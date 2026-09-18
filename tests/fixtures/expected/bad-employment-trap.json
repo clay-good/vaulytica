@@ -36,7 +36,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "CHOICE-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -59,7 +59,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-008",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -74,21 +74,21 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-010",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "CHOICE-011",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "CHOICE-012",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -139,7 +139,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-007",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -153,7 +153,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-009",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -195,7 +195,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "DARK-015",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -209,7 +209,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -223,7 +223,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -258,7 +258,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.6.1"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -266,7 +266,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.14.0"
+      "rule_version": "1.15.0"
     },
     {
       "elapsed_ms": 0,
@@ -315,7 +315,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-008",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -386,7 +386,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-008",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -421,21 +421,21 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-004",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "PERS-006",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -450,14 +450,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-008",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -583,7 +583,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -898,11 +898,11 @@
         "start_offset": 280,
         "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost"
       },
-      "explanation": "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024) declared 'stay-or-pay' provisions presumptively unlawful under §8(a)(1) of the NLRA as restraints on Section 7 rights. The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated; New York's 'Trapped at Work Act' (Dec. 2025) bans employment promissory notes for non-transferable training. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
+      "explanation": "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024), which had treated 'stay-or-pay' provisions as presumptively unlawful, was rescinded by GC 25-05 on February 14, 2025 (and a General Counsel memo is not Board law). The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated. New York's Trapped at Work Act (signed December 2025, amended February 2026) prohibits requiring an employment promissory note once it takes effect — confirm its effective date. California's AB 692 (Bus. & Prof. Code § 16608) restricts stay-or-pay terms in employment contracts entered on or after January 1, 2026. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
       "id": "PERS-008-s1.2-280",
       "recommendation": "Strike the clause. If retention is the goal, use vesting equity, deferred compensation, or a discretionary retention bonus — none of which transfer to the employer's exit-cost-shifting goal but also none of which trigger the same enforcement risk.",
       "rule_id": "PERS-008",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "critical",
       "source_citations": [],
       "title": "Training-repayment / stay-or-pay clause"
@@ -916,11 +916,11 @@
         "start_offset": 1301,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
-      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
+      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
       "id": "CHOICE-010-s1.4-1301",
       "recommendation": "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       "rule_id": "CHOICE-010",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Asymmetric jury-trial waiver"
@@ -969,11 +969,11 @@
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
-      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
+      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply. A work an employee prepares within the scope of employment is a work made for hire owned by the employer (17 U.S.C. §§ 101, 201(b)); copyright in a contractor's work vests in the contractor unless a written work-for-hire agreement covers an enumerated category, or the rights are assigned in writing.",
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.14.0",
+      "rule_version": "1.15.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1092,10 +1092,10 @@
         "start_offset": 1317,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
-      "explanation": "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
+      "explanation": "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",
       "id": "CHOICE-008-s1.4-1317",
       "rule_id": "CHOICE-008",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [],
       "title": "Jury trial waiver present"
@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "84f506b6f9524e3ba0dc1217e58acfae06eeae453cdf50aaa473ea9a34eedb55",
+  "result_hash": "4fe6e94d2902733d3bee98bda1ac4680335f142cc35bb0e164fc0cad7ee151bc",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.729.0"
+  "version": "9.730.0"
 }

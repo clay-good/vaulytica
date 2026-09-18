@@ -223,16 +223,16 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Books and records available to HHS Secretary",
     description:
       "BAA must require BA to make its internal practices, books, and records available to HHS for compliance review.",
-    citation: "45 C.F.R. § 164.504(e)(2)(ii)(H)",
+    citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
     missing_title: "HHS books-and-records access clause missing",
     missing_description:
       "No clause was found making BA's books and records available to the HHS Secretary.",
     explanation:
-      "Section 164.504(e)(2)(ii)(H) requires BAs to make their internal practices, books, and records available to the Secretary of HHS for determining compliance.",
+      "Section 164.504(e)(2)(ii)(I) requires BAs to make their internal practices, books, and records available to the Secretary of HHS for determining compliance.",
     recommendation:
       "Add: 'Business Associate shall make its internal practices, books, and records relating to the use and disclosure of PHI available to the Secretary of HHS for purposes of determining compliance.'",
     present_patterns: [
@@ -241,21 +241,21 @@ export const BAA_RULES: Rule[] = [
     denied_if: expressDenial(String.raw`books\s+and\s+records|internal\s+practices`),
     denied_title: "HHS access to books and records expressly denied",
     denied_description:
-      "The agreement states that books and records are not made available to the Secretary. \u00a7 164.504(e)(2)(ii)(H) requires that access for compliance review.",
+      "The agreement states that books and records are not made available to the Secretary. \u00a7 164.504(e)(2)(ii)(I) requires that access for compliance review.",
   }),
 
   presence({
     id: "BAA-010",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Return or destruction at termination",
     description:
       "BA must, at termination, return or destroy all PHI received from, or created on behalf of, the covered entity.",
-    citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
+    citation: "45 C.F.R. § 164.504(e)(2)(ii)(J)",
     missing_title: "Return-or-destruction clause missing",
     missing_description:
       "No clause was found requiring return or destruction of PHI at termination of the agreement.",
     explanation:
-      "Section 164.504(e)(2)(ii)(I) requires the BA to return or destroy all PHI received from the covered entity, including PHI in the possession of subcontractors, at termination if feasible.",
+      "Section 164.504(e)(2)(ii)(J) requires the BA, at termination and if feasible, to return or destroy all PHI received from, or created or received on behalf of, the covered entity; where that is infeasible, the protections must extend to the retained PHI. Covering copies held by subcontractors is language from HHS's sample BAA provisions, not the regulation.",
     recommendation:
       "Add: 'Upon termination, Business Associate shall return or destroy all PHI received from or created on behalf of Covered Entity, including such PHI in the possession of any subcontractor.'",
     // Broadened beyond the bare "return or destroy" / "destroy all PHI" forms:
@@ -290,6 +290,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-011",
+    version: "1.1.0",
     name: "Termination right for material breach",
     description:
       "Covered entity must have the right to terminate the BAA for material breach by the business associate.",
@@ -298,7 +299,7 @@ export const BAA_RULES: Rule[] = [
     missing_description:
       "No clause was found giving Covered Entity the right to terminate for material breach.",
     explanation:
-      "Section 164.504(e)(2)(iii) requires the BAA to allow the covered entity to terminate if the BA has violated a material term and either failed to cure or cure is not feasible.",
+      "Section 164.504(e)(2)(iii) requires the contract to authorize termination if the covered entity determines the business associate has violated a material term; the cure-or-terminate steps come from § 164.504(e)(1)(ii).",
     recommendation:
       "Add a termination-for-breach clause with a defined cure period and explicit reference to material breach of HIPAA obligations.",
     present_patterns: [/(material\s+breach|terminate.*?breach|breach.*?(terminate|termination))/is],
@@ -419,15 +420,16 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-018",
+    version: "1.1.0",
     name: "Subcontractor flow-down for Security Rule",
     description:
       "BA must ensure subcontractors handling ePHI agree to the Security Rule restrictions.",
-    citation: "45 C.F.R. § 164.314(a)(2)(ii)",
+    citation: "45 C.F.R. § 164.314(a)(2)(i)(B), (a)(2)(iii)",
     missing_title: "Security Rule subcontractor flow-down missing",
     missing_description:
       "No clause was found extending Security Rule obligations to subcontractors that maintain ePHI.",
     explanation:
-      "Section 164.314(a)(2)(ii) requires BAs to ensure that any subcontractor that maintains ePHI agrees to comply with applicable Security Rule requirements.",
+      "Section 164.314(a)(2)(i)(B) requires the BA to ensure that any subcontractor that creates, receives, maintains, or transmits ePHI on its behalf agrees to comply with applicable Security Rule requirements; § 164.314(a)(2)(iii) applies the same contract requirements to BA–subcontractor contracts.",
     recommendation:
       "Add: 'Business Associate shall ensure that any subcontractor that creates, receives, maintains, or transmits ePHI on behalf of Business Associate agrees in writing to comply with applicable Security Rule requirements.'",
     present_patterns: [
@@ -548,23 +550,23 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-024",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Return-or-destruction lacks definite outer bound",
     description:
       "Flags return-or-destruction language that is open-ended ('as soon as practicable', 'commercially reasonable').",
-    citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
+    citation: "45 C.F.R. § 164.504(e)(2)(ii)(J)",
     bad_title: "Return-or-destruction lacks definite outer bound",
     bad_description:
       "Detected return-or-destruction obligation without a definite outer time bound.",
     explanation:
-      "HHS guidance expects a definite outer bound for return or destruction of PHI at termination. Open-ended timing risks indefinite PHI retention.",
+      "Neither the regulation nor HHS's sample BAA provisions set a return deadline; a definite outer bound for return or destruction of PHI at termination is market practice. Open-ended timing risks indefinite PHI retention.",
     recommendation:
       "Specify a fixed number of days (e.g., 30 days) after termination for return or destruction of PHI.",
     bad_patterns: [
       /(return|destroy|destruction).{0,80}(as\s+soon\s+as\s+practicable|commercially\s+reasonable|reasonable\s+time)/i,
       // "return or destroy PHI WHEN feasible" is open-ended timing. "IF
       // feasible" is deliberately excluded — that is the statutory condition
-      // at 45 C.F.R. § 164.504(e)(2)(ii)(I) ("if it is infeasible to return
+      // at 45 C.F.R. § 164.504(e)(2)(ii)(J) ("if it is infeasible to return
       // or destroy … extend the protections"), which is correct drafting.
       /(return|destroy|destruction)[^.]{0,60}\b(?:when|as)\s+feasible\b/i,
     ],
@@ -584,16 +586,16 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-025",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Indemnity cap impairing HIPAA remedies",
     description:
       "Flags liability caps that limit damages below the covered entity's potential HIPAA penalty exposure.",
     citation: "45 C.F.R. § 160.404 (Civil Money Penalty caps)",
     bad_title: "Indemnity cap may impair HIPAA remedies",
     bad_description:
-      "Detected an aggregate-liability cap that may not cover HIPAA Tier 4 penalties (up to $2,067,813 per violation category).",
+      "Detected an aggregate-liability cap that may not cover HIPAA civil money penalties at the highest tier.",
     explanation:
-      "HIPAA civil money penalties can reach over $2M per violation category per year (45 CFR § 160.404, adjusted annually). A liability cap below that effectively shifts HIPAA risk back to the Covered Entity.",
+      "HIPAA's highest penalty tier (willful neglect not corrected) carries a calendar-year cap for identical violations, adjusted annually for inflation (45 C.F.R. § 160.404; 45 C.F.R. Part 102). A liability cap below that exposure effectively shifts HIPAA risk back to the Covered Entity.",
     recommendation:
       "Carve HIPAA-related liability out of the cap, or set the cap at a multiple of fees no lower than the HHS annual penalty cap.",
     // v1.0.0 matched "aggregate/total liability" or "liability … shall not
@@ -608,15 +610,15 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-026",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Covered entity audit rights preserved",
     description: "BAA should preserve the covered entity's right to audit BA's HIPAA compliance.",
-    citation: "45 C.F.R. § 164.504(e)(2)(ii)(H)",
+    citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
     missing_title: "Covered-entity audit rights not preserved",
     missing_description:
       "No clause was found granting Covered Entity audit rights over BA's PHI handling.",
     explanation:
-      "HHS guidance encourages audit rights as a substantive complement to the books-and-records access requirement. Without audit rights, the covered entity has limited ability to verify ongoing compliance.",
+      "Audit rights are a market-practice complement to the books-and-records access requirement; neither the regulation nor HHS's sample BAA provisions grant the covered entity an audit right. Without audit rights, the covered entity has limited ability to verify ongoing compliance.",
     recommendation:
       "Add an audit-rights clause permitting reasonable on-site or remote audits of BA's HIPAA compliance.",
     // The right is stated as a PERMISSION, and in a downstream BAA it runs to
@@ -633,7 +635,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-027",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Covered entity indemnifies BA for HIPAA violations",
     description:
       "Flags clauses where the covered entity indemnifies the business associate for HIPAA violations — a common vendor overreach.",
@@ -642,7 +644,7 @@ export const BAA_RULES: Rule[] = [
     bad_description:
       "Detected indemnification language requiring the covered entity to indemnify BA for HIPAA-related liability.",
     explanation:
-      "HHS-frowned-upon drafting: shifting HIPAA liability from BA to the covered entity inverts the regulatory burden. The covered entity should not indemnify the BA for the BA's own HIPAA violations.",
+      "Market practice, not an HHS position (HHS's sample BAA provisions do not address indemnification): shifting HIPAA liability from BA to the covered entity inverts the regulatory burden. The covered entity should not indemnify the BA for the BA's own HIPAA violations.",
     recommendation:
       "Restrict mutual indemnification to non-HIPAA matters, or remove the CE-to-BA indemnification entirely with respect to HIPAA breaches.",
     // v1.0.0 required "covered entity (shall|will) indemnif" with the verb
@@ -825,14 +827,15 @@ export const BAA_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "BAA-036",
+    version: "1.1.0",
     name: "Signed by authorized representative",
     description:
       "BAA should be signed by an authorized representative of each party (satisfactory assurances).",
-    citation: "45 C.F.R. § 164.504(e)(5)",
+    citation: "45 C.F.R. §§ 164.502(e)(2), 164.504(e)",
     missing_title: "Signature block missing",
     missing_description: "No signature block was detected in the document.",
     explanation:
-      "Section 164.504(e)(5) requires the covered entity to obtain satisfactory assurances through a written contract — a signed instrument.",
+      "Satisfactory assurances must be documented in a written contract (45 C.F.R. §§ 164.502(e)(2), 164.504(e)); HIPAA does not require a signature, though one is good evidence of execution. Section 164.504(e)(5) extends the requirements to BA–subcontractor contracts.",
     recommendation:
       "Add signature blocks for both parties with name, title, and date of authorized representatives.",
     present_patterns: [
@@ -979,15 +982,15 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-043",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "Survival of HIPAA obligations after termination",
     description: "BAA should state that HIPAA-related obligations survive termination.",
-    citation: "45 C.F.R. § 164.504(e)(2)(ii)(I)",
+    citation: "45 C.F.R. § 164.504(e)(2)(ii)(J)",
     missing_title: "Survival clause for HIPAA obligations missing",
     missing_description:
       "No survival clause was found extending HIPAA obligations past termination.",
     explanation:
-      "Section 164.504(e)(2)(ii)(I) and HHS guidance expect HIPAA obligations to survive termination for any PHI retained after termination.",
+      "Section 164.504(e)(2)(ii)(J) requires the protections of the contract to extend to any PHI retained after termination because return or destruction is infeasible.",
     recommendation:
       "Add: 'The obligations of Business Associate under Section [X] (Return or Destruction of PHI), and the obligations applicable to any PHI that BA retains, shall survive termination.'",
     // § 164.504(e)(2)(ii)(J)'s own survival mechanism: when return or

@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-008",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Cross-border data transfer without safeguard",
   category: "ip-and-data",
   default_severity: "warning",
@@ -103,7 +103,7 @@ export const rule: Rule = {
       description: `The contract authorizes cross-border data transfer ('${hit.raw}') but does not reference SCCs, BCRs, an adequacy decision, or the Data Privacy Framework.`,
       excerpt: hit.raw,
       explanation:
-        "GDPR Article 46 (and the UK GDPR analogue) requires a documented transfer mechanism for personal data leaving the EEA/UK. Common mechanisms are EU Standard Contractual Clauses (Commission Decision 2021/914), Binding Corporate Rules, an adequacy decision, or — for US transfers — the EU-US Data Privacy Framework. A contract that authorizes cross-border transfer without naming a mechanism leaves the data exporter exposed to enforcement.",
+        "GDPR Chapter V (and the UK GDPR analogue) requires a lawful transfer basis for personal data leaving the EEA/UK: an adequacy decision under Article 45 (for certified US recipients, the EU-US Data Privacy Framework), or an Article 46 safeguard such as EU Standard Contractual Clauses (Commission Decision 2021/914) or Binding Corporate Rules. A contract that authorizes cross-border transfer without naming a mechanism leaves the data exporter exposed to enforcement.",
       recommendation:
         "Add an explicit reference to the applicable transfer mechanism. For US-based vendors, the EU-US Data Privacy Framework (if certified) or 2021 SCCs are the most defensible defaults.",
       position: { section_id: hit.sectionId, start: hit.start, end: hit.end },

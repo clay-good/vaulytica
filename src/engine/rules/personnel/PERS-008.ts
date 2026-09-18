@@ -7,20 +7,22 @@ import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "
  *
  * Detects clauses that require an employee to repay "training
  * costs" or "signing bonuses" if they quit or are terminated within
- * a vesting period. NLRB GC Memorandum 25-01 (Oct. 7, 2024)
- * declared "stay-or-pay" provisions presumptively unlawful under
- * §8(a)(1) of the NLRA as restraints on Section 7 rights, demanding
- * remediation within 60 days. CFPB's July 2023 report flagged TRAPs
- * as employer-driven debt; state AGs (CA, CO, NV) have investigated;
- * New York's "Trapped at Work Act" (enacted Dec. 2025) bans
- * employment promissory notes for non-transferable / employer-
- * specific training. Many TRAPs also fail FLSA "free and clear"
+ * a vesting period. NLRB GC Memorandum 25-01 (Oct. 7, 2024), which
+ * had treated "stay-or-pay" provisions as presumptively unlawful, was
+ * rescinded by GC 25-05 on February 14, 2025 (a GC memo is not Board
+ * law). CFPB's July 2023 report flagged TRAPs as employer-driven debt;
+ * state AGs (CA, CO, NV) have investigated. New York's Trapped at Work
+ * Act (signed December 2025, amended February 2026) prohibits requiring
+ * an employment promissory note once it takes effect — confirm its
+ * effective date. California's AB 692 (Bus. & Prof. Code § 16608)
+ * restricts stay-or-pay terms in employment contracts entered on or
+ * after January 1, 2026. Many TRAPs also fail FLSA "free and clear"
  * wage requirements when repayment dips an employee below minimum
  * wage.
  */
 export const rule: Rule = {
   id: "PERS-008",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Training-repayment / stay-or-pay clause",
   category: "personnel",
   default_severity: "critical",
@@ -43,7 +45,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024) declared 'stay-or-pay' provisions presumptively unlawful under §8(a)(1) of the NLRA as restraints on Section 7 rights. The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated; New York's 'Trapped at Work Act' (Dec. 2025) bans employment promissory notes for non-transferable training. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
+        "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024), which had treated 'stay-or-pay' provisions as presumptively unlawful, was rescinded by GC 25-05 on February 14, 2025 (and a General Counsel memo is not Board law). The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated. New York's Trapped at Work Act (signed December 2025, amended February 2026) prohibits requiring an employment promissory note once it takes effect — confirm its effective date. California's AB 692 (Bus. & Prof. Code § 16608) restricts stay-or-pay terms in employment contracts entered on or after January 1, 2026. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
       recommendation:
         "Strike the clause. If retention is the goal, use vesting equity, deferred compensation, or a discretionary retention bonus — none of which transfer to the employer's exit-cost-shifting goal but also none of which trigger the same enforcement risk.",
       position: hit.position,

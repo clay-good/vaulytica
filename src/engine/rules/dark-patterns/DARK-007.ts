@@ -21,7 +21,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-007",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Browsewrap / passive-acceptance language",
   category: "dark-patterns",
   default_severity: "warning",
@@ -43,7 +43,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. For consumer-facing contracts, the FTC's *.com Disclosures* guidance treats hidden or passive consent as a deceptive practice.",
+        "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. Assent to online terms is a question of state contract-formation law; the FTC's .com Disclosures guidance addresses clear-and-conspicuous advertising disclosures, not contract assent.",
       recommendation:
         "Pair the contract with an affirmative manifestation of assent — a click-through checkbox, a typed name, or an e-signature. Confirm reasonable conspicuous notice of the terms prior to the assent step.",
       position: hit.position,

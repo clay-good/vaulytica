@@ -41,7 +41,7 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
     id: "IPL-103",
     // 1.0.1 — written as a synonym OR, but the USPTO addressee and the recordation authorization are distinct pillars; `authoriz` alone is satisfied by "authorized representatives". The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Recordation authorization to the USPTO",
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
@@ -49,7 +49,7 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
       /(record|authori[sz]|is\s+hereby\s+(requested|directed)\s+to)/i,
     ],
     all: true,
-    why: "Under 35 U.S.C. § 261 an unrecorded assignment is void against a subsequent bona fide purchaser without notice who records first. Recordation within three months protects priority.",
+    why: "Under 35 U.S.C. § 261 an assignment is void against a later purchaser for value without notice unless recorded within three months of its date or before the later purchase; the later purchaser need not record first. 15 U.S.C. § 1060(a)(4) applies the same rule to trademarks.",
     fix: "Authorize and direct the Commissioner for Patents to record the assignment, and commit the assignee to record promptly.",
   },
   {
@@ -139,7 +139,7 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
     id: "IPL-109",
     // 1.0.1 — written as a synonym OR, but the USPTO addressee and the recordation authorization are distinct pillars; `authoriz` alone is satisfied by "authorized representatives". The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Recordation authorization",
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
@@ -147,7 +147,7 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
       /(record|authori[sz]|is\s+hereby\s+(requested|directed))/i,
     ],
     all: true,
-    why: "An unrecorded trademark assignment is void against a subsequent purchaser for value without notice who records first, under the same three-month rule as patents.",
+    why: "Under 35 U.S.C. § 261 an assignment is void against a later purchaser for value without notice unless recorded within three months of its date or before the later purchase; the later purchaser need not record first. 15 U.S.C. § 1060(a)(4) applies the same rule to trademarks.",
     fix: "Authorize recordation with the USPTO and any foreign registries, and allocate the recordation costs.",
   },
   {

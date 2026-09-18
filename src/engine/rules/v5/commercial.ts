@@ -65,13 +65,14 @@ const PURCHASE_ORDER = pack("purchase-order-terms", C, [
   },
   {
     id: "COMM-105",
+    ver: "1.1.0",
     name: "Cancellation and change rights",
     cite: ucc("2-106", "Cancellation"),
     pat: [
       /(cancel|terminate)\s+(this\s+)?(purchase\s+)?order/i,
       /(change\s+order|modif(y|ication)\s+of\s+(the\s+)?order)/i,
     ],
-    why: "Buyer forms customarily reserve cancellation for convenience with a stated settlement of costs incurred. Without it, cancellation is a breach and the seller's remedy is § 2-708 lost profit.",
+    why: "Buyer forms customarily reserve cancellation for convenience with a stated settlement of costs incurred. Without it, a buyer's wrongful cancellation is a breach, and the seller may choose among UCC remedies: resale (§ 2-706), market differential (§ 2-708(1)), lost profit (§ 2-708(2)), or in limited cases the price (§ 2-709).",
     fix: "Add a cancellation-for-convenience right with the cost settlement formula, and a change-order procedure with price and schedule adjustment.",
   },
 ]);
@@ -320,6 +321,7 @@ const FREIGHT = pack("freight-transportation-agreement", C, [
   },
   {
     id: "COMM-123",
+    ver: "1.1.0",
     name: "Claims filing and suit deadlines",
     cite: cfr(
       "49",
@@ -330,7 +332,7 @@ const FREIGHT = pack("freight-transportation-agreement", C, [
       /(claim\s+(must|(?:shall|will))\s+be\s+filed|filing\s+of\s+claims)/i,
       /(nine\s+months|9\s*\)?\s*months|two\s+years|limitation\s+period)/i,
     ],
-    why: "Carmack permits a minimum nine-month claim-filing period and a two-year suit limitation. Agreements routinely shorten these below the statutory floor, which makes the shortened term unenforceable and leaves neither party sure of the real deadline.",
+    why: "Carmack sets a minimum nine-month claim-filing period and a two-year suit limitation (49 U.S.C. § 14706(e)). Those minimums can be waived in a written transportation contract under 49 U.S.C. § 14101(b), so a shortened period in such a contract can be enforceable; outside one, a shortened term is unenforceable and leaves neither party sure of the real deadline.",
     fix: "State the claim-filing period (no less than nine months from delivery) and the suit limitation (no less than two years from claim disallowance), and the required claim contents.",
   },
 ]);
@@ -551,8 +553,9 @@ const FRANCHISE = pack("franchise-agreement", C, [
 const FDD = pack("franchise-disclosure-document", C, [
   {
     id: "COMM-140",
+    ver: "1.1.0",
     name: "Items 1-5 — franchisor, litigation, bankruptcy, and fees",
-    cite: cfr("16", "436.5(a)", "FTC Franchise Rule — Items 1 through 5"),
+    cite: cfr("16", "436.5(a)–(e)", "FTC Franchise Rule — Items 1 through 5"),
     pat: [/item\s+1/i, /(litigation|bankruptcy|initial\s+fees?)/i],
     why: "§ 436.5 prescribes 23 items in fixed order. Items 3 and 4 (litigation and bankruptcy) are the disclosures rescission claims are built on, and omissions are the classic Franchise Rule violation.",
     fix: "Include Items 1-5 in the prescribed order: the franchisor and its predecessors, business experience, litigation, bankruptcy, and initial fees.",
@@ -720,7 +723,7 @@ const JOINT_VENTURE = pack("joint-venture-agreement", C, [
   },
   {
     id: "COMM-151",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "IP ownership and background IP",
     cite: practice("jv-ip", "background and foreground IP allocation in joint ventures"),
     // 1.1.0 — the patterns required the JARGON ("background IP",
@@ -745,7 +748,7 @@ const JOINT_VENTURE = pack("joint-venture-agreement", C, [
     // to an OR, so either half alone scored the document clean. See the
     // pack-wide note on `all`.
     all: true,
-    why: "Each member arrives with IP the venture needs and leaves wanting rights to what the venture built. Silence produces joint ownership, whose default rules (each owner may license without accounting) rarely match the deal.",
+    why: "Each member arrives with IP the venture needs and leaves wanting rights to what the venture built. Silence produces joint ownership, whose default rules rarely match the deal: a patent co-owner may license without accounting to the others (35 U.S.C. § 262), while joint copyright owners may license non-exclusively but must account to co-owners for profits.",
     fix: "Identify background IP and the license granted to the venture, state who owns venture-developed IP, and set license-back rights on dissolution.",
   },
 ]);
@@ -862,6 +865,7 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
   },
   {
     id: "COMM-160",
+    ver: "1.1.0",
     name: "Cybersecurity — DFARS 252.204-7012 / NIST SP 800-171",
     cite: cfr(
       "48",
@@ -872,8 +876,8 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
       /(252\.204-7012|252\.204-7020|nist\s+sp\s+800-171|cmmc)/i,
       /(covered\s+defen[cs]e\s+information|controlled\s+unclassified\s+information|cyber\s+incident\s+report)/i,
     ],
-    why: "DFARS 252.204-7012(m) requires the clause in all subcontracts where covered defense information will be handled, with a 72-hour incident report to DoD. The prime is liable for a subcontractor's failure.",
-    fix: "Flow down 252.204-7012 (and 7019/7020 where applicable), require NIST SP 800-171 implementation and an SPRS score, and set the 72-hour incident-report duty.",
+    why: "DFARS 252.204-7012(m) requires the clause in all subcontracts where covered defense information will be handled, with a 72-hour incident report to DoD. The prime is liable for a subcontractor's failure. Since the CMMC acquisition rule took effect November 10, 2025, DFARS 252.204-7021 must also be flowed down where the prime requires a CMMC level.",
+    fix: "Flow down 252.204-7012 (and 7019/7020 where applicable, and 252.204-7021 where a CMMC level is required), require NIST SP 800-171 implementation and an SPRS score, and set the 72-hour incident-report duty.",
     when: [
       /(defen[cs]e|dod|department\s+of\s+defen[cs]e|dfars|covered\s+defen[cs]e\s+information)/i,
     ],
@@ -881,14 +885,15 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
   },
   {
     id: "COMM-161",
+    ver: "1.1.0",
     name: "Small-business and socioeconomic clauses",
     cite: cfr("48", "52.219-8", "FAR — utilization of small business concerns"),
     pat: [
       /(52\.219|small\s+business\s+(subcontracting|concerns))/i,
       /(52\.222-26|equal\s+opportunity|affirmative\s+action)/i,
     ],
-    why: "FAR 52.219-8 and 52.222-26 are among the handful of clauses required in subcontracts above threshold regardless of commerciality. Their omission is a recurring finding in prime contractor audits.",
-    fix: "Flow down FAR 52.219-8, 52.222-26, 52.222-35/36/37, and 52.222-50 as applicable to the subcontract value and type.",
+    why: "FAR 52.219-8 is among the handful of clauses required in subcontracts above threshold regardless of commerciality. Executive Order 14173 (January 21, 2025) revoked E.O. 11246, and FAR 52.222-26 (Equal Opportunity) is no longer required. Omitted flow-downs are a recurring finding in prime contractor audits.",
+    fix: "Flow down FAR 52.219-8, 52.222-35/36/37, and 52.222-50 as applicable to the subcontract value and type.",
   },
   {
     id: "COMM-162",

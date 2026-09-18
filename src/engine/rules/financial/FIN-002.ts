@@ -30,7 +30,7 @@ const NAMED = /\b[Tt]he\s+([A-Z][\w\s]{2,30}?)\s+(?:of|equal\s+to)\s+\$([\d,]+(?
 
 export const rule: Rule = {
   id: "FIN-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Inconsistent named amounts",
   category: "financial",
   default_severity: "warning",
@@ -85,7 +85,7 @@ export const rule: Rule = {
         description: `"${name}" is referenced with multiple values: ${values}.`,
         excerptText: list.map((e) => e.raw).join(" / "),
         explanation:
-          "When the same named amount is stated with different values in different parts of the contract, the ambiguity is exploitable. Most courts will resolve in favor of the meaning more favorable to the non-drafting party.",
+          "When the same named amount is stated with different values in different parts of the contract, the ambiguity is exploitable. Courts first try to reconcile conflicting terms from the whole contract and extrinsic evidence; construing against the drafter is a last-resort tie-breaker, applied weakly between sophisticated parties.",
         recommendation: "Pick one value and update every reference to use it.",
         position: { section_id: first.sectionId, start: first.start, end: first.end },
         source_citations: [],

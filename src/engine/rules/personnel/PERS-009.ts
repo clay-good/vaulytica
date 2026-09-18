@@ -6,24 +6,23 @@ import type { DocPosition } from "../../../extract/types.js";
 /**
  * PERS-009 — Long non-solicit duration (warning, personnel).
  *
- * Detects non-solicit / no-hire clauses with a duration that exceeds
- * the consensus-reasonable bound. PERS-002 fires "info" on the
- * presence of any non-solicit; PERS-009 escalates to "warning" when
- * the duration extends past 12 months — the most commonly cited
- * outer bound for enforceability across US states. Durations of 24
- * months or more are flagged with stronger language: California
- * Bus. & Prof. Code § 16600 / § 16600.5 voids most non-solicits
- * regardless of duration; New York courts disfavor non-solicits
- * longer than 12 months absent a strong showing of legitimate
- * business interest (e.g., *BDO Seidman v. Hirshberg*, 712 N.E.2d
- * 1220); Massachusetts G.L. c. 149 § 24L caps at 12 months for
- * post-employment restrictions on individuals.
+ * Detects non-solicit / no-hire clauses with a duration longer than
+ * 12 months. PERS-002 fires "info" on the presence of any non-solicit;
+ * PERS-009 escalates to "warning" when the duration extends past 12
+ * months. Durations of 24 months or more are flagged with stronger
+ * language. Non-solicit duration is judged case by case for
+ * reasonableness; 12–24 months is common and often enforced (*BDO
+ * Seidman v. Hirshberg*, 93 N.Y.2d 382 (1999), partially enforced an
+ * 18-month client non-solicit), while California generally voids them.
+ * Massachusetts's Noncompetition Agreement Act (G.L. c. 149 § 24L) caps
+ * non-competes at 12 months but expressly excludes employee and customer
+ * non-solicitation covenants.
  *
  * Detection: a paragraph carrying non-solicit / no-hire / no-poach
  * language AND a duration expressed in months / years. Two thresholds:
  *
- *   - 13–23 months → "exceeds the typical 12-month bound"
- *   - ≥ 24 months → "well beyond the consensus enforceable window"
+ *   - 13–23 months → "exceeds 12 months"
+ *   - ≥ 24 months → "is well beyond 12 months"
  */
 
 // Conservative non-solicit gates. We do a cheap "is there a relevant
@@ -90,7 +89,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",
@@ -217,15 +216,15 @@ export const rule: Rule = {
     });
     if (!hit) return null;
     const h: Hit = hit;
-    const tier = h.months >= 24 ? "well beyond" : "exceeds";
+    const tier = h.months >= 24 ? "is well beyond" : "exceeds";
     return emit(ctx, rule, {
-      title: `Non-solicit duration ${h.months} months ${tier} the consensus 12-month bound`,
+      title: `Non-solicit duration ${h.months} months ${tier} 12 months`,
       description: `${h.raw} — non-solicit duration ${h.months} months`,
       excerpt: excerptWindow(h.text, h.matchIndex, 20, 280),
       explanation:
         h.months >= 24
-          ? "Non-solicit durations of 24 months or longer are routinely struck down or narrowed by US courts. California Bus. & Prof. Code §§ 16600 / 16600.5 voids most non-solicits regardless of duration; Massachusetts G.L. c. 149 § 24L caps individual post-employment restrictions at 12 months; New York courts (e.g., BDO Seidman v. Hirshberg) require a strong legitimate-business-interest showing for anything past 12 months. A 24+ month restriction is unlikely to be enforced as written."
-          : "Non-solicit durations longer than 12 months are increasingly disfavored. The consensus enforceable window across US states is 12 months, with California (Bus. & Prof. Code §§ 16600 / 16600.5) voiding most non-solicits entirely. A 13–23 month restriction is likely to be narrowed by a reviewing court to 12 months or less.",
+          ? "Non-solicit duration is judged case by case for reasonableness; 12–24 months is common and often enforced (BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999), partially enforced an 18-month client non-solicit), while California generally voids them (Bus. & Prof. Code §§ 16600 / 16600.5). Massachusetts's Noncompetition Agreement Act (G.L. c. 149 § 24L) caps non-competes at 12 months but expressly excludes employee and customer non-solicitation covenants. A restriction of 24 months or longer is beyond the range commonly enforced."
+          : "Non-solicit duration is judged case by case for reasonableness; 12–24 months is common and often enforced (BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999), partially enforced an 18-month client non-solicit), while California generally voids them (Bus. & Prof. Code §§ 16600 / 16600.5). A restriction longer than 12 months draws closer scrutiny of the business interest it protects.",
       recommendation:
         "Reduce the non-solicit duration to 12 months or less, or split into (i) a 12-month post-engagement non-solicit, and (ii) a longer non-solicit limited to specific individuals with a documented legitimate business interest. Consider whether the clause is enforceable at all under California law if any party is California-based.",
       position: h.position,

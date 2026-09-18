@@ -48,7 +48,7 @@ export function hipaa(section: string, label?: string): SourceCitation {
   return v4Cite({
     id: `hipaa-45-cfr-164-${section.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `45 C.F.R. § 164.${section}${label ? ` (${label})` : ""}`,
-    source_url: `https://www.law.cornell.edu/cfr/text/45/164.${section.replace(/[^0-9]/g, "")}`,
+    source_url: `https://www.law.cornell.edu/cfr/text/45/164.${section.split("(")[0]}`,
   });
 }
 

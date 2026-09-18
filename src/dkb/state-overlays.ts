@@ -148,7 +148,7 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     summary:
       "California voids employee non-compete covenants by statute, with no general exception for ordinary employment. As of 2024 an employer may also not attempt to enforce a void non-compete and must have notified affected employees; doing so is an independent violation.",
     recommendation:
-      "Treat any employee non-compete as unenforceable under California law. Rely on trade-secret protection and a narrowly-drawn confidentiality/non-solicit instead; confirm the 2024 employee-notice obligation was met.",
+      "Treat any employee non-compete as unenforceable under California law. Rely on trade-secret protection and confidentiality obligations; customer non-solicits are void under § 16600 (Edwards v. Arthur Andersen (2008)), and employee non-solicits are likely void too, except as ancillary to a sale of business (§§ 16601–16602.5). Confirm the 2024 employee-notice obligation was met.",
     severity: "critical",
     citation: cite(
       "ca-bus-prof-16600",
@@ -222,9 +222,9 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     posture: "restricted",
     headline: "Void unless worker is highly compensated",
     summary:
-      "Colorado makes non-competes void unless the worker earns above an annually-adjusted highly-compensated threshold (and customer non-solicits unless above ~60% of it), requires specific advance notice, and imposes penalties for non-compliant covenants. Criminal-trade-secret and sale-of-business exceptions are narrow.",
+      "Colorado makes non-competes void unless the worker earns above an annually-adjusted highly-compensated threshold (and customer non-solicits unless above ~60% of it), requires specific advance notice, and imposes penalties for non-compliant covenants. Even for a highly compensated worker, the covenant must be for the protection of trade secrets and no broader than reasonably necessary to protect them (C.R.S. § 8-2-113(2)(b)), with separate advance notice. Criminal-trade-secret and sale-of-business exceptions are narrow.",
     recommendation:
-      "Confirm the worker exceeds the current highly-compensated threshold and that the statutory advance-notice requirement was met; otherwise the non-compete is void and may carry penalties.",
+      "Confirm the worker exceeds the current highly-compensated threshold, that the covenant is limited to protecting trade secrets and no broader than reasonably necessary, and that the separate statutory advance-notice requirement was met; otherwise the non-compete is void and may carry penalties.",
     severity: "warning",
     citation: cite(
       "co-rev-stat-8-2-113",
@@ -239,11 +239,12 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     jurisdiction: "us-wa",
     state_name: "Washington",
     posture: "restricted",
-    headline: "Void below income threshold; ≤18 mo presumed reasonable",
+    headline:
+      "Void below income threshold; >18 mo presumed unreasonable; all void from June 30, 2027",
     summary:
-      "Washington voids non-competes for employees earning below an annually-adjusted income threshold, requires written disclosure by the offer-acceptance date, presumes any duration over 18 months unreasonable, and mandates pay during any post-termination enforcement of a laid-off worker's covenant.",
+      "Washington voids non-competes for employees earning below an annually-adjusted income threshold, requires written disclosure by the offer-acceptance date, presumes any duration over 18 months unreasonable, and mandates pay during any post-termination enforcement of a laid-off worker's covenant. Under 2026 Wash. Laws ch. 149 (HB 1155), from June 30, 2027 all noncompetition covenants are void and unenforceable; until then RCW 49.62's earnings-threshold regime applies.",
     recommendation:
-      "Verify the employee's earnings exceed the current threshold and the duration is ≤18 months; confirm the disclosure-timing and (for laid-off workers) the pay-during-enforcement requirements.",
+      "Verify the employee's earnings exceed the current threshold and the duration is ≤18 months; confirm the disclosure-timing and (for laid-off workers) the pay-during-enforcement requirements. Plan for every noncompetition covenant becoming void and unenforceable from June 30, 2027 (2026 Wash. Laws ch. 149).",
     severity: "warning",
     citation: cite(
       "wa-rcw-49-62",
@@ -260,9 +261,9 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     posture: "restricted",
     headline: "Void unless statutory conditions met; ≤12 mo",
     summary:
-      "Oregon makes a non-compete voidable unless the employer gives written notice at least two weeks before the start date (or it is entered at a bona fide advancement), the employee is exempt and earns above a salary floor, and the term does not exceed 12 months.",
+      "Since January 1, 2022, Oregon makes a non-compete void and unenforceable unless the employer gives written notice at least two weeks before the start date (or it is entered at a bona fide advancement), the employee is exempt and earns above a salary floor, and the term does not exceed 12 months.",
     recommendation:
-      "Confirm the two-week advance-notice, exempt-status, salary-floor, and 12-month-cap conditions were all satisfied; a covenant missing any of them is voidable in Oregon.",
+      "Confirm the two-week advance-notice, exempt-status, salary-floor, and 12-month-cap conditions were all satisfied; a covenant missing any of them is void and unenforceable in Oregon.",
     severity: "warning",
     citation: cite(
       "or-rev-stat-653-295",
@@ -298,7 +299,7 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     posture: "restricted",
     headline: "Void for low-wage and all overtime-eligible employees",
     summary:
-      "Virginia prohibits non-competes for 'low-wage employees' — those earning below the state average weekly wage, any worker paid primarily by tips/commission/incentive, and (per SB 1218, eff. 2025-07-01) any employee entitled to FLSA overtime for hours over 40, regardless of earnings. Covenants for exempt higher earners remain subject to common-law reasonableness review.",
+      "Virginia prohibits non-competes for 'low-wage employees' — those earning below the state average weekly wage and (per SB 1218, eff. 2025-07-01) any employee entitled to FLSA overtime for hours over 40, regardless of earnings. The definition excludes employees paid in whole or predominant part by sales commissions, incentives, or bonuses (§ 40.1-28.7:8(A)). Covenants for exempt higher earners remain subject to common-law reasonableness review.",
     recommendation:
       "Confirm the employee is FLSA-exempt AND earns above the current low-wage threshold; if either fails, the non-compete is prohibited and exposes the employer to statutory penalties (and the required workplace posting must reflect the amended statute).",
     severity: "warning",
@@ -354,9 +355,9 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     jurisdiction: "us-nv",
     state_name: "Nevada",
     posture: "restricted",
-    headline: "Enforceable with limits; no bar on hourly workers",
+    headline: "Enforceable with limits; barred for hourly-only workers",
     summary:
-      "Nevada enforces reasonable non-competes supported by valuable consideration but prohibits them for employees paid solely on an hourly wage basis, bars restrictions on serving former customers the employee did not solicit, and requires courts to revise (blue-pencil) overbroad covenants rather than void them.",
+      "Nevada enforces reasonable non-competes supported by valuable consideration but prohibits them for employees paid solely on an hourly wage basis, exclusive of tips or gratuities (NRS 613.195(3)), bars restrictions on serving former customers the employee did not solicit, and requires courts to revise (blue-pencil) overbroad covenants rather than void them.",
     recommendation:
       "Confirm the worker is not paid solely hourly and that scope/duration are reasonable; the covenant may be judicially narrowed rather than struck if overbroad.",
     severity: "info",
@@ -420,8 +421,8 @@ const EMPLOYMENT_NONCOMPETE: readonly StateOverlay[] = [
     severity: "info",
     citation: cite(
       "ny-bdo-seidman",
-      "BDO Seidman v. Hyatt, 93 N.Y.2d 382 (1999) (New York common-law non-compete test)",
-      "https://www.nycourts.gov/reporter/archives/bdo_hyatt.htm",
+      "BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999) (New York common-law non-compete test)",
+      "https://law.justia.com/cases/new-york/court-of-appeals/1999/93-n-y-2d-382-0.html",
     ),
   },
   {
@@ -545,7 +546,7 @@ const RESIDENTIAL_LEASE_DEPOSIT: readonly StateOverlay[] = [
     severity: "warning",
     citation: cite(
       "nj-46-8-19",
-      "N.J.S.A. §§ 46:8-19 to 46:8-21.1 (Rent Security Deposit Act)",
+      "N.J.S.A. §§ 46:8-19 to 46:8-26 (Rent Security Deposit Act; cap at § 46:8-21.2)",
       "https://www.njleg.state.nj.us/",
     ),
   },
@@ -632,11 +633,11 @@ const RESIDENTIAL_LEASE_DEPOSIT: readonly StateOverlay[] = [
     jurisdiction: "us-wa",
     state_name: "Washington",
     posture: "informational",
-    headline: "No statutory cap; return in 21 days; checklist required",
+    headline: "No statutory cap; return in 30 days; checklist required",
     summary:
-      "Washington sets no deposit cap but requires a written move-in condition checklist (a deposit cannot be collected without one) and return of the deposit with a full itemized statement within 21 days of the tenancy ending. Non-compliance can forfeit the landlord's right to retain any of it.",
+      "Washington sets no deposit cap but requires a written move-in condition checklist (a deposit cannot be collected without one) and return of the deposit with a full itemized statement within 30 days after the tenancy ends and the tenant vacates (RCW 59.18.280). Non-compliance can forfeit the landlord's right to retain any of it.",
     recommendation:
-      "Confirm a move-in condition checklist was provided (a prerequisite to holding any deposit) and that the lease reflects the 21-day itemized-return rule.",
+      "Confirm a move-in condition checklist was provided (a prerequisite to holding any deposit) and that the lease reflects the 30-day itemized-return rule.",
     severity: "info",
     citation: cite(
       "wa-rcw-59-18-280",
@@ -718,9 +719,9 @@ const LENDING_USURY: readonly StateOverlay[] = [
     jurisdiction: "us-tx",
     state_name: "Texas",
     posture: "informational",
-    headline: "Cap: 18% default; up to 28%+ by tiered ceilings",
+    headline: "Cap: 10% general maximum; ch. 303 optional ceilings (18%–24%)",
     summary:
-      "Texas caps interest at 6% absent agreement and 18% by written contract for many loans, with higher tiered 'weekly/monthly/annualized' ceilings under Finance Code ch. 303 for commercial and larger transactions. Usurious interest exposes the lender to statutory penalties (forfeiture of interest and, above thresholds, principal).",
+      "Texas sets a 6% legal rate absent agreement (Fin. Code § 302.002) and a 10% general maximum (§ 302.001(b)) unless a chapter 303 optional ceiling (floor 18%, generally capped at 24%) is contracted for. Usurious interest exposes the lender to statutory penalties (forfeiture of interest and, above thresholds, principal).",
     recommendation:
       "Identify which ch. 303 ceiling applies to the transaction type and confirm the contracted rate plus interest-equivalent charges stays within it to avoid Texas usury penalties.",
     severity: "info",
@@ -775,11 +776,11 @@ const LENDING_USURY: readonly StateOverlay[] = [
     jurisdiction: "us-de",
     state_name: "Delaware",
     posture: "informational",
-    headline: "No cap on the contracted rate",
+    headline: "Cap: 5% over the discount rate; none for loans over $100,000",
     summary:
-      "Delaware sets a legal rate of 5% over the Federal Reserve discount rate only where no rate is specified; for loans of $100,000 or more not secured by a mortgage on the borrower's residence, and broadly where a rate is agreed, there is effectively no usury ceiling. This is why many lenders choose Delaware law.",
+      "6 Del. C. § 2301(a) caps an agreed rate at 5% over the Federal Reserve discount rate; there is no limit for loans exceeding $100,000 not secured by a mortgage on the borrower's principal residence (§ 2301(c)).",
     recommendation:
-      "A Delaware choice-of-law clause generally removes a usury ceiling for an agreed rate; confirm the choice-of-law is valid for the parties and that no borrower-residence-mortgage limit applies.",
+      "For a loan of $100,000 or less, or one secured by a mortgage on the borrower's principal residence, confirm the agreed rate is within 5% over the Federal Reserve discount rate; confirm the Delaware choice-of-law is valid for the parties.",
     severity: "info",
     citation: cite(
       "de-6-2301",
@@ -815,13 +816,13 @@ const LENDING_USURY: readonly StateOverlay[] = [
     posture: "informational",
     headline: "Cap: 6% legal rate (loans ≤ $50,000)",
     summary:
-      "Pennsylvania's Act 6 sets a 6% maximum lawful interest rate on loans of $50,000 or less (with carve-outs for residential mortgages and certain obligations). Business loans above $50,000, and loans by licensed institutions, are broadly exempt. Exceeding the cap forfeits the excess interest and triple damages.",
+      "Pennsylvania's Act 6 sets a 6% maximum lawful interest rate on loans of $50,000 or less (with carve-outs for residential mortgages and certain obligations). Act 6 exempts business loans over $10,000, unsecured non-collateralized loans over $35,000, and obligations over $50,000 (41 P.S. § 301); loans by licensed institutions are broadly exempt. Exceeding the cap forfeits the excess interest and triple damages.",
     recommendation:
-      "For a loan of $50,000 or less, confirm the rate is at or below 6% unless an exemption applies; larger commercial loans are generally outside the Act 6 cap.",
+      "For a loan of $50,000 or less, confirm the rate is at or below 6% unless an exemption applies; business loans over $10,000 and the other exempt categories are outside the Act 6 cap.",
     severity: "info",
     citation: cite(
       "pa-41-ps-201",
-      "41 Pa. Stat. § 201 et seq. (Act 6 of 1974)",
+      "41 P.S. §§ 201, 301 (Act 6 of 1974)",
       "https://www.legis.state.pa.us/cfdocs/legis/LI/uconsCheck.cfm?txtType=HTM&yr=1974&sessInd=0&act=6",
     ),
   },
@@ -853,13 +854,13 @@ const LENDING_USURY: readonly StateOverlay[] = [
     posture: "informational",
     headline: "Cap: 45% civil maximum; consumer-credit limits lower",
     summary:
-      "Colorado sets a 45% per-year default maximum where no rate is agreed and treats interest above 45% as criminal usury. The Uniform Consumer Credit Code imposes substantially lower tiered finance-charge caps on consumer loans, and recent legislation further restricts high-cost consumer lending.",
+      "Absent agreement the legal rate in Colorado is 8% (C.R.S. § 5-12-101); 45% is the maximum agreed rate (§ 5-12-103), and interest above 45% is criminal usury. The Uniform Consumer Credit Code imposes substantially lower tiered finance-charge caps on consumer loans, and recent legislation further restricts high-cost consumer lending.",
     recommendation:
       "Distinguish a UCCC-governed consumer loan (lower tiered caps) from a commercial loan; in all cases keep the rate below the 45% criminal-usury ceiling.",
     severity: "info",
     citation: cite(
       "co-rev-stat-5-12-103",
-      "Colo. Rev. Stat. §§ 5-12-103, 18-15-104; UCCC art. 5-2",
+      "Colo. Rev. Stat. §§ 5-12-101, 5-12-103, 18-15-104; UCCC art. 5-2",
       "https://leg.colorado.gov/sites/default/files/images/olls/crs2023-title-05.pdf",
     ),
   },

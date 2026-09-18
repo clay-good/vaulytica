@@ -259,6 +259,7 @@ const BONUS = pack("bonus-plan", C, [
   },
   {
     id: "EMP-117",
+    ver: "1.1.0",
     name: "Employed-on-payment-date condition",
     cite: stateLaw(
       "bonus-forfeiture",
@@ -269,7 +270,7 @@ const BONUS = pack("bonus-plan", C, [
       /(must\s+be\s+(actively\s+)?employed|remain\s+employed)/i,
       /(on\s+the\s+(payment|payout)\s+date|at\s+the\s+time\s+of\s+payment|forfeit)/i,
     ],
-    why: "This condition is enforced in most states and rejected in some (notably for earned wages in Massachusetts and California) where the bonus is non-discretionary. Its absence means an employee who leaves in January is owed the prior year's bonus.",
+    why: "Employed-on-payment-date conditions are generally enforced for discretionary bonuses; some states, notably California, restrict forfeiting a bonus already fully earned. Without the condition, entitlement depends on the plan's terms.",
     fix: "State the employment condition and its exceptions (death, disability, retirement, involuntary termination without cause), confirming it against the governing state's wage law.",
     sev: "critical",
   },
@@ -570,14 +571,15 @@ const CBA = pack("union-cba", C, [
   },
   {
     id: "EMP-138",
+    ver: "1.1.0",
     name: "No-strike and no-lockout clause",
     cite: usc(
       "29",
-      "173",
-      "Labor Management Relations Act — national emergencies and conciliation",
+      "185",
+      "Labor Management Relations Act § 301 — enforcement of collective bargaining agreements",
     ),
     pat: [/no\s+strike/i, /(no\s+lock-?out|work\s+stoppage|slowdown|picket)/i],
-    why: "The no-strike clause is the employer's principal consideration for arbitration. Its scope — sympathy strikes, unfair labor practice strikes, safety refusals — determines what conduct is actually barred.",
+    why: "No-strike clauses are enforced under LMRA § 301 (29 U.S.C. § 185). The no-strike clause is the employer's principal consideration for arbitration. Its scope — sympathy strikes, unfair labor practice strikes, safety refusals — determines what conduct is actually barred.",
     fix: "State the no-strike and no-lockout obligations, define the covered conduct, and state any carve-outs and the remedy for breach.",
   },
   {
@@ -605,6 +607,7 @@ const CBA = pack("union-cba", C, [
   },
   {
     id: "EMP-141",
+    ver: "1.1.0",
     name: "Term, reopener, and evergreen clause",
     cite: usc(
       "29",
@@ -615,7 +618,7 @@ const CBA = pack("union-cba", C, [
       /(term\s+of\s+this\s+agreement|effective\s+from|(?:shall|will|must)\s+remain\s+in\s+(full\s+force\s+and\s+)?effect)/i,
       /(reopen|automatic(ally)?\s+renew|sixty\s+\(?60\)?\s+days|notice\s+of\s+(intent\s+to\s+)?(terminate|modify))/i,
     ],
-    why: "§ 8(d) requires 60 days' notice to modify or terminate and 30 days' notice to the FMCS. An evergreen clause without those notice mechanics leaves both sides unsure whether the contract has rolled over.",
+    why: "§ 8(d) requires written notice 60 days before expiration or modification, and notice to the FMCS and the state agency within 30 days after that notice if no agreement has been reached (90 and 60 days for health-care institutions). An evergreen clause without those notice mechanics leaves both sides unsure whether the contract has rolled over.",
     fix: "State the term, the § 8(d) notice requirements for modification or termination, any reopener subjects, and the evergreen renewal terms.",
   },
 ]);
@@ -643,10 +646,11 @@ const WARN = pack("warn-notice", C, [
   },
   {
     id: "EMP-145",
+    ver: "1.1.0",
     name: "Job titles and number of affected employees",
     cite: cfr(
       "20",
-      "639.7(c)",
+      "639.7(e)",
       "WARN regulations — notice to the state dislocated worker unit and local government",
     ),
     pat: [

@@ -270,12 +270,12 @@ export const CROSS_DATE_001: ConsistencyRule = {
 
 export const CROSS_AMOUNT_001: ConsistencyRule = {
   id: "CROSS-AMOUNT-001",
-  version: V4_VERSION,
+  version: "1.5.0",
   name: "Aggregate liability cap mismatch across documents",
   category: "consistency",
   default_severity: "warning",
   description:
-    "Two documents in the bundle state different aggregate-liability caps. The lower cap controls in practice for any conduct that touches both documents; if the higher cap was the intent, the carve-out must be stated explicitly.",
+    "Two documents in the bundle state different aggregate-liability caps. Which cap governs depends on the documents' order-of-precedence clause and the specific-over-general canon. If one cap was meant to control a particular stream of conduct, that should be stated explicitly.",
   requires: [],
   check(ctx): ConsistencyFinding[] {
     if (ctx.documents.length < 2) return [];
@@ -295,9 +295,9 @@ export const CROSS_AMOUNT_001: ConsistencyRule = {
       makeConsistencyFinding({
         rule: CROSS_AMOUNT_001,
         title: `Aggregate liability caps differ: $${lo.cap.amount_usd.toLocaleString("en-US")} in "${lo.doc.doc_id}" vs $${hi.cap.amount_usd.toLocaleString("en-US")} in "${hi.doc.doc_id}"`,
-        description: `"${lo.doc.doc_id}" caps liability at $${lo.cap.amount_usd.toLocaleString("en-US")}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString("en-US")}. The lower cap will control for any liability that touches both documents.`,
+        description: `"${lo.doc.doc_id}" caps liability at $${lo.cap.amount_usd.toLocaleString("en-US")}; "${hi.doc.doc_id}" caps it at $${hi.cap.amount_usd.toLocaleString("en-US")}. Which cap governs depends on the documents' order-of-precedence clause and the specific-over-general canon.`,
         explanation:
-          "Cap mismatch is one of the most common multi-document drafting errors. Operatively the lower cap wins; a party that wanted the higher cap to control for one stream of conduct must carve it out explicitly in the document the conduct comes under.",
+          "Cap mismatch is one of the most common multi-document drafting errors. Which cap governs depends on the documents' order-of-precedence clause and the specific-over-general canon. A party that wanted the higher cap to control for one stream of conduct must carve it out explicitly in the document the conduct comes under.",
         recommendation:
           "Reconcile the caps to a single number, or add a carve-out clause naming which conduct gets which cap with a clear precedence rule.",
         excerpts: [

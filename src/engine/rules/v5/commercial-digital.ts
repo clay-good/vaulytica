@@ -11,7 +11,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { agency, expressDenial, practice, stateLaw, ucc, usc } from "./_helpers.js";
+import { agency, cfr, expressDenial, practice, stateLaw, ucc, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
 import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
@@ -26,7 +26,7 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
       "online-assent",
       "clickwrap versus browsewrap assent in US contract-formation cases",
     ),
-    ver: "1.1.0",
+    ver: "1.2.0",
     pat: [
       // "you agree to BE BOUND BY these Terms" is the commoner spelling, and
       // the browsewrap recital names the WEBSITE (or the app, or the platform)
@@ -37,7 +37,7 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
       /(by\s+(clicking|checking|creating\s+an\s+account|registering)|you\s+agree\s+to\s+(be\s+bound\s+by\s+)?(these|this|the)\s+terms)/i,
       /(by\s+(using|accessing|visiting|browsing|continuing\s+to\s+use)(\s+or\s+\w+)?\s+(the\s+|this\s+|our\s+)?(site|website|service|platform|application|app)\b|constitutes?\s+(your\s+)?acceptance)/i,
     ],
-    why: "US courts enforce clickwrap almost uniformly and browsewrap almost never. Terms that state no assent mechanism at all are the weakest position of the three: there is no record that any user ever agreed.",
+    why: "Courts generally enforce clickwrap; browsewrap is enforced only where the user had actual or constructive notice of the terms (Nguyen v. Barnes & Noble, 763 F.3d 1171 (9th Cir. 2014)). Terms that state no assent mechanism at all are the weakest position of the three: there is no record that any user ever agreed.",
     fix: "State the assent mechanism, and back it with an interface that requires an affirmative act (checkbox or button) adjacent to a conspicuous link to these terms.",
     sev: "critical",
   },
@@ -94,10 +94,11 @@ const WEBSITE_TOU = pack("website-terms-of-use", C, [
   },
   {
     id: "COMM-205",
+    ver: "1.1.0",
     name: "Arbitration clause and class waiver conspicuousness",
     cite: usc("9", "2", "Federal Arbitration Act — validity of arbitration agreements"),
     pat: [/arbitrat/i, /(class\s+action\s+waiver|on\s+an\s+individual\s+basis|no\s+class)/i],
-    why: "Consumer arbitration clauses survive under the FAA, but only where the term was conspicuous and assented to. Burying it in an unlinked footer is the fact pattern courts use to refuse enforcement.",
+    why: "Under the FAA the arbitration clause itself need not be specially conspicuous — a state rule requiring that is preempted (Doctor's Associates v. Casarotto, 517 U.S. 681 (1996)). What matters is reasonably conspicuous notice of the terms as a whole and manifested assent under state contract-formation law.",
     fix: "Set the arbitration and class-waiver clause in a conspicuous, separately-headed section, in bold or capitals, and add an opt-out window with a stated method.",
     when: [/arbitrat/i],
   },
@@ -303,18 +304,18 @@ const LOYALTY = pack("loyalty-program-terms", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Gift-card and stored-value law interaction",
-    cite: usc(
-      "15",
-      "1693l-1",
-      "Electronic Fund Transfer Act — general-use prepaid cards, gift certificates and store gift cards",
+    cite: cfr(
+      "12",
+      "1005.20",
+      "Regulation E — gift cards; loyalty, award and promotional cards excluded (§ 1005.20(b)(4))",
     ),
     pat: [
       /(no\s+cash\s+value|not\s+redeemable\s+for\s+cash|have\s+no\s+monetary\s+value)/i,
       /(gift[-\s]+card|stored[-\s]+value|prepaid)/i,
     ],
-    why: "Points earned through purchase can be treated as stored value in some states, pulling in expiration limits and escheat duties. The 'no cash value' recital is the standard defense against that characterization.",
+    why: "The federal gift-card provisions exclude loyalty, award and promotional cards (12 C.F.R. § 1005.20(b)(4)); any stored-value treatment of purchased points arises under state gift-card and unclaimed-property law, which can pull in expiration limits and escheat duties. The 'no cash value' recital is the standard defense against that characterization.",
     fix: "State that points have no cash value, are not property, and are not transferable, and confirm the treatment of any points purchased for money.",
   },
   {
@@ -387,17 +388,18 @@ const SWEEPSTAKES = pack("sweepstakes-official-rules", C, [
   },
   {
     id: "COMM-228",
+    ver: "1.1.0",
     name: "Prize description, ARV, and winner tax responsibility",
     cite: agency(
       "IRS",
-      "Form 1099-MISC reporting of prizes and awards of $600 or more",
+      "Form 1099-MISC reporting of prizes and awards ($2,000 or more for prizes paid after December 31, 2025)",
       "https://www.irs.gov/forms-pubs/about-form-1099-misc",
     ),
     pat: [
       /(approximate\s+retail\s+value|arv|prize\s+value)/i,
       /(tax(es)?\s+(are|is)\s+the\s+(sole\s+)?responsibility|1099|w-?9)/i,
     ],
-    why: "Prizes of $600 or more are reportable on Form 1099-MISC, and the winner owes the tax. Rules that do not disclose ARV and tax responsibility routinely produce refusals at affidavit stage.",
+    why: "For prizes paid after December 31, 2025, the Form 1099-MISC reporting threshold is $2,000 (One Big Beautiful Bill Act amending IRC § 6041(a)), indexed for inflation after 2026, and the winner owes the tax. Rules that do not disclose ARV and tax responsibility routinely produce refusals at affidavit stage.",
     fix: "Describe each prize, state its approximate retail value, state that all taxes are the winner's responsibility, and require a W-9 before award where reporting applies.",
   },
   {
@@ -413,17 +415,18 @@ const SWEEPSTAKES = pack("sweepstakes-official-rules", C, [
   },
   {
     id: "COMM-230",
+    ver: "1.1.0",
     name: "Winner list and publicity release",
     cite: stateLaw(
       "publicity-release",
-      "limits on conditioning a prize on a publicity release (New York and Florida)",
+      "state limits on conditioning a prize on a publicity release; N.Y. Civ. Rights Law §§ 50–51",
       "https://www.law.cornell.edu/wex/publicity",
     ),
     pat: [
       /(winners?\s+list|list\s+of\s+winners)/i,
       /(publicity|name,?\s+(likeness|image)|except\s+where\s+prohibited)/i,
     ],
-    why: "New York prohibits conditioning a prize on a publicity release, so the standard clause must carve those states out. A winners-list offer is separately required in several states.",
+    why: "Some states restrict conditioning a prize on a publicity release, and New York requires written consent to use a person's name or likeness commercially (N.Y. Civ. Rights Law §§ 50–51), so the standard clause carves out where prohibited. A winners-list offer is separately required in several states.",
     fix: 'Add a publicity release with an "except where prohibited by law" carve-out, and state how to request a winners list and for how long.',
   },
 ]);

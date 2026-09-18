@@ -5,7 +5,7 @@ import { truncate } from "../../text.js";
 /** CHOICE-008 — Jury trial waiver (info). */
 export const rule: Rule = {
   id: "CHOICE-008",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Jury trial waiver",
   category: "choice-and-venue",
   default_severity: "info",
@@ -31,7 +31,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: truncate(hit.text, 240),
       explanation:
-        "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
+        "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",
       position: hit.position,
     });
   },

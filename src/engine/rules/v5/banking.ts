@@ -39,8 +39,14 @@ const REVOLVER = pack("revolving-credit-agreement", C, [
   },
   {
     id: "BNK-102",
+    ver: "1.1.0",
     name: "Interest rate, benchmark, and replacement waterfall",
-    cite: usc("15", "1639e", "Adjustable Interest Rate (LIBOR) Act — benchmark replacement"),
+    cite: {
+      ...usc("12", "5801", "Adjustable Interest Rate (LIBOR) Act — benchmark replacement"),
+      source:
+        "12 U.S.C. §§ 5801–5807 — Adjustable Interest Rate (LIBOR) Act — benchmark replacement",
+      source_url: "https://www.law.cornell.edu/uscode/text/12/chapter-55",
+    },
     pat: [
       /(sofr|term\s+sofr|base\s+rate|applicable\s+margin)/i,
       /(benchmark\s+replacement|successor\s+rate|conforming\s+changes|credit\s+spread\s+adjustment)/i,
@@ -382,17 +388,18 @@ const FACTORING = pack("factoring-agreement", C, [
   },
   {
     id: "BNK-126",
+    ver: "1.1.0",
     name: "Effective cost-of-funds disclosure",
     cite: stateLaw(
       "commercial-financing-disclosure",
-      "state commercial financing disclosure laws requiring APR or estimated APR for small-business finance (California, New York, Utah, Virginia, and others)",
+      "state commercial financing disclosure laws for small-business finance (California and New York require an estimated APR; Utah and Virginia require cost disclosures without an APR)",
       "https://www.law.cornell.edu/wex/consumer_protection",
     ),
     pat: [
       /(annual\s+percentage\s+rate|apr|effective\s+(annual\s+)?(rate|cost))/i,
       /(total\s+cost|disclosure|estimated)/i,
     ],
-    why: "California, New York, Utah, and Virginia now require APR or cost disclosures on commercial financing including factoring above certain thresholds. A facility priced only as a discount rate obscures a cost that may be several times higher annualized.",
+    why: "California and New York require an (estimated) APR, and Utah and Virginia require cost disclosures without an APR, on commercial financing including factoring. The laws cover transactions at or below a cap (e.g., $500,000 in California and New York). A facility priced only as a discount rate obscures a cost that may be several times higher annualized.",
     fix: "Provide the state-required commercial financing disclosure with the annualized rate, total dollar cost, and prepayment terms where the transaction is covered.",
   },
 ]);
@@ -619,13 +626,14 @@ const EFA = pack("equipment-finance-agreement", C, [
   },
   {
     id: "BNK-143",
+    ver: "1.1.0",
     name: "Default, acceleration, and disposition of collateral",
     cite: ucc("9-610", "Disposition of collateral after default"),
     pat: [
       /(default|accelerat)/i,
       /(repossess|dispose\s+of\s+the\s+(equipment|collateral)|commercially\s+reasonable|deficiency)/i,
     ],
-    why: "Article 9 Part 6 governs disposition and cannot be waived: notice, commercial reasonableness, and the deficiency calculation apply whatever the contract says.",
+    why: "Article 9 Part 6 governs disposition, and most of its duties cannot be waived before default (§ 9-602). The debtor may waive notice of disposition after default (§ 9-624(a)), and the parties may set standards for performing those duties that are not manifestly unreasonable (§ 9-603).",
     fix: "State the events of default, the acceleration remedy, and the disposition rights, expressly subject to the Article 9 notice and commercial-reasonableness requirements.",
   },
 ]);

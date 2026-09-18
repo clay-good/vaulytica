@@ -94,6 +94,7 @@ function absenceRule(spec: AbsenceSpec): Rule {
 
 const SPEC_101: AbsenceSpec = {
   id: "EST-101",
+  version: "1.1.0",
   name: "Attestation clause present",
   severity: "warning",
   patterns: [
@@ -106,7 +107,7 @@ const SPEC_101: AbsenceSpec = {
   missingDescription:
     "No clause was found reciting that the witnesses attested execution of the will.",
   explanation:
-    "UPC § 2-502 requires the will to be signed by at least two witnesses who witnessed the signing or the testator's acknowledgment. An attestation clause is the standard evidence of that formality.",
+    "UPC § 2-502(a)(3) requires either the signatures of at least two witnesses or the testator's acknowledgment before a notary; § 2-502(b) also validates holographic wills, and § 2-503 lets a court excuse defects under the harmless-error rule. State law varies. Where the will is witnessed, an attestation clause is the standard evidence of that formality.",
   recommendation:
     "Add an attestation clause reciting that the witnesses signed in the testator's presence and at the testator's request.",
   citations: [upc("2-502", "execution; witnessed wills")],
@@ -179,7 +180,7 @@ const EST_104: Rule = absenceRule({
 
 const SPEC_105: AbsenceSpec = {
   id: "EST-105",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Witness signature blocks present",
   severity: "warning",
   // Presence-only — EST-106 below does the count comparison against the
@@ -202,7 +203,7 @@ const SPEC_105: AbsenceSpec = {
   missingTitle: "No witness signature blocks detected",
   missingDescription: "No witness signature blocks were found in the document text.",
   explanation:
-    "UPC § 2-502 requires at least two witnesses to sign the will. Witness signature blocks are the concrete evidence of that formality.",
+    "UPC § 2-502(a)(3) requires either the signatures of at least two witnesses or the testator's acknowledgment before a notary; § 2-502(b) also validates holographic wills, and § 2-503 lets a court excuse defects under the harmless-error rule. State law varies. Where the will is witnessed, witness signature blocks are the concrete evidence of that formality.",
   recommendation:
     "Add at least two witness signature blocks (signature line, printed name, address).",
   citations: [upc("2-502")],
@@ -268,7 +269,7 @@ function witnessSignatureBlockCount(ctx: RuleContext): number {
 
 const EST_106: Rule = {
   id: "EST-106",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Witness signature blocks fewer than the recital",
   category: CATEGORY,
   default_severity: "warning",
@@ -288,7 +289,7 @@ const EST_106: Rule = {
       description: `The document's own text recites ${recited} witnesses, but only ${blocks} witness signature block${blocks === 1 ? " was" : "s were"} detected.`,
       excerptText: "(witness signature blocks fewer than the recited count)",
       explanation:
-        "A will that recites more witnesses than it provides signature blocks for is internally inconsistent: either the recital overstates the attestation or a witness signature block is missing. Under UPC § 2-502 at least two witnesses must sign; a probate court compares the recital against the actual signatures.",
+        "A will that recites more witnesses than it provides signature blocks for is internally inconsistent: either the recital overstates the attestation or a witness signature block is missing. UPC § 2-502(a)(3) requires either the signatures of at least two witnesses or the testator's acknowledgment before a notary; § 2-502(b) also validates holographic wills, and § 2-503 lets a court excuse defects under the harmless-error rule. State law varies. A probate court compares the recital against the actual signatures.",
       recommendation:
         "Add the missing witness signature block(s) or correct the recited witness count so the recital matches the signature blocks.",
       position: docTop(ctx),
@@ -428,7 +429,7 @@ function formatPercent(n: number): string {
 
 const EST_201: Rule = {
   id: "EST-201",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Residuary shares do not sum to 100%",
   category: CATEGORY,
   default_severity: "warning",
@@ -464,7 +465,7 @@ const EST_201: Rule = {
       description: `Detected residuary shares: ${list}. Total: ${formatPercent(rounded)}% (expected 100%).`,
       excerptText: "(residuary share arithmetic does not sum to 100%)",
       explanation:
-        "The residuary clause's stated shares do not add up to the whole estate. Under UPC § 2-604, any unallocated residue fails and passes by intestacy under UPC § 2-101 — likely contrary to the testator's intent — unless the arithmetic is corrected.",
+        "The residuary clause's stated shares do not add up to the whole estate. If they total less than 100%, the unallocated residue passes by partial intestacy (UPC § 2-101) — likely contrary to the testator's intent. If they total more than 100%, the shares are abated; the excess does not cause intestacy. Either way the arithmetic should be corrected.",
       recommendation:
         "Re-check the residuary shares against the detected percentages / fractions and correct them (or add a clause disposing of any unallocated residue) so they sum to 100%.",
       position: docTop(ctx),
@@ -482,6 +483,7 @@ const EST_201: Rule = {
 
 const EST_301: Rule = absenceRule({
   id: "EST-301",
+  version: "1.1.0",
   name: "Executor / personal representative named",
   severity: "warning",
   patterns: [/executor|executrix|personal representative/],
@@ -491,11 +493,14 @@ const EST_301: Rule = absenceRule({
     "Without a nomination, the court appoints from the statutory priority list rather than the testator's chosen fiduciary.",
   recommendation:
     "Add a clause nominating an executor / personal representative (and a successor).",
-  citations: [upc("3-703", "general duties")],
+  citations: [
+    upc("3-203", "priority among persons seeking appointment as personal representative"),
+  ],
 });
 
 const EST_302: Rule = absenceRule({
   id: "EST-302",
+  version: "1.1.0",
   name: "Successor fiduciary named",
   severity: "info",
   patterns: [
@@ -509,7 +514,7 @@ const EST_302: Rule = absenceRule({
   explanation:
     "Without a successor, a court must appoint one if the named fiduciary cannot or will not serve, creating delay and a fiduciary the testator did not choose.",
   recommendation: "Name at least one successor / alternate fiduciary.",
-  citations: [upc("3-703")],
+  citations: [upc("3-203")],
 });
 
 const MINOR_REF_RE = /minor child|minor children|my children.{0,60}(minor|under the age|under age)/;

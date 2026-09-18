@@ -58,12 +58,12 @@ export function stateLT(): SourceCitation {
   });
 }
 
-/** Statute of Frauds (UCC § 2-201 plus state real-property codes). */
+/** Real-property Statute of Frauds (state codes; Restatement (Second) of Contracts § 125). */
 export function statuteOfFrauds(): SourceCitation {
   return v4Cite({
     id: "statute-of-frauds",
     source:
-      "Statute of Frauds (UCC § 2-201; state real-property codes, e.g., CA Civ. § 1624; NY GOL § 5-703)",
+      "Real-property Statute of Frauds (state codes, e.g., CA Civ. § 1624; NY GOL § 5-703; Restatement (Second) of Contracts § 125)",
     source_url: "https://www.law.cornell.edu/wex/statute_of_frauds",
   });
 }

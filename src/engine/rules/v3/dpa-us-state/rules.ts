@@ -39,19 +39,21 @@ const CONFIG: RegulatedRuleConfig = {
   category: "dpa-us-state",
   applies_to_playbooks: US_STATE_PLAYBOOKS,
   cite_for(citation: string) {
-    const lower = citation.toLowerCase();
     let url = "https://oag.ca.gov/privacy/ccpa";
-    if (lower.includes("va")) url = "https://law.lis.virginia.gov/vacodefull/title59.1/chapter53/";
-    else if (lower.includes("colo"))
+    if (/\b(?:va|virginia|vcdpa)\b/i.test(citation))
+      url = "https://law.lis.virginia.gov/vacodefull/title59.1/chapter53/";
+    else if (/\b(?:colo|colorado)\b/i.test(citation))
       url = "https://leg.colorado.gov/sites/default/files/2021a_190_signed.pdf";
-    else if (lower.includes("conn"))
+    else if (/\b(?:conn|connecticut)\b/i.test(citation))
       url = "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF";
-    else if (lower.includes("utah")) url = "https://le.utah.gov/xcode/Title13/Chapter61/13-61.html";
-    else if (lower.includes("tex"))
+    else if (/\butah\b/i.test(citation))
+      url = "https://le.utah.gov/xcode/Title13/Chapter61/13-61.html";
+    else if (/\b(?:tex|texas)\b/i.test(citation))
       url = "https://capitol.texas.gov/tlodocs/88R/billtext/html/HB00004F.HTM";
-    else if (lower.includes("ors"))
+    else if (/\b(?:ors|oregon)\b/i.test(citation))
       url = "https://olis.oregonlegislature.gov/liz/2023R1/Downloads/MeasureDocument/SB0619";
-    else if (lower.includes("del")) url = "https://delcode.delaware.gov/title6/c012D/";
+    else if (/\b(?:del|delaware)\b/i.test(citation))
+      url = "https://delcode.delaware.gov/title6/c012D/";
     return {
       id: `us-state-${citation.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
       source_url: url,
@@ -150,6 +152,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-004",
+    version: "1.1.0",
     name: "CCPA: no-combining-with-other-data restriction",
     description:
       "CCPA service-provider contract must prohibit combining personal information with data from other sources.",
@@ -160,7 +163,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     explanation:
       "§ 1798.140(ag)(1)(D) restricts combining the personal information with data from other sources.",
     recommendation:
-      "Add: 'Service Provider shall not combine personal information received from Business with personal information received from any other source, except as permitted by 11 CCR § 7050(c).'",
+      "Add: 'Service Provider shall not combine personal information received from Business with personal information received from any other source, except to perform a business purpose permitted by Cal. Civ. Code § 1798.140(ag)(1)(D) and 11 CCR § 7050(a).'",
     present_patterns: [
       // "combine Covered Data with personal information it receives from
       // ANOTHER SOURCE" is the regulation's own singular; the pattern read only
@@ -196,31 +199,32 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-006",
-    name: "CCPA: certification of understanding",
+    version: "1.1.0",
+    name: "CCPA: contractor certification of understanding",
     description:
-      "CCPA service-provider contract should require service-provider certification of CCPA understanding.",
-    citation: "Cal. Code Regs. tit. 11, § 7051(a)(7)",
+      "A CCPA contractor's contract must include the contractor's certification that it understands and will comply with the contract's restrictions.",
+    citation: "Cal. Civ. Code § 1798.140(j)(1)(A)",
     missing_title: "CCPA certification of understanding missing",
-    missing_description: "No service-provider certification of CCPA understanding was found.",
+    missing_description: "No certification of understanding of the CCPA restrictions was found.",
     explanation:
-      "§ 7051(a)(7) expects the contract to require service-provider certification that it understands the restrictions and will comply.",
+      "No certification is required of a service provider. A contractor's contract must include a certification that the contractor understands the contract's restrictions and will comply with them (Cal. Civ. Code § 1798.140(j)(1)(A)).",
     recommendation:
-      "Add: 'Service Provider certifies that it understands the restrictions in this Agreement and the CCPA and will comply with them.'",
+      "If the recipient is a contractor, add: 'Contractor certifies that it understands the restrictions in this Agreement and the CCPA and will comply with them.' For a service provider, a certification is optional.",
     present_patterns: [/(certifies?|certification).{0,80}(understand|restrictions|ccpa|comply)/is],
     default_severity: "warning",
   }),
   presence({
     id: "USDPA-007",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "CCPA: monitoring / oversight right",
     description:
       "CCPA contract must grant the business the right to take reasonable steps to ensure consistent use.",
-    citation: "Cal. Civ. Code § 1798.140(ag)(1)(C)",
+    citation: "Cal. Civ. Code § 1798.100(d)(3); Cal. Code Regs. tit. 11, § 7051(a)(7)",
     missing_title: "CCPA monitoring right missing",
     missing_description:
       "No clause was found granting the business reasonable monitoring / oversight rights.",
     explanation:
-      "§ 1798.140(ag)(1)(C) requires the contract to grant the business the right to take reasonable and appropriate steps to ensure that the service provider uses the personal information in a manner consistent with the business's obligations under the CCPA.",
+      "Cal. Civ. Code § 1798.100(d)(3) and 11 CCR § 7051(a)(7) require the contract to grant the business the right to take reasonable and appropriate steps to ensure that the service provider uses the personal information in a manner consistent with the business's obligations under the CCPA.",
     recommendation:
       "Add: 'Business may take reasonable and appropriate steps to ensure that Service Provider uses personal information in a manner consistent with Business's obligations under the CCPA.'",
     present_patterns: [
@@ -233,16 +237,16 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "CCPA: assistance with consumer requests",
     description:
       "CCPA service-provider contract must require assistance with consumer rights requests.",
-    citation: "Cal. Code Regs. tit. 11, § 7051(a)(8)",
+    citation: "Cal. Code Regs. tit. 11, § 7051(a)(10)",
     missing_title: "CCPA consumer-request assistance missing",
     missing_description:
       "No clause was found requiring assistance with verifiable consumer requests.",
     explanation:
-      "§ 7051(a)(8) requires the contract to require the service provider to enable the business to comply with verifiable consumer requests.",
+      "§ 7051(a)(10) requires the contract to require the service provider to enable the business to comply with verifiable consumer requests.",
     recommendation:
       "Add: 'Service Provider shall assist Business in responding to verifiable consumer requests under the CCPA.'",
     present_patterns: [
@@ -255,16 +259,16 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "CCPA: notification of inability to comply",
     description:
       "CCPA service-provider must notify business if it can no longer meet its obligations under CCPA.",
-    citation: "Cal. Code Regs. tit. 11, § 7051(a)(6)",
+    citation: "Cal. Code Regs. tit. 11, § 7051(a)(8); Cal. Civ. Code § 1798.100(d)(4)",
     missing_title: "CCPA inability-to-comply notification missing",
     missing_description:
       "No clause was found requiring notification if service provider can no longer meet CCPA obligations.",
     explanation:
-      "§ 7051(a)(6) requires the service provider to notify the business if it makes a determination that it can no longer meet its obligations under the CCPA.",
+      "§ 7051(a)(8) (see Cal. Civ. Code § 1798.100(d)(4)) requires the service provider to notify the business if it makes a determination that it can no longer meet its obligations under the CCPA.",
     recommendation:
       "Add: 'Service Provider shall notify Business if it makes a determination that it can no longer meet its obligations under the CCPA.'",
     present_patterns: [
@@ -308,11 +312,12 @@ export const DPA_US_STATE_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "USDPA-011",
+    version: "1.1.0",
     name: "Multi-state: processing instructions clear",
     description:
       "Processor contract must set out the processing instructions binding on the processor.",
     citation:
-      "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / Conn. Gen. Stat. § 42-520 / similar",
+      "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / Conn. Gen. Stat. § 42-521 / similar",
     missing_title: "Processing-instructions clause missing",
     missing_description: "No clause was found setting out the processing instructions.",
     explanation:
@@ -388,7 +393,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-015",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Multi-state: deletion or return",
     description:
       "Processor must delete or return personal data at end of services at controller's direction.",
@@ -396,7 +401,8 @@ export const DPA_US_STATE_RULES: Rule[] = [
     missing_title: "Deletion-or-return clause missing",
     missing_description:
       "No clause was found requiring deletion or return of personal data at end of services.",
-    explanation: "VCDPA, CPA, CTDPA all require deletion or return at end of services.",
+    explanation:
+      "Virginia, Colorado, Connecticut, Texas and most later statutes require delete-or-return at the controller's direction; Utah's § 13-61-301 and the CCPA's service-provider terms do not.",
     recommendation:
       "Add: 'At Controller's direction, Processor shall delete or return all Personal Data at the end of the provision of services.'",
     present_patterns: [
@@ -423,7 +429,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     ],
     denied_title: "Deletion-or-return expressly excused",
     denied_description:
-      "The agreement states that the processor is not required to delete or return personal data at the end of the services. Every US state processor statute requires deletion or return on the controller's direction; excusing it leaves personal data with a former vendor indefinitely.",
+      "The agreement states that the processor is not required to delete or return personal data at the end of the services. Virginia, Colorado, Connecticut, Texas and most later statutes require deletion or return at the controller's direction; excusing it leaves personal data with a former vendor indefinitely.",
   }),
   presence({
     id: "USDPA-016",
@@ -507,17 +513,18 @@ export const DPA_US_STATE_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   language({
     id: "USDPA-020",
+    version: "1.1.0",
     name: "Service Provider status claimed but not earned",
     description:
-      "Flags a document that claims CCPA 'Service Provider' status but does not contain the §7051 required elements.",
+      "Flags a document that claims CCPA 'Service Provider' status but does not contain the § 7051(a) required elements.",
     citation: "Cal. Civ. Code § 1798.140(ag); 11 CCR § 7051",
     bad_title: "Claimed 'Service Provider' status without required elements",
     bad_description:
       "Document claims CCPA 'Service Provider' status but is missing one or more § 7051 required elements.",
     explanation:
-      "Claiming Service Provider status without meeting the § 7051 contract requirements means the recipient may be reclassified as a 'third party' — triggering sale / share consequences for the disclosing party.",
+      "11 CCR § 7051(a) lists ten required contract elements, (1)–(10), and § 7051(c) provides that a person without a compliant contract is not a service provider, so the recipient may be treated as a 'third party' — triggering sale / share consequences for the disclosing party.",
     recommendation:
-      "Add the missing § 7051(a)(1)–(8) elements, or remove the Service Provider claim and treat the recipient as a third party.",
+      "Add the missing § 7051(a)(1)–(10) elements, or remove the Service Provider claim and treat the recipient as a third party.",
     bad_patterns: [/(service\s+provider\s+(?:status|under\s+the\s+ccpa))/i],
     // Was a forward-only negative lookahead, so § 7051 elements recited BEFORE
     // the status claim ("Service Provider shall not retain ... for any purpose

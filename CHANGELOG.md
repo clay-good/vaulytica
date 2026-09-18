@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.730.0] — 2026-09-18
+
+### Fixed
+- 🚨 **A legal-accuracy QA of every rule's statements of law: 203
+  corrections.** Five practice-area reviews (employment; privacy and health;
+  commercial, NDA and IP; corporate, finance and real estate; litigation,
+  trusts and estates) read every rule's name, description, explanation,
+  recommendation and citation the way an attorney reading the report would.
+  Each flag was checked against the primary source — statute and regulation
+  text, the eCFR, EUR-Lex, state legislature sites, SEC forms — before it was
+  applied; developments after the reviewers' knowledge were confirmed on the
+  official site (Washington's 2026 ban on non-competes, RCW 49.62.020 as
+  amended by 2026 c 149; California's AB 692, Bus. & Prof. Code § 16608; the
+  30-day breach notice of Civ. Code § 1798.82 as amended by SB 446) or stated
+  without a date where sources disagree (New York's Trapped at Work Act). The
+  most consequential:
+  - **Backwards or wrong law:** BNK-016 had UCC Article 9 inverted — "all
+    assets" does not identify collateral in a *security agreement*
+    (§ 9-108(c)) and does suffice in a *financing statement* (§ 9-504(2)).
+    Six estate rules said a will always needs two witnesses; UPC § 2-502(a)(3)
+    allows a notary instead. EMP-004 measured the 280G excess above 3× the base
+    amount (it is above 1×). MNA-066/067 said *Lazard* made the earnout implied
+    covenant unwaivable. GOV-008 called DGCL § 145 indemnification not
+    self-executing (§ 145(c) is mandatory). GOV-060 invented a
+    controlled-company exemption from audit-committee independence.
+    EQT-018 said Rule 506(b) requires every investor to be accredited. The
+    Virginia overlay said the low-wage non-compete ban covers commission
+    earners — the statute excludes them.
+  - **Nonexistent or wrong authorities:** "NY Lab. § 191-d" (no such law);
+    *BDO Seidman v. Hyatt* (it is *Hirshberg*, and the linked page was dead);
+    "FCPA § 30B"; the LIBOR Act cited to TILA's appraisal section; Texas's
+    construction anti-indemnity statute cited to the wrong code; BAA
+    pinpoints (ii)(H)/(I) for what are (ii)(I)/(J) since 2013; SCC Clause 18
+    for governing law (it is Clause 17); five CCPA regulation subsections;
+    UPMAA and UPOAA section numbers; Zubulake IV cited as Zubulake V.
+  - **Outdated:** the rescinded NLRB GC 25-01; the removed Circular 230
+    disclaimer; FAR 52.222-26 after E.O. 14173; the $600 prize 1099
+    threshold; SSI's in-kind food rule; FRCP 8(c)(1)'s nineteen defenses;
+    Oregon's "voidable" non-competes; the ISO 27001:2013 control numbers.
+  - **Overstated:** "void in every state", "the only mechanism", "must be
+    notarized", "unenforceable" where the law is narrower or varies.
+  Citation-link fixes in shared helpers: every HIPAA pinpoint linked to a page
+  that does not exist (164.5201 for 164.520(b)(1)(i)); FTC Act citations
+  linked to 16 C.F.R.; IRC citations to the root of Title 26; state-privacy
+  citations routed by substring, so "privacy" could link to the Virginia code
+  (now word-bounded). HC-109 also stops requiring the part-time schedule the
+  OIG removed in 2020.
+  Golden regeneration, classified: 370 files; no finding added or removed and
+  no severity changed — explanation, citation, recommendation, description and
+  title text only.
+
 ## [9.729.0] — 2026-09-18
 
 ### Fixed

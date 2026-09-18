@@ -12,7 +12,7 @@
  */
 
 import type { Rule } from "../../finding.js";
-import { pack, modelRule, practice } from "./_helpers.js";
+import { pack, modelRule, practice, ethicsOpinion } from "./_helpers.js";
 import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
 
 const C = "law-practice";
@@ -315,6 +315,7 @@ const FLAT_FEE = pack("flat-fee-agreement", C, [
   },
   {
     id: "ENG-019",
+    ver: "1.1.0",
     name: "Refund of the unearned portion on early termination",
     cite: modelRule(
       "1.16(d)",
@@ -325,7 +326,7 @@ const FLAT_FEE = pack("flat-fee-agreement", C, [
       /(refund|unearned|prorat|quantum\s+meruit|return\s+(of|any))/i,
     ],
     all: true,
-    why: "Rule 1.16(d) requires refunding any advance payment of fee that has not been earned, whatever the agreement calls the fee. A non-refundable flat fee is unenforceable to that extent in every jurisdiction.",
+    why: "Model Rule 1.16(d) requires refunding any unearned advance fee; states differ on nonrefundable and 'earned on receipt' fees, and a true availability retainer may be earned when paid.",
     fix: "State the method for determining the earned portion on early termination and commit to refunding the balance.",
     sev: "critical",
   },
@@ -432,14 +433,14 @@ const JOINT_REP = pack("joint-representation-waiver", C, [
     // signature block every document has. The consent pillar now has to name
     // a consent rather than an agreement, and the signing pillar has to be
     // about the CLIENTS signing this waiver.
-    ver: "1.0.1",
+    ver: "1.1.0",
     pat: [
       /(informed\s+consent|consents?\s+(?:in\s+writing\s+)?to\b|each\s+client\s+(?:consents|agrees|acknowledges)|waives?\s+(?:any\s+)?conflict)/i,
       /(sign(?:ed)?\s+below|by\s+signing\s+(?:this|below)|each\s+client\s+(?:(?:shall|will|must)\s+)?sign|signed\s+by\s+each\s+client)/i,
     ],
     all: true,
-    why: "Rule 1.7(b)(4) requires informed consent confirmed in writing. An unsigned waiver in the file is not the confirmation the rule contemplates.",
-    fix: "Add a signature block for each jointly represented client with a date.",
+    why: "Rule 1.7(b)(4) requires informed consent confirmed in writing. Under Model Rule 1.0(b), 'confirmed in writing' is met by the client's written consent or a writing the lawyer promptly sends confirming oral consent; a client signature is required only where a rule says 'signed by the client' (e.g., Rule 1.8(a)). Some states, such as California, require the client's written consent.",
+    fix: "Add a dated signature block for each jointly represented client, or confirm each client's oral consent in a writing sent promptly.",
     sev: "critical",
   },
 ]);
@@ -498,14 +499,15 @@ const LIMITED_SCOPE = pack("limited-scope-representation", C, [
   },
   {
     id: "ENG-030",
+    ver: "1.1.0",
     name: "Court disclosure of limited-scope appearance",
-    cite: modelRule("3.3", "candor toward the tribunal"),
+    cite: ethicsOpinion("07-446", "undisclosed legal assistance to pro se litigants"),
     pat: [
       /(court|tribunal|judge|clerk)/i,
       /(notice\s+of\s+limited\s+(scope|appearance)|disclos|file\s+a\s+(notice|substitution)|local\s+rule)/i,
     ],
     all: true,
-    why: "Many jurisdictions require a notice of limited appearance and a separate withdrawal, and some require disclosure of drafting assistance. What the court is told is a rule question, not a client-preference question.",
+    why: "Disclosure of a limited-scope appearance or ghostwriting is set by state court rules; many require a notice of limited appearance and a separate withdrawal. ABA Formal Opinion 07-446 concludes the Model Rules do not require disclosing drafting help. What the court is told is a rule question, not a client-preference question.",
     fix: "State what will be filed with the court about the limited scope, and how and when the appearance ends.",
     when: [/(court|litigation|filing|hearing|pleading|complaint|motion)/i],
   },
@@ -530,7 +532,7 @@ const LIMITED_SCOPE = pack("limited-scope-representation", C, [
 const TERMINATION = pack("termination-of-representation", C, [
   {
     id: "ENG-032",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Statement that the representation has ended",
     cite: modelRule("1.16", "declining or terminating representation"),
     pat: [
@@ -540,7 +542,7 @@ const TERMINATION = pack("termination-of-representation", C, [
       /(this\s+(letter|matter)|as\s+of\s+\w+\s+\d{1,2}|effective)/i,
     ],
     all: true,
-    why: "A closing letter's purpose is to fix the date the duty ended, which is what starts the malpractice limitations period and ends the conflicts obligation. Ambiguity here defeats both.",
+    why: "A closing letter's purpose is to fix the date the representation ended. Ending it shifts conflicts analysis from Rule 1.7 to Rule 1.9, whose former-client duties continue; the effect on the malpractice limitations period depends on whether the state tolls claims during continuous representation. Ambiguity here clouds both.",
     fix: "State plainly that the representation has concluded and the date on which it did.",
     sev: "critical",
   },
@@ -572,6 +574,7 @@ const TERMINATION = pack("termination-of-representation", C, [
   },
   {
     id: "ENG-035",
+    ver: "1.1.0",
     name: "Final accounting and refund of unearned funds",
     cite: modelRule("1.15(d)", "safekeeping property — prompt accounting and delivery"),
     pat: [
@@ -579,7 +582,7 @@ const TERMINATION = pack("termination-of-representation", C, [
       /(refund|remit|unearned|trust[-\s]+account|enclosed\s+is)/i,
     ],
     all: true,
-    why: "Rules 1.15(d) and 1.16(d) require a prompt accounting and return of any unearned advance. Trust-account balances left after a matter closes are a recurring source of discipline.",
+    why: "Rule 1.15(d) requires a full accounting on the client's request, and Rule 1.16(d) requires refunding unearned advance fees. Trust-account balances left after a matter closes are a recurring source of discipline.",
     fix: "Include the final accounting, state any trust balance, and refund or apply it with the client's direction.",
   },
   {

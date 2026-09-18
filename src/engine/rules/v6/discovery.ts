@@ -421,11 +421,12 @@ const RESPONSES = pack("discovery-responses", C, [
   },
   {
     id: "DISC-021",
+    ver: "1.1.0",
     name: "Signature of counsel",
     cite: frcp("26(g)(1)", "signing disclosures and discovery requests, responses, and objections"),
     pat: [/(signature|\/s\/|respectfully\s+submitted)/i, /(attorney|counsel\s+for|bar\s+no|esq)/i],
     all: true,
-    why: "Rule 26(g) requires every response and objection to be signed by at least one attorney of record, and the signature certifies that the response is complete and correct and not interposed for an improper purpose. An unsigned response is subject to being struck.",
+    why: "Rule 26(g) requires every response and objection to be signed by at least one attorney of record. Under Rule 26(g)(1)(B), the signature certifies that the response is consistent with the rules and warranted by law, not interposed for an improper purpose, and not unreasonable or unduly burdensome; the 'complete and correct' certification applies only to disclosures under Rule 26(g)(1)(A). An unsigned response is subject to being struck.",
     fix: "Add the signing attorney's signature block with the certification Rule 26(g) attaches to it.",
     sev: "critical",
   },
@@ -550,7 +551,7 @@ const PRIV_LOG = pack("privilege-log", C, [
 const RULE_26F = pack("rule-26f-report", C, [
   {
     id: "DISC-030",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Proposed discovery plan with the required subjects",
     cite: frcp("26(f)(3)", "conference of the parties — discovery plan"),
     pat: [
@@ -560,8 +561,8 @@ const RULE_26F = pack("rule-26f-report", C, [
       /(subjects?\s+on\s+which\s+discovery|completion\s+date|phases?|limits?\s+on\s+discovery|discovery\s+(?:closes|closing|cutoff|cut-off|deadline)|\bdeadlines?\b)/i,
     ],
     all: true,
-    why: "Rule 26(f)(3) enumerates six subjects the plan must state. A report that omits them leaves the scheduling order to be written by the court without the parties' input.",
-    fix: "Address each Rule 26(f)(3) subject: initial disclosures, subjects and timing of discovery, ESI, privilege issues, changes to the limits, and other orders.",
+    why: "Rule 26(f)(3) enumerates six subjects the plan must state. As amended December 1, 2025, Rule 26(f)(3)(D) requires the plan to address the timing and method for complying with Rule 26(b)(5)(A) (privilege logs), and Rule 16(b)(3)(B)(iv) lets the scheduling order do the same. A report that omits them leaves the scheduling order to be written by the court without the parties' input.",
+    fix: "Address each Rule 26(f)(3) subject: initial disclosures, subjects and timing of discovery, ESI, privilege issues (including the timing and method of privilege logs), changes to the limits, and other orders.",
     sev: "critical",
   },
   {
@@ -582,6 +583,7 @@ const RULE_26F = pack("rule-26f-report", C, [
   },
   {
     id: "DISC-032",
+    ver: "1.1.0",
     name: "FRE 502(d) order requested",
     cite: fre("502(d)", "controlling effect of a court order on privilege waiver"),
     pat: [
@@ -589,7 +591,7 @@ const RULE_26F = pack("rule-26f-report", C, [
       /(order|clawback|non-?waiver|inadvertent\s+(production|disclosure))/i,
     ],
     all: true,
-    why: "A Rule 502(d) order is the only mechanism that protects against waiver in other federal and state proceedings, and it costs nothing to request at the 26(f) stage. Relying on 502(b) instead leaves waiver to a reasonableness fight after the fact.",
+    why: "Rule 502(b) also protects an inadvertent disclosure in a federal proceeding in later federal and state proceedings if reasonable steps were taken; a Rule 502(d) order gives that protection regardless of the care taken, and it costs nothing to request at the 26(f) stage. Relying on 502(b) alone leaves waiver to a reasonableness fight after the fact.",
     fix: "Request a Rule 502(d) order and attach the proposed form, with the clawback and sequestration procedure.",
     sev: "critical",
   },
@@ -692,6 +694,7 @@ const DEPO = pack("deposition-notice", C, [
   },
   {
     id: "DISC-038",
+    ver: "1.1.0",
     name: "Rule 30(b)(6) topics described with reasonable particularity",
     cite: frcp("30(b)(6)", "notice or subpoena directed to an organization"),
     pat: [
@@ -699,22 +702,24 @@ const DEPO = pack("deposition-notice", C, [
       /(matters?\s+for\s+examination|topics?|described\s+with\s+reasonable\s+particularity|confer\s+in\s+good\s+faith)/i,
     ],
     all: true,
-    why: "Rule 30(b)(6) requires topics described with reasonable particularity and, since 2020, a good-faith conferral about them. Overbroad topics are the leading cause of 30(b)(6) motion practice.",
-    fix: "List the matters for examination with reasonable particularity, and recite the conferral the 2020 amendment requires.",
+    why: "Rule 30(b)(6) requires topics described with reasonable particularity and, since 2020, requires the parties to confer in good faith about the matters for examination; the rule does not require the notice to recite the conferral. Overbroad topics are the leading cause of 30(b)(6) motion practice.",
+    fix: "List the matters for examination with reasonable particularity, and confer in good faith about them as the 2020 amendment requires.",
     when: [/30\(b\)\(6\)|organi[sz]ation|corporate\s+representative|designate\s+one\s+or\s+more/i],
     sev: "critical",
   },
   {
     id: "DISC-039",
+    ver: "1.1.0",
     name: "Method of recording",
     cite: frcp("30(b)(3)(A)", "depositions — method of recording"),
     pat: [/(record(ed|ing)?|transcri)/i, /(stenograph|audio|video|audiovisual|by\s+means\s+of)/i],
     all: true,
-    why: "Rule 30(b)(3)(A) requires the notice to state the method of recording. A party that wants video and did not notice it cannot use video at trial.",
+    why: "Rule 30(b)(3)(A) requires the notice to state the method of recording, but under Rule 30(b)(3)(B) any party may give prior notice of an additional method at its own expense.",
     fix: "State the method or methods of recording, including video where it may be used at trial.",
   },
   {
     id: "DISC-040",
+    ver: "1.1.0",
     name: "Documents requested with the deposition",
     cite: frcp("30(b)(2)", "depositions — producing documents"),
     pat: [
@@ -722,8 +727,8 @@ const DEPO = pack("deposition-notice", C, [
       /(rule\s+34|attached|(?:schedule|exhibit|annexure|annex|appendix)\s+[a-z]|request(ed)?\s+(to\s+be\s+)?produced|subpoena\s+duces\s+tecum)/i,
     ],
     all: true,
-    why: "Rule 30(b)(2) allows a document request with the notice, but it must comply with Rule 34 — which means the deponent gets the full Rule 34 response period, not until the deposition date.",
-    fix: "Attach the Rule 34 request as a schedule and set the production date accounting for the full response period.",
+    why: "Under Rule 30(b)(2), only a notice to a party deponent may carry a Rule 34 request, and that party gets the full Rule 34 response period, not until the deposition date. A nonparty's documents require a Rule 45 subpoena.",
+    fix: "For a party deponent, attach the Rule 34 request as a schedule and set the production date accounting for the full response period; for a nonparty, serve a Rule 45 subpoena.",
     when: [/(document|produce|duces\s+tecum|bring\s+with\s+you)/i],
   },
 ]);

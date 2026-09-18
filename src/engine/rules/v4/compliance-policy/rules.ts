@@ -161,8 +161,10 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
 const FCPA_RULES: Rule[] = [
   presence({
     id: "POL-006",
+    version: "1.1.0",
     name: "FCPA anti-bribery prohibition",
-    description: "Policy must prohibit corrupt payments to foreign officials (FCPA § 30A / § 30B).",
+    description:
+      "Policy must prohibit corrupt payments to foreign officials (Exchange Act § 30A, 15 U.S.C. § 78dd-1; FCPA §§ 104, 104A, 15 U.S.C. §§ 78dd-2, 78dd-3).",
     citation: fcpa("78dd-1"),
     playbooks: [POL_PLAYBOOK_FCPA],
     missing_title: "FCPA anti-bribery clause missing",
@@ -299,16 +301,16 @@ const FCPA_RULES: Rule[] = [
 const AML_RULES: Rule[] = [
   presence({
     id: "POL-012",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "AML program — BSA five pillars",
     description:
-      "AML policy must establish the five-pillar AML program (BSA + FinCEN final rule 2018).",
+      "AML policy must establish the five-pillar AML program (BSA + FinCEN CDD final rule, 81 Fed. Reg. 29398 (May 11, 2016)).",
     citation: bsa(),
     playbooks: [POL_PLAYBOOK_AML],
     missing_title: "BSA five-pillar AML program clause missing",
     missing_description: "No AML five-pillar program clause was found.",
     explanation:
-      "FinCEN's 2018 final rule requires (1) internal policies / procedures / controls, (2) compliance officer designation, (3) ongoing employee training, (4) independent testing / audit, and (5) customer due diligence including beneficial-ownership identification.",
+      "For covered financial institutions, the BSA and FinCEN's CDD final rule (published May 11, 2016, 81 Fed. Reg. 29398; compliance date May 11, 2018) require (1) internal policies / procedures / controls, (2) compliance officer designation, (3) ongoing employee training, (4) independent testing / audit, and (5) customer due diligence including beneficial-ownership identification.",
     recommendation:
       "Add 'AML Program' establishing the five pillars: policies / procedures, AML officer, training, independent testing, CDD + beneficial ownership.",
     present_patterns: [
@@ -749,7 +751,7 @@ const DOC_RETENTION_RULES: Rule[] = [
   }),
   presence({
     id: "POL-031",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "SEC / IRS / regulatory minimums",
     description:
       "Policy must align with SEC / IRS / DOL / regulatory minimum retention requirements.",
@@ -762,7 +764,7 @@ const DOC_RETENTION_RULES: Rule[] = [
     missing_title: "Regulatory minimum retention clause missing",
     missing_description: "No regulatory-minimum retention clause was found.",
     explanation:
-      "SEC Rule 17a-4 (broker-dealers), IRC § 6501 (tax assessment 3-year minimum + 7-year fraud), ERISA § 107 (6 years), HIPAA § 164.530(j) (6 years) — policy must align with the longest applicable.",
+      "SEC Rule 17a-4 (broker-dealers), IRC § 6501 (3-year general assessment period, 6 years for a substantial omission under § 6501(e), no limit for a fraudulent or unfiled return under § 6501(c)), ERISA § 107 (6 years), HIPAA § 164.530(j) (6 years) — policy must align with the longest applicable.",
     recommendation:
       "Add 'Regulatory Minimums' aligning retention with SEC / IRS / DOL / HIPAA / state minimums (the longer applicable period controls).",
     present_patterns: [
@@ -803,6 +805,7 @@ const DOC_RETENTION_RULES: Rule[] = [
 const COI_POLICY_RULES: Rule[] = [
   presence({
     id: "POL-033",
+    version: "1.1.0",
     name: "Definition of conflict of interest",
     description: "Policy must define what constitutes a conflict of interest.",
     citation: form990(),
@@ -810,7 +813,7 @@ const COI_POLICY_RULES: Rule[] = [
     missing_title: "COI definition clause missing",
     missing_description: "No COI-definition clause was found.",
     explanation:
-      "IRS Form 990 Part VI requires conflict-of-interest policy. ABA model nonprofit code + most state nonprofit acts require disclosure procedures.",
+      "IRS Form 990 Part VI line 12a asks whether the organization has a written conflict-of-interest policy; it does not require one. ABA model nonprofit code + most state nonprofit acts require disclosure procedures.",
     recommendation:
       "Add 'Definition' covering direct / indirect financial interests, family / spouse / business / related-party transactions, and dual-board service.",
     present_patterns: [
@@ -1130,6 +1133,7 @@ const SOCIAL_MEDIA_POLICY_RULES: Rule[] = [
 const LOBBYING_POLICY_RULES: Rule[] = [
   presence({
     id: "POL-046",
+    version: "1.1.0",
     name: "LDA registration + quarterly reporting",
     description: "Policy must address LDA registration thresholds + quarterly LD-2 reporting.",
     citation: lda(),
@@ -1137,7 +1141,7 @@ const LOBBYING_POLICY_RULES: Rule[] = [
     missing_title: "LDA registration / quarterly reporting clause missing",
     missing_description: "No LDA registration / quarterly reporting clause was found.",
     explanation:
-      "Lobbying Disclosure Act of 1995 (2 U.S.C. §§ 1601–1614) requires registration when income ≥ $14,000/quarter (in-house) and quarterly LD-2 reports. Honest Leadership and Open Government Act of 2007 adds semiannual LD-203 reports.",
+      "Lobbying Disclosure Act of 1995 (2 U.S.C. §§ 1601–1614) requires registration once dollar-per-quarter thresholds are met and quarterly LD-2 reports. The thresholds are adjusted for inflation periodically; check the current figures published by the Secretary of the Senate and the Clerk of the House. Honest Leadership and Open Government Act of 2007 adds semiannual LD-203 reports.",
     recommendation:
       "Add 'LDA Compliance' addressing registration thresholds, lobbyist designation, LD-2 quarterly reports, and LD-203 semiannual reports.",
     present_patterns: [

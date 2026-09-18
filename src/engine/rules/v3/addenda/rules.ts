@@ -194,7 +194,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceSec({
     id: "ADDENDA-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Incident-response notification window",
     description:
       "Vendor Security Addendum must specify a notification window for security incidents.",
@@ -203,7 +203,7 @@ export const ADDENDA_RULES: Rule[] = [
     missing_description:
       "No notification window for security incidents (e.g., 48 hours, 72 hours) was found.",
     explanation:
-      "Vague 'prompt' / 'without undue delay' language is unenforceable; regulated parties (HIPAA, GDPR) require specific windows.",
+      "GDPR Art. 33(2) itself requires a processor to notify the controller 'without undue delay', and HIPAA (45 C.F.R. § 164.410) requires notice 'without unreasonable delay and in no case later than 60 calendar days'; a fixed window is best practice, not a regulatory requirement.",
     recommendation:
       "Specify a window: e.g., 'Vendor shall notify Customer within 48 hours of confirming a security incident affecting Customer Data.'",
     present_patterns: [
@@ -360,7 +360,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   languageAi({
     id: "ADDENDA-011",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Prohibited use: training on customer data without opt-in",
     description:
       "Flags an AI Addendum that permits training on customer data without an explicit opt-in.",
@@ -369,9 +369,9 @@ export const ADDENDA_RULES: Rule[] = [
     bad_description:
       "AI Addendum appears to allow vendor to train its models on Customer Data without an explicit opt-in.",
     explanation:
-      "FTC enforcement has repeatedly targeted vendors that train models on customer data without clear, affirmative consent.",
+      "The FTC has warned that quietly or retroactively changing terms to permit AI training may be unfair or deceptive (2024), and has ordered deletion of models trained on improperly obtained data; no FTC rule requires opt-in consent for training on business customer data.",
     recommendation:
-      "Require an explicit, affirmative opt-in for training on Customer Data; opt-out-by-default is insufficient under FTC posture.",
+      "Require an explicit, affirmative opt-in for training on Customer Data as a contractual protection.",
     // v1.1.0 required the "may use Customer Data … to train" order and missed
     // the reversed "may train its models ON Customer Data" and the passive
     // "Customer Data may be used to train". Because those broader forms could
@@ -392,7 +392,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceAi({
     id: "ADDENDA-012",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "AI transparency: features + default state + hosting",
     description:
       "AI Addendum should disclose which features use AI, whether on by default or opt-in, and whether the model is on-prem or third-party-hosted.",
@@ -401,7 +401,7 @@ export const ADDENDA_RULES: Rule[] = [
     missing_description:
       "AI feature inventory + on-by-default-vs-opt-in + on-prem-vs-third-party-model disclosures not all present.",
     explanation:
-      "EU AI Act Article 50 + FTC consumer-protection posture both require clear disclosure of AI use.",
+      "EU AI Act Article 50 (applicable from August 2, 2026) requires telling people they are interacting with an AI system and labeling certain synthetic content; it does not require a B2B addendum to inventory AI features. The FTC Act has no general AI-disclosure requirement; it prohibits deceptive claims and omissions.",
     recommendation:
       "List the AI features, their default-on / opt-in status, and the model host (on-prem vs OpenAI / Anthropic / Google / etc.).",
     present_patterns: [

@@ -33,6 +33,7 @@ import {
   secRule21F17,
   frcp37e,
   zubulake,
+  zubulakeV,
   fdcpa,
   lanham43,
   stateLimitations,
@@ -223,6 +224,7 @@ const RELEASE_RULES: Rule[] = [
 const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   presence({
     id: "SET-006",
+    version: "1.1.0",
     name: "Settlement consideration stated",
     description: "Settlement agreement must state the consideration (payment amount, performance).",
     citation: settlePractice(
@@ -234,7 +236,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     missing_title: "Settlement consideration clause missing",
     missing_description: "No clause was found stating the consideration paid for the settlement.",
     explanation:
-      "Without recited consideration, the agreement is vulnerable to a failure-of-consideration defense.",
+      "Leaving consideration unrecited does not negate it, and compromising a disputed claim is itself consideration (Restatement (Second) of Contracts § 74). Stating the settlement payment still records what each party gives and when.",
     recommendation:
       "Add 'Consideration' or 'Settlement Payment' specifying the amount, currency, payee, and timing.",
     present_patterns: [
@@ -248,10 +250,10 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   language({
     id: "SET-007",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Overbroad confidentiality / non-disparagement (NLRB scrutiny)",
     description:
-      "NLRB McLaren Macomb found that overbroad confidentiality / non-disparagement provisions in settlements with non-supervisory employees violate NLRA § 7.",
+      "NLRB McLaren Macomb held that offering severance agreements with broad confidentiality or non-disparagement terms to non-supervisory employees violates NLRA § 8(a)(1).",
     citation: mclarenMacomb(),
     playbooks: [SETTLE_PLAYBOOK_SETTLEMENT],
     bad_patterns: [
@@ -273,7 +275,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     bad_description:
       "Settlement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity (NLRA § 7).",
     explanation:
-      "Under McLaren Macomb, settlement clauses that broadly restrict employees from discussing terms, disparaging the employer, or communicating about the dispute are unlawful as to covered employees.",
+      "McLaren Macomb held that offering severance agreements with broad confidentiality or non-disparagement terms violates NLRA § 8(a)(1). It remains Board precedent, but the General Counsel rescinded the implementing guidance in February 2025. Clauses that broadly restrict covered employees from discussing terms, disparaging the employer, or communicating about the dispute carry that risk.",
     recommendation:
       "Narrow with carve-outs for protected concerted activity, § 7 rights, agency communications (SEC / EEOC / NLRB / DOL), and disclosure of unlawful conduct.",
     default_severity: "warning",
@@ -416,7 +418,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
   }),
   presence({
     id: "SET-012",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Specific demand and response deadline",
     description:
       "Demand letter must state the specific demand (amount / action) and a response deadline.",
@@ -429,7 +431,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
     missing_title: "Specific demand / deadline clause missing",
     missing_description: "No specific demand or response-deadline clause was found.",
     explanation:
-      "A demand letter without a specific demand or deadline is non-actionable. Many statutes (PAGA, CC&Rs, anti-SLAPP) impose minimum response windows.",
+      "A demand letter without a specific demand or deadline is non-actionable. Some statutes set pre-suit notice periods (e.g., PAGA's LWDA period; Cal. Civ. Code § 1782).",
     recommendation:
       "State the specific relief sought (dollar amount, cure action) and a response deadline (typically 14–30 days).",
     present_patterns: [
@@ -798,7 +800,7 @@ const TOLLING_RULES: Rule[] = [
 const LIT_HOLD_RULES: Rule[] = [
   presence({
     id: "SET-025",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Triggering event / pending or anticipated litigation",
     description:
       "Litigation hold must describe the triggering event (filed or anticipated litigation / investigation).",
@@ -808,7 +810,7 @@ const LIT_HOLD_RULES: Rule[] = [
     missing_description:
       "No description of the litigation / investigation triggering the hold was found.",
     explanation:
-      "Under Zubulake and FRCP 37(e), the duty to preserve attaches when litigation is reasonably anticipated. The hold notice should describe the trigger so recipients understand scope.",
+      "Under Zubulake IV (220 F.R.D. 212), persuasive district-court authority, the duty to preserve attaches when litigation is reasonably anticipated; FRCP 37(e) does not itself create that duty. The hold notice should describe the trigger so recipients understand scope.",
     recommendation:
       "Identify the matter (case caption / investigation), the parties, and the date the duty to preserve attached.",
     present_patterns: [
@@ -821,6 +823,7 @@ const LIT_HOLD_RULES: Rule[] = [
   }),
   presence({
     id: "SET-026",
+    version: "1.1.0",
     name: "Scope of preservation — categories of materials",
     description:
       "Hold notice must identify categories of materials to preserve (documents, emails, ESI, mobile, IM, voicemail).",
@@ -829,7 +832,7 @@ const LIT_HOLD_RULES: Rule[] = [
     missing_title: "Preservation-scope clause missing",
     missing_description: "No clause identifying the categories of materials to preserve was found.",
     explanation:
-      "FRCP 37(e) requires preservation of ESI that should reasonably have been preserved. The hold must enumerate categories (email, chat, mobile, cloud, shared drives, third-party platforms).",
+      "Rule 37(e) does not create the duty to preserve; it applies only when ESI that should have been preserved is lost because reasonable steps were not taken and cannot be restored or replaced. Relief is limited to curing prejudice, and adverse-inference or terminating sanctions require intent to deprive. The hold should enumerate categories (email, chat, mobile, cloud, shared drives, third-party platforms) so reasonable steps are taken.",
     recommendation:
       "List categories: email, instant messaging (Slack / Teams), text / SMS / mobile, voicemail, paper, shared drives, cloud storage, third-party platforms (e.g., Dropbox, Box, GitHub).",
     present_patterns: [
@@ -840,6 +843,7 @@ const LIT_HOLD_RULES: Rule[] = [
   }),
   presence({
     id: "SET-027",
+    version: "1.1.0",
     name: "Suspension of routine deletion / retention policies",
     description:
       "Hold notice must suspend routine deletion / records-retention policies on covered materials.",
@@ -848,7 +852,7 @@ const LIT_HOLD_RULES: Rule[] = [
     missing_title: "Suspension-of-deletion clause missing",
     missing_description: "No clause suspending routine deletion / retention policies was found.",
     explanation:
-      "Routine email purge / auto-delete / DLP retention sweeps must be suspended for covered custodians; FRCP 37(e) sanctions follow when routine deletion destroys ESI subject to a duty to preserve.",
+      "Routine email purge / auto-delete / DLP retention sweeps should be suspended for covered custodians. Rule 37(e) does not create the duty to preserve; it applies only when ESI that should have been preserved is lost because reasonable steps were not taken and cannot be restored or replaced. Relief is limited to curing prejudice, and adverse-inference or terminating sanctions require intent to deprive.",
     recommendation:
       "Add 'Suspension of Routine Deletion' instructing recipients (and IT) to suspend auto-delete, mailbox quotas, and routine retention destruction for covered custodians.",
     present_patterns: [
@@ -858,15 +862,16 @@ const LIT_HOLD_RULES: Rule[] = [
   }),
   presence({
     id: "SET-028",
+    version: "1.1.0",
     name: "Custodian list and acknowledgment requirement",
     description: "Hold should identify covered custodians and require written acknowledgment.",
-    citation: zubulake(),
+    citation: zubulakeV(),
     playbooks: [SETTLE_PLAYBOOK_LITHOLD],
     missing_title: "Custodian list / acknowledgment clause missing",
     missing_description:
       "No custodian list or acknowledgment requirement was found in the hold notice.",
     explanation:
-      "Zubulake V requires counsel to oversee preservation. Acknowledgment establishes that custodians received and understood the hold; the custodian list scopes preservation.",
+      "Zubulake V, 229 F.R.D. 422 (S.D.N.Y. 2004), persuasive district-court authority, holds that counsel must oversee preservation. Acknowledgment establishes that custodians received and understood the hold; the custodian list scopes preservation.",
     recommendation:
       "Identify covered custodians and require each to return a signed acknowledgment within a stated period (typically 5–7 business days).",
     present_patterns: [/(custodian|recipient)/i, /(acknowledg(e|ment)|confirm\s+receipt)/i],

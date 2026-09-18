@@ -12,7 +12,7 @@ import { findStatuteCitation, makeFinding } from "../../finding.js";
  */
 export const rule: Rule = {
   id: "STRUCT-001",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Party identification block present",
   category: "structural",
   default_severity: "warning",
@@ -35,7 +35,7 @@ export const rule: Rule = {
       description: "Vaulytica could not identify the parties to this document.",
       excerptText: "(no preamble or signature block matched the expected patterns)",
       explanation:
-        "A contract that does not clearly name its parties is unenforceable as a matter of basic contract drafting. Add a preamble identifying the parties (typical pattern: 'This Agreement is made between X and Y') or ensure the signature block names each party clearly.",
+        "A contract that does not clearly name its parties invites a dispute over who is bound; courts can identify parties from signatures and extrinsic evidence, so the defect is ambiguity rather than automatic unenforceability. Add a preamble identifying the parties (typical pattern: 'This Agreement is made between X and Y') or ensure the signature block names each party clearly.",
       recommendation:
         "Add a preamble naming each party, their entity type, and jurisdiction of formation; or verify that the signature block is intact.",
       position: { section_id: firstSectionId, start: 0, end: 0 },

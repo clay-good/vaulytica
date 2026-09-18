@@ -25,13 +25,14 @@ const PHYSICIAN = pack("physician-employment-agreement", C, [
   },
   {
     id: "HC-102",
+    ver: "1.1.0",
     name: "No compensation varying with referral volume or value",
     cite: usc("42", "1395nn", "Stark Law — bona fide employment relationship exception"),
     pat: [
       /(volume\s+or\s+value\s+of\s+(any\s+)?referrals)/i,
       /(does\s+not\s+(vary|take\s+into\s+account)|not\s+determined\s+in\s+(any\s+)?manner\s+that\s+takes\s+into\s+account)/i,
     ],
-    why: "The exception fails if compensation takes into account the volume or value of referrals. This is the term Stark cases are decided on, and it must appear in the contract, not only in practice.",
+    why: "The Stark bona fide employment exception (42 U.S.C. § 1395nn(e)(2); 42 C.F.R. § 411.357(c)) has no writing requirement; the referral-volume prohibition must be met in fact. A contract recital is good practice.",
     fix: "State that compensation does not take into account, directly or indirectly, the volume or value of referrals or other business generated between the parties.",
     sev: "critical",
   },
@@ -153,14 +154,19 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
   },
   {
     id: "HC-109",
-    name: "Services specified and aggregate hours set in advance",
+    ver: "1.2.0",
+    name: "Services covered and specified",
     cite: cfr("42", "1001.952(d)", "AKS safe harbor — specification of services"),
     pat: [
       /(scope\s+of\s+services|duties|services\s+to\s+be\s+(provided|performed))/i,
-      /(hours\s+per\s+(month|week|year)|aggregate|schedule\s+of\s+services|specified\s+in\s+advance)/i,
+      // Since the OIG's 2020 rule the safe harbor asks that the agreement cover
+      // and SPECIFY the services — a part-time schedule and an aggregate figure
+      // are no longer required, so the ways a current agreement specifies them
+      // count too.
+      /(hours\s+per\s+(month|week|year)|aggregate|schedule\s+of\s+services|specified\s+in\s+advance|methodology|all\s+(?:of\s+the\s+)?services|services\s+(?:are\s+)?(?:set\s+out|described|listed|specified)\s+in)/i,
     ],
-    why: "The safe harbor requires the agreement to cover all services and specify them, and where services are part-time, to specify the schedule, length, and exact charge for each interval.",
-    fix: "Enumerate the directorship duties, state the aggregate hours required per period, and specify the schedule where services are periodic rather than full-time.",
+    why: "The personal services safe harbor (42 C.F.R. § 1001.952(d)) requires the agreement to cover and specify all services provided. The OIG's 2020 final rule (effective January 19, 2021) removed the part-time schedule requirement and replaced 'aggregate compensation set in advance' with 'the methodology for determining compensation set in advance'.",
+    fix: "Enumerate the directorship duties and state the methodology for determining compensation in advance; stating expected hours per period remains good practice.",
     sev: "critical",
   },
   {

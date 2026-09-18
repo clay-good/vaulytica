@@ -4,7 +4,7 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 /** IPDATA-001 — IP ownership clause present (warning). */
 export const rule: Rule = {
   id: "IPDATA-001",
-  version: "1.14.0",
+  version: "1.15.0",
   name: "IP ownership clause present",
   category: "ip-and-data",
   default_severity: "warning",
@@ -114,7 +114,7 @@ export const rule: Rule = {
       description: "The contract does not allocate ownership of intellectual property.",
       excerpt: "(no IP-ownership clause)",
       explanation:
-        "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
+        "Without an IP-ownership clause, default copyright and patent rules apply. A work an employee prepares within the scope of employment is a work made for hire owned by the employer (17 U.S.C. §§ 101, 201(b)); copyright in a contractor's work vests in the contractor unless a written work-for-hire agreement covers an enumerated category, or the rights are assigned in writing.",
       recommendation:
         "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       position: topPosition(ctx),

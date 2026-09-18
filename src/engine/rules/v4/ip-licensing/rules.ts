@@ -126,6 +126,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-004",
+    version: "1.1.0",
     name: "Recordation cooperation — 35 U.S.C. § 261 / 17 U.S.C. § 205",
     description:
       "Assignment should require assignor to cooperate with recordation at the USPTO / Copyright Office.",
@@ -134,7 +135,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     missing_title: "Recordation-cooperation clause missing",
     missing_description: "No clause requiring cooperation with recordation was found.",
     explanation:
-      "35 U.S.C. § 261 voids an unrecorded assignment as against a subsequent bona-fide purchaser without notice within 3 months; 17 U.S.C. § 205 provides priority on recordation. Cooperation language ensures recordation can be perfected.",
+      "Under 35 U.S.C. § 261 an assignment is void against a later purchaser for value without notice unless recorded within three months of its date or before the later purchase; the later purchaser need not record first. 15 U.S.C. § 1060(a)(4) applies the same rule to trademarks, and 17 U.S.C. § 205 provides priority on recordation for copyrights. Cooperation language ensures recordation can be perfected.",
     recommendation:
       "Add 'Further Assurances' / 'Recordation' requiring assignor to execute documents and provide reasonable cooperation to record the assignment.",
     present_patterns: [
@@ -145,7 +146,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-005",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Power of attorney for IP-office filings",
     description:
       "Assignment should grant a power of attorney to enable the assignee to file in the IP offices.",
@@ -158,7 +159,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     missing_title: "POA clause missing",
     missing_description: "No power-of-attorney clause was found in the assignment.",
     explanation:
-      "Without a POA the assignee cannot independently file recordation, prosecute, or maintain transferred IP — every action requires reaching assignor for execution.",
+      "An assignee can record an executed assignment itself (37 C.F.R. §§ 3.11, 3.25) and, once it establishes ownership, prosecute and maintain the patent (37 C.F.R. § 3.73); a power of attorney mainly helps where the assignor's further signature is needed, such as inventor declarations or foreign filings.",
     recommendation:
       "Add 'Power of Attorney' authorizing assignee (and its counsel) to execute and file documents necessary to record, maintain, prosecute, or enforce the assigned IP.",
     present_patterns: [
@@ -434,16 +435,17 @@ const TM_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-015",
+    version: "1.1.0",
     name: "Goodwill assignment to licensor / no challenge",
     description:
       "Trademark license should provide that all use inures to licensor's benefit and licensee will not challenge the marks.",
-    citation: lanham("32", "Goodwill / no-challenge"),
+    citation: lanham("5", "Licensee use inures to licensor, 15 U.S.C. § 1055"),
     playbooks: [IPL_PLAYBOOK_TRADEMARK],
     missing_title: "Goodwill / no-challenge clause missing",
     missing_description:
       "No clause stating use inures to licensor's benefit and barring licensee challenge was found.",
     explanation:
-      "Without an inures-to-benefit clause and a no-challenge clause, licensee can build independent rights or later challenge the mark. Note: some jurisdictions limit enforceability of no-challenge clauses; pair with covenants to assist registration.",
+      "Without an inures-to-benefit clause and a no-challenge clause, licensee can build independent rights or later challenge the mark. Use by a controlled licensee inures to the licensor under Lanham Act § 5 (15 U.S.C. § 1055); no-challenge clauses rest on licensee-estoppel case law, not the statute. Note: some jurisdictions limit enforceability of no-challenge clauses; pair with covenants to assist registration.",
     recommendation:
       "Add 'Goodwill' clause stating all use inures to licensor and 'No Challenge' clause barring licensee from challenging validity / ownership.",
     present_patterns: [
@@ -866,6 +868,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-033",
+    version: "1.1.0",
     name: "Notice / attribution file generation",
     description:
       "Compliance document must address how attribution notices are generated and distributed.",
@@ -874,7 +877,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
     missing_title: "Notice / attribution generation clause missing",
     missing_description: "No clause was found addressing notice / attribution generation.",
     explanation:
-      "MIT, Apache-2.0, and BSD all require notice / attribution preservation. Apache-2.0 § 4(d) requires a NOTICE file. Notice files are typically generated automatically from the SBOM.",
+      "MIT, Apache-2.0, and BSD all require notice / attribution preservation. If the Work includes a NOTICE file, Apache-2.0 § 4(d) requires redistributions to include a readable copy of its attribution notices; it does not require creating one. Notice files are typically generated automatically from the SBOM.",
     recommendation:
       "Add 'Notices' describing how NOTICE / THIRD-PARTY-NOTICES files are generated and made available (in-product, in documentation, or at a URL).",
     present_patterns: [
@@ -932,6 +935,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
 const WFH_RULES: Rule[] = [
   presence({
     id: "IPL-036",
+    version: "1.1.0",
     name: "§ 101 specially-commissioned-category recital",
     description:
       "Work-for-hire agreement must fall within one of the nine 17 U.S.C. § 101 categories for specially commissioned works.",
@@ -940,7 +944,7 @@ const WFH_RULES: Rule[] = [
     missing_title: "§ 101 specially-commissioned recital missing",
     missing_description: "No clause was found reciting the § 101 work-for-hire category.",
     explanation:
-      "Under 17 U.S.C. § 101, a non-employee work is 'made for hire' only if (a) the parties expressly agree in writing AND (b) the work falls into one of nine categories (contribution to a collective work, part of a motion picture or audiovisual work, translation, supplementary work, compilation, instructional text, test, answer material, atlas). Outside those categories, an assignment is required instead.",
+      "Under 17 U.S.C. § 101, a non-employee work is 'made for hire' only if (a) the parties expressly agree in writing AND (b) the work falls into one of nine categories (contribution to a collective work, part of a motion picture or audiovisual work, translation, supplementary work, compilation, instructional text, test, answer material, atlas). Outside those categories, an assignment is required instead. The nine-category requirement applies only to specially commissioned works by non-employees; a work an employee prepares within the scope of employment is a work made for hire with no category or written agreement needed (17 U.S.C. § 101(1)).",
     recommendation:
       "Recite the § 101 category (or, if none applies, restructure as an assignment) and include both a work-for-hire recital and a backup assignment.",
     present_patterns: [
@@ -1025,6 +1029,7 @@ const WFH_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-040",
+    version: "1.1.0",
     name: "Independent-contractor status + tax / benefits disclaimer",
     description:
       "Work-for-hire agreement (with non-employees) must recite independent-contractor status.",
@@ -1038,7 +1043,7 @@ const WFH_RULES: Rule[] = [
     missing_description:
       "No clause was found reciting independent-contractor status / no-employee-benefits.",
     explanation:
-      "Misclassification is the central risk of contractor engagements (IRS 20-factor / ABC test). A status recital + tax / benefits disclaimer documents the parties' intent.",
+      "Misclassification is the central risk of contractor engagements. The IRS groups the common-law control factors into behavioral control, financial control and relationship of the parties; the ABC test is a state-law test (e.g. Cal. Lab. Code § 2775). A status recital + tax / benefits disclaimer documents the parties' intent.",
     recommendation:
       "Add 'Independent Contractor' stating contractor is not an employee, is responsible for taxes, and is not entitled to employee benefits.",
     present_patterns: [

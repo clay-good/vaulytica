@@ -24,11 +24,11 @@ const NY_CONVENTION_PARTIES =
 /** CHOICE-005 — Foreign venue without enforceability treaty (warning). */
 export const rule: Rule = {
   id: "CHOICE-005",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Foreign venue without enforceability treaty",
   category: "choice-and-venue",
   default_severity: "warning",
-  description: "Flags non-US venues outside the New York / Hague convention common list.",
+  description: "Flags non-US venues outside a common list of New York Convention states.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     const venue = ctx.extracted.jurisdictions.find((j) => j.clause_kind === "venue");
@@ -40,9 +40,9 @@ export const rule: Rule = {
       description: `Venue: ${venue.raw_text}.`,
       excerpt: venue.raw_text,
       explanation:
-        "Enforcing a US judgment in a jurisdiction outside the New York or Hague convention can be expensive and uncertain. Confirm a clear path to enforcement exists.",
+        "The New York Convention governs recognition of arbitral awards, not court judgments. The United States is not a party to the 2005 Hague Choice of Court Convention or the 2019 Hague Judgments Convention, so a US judgment is enforced abroad under each country's domestic law. Confirm a clear path to enforcement exists.",
       recommendation:
-        "Consider a seat in a New York Convention state, or add an arbitration clause with a Convention seat, so an award is enforceable where the counterparty's assets are. A judgment from a non-Convention forum may be unenforceable against them.",
+        "Consider an arbitration clause seated in a New York Convention state, so an award is enforceable where the counterparty's assets are. A court judgment has no comparable treaty path and depends on the enforcing country's domestic law.",
       position: venue.position,
     });
   },

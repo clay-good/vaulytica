@@ -646,6 +646,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
   }),
   presence({
     id: "INS-024",
+    version: "1.1.0",
     name: "Signature + date + minor / guardian recital (when applicable)",
     description:
       "Hold-harmless must be signed and dated; minor-participant forms need a guardian signature recital.",
@@ -658,7 +659,7 @@ const HOLD_HARMLESS_RULES: Rule[] = [
     missing_title: "Signature / minor recital missing",
     missing_description: "No signature line / date / minor-or-guardian recital was found.",
     explanation:
-      "Without signature + date the document is incomplete; for minor participants, many states limit enforceability of parent-signed releases (e.g., Atkins v. Swimwest Family Fitness Center).",
+      "Without signature + date the document is incomplete; for minor participants, many states limit enforceability of parent-signed releases (e.g., Hojnowski v. Vans Skate Park, 901 A.2d 381 (N.J. 2006); Kirton v. Fields, 997 So. 2d 349 (Fla. 2008)).",
     recommendation:
       "Add signature + date lines; for minor participants, add 'Parent / Guardian Signature' with a recital acknowledging the parent / guardian has authority.",
     present_patterns: [/(signature|signed|sign\s+here)/i, /(date)/i, /(parent|guardian|minor)/i],

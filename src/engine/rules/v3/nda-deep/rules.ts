@@ -135,6 +135,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-004",
+    version: "1.1.0",
     name: "Trade-secret perpetual carve-out present",
     description:
       "Best practice: trade-secret obligations should continue for as long as the information qualifies as a trade secret, not be cut off by a fixed term.",
@@ -143,7 +144,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     missing_description:
       "No clause was found extending the confidentiality obligation for trade secrets beyond the fixed term.",
     explanation:
-      "If the NDA imposes a flat 3- or 5-year confidentiality term with no carve-out for trade secrets, the discloser loses statutory protection once the term lapses — defeating the purpose of UTSA / DTSA.",
+      "Some courts treat a fixed confidentiality term as evidence that the owner stopped taking reasonable secrecy measures after it expired, which can defeat trade-secret status; the risk is real but not automatic.",
     recommendation:
       "Add: 'With respect to trade secrets, the obligations of confidentiality shall continue for as long as the information qualifies as a trade secret under applicable law.'",
     // The carve-out is usually written as a TAIL on the term sentence, and the

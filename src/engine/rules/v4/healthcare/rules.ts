@@ -110,6 +110,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "HC-005",
+    version: "1.1.0",
     name: "Confidentiality of records",
     description: "Informed consent must describe how confidentiality of records is maintained.",
     citation: commonRule("116(b)(5)", "Confidentiality"),
@@ -117,7 +118,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
     missing_title: "Confidentiality-of-records clause missing",
     missing_description: "No clause was found describing the confidentiality of subject records.",
     explanation:
-      "§ 46.116(b)(5) requires a statement describing the extent, if any, to which confidentiality of records identifying the subject will be maintained, including any FDA inspection.",
+      "§ 46.116(b)(5) requires a statement describing the extent, if any, to which confidentiality of records identifying the subject will be maintained. For FDA-regulated studies, 21 C.F.R. § 50.25(a)(5) also requires noting the possibility that the FDA may inspect the records.",
     recommendation:
       "Add 'Confidentiality' describing how records are protected, who may access them (e.g., FDA, sponsor, IRB), and any limits on confidentiality.",
     present_patterns: [
@@ -169,10 +170,10 @@ const INFORMED_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "HC-008",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "FDA-regulated study — § 50.25 additional elements (when applicable)",
     description:
-      "If the study is FDA-regulated, the consent must include § 50.25 additional elements (clinicaltrials.gov statement, FDA inspection of records).",
+      "If the study is FDA-regulated, the consent must include § 50.25 elements (the ClinicalTrials.gov statement for applicable clinical trials, FDA inspection of records).",
     citation: fdaIc("25", "FDA additional elements"),
     playbooks: [HC_PLAYBOOK_INFORMED_CONSENT],
     // § 50.25 governs consent for a CLINICAL INVESTIGATION, not treatment. The
@@ -190,7 +191,7 @@ const INFORMED_CONSENT_RULES: Rule[] = [
     missing_title: "FDA § 50.25 additional elements clause missing",
     missing_description: "No § 50.25 additional elements were found for an FDA-regulated study.",
     explanation:
-      "21 C.F.R. § 50.25 requires additional elements for FDA-regulated trials including disclosure that the trial is registered on clinicaltrials.gov and that FDA may inspect records.",
+      "For applicable clinical trials, 21 C.F.R. § 50.25(c) requires the prescribed ClinicalTrials.gov statement; the FDA-inspection note is a basic element under § 50.25(a)(5).",
     recommendation:
       "Add 'FDA Additional Elements' (when applicable) covering clinicaltrials.gov registration and FDA inspection of records.",
     present_patterns: [
@@ -436,15 +437,15 @@ const NPP_ACK_RULES: Rule[] = [
   }),
   presence({
     id: "HC-020",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Date of receipt",
-    description: "Acknowledgment must include the date of receipt.",
+    description: "Acknowledgment should include the date of receipt.",
     citation: hipaa("520(c)(2)(ii)", "Date"),
     playbooks: [HC_PLAYBOOK_NPP_ACK],
     missing_title: "Date of receipt missing",
     missing_description: "No date of receipt was found.",
     explanation:
-      "The acknowledgment must include the date the NPP was received so the covered entity can document compliance with the timing requirements.",
+      "§ 164.520(c)(2)(ii) requires only a good-faith effort to obtain a written acknowledgment of receipt; a date of receipt is good practice, not a requirement, and helps the covered entity document compliance with the timing requirements.",
     recommendation: "Add a 'Date Received' line.",
     // A blank acknowledgment form prints "Date: ______" beside the signature
     // line; that IS the date-of-receipt line, and the form carries no digits
@@ -457,15 +458,16 @@ const NPP_ACK_RULES: Rule[] = [
   }),
   presence({
     id: "HC-021",
+    version: "1.1.0",
     name: "Signature of individual / personal representative",
     description:
-      "Acknowledgment must be signed by the individual or a personal representative with authority recital.",
+      "Acknowledgment should be signed by the individual or a personal representative with authority recital.",
     citation: hipaa("520(c)(2)(ii)", "Signature"),
     playbooks: [HC_PLAYBOOK_NPP_ACK],
     missing_title: "Signature clause missing",
     missing_description: "No signature clause was found.",
     explanation:
-      "The acknowledgment must be signed by the individual or a personal representative. Identify the representative's authority where applicable.",
+      "§ 164.520(c)(2)(ii) requires only a good-faith effort to obtain a written acknowledgment; a signature by the individual or a personal representative is good practice, not a requirement. Identify the representative's authority where applicable.",
     recommendation:
       "Add 'Signature' and (if signed by a representative) a description of authority (parent, guardian, POA).",
     present_patterns: [
@@ -495,14 +497,15 @@ const NPP_ACK_RULES: Rule[] = [
   }),
   presence({
     id: "HC-023",
+    version: "1.1.0",
     name: "Statement of right to a copy of the NPP",
     description: "Acknowledgment should state the individual's right to a copy of the NPP.",
-    citation: hipaa("520(c)(2)(iii)", "Copy of NPP"),
+    citation: hipaa("520(b)(1)(iv)(F)", "Right to paper copy"),
     playbooks: [HC_PLAYBOOK_NPP_ACK],
     missing_title: "Right-to-copy statement missing",
     missing_description: "No statement of the right to a copy of the NPP was found.",
     explanation:
-      "Section 164.520(c)(2)(iii): individuals have a right to a paper copy of the NPP upon request.",
+      "Sections 164.520(b)(1)(iv)(F) and (c)(3)(iv): individuals have a right to a paper copy of the NPP upon request.",
     recommendation:
       "Add 'Right to Copy' stating the individual may request a paper copy of the NPP at any time.",
     present_patterns: [

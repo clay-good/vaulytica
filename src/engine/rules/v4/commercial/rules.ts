@@ -185,9 +185,10 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-007",
+    version: "1.1.0",
     name: "Best-efforts obligation for a requirements / exclusive arrangement",
     description:
-      "A requirements / output or exclusive-dealing supply arrangement must carry the § 2-306(2) best-efforts obligation.",
+      "A requirements / output or exclusive-dealing supply arrangement should state the effort standard the parties owe.",
     citation: ucc("2-306(2)", "Best efforts in exclusive dealing"),
     playbooks: [COMM_PLAYBOOK_MANUFACTURING],
     // Only relevant where the arrangement is a requirements / output or
@@ -198,7 +199,7 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
     missing_description:
       "The arrangement is a requirements / output or exclusive one but no best-efforts / commercially-reasonable-efforts obligation was found.",
     explanation:
-      "UCC § 2-306(2) implies, in an exclusive-dealing contract, an obligation on the seller to use best efforts to supply and on the buyer to use best efforts to promote their sale. Stating the standard expressly (and any minimums) forecloses the classic Wood v. Lucy dispute over what the exclusive party actually owes.",
+      "UCC § 2-306(2) applies to exclusive dealing and implies best efforts 'unless otherwise agreed'; output and requirements contracts are governed by the good-faith measure of § 2-306(1). Stating the standard is prudent; the Code does not require it. Stating it expressly (and any minimums) forecloses the classic Wood v. Lucy dispute over what the exclusive party actually owes.",
     recommendation:
       "Add a 'Best Efforts' clause stating the supply / promotion effort standard (best or commercially reasonable efforts) and any minimum purchase / stocking commitments.",
     present_patterns: [

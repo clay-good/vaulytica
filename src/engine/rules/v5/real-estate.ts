@@ -664,6 +664,7 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
   },
   {
     id: "RE-145",
+    ver: "1.1.0",
     name: "Default remedies and liquidated damages",
     cite: practice(
       "psa-default",
@@ -673,7 +674,7 @@ const RESIDENTIAL_PSA = pack("residential-purchase-agreement", C, [
       /(default|breach)/i,
       /(liquidated\s+damages|specific\s+performance|retain\s+the\s+(earnest\s+money|deposit)|sole\s+remedy)/i,
     ],
-    why: "A liquidated damages clause capping the seller's recovery at the deposit is enforceable in most states only if separately initialed or conspicuous, and specific performance is the buyer's usual remedy.",
+    why: "California requires a liquidated damages clause capping the seller's recovery at the deposit to be separately initialed (Cal. Civ. Code §§ 1675–1677); other states set their own formal requirements. Specific performance is the buyer's usual remedy.",
     fix: "State each party's remedies on default, whether the deposit is liquidated damages, and satisfy any separate-initialing or conspicuousness requirement.",
   },
 ]);

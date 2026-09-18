@@ -99,7 +99,7 @@ export function usuryGeneric(): SourceCitation {
   return v4Cite({
     id: "usury-state-cap-generic",
     source:
-      "State usury caps (consumer / commercial) — per-state table (e.g., CA Civ. § 1916.1; NY GBL § 5-501; TX Fin. § 303)",
+      "State usury caps (consumer / commercial) — per-state table (e.g., CA Civ. § 1916.1; N.Y. Gen. Oblig. Law § 5-501; TX Fin. § 303)",
     source_url: "https://www.usurylaw.com/state-rates",
     license: "Practitioner reference — state codes are public domain",
     license_url: "https://www.usa.gov/government-works",

@@ -318,15 +318,18 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   presence({
     id: "TRANSFER-010",
-    name: "SCC Clause 18 — Governing Law and Forum",
+    version: "1.1.0",
+    name: "SCC Clauses 17–18 — Governing Law and Forum",
     description:
-      "SCC Clause 18 (Governing Law / Choice of Forum and Jurisdiction) must be present.",
-    citation: "EU SCCs Clause 18",
-    missing_title: "SCC Clause 18 (Governing Law / Forum) missing",
-    missing_description: "No reference to SCC Clause 18 was found.",
+      "SCC Clause 17 (Governing Law) and Clause 18 (Choice of Forum and Jurisdiction) must be present.",
+    citation: "EU SCCs Clauses 17–18 (Decision (EU) 2021/914)",
+    missing_title: "SCC Clauses 17–18 (Governing Law / Forum) missing",
+    missing_description:
+      "No reference to SCC Clause 18 or to governing-law and forum terms was found.",
     explanation:
-      "Clause 18 sets the governing law (must be an EU Member State allowing third-party-beneficiary rights) and forum.",
-    recommendation: "Include the full Clause 18 text and pick a qualifying EU Member State.",
+      "Under Decision (EU) 2021/914, Clause 17 sets the governing law (for Modules 2 and 3, the law of an EU Member State that allows third-party-beneficiary rights) and Clause 18 sets the choice of forum and jurisdiction.",
+    recommendation:
+      "Include the full Clause 17 and Clause 18 text and pick a qualifying EU Member State.",
     present_patterns: [
       /(clause\s*18\b|governing\s+law\s+and\s+(?:forum|jurisdiction)|choice\s+of\s+forum)/i,
     ],
@@ -486,15 +489,15 @@ export const TRANSFER_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presenceAll({
     id: "TRANSFER-019",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "TIA / Transfer Risk Assessment reference",
     description:
       "Where SCCs / IDTA cover transfers to a non-adequate country, the DPA must reference a TIA / TRA.",
-    citation: "EDPB Recommendations 01/2020 on Supplementary Measures",
+    citation: "CJEU C-311/18 (Schrems II); EU SCCs Clause 14(b); EDPB Recommendations 01/2020",
     missing_title: "TIA / Transfer Risk Assessment reference missing",
     missing_description: "No reference to a TIA / Transfer Risk Assessment was found.",
     explanation:
-      "EDPB Recommendations 01/2020 require the parties to assess local laws and practices of the recipient country.",
+      "The duty to assess the destination's law comes from Schrems II (C-311/18) and SCC Clause 14(b), which requires the assessment to be documented; EDPB Recommendations 01/2020 are guidance on how to do it.",
     recommendation:
       "Reference a TIA / TRA in the DPA / SCC Annex and document the supplementary measures where needed.",
     present_patterns: [
@@ -504,16 +507,17 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   presenceAll({
     id: "TRANSFER-020",
-    version: "1.1.0",
-    name: "Onward-transfer terms (Clause 8.7 / 8.8)",
+    version: "1.2.0",
+    name: "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
     description:
-      "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
-    citation: "EU SCCs Clause 8.7 / 8.8",
+      "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
+    citation: "EU SCCs Clause 8.8 (Modules Two and Three); Clause 8.7 (Module One)",
     missing_title: "Onward-transfer terms missing",
-    missing_description: "No reference to onward-transfer terms (Clause 8.7 / 8.8) was found.",
+    missing_description: "No reference to onward-transfer terms was found.",
     explanation:
-      "SCC Clause 8.7 / 8.8 governs onward transfers to third parties outside the EEA. For the UK Addendum (layered on EU SCCs), Clause 8.8 is incorporated by reference but explicit acknowledgment is best practice.",
-    recommendation: "Include the Clause 8.7 / 8.8 text or its substantive equivalent in the DPA.",
+      "Under Module Two Clause 8.8, the importer may disclose data to a third party only on documented instructions, and outside the EU only if the recipient is bound by the Clauses or another listed ground applies. In Modules Two and Three, Clause 8.7 covers sensitive data; onward transfer is Clause 8.7 only in Module One. For the UK Addendum (layered on EU SCCs), the onward-transfer clause is incorporated by reference but explicit acknowledgment is best practice.",
+    recommendation:
+      "Include the onward-transfer clause text or its substantive equivalent in the DPA.",
     present_patterns: [/(onward\s+transfer|clause\s+8\.7|clause\s+8\.8)/i],
     default_severity: "warning",
     applicable_if: [INTERNATIONAL_TRANSFER],

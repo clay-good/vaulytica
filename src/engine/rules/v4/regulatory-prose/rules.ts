@@ -131,6 +131,7 @@ const FORM_D_RULES: Rule[] = [
   }),
   presence({
     id: "REG-006",
+    version: "1.1.0",
     name: "Offering amount + minimum investment",
     description:
       "Form D narrative must state aggregate offering amount and any minimum investment.",
@@ -139,7 +140,7 @@ const FORM_D_RULES: Rule[] = [
     missing_title: "Offering amount / minimum investment clause missing",
     missing_description: "No offering-amount / minimum-investment clause was found.",
     explanation:
-      "Form D Items 13–14 require aggregate offering amount and minimum-investment information.",
+      "Form D Item 11 requires the minimum investment accepted from any outside investor, and Item 13 (Offering and Sales Amounts) requires the total offering amount; Item 14 covers investors.",
     recommendation:
       "Add 'Offering Size' specifying aggregate offering amount and minimum investment per investor.",
     present_patterns: [
@@ -150,6 +151,7 @@ const FORM_D_RULES: Rule[] = [
   }),
   presence({
     id: "REG-007",
+    version: "1.1.0",
     name: "State blue-sky notice filings",
     description: "Form D narrative should address state blue-sky notice filings.",
     citation: blueSky(),
@@ -157,7 +159,7 @@ const FORM_D_RULES: Rule[] = [
     missing_title: "State blue-sky notice clause missing",
     missing_description: "No state blue-sky notice clause was found.",
     explanation:
-      "Most states require notice filings for Reg D offerings (NSMIA-preempted but most states require Form D copies + filing fees). Failure to file blocks resale.",
+      "Most states require notice filings for Reg D offerings (NSMIA-preempted but most states require Form D copies + filing fees). A missed state notice filing does not affect the federal Rule 506 exemption or block resale, but states may impose late fees, penalties, or stop orders.",
     recommendation:
       "Add 'State Blue-Sky' addressing notice filings in each state where investors reside.",
     present_patterns: [/(blue.sky|state\s+notice|nsmia)/i, /(notice\s+filing|state\s+securities)/i],
@@ -508,19 +510,20 @@ const RISK_FACTORS_RULES: Rule[] = [
   }),
   presence({
     id: "REG-023",
+    version: "1.1.0",
     name: "Climate / environmental risk factor (where material)",
     description:
       "Risk factors should address material climate / environmental / ESG risks where applicable.",
     citation: regPractice(
       "climate-disclosure",
-      "SEC Climate Disclosure proposal + state ESG rules + investor pressure (Reg S-K Item 105 materiality)",
+      "SEC climate-disclosure rules (adopted March 2024, stayed, not in effect) + state ESG rules + investor pressure (Reg S-K Item 105 materiality)",
       "https://www.sec.gov/news/press-release/2024-31",
     ),
     playbooks: [REG_PLAYBOOK_S1, REG_PLAYBOOK_10K],
     missing_title: "Climate / environmental risk factor clause missing",
     missing_description: "No climate / environmental risk factor was found.",
     explanation:
-      "SEC climate disclosure rules (where stayed / litigated) + Reg S-K Item 105 materiality + investor expectations + EU CSRD increasingly require climate-related risk disclosure for material exposures.",
+      "The SEC adopted climate-disclosure rules in March 2024, stayed them in April 2024, and in March 2025 voted to stop defending them; they are not in effect. Reg S-K Item 105 materiality, investor expectations, and EU CSRD still drive climate-related risk disclosure for material exposures.",
     recommendation:
       "Where material, add a 'Climate / Environmental' risk factor covering physical risks, transition risks, regulatory exposures, and supply-chain effects.",
     present_patterns: [
@@ -685,20 +688,20 @@ const PPM_RULES: Rule[] = [
   }),
   presence({
     id: "REG-031",
+    version: "1.1.0",
     name: "Tax considerations",
     description: "PPM should include material tax considerations.",
     citation: regPractice(
       "ppm-tax",
-      "PPM tax-considerations baseline (Circular 230 + safe harbor disclaimers)",
+      "PPM tax-considerations baseline",
       "https://www.americanbar.org/groups/taxation/",
     ),
     playbooks: [REG_PLAYBOOK_PPM],
     missing_title: "Tax considerations clause missing",
-    missing_description: "No tax considerations / Circular 230 clause was found.",
+    missing_description: "No tax considerations clause was found.",
     explanation:
-      "Material tax considerations (passive activity, UBTI, K-1 vs 1099 reporting, basis, ECI) are typical PPM content; Circular 230 disclaimers may apply.",
-    recommendation:
-      "Add 'Tax Considerations' covering material federal income tax issues + appropriate Circular 230 disclaimer.",
+      "Material tax considerations (passive activity, UBTI, K-1 vs 1099 reporting, basis, ECI) are typical PPM content. The Circular 230 covered-opinion rules were removed in 2014 (T.D. 9668), so no Circular 230 disclaimer is required.",
+    recommendation: "Add 'Tax Considerations' covering material federal income tax issues.",
     present_patterns: [
       /(tax\s+considerations?|tax\s+matters?)/i,
       /(circular\s+230|federal\s+income\s+tax|ubti|k.?1)/i,
@@ -732,6 +735,7 @@ const PPM_RULES: Rule[] = [
 const REG_A_RULES: Rule[] = [
   presence({
     id: "REG-033",
+    version: "1.1.0",
     name: "Tier 1 vs Tier 2 election + offering-size cap",
     description: "Offering circular must identify Tier 1 ($20M cap) or Tier 2 ($75M cap) election.",
     citation: regA("Tier 1 / Tier 2"),
@@ -739,7 +743,7 @@ const REG_A_RULES: Rule[] = [
     missing_title: "Tier 1 / Tier 2 election clause missing",
     missing_description: "No Tier 1 / Tier 2 election clause was found.",
     explanation:
-      "Reg A Tier 1 caps at $20M / 12 months; Tier 2 at $75M (after 2024 amendments). Tier 2 preempts state blue-sky but requires audited financials + ongoing reporting.",
+      "Reg A Tier 1 caps at $20M / 12 months; Tier 2 at $75M (raised from $50M by amendments adopted November 2, 2020, effective March 15, 2021). Tier 2 preempts state blue-sky but requires audited financials + ongoing reporting.",
     recommendation: "Add 'Tier' identifying Tier 1 or Tier 2 election and applicable offering cap.",
     present_patterns: [/(tier\s+1|tier\s+2|tier\s+i|tier\s+ii)/i, /\$\s*(20|75)\s*(million|m)/i],
   }),
@@ -771,6 +775,7 @@ const REG_A_RULES: Rule[] = [
   }),
   presence({
     id: "REG-035",
+    version: "1.1.0",
     name: "Risk factors specific to offering",
     description: "Reg A+ circular must include offering-specific risk factors.",
     citation: regSk105(),
@@ -778,13 +783,14 @@ const REG_A_RULES: Rule[] = [
     missing_title: "Reg A+ risk factors clause missing",
     missing_description: "No risk-factors section was found in the offering circular.",
     explanation:
-      "Form 1-A Item 1 (Part II) requires risk factors; standard practice mirrors Reg S-K Item 105.",
+      "Form 1-A Part II Item 3 (Summary and Risk Factors) requires risk factors; standard practice mirrors Reg S-K Item 105.",
     recommendation:
       "Add 'Risk Factors' with offering-specific material risks (operating, financial, regulatory, investor-protection).",
     present_patterns: [/risk\s+factors/i, /(material\s+risks?|principal\s+risks?)/i],
   }),
   presence({
     id: "REG-036",
+    version: "1.1.0",
     name: "Use of proceeds + plan of distribution",
     description: "Circular must describe use of proceeds + plan of distribution.",
     citation: regA("Form 1-A"),
@@ -792,7 +798,7 @@ const REG_A_RULES: Rule[] = [
     missing_title: "Use of proceeds / plan of distribution clause missing",
     missing_description: "No use-of-proceeds / plan-of-distribution clause was found.",
     explanation:
-      "Form 1-A Items 3 + 4 require use of proceeds and plan of distribution. Use-of-proceeds drift drives investor protection scrutiny.",
+      "Form 1-A Part II Items 5 (Plan of Distribution) and 6 (Use of Proceeds) require plan of distribution and use of proceeds. Use-of-proceeds drift drives investor protection scrutiny.",
     recommendation:
       "Add 'Use of Proceeds' and 'Plan of Distribution' with intended use of capital + distribution channels (self-distribution / broker-dealer / online).",
     present_patterns: [
@@ -819,6 +825,7 @@ const REG_A_RULES: Rule[] = [
   }),
   presence({
     id: "REG-038",
+    version: "1.1.0",
     name: "Audited financials (Tier 2) — narrative reference",
     description:
       "Tier 2 circular must reference audited financials (2 years of audited statements required).",
@@ -828,9 +835,9 @@ const REG_A_RULES: Rule[] = [
     missing_description:
       "No clause was found referencing the Tier 2 audited-financials requirement.",
     explanation:
-      "Tier 2 requires 2 years of audited financial statements (Tier 1 requires reviewed). The narrative should reference where the financials appear.",
+      "Tier 2 requires 2 years of audited financial statements. Tier 1 financial statements need not be audited or reviewed, but unaudited statements must be labeled unaudited. The narrative should reference where the financials appear.",
     recommendation:
-      "Add 'Financial Statements' cross-reference to the audited financials (Tier 2) or reviewed financials (Tier 1).",
+      "Add 'Financial Statements' cross-reference to the audited financials (Tier 2) or the financial statements, labeled unaudited if not audited (Tier 1).",
     present_patterns: [
       /(audited\s+financial(s|\s+statements?))/i,
       /(2\s*\)?\s*years?|two\s+years?|fiscal\s+year)/i,

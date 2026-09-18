@@ -70,7 +70,7 @@ export function suretyship(): SourceCitation {
   return v4Cite({
     id: "state-suretyship",
     source:
-      "State suretyship law + Statute of Frauds (Restatement (Third) of Suretyship & Guaranty; UCC § 1-201)",
+      "State suretyship law + Statute of Frauds (Restatement (Third) of Suretyship & Guaranty § 11; state statute-of-frauds provisions)",
     source_url: "https://www.law.cornell.edu/wex/suretyship",
   });
 }

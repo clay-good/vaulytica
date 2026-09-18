@@ -22,7 +22,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "OBLI-008",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Efforts standard undefined",
   category: "obligations",
   default_severity: "info",
@@ -63,7 +63,7 @@ export const rule: Rule = {
       description: `The contract uses "${phrase}" without defining it.`,
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "Efforts-standard phrases carry different obligation strengths in commercial drafting. Bloor v. Falstaff (2d Cir. 1979) and its progeny treat 'best efforts' as the most demanding, 'commercially reasonable efforts' as the middle term, and 'reasonable efforts' as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
+        "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
       recommendation: `Either delete the qualifier (let the obligation be absolute) or add an explicit definition of "${phrase}" — typically a list of required actions ("including obtaining all consents, devoting professional staff, and absorbing reasonable costs") plus carve-outs ("but not requiring litigation, financial harm, etc.").`,
       position: hit.position,
     });

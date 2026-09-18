@@ -12,7 +12,7 @@ const BOUNDED =
 /** PERS-004 — Anti-poaching language (warning). */
 export const rule: Rule = {
   id: "PERS-004",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Anti-poaching / no-hire between parties",
   category: "personnel",
   default_severity: "warning",
@@ -66,7 +66,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: truncate(hit.text, 280),
       explanation:
-        "Mutual no-hire clauses between competitors raise antitrust scrutiny under FTC Act § 5. DOJ has prosecuted no-poach agreements between competitors.",
+        "Naked no-poach agreements between competing employers can violate Sherman Act § 1 (15 U.S.C. § 1). DOJ has prosecuted no-poach agreements between competitors.",
       recommendation:
         "Confirm the no-hire is ancillary to a legitimate transaction and narrow — the employees who actually worked on this engagement, for a bounded period. A naked no-poach between competitors is a per se antitrust risk, not merely an unenforceable term.",
       position: hit.position,

@@ -84,6 +84,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-003",
+    version: "1.1.0",
     name: "Interest rate stated + state-usury compliance",
     description:
       "Promissory note must state the interest rate and comply with applicable state usury caps.",
@@ -92,7 +93,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     missing_title: "Interest rate clause missing",
     missing_description: "No interest-rate clause was found.",
     explanation:
-      "State usury caps vary widely (NY 16% civil / 25% criminal; CA 10% non-licensed; TX 18% absent agreement). Failure to state — or stating a rate above the cap — risks usury / forfeiture.",
+      "State usury caps vary widely (NY 16% civil / 25% criminal; CA 10% non-licensed; TX 6% legal rate absent agreement under Fin. Code § 302.002 and a 10% general maximum under § 302.001(b) unless a chapter 303 optional ceiling — floor 18%, generally capped at 24% — is contracted for). Failure to state — or stating a rate above the cap — risks usury / forfeiture.",
     recommendation:
       "Add 'Interest' specifying the rate (fixed / variable / index), compounding, and a savings clause limiting interest to the highest lawful rate.",
     present_patterns: [
@@ -463,6 +464,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-016",
+    version: "1.1.0",
     name: "Collateral description — reasonably identifies (§ 9-108)",
     description: "Collateral must be described with reasonable specificity per UCC § 9-108.",
     citation: ucc("9-108", "Sufficiency of description"),
@@ -471,7 +473,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
     missing_description:
       "No clause was found describing the collateral with reasonable specificity.",
     explanation:
-      "UCC § 9-108 requires that the collateral description reasonably identify what is described. 'All assets' is permitted in the security agreement (but not in the financing statement absent specific exceptions).",
+      "UCC § 9-108 requires that the collateral description reasonably identify what is described. A supergeneric description such as 'all assets' does not reasonably identify collateral in a security agreement (UCC § 9-108(c)); it is expressly sufficient in a financing statement (UCC § 9-504(2)).",
     recommendation:
       "Add 'Collateral' describing each category (accounts, inventory, equipment, general intangibles, deposit accounts, IP) with sufficient detail.",
     present_patterns: [
@@ -1157,7 +1159,7 @@ const UCC1_RULES: Rule[] = [
     missing_title: "Debtor exact-legal-name clause missing",
     missing_description: "No clause was found stating debtor's exact legal name.",
     explanation:
-      "§ 9-503 requires the financing statement to use the debtor's exact legal name — for registered organizations, the name on the most recent public organic record. Errors are seriously misleading and can defeat perfection (§ 9-506).",
+      "§ 9-503 requires the financing statement to use the debtor's exact legal name — for registered organizations, the name on the most recent public organic record. An error that makes the financing statement seriously misleading can defeat perfection (§ 9-506), but under the § 9-506(c) safe harbor an error is not seriously misleading if a search under the debtor's correct name, using the filing office's standard search logic, discloses the record.",
     recommendation:
       "State debtor's exact legal name from the public organic record (Secretary of State filing) and identify the type / jurisdiction of organization.",
     // The national UCC1 form states § 9-503 in its OWN words, in the
@@ -1165,7 +1167,7 @@ const UCC1_RULES: Rule[] = [
     // omit, modify, or abbreviate any part of the Debtor's name", and labels
     // the box "ORGANIZATION'S NAME". None of that is the phrase "exact legal
     // name", so a correctly prepared form was told it states none.
-    version: "1.1.0",
+    version: "1.2.0",
     present_patterns: [
       /(exact\s+legal\s+name|registered\s+(name|organi[sz]ation))/i,
       /(secretary\s+of\s+state|public\s+organic\s+record)/i,

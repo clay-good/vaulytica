@@ -814,7 +814,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-027",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Breach notice timing stricter than 'undue delay'",
     description:
       "Flags fixed breach-notice deadlines that exceed regulator expectations (e.g., > 72 hours from controller awareness, > 5 days from processor awareness).",
@@ -823,7 +823,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     bad_description:
       "Detected a breach-notice window longer than is consistent with 'without undue delay.'",
     explanation:
-      "Although Art. 33(2) does not set a strict outer bound for the processor, supervisory guidance treats anything beyond ~24–72 hours as suspect.",
+      "Art. 33(2) sets no fixed deadline for the processor; EDPB Guidelines 07/2020 recommend the contract fix a specific timeframe so the controller can meet its own 72-hour deadline.",
     recommendation:
       "Tighten the processor's notification window to no more than 48–72 hours after becoming aware.",
     // v1.0.0 required the day count to sit directly against "days" and so missed
@@ -950,13 +950,14 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-033",
+    version: "1.1.0",
     name: "EU SCCs incorporated by reference",
     description: "DPA should incorporate EU SCCs by reference where transfers require them.",
     citation: "Commission Implementing Decision (EU) 2021/914",
     missing_title: "EU SCCs not incorporated",
     missing_description: "No clause was found incorporating the EU Standard Contractual Clauses.",
     explanation:
-      "Decision 2021/914 requires the parties to use the SCC template for in-scope transfers.",
+      "The SCCs are one of the Art. 46 safeguards the parties may choose; no instrument requires them. Under Recital 7 of Decision 2021/914 they are not for importers whose processing is itself subject to the GDPR.",
     recommendation: "Incorporate the EU SCCs by reference and complete Annexes I, II, III.",
     present_patterns: [/(2021\/914|standard\s+contractual\s+clauses|EU\s+SCCs?)/i],
     default_severity: "warning",
@@ -1106,7 +1107,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-040",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subprocessor list annex",
     description:
       "DPA should include a list of approved subprocessors (Annex III for SCCs Modules 2 & 3).",
@@ -1114,7 +1115,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     missing_title: "Subprocessor list annex missing",
     missing_description: "No Annex listing subprocessors was found.",
     explanation:
-      "SCC Modules 2 and 3 require Annex III listing sub-processors at the time of signature.",
+      "Under Modules 2 and 3, Annex III must list sub-processors only where the parties choose specific prior authorisation (Clause 9(a), Option 1); under general written authorisation the importer supplies and updates its list.",
     recommendation:
       "Add an Annex III listing approved sub-processors with the categories of data they process.",
     // "the Sub-processors listed in Annex 3" names the subprocessors BEFORE
@@ -1275,16 +1276,16 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-048",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Controller indemnifies Processor for GDPR fines",
     description:
       "Flags clauses where the controller indemnifies the processor for the processor's own GDPR liability.",
-    citation: "GDPR Art. 82",
+    citation: "GDPR Arts. 82–83",
     bad_title: "Controller indemnifies Processor for GDPR liability",
     bad_description:
       "Detected language requiring the Controller to indemnify the Processor for GDPR-related fines or claims.",
     explanation:
-      "Under Art. 82, a processor remains liable for its own infringements. Shifting that liability to the controller is vendor overreach and may be invalid.",
+      "Fines are imposed under Art. 83; Art. 82 governs compensation and its apportionment between controller and processor (Art. 82(2), (5)). A processor remains liable for its own infringements; shifting that liability to the controller is vendor overreach, and whether an indemnity for fines is enforceable is a matter of national law.",
     recommendation:
       "Limit indemnification to non-GDPR contract claims, or align with the parties' actual fault.",
     // v1.0.0 required "controller/customer (shall|will) indemnif" with the verb
@@ -1413,7 +1414,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-054",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Onward transfer obligations (SCC Clause 8.8)",
     description:
       "Where SCCs apply, the DPA should reference onward-transfer obligations per SCC Clause 8.8.",
@@ -1421,7 +1422,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     missing_title: "Onward-transfer clause missing",
     missing_description: "No clause was found governing onward transfers.",
     explanation:
-      "SCC Clause 8.8 requires onward transfers to be subject to the same data protection obligations.",
+      "Under Module Two Clause 8.8, the importer may disclose data to a third party only on documented instructions, and outside the EU only if the recipient is bound by the Clauses or another listed ground applies.",
     recommendation:
       "Add: 'Onward transfers shall be subject to the same data protection obligations as set out in this Agreement.'",
     present_patterns: [/(onward\s+transfer|clause\s+8\.8|onward[- ]transfer)/i],

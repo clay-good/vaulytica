@@ -83,8 +83,8 @@ const CONFIG: RegulatedRuleConfig = {
       lower.includes("new york general obligations")
     ) {
       url = "https://www.nysenate.gov/legislation/laws/GOB/5-322.1";
-    } else if (lower.includes("texas") || lower.includes("tex. bus")) {
-      url = "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.151.htm";
+    } else if (lower.includes("texas") || lower.includes("tex. ins")) {
+      url = "https://statutes.capitol.texas.gov/Docs/IN/htm/IN.151.htm";
     } else if (lower.includes("ucc § 2-316") || lower.includes("u.c.c. § 2-316")) {
       url = "https://www.law.cornell.edu/ucc/2/2-316";
     } else if (lower.includes("ucc § 2-719") || lower.includes("u.c.c. § 2-719")) {
@@ -346,6 +346,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   presence({
     id: "MSA-007",
+    version: "1.1.0",
     name: "Liability cap carve-outs (fraud / wilful misconduct / IP indemnity)",
     description:
       "Liability cap must carve out fraud, wilful misconduct, IP indemnity, and breach of confidentiality.",
@@ -354,7 +355,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     missing_description:
       "No carve-outs from the liability cap (fraud / wilful misconduct / IP indemnity / confidentiality / DP) were found.",
     explanation:
-      "A cap that absorbs fraud and wilful misconduct is unconscionable in many jurisdictions and commercially abnormal.",
+      "Many jurisdictions refuse, as a matter of public policy, to enforce a limitation of liability for fraud, intentional or wilful misconduct, and in some states gross negligence (e.g., Kalisch-Jarcho v. City of New York, 58 N.Y.2d 377 (1983); Cal. Civ. Code § 1668).",
     recommendation:
       "Carve fraud, wilful misconduct, IP indemnification, confidentiality breach, and data-protection breach out of the cap.",
     present_patterns: [
@@ -585,7 +586,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Implied-warranty disclaimer overreach (UCC alignment)",
     description:
       "Flags an implied-warranty disclaimer that may overreach the UCC's conspicuous-disclaimer requirement.",
@@ -594,7 +595,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     bad_description:
       "Implied-warranty disclaimer is present but may not satisfy UCC § 2-316's conspicuous-disclaimer requirement (or may include warranties UCC § 2-316 reserves).",
     explanation:
-      "UCC § 2-316 requires merchantability disclaimers to mention 'merchantability' and to be conspicuous; many MSAs default to a generic 'AS IS' that fails the test.",
+      "Under UCC § 2-316(3)(a), 'as is', 'with all faults' or similar language excludes all implied warranties unless the circumstances indicate otherwise; the 'mention merchantability and be conspicuous' requirement of § 2-316(2) applies to other disclaimer language. Article 2 governs sales of goods, not pure services.",
     recommendation:
       "Use the UCC-safe disclaimer: '[ALL-CAPS] VENDOR DISCLAIMS ALL IMPLIED WARRANTIES, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.' Confirm conspicuousness.",
     // v1.0.0 required "as is" with a space and "disclaims all [other] warranties"
@@ -621,14 +622,14 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "MSA-016",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "SLA referenced or attached",
     description: "MSA must reference or attach an SLA where the service is hosted.",
     citation: "Commercial drafting baseline — SLA reference",
     missing_title: "SLA reference missing",
     missing_description: "No SLA / service level agreement / uptime commitment was found.",
     explanation:
-      "An MSA for hosted services without an SLA leaves availability promises unenforceable.",
+      "Without an SLA, availability is measured only by general performance obligations and ordinary breach remedies — no objective uptime standard or credit schedule — which makes proving and pricing a breach harder.",
     recommendation:
       "Reference an SLA (attached or linked) with uptime, support response, and remedy schedules.",
     // "the SERVICE LEVELS in Schedule 2" is how an English agreement refers to
@@ -646,7 +647,7 @@ export const MSA_DEEP_RULES: Rule[] = [
     denied_if: expressDenial(String.raw`service\s+level\s+agreement|\bSLA\b|service\s+levels?`),
     denied_title: "Service-level commitment expressly disclaimed",
     denied_description:
-      "The agreement states that no service level applies. Without a committed service level the availability obligation is unenforceable.",
+      "The agreement states that no service level applies. Without a committed service level, availability is measured only by general performance obligations and ordinary breach remedies, which makes proving and pricing a breach harder.",
   }),
   language({
     id: "MSA-017",
@@ -973,23 +974,23 @@ export const MSA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   language({
     id: "MSA-029",
-    version: "1.1.0",
-    name: "Texas anti-indemnity (Tex. Bus. & Com. Code Ch. 151) flag",
+    version: "1.2.0",
+    name: "Texas anti-indemnity (Tex. Ins. Code Ch. 151) flag",
     description:
-      "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Bus. & Com. Code § 151.102.",
-    citation: "Tex. Bus. & Com. Code § 151.102",
+      "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Ins. Code § 151.102.",
+    citation: "Tex. Ins. Code § 151.102",
     bad_title: "Indemnity may violate Texas anti-indemnity statute",
     bad_description:
       "Indemnification appears to require one party to indemnify the other for the indemnitee's negligence in a construction-related MSA governed by Texas law.",
     explanation:
-      "Texas Bus. & Com. Code Ch. 151 voids construction-contract indemnities that cover the indemnitee's own negligence (with limited insurance-policy exceptions).",
+      "Tex. Ins. Code § 151.102 makes void and unenforceable a construction-contract provision requiring a party to indemnify or defend the indemnitee against a claim caused by the indemnitee's own negligence or fault. Section 151.103 excepts claims for bodily injury or death of the indemnitor's own employees, agents or subcontractors.",
     recommendation:
       "Narrow to the indemnitor's own negligence; verify governing law and project-state nexus.",
     bad_patterns: [
       /(?:Texas|tex\.|governed\s+by\s+the\s+laws\s+of\s+(?:the\s+state\s+of\s+)?Texas)[^.]{0,400}indemnif\w+[^.]{0,160}(?:negligence|fault)\s+of\s+(?:the\s+)?indemnitee/is,
       // As MSA-010: the canonical broad-form clause uses "in whole or in part"
-      // and names the party, not the literal "indemnitee". Tex. Bus. & Com.
-      // Ch. 151 voids construction indemnity for the indemnitee's own
+      // and names the party, not the literal "indemnitee". Tex. Ins. Code
+      // § 151.102 voids construction indemnity for the indemnitee's own
       // negligence; cross-sentence, lazily bounded, Texas-gated.
       /(?:texas|tex\.)[\s\S]{0,500}?indemnif\w+[^.]{0,200}\bin\s+whole\s+or\s+in\s+part\b/is,
     ],

@@ -6,7 +6,7 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.729.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1825 single-document rules
+- **Engine:** `9.730.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1825 single-document rules
 - **Signed:** 0 of 1825 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
@@ -32,16 +32,16 @@ firing refines the order automatically — re-run `npm run accuracy` then
 | 7 | `BAA-006` — Access to PHI (164.524) | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-e-` |
 | 8 | `BAA-007` — Amendment of PHI (164.526) | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-f-` |
 | 9 | `BAA-008` — Accounting of disclosures (164.528) | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-g-` |
-| 10 | `BAA-009` — Books and records available to HHS Secretary | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-h-` |
-| 11 | `BAA-010` — Return or destruction at termination | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-i-` |
+| 10 | `BAA-009` — Books and records available to HHS Secretary | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-i-` |
+| 11 | `BAA-010` — Return or destruction at termination | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-ii-j-` |
 | 12 | `BAA-011` — Termination right for material breach | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-2-iii-` |
 | 13 | `BAA-013` — Security Rule compliance required | critical | baa | 0 | `hipaa-45-c-f-r-164-314-a-2-i-` |
 | 14 | `BAA-017` — Security incident reporting | critical | baa | 0 | `hipaa-45-c-f-r-164-314-a-2-i-c-` |
-| 15 | `BAA-018` — Subcontractor flow-down for Security Rule | critical | baa | 0 | `hipaa-45-c-f-r-164-314-a-2-ii-` |
+| 15 | `BAA-018` — Subcontractor flow-down for Security Rule | critical | baa | 0 | `hipaa-45-c-f-r-164-314-a-2-i-b-a-2-iii-` |
 | 16 | `BAA-019` — Breach notification clause present | critical | baa | 0 | `hipaa-45-c-f-r-164-410` |
 | 17 | `BAA-020` — Breach notification looser than 60 days | critical | baa | 0 | `hipaa-45-c-f-r-164-410-b-` |
 | 18 | `BAA-030` — Mitigation obligation | critical | baa | 0 | `hipaa-45-c-f-r-164-530-f-covered-entity-duty-flowed-through-` |
-| 19 | `BAA-036` — Signed by authorized representative | critical | baa | 0 | `hipaa-45-c-f-r-164-504-e-5-` |
+| 19 | `BAA-036` — Signed by authorized representative | critical | baa | 0 | `hipaa-45-c-f-r-164-502-e-2-164-504-e-` |
 | 20 | `BAA-041` — PHI referenced in document | critical | baa | 0 | `hipaa-45-c-f-r-160-103` |
 | 21 | `BAA-045` — Covered entity / business associate roles named | critical | baa | 0 | `hipaa-45-c-f-r-160-103` |
 | 22 | `BNK-001` — Maker, payee, and principal amount | critical | banking | 0 | `ucc-3-104` |

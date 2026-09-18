@@ -36,7 +36,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "CHOICE-005",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -58,7 +58,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-008",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -74,7 +74,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-010",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -82,7 +82,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-011",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -90,7 +90,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-012",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -140,7 +140,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-007",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -154,7 +154,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-009",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -196,7 +196,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "DARK-015",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -210,7 +210,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -224,7 +224,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -259,7 +259,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-009",
-      "rule_version": "1.6.1"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -267,7 +267,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.14.0"
+      "rule_version": "1.15.0"
     },
     {
       "elapsed_ms": 0,
@@ -316,7 +316,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-008",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -391,7 +391,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-008",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -427,7 +427,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-004",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -435,7 +435,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -443,7 +443,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "PERS-006",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -457,14 +457,14 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-008",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -590,7 +590,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-001",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -924,11 +924,11 @@
         "start_offset": 1400,
         "text": "Employee hereby waives any right to trial by jury in any action arising from this Agreement."
       },
-      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
+      "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
       "id": "CHOICE-010-s1.8-1400",
       "recommendation": "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       "rule_id": "CHOICE-010",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Asymmetric jury-trial waiver"
@@ -942,11 +942,11 @@
         "start_offset": 1635,
         "text": "Delaware"
       },
-      "explanation": "Cal. Lab. Code § 925 voids out-of-state choice-of-law clauses in employment contracts entered into, modified, or extended after Jan. 1, 2017 — unless the employee was individually represented by counsel in negotiating that specific clause. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., Lyon v. Neustar) routinely refuse to enforce it.",
+      "explanation": "Cal. Lab. Code § 925 makes an out-of-state choice-of-law or forum provision voidable by the employee (not void) in employment contracts entered into, modified, or extended after Jan. 1, 2017. It applies to employees who primarily reside and work in California and were required to agree as a condition of employment, and not where the employee was individually represented by counsel in negotiating the venue or choice-of-law terms. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., Lyon v. Neustar) routinely refuse to enforce it.",
       "id": "CHOICE-011-s1.10-1635",
       "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
       "rule_id": "CHOICE-011",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -969,11 +969,11 @@
         "start_offset": 1682,
         "text": "Delaware → California"
       },
-      "explanation": "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply foreign law as a question of fact. Each side pays for an expert on the other state's law, the local judge applies an unfamiliar framework, and outcomes become unpredictable. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
+      "explanation": "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply another jurisdiction's law. Federal courts decide foreign-country law as a question of law (Fed. R. Civ. P. 44.1), and state courts routinely take judicial notice of sister-state law; a law/forum split adds cost and unpredictability. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
       "id": "CHOICE-012-s1.10-1682",
       "recommendation": "Align governing law and venue to the same jurisdiction unless the mismatch is deliberate and documented. If deliberate, add a brief explanation in the choice-of-law section noting the rationale (typical use case: a neutral arbitral seat with a different governing law).",
       "rule_id": "CHOICE-012",
-      "rule_version": "1.0.0",
+      "rule_version": "1.1.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Governing law (Delaware) and venue (California) name different jurisdictions"
@@ -987,11 +987,11 @@
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
-      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply: under 17 U.S.C. § 201, copyright vests in the author/employee unless work-for-hire or assignment applies.",
+      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply. A work an employee prepares within the scope of employment is a work made for hire owned by the employer (17 U.S.C. §§ 101, 201(b)); copyright in a contractor's work vests in the contractor unless a written work-for-hire agreement covers an enumerated category, or the rights are assigned in writing.",
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.14.0",
+      "rule_version": "1.15.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1022,11 +1022,11 @@
         "start_offset": 764,
         "text": "employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
       },
-      "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
+      "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       "id": "PERS-005-s1.5-764",
       "recommendation": "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1049,22 +1049,13 @@
         "start_offset": 939,
         "text": "Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time."
       },
-      "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's McLaren Macomb decision (Feb 2023) held that broad non-disparagement language in severance agreements can be unlawful as to NLRA-protected concerted activity. The SEC's Rule 21F-17 separately voids clauses that would prevent whistleblowing to the Commission. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
+      "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's McLaren Macomb decision (Feb 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1); it remains Board law, though the General Counsel's 2023 enforcement guidance was rescinded in February 2025 (GC 25-05). SEC Rule 21F-17 separately prohibits any action, including enforcing or threatening to enforce a confidentiality agreement, that impedes communicating with the SEC about a possible securities violation. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible.",
       "id": "PERS-006-s1.6-939",
       "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, and (4) statements required by law. Consider also whether the clause should be bilateral.",
       "rule_id": "PERS-006",
-      "rule_version": "1.1.0",
+      "rule_version": "1.2.0",
       "severity": "warning",
-      "source_citations": [
-        {
-          "id": "stat-ftc-deception-statement",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "FTC Policy Statement on Deception (1983)",
-          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
-        }
-      ],
+      "source_citations": [],
       "title": "Non-disparagement clause present"
     },
     {
@@ -1112,10 +1103,10 @@
         "start_offset": 1416,
         "text": "Employee hereby waives any right to trial by jury in any action arising from this Agreement."
       },
-      "explanation": "Jury waivers are enforceable in most US jurisdictions but unenforceable in some contexts (e.g., California for pre-dispute employment waivers). Confirm enforceability against the governing-law jurisdiction.",
+      "explanation": "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",
       "id": "CHOICE-008-s1.8-1416",
       "rule_id": "CHOICE-008",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [],
       "title": "Jury trial waiver present"
@@ -1224,11 +1215,11 @@
         "start_offset": 278,
         "text": "Employee shall use best efforts to perform the duties of Senior Engineer."
       },
-      "explanation": "Efforts-standard phrases carry different obligation strengths in commercial drafting. Bloor v. Falstaff (2d Cir. 1979) and its progeny treat 'best efforts' as the most demanding, 'commercially reasonable efforts' as the middle term, and 'reasonable efforts' as the weakest — but without an in-document definition, the parties can dispute which standard applies and what conduct satisfies it.",
+      "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
       "id": "OBLI-008-s1.1-278",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [],
       "title": "Efforts standard \"best efforts\" undefined"
@@ -1288,11 +1279,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "12842e10615d5c94902244d08ee572e5259a2ae33439c51706bbfbf5b08af836",
+  "result_hash": "42e7aa0ad8d2fc87661103914370f3c02edb4f68a64651b30e3f7c8a29634293",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.729.0"
+  "version": "9.730.0"
 }

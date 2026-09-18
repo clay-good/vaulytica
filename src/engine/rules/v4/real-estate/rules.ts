@@ -811,16 +811,17 @@ const EASEMENT_RULES: Rule[] = [
 const CCR_RULES: Rule[] = [
   presence({
     id: "RE-032",
+    version: "1.1.0",
     name: "Declaration of CC&Rs identification",
     description:
-      "CC&Rs must identify themselves as a Declaration of Covenants, Conditions, and Restrictions.",
+      "CC&Rs should identify themselves as the recorded declaration of covenants, conditions, and restrictions.",
     citation: hoaStatutes(),
     playbooks: [RE_PLAYBOOK_CCR],
     missing_title: "CC&Rs identification missing",
     missing_description:
       "No 'Declaration of Covenants, Conditions, and Restrictions' identification was found.",
     explanation:
-      "State HOA statutes (e.g., Davis-Stirling Act in CA) require specific naming conventions for the recorded declaration.",
+      'State HOA statutes impose no naming convention: the Davis-Stirling Act defines "declaration" as the recorded document "however denominated" (Cal. Civ. Code § 4135). Clear identification and recording data still let owners and title examiners locate the governing instrument.',
     recommendation: "Title the document 'Declaration of Covenants, Conditions, and Restrictions'.",
     present_patterns: [
       // All three of these are words in this family's own name — "CC&Rs
@@ -976,7 +977,7 @@ const CCR_RULES: Rule[] = [
   }),
   presence({
     id: "RE-039",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Dispute resolution / enforcement",
     description: "CC&Rs should specify dispute resolution / enforcement procedure.",
     citation: hoaStatutes(),
@@ -984,7 +985,7 @@ const CCR_RULES: Rule[] = [
     missing_title: "Dispute-resolution clause missing",
     missing_description: "No dispute-resolution or enforcement clause was found.",
     explanation:
-      "State HOA statutes increasingly require pre-suit ADR (e.g., Davis-Stirling § 5925); the CC&Rs should restate the process.",
+      "State HOA statutes increasingly require pre-suit ADR (e.g., Cal. Civ. Code § 5930 under the Davis-Stirling Act); the CC&Rs should restate the process.",
     recommendation:
       "Add 'Dispute Resolution' including mandatory ADR / mediation before litigation.",
     present_patterns: [

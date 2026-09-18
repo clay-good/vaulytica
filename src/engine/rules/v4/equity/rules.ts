@@ -312,6 +312,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-013",
+    version: "1.1.0",
     name: "Maturity date specified",
     description: "Convertible note must have a maturity date.",
     citation: ucc3("108"),
@@ -319,7 +320,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
     missing_title: "Maturity date missing",
     missing_description: "No maturity-date clause was found.",
     explanation:
-      "UCC § 3-108 requires the time of payment to be on demand or at a definite time. A note without a maturity date is non-negotiable.",
+      "A promise that states no time of payment is payable on demand (UCC § 3-108(a)), so omitting a maturity date does not by itself defeat negotiability. A convertible note still needs a stated maturity date to fix when principal and interest fall due if the note does not convert.",
     recommendation:
       "Add 'Maturity Date' stating a date certain on which principal and accrued interest become due if not previously converted.",
     present_patterns: [/maturity\s+date/i, /due\s+(on|and\s+payable\s+on)/i],
@@ -401,6 +402,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-018",
+    version: "1.1.0",
     name: "Investor accredited-investor representation",
     description:
       "Convertible notes are sold under Reg D Rule 506; investor must represent accredited-investor status.",
@@ -413,7 +415,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
     missing_title: "Accredited-investor representation missing",
     missing_description: "No accredited-investor representation was found.",
     explanation:
-      "Practice baseline: a Reg D Rule 506(b) / (c) offering requires the issuer to reasonably believe investors are accredited.",
+      "Rule 506(b) permits up to 35 non-accredited but sophisticated purchasers; Rule 506(c) requires every purchaser to be accredited and the issuer to take reasonable steps to verify it (17 C.F.R. § 230.506). An accredited-investor representation supports either exemption.",
     recommendation:
       "Add an 'Investor Representations' section confirming accredited-investor status under Rule 501.",
     present_patterns: [/accredited\s+investor/i],
@@ -429,6 +431,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
 const OPTION_GRANT_RULES: Rule[] = [
   presence({
     id: "EQT-019",
+    version: "1.1.0",
     name: "Grant date and number of shares stated",
     description:
       "Grant notice must state grant date and the number of shares subject to the option.",
@@ -437,7 +440,7 @@ const OPTION_GRANT_RULES: Rule[] = [
     missing_title: "Grant date / number of shares missing",
     missing_description: "No grant date or number of shares clause was found.",
     explanation:
-      "IRC § 422(b)(7) requires ISO grants to state grant date; § 409A grants need an objective grant date.",
+      "Practice baseline: stating the grant date fixes the date of grant (defined in Treas. Reg. § 1.421-1(c)) against which ISO holding periods and the fair-market-value exercise price under IRC §§ 422 and 409A are measured.",
     recommendation: "Add 'Grant Date' and 'Number of Shares' lines in the grant notice header.",
     present_patterns: [
       /grant\s+date/i,
@@ -698,23 +701,26 @@ const RSU_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-031",
+    version: "1.1.0",
     name: "Settlement timing — § 409A short-term-deferral",
     description:
-      "Settlement should occur within the § 409A short-term-deferral window (by 2.5 months after vest) or be a § 409A-compliant deferred-compensation plan.",
+      "Settlement should occur within the § 409A short-term-deferral window (by the 15th day of the third month after the end of the taxable year in which the units vest) or be a § 409A-compliant deferred-compensation plan.",
     citation: treasReg("1.409A-1(b)(4)", "Short-term deferral"),
     playbooks: [EQT_PLAYBOOK_RSU],
     missing_title: "Settlement-timing clause missing",
     missing_description: "No settlement-timing clause was found.",
     explanation:
-      "Under Treas. Reg. § 1.409A-1(b)(4), short-term deferral status requires settlement by 2.5 months after the year in which the right vests. Outside that window the RSU is § 409A deferred compensation.",
+      "Under Treas. Reg. § 1.409A-1(b)(4), short-term deferral status requires settlement by the 15th day of the third month after the end of the later of the employee's or the employer's taxable year in which the right vests. Outside that window the RSU is § 409A deferred compensation.",
     recommendation:
-      "Add 'Settlement' stating the units settle on (or as soon as practicable after, but no later than 2.5 months after) the vesting date.",
+      "Add 'Settlement' stating the units settle on (or as soon as practicable after) the vesting date, and in any event within the short-term-deferral period of Treas. Reg. § 1.409A-1(b)(4).",
     present_patterns: [/settlement/i, /short.term\s+deferral/i, /2\.5\s+months?/i],
   }),
   presence({
     id: "EQT-032",
+    version: "1.1.0",
     name: "Tax-withholding mechanics",
-    description: "RSU vesting triggers FICA / FIT withholding under § 3401.",
+    description:
+      "RSUs are subject to FICA when they vest (IRC § 3121(v)(2)) and to federal income-tax withholding when shares are delivered (§ 3402), which may be later.",
     citation: irc("3401", "Withholding"),
     playbooks: [EQT_PLAYBOOK_RSU],
     missing_title: "Tax-withholding mechanics clause missing",
@@ -1022,11 +1028,11 @@ const ELECTION_83B_RULES: Rule[] = [
   }),
   compound({
     id: "EQT-048",
-    version: "1.1.0",
-    name: "30-day filing notice + copies to IRS / employer / return",
+    version: "1.2.0",
+    name: "30-day filing notice + copy to employer",
     description:
-      "Treas. Reg. § 1.83-2(c) requires filing within 30 days and copies to the IRS / employer / taxpayer's return.",
-    citation: treasReg("1.83-2(c)", "30-day filing + copies"),
+      "Treas. Reg. § 1.83-2 requires filing with the IRS within 30 days (§ 1.83-2(c)) and a copy to the service recipient (§ 1.83-2(d)).",
+    citation: treasReg("1.83-2", "30-day filing + copy to service recipient"),
     playbooks: [EQT_PLAYBOOK_83B],
     required_patterns: [
       // The deadline is written "thirty (30) days", "thirty days", or the
@@ -1042,9 +1048,9 @@ const ELECTION_83B_RULES: Rule[] = [
     min_match: 2,
     missing_title: "30-day / filing-copies recitals incomplete",
     missing_description:
-      "One or more of the three Treas. Reg. § 1.83-2(c) procedural recitals (30-day window, IRS filing, employer / return copies) is missing.",
+      "One or more of the three Treas. Reg. § 1.83-2 procedural recitals (30-day window, IRS filing, employer copy) is missing.",
     explanation:
-      "Treas. Reg. § 1.83-2(c) requires the election to be filed within 30 days; a copy must be furnished to the employer; and (under § 1.83-2(c) historically) attached to the taxpayer's return — though the IRS has waived the latter for tax years 2016+, the filing-deadline and employer-copy still apply.",
+      "Treas. Reg. § 1.83-2(c) requires the election to be filed with the IRS within 30 days of the transfer, and § 1.83-2(d) requires a copy to be furnished to the service recipient. T.D. 9779 (2016) removed the requirement to attach a copy to the taxpayer's return for property transferred on or after January 1, 2016.",
     recommendation:
       "Add procedural recitals covering the 30-day filing window, the IRS service center, and the employer copy.",
     default_severity: "critical",

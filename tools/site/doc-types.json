@@ -346,7 +346,7 @@
     {
      "id": "POL-012",
      "name": "AML program — BSA five pillars",
-     "description": "AML policy must establish the five-pillar AML program (BSA + FinCEN final rule 2018).",
+     "description": "AML policy must establish the five-pillar AML program (BSA + FinCEN CDD final rule, 81 Fed. Reg. 29398 (May 11, 2016)).",
      "severity": "critical"
     },
     {
@@ -454,7 +454,7 @@
     {
      "id": "POL-006",
      "name": "FCPA anti-bribery prohibition",
-     "description": "Policy must prohibit corrupt payments to foreign officials (FCPA § 30A / § 30B).",
+     "description": "Policy must prohibit corrupt payments to foreign officials (Exchange Act § 30A, 15 U.S.C. § 78dd-1; FCPA §§ 104, 104A, 15 U.S.C. §§ 78dd-2, 78dd-3).",
      "severity": "critical"
     },
     {
@@ -1889,7 +1889,7 @@
     {
      "id": "GOV-011",
      "name": "Exclusive-forum bylaw — federal-claims overreach",
-     "description": "A Delaware exclusive-forum bylaw cannot validly designate Delaware Chancery as the exclusive forum for Securities Act claims (Boilermakers / Sciabacucchi / Salzberg lineage; cf. CA & WA pushback).",
+     "description": "A Delaware exclusive-forum provision should not designate Delaware courts for federal securities claims: Salzberg v. Sciabacucchi (Del. 2020) upheld charter provisions requiring Securities Act claims to be brought in federal court, not Delaware-forum provisions for those claims.",
      "severity": "warning"
     },
     {
@@ -1914,7 +1914,7 @@
     {
      "id": "RE-032",
      "name": "Declaration of CC&Rs identification",
-     "description": "CC&Rs must identify themselves as a Declaration of Covenants, Conditions, and Restrictions.",
+     "description": "CC&Rs should identify themselves as the recorded declaration of covenants, conditions, and restrictions.",
      "severity": "critical"
     },
     {
@@ -2582,7 +2582,7 @@
     {
      "id": "GOV-060",
      "name": "Audit committee — non-independent member prohibited",
-     "description": "Charter cannot allow a non-independent member to serve on the audit committee absent the § 301 controlled-company / phase-in exception.",
+     "description": "Charter cannot allow a non-independent member to serve on the audit committee except under the limited Rule 10A-3 exceptions (e.g., the new-issuer phase-in); there is no controlled-company exemption from audit-committee independence.",
      "severity": "critical"
     }
    ],
@@ -2681,7 +2681,7 @@
     {
      "id": "SET-007",
      "name": "Overbroad confidentiality / non-disparagement (NLRB scrutiny)",
-     "description": "NLRB McLaren Macomb found that overbroad confidentiality / non-disparagement provisions in settlements with non-supervisory employees violate NLRA § 7.",
+     "description": "NLRB McLaren Macomb held that offering severance agreements with broad confidentiality or non-disparagement terms to non-supervisory employees violates NLRA § 8(a)(1).",
      "severity": "warning"
     },
     {
@@ -3059,8 +3059,8 @@
     },
     {
      "id": "PRV-005",
-     "name": "CCPA / CPRA opt-out (Sale / Share / Cross-context targeted advertising)",
-     "description": "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context targeted advertising (GPC support).",
+     "name": "CCPA / CPRA opt-out (Sale / Share / Cross-context behavioral advertising)",
+     "description": "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context behavioral advertising (GPC support).",
      "severity": "warning"
     },
     {
@@ -3688,7 +3688,7 @@
     {
      "id": "MNA-040",
      "name": "Schedules disclose by mere reference to a data-room folder",
-     "description": "Mere reference to a data-room folder generally does not constitute disclosure (Cobalt International line).",
+     "description": "Mere reference to a data-room folder generally does not constitute disclosure; a buyer may rely on the representations despite diligence access (Cobalt Operating v. James Crystal Enterprises).",
      "severity": "warning"
     },
     {
@@ -4085,8 +4085,8 @@
     },
     {
      "id": "USDPA-006",
-     "name": "CCPA: certification of understanding",
-     "description": "CCPA service-provider contract should require service-provider certification of CCPA understanding.",
+     "name": "CCPA: contractor certification of understanding",
+     "description": "A CCPA contractor's contract must include the contractor's certification that it understands and will comply with the contract's restrictions.",
      "severity": "warning"
     },
     {
@@ -4170,7 +4170,7 @@
     {
      "id": "USDPA-020",
      "name": "Service Provider status claimed but not earned",
-     "description": "Flags a document that claims CCPA 'Service Provider' status but does not contain the §7051 required elements.",
+     "description": "Flags a document that claims CCPA 'Service Provider' status but does not contain the § 7051(a) required elements.",
      "severity": "critical"
     },
     {
@@ -4572,8 +4572,8 @@
     },
     {
      "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.7 / 8.8)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
+     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
+     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
      "severity": "warning"
     }
    ],
@@ -4628,8 +4628,8 @@
     },
     {
      "id": "USDPA-006",
-     "name": "CCPA: certification of understanding",
-     "description": "CCPA service-provider contract should require service-provider certification of CCPA understanding.",
+     "name": "CCPA: contractor certification of understanding",
+     "description": "A CCPA contractor's contract must include the contractor's certification that it understands and will comply with the contract's restrictions.",
      "severity": "warning"
     },
     {
@@ -4713,7 +4713,7 @@
     {
      "id": "USDPA-020",
      "name": "Service Provider status claimed but not earned",
-     "description": "Flags a document that claims CCPA 'Service Provider' status but does not contain the §7051 required elements.",
+     "description": "Flags a document that claims CCPA 'Service Provider' status but does not contain the § 7051(a) required elements.",
      "severity": "critical"
     },
     {
@@ -5115,8 +5115,8 @@
     },
     {
      "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.7 / 8.8)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
+     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
+     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
      "severity": "warning"
     }
    ],
@@ -5218,7 +5218,7 @@
     {
      "id": "EST-035",
      "name": "Agent's duties — fiduciary obligations",
-     "description": "POA should recite agent's fiduciary duties (UPOAA § 114): loyalty, good faith, no commingling.",
+     "description": "POA should address the agent's fiduciary duties (UPOAA § 114): loyalty, good faith, recordkeeping.",
      "severity": "warning"
     },
     {
@@ -5230,7 +5230,7 @@
     {
      "id": "EST-037",
      "name": "Notarial acknowledgment + recording (for real property)",
-     "description": "Durable POA must be notarized; recording is needed where real property is involved.",
+     "description": "Durable POA should carry a notarial acknowledgment; recording is needed where real property is involved.",
      "severity": "critical"
     },
     {
@@ -5273,13 +5273,13 @@
     {
      "id": "MNA-066",
      "name": "Implied covenant — express acknowledgment or waiver",
-     "description": "Delaware Lazard held that the implied covenant cannot be waived; the agreement should not purport to do so.",
+     "description": "The implied covenant fills only gaps the earnout leaves open; the agreement should state the intended conduct standard expressly (Lazard Tech. Partners v. Qinetiq (Del. 2015)).",
      "severity": "warning"
     },
     {
      "id": "MNA-067",
      "name": "Disclaimer of obligation to maximize earnout",
-     "description": "Disclaimers of any duty to maximize the earnout will not survive — Lazard still applies.",
+     "description": "Delaware generally enforces express disclaimers of any duty to maximize the earnout; the implied covenant fills only gaps the contract leaves open (Lazard Tech. Partners v. Qinetiq (Del. 2015)).",
      "severity": "warning"
     },
     {
@@ -5506,13 +5506,13 @@
     {
      "id": "EMP-028",
      "name": "Consideration for restrictive covenants",
-     "description": "Restrictive covenants must be supported by consideration; some states require independent consideration mid-employment (e.g., MA, IL).",
+     "description": "Restrictive covenants must be supported by consideration; some states require independent consideration mid-employment (e.g., MA, WA).",
      "severity": "warning"
     },
     {
      "id": "EMP-029",
      "name": "Garden-leave option (MA / WA where required)",
-     "description": "Massachusetts and Washington require garden leave or other consideration for post-employment non-competes.",
+     "description": "Massachusetts requires garden leave or other mutually agreed consideration for post-employment non-competes; Washington requires continued base pay when enforcing against a laid-off employee.",
      "severity": "warning"
     },
     {
@@ -5963,7 +5963,7 @@
     {
      "id": "EMP-007",
      "name": "Clawback policy reference (Dodd-Frank § 954)",
-     "description": "Listed-issuer executive agreements should reference the clawback policy (Dodd-Frank § 954; SEC Rule 10D-1).",
+     "description": "Listed-issuer executive agreements should reference the clawback policy (Exchange Act § 10D; SEC Rule 10D-1).",
      "severity": "warning"
     },
     {
@@ -6167,8 +6167,8 @@
     },
     {
      "id": "EST-058",
-     "name": "Retirement-plan division — QDRO / DRO",
-     "description": "MSAs dividing qualified retirement plans must reference a QDRO (or DRO for federal employees).",
+     "name": "Retirement-plan division — QDRO / federal court order",
+     "description": "MSAs dividing qualified retirement plans must reference a QDRO (or, for federal employees, the court order FERS / CSRS or the TSP requires).",
      "severity": "warning"
     },
     {
@@ -7064,7 +7064,7 @@
     {
      "id": "PRV-040",
      "name": "Regulatory / AG notification trigger threshold",
-     "description": "Template must address state-AG / supervisory-authority notification triggers (typically 500 / 1,000 affected residents).",
+     "description": "Template must address state-AG / supervisory-authority notification triggers, which vary by state.",
      "severity": "warning"
     }
    ],
@@ -7292,7 +7292,7 @@
     {
      "id": "HC-008",
      "name": "FDA-regulated study — § 50.25 additional elements (when applicable)",
-     "description": "If the study is FDA-regulated, the consent must include § 50.25 additional elements (clinicaltrials.gov statement, FDA inspection of records).",
+     "description": "If the study is FDA-regulated, the consent must include § 50.25 elements (the ClinicalTrials.gov statement for applicable clinical trials, FDA inspection of records).",
      "severity": "warning"
     },
     {
@@ -7947,7 +7947,7 @@
     {
      "id": "EST-008",
      "name": "Execution block — testator + witnesses (2)",
-     "description": "Will must include execution block for testator signature and at least two witnesses.",
+     "description": "Will should include an execution block for the testator's signature and either two witnesses or a notarial acknowledgment.",
      "severity": "critical"
     },
     {
@@ -8540,7 +8540,7 @@
     {
      "id": "MNA-074",
      "name": "Non-compete > 5 years flagged",
-     "description": "Most states will not enforce sale-of-business non-competes longer than 5 years.",
+     "description": "Reasonableness of a sale-of-business non-compete is fact-specific; longer terms are enforced where tied to the goodwill sold.",
      "severity": "warning"
     },
     {
@@ -8633,7 +8633,7 @@
     {
      "id": "COMM-007",
      "name": "Best-efforts obligation for a requirements / exclusive arrangement",
-     "description": "A requirements / output or exclusive-dealing supply arrangement must carry the § 2-306(2) best-efforts obligation.",
+     "description": "A requirements / output or exclusive-dealing supply arrangement should state the effort standard the parties owe.",
      "severity": "critical"
     },
     {
@@ -8837,7 +8837,7 @@
     },
     {
      "id": "HC-109",
-     "name": "Services specified and aggregate hours set in advance",
+     "name": "Services covered and specified",
      "description": "",
      "severity": "critical"
     },
@@ -9241,8 +9241,8 @@
     },
     {
      "id": "MSA-029",
-     "name": "Texas anti-indemnity (Tex. Bus. & Com. Code Ch. 151) flag",
-     "description": "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Bus. & Com. Code § 151.102.",
+     "name": "Texas anti-indemnity (Tex. Ins. Code Ch. 151) flag",
+     "description": "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Ins. Code § 151.102.",
      "severity": "warning"
     },
     {
@@ -9460,8 +9460,8 @@
     },
     {
      "id": "MSA-029",
-     "name": "Texas anti-indemnity (Tex. Bus. & Com. Code Ch. 151) flag",
-     "description": "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Bus. & Com. Code § 151.102.",
+     "name": "Texas anti-indemnity (Tex. Ins. Code Ch. 151) flag",
+     "description": "Flags an indemnity for the indemnitee's own negligence in a Texas-governed construction MSA — void per Tex. Ins. Code § 151.102.",
      "severity": "warning"
     },
     {
@@ -9783,13 +9783,13 @@
     {
      "id": "GOV-072",
      "name": "Inurement prohibition",
-     "description": "Bylaws must prohibit inurement of net earnings to private individuals (IRC § 501(c)(3); Treas. Reg. § 1.501(c)(3)-1(c)(2)).",
+     "description": "Bylaws customarily recite the prohibition on inurement of net earnings to private individuals (IRC § 501(c)(3); Treas. Reg. § 1.501(c)(3)-1(c)(2)).",
      "severity": "critical"
     },
     {
      "id": "GOV-073",
      "name": "Political-activity prohibition",
-     "description": "Bylaws must prohibit participation in political campaigns and limit lobbying (IRC § 501(c)(3)).",
+     "description": "Bylaws customarily recite the prohibition on political-campaign participation and the limit on lobbying (IRC § 501(c)(3)).",
      "severity": "critical"
     },
     {
@@ -9831,7 +9831,7 @@
     {
      "id": "GOV-080",
      "name": "Three-pillar 501(c)(3) charter recitals present (inurement + political + dissolution)",
-     "description": "Treas. Reg. § 1.501(c)(3)-1(b) requires three organizing-document pillars: (1) exempt-purpose limitation, (2) inurement / political prohibition, (3) dissolution-to-exempt-organization.",
+     "description": "The § 501(c)(3) organizational test (Treas. Reg. § 1.501(c)(3)-1(b)) looks to the articles: an exempt-purpose limitation, no non-exempt powers, and a dissolution-to-exempt-organization clause. Inurement / political prohibitions are operational requirements customarily recited alongside them.",
      "severity": "critical"
     }
    ],
@@ -9854,13 +9854,13 @@
     {
      "id": "HC-020",
      "name": "Date of receipt",
-     "description": "Acknowledgment must include the date of receipt.",
+     "description": "Acknowledgment should include the date of receipt.",
      "severity": "critical"
     },
     {
      "id": "HC-021",
      "name": "Signature of individual / personal representative",
-     "description": "Acknowledgment must be signed by the individual or a personal representative with authority recital.",
+     "description": "Acknowledgment should be signed by the individual or a personal representative with authority recital.",
      "severity": "critical"
     },
     {
@@ -10585,7 +10585,7 @@
     {
      "id": "EMP-037",
      "name": "DTSA whistleblower-immunity notice",
-     "description": "PIIA / employee NDA must contain the 18 U.S.C. § 1833(b) DTSA notice.",
+     "description": "PIIA / employee NDA should contain the 18 U.S.C. § 1833(b) DTSA notice.",
      "severity": "critical"
     },
     {
@@ -10658,7 +10658,7 @@
     {
      "id": "EST-046",
      "name": "Parties + during-marriage recital",
-     "description": "Postnup must identify the spouses and recite the agreement is made during the marriage.",
+     "description": "Postnup should identify the spouses and recite the agreement is made during the marriage.",
      "severity": "critical"
     },
     {
@@ -10694,7 +10694,7 @@
     {
      "id": "EST-052",
      "name": "Execution — signatures + notarial acknowledgment",
-     "description": "Postnup must be executed in writing, signed, and (in many states) notarized.",
+     "description": "Postnup must be in a record signed by both parties; check state law for any added formalities.",
      "severity": "critical"
     },
     {
@@ -10830,13 +10830,13 @@
     {
      "id": "EST-038",
      "name": "Parties + contemplation of marriage recital",
-     "description": "Prenup must identify parties and recite that the agreement is made in contemplation of marriage.",
+     "description": "Prenup should identify the parties; a contemplation-of-marriage recital is customary.",
      "severity": "critical"
     },
     {
      "id": "EST-039",
      "name": "Financial disclosure schedules + adequacy recital",
-     "description": "Prenup must include financial disclosure schedules and recital that disclosures are fair and reasonable.",
+     "description": "Prenup should include financial disclosure schedules and a recital that disclosure was adequate or expressly waived.",
      "severity": "critical"
     },
     {
@@ -10854,7 +10854,7 @@
     {
      "id": "EST-042",
      "name": "Estate / inheritance rights",
-     "description": "Prenup may waive elective-share / homestead / family-allowance / intestate rights (and should address probate coordination).",
+     "description": "Prenup may waive elective-share / homestead / exempt-property / family-allowance / intestate rights (and should address probate coordination).",
      "severity": "warning"
     },
     {
@@ -10872,7 +10872,7 @@
     {
      "id": "EST-045",
      "name": "Execution — signatures + notarial acknowledgment + time-before-marriage",
-     "description": "Prenup must be executed in writing, with signatures and notary; should be signed adequately before the wedding.",
+     "description": "Prenup must be in a record signed by both parties; notarization is customary but not required by the UPMAA; should be signed adequately before the wedding.",
      "severity": "critical"
     },
     {
@@ -12076,13 +12076,13 @@
     {
      "id": "EQT-031",
      "name": "Settlement timing — § 409A short-term-deferral",
-     "description": "Settlement should occur within the § 409A short-term-deferral window (by 2.5 months after vest) or be a § 409A-compliant deferred-compensation plan.",
+     "description": "Settlement should occur within the § 409A short-term-deferral window (by the 15th day of the third month after the end of the taxable year in which the units vest) or be a § 409A-compliant deferred-compensation plan.",
      "severity": "critical"
     },
     {
      "id": "EQT-032",
      "name": "Tax-withholding mechanics",
-     "description": "RSU vesting triggers FICA / FIT withholding under § 3401.",
+     "description": "RSUs are subject to FICA when they vest (IRC § 3121(v)(2)) and to federal income-tax withholding when shares are delivered (§ 3402), which may be later.",
      "severity": "critical"
     },
     {
@@ -12802,8 +12802,8 @@
     },
     {
      "id": "TRANSFER-010",
-     "name": "SCC Clause 18 — Governing Law and Forum",
-     "description": "SCC Clause 18 (Governing Law / Choice of Forum and Jurisdiction) must be present.",
+     "name": "SCC Clauses 17–18 — Governing Law and Forum",
+     "description": "SCC Clause 17 (Governing Law) and Clause 18 (Choice of Forum and Jurisdiction) must be present.",
      "severity": "critical"
     },
     {
@@ -12826,8 +12826,8 @@
     },
     {
      "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.7 / 8.8)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
+     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
+     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
      "severity": "warning"
     }
    ],
@@ -13234,8 +13234,8 @@
     },
     {
      "id": "TRANSFER-010",
-     "name": "SCC Clause 18 — Governing Law and Forum",
-     "description": "SCC Clause 18 (Governing Law / Choice of Forum and Jurisdiction) must be present.",
+     "name": "SCC Clauses 17–18 — Governing Law and Forum",
+     "description": "SCC Clause 17 (Governing Law) and Clause 18 (Choice of Forum and Jurisdiction) must be present.",
      "severity": "critical"
     },
     {
@@ -13258,8 +13258,8 @@
     },
     {
      "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.7 / 8.8)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
+     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
+     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
      "severity": "warning"
     }
    ],
@@ -13362,8 +13362,8 @@
     },
     {
      "id": "EQT-048",
-     "name": "30-day filing notice + copies to IRS / employer / return",
-     "description": "Treas. Reg. § 1.83-2(c) requires filing within 30 days and copies to the IRS / employer / taxpayer's return.",
+     "name": "30-day filing notice + copy to employer",
+     "description": "Treas. Reg. § 1.83-2 requires filing with the IRS within 30 days (§ 1.83-2(c)) and a copy to the service recipient (§ 1.83-2(d)).",
      "severity": "critical"
     }
    ],
@@ -13531,7 +13531,7 @@
     {
      "id": "EMP-020",
      "name": "McLaren Macomb — overbroad confidentiality / non-disparagement",
-     "description": "NLRB McLaren Macomb (Feb. 21, 2023) found that overbroad confidentiality or non-disparagement provisions in separation agreements violate NLRA § 7.",
+     "description": "NLRB McLaren Macomb (Feb. 21, 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1).",
      "severity": "warning"
     },
     {
@@ -15105,8 +15105,8 @@
     },
     {
      "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.7 / 8.8)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
+     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
+     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
      "severity": "warning"
     }
    ],
@@ -15988,7 +15988,7 @@
     {
      "id": "GOV-049",
      "name": "Effective date / dating",
-     "description": "Consent should be dated as of a specific date.",
+     "description": "Consent should state the date as of which it is effective.",
      "severity": "warning"
     },
     {

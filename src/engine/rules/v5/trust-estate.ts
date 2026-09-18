@@ -207,14 +207,15 @@ const SNT = pack("special-needs-trust", C, [
   },
   {
     id: "EST-413",
+    ver: "1.1.0",
     name: "Distribution limits on cash and in-kind support",
     cite: agency_ssa(),
     pat: [
       /(cash|in-?kind\s+support\s+and\s+maintenance|ISM)/i,
       /((?:shall|will|must)\s+not\s+(distribute|pay)\s+(cash\s+)?directly|food\s+(and|or)\s+shelter|reduce\s+(the\s+)?(ssi|benefit))/i,
     ],
-    why: "Cash to the beneficiary reduces SSI dollar for dollar, and payments for food or shelter reduce it by the presumed maximum value. Trustees need the rule in the document, not only in a memo.",
-    fix: "Direct the trustee not to distribute cash directly to the beneficiary and to consider the in-kind support and maintenance consequences of food and shelter payments.",
+    why: "Cash to the beneficiary reduces SSI dollar for dollar. Since September 30, 2024, SSA no longer counts food as in-kind support and maintenance; only shelter payments reduce SSI, capped at the presumed maximum value. Trustees need the rule in the document, not only in a memo.",
+    fix: "Direct the trustee not to distribute cash directly to the beneficiary and to consider the in-kind support and maintenance consequences of shelter payments.",
   },
 ]);
 
@@ -233,13 +234,14 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
   },
   {
     id: "EST-415",
+    ver: "1.1.0",
     name: "Power to amend cited and its method followed",
     cite: uniformAct("Uniform Trust Code § 602", "revocation or amendment — method"),
     pat: [
       /(reserved\s+the\s+right\s+to\s+amend|power\s+to\s+amend|article\s+\w+\s+of\s+the\s+trust)/i,
       /(in\s+accordance\s+with|pursuant\s+to|as\s+provided\s+in\s+section)/i,
     ],
-    why: "UTC § 602(c) requires substantial compliance with a method the trust specifies, and where the trust specifies an exclusive method, only that method works. Amendments failing the specified method are void.",
+    why: "Under UTC § 602(c), substantial compliance with the trust's method is required only if that method is expressly exclusive; otherwise any method showing the settlor's intent by clear and convincing evidence works. Following the trust's own method avoids a contest over which applies.",
     fix: "Cite the article reserving the power to amend and recite that the amendment is made in the manner that article requires.",
     sev: "critical",
   },

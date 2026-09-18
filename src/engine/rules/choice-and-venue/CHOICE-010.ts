@@ -35,7 +35,7 @@ const BILATERAL = new RegExp(
  */
 export const rule: Rule = {
   id: "CHOICE-010",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Asymmetric jury-trial waiver",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -54,7 +54,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Even where enforceable (most US jurisdictions under the FAA and Seventh Amendment), the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
+        "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
       recommendation:
         "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       position: hit.position,

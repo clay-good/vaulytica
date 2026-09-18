@@ -177,6 +177,7 @@ const ANSWER = pack("answer", C, [
   },
   {
     id: "PLDG-011",
+    ver: "1.1.0",
     name: "Rule 8(b)(5) lack-of-knowledge formulation",
     cite: frcp("8(b)(5)", "defenses; admissions and denials — lacking knowledge or information"),
     pat: [
@@ -184,13 +185,14 @@ const ANSWER = pack("answer", C, [
       /(form\s+a\s+belief|belief\s+as\s+to\s+the\s+truth|on\s+that\s+basis\s+denies|therefore\s+denies)/i,
     ],
     all: true,
-    why: "Rule 8(b)(5) permits a lack-of-knowledge response that 'has the effect of a denial' only in the statutory form: lacking knowledge or information sufficient to form a belief about the truth of the allegation. Loose paraphrases have been treated as admissions.",
-    fix: "Use the Rule 8(b)(5) formulation exactly, and add the resulting denial.",
+    why: "Rule 8(b)(5) requires the party to state that it lacks knowledge or information sufficient to form a belief about the truth of an allegation, and that statement has the effect of a denial. The rule requires no exact wording, but the response should convey that substance.",
+    fix: "Track the Rule 8(b)(5) formulation, and add the resulting denial.",
     when: [/(lack|without)\s+(sufficient\s+)?(knowledge|information)/i],
     sev: "critical",
   },
   {
     id: "PLDG-012",
+    ver: "1.1.0",
     name: "Affirmative defenses pleaded",
     cite: frcp("8(c)(1)", "defenses; admissions and denials — affirmative defenses"),
     pat: [
@@ -198,7 +200,7 @@ const ANSWER = pack("answer", C, [
       /(statute\s+of\s+limitations|waiver|estoppel|release|failure\s+to\s+state|laches|assumption\s+of\s+risk|first\s+affirmative)/i,
     ],
     all: true,
-    why: "Rule 8(c)(1) lists nineteen defenses that must be affirmatively pleaded in responding to a pleading; a defense omitted from the answer is generally waived. This is the single largest irreversible risk in drafting an answer.",
+    why: "Rule 8(c)(1) lists eighteen affirmative defenses, and the list is not exhaustive; an affirmative defense must be pleaded in responding to a pleading, and a defense omitted from the answer is generally waived. This is the single largest irreversible risk in drafting an answer.",
     fix: "Plead every applicable Rule 8(c)(1) defense, each separately stated and numbered, with enough factual content to give notice.",
     sev: "critical",
   },
@@ -243,6 +245,7 @@ const ANSWER = pack("answer", C, [
   },
   {
     id: "PLDG-016",
+    ver: "1.1.0",
     name: "Certificate of service",
     cite: frcp("5(d)(1)(B)", "serving and filing — certificate of service"),
     pat: [
@@ -250,7 +253,7 @@ const ANSWER = pack("answer", C, [
       /(served|cm\/ecf|electronic\s+filing|e-?mail|method\s+of\s+service)/i,
     ],
     all: true,
-    why: "Even where CM/ECF serves registered parties automatically, most local rules still require the certificate, and any party served outside the system must be shown.",
+    why: "Under Rule 5(d)(1)(B), no certificate of service is required for a paper served through the court's electronic-filing system; one is required when a party is served by other means. Check local rules for any added requirement.",
     fix: "Add a certificate of service naming every party served, the method for each, and the date.",
   },
 ]);

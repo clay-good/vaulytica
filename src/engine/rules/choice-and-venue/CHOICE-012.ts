@@ -8,9 +8,10 @@ import { emit } from "../_helpers.js";
  * law but a different jurisdiction as the venue / exclusive forum.
  * The combination is enforceable in many jurisdictions but is almost
  * always a drafting error rather than a deliberate choice: a litigant
- * filing in the venue jurisdiction's courts must brief the foreign
- * law as a question of fact, doubling expert-witness costs and giving
- * the local judge an unfamiliar legal framework to apply. The result
+ * filing in the venue jurisdiction's courts must brief the other
+ * jurisdiction's law (a question of law under Fed. R. Civ. P. 44.1, and
+ * judicially noticed for sister states), adding cost and giving the local
+ * judge an unfamiliar legal framework to apply. The result
  * is unpredictable and slow.
  *
  * Detection: the jurisdictions extractor produces a `governing-law`
@@ -27,7 +28,7 @@ import { emit } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "CHOICE-012",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Governing-law / venue jurisdiction mismatch",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -54,7 +55,7 @@ export const rule: Rule = {
       description: `Governing law is ${gov.raw_text}; venue / exclusive jurisdiction is ${mismatched.raw_text}.`,
       excerpt: `${gov.raw_text} → ${mismatched.raw_text}`,
       explanation:
-        "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply foreign law as a question of fact. Each side pays for an expert on the other state's law, the local judge applies an unfamiliar framework, and outcomes become unpredictable. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
+        "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply another jurisdiction's law. Federal courts decide foreign-country law as a question of law (Fed. R. Civ. P. 44.1), and state courts routinely take judicial notice of sister-state law; a law/forum split adds cost and unpredictability. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
       recommendation:
         "Align governing law and venue to the same jurisdiction unless the mismatch is deliberate and documented. If deliberate, add a brief explanation in the choice-of-law section noting the rationale (typical use case: a neutral arbitral seat with a different governing law).",
       position: mismatched.position,

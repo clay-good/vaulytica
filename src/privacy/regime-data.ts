@@ -66,7 +66,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "sources",
     label: "Categories of sources of personal information",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "categor(y|ies) of sources",
@@ -85,7 +85,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "business-purpose",
     label: "Business or commercial purpose for collecting, selling, or sharing",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "business.{0,5}purpose",
@@ -102,7 +102,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "third-parties",
     label: "Categories of third parties to whom PI is disclosed",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "third part(y|ies)",
@@ -155,7 +155,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "request-methods",
     label: "Methods for submitting rights requests",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "submit a request",
@@ -168,7 +168,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "opt-out-link",
     label: "Do Not Sell or Share My Personal Information link / opt-out mechanism",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "do not sell or share my personal information",
@@ -187,7 +187,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "sensitive-pi",
     label: "Sensitive personal information: categories + right to limit",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "sensitive personal information",
@@ -207,7 +207,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "last-updated",
     label: "Date the notice was last updated",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: [
       "last updated",
@@ -220,7 +220,7 @@ const CCPA_ITEMS: ContentItem[] = [
     key: "contact",
     label: "Contact information for privacy questions",
     citation: "11 CCR § 7011(e)",
-    url: "https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?division=1.&part=4.&title=1.81.&chapter=&article=",
+    url: "https://cppa.ca.gov/regulations/",
     retrieved_at: RETRIEVED_AT,
     present_patterns: ["contact us", "privacy@", "questions .{0,20}privacy", "data protection"],
   },

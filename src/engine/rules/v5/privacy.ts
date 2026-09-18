@@ -15,11 +15,11 @@ const BIOMETRIC = pack("biometric-consent", C, [
     id: "PRV-101",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.2.0",
+    ver: "1.3.0",
     name: "Written release obtained before collection",
     cite: stateLaw(
       "biometric-privacy",
-      "biometric privacy statutes requiring a written release before collection (740 ILCS 14/15(b); Tex. Bus. & Com. § 503.001; Wash. Rev. Code 19.375)",
+      "biometric privacy statutes: written release (740 ILCS 14/15(b)); notice and consent before capture (Tex. Bus. & Com. Code § 503.001); notice and consent before enrollment (Wash. Rev. Code § 19.375.020)",
       "https://www.ilga.gov/legislation/ilcs/ilcs3.asp?ActID=3004",
     ),
     pat: [
@@ -33,7 +33,7 @@ const BIOMETRIC = pack("biometric-consent", C, [
       /(before\s+(any\s+)?(collection|capture)|prior\s+to\s+(the\s+)?(collection|capture)|collect(ion)?\s+of\s+my\s+biometric|collect\w*[^.;]{0,70}?\bbiometric|biometric\s+identifier[^.;]{0,90}?\bcollect)/i,
     ],
     all: true,
-    why: "BIPA § 15(b) requires informed written consent before collection, and it carries a private right of action with statutory damages per violation — the only US biometric statute that does.",
+    why: "Only Illinois BIPA requires a written release (§ 15(b)); Texas § 503.001 requires notice and consent before capture, and Washington RCW 19.375.020 requires notice and consent (or a mechanism preventing later commercial use) before enrolling an identifier. BIPA carries a private right of action with statutory damages (since Public Act 103-0769 (2024), repeated collection by the same method from the same person is one violation); New York City's commercial biometric law also provides a private right of action.",
     fix: "Obtain a signed written release before any collection, and retain proof of the date it was signed.",
     denied: expressDenial(String.raw`written\s+release`),
     sev: "critical",
@@ -139,26 +139,28 @@ const BIOMETRIC = pack("biometric-consent", C, [
 const COPPA = pack("childrens-privacy-notice", C, [
   {
     id: "PRV-107",
+    ver: "1.1.0",
     name: "Operator identity and contact details",
-    cite: cfr(
-      "16",
-      "312.4(d)(1)",
-      "COPPA Rule — direct notice to the parent, operator contact information",
-    ),
+    cite: cfr("16", "312.4(d)(1)", "COPPA Rule — online notice, operator contact information"),
     pat: [
       /(operator|name\s+of\s+the\s+(company|operator|website))/i,
       /(address|telephone|email|contact\s+(information|us))/i,
     ],
-    why: "§ 312.4(d)(1) requires the name, address, telephone number, and email of all operators collecting information through the service, or of one operator designated to respond.",
+    why: "§ 312.4(d)(1) requires the online notice to give the name, address, telephone number, and email of all operators collecting information through the service, or of one operator designated to respond. Direct notice to parents is governed by § 312.4(b)–(c).",
     fix: "List each operator's name, physical address, telephone number, and email, or designate one operator to respond on behalf of all.",
     sev: "critical",
   },
   {
     id: "PRV-108",
+    ver: "1.1.0",
     name: "Categories collected and how used",
-    cite: cfr("16", "312.4(d)(2)", "COPPA Rule — what information is collected and how it is used"),
+    cite: cfr(
+      "16",
+      "312.4(d)(2)",
+      "COPPA Rule — online notice, what information is collected and how it is used",
+    ),
     pat: [/(collect|information\s+we\s+collect)/i, /(how\s+(we\s+)?use|purpose|disclos)/i],
-    why: "The direct notice must state what personal information is collected, how it is used, and whether it is disclosed to third parties and for what purpose.",
+    why: "The online notice (§ 312.4(d)) must state what personal information is collected, how it is used, and the operator's disclosure practices. Under the amended COPPA Rule (compliance date April 22, 2026), it must also identify third-party recipients or their categories and the operator's written data-retention policy. Direct notice to parents is governed by § 312.4(b)–(c).",
     fix: "Describe each category collected, how it is used, whether it is disclosed and to whom, and whether collection is passive or user-initiated.",
   },
   {
@@ -217,15 +219,15 @@ const COPPA = pack("childrens-privacy-notice", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Third-party disclosure and retention limits",
     cite: cfr("16", "312.10", "COPPA Rule — data retention and deletion requirements"),
     pat: [
       /(retain|retention)/i,
       /(only\s+as\s+long\s+as\s+is\s+reasonably\s+necessary|delete|third[-\s]+part(y|ies)|service\s+providers)/i,
     ],
-    why: "§ 312.10 permits retention only as long as reasonably necessary for the purpose collected, and requires deletion using reasonable measures against unauthorized access.",
-    fix: "State the retention limit tied to the collection purpose, the deletion practice, and the categories of third parties that receive the information and why.",
+    why: "§ 312.10 permits retention only as long as reasonably necessary for the purpose collected, and requires deletion using reasonable measures against unauthorized access. As amended, § 312.10 also requires a written data-retention policy and prohibits indefinite retention.",
+    fix: "State the retention limit tied to the collection purpose, the written data-retention policy, the deletion practice, and the categories of third parties that receive the information and why.",
   },
 ]);
 

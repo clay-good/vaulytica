@@ -57,7 +57,7 @@ export function irc(section: string, label?: string): SourceCitation {
   return v4Cite({
     id: `irc-${section.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `26 U.S.C. § ${section}${label ? ` (${label})` : ""}`,
-    source_url: "https://www.law.cornell.edu/uscode/text/26",
+    source_url: `https://www.law.cornell.edu/uscode/text/26/${section}`,
   });
 }
 
@@ -77,7 +77,7 @@ export function stateNonCompete(): SourceCitation {
   return v4Cite({
     id: "state-non-compete-law",
     source:
-      "State non-compete law (e.g., CA Bus. & Prof. § 16600 (void); NY Lab. § 191-d; MA G.L. c. 149 § 24L; WA RCW 49.62; CO § 8-2-113)",
+      "State non-compete law (e.g., CA Bus. & Prof. § 16600 (void); NY common law (BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999)); MA G.L. c. 149 § 24L; WA RCW 49.62; CO § 8-2-113)",
     source_url: "https://www.law.cornell.edu/wex/non-compete_clause",
   });
 }
@@ -128,12 +128,13 @@ export function flsa(): SourceCitation {
   });
 }
 
-/** Reg S-K Item 402 / Dodd-Frank clawback. */
-export function regSk402(): SourceCitation {
+/** Exchange Act § 10D / Rule 10D-1 — listed-issuer clawback. */
+export function rule10D1(): SourceCitation {
   return v4Cite({
-    id: "reg-sk-item-402",
-    source: "SEC Regulation S-K Item 402; Dodd-Frank § 954 clawback",
-    source_url: "https://www.law.cornell.edu/cfr/text/17/229.402",
+    id: "sec-rule-10d-1",
+    source:
+      "Exchange Act § 10D; Rule 10D-1 (17 C.F.R. § 240.10D-1) — recovery of erroneously awarded compensation",
+    source_url: "https://www.law.cornell.edu/cfr/text/17/240.10D-1",
   });
 }
 

@@ -6,7 +6,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
-import { frcp, fre, stateLaw, practice, standardForm, modelRule } from "./_helpers.js";
+import { frcp, fre, stateLaw, practice, standardForm, modelRule, agency } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 const C = "settlement";
@@ -299,13 +299,14 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
   },
   {
     id: "SET-119",
+    ver: "1.1.0",
     name: "FRE 502(d) non-waiver order",
     cite: fre("502(d)", "controlling effect of a court order on privilege waiver"),
     pat: [
       /502\(d\)|rule\s+502/i,
       /(no\s+waiver|does\s+not\s+(constitute|effect)\s+a\s+waiver|clawback|inadvertent\s+(production|disclosure))/i,
     ],
-    why: "A Rule 502(d) order is the only mechanism that protects against waiver in other federal and state proceedings, and it applies regardless of the care taken. Relying on 502(b) instead leaves waiver to a reasonableness fight.",
+    why: "Rule 502(b) also protects an inadvertent disclosure in a federal proceeding in later federal and state proceedings if reasonable steps were taken; a Rule 502(d) order gives that protection regardless of the care taken. Relying on 502(b) alone leaves waiver to a reasonableness fight.",
     fix: "Include an express Rule 502(d) order stating that production does not waive privilege in this or any other proceeding, with the clawback and sequestration procedure.",
     sev: "critical",
   },
@@ -475,13 +476,14 @@ const EXPERT = pack("expert-witness-retention", C, [
   },
   {
     id: "SET-130",
+    ver: "1.1.0",
     name: "Independence and no-contingent-fee recital",
     cite: modelRule("3.4(b)", "fairness to opposing party and counsel — inducements to a witness"),
     pat: [
       /(independent|own\s+(opinions|professional\s+judgment)|not\s+contingent)/i,
       /(outcome\s+of\s+the\s+(case|litigation)|contingen|regardless\s+of\s+the\s+result)/i,
     ],
-    why: "A fee contingent on the outcome is improper for an expert in every US jurisdiction and is the first line of cross-examination. The recital is both an ethics safeguard and a credibility protection.",
+    why: "Model Rule 3.4 comment [3] notes that the common-law rule in most jurisdictions forbids paying an expert witness a contingent fee, and such a fee is the first line of cross-examination. The recital is both an ethics safeguard and a credibility protection.",
     fix: "State that compensation is not contingent on the outcome or the content of the opinion, and that the expert's opinions are their own independent professional judgment.",
     sev: "critical",
   },
@@ -644,13 +646,18 @@ const LIT_FUNDING = pack("litigation-funding-agreement", C, [
   },
   {
     id: "SET-142",
+    ver: "1.1.0",
     name: "Disclosure obligations under local rules and standing orders",
-    cite: frcp("7.1", "disclosure statement"),
+    cite: agency(
+      "U.S. District Court for the District of New Jersey",
+      "L. Civ. R. 7.1.1 (disclosure of third-party litigation funding)",
+      "https://www.njd.uscourts.gov/",
+    ),
     pat: [
       /disclos/i,
       /(local\s+rule|standing\s+order|court\s+order|third-?party\s+funding|(?:shall|will|must)\s+cooperate\s+in\s+(any\s+)?disclosure)/i,
     ],
-    why: "The District of New Jersey and the District of Delaware require disclosure of litigation funding by standing rule, and other courts order it case by case. The agreement should not obstruct compliance.",
+    why: "D.N.J. L. Civ. R. 7.1.1 requires litigation-funding disclosure district-wide; in Delaware the requirement is Chief Judge Connolly's April 2022 standing order, which covers only his cases; FRCP 7.1 does not require funding disclosure. Other courts order it case by case. The agreement should not obstruct compliance.",
     fix: "Require the parties to cooperate with any court-ordered or rule-required disclosure, and state what may be disclosed without breaching confidentiality.",
   },
   {

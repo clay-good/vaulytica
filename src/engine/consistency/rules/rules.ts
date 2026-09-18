@@ -48,12 +48,12 @@ const TETHER_TO_SCOPE =
 
 export const CC_001_BAA_PURPOSE: ConsistencyRule = {
   id: "CC-001",
-  version: RULE_VERSION,
+  version: "1.1.0",
   name: "BAA permitted uses no broader than MSA purpose",
   category: "consistency",
   default_severity: "critical",
   description:
-    "Under 45 CFR § 164.504(e)(2)(i)(A) the BAA's permitted uses cannot exceed the covered entity's own permitted uses. The MSA's service description bounds those permitted uses; if the BAA grants 'any purpose' or 'any business purpose' use of PHI it is broader than the MSA contemplates.",
+    "Under 45 CFR § 164.504(e)(2)(i) the BAA may not authorize uses or disclosures that would violate the Privacy Rule if done by the covered entity; subparagraph (A) is the exception for the business associate's own management and administration. The MSA's service description bounds those permitted uses; if the BAA grants 'any purpose' or 'any business purpose' use of PHI it is broader than the MSA contemplates.",
   requires: ["msa", "baa"],
   check(ctx): ConsistencyFinding[] {
     const msa = findByKind(ctx.documents, "msa");
@@ -89,7 +89,7 @@ export const CC_001_BAA_PURPOSE: ConsistencyRule = {
         description:
           "The BAA grants open-ended use of PHI ('any business purpose' or equivalent) while the MSA defines a specific service scope. The BAA's grant cannot exceed the covered entity's own permitted uses.",
         explanation:
-          "HHS guidance under 45 CFR § 164.504(e) prohibits the business associate from using PHI other than as the covered entity itself could. An MSA that scopes services to (for example) claims processing cannot anchor a BAA permitting 'any business purpose' use of PHI.",
+          "45 CFR § 164.504(e)(2)(i) itself bars the BAA from authorizing the business associate to use or disclose PHI in a manner that would violate the Privacy Rule if done by the covered entity; subparagraph (A) is the exception for the business associate's own management and administration. An MSA that scopes services to (for example) claims processing cannot anchor a BAA permitting 'any business purpose' use of PHI.",
         recommendation:
           "Narrow the BAA's permitted-uses clause to the services described in the MSA (or to a defined Permitted Purpose that mirrors the MSA's scope).",
         excerpts: [paragraphExcerpt(baa, baaBroad), paragraphExcerpt(msa, msaServices)],
@@ -416,7 +416,7 @@ export const CC_005_GOVERNING_LAW: ConsistencyRule = {
 
 export const CC_006_NOTICE: ConsistencyRule = {
   id: "CC-006",
-  version: RULE_VERSION,
+  version: "1.1.0",
   name: "Notice addresses and methods aligned across documents",
   category: "consistency",
   default_severity: "info",
@@ -456,7 +456,7 @@ export const CC_006_NOTICE: ConsistencyRule = {
         description:
           "The notice clauses across documents specify different addresses or methods. A notice valid under one document may be ineffective under the other.",
         explanation:
-          "Operationally, this matters most for breach notification: HIPAA's 60-day clock and GDPR's 72-hour clock both turn on when notice is 'received'. Misaligned addresses turn a compliant sender into a non-compliant one.",
+          "Operationally, this matters most for breach notification: HIPAA's 60-day deadlines run from discovery of the breach (45 C.F.R. §§ 164.404, 164.410), GDPR Art. 33's 72 hours run from when the controller becomes aware, and a processor must tell the controller without undue delay. A notice sent to the wrong address can delay the response while those clocks run.",
         recommendation:
           "Unify the notice clauses (single addressee, single physical and email address, identical accepted channels) or explicitly cross-reference one clause from the other documents.",
         excerpts: [
@@ -657,12 +657,12 @@ const NOTICE_CONFINES_DATA_TO_REGION = new RegExp(
 
 export const CC_009_PRIVACY_NOTICE_TRANSFERS: ConsistencyRule = {
   id: "CC-009",
-  version: RULE_VERSION,
+  version: "1.1.0",
   name: "Privacy notice denies the cross-border transfer the DPA provides for",
   category: "consistency",
   default_severity: "critical",
   description:
-    "GDPR Art. 13(1)(f) requires the notice to disclose transfers to a third country and the safeguard relied on. A notice that promises data never leaves a region, while the companion DPA carries an Art. 46 transfer mechanism (SCCs, the UK IDTA, BCRs, an adequacy decision), misstates the transfer position.",
+    "GDPR Art. 13(1)(f) requires the notice to disclose transfers to a third country and the safeguard relied on. A notice that promises data never leaves a region, while the companion DPA carries a transfer mechanism (an Art. 45 adequacy decision, SCCs or BCRs under Art. 46, or the UK IDTA under the UK GDPR), misstates the transfer position.",
   requires: ["privacy_policy", "dpa"],
   check(ctx): ConsistencyFinding[] {
     const notice = findByKind(ctx.documents, "privacy_policy");
@@ -689,7 +689,7 @@ export const CC_009_PRIVACY_NOTICE_TRANSFERS: ConsistencyRule = {
         description:
           "The published privacy notice tells data subjects their personal data is not transferred outside a named region, while the companion DPA relies on a cross-border transfer mechanism — which exists only to legitimise the transfer the notice denies.",
         explanation:
-          "GDPR Art. 13(1)(f) requires the controller to tell the data subject that it intends to transfer personal data to a third country and to identify the Art. 45/46 basis. A DPA carrying Standard Contractual Clauses, the UK IDTA, Binding Corporate Rules or an adequacy decision is evidence of that intent, so the notice's confinement statement cannot both be true and the mechanism be necessary.",
+          "GDPR Art. 13(1)(f) requires the controller to tell the data subject that it intends to transfer personal data to a third country and to identify the basis: an adequacy decision (Art. 45) or an Art. 46 safeguard such as Standard Contractual Clauses or Binding Corporate Rules (Art. 47, referenced in Art. 46(2)(b)). The UK IDTA is a UK GDPR instrument, not an EU Art. 46 safeguard. A DPA carrying any of these is evidence of the intent to transfer, so the notice's confinement statement cannot both be true and the mechanism be necessary.",
         recommendation:
           "Either correct the notice to disclose the transfer and name the safeguard the DPA relies on, or remove the transfer mechanism if processing genuinely stays in-region.",
         excerpts: [

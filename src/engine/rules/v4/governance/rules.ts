@@ -217,7 +217,7 @@ const BYLAWS_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-008",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Indemnification of directors and officers",
     description:
       "Bylaws should provide for indemnification of D&O to the fullest extent of DGCL § 145 / MBCA § 8.50.",
@@ -226,7 +226,7 @@ const BYLAWS_RULES: Rule[] = [
     missing_title: "D&O indemnification clause missing",
     missing_description: "No indemnification clause was found in the bylaws.",
     explanation:
-      "DGCL § 145 authorizes indemnification but it is not self-executing; bylaws must provide for it or directors lose the protection.",
+      "DGCL § 145(c) requires indemnification of a present or former director or officer who is successful on the merits or otherwise, with no bylaw needed; permissive indemnification under § 145(a)–(b) is authorized case by case under § 145(d), and bylaws commonly make it mandatory.",
     recommendation:
       "Add an 'Indemnification' article extending mandatory indemnification to D&O to the fullest extent permitted by DGCL § 145, including advancement of expenses.",
     // The bylaws indemnification article is usually written with the verb
@@ -274,13 +274,13 @@ const BYLAWS_RULES: Rule[] = [
   }),
   language({
     id: "GOV-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Exclusive-forum bylaw — federal-claims overreach",
     description:
-      "A Delaware exclusive-forum bylaw cannot validly designate Delaware Chancery as the exclusive forum for Securities Act claims (Boilermakers / Sciabacucchi / Salzberg lineage; cf. CA & WA pushback).",
+      "A Delaware exclusive-forum provision should not designate Delaware courts for federal securities claims: Salzberg v. Sciabacucchi (Del. 2020) upheld charter provisions requiring Securities Act claims to be brought in federal court, not Delaware-forum provisions for those claims.",
     citation: govPractice(
       "sciabacucchi-salzberg",
-      "Salzberg v. Sciabacucchi, 227 A.3d 102 (Del. 2020) (federal-forum bylaws upheld) and contrast California / 9th Circuit treatment.",
+      "Salzberg v. Sciabacucchi, 227 A.3d 102 (Del. 2020) (federal-forum charter provisions for Securities Act claims upheld) and contrast California / 9th Circuit treatment.",
       "https://courts.delaware.gov/Opinions/Download.aspx?id=300600",
     ),
     playbooks: [GOV_PLAYBOOK_BYLAWS],
@@ -305,7 +305,7 @@ const BYLAWS_RULES: Rule[] = [
     bad_description:
       "The exclusive-forum bylaw appears to designate Delaware as the exclusive forum for Securities Exchange Act of 1934 claims.",
     explanation:
-      "Sciabacucchi / Salzberg upheld Delaware-forum bylaws for Securities Act of 1933 claims but expressly declined to extend that holding to Exchange Act claims, which carry exclusive federal-court jurisdiction under § 27.",
+      "Salzberg v. Sciabacucchi (Del. 2020) upheld charter provisions requiring Securities Act of 1933 claims to be brought in federal court; it did not uphold Delaware-forum provisions for those claims. Exchange Act claims carry exclusive federal-court jurisdiction under § 27, so a Delaware forum cannot hear them.",
     recommendation:
       "Limit the exclusive-forum provision to internal-affairs claims (Delaware Chancery) and Securities Act 1933 claims (federal court), and exclude Exchange Act claims.",
   }),
@@ -1110,14 +1110,15 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-049",
+    version: "1.1.0",
     name: "Effective date / dating",
-    description: "Consent should be dated as of a specific date.",
+    description: "Consent should state the date as of which it is effective.",
     citation: dgcl("228(c)"),
     playbooks: [GOV_PLAYBOOK_WRITTEN_CONSENT],
     missing_title: "Effective date missing",
     missing_description: "No effective-date clause was found.",
     explanation:
-      "DGCL § 228(c) starts a 60-day clock from the earliest-dated consent — leaving the consent undated invites challenge.",
+      "Under DGCL § 228(c) as amended in 2023, consents from enough holders must be delivered within 60 days of the first date a consent is delivered to the corporation; consents no longer need to bear a date of signature. Stating an effective date records when the action is intended to take effect.",
     recommendation: "Add 'This consent is effective as of [date]' near the signature block.",
     present_patterns: [/effective\s+(as\s+of|date)/i, /dated\s+(as\s+of|the)/i],
     default_severity: "warning",
@@ -1315,10 +1316,10 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
   }),
   language({
     id: "GOV-060",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Audit committee — non-independent member prohibited",
     description:
-      "Charter cannot allow a non-independent member to serve on the audit committee absent the § 301 controlled-company / phase-in exception.",
+      "Charter cannot allow a non-independent member to serve on the audit committee except under the limited Rule 10A-3 exceptions (e.g., the new-issuer phase-in); there is no controlled-company exemption from audit-committee independence.",
     citation: sox301(),
     playbooks: [GOV_PLAYBOOK_COMMITTEE_CHARTER],
     // v1.0.0 required the exact "non-independent director may serve … audit"
@@ -1339,7 +1340,7 @@ const COMMITTEE_CHARTER_RULES: Rule[] = [
     bad_description:
       "The charter appears to permit a non-independent director to sit on the audit committee.",
     explanation:
-      "SOX § 301 / Rule 10A-3 forbid non-independent audit-committee members except for narrow phase-in / controlled-company exceptions.",
+      "SOX § 301 / Rule 10A-3 forbid non-independent audit-committee members except for limited exceptions such as the new-issuer phase-in (Rule 10A-3(b)(1)(iv)(A)). NYSE 303A.00 and Nasdaq 5615(c) exempt controlled companies from the compensation and nominating committee requirements only, not from audit-committee independence.",
     recommendation:
       "Strike the override or limit it to the specific phase-in exceptions in Exchange Act Rule 10A-3.",
     default_severity: "critical",
@@ -1598,30 +1599,32 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-072",
+    version: "1.1.0",
     name: "Inurement prohibition",
     description:
-      "Bylaws must prohibit inurement of net earnings to private individuals (IRC § 501(c)(3); Treas. Reg. § 1.501(c)(3)-1(c)(2)).",
+      "Bylaws customarily recite the prohibition on inurement of net earnings to private individuals (IRC § 501(c)(3); Treas. Reg. § 1.501(c)(3)-1(c)(2)).",
     citation: irc("501(c)(3)", "Inurement prohibition"),
     playbooks: [GOV_PLAYBOOK_NONPROFIT],
     missing_title: "Inurement-prohibition clause missing",
     missing_description: "No inurement-prohibition clause was found.",
     explanation:
-      "Treas. Reg. § 1.501(c)(3)-1(c)(2) requires that no part of the net earnings inure to the benefit of private shareholders or individuals. Failure to include this provision can cost the exemption.",
+      "Treas. Reg. § 1.501(c)(3)-1(c)(2) requires that no part of the net earnings inure to the benefit of private shareholders or individuals. This is an operational requirement: it is customarily recited in the organizing documents but is not required there by the organizational test (Treas. Reg. § 1.501(c)(3)-1(b)).",
     recommendation:
       "Add 'No part of the net earnings of the corporation shall inure to the benefit of, or be distributable to, its members, trustees, officers, or other private persons...'.",
     present_patterns: [/inure\s+to/i, /no\s+part\s+of\s+the\s+net\s+earnings/i],
   }),
   presence({
     id: "GOV-073",
+    version: "1.1.0",
     name: "Political-activity prohibition",
     description:
-      "Bylaws must prohibit participation in political campaigns and limit lobbying (IRC § 501(c)(3)).",
+      "Bylaws customarily recite the prohibition on political-campaign participation and the limit on lobbying (IRC § 501(c)(3)).",
     citation: irc("501(c)(3)", "Political-activity prohibition"),
     playbooks: [GOV_PLAYBOOK_NONPROFIT],
     missing_title: "Political-activity prohibition clause missing",
     missing_description: "No clause was found prohibiting political campaign activity.",
     explanation:
-      "IRC § 501(c)(3) absolutely prohibits intervention in political campaigns and limits lobbying to an insubstantial part of activities (subject to § 501(h) election).",
+      "IRC § 501(c)(3) absolutely prohibits intervention in political campaigns and limits lobbying to an insubstantial part of activities (subject to § 501(h) election). These are operational requirements: customarily recited in the organizing documents but not required there by the organizational test (Treas. Reg. § 1.501(c)(3)-1(b)).",
     recommendation:
       "Add a clause prohibiting political-campaign intervention and restricting lobbying to permitted limits.",
     present_patterns: [
@@ -1752,9 +1755,10 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   compound({
     id: "GOV-080",
+    version: "1.1.0",
     name: "Three-pillar 501(c)(3) charter recitals present (inurement + political + dissolution)",
     description:
-      "Treas. Reg. § 1.501(c)(3)-1(b) requires three organizing-document pillars: (1) exempt-purpose limitation, (2) inurement / political prohibition, (3) dissolution-to-exempt-organization.",
+      "The § 501(c)(3) organizational test (Treas. Reg. § 1.501(c)(3)-1(b)) looks to the articles: an exempt-purpose limitation, no non-exempt powers, and a dissolution-to-exempt-organization clause. Inurement / political prohibitions are operational requirements customarily recited alongside them.",
     citation: irc("501(c)(3)", "Three organizational-test pillars"),
     playbooks: [GOV_PLAYBOOK_NONPROFIT],
     required_patterns: [
@@ -1767,7 +1771,7 @@ const NONPROFIT_RULES: Rule[] = [
     missing_description:
       "One or more of the three Treas. Reg. § 1.501(c)(3)-1(b) organizational pillars (purpose, inurement / political, dissolution) is missing.",
     explanation:
-      "All three pillars must appear in the organizing documents for the entity to meet the § 501(c)(3) organizational test.",
+      "The organizational test requires the articles to limit purposes to exempt purposes, grant no non-exempt powers, and dedicate assets on dissolution. The inurement and political-campaign prohibitions are operational requirements; they are customarily recited but not required in the organizing document.",
     recommendation:
       "Include all three pillars: an exempt-purposes recital, an inurement / political-activity prohibition, and a dissolution clause directing residual assets to another § 501(c)(3).",
     default_severity: "critical",

@@ -561,6 +561,7 @@ const APA_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-024",
+    version: "1.1.0",
     name: "Bulk-sales law treatment",
     description: "APA should address state bulk-sales law (former UCC Art. 6) where it survives.",
     citation: bulkSales(),
@@ -568,7 +569,7 @@ const APA_RULES: Rule[] = [
     missing_title: "Bulk-sales law clause missing",
     missing_description: "No bulk-sales-law clause was found.",
     explanation:
-      "Many states have repealed bulk-sales (former UCC Art. 6) but several retain it (CA Civ. § 6101 et seq., MD, etc.). The APA should waive compliance and shift creditor risk to seller.",
+      "Most states have repealed bulk-sales law (former UCC Art. 6); only a few retain a bulk-sale regime (e.g., Cal. Com. Code § 6101 et seq.). The APA should waive compliance and shift creditor risk to seller.",
     recommendation:
       "Add 'Bulk Sales' waiving compliance with any applicable bulk-sales law and indemnifying buyer for resulting creditor claims.",
     present_patterns: [/bulk\s+(sales?|transfer)/i],
@@ -724,7 +725,7 @@ const MERGER_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-031",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Appraisal rights notice (DGCL § 262)",
     description: "Stockholders must be advised of appraisal rights under DGCL § 262.",
     citation: dgcl("262"),
@@ -739,7 +740,7 @@ const MERGER_RULES: Rule[] = [
     denied_if: expressDenial(String.raw`appraisal\s+rights?|dissenters?.?\s+rights?`),
     denied_title: "Appraisal rights expressly denied",
     denied_description:
-      "The document states that stockholders have no appraisal rights. DGCL \u00a7 262 confers a statutory right to dissent and seek appraisal; a blanket denial is a defect on its face rather than the statutory notice.",
+      "The document states that stockholders have no appraisal rights. That can be accurate: appraisal is unavailable in many mergers under the DGCL \u00a7 262(b) market-out exception, and sophisticated stockholders may waive it by contract (Manti Holdings v. Authentix (Del. 2021)). Confirm the statement is correct for this transaction.",
   }),
   presence({
     id: "MNA-032",
@@ -944,13 +945,13 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   language({
     id: "MNA-040",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Schedules disclose by mere reference to a data-room folder",
     description:
-      "Mere reference to a data-room folder generally does not constitute disclosure (Cobalt International line).",
+      "Mere reference to a data-room folder generally does not constitute disclosure; a buyer may rely on the representations despite diligence access (Cobalt Operating v. James Crystal Enterprises).",
     citation: maPractice(
       "cobalt-disclosure",
-      "Cobalt International Energy, Inc. line on data-room disclosure (Del. Ch.)",
+      "Cobalt Operating, LLC v. James Crystal Enterprises, LLC (Del. Ch. 2007), aff'd (Del. 2008) (buyer may rely on representations despite diligence access)",
       "https://courts.delaware.gov/Opinions/",
     ),
     playbooks: [MA_PLAYBOOK_DISCLOSURE],
@@ -1252,7 +1253,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-052",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Tax reporting and treatment",
     description: "Escrow agreement should specify tax-reporting party and treatment of interest.",
     citation: maPractice(
@@ -1264,7 +1265,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
     missing_title: "Tax-reporting clause missing",
     missing_description: "No tax-reporting clause was found.",
     explanation:
-      "IRS treats interest as earned by one party (typically seller) for tax purposes; the agreement should designate.",
+      "Escrow income is taxed to the party treated as its owner; Prop. Treas. Reg. § 1.468B-8 treats the buyer as the owner of a contingent at-closing escrow. The agreement should designate the tax owner.",
     recommendation:
       "Add 'Tax Reporting' designating the tax owner of escrow income and the agent's 1099 reporting obligation.",
     // The rule wanted vocabulary an escrow agreement does not use. A section
@@ -1599,27 +1600,28 @@ const EARNOUT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-066",
+    version: "1.1.0",
     name: "Implied covenant — express acknowledgment or waiver",
     description:
-      "Delaware Lazard held that the implied covenant cannot be waived; the agreement should not purport to do so.",
+      "The implied covenant fills only gaps the earnout leaves open; the agreement should state the intended conduct standard expressly (Lazard Tech. Partners v. Qinetiq (Del. 2015)).",
     citation: delawareEarnoutCases(),
     playbooks: [MA_PLAYBOOK_EARNOUT],
     missing_title: "Implied-covenant acknowledgment missing",
     missing_description:
       "No acknowledgment of the implied covenant of good faith and fair dealing was found.",
     explanation:
-      "Lazard v. Qinetiq affirms that the implied covenant remains in earnouts despite express conduct covenants. Some agreements affirmatively reference it as a backstop.",
+      "In Lazard Tech. Partners v. Qinetiq (Del. 2015) the court would not use the implied covenant to impose a duty broader than the express earnout covenant; Delaware generally enforces express 'no obligation to maximize the earnout' or sole-discretion provisions, and the implied covenant fills only gaps the contract leaves open. Some agreements affirmatively reference it as a backstop.",
     recommendation:
-      "Add an acknowledgment that the implied covenant of good faith and fair dealing applies (or, if buyer is comfortable, an express disclaimer of implied earnout-maximization duties — knowing it will not waive the covenant under Lazard).",
+      "Add an acknowledgment that the implied covenant of good faith and fair dealing applies, or state expressly the conduct standard the parties intend (including any disclaimer of a duty to maximize the earnout), since the implied covenant will not supply terms the contract addresses.",
     present_patterns: [/implied\s+covenant/i, /good\s+faith\s+and\s+fair\s+dealing/i],
     default_severity: "warning",
   }),
   language({
     id: "MNA-067",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Disclaimer of obligation to maximize earnout",
     description:
-      "Disclaimers of any duty to maximize the earnout will not survive — Lazard still applies.",
+      "Delaware generally enforces express disclaimers of any duty to maximize the earnout; the implied covenant fills only gaps the contract leaves open (Lazard Tech. Partners v. Qinetiq (Del. 2015)).",
     citation: delawareEarnoutCases(),
     playbooks: [MA_PLAYBOOK_EARNOUT],
     // v1.1.0 required "no duty/obligation to maximize/increase" to sit directly
@@ -1633,10 +1635,11 @@ const EARNOUT_RULES: Rule[] = [
     ],
     bad_title: "Disclaimer of earnout-maximization duty flagged",
     bad_description:
-      "The agreement disclaims any obligation to maximize the earnout, which Delaware courts will not enforce as a complete shield.",
+      "The agreement disclaims any obligation to maximize the earnout. Delaware generally enforces such a provision, so the seller should not expect the implied covenant to supply a broader duty.",
     explanation:
-      "Lazard / Aveta hold the implied covenant remains operative; disclaimers do not eliminate it.",
-    recommendation: "Replace blanket disclaimers with a defined efforts standard.",
+      "In Lazard Tech. Partners v. Qinetiq (Del. 2015) the court would not use the implied covenant to impose a duty broader than the express earnout covenant; Delaware generally enforces express 'no obligation to maximize the earnout' or sole-discretion provisions, and the implied covenant fills only gaps the contract leaves open.",
+    recommendation:
+      "If the seller needs protection, negotiate a defined efforts standard in place of the blanket disclaimer.",
     default_severity: "warning",
   }),
   presence({
@@ -1779,9 +1782,10 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   language({
     id: "MNA-074",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "Non-compete > 5 years flagged",
-    description: "Most states will not enforce sale-of-business non-competes longer than 5 years.",
+    description:
+      "Reasonableness of a sale-of-business non-compete is fact-specific; longer terms are enforced where tied to the goodwill sold.",
     citation: maPractice(
       "non-compete-duration",
       "State court treatment of M&A non-competes (3–5 year norm)",
@@ -1810,7 +1814,7 @@ const MA_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     bad_description:
       "The non-compete period exceeds 5 years, beyond the norm for M&A sale-of-business covenants.",
     explanation:
-      "Periods above 5 years are commonly struck or blue-penciled. Drafters should justify under state law if longer.",
+      "Reasonableness is fact-specific; periods above 5 years draw closer scrutiny and should be tied to the goodwill sold under the governing state's law.",
     recommendation: "Limit the non-compete to 3–5 years.",
     default_severity: "warning",
   }),

@@ -28,7 +28,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "DARK-009",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Unilateral amendment by posting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -65,7 +65,7 @@ export const rule: Rule = {
         description: a.match[0],
         excerpt: excerptWindow(a.text, a.match.index, 30, 320),
         explanation:
-          "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. The FTC has called out 'post-and-pray' amendment in enforcement actions under Section 5 and ROSCA (15 U.S.C. § 8403), and California's automatic renewal law (Bus. & Prof. Code § 17600 et seq.) requires affirmative consent to material changes in a consumer subscription. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
+          "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. Cal. Bus. & Prof. Code § 17602 requires clear and conspicuous notice of a material change and how to cancel — not affirmative consent. ROSCA regulates negative-option billing, not unilateral amendment; the FTC has challenged retroactive material changes under Section 5. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
         recommendation:
           "Restrict unilateral amendment to immaterial / non-substantive changes effected by written notice (email + at least 30 days) with a defined objection / opt-out right. Material changes — pricing, scope, liability, data use — must require a signed amendment or affirmative click-through consent.",
         position: a.position,
@@ -100,7 +100,7 @@ export const rule: Rule = {
         description: b2.match[0],
         excerpt: excerptWindow(b2.text, b2.match.index, 30, 320),
         explanation:
-          "A clause that deems continued use of the service to be acceptance of unilateral amendments has been criticized as illusory: the party 'consenting' has no real notice and no real ability to refuse without disrupting their business. FTC guidance and courts increasingly require affirmative consent for material contract changes.",
+          "A clause that deems continued use of the service to be acceptance of unilateral amendments has been criticized as illusory: the party 'consenting' has no real notice and no real ability to refuse without disrupting their business. The FTC has challenged retroactive material changes under Section 5.",
         recommendation:
           "Require affirmative consent (signed amendment or click-through) for material changes. Continued-use-as-acceptance is acceptable only for non-substantive changes after meaningful written notice and an opt-out window.",
         position: b2.position,

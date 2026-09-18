@@ -74,12 +74,24 @@ export function frcp37e(): SourceCitation {
   });
 }
 
-/** Zubulake v. UBS Warburg LLC (preservation duty). */
+/** Zubulake v. UBS Warburg LLC (Zubulake IV — preservation duty). */
 export function zubulake(): SourceCitation {
   return v4Cite({
     id: "zubulake-v-ubs",
     source:
-      "Zubulake v. UBS Warburg LLC, 220 F.R.D. 212 (S.D.N.Y. 2003) — duty to preserve and litigation hold",
+      "Zubulake v. UBS Warburg LLC (Zubulake IV), 220 F.R.D. 212 (S.D.N.Y. 2003) — duty to preserve and litigation hold (persuasive district-court authority)",
+    source_url: "https://www.law.cornell.edu/rules/frcp/rule_37",
+    license: "Public-domain US judicial opinion",
+    license_url: "https://www.usa.gov/government-works",
+  });
+}
+
+/** Zubulake v. UBS Warburg LLC (Zubulake V — counsel's duty to oversee preservation). */
+export function zubulakeV(): SourceCitation {
+  return v4Cite({
+    id: "zubulake-v-ubs-v",
+    source:
+      "Zubulake v. UBS Warburg LLC (Zubulake V), 229 F.R.D. 422 (S.D.N.Y. 2004) — counsel's oversight of preservation (persuasive district-court authority)",
     source_url: "https://www.law.cornell.edu/rules/frcp/rule_37",
     license: "Public-domain US judicial opinion",
     license_url: "https://www.usa.gov/government-works",

@@ -64,12 +64,22 @@ export function respa(label: string): SourceCitation {
   });
 }
 
-/** FTC rule / guide citation (16 C.F.R.) or FTC Act § 5 (15 U.S.C. § 45). */
+/**
+ * FTC rule / guide citation (16 C.F.R.) or FTC Act § 5 (15 U.S.C. § 45). A
+ * U.S.C. label links to the Cornell U.S. Code; a C.F.R. label links to eCFR.
+ */
 export function ftc(part: string, label: string): SourceCitation {
+  const usc = /^(\d+)\s+U\.S\.C\.\s+§+\s*([\w-]+)/.exec(part);
+  const cfrPart = /C\.F\.R\.\s+Part\s+(\d+)/i.exec(part);
+  const source_url = usc
+    ? `https://www.law.cornell.edu/uscode/text/${usc[1]}/${usc[2]}`
+    : cfrPart
+      ? `https://www.ecfr.gov/current/title-16/part-${cfrPart[1]}`
+      : "https://www.ecfr.gov/current/title-16";
   return v4Cite({
     id: `ftc-${part.replace(/[^A-Za-z0-9]+/g, "-").toLowerCase()}`,
     source: `${part} (${label})`,
-    source_url: "https://www.ecfr.gov/current/title-16",
+    source_url,
   });
 }
 

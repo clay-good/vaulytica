@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.6.1",
+  version: "1.7.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -146,7 +146,7 @@ export const rule: Rule = {
       description: `The contract specifies a late-payment rate of ${rate}%${period ? ` per ${period}` : ""}, which annualizes to approximately ${annualRate.toFixed(1)}%.`,
       excerpt,
       explanation:
-        "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states but several (New York General Obligations Law §5-501, Tennessee, Arkansas pre-Constitutional-Amendment) hold the line tighter. A rate that would be standard in Texas or Delaware may be void in New York or California consumer contexts. Confirm against the controlling jurisdiction.",
+        "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. Confirm against the controlling jurisdiction.",
       recommendation:
         "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       position: hit.position,

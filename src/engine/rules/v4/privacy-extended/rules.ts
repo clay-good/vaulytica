@@ -147,18 +147,18 @@ const COOKIE_NOTICE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-005",
-    version: "1.3.0",
-    name: "CCPA / CPRA opt-out (Sale / Share / Cross-context targeted advertising)",
+    version: "1.4.0",
+    name: "CCPA / CPRA opt-out (Sale / Share / Cross-context behavioral advertising)",
     description:
-      "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context targeted advertising (GPC support).",
+      "Cookie notice for CCPA / CPRA-covered businesses must explain the right to opt out of sale / share / cross-context behavioral advertising (GPC support).",
     citation: ccpa("135"),
     playbooks: [PRV_PLAYBOOK_COOKIE],
     missing_title: "CCPA / CPRA opt-out clause missing",
     missing_description: "No CCPA / CPRA opt-out or GPC-support clause was found.",
     explanation:
-      "CCPA § 1798.135 + CPRA + CPPA regulations require a 'Do Not Sell or Share My Personal Information' link, recognition of the Global Privacy Control (GPC) signal, and disclosure of cross-context targeted advertising.",
+      "§ 1798.135 allows a 'Do Not Sell or Share' link (with the 'Limit' link), a single 'Your Privacy Choices' link, or, under § 1798.135(b), no link if the business honors opt-out preference signals without friction; honoring the Global Privacy Control is mandatory (11 CCR § 7025). Sharing covers cross-context behavioral advertising.",
     recommendation:
-      "Add a 'Do Not Sell or Share' link, an explanation of GPC processing, and treatment of cross-context targeted advertising.",
+      "Add the opt-out method the business uses (a 'Do Not Sell or Share' link, a 'Your Privacy Choices' link, or frictionless opt-out preference signals), an explanation of GPC processing, and treatment of cross-context behavioral advertising.",
     // CCPA/CPRA reaches California consumers. A German cookie notice
     // governed by the GDPR and the TTDSG is not missing a "Do Not Sell"
     // link — the same inapplicable-regime class as SET-003's § 1542 waiver.
@@ -308,7 +308,7 @@ const NPP_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-012",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Effective date of notice",
     description: "NPP must include an effective date.",
     citation: hipaa("520(b)(1)(viii)", "Effective date"),
@@ -316,7 +316,7 @@ const NPP_RULES: Rule[] = [
     missing_title: "Effective-date clause missing",
     missing_description: "No effective date was found.",
     explanation:
-      "§ 164.520(b)(1)(v)(C) requires the NPP to state its effective date. Without it, individuals cannot tell which version applies.",
+      "§ 164.520(b)(1)(viii) requires the NPP to state its effective date. Without it, individuals cannot tell which version applies.",
     recommendation: "Add 'Effective Date' with the date the notice took effect.",
     present_patterns: [/(effective\s+date|effective\s+as\s+of)/i, /(20\d{2}|19\d{2})/],
     // Both pillars. The year alone — "2026" — appears in every dated notice,
@@ -448,6 +448,7 @@ const ROPA_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-019",
+    version: "1.1.0",
     name: "International transfers — Art. 30(1)(e)",
     description: "ROPA must identify transfers to third countries with the safeguards in place.",
     citation: gdprArt("30", "Transfers"),
@@ -456,7 +457,7 @@ const ROPA_RULES: Rule[] = [
     missing_description:
       "No clause was found identifying third-country transfers or the safeguards used.",
     explanation:
-      "Art. 30(1)(e) requires identification of third-country transfers, including documentation of the suitable safeguards (Art. 46) or derogations (Art. 49).",
+      "Art. 30(1)(e) requires identification of transfers to third countries or international organisations; documentation of suitable safeguards is required only for transfers under the second subparagraph of Art. 49(1).",
     recommendation:
       "Add 'International Transfers' listing third-country destinations and the safeguards (adequacy decision, SCCs + TIA, BCRs, or Art. 49 derogation).",
     present_patterns: [
@@ -611,6 +612,7 @@ const DPIA_RULES: Rule[] = [
 const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   presence({
     id: "PRV-027",
+    version: "1.1.0",
     name: "Information security policy / governance",
     description: "VSQ must confirm a written information security policy approved by management.",
     citation: nistIso(),
@@ -618,7 +620,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     missing_title: "Information security policy clause missing",
     missing_description: "No clause was found confirming a written information security policy.",
     explanation:
-      "ISO 27001 A.5 and NIST CSF Govern require a documented, management-approved security policy. Absent vendor must remediate before processing.",
+      "ISO/IEC 27001:2022 (A.5.1) and the NIST CSF 2.0 Govern function, the frameworks vendors are commonly assessed against, call for a documented, management-approved security policy. An absent policy should be remediated before processing.",
     recommendation:
       "Add 'Information Security Policy' confirming a written policy approved by management with stated review cadence.",
     present_patterns: [
@@ -628,6 +630,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-028",
+    version: "1.1.0",
     name: "Access control — role-based, least privilege, MFA",
     description:
       "VSQ must describe access control: RBAC, least privilege, MFA, and quarterly access reviews.",
@@ -636,7 +639,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     missing_title: "Access control clause missing",
     missing_description: "No access-control description was found.",
     explanation:
-      "ISO 27001 A.8 / A.9 and NIST CSF Protect.AC require RBAC, least privilege, MFA, and periodic access reviews. Customers expect specific affirmation.",
+      "Vendors are commonly assessed against ISO/IEC 27001:2022 access-control controls (A.5.15–5.18, A.8.2–8.5) and NIST CSF 2.0 PR.AA (identity management, authentication, and access control), which cover RBAC, least privilege, MFA, and periodic access reviews. Customers expect specific affirmation.",
     recommendation:
       "Add 'Access Control' describing RBAC, least-privilege provisioning, MFA enforcement (incl. for admins), and quarterly access reviews.",
     present_patterns: [
@@ -647,7 +650,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-029",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Encryption at rest and in transit",
     description: "VSQ must confirm encryption at rest and in transit with stated algorithms.",
     citation: nistIso(),
@@ -655,7 +658,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     missing_title: "Encryption-at-rest/in-transit clause missing",
     missing_description: "No encryption description (at rest and in transit) was found.",
     explanation:
-      "ISO 27001 A.10 and NIST CSF Protect.DS require encryption controls. Modern practice: AES-256 at rest, TLS 1.2+ in transit; identify any plaintext fallback.",
+      "Vendors are commonly assessed against ISO/IEC 27001:2022 A.8.24 (use of cryptography) and NIST CSF 2.0 PR.DS for encryption controls. Modern practice: AES-256 at rest, TLS 1.2+ in transit; identify any plaintext fallback.",
     recommendation:
       "Add 'Encryption' confirming AES-256 (or equivalent) at rest and TLS 1.2+ in transit; identify any storage that is not encrypted.",
     present_patterns: [
@@ -666,7 +669,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     denied_if: expressDenial(String.raw`encrypt(?:ion|ed)\s+(?:at\s+rest|in\s+transit)`),
     denied_title: "Encryption at rest or in transit expressly disclaimed",
     denied_description:
-      "The questionnaire states that data is not encrypted at rest or in transit. ISO 27001 A.10 / NIST CSF Protect.DS treat this as a baseline control, so an express disclaimer is a material gap rather than an omission.",
+      "The questionnaire states that data is not encrypted at rest or in transit. ISO/IEC 27001:2022 A.8.24 and NIST CSF 2.0 PR.DS, the frameworks vendors are commonly assessed against, treat encryption as a baseline control, so an express disclaimer is a material gap rather than an omission.",
   }),
   presence({
     id: "PRV-030",
@@ -689,6 +692,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-031",
+    version: "1.1.0",
     name: "Vulnerability management + penetration testing",
     description:
       "VSQ must describe patch / vulnerability management cadence and annual third-party penetration testing.",
@@ -698,7 +702,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     missing_description:
       "No clause was found describing patch / vulnerability management or penetration testing.",
     explanation:
-      "NIST CSF Detect / Respond + ISO 27001 A.12 require vulnerability management. Customers expect critical-severity SLAs and annual penetration tests.",
+      "Vendors are commonly assessed against ISO/IEC 27001:2022 A.8.8 (management of technical vulnerabilities) and NIST CSF 2.0 ID.RA for vulnerability management. Customers expect critical-severity SLAs and annual penetration tests.",
     recommendation:
       "Add 'Vulnerability Management' with patch SLAs by severity (critical 7d / high 30d / medium 90d) and annual third-party penetration testing.",
     present_patterns: [
@@ -709,7 +713,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-032",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Incident response + breach notification SLA",
     description:
       "VSQ must describe the incident-response process and breach-notification SLA to customers.",
@@ -718,7 +722,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     missing_title: "Incident response / notification clause missing",
     missing_description: "No incident-response / breach-notification clause was found.",
     explanation:
-      "ISO 27001 A.16 / NIST CSF Respond. Customers expect a defined IR plan and a contractual breach-notification SLA (commonly 24–72 hours).",
+      "Vendors are commonly assessed against ISO/IEC 27001:2022 incident-management controls (A.5.24–5.28) and the NIST CSF 2.0 Respond function. Customers expect a defined IR plan and a contractual breach-notification SLA (commonly 24–72 hours).",
     recommendation:
       "Add 'Incident Response' with documented IR plan, tabletop cadence, and breach-notification SLA to customer (e.g., without undue delay, within 72 hours).",
     present_patterns: [
@@ -731,7 +735,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
     ),
     denied_title: "Incident-response plan expressly disclaimed",
     denied_description:
-      "The questionnaire states that no incident-response plan or breach-notification process is maintained. ISO 27001 A.16 / NIST CSF Respond treat this as a baseline expectation for any vendor handling customer data.",
+      "The questionnaire states that no incident-response plan or breach-notification process is maintained. ISO/IEC 27001:2022 A.5.24–5.28 and the NIST CSF 2.0 Respond function, the frameworks vendors are commonly assessed against, treat an incident-response process as a baseline expectation for any vendor handling customer data.",
   }),
   presence({
     id: "PRV-033",
@@ -856,6 +860,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-039",
+    version: "1.1.0",
     name: "Timing — 72 hour notification (GDPR Art. 33) + state thresholds",
     description:
       "Notification template must address GDPR Art. 33 72-hour timing and applicable state-specific thresholds.",
@@ -864,7 +869,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     missing_title: "Timing / 72-hour clause missing",
     missing_description: "No timing or notification-deadline clause was found.",
     explanation:
-      "GDPR Art. 33(1) requires notification within 72 hours of awareness; HIPAA Breach Rule § 164.408 requires individual notice without unreasonable delay and within 60 days; state laws vary (e.g., CA 'most expedient time', MA 'as soon as practicable').",
+      "GDPR Art. 33(1) requires notification within 72 hours of awareness; HIPAA Breach Rule § 164.404 requires individual notice without unreasonable delay and no later than 60 days after discovery (§ 164.408 governs notice to the Secretary). Since January 1, 2026, California requires notice to residents within 30 calendar days of discovery (Civ. Code § 1798.82, as amended by SB 446); other state laws vary (e.g., MA 'as soon as practicable').",
     recommendation:
       "Add 'Timing' addressing the GDPR 72-hour deadline, HIPAA 60-day timing, and applicable state-specific maxima.",
     present_patterns: [
@@ -877,15 +882,15 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     id: "PRV-040",
     name: "Regulatory / AG notification trigger threshold",
     description:
-      "Template must address state-AG / supervisory-authority notification triggers (typically 500 / 1,000 affected residents).",
+      "Template must address state-AG / supervisory-authority notification triggers, which vary by state.",
     citation: stateBreach(),
     playbooks: [PRV_PLAYBOOK_INCIDENT],
     missing_title: "Regulator / AG notification trigger missing",
     missing_description: "No clause was found addressing regulator / AG notification triggers.",
     explanation:
-      "Many state laws set an AG-notification trigger at 500 or 1,000 affected residents (e.g., CA, NY, MA); HIPAA requires media notice at 500+ residents in a state.",
+      "California requires Attorney General notice when more than 500 residents are notified (within 15 days of notifying them); New York and Massachusetts require regulator notice for a breach affecting any resident; HIPAA media notice applies to breaches involving more than 500 residents of a state (§ 164.406).",
     recommendation:
-      "Add 'Regulator Notification' covering state-AG triggers (typically 500 / 1,000+), HIPAA 500-resident media notice, and EU supervisory-authority notification under Art. 33.",
+      "Add 'Regulator Notification' covering state-AG triggers (which vary by state), HIPAA media notice for breaches involving more than 500 residents of a state, and EU supervisory-authority notification under Art. 33.",
     present_patterns: [
       // The plural is the standard form: "the state attorneys general".
       /(state\s+(ags?|attorneys?\s+general)|supervisory\s+authority)/i,
@@ -905,7 +910,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     // and a state-AG trigger threshold, neither of which it is supposed to
     // state.
     applicable_if: [/^(?![\s\S]*\bDear\s+(?:Mr|Mrs|Ms|Mx|Dr|Prof|Hon|Rev)\b)/],
-    version: "1.2.0",
+    version: "1.3.0",
     default_severity: "warning",
   }),
 ];

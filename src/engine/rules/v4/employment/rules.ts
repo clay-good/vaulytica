@@ -6,7 +6,7 @@
  * PIIA, performance-improvement plan, employee handbook. Citations
  * anchor to OWBPA / ADEA § 626(f), NLRB *McLaren Macomb*, IRC § 409A
  * and § 280G, the FTC Non-Compete Rule, state non-compete law, CA
- * Lab. § 2870, NLRA § 7, FLSA, Reg S-K Item 402, and EEOC guidance.
+ * Lab. § 2870, NLRA § 7, FLSA, Exchange Act Rule 10D-1, and EEOC guidance.
  *
  * Rule ids are flat `EMP-NNN` (001..050); each rule's
  * `applies_to_playbooks` restricts execution.
@@ -38,7 +38,7 @@ import {
   eeocGuidance,
   secRule21F17,
   flsa,
-  regSk402,
+  rule10D1,
   empPractice,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
@@ -72,14 +72,14 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
     // ("and"), but the patterns were a synonym OR: title, duties, and the reporting line are distinct pillars, and `(title|position|role)` alone is satisfied by the "Title: ____" line of a signature block.
     // The check could not fire on a document that carried nothing but
     // execution boilerplate.
-    version: "1.0.1",
+    version: "1.1.0",
     name: "Title, duties, and reporting line",
     description:
       "Executive agreement must state title, duties, and reporting line (CEO / Board / supervising executive).",
     citation: empPractice(
       "exec-baseline",
-      "Executive employment baseline (Reg S-K Item 402)",
-      "https://www.law.cornell.edu/cfr/text/17/229.402",
+      "Executive employment drafting practice",
+      "https://www.americanbar.org/groups/labor_law/",
     ),
     playbooks: [EMP_PLAYBOOK_EXEC],
     missing_title: "Title / duties / reporting clause missing",
@@ -96,14 +96,19 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-002",
+    version: "1.1.0",
     name: "Base salary and bonus structure",
     description: "Executive agreement must state base salary and bonus / incentive structure.",
-    citation: regSk402(),
+    citation: empPractice(
+      "exec-compensation",
+      "Executive compensation drafting practice",
+      "https://www.americanbar.org/groups/labor_law/",
+    ),
     playbooks: [EMP_PLAYBOOK_EXEC],
     missing_title: "Base salary / bonus clause missing",
     missing_description: "No base-salary or bonus clause was found.",
     explanation:
-      "Reg S-K Item 402 requires disclosure of compensation arrangements for named executive officers.",
+      "Standard drafting practice is to state base salary and bonus terms in the agreement itself; they fix the executive's entitlements and the baseline for severance and Good Reason. (Reg S-K Item 402 is a proxy-disclosure rule for SEC registrants and does not itself require these terms.)",
     recommendation:
       "Add 'Compensation' specifying base salary, target bonus, and any equity awards.",
     present_patterns: [/base\s+salary/i, /annual\s+(bonus|incentive)/i, /target\s+bonus/i],
@@ -125,6 +130,7 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-004",
+    version: "1.1.0",
     name: "§ 280G parachute-payment treatment",
     description:
       "Executive agreement with change-of-control benefits should address IRC § 280G parachute-payment treatment.",
@@ -133,7 +139,7 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
     missing_title: "§ 280G clause missing",
     missing_description: "No clause was found addressing § 280G parachute treatment.",
     explanation:
-      "If CIC payments exceed 3x base amount, the excess is non-deductible to the company and subject to a 20% excise tax on the executive. Standard pattern: 'best-net' (cap or full-pay, whichever is better after tax) or stockholder vote (private company).",
+      "If change-in-control payments equal or exceed 3 times the executive's base amount, the portion above 1 times the base amount is an excess parachute payment: non-deductible to the company and subject to a 20% excise tax on the executive (IRC §§ 280G, 4999). Standard pattern: 'best-net' (cap or full-pay, whichever is better after tax) or stockholder vote (private company).",
     recommendation: "Add 'Section 280G' with best-net or cleansing-vote treatment.",
     present_patterns: [/(section\s+280g|\b280g\b)/i, /(parachute\s+payment|excise\s+tax)/i],
   }),
@@ -179,15 +185,16 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-007",
+    version: "1.1.0",
     name: "Clawback policy reference (Dodd-Frank § 954)",
     description:
-      "Listed-issuer executive agreements should reference the clawback policy (Dodd-Frank § 954; SEC Rule 10D-1).",
-    citation: regSk402(),
+      "Listed-issuer executive agreements should reference the clawback policy (Exchange Act § 10D; SEC Rule 10D-1).",
+    citation: rule10D1(),
     playbooks: [EMP_PLAYBOOK_EXEC],
     missing_title: "Clawback policy reference missing",
     missing_description: "No clawback / Dodd-Frank clawback reference was found.",
     explanation:
-      "Listed issuers must adopt Rule 10D-1 clawback policies (2023+); executive agreements typically incorporate by reference.",
+      "Under Exchange Act § 10D and Rule 10D-1 (17 C.F.R. § 240.10D-1), listed issuers must adopt clawback policies (2023+); executive agreements typically incorporate the policy by reference.",
     recommendation:
       "Add 'Clawback' incorporating the company's Rule 10D-1 / Dodd-Frank § 954 clawback policy.",
     present_patterns: [/clawback/i, /(section\s+954|rule\s+10d.1)/i],
@@ -195,10 +202,11 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-008",
+    version: "1.1.0",
     name: "Restrictive covenants subordinated to non-compete / NDA terms",
     description:
       "Executive agreement should incorporate or carry restrictive covenants by reference.",
-    citation: ftcNcr(),
+    citation: stateNonCompete(),
     playbooks: [EMP_PLAYBOOK_EXEC],
     missing_title: "Restrictive-covenants reference missing",
     missing_description: "No restrictive-covenants clause / reference was found.",
@@ -479,10 +487,10 @@ const SEPARATION_RULES: Rule[] = [
   }),
   language({
     id: "EMP-020",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "McLaren Macomb — overbroad confidentiality / non-disparagement",
     description:
-      "NLRB McLaren Macomb (Feb. 21, 2023) found that overbroad confidentiality or non-disparagement provisions in separation agreements violate NLRA § 7.",
+      "NLRB McLaren Macomb (Feb. 21, 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1).",
     citation: mclarenMacomb(),
     playbooks: [EMP_PLAYBOOK_SEPARATION],
     bad_patterns: [
@@ -515,7 +523,7 @@ const SEPARATION_RULES: Rule[] = [
     bad_description:
       "The separation agreement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity.",
     explanation:
-      "Under McLaren Macomb, overbroad confidentiality / non-disparagement clauses are unlawful as to non-supervisory employees; the NLRB has signaled aggressive enforcement.",
+      "McLaren Macomb held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1) as to non-supervisory employees. It remains Board law; the General Counsel's 2023 enforcement guidance was rescinded in February 2025 (GC 25-05).",
     recommendation:
       "Narrow the clause with carve-outs for protected concerted activity, Section 7 rights, communication with government agencies, and discussion of unlawful conduct.",
     default_severity: "warning",
@@ -619,7 +627,7 @@ const SEPARATION_RULES: Rule[] = [
 const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   language({
     id: "EMP-024",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Worker non-compete — state-law enforceability scrutiny",
     description:
       "Worker non-competes turn on state law; the FTC's 2024 rule that would have banned most of them (16 C.F.R. Part 910) was vacated and never took effect.",
@@ -652,14 +660,14 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     bad_description:
       "The agreement contains an employee / worker non-compete covenant whose enforceability turns on state law.",
     explanation:
-      "The FTC Non-Compete Rule (2024) would have banned most worker non-competes, but it was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. 2024) and never took effect; the FTC dismissed its appeals in September 2025 and retains only case-by-case FTC Act § 5 enforcement. The state-law trend (statutory bans in CA, MN, ND, OK, WY; targeted bans and thresholds in NY, MA, WA, CO, VA, IL, DC) remains sharply restrictive.",
+      "The FTC Non-Compete Rule (2024) would have banned most worker non-competes, but it was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. 2024) and never took effect; the FTC dismissed its appeals in September 2025 and retains only case-by-case FTC Act § 5 enforcement. The state-law trend (statutory bans in CA, MN, ND, OK, WY; targeted bans and thresholds in NY, MA, WA, CO, VA, IL, DC) remains sharply restrictive. Under 2026 Wash. Laws ch. 149 (HB 1155), from June 30, 2027 all noncompetition covenants in Washington are void and unenforceable; until then RCW 49.62's earnings-threshold regime applies.",
     recommendation:
       "Confirm enforceability under the applicable state's non-compete law; consider narrower non-solicits or NDA-only protection.",
     default_severity: "warning",
   }),
   presence({
     id: "EMP-025",
-    version: "1.5.0",
+    version: "1.6.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -667,7 +675,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     missing_title: "Non-compete duration missing",
     missing_description: "No duration was specified for the non-compete obligation.",
     explanation:
-      "Unbounded non-competes are unenforceable in every state. State norm: 6–12 months for non-supervisory; up to 2 years for senior executives.",
+      "A non-compete with no stated duration is unenforceable as written in many states; reformation states such as Texas, Florida and Nevada may instead impose a reasonable limit. State norm: 6–12 months for non-supervisory; up to 2 years for senior executives.",
     recommendation: "Add 'Duration' (typically 6–24 months) and consider state-specific maximums.",
     present_patterns: [
       new RegExp(String.raw`non.?compete.{0,80}(${PERIOD_COUNT})\s+(months?|years?)`, "is"),
@@ -713,6 +721,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-026",
+    version: "1.1.0",
     name: "Non-solicit of customers and employees",
     description: "Employment RC should include customer / employee non-solicits.",
     citation: stateNonCompete(),
@@ -720,7 +729,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
     missing_title: "Customer / employee non-solicit clause missing",
     missing_description: "No customer or employee non-solicit was found.",
     explanation:
-      "Even where non-competes are unenforceable, customer / employee non-solicits typically survive — they should be drafted separately.",
+      "In most states non-solicits survive where non-competes do not, but California and North Dakota generally void customer non-solicits as well. Draft them as separate covenants.",
     recommendation: "Add 'Non-Solicitation of Customers' and 'Non-Solicitation of Employees'.",
     present_patterns: [/non.?solicit/i, /not\s+to\s+solicit/i, /no.?(hire|poach)/i],
   }),
@@ -767,15 +776,16 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-028",
+    version: "1.1.0",
     name: "Consideration for restrictive covenants",
     description:
-      "Restrictive covenants must be supported by consideration; some states require independent consideration mid-employment (e.g., MA, IL).",
+      "Restrictive covenants must be supported by consideration; some states require independent consideration mid-employment (e.g., MA, WA).",
     citation: stateNonCompete(),
     playbooks: [EMP_PLAYBOOK_RC],
     missing_title: "Consideration clause missing",
     missing_description: "No consideration clause was found.",
     explanation:
-      "MA / IL / NH / OR / WA / similar states require independent consideration for non-competes signed mid-employment.",
+      "Massachusetts and Washington require consideration independent of continued employment for mid-employment non-competes, and Oregon requires a bona fide advancement; Illinois accepts two years of continued employment or other professional or financial benefits (820 ILCS 90/5); New Hampshire requires pre-acceptance disclosure to new hires (RSA 275:70).",
     recommendation:
       "Add 'Consideration' recital tying the covenants to the employment offer or to specified additional consideration (sign-on bonus, equity grant).",
     present_patterns: [
@@ -786,16 +796,16 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-029",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Garden-leave option (MA / WA where required)",
     description:
-      "Massachusetts and Washington require garden leave or other consideration for post-employment non-competes.",
+      "Massachusetts requires garden leave or other mutually agreed consideration for post-employment non-competes; Washington requires continued base pay when enforcing against a laid-off employee.",
     citation: stateNonCompete(),
     playbooks: [EMP_PLAYBOOK_RC],
     missing_title: "Garden-leave / continuing-pay clause missing",
     missing_description: "No garden-leave or continuing-pay clause was found.",
     explanation:
-      "Mass. G.L. c. 149 § 24L requires either garden leave (50% of highest base salary) or 'mutually agreed-upon consideration'.",
+      "Massachusetts requires garden leave (at least 50% of the highest base salary in the prior two years) or other mutually agreed consideration (G.L. c. 149 § 24L); Washington requires continued base pay only when enforcing against an employee terminated in a layoff (RCW 49.62.020(1)(c)).",
     recommendation:
       "Where required by state law, add a 'Garden Leave' clause paying 50% of highest base salary during the restricted period.",
     // Garden leave is a MASSACHUSETTS (and, for certain workers, Washington)
@@ -953,7 +963,7 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-035",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "California § 2870 carve-out (where applicable)",
     description:
       "California PIIAs must carve out the § 2870 exception (no assignment of inventions developed on employee's own time without employer resources).",
@@ -962,7 +972,7 @@ const PIIA_RULES: Rule[] = [
     missing_title: "Cal. Lab. § 2870 carve-out missing",
     missing_description: "No Cal. Lab. § 2870 carve-out was found.",
     explanation:
-      "California Labor Code § 2870 voids invention-assignment provisions that try to assign inventions developed entirely on the employee's own time, without employer equipment / facilities / proprietary info, unless they relate to employer's business or anticipated R&D.",
+      "California Labor Code § 2870 voids invention-assignment provisions that try to assign inventions developed entirely on the employee's own time, without employer equipment / facilities / proprietary info, unless they relate to the employer's business or actual or demonstrably anticipated research or development, or result from any work performed by the employee for the employer (§ 2870(a)).",
     recommendation:
       "If California law applies, add the § 2870 carve-out language verbatim or by reference.",
     present_patterns: [
@@ -1003,8 +1013,9 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-037",
+    version: "1.1.0",
     name: "DTSA whistleblower-immunity notice",
-    description: "PIIA / employee NDA must contain the 18 U.S.C. § 1833(b) DTSA notice.",
+    description: "PIIA / employee NDA should contain the 18 U.S.C. § 1833(b) DTSA notice.",
     citation: empPractice(
       "dtsa-piia",
       "18 U.S.C. § 1833(b) — DTSA whistleblower immunity",
@@ -1014,7 +1025,7 @@ const PIIA_RULES: Rule[] = [
     missing_title: "DTSA notice missing",
     missing_description: "No 18 U.S.C. § 1833(b) DTSA notice was found.",
     explanation:
-      "Without the immunity notice the employer cannot recover exemplary damages or attorneys' fees under DTSA against an employee.",
+      "The notice is not mandatory, but under 18 U.S.C. § 1833(b)(3), an agreement entered into or updated after May 11, 2016 that lacks the immunity notice bars the employer from recovering exemplary damages or attorney's fees under the DTSA against that employee, contractor, or consultant.",
     recommendation: "Add the DTSA notice using the statutory three-prong language.",
     present_patterns: [/(18\s+u\.?s\.?c\.?\s+§?\s*1833|defend\s+trade\s+secrets\s+act)/i],
   }),
@@ -1049,12 +1060,16 @@ const PIP_RULES: Rule[] = [
     version: "1.1.0",
     name: "Specific performance deficiencies identified",
     description: "PIP must identify specific performance deficiencies.",
-    citation: eeocGuidance(),
+    citation: empPractice(
+      "pip-deficiencies",
+      "PIP drafting practice — specific deficiencies",
+      "https://www.americanbar.org/groups/labor_law/",
+    ),
     playbooks: [EMP_PLAYBOOK_PIP],
     missing_title: "Performance deficiencies clause missing",
     missing_description: "No clause was found identifying specific performance deficiencies.",
     explanation:
-      "EEOC views vague PIPs as evidence of pretext; specificity defends the disciplinary record.",
+      "Courts may treat vague or shifting performance criteria as evidence of pretext; specific, documented deficiencies defend the record.",
     recommendation: "Add 'Performance Deficiencies' enumerating each deficiency with examples.",
     present_patterns: [
       /performance\s+(deficienc|issues?|concerns?)/i,
@@ -1066,14 +1081,19 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-040",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Measurable performance goals",
     description: "PIP must include measurable performance goals.",
-    citation: eeocGuidance(),
+    citation: empPractice(
+      "pip-goals",
+      "PIP drafting practice — measurable goals",
+      "https://www.americanbar.org/groups/labor_law/",
+    ),
     playbooks: [EMP_PLAYBOOK_PIP],
     missing_title: "Measurable goals clause missing",
     missing_description: "No measurable performance goals were found.",
-    explanation: "Standard practice: SMART goals with quantitative thresholds.",
+    explanation:
+      "Standard practice: SMART goals with quantitative thresholds. Courts may treat vague or shifting performance criteria as evidence of pretext; specific, documented deficiencies defend the record.",
     recommendation: "Add 'Performance Goals' with specific, measurable, time-bound metrics.",
     present_patterns: [
       /performance\s+goals?/i,
@@ -1090,14 +1110,19 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-041",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Duration and review schedule (30 / 60 / 90 days)",
     description: "PIP must specify duration and review schedule.",
-    citation: eeocGuidance(),
+    citation: empPractice(
+      "pip-schedule",
+      "PIP drafting practice — duration and review schedule",
+      "https://www.americanbar.org/groups/labor_law/",
+    ),
     playbooks: [EMP_PLAYBOOK_PIP],
     missing_title: "PIP duration / review schedule clause missing",
     missing_description: "No PIP duration or review schedule was found.",
-    explanation: "Practice baseline: 30 / 60 / 90 day milestones with biweekly check-ins.",
+    explanation:
+      "Practice baseline: 30 / 60 / 90 day milestones with biweekly check-ins. Courts may treat vague or shifting performance criteria as evidence of pretext; specific, documented deficiencies defend the record.",
     recommendation: "Add 'Duration and Review Schedule' specifying 30 / 60 / 90 day milestones.",
     present_patterns: [
       /(30|60|90)\s*[-\s/]\s*(60|90)?\s*day/i,
@@ -1135,15 +1160,20 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-043",
+    version: "1.1.0",
     name: "Consequences of failure to improve",
     description:
       "PIP should state consequences of failure to improve (termination is the typical end-state).",
-    citation: eeocGuidance(),
+    citation: empPractice(
+      "pip-consequences",
+      "PIP drafting practice — consequences of failure",
+      "https://www.americanbar.org/groups/labor_law/",
+    ),
     playbooks: [EMP_PLAYBOOK_PIP],
     missing_title: "Consequences clause missing",
     missing_description: "No consequences-of-failure clause was found.",
     explanation:
-      "Without stated consequences the PIP is read as warning-only; termination on failure must be explicit.",
+      "Without stated consequences the PIP is read as warning-only; termination on failure must be explicit. Courts may treat vague or shifting performance criteria as evidence of pretext; specific, documented deficiencies defend the record.",
     recommendation:
       "Add 'Consequences of Failure' stating that failure to meet goals may result in further discipline up to and including termination.",
     present_patterns: [
@@ -1216,6 +1246,7 @@ const HANDBOOK_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-046",
+    version: "1.1.0",
     name: "EEO / anti-harassment policy",
     description: "Handbook must include an EEO / anti-harassment policy with complaint procedure.",
     citation: eeocGuidance(),
@@ -1223,7 +1254,7 @@ const HANDBOOK_RULES: Rule[] = [
     missing_title: "EEO / anti-harassment policy clause missing",
     missing_description: "No EEO / anti-harassment policy was found.",
     explanation:
-      "Faragher / Ellerth affirmative defense requires a policy with a complaint procedure and anti-retaliation provision.",
+      "A published anti-harassment policy with a complaint procedure is the principal evidence of reasonable care for the Faragher/Ellerth defense, though not strictly required, and the defense is unavailable where a tangible employment action was taken.",
     recommendation:
       "Add 'EEO and Anti-Harassment' with prohibited conduct, complaint procedure (with alternative reporting paths), and anti-retaliation.",
     present_patterns: [
@@ -1277,7 +1308,7 @@ const HANDBOOK_RULES: Rule[] = [
   }),
   language({
     id: "EMP-049",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "NLRA § 7 overbroad confidentiality / social-media policy",
     description:
       "Overbroad confidentiality / social-media / non-disparagement rules can chill protected concerted activity (NLRA § 7).",
@@ -1303,7 +1334,7 @@ const HANDBOOK_RULES: Rule[] = [
     bad_description:
       "A handbook policy appears to broadly restrict discussion of wages / working conditions or social-media activity — protected by NLRA § 7.",
     explanation:
-      "NLRB's 2023 Stericycle decision tightened scrutiny of work rules that could be reasonably interpreted to chill § 7 activity. Wage-discussion bans are per-se unlawful.",
+      "NLRB's 2023 Stericycle decision tightened scrutiny of work rules that could be reasonably interpreted to chill § 7 activity. Stericycle remains Board law; bans on discussing wages were unlawful before Stericycle and remain so.",
     recommendation:
       "Narrow the policy with explicit carve-outs for § 7 / protected concerted activity, wage / working-condition discussions, and post-employment communications.",
     default_severity: "warning",

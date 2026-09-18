@@ -8,8 +8,9 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  * U.C.C. § 9-602 lists the debtor protections a security agreement **may not
  * waive**: the breach-of-the-peace limit on self-help repossession (§ 9-609),
  * the commercial-reasonableness standard for disposition (§ 9-610(b)), the
- * notification of disposition (§§ 9-611 to 9-614), the right to redeem the
- * collateral (§ 9-623), and the deficiency calculation (§§ 9-625 to 9-626). A
+ * notification of disposition (§§ 9-611, 9-613 and 9-614), the right to redeem
+ * the collateral (§ 9-623), the deficiency or surplus calculation (§ 9-615(c),
+ * (d), (f)), and the remedies for noncompliance (§§ 9-625 to 9-626). A
  * clause purporting to waive them is void as to those rights, and the finance
  * party that relies on it can lose its deficiency entirely.
  *
@@ -78,7 +79,7 @@ const SAVED_BY_LAW =
 
 export const rule: Rule = {
   id: "DARK-015",
-  version: "1.0.0",
+  version: "1.1.0",
   name: "Waiver of non-waivable Article 9 debtor protections",
   category: "dark-patterns",
   default_severity: "critical",
@@ -103,7 +104,7 @@ export const rule: Rule = {
       description: hit.match[0].trim().slice(0, 200),
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "U.C.C. § 9-602 lists the debtor protections a security agreement may not waive: the breach-of-the-peace limit on self-help repossession (§ 9-609), commercial reasonableness of the disposition (§ 9-610(b)), notification of the disposition (§§ 9-611 to 9-614), the right to redeem the collateral (§ 9-623), and the deficiency calculation (§§ 9-625 to 9-626). A clause purporting to waive them is void as to those rights, and a secured party that repossesses or sells in reliance on it risks losing its deficiency altogether.",
+        "U.C.C. § 9-602 lists the debtor protections a security agreement may not waive: the breach-of-the-peace limit on self-help repossession (§ 9-609), commercial reasonableness of the disposition (§ 9-610(b)), notification of the disposition (§§ 9-611, 9-613 and 9-614), the right to redeem the collateral (§ 9-623), the calculation of a deficiency or surplus (§ 9-615(c), (d), (f)), and the remedies for noncompliance (§§ 9-625 to 9-626). A clause purporting to waive them is void as to those rights, and a secured party that repossesses or sells in reliance on it risks losing its deficiency altogether.",
       recommendation:
         'Remove the waiver, or confine it to what § 9-602 permits — "except as prohibited by applicable law" / "subject to the requirements of Article 9" — and state that repossession and disposition will comply with the notice and commercial-reasonableness requirements.',
       position: hit.position,

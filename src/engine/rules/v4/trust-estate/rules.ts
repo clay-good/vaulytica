@@ -214,16 +214,17 @@ const WILL_RULES: Rule[] = [
   }),
   presence({
     id: "EST-008",
+    version: "1.1.0",
     name: "Execution block — testator + witnesses (2)",
     description:
-      "Will must include execution block for testator signature and at least two witnesses.",
+      "Will should include an execution block for the testator's signature and either two witnesses or a notarial acknowledgment.",
     citation: upc("2-502", "Execution; witnessed wills"),
     playbooks: [EST_PLAYBOOK_WILL],
     missing_title: "Execution block (signature + witnesses) missing",
     missing_description:
       "No execution block (testator signature + at least two witnesses) was found in the text.",
     explanation:
-      "UPC § 2-502 requires at least two competent witnesses. Note: actual execution formalities cannot be verified from the docx alone (see EST-060).",
+      "UPC § 2-502(a)(3) requires either the signatures of at least two witnesses or the testator's acknowledgment before a notary; § 2-502(b) also validates holographic wills, and § 2-503 lets a court excuse defects under the harmless-error rule. State law varies. Note: actual execution formalities cannot be verified from the docx alone (see EST-060).",
     recommendation:
       "Add execution block with testator signature line + 2 witness signature lines + (recommended) notary block.",
     present_patterns: [
@@ -254,6 +255,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
   }),
   presence({
     id: "EST-010",
+    version: "1.1.0",
     name: "Trustee + successor trustees",
     description: "Trust must identify the initial trustee and at least one successor trustee.",
     citation: utc("704", "Vacancy in trusteeship"),
@@ -261,7 +263,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
     missing_title: "Trustee / successor trustees clause missing",
     missing_description: "No trustee / successor-trustee clause was found.",
     explanation:
-      "UTC § 704 governs vacancies. Without successor designation, the court appoints, creating delay and unintended outcomes.",
+      "Under UTC § 704(c), a vacancy in a noncharitable trust is filled by the person the trust names, then by unanimous agreement of the qualified beneficiaries, and only then by the court. Naming a successor avoids delay and unintended outcomes.",
     recommendation:
       "Add 'Trustees' identifying initial trustee + at least one successor (and remove / replace procedures).",
     present_patterns: [/(trustee)/i, /(successor|alternate)\s+trustee/i],
@@ -283,6 +285,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
   }),
   presence({
     id: "EST-012",
+    version: "1.1.0",
     name: "Funding — initial trust property identified",
     description: "Trust should identify initial trust property (often Schedule A).",
     citation: utc("401", "Methods of creating trust"),
@@ -290,7 +293,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
     missing_title: "Funding / trust property clause missing",
     missing_description: "No funding / initial trust-property clause was found.",
     explanation:
-      "UTC § 401 requires property for trust formation. Without funding, the trust is unfunded and inoperative.",
+      "UTC § 401 requires property for trust formation. A revocable trust is often created with nominal property and funded later; under UPC § 2-511 a pour-over to it is valid whatever the size of its corpus. Identifying the initial trust property documents the funding.",
     recommendation: "Add 'Trust Property' (or Schedule A) describing the initial trust corpus.",
     present_patterns: [
       /(trust\s+property|trust\s+corpus|schedule\s+a|initial\s+funding)/i,
@@ -299,10 +302,11 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
   }),
   presence({
     id: "EST-013",
+    version: "1.1.0",
     name: "Distributions during settlor's life",
     description:
       "Trust must address distributions during settlor's lifetime (typically: all income and principal to settlor).",
-    citation: utc("813", "Duty to inform and report"),
+    citation: utc("603", "Settlor's powers; powers of withdrawal"),
     playbooks: [EST_PLAYBOOK_REVOCABLE_TRUST],
     missing_title: "Lifetime-distribution clause missing",
     missing_description: "No lifetime-distribution clause was found.",
@@ -355,6 +359,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
   }),
   presence({
     id: "EST-016",
+    version: "1.1.0",
     name: "Spendthrift + creditor-protection clause",
     description:
       "Trust should include a spendthrift clause restraining beneficiaries' creditors (UTC § 502).",
@@ -363,7 +368,7 @@ const REVOCABLE_TRUST_RULES: Rule[] = [
     missing_title: "Spendthrift clause missing",
     missing_description: "No spendthrift / creditor-protection clause was found.",
     explanation:
-      "UTC § 502 enforces spendthrift provisions restricting both voluntary and involuntary transfers of beneficial interests. Standard estate-planning practice.",
+      "UTC § 502 enforces spendthrift provisions restricting both voluntary and involuntary transfers of beneficial interests. During the settlor's life, a revocable trust's property is reachable by the settlor's creditors whatever the spendthrift clause says (UTC § 505(a)(1)); the clause protects other beneficiaries, subject to the § 503 exceptions.",
     recommendation:
       "Add 'Spendthrift Provision' restraining voluntary and involuntary transfers of beneficial interests.",
     present_patterns: [/spendthrift/i, /(creditor|involuntary\s+transfer|attachment)/i],
@@ -644,14 +649,15 @@ const HEALTHCARE_POA_RULES: Rule[] = [
 const DURABLE_POA_RULES: Rule[] = [
   presence({
     id: "EST-031",
+    version: "1.1.0",
     name: "Principal + agent identification (financial)",
     description: "Durable POA must identify principal and agent (and successor agent).",
-    citation: upoaa("110", "Co-agents and successor agents"),
+    citation: upoaa("111", "Coagents and successor agents"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Principal / agent identification clause missing",
     missing_description: "No clause was found identifying principal and agent.",
     explanation:
-      "UPOAA § 110 contemplates co-agents and successor agents. Identification is the operative core.",
+      "UPOAA § 111 contemplates co-agents and successor agents. Identification is the operative core.",
     recommendation:
       "Add 'Principal and Agent' identifying the principal and primary / successor agents.",
     present_patterns: [/(principal|grantor)/i, /(agent|attorney.in.fact)/i],
@@ -732,17 +738,18 @@ const DURABLE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-035",
+    version: "1.1.0",
     name: "Agent's duties — fiduciary obligations",
     description:
-      "POA should recite agent's fiduciary duties (UPOAA § 114): loyalty, good faith, no commingling.",
+      "POA should address the agent's fiduciary duties (UPOAA § 114): loyalty, good faith, recordkeeping.",
     citation: upoaa("114", "Agent's duties"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Agent fiduciary duties clause missing",
     missing_description: "No clause was found reciting agent's fiduciary duties.",
     explanation:
-      "UPOAA § 114 imposes duties of loyalty, good faith, recordkeeping. Without recital, principal protections are weaker and third parties may hesitate to honor the POA.",
+      'UPOAA § 114 imposes duties of loyalty, good faith, and recordkeeping by statute, whether or not the document recites them; its listed duties do not include "no commingling" in those words. A recital still helps the agent and third parties understand the agent\'s obligations.',
     recommendation:
-      "Add 'Agent's Duties' reciting loyalty, good faith, no commingling, and recordkeeping obligations.",
+      "Add 'Agent's Duties' reciting loyalty, good faith, and recordkeeping obligations, plus any additional duties (such as keeping the principal's property separate) the principal wants.",
     present_patterns: [
       /(agent.?s\s+duties|fiduciary|loyalty)/i,
       /(good\s+faith|records|commingl)/i,
@@ -767,15 +774,16 @@ const DURABLE_POA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-037",
+    version: "1.1.0",
     name: "Notarial acknowledgment + recording (for real property)",
     description:
-      "Durable POA must be notarized; recording is needed where real property is involved.",
+      "Durable POA should carry a notarial acknowledgment; recording is needed where real property is involved.",
     citation: upoaa("105", "Execution"),
     playbooks: [EST_PLAYBOOK_DURABLE_POA],
     missing_title: "Notary / recording clause missing",
     missing_description: "No notary / recording clause was found.",
     explanation:
-      "UPOAA § 105 requires notarial acknowledgment; recording with the county recorder is required for POAs used to convey / encumber real property. Execution formalities cannot be verified from text — see EST-060.",
+      "UPOAA § 105 requires only the principal's signature; acknowledgment before a notary makes the signature presumed genuine and supports the § 119 reliance protections, but is not a validity requirement. Some states do require it. Recording with the county recorder is required for POAs used to convey / encumber real property. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
       "Add notarial acknowledgment block and (if real property) recording instructions.",
     present_patterns: [
@@ -792,16 +800,16 @@ const DURABLE_POA_RULES: Rule[] = [
 const PRENUP_RULES: Rule[] = [
   presence({
     id: "EST-038",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Parties + contemplation of marriage recital",
     description:
-      "Prenup must identify parties and recite that the agreement is made in contemplation of marriage.",
-    citation: upmaa("3", "Formation"),
+      "Prenup should identify the parties; a contemplation-of-marriage recital is customary.",
+    citation: upmaa("6", "Formation requirements"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Parties / contemplation-of-marriage clause missing",
     missing_description: "No clause was found identifying parties and contemplation of marriage.",
     explanation:
-      "UPMAA / UPAA require contemplation-of-marriage recital; absent the recital, the document is not a prenup.",
+      "UPMAA § 6 requires a premarital agreement to be in a record signed by both parties. Neither the UPMAA nor the UPAA requires a contemplation-of-marriage recital, but the recital identifies the document as a premarital agreement and frames its purpose.",
     recommendation:
       "Add 'Parties' identifying both prospective spouses and reciting contemplation of marriage.",
     present_patterns: [
@@ -820,18 +828,18 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-039",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Financial disclosure schedules + adequacy recital",
     description:
-      "Prenup must include financial disclosure schedules and recital that disclosures are fair and reasonable.",
+      "Prenup should include financial disclosure schedules and a recital that disclosure was adequate or expressly waived.",
     citation: upmaa("9", "Disclosure"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Financial disclosure / adequacy clause missing",
     missing_description: "No financial-disclosure / adequacy-recital clause was found.",
     explanation:
-      "Failure to disclose is the leading ground for invalidation. UPMAA § 9 requires fair and reasonable disclosure or knowing waiver.",
+      "Failure to disclose is the leading ground for invalidation. UPMAA § 9 requires access to independent legal representation and, under § 9(d), adequate financial disclosure: a reasonably accurate description and good-faith estimate of value, an express waiver in a separate signed record, or adequate knowledge.",
     recommendation:
-      "Attach Schedule A (party 1 assets / debts) and Schedule B (party 2 assets / debts) with an adequacy recital and any knowing waiver.",
+      "Attach Schedule A (party 1 assets / debts) and Schedule B (party 2 assets / debts) with good-faith value estimates, an adequacy recital, and any express waiver in a separate signed record.",
     present_patterns: [
       /(disclosure|schedule\s+a|schedule\s+b|assets\s+and\s+liabilities)/i,
       /(fair\s+and\s+reasonable|adequate|knowing\s+waiver)/i,
@@ -845,10 +853,11 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-040",
+    version: "1.1.0",
     name: "Separate vs marital property characterization",
     description:
       "Prenup must characterize separate vs marital / community property and its post-marriage treatment.",
-    citation: upmaa("9", "Permitted terms"),
+    citation: upmaa("9", "Enforcement"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Property characterization clause missing",
     missing_description: "No property-characterization clause was found.",
@@ -863,6 +872,7 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-041",
+    version: "1.1.0",
     name: "Alimony / spousal-support waiver or terms",
     description:
       "Prenup should address alimony / spousal support (waiver, formula, or cross-reference to state default).",
@@ -871,7 +881,7 @@ const PRENUP_RULES: Rule[] = [
     missing_title: "Alimony / spousal-support clause missing",
     missing_description: "No alimony / spousal-support clause was found.",
     explanation:
-      "Alimony waivers are heavily scrutinized and unenforceable in some states (CA permits with counsel; some states refuse). UPMAA § 10(a)(4) permits with limitations.",
+      "Alimony waivers are heavily scrutinized and unenforceable in some states (CA permits with counsel; some states refuse). Under UPMAA § 10(b), if a spousal-support waiver would leave a party eligible for public assistance, the court may order support to the extent needed.",
     recommendation:
       "Add 'Spousal Support' addressing alimony — waiver, formula, or default — with attention to state-specific enforceability (e.g., CA Fam. § 1612(c) counsel requirement).",
     present_patterns: [
@@ -881,15 +891,16 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-042",
+    version: "1.1.0",
     name: "Estate / inheritance rights",
     description:
-      "Prenup may waive elective-share / homestead / family-allowance / intestate rights (and should address probate coordination).",
-    citation: upmaa("9", "Permitted terms"),
+      "Prenup may waive elective-share / homestead / exempt-property / family-allowance / intestate rights (and should address probate coordination).",
+    citation: upc("2-213", "Waiver of right to elect and of other rights"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Estate / inheritance rights clause missing",
     missing_description: "No estate / inheritance rights clause was found.",
     explanation:
-      "UPMAA § 9 expressly permits waiver of elective share, homestead, and intestate rights. Without waiver, surviving spouse retains default elective-share rights.",
+      "Waiver of the elective share, homestead, exempt property, family allowance, and intestate rights is governed by UPC § 2-213 (and UPAA § 3(a) in UPAA states); UPMAA § 9 is the enforcement section. Without waiver, the surviving spouse retains default elective-share rights.",
     recommendation:
       "Add 'Estate Rights' addressing elective share, homestead allowance, family allowance, intestate share, and beneficiary designations.",
     present_patterns: [
@@ -918,15 +929,16 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-044",
+    version: "1.1.0",
     name: "Choice of law + venue",
     description:
       "Prenup should specify governing law and venue (state where parties expect to marry / reside).",
-    citation: upmaa("11", "Choice of law"),
+    citation: upmaa("4", "Governing law"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Choice-of-law / venue clause missing",
     missing_description: "No choice-of-law / venue clause was found.",
     explanation:
-      "UPMAA § 11 honors the parties' choice of law; absent choice, the law of the state where the agreement is signed applies.",
+      "UPMAA § 4 applies the chosen law if that jurisdiction has a significant relationship to the agreement or a party and the choice does not offend the forum's fundamental public policy; otherwise the forum's law, including its choice-of-law rules, applies.",
     recommendation:
       "Add 'Governing Law and Venue' specifying state law that will govern enforceability and venue.",
     present_patterns: [/(governing\s+law|choice\s+of\s+law)/i, /(venue|jurisdiction)/i],
@@ -934,17 +946,18 @@ const PRENUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-045",
+    version: "1.1.0",
     name: "Execution — signatures + notarial acknowledgment + time-before-marriage",
     description:
-      "Prenup must be executed in writing, with signatures and notary; should be signed adequately before the wedding.",
-    citation: upmaa("4", "Execution"),
+      "Prenup must be in a record signed by both parties; notarization is customary but not required by the UPMAA; should be signed adequately before the wedding.",
+    citation: upmaa("6", "Formation requirements"),
     playbooks: [EST_PLAYBOOK_PRENUP],
     missing_title: "Execution / notary clause missing",
     missing_description: "No execution / notary clause was found.",
     explanation:
-      "UPMAA § 4 requires a signed writing. Signing under duress, on the eve of the wedding, can be an enforceability red flag. Execution formalities cannot be verified from text — see EST-060.",
+      "UPMAA § 6 requires a premarital agreement to be in a record signed by both parties; neither the UPMAA nor the UPAA requires notarization. Signing under duress, on the eve of the wedding, can be an enforceability red flag. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
-      "Add execution block with notarial acknowledgment + a recital of when the agreement was executed relative to the wedding.",
+      "Add execution block with both parties' signatures (notarial acknowledgment optional) + a recital of when the agreement was executed relative to the wedding.",
     present_patterns: [
       /(signature|signed)/i,
       /(notary|notar(y|ial)|acknowledg(ment|ed))/i,
@@ -964,16 +977,16 @@ const POSTNUP_RULES: Rule[] = [
     // ("and"), but the patterns were a synonym OR: the spouses and the during-marriage recital are distinct pillars, and `(spouses|husband\s+and\s+wife|married\s+couple|parties)` alone is satisfied by the word "parties".
     // The check could not fire on a document that carried nothing but
     // execution boilerplate.
-    version: "1.0.1",
+    version: "1.1.0",
     name: "Parties + during-marriage recital",
     description:
-      "Postnup must identify the spouses and recite the agreement is made during the marriage.",
-    citation: upmaa("3", "Formation"),
+      "Postnup should identify the spouses and recite the agreement is made during the marriage.",
+    citation: upmaa("6", "Formation requirements"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Parties / during-marriage clause missing",
     missing_description: "No clause was found identifying spouses and the during-marriage status.",
     explanation:
-      "Postnups are more scrutinized than prenups because spouses owe heightened fiduciary duties (CA Fam. § 721, IL, NY). The during-marriage recital frames the analysis.",
+      "UPMAA § 6 requires a marital agreement to be in a record signed by both parties; no statutory recital is required. Postnups are more scrutinized than prenups because spouses owe heightened fiduciary duties (CA Fam. § 721, IL, NY). The during-marriage recital frames the analysis.",
     recommendation:
       "Add 'Parties' identifying the spouses and reciting that the parties are married and entering this agreement during the marriage.",
     present_patterns: [
@@ -1007,6 +1020,7 @@ const POSTNUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-048",
+    version: "1.1.0",
     name: "Heightened fiduciary disclosure",
     description:
       "Postnup must include full financial disclosure — heightened standard given spouses' fiduciary duties.",
@@ -1015,7 +1029,7 @@ const POSTNUP_RULES: Rule[] = [
     missing_title: "Fiduciary disclosure clause missing",
     missing_description: "No fiduciary-disclosure / disclosure-schedules clause was found.",
     explanation:
-      "Spouses owe each other fiduciary duties (e.g., CA Fam. § 721); disclosure is heightened compared to prenup. Failure to fully disclose is the leading ground for invalidation.",
+      "UPMAA § 9 requires access to independent legal representation and, under § 9(d), adequate financial disclosure: a reasonably accurate description and good-faith estimate of value, an express waiver in a separate signed record, or adequate knowledge. Spouses also owe each other fiduciary duties (e.g., CA Fam. § 721). Failure to fully disclose is the leading ground for invalidation.",
     recommendation:
       "Attach Schedule A / B with full assets / debts / income and recite the disclosure was complete and adequate.",
     present_patterns: [
@@ -1025,15 +1039,16 @@ const POSTNUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-049",
+    version: "1.1.0",
     name: "Property characterization + transmutation",
     description:
       "Postnup must address transmutation of property and characterization of community / separate / marital property.",
-    citation: upmaa("9", "Permitted terms"),
+    citation: upmaa("9", "Enforcement"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Property characterization / transmutation clause missing",
     missing_description: "No property-characterization / transmutation clause was found.",
     explanation:
-      "Transmutation rules vary sharply (CA Fam. § 852 requires express written waiver). The postnup commonly recharacterizes property to define separate / community ownership going forward.",
+      "Transmutation rules vary sharply (Cal. Fam. Code § 852 requires an 'express declaration' in writing). The postnup commonly recharacterizes property to define separate / community ownership going forward.",
     recommendation:
       "Add 'Property Characterization and Transmutation' defining each party's separate / marital / community property, with explicit transmutation language where required.",
     present_patterns: [
@@ -1043,6 +1058,7 @@ const POSTNUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-050",
+    version: "1.1.0",
     name: "Spousal support / waiver",
     description: "Postnup should address spousal support — waiver, formula, or state-default.",
     citation: upmaa("10", "Limitations"),
@@ -1050,7 +1066,7 @@ const POSTNUP_RULES: Rule[] = [
     missing_title: "Spousal support clause missing",
     missing_description: "No spousal-support / waiver clause was found.",
     explanation:
-      "Same scrutiny as prenup; some states refuse alimony waivers in postnups. CA requires independent counsel for alimony waivers in postnups.",
+      "Same scrutiny as prenup; some states refuse alimony waivers in postnups. California's Fam. Code §§ 1612(c) and 1615 apply to premarital agreements; California postnuptial agreements are tested under the fiduciary duty of Fam. Code § 721.",
     recommendation:
       "Add 'Spousal Support' addressing waiver / formula / default with attention to state-specific enforceability.",
     present_patterns: [
@@ -1061,12 +1077,13 @@ const POSTNUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-051",
+    version: "1.1.0",
     name: "Independent counsel + voluntary execution",
     description:
       "Postnup should recite each party had independent counsel and executed voluntarily.",
     citation: estPractice(
       "postnup-counsel",
-      "Postnup independent-counsel baseline (CA Fam. § 1615 / NY DRL § 236(B))",
+      "Postnup independent-counsel baseline (Cal. Fam. Code § 721 fiduciary duty / NY DRL § 236(B))",
       "https://www.americanbar.org/groups/family_law/",
     ),
     playbooks: [EST_PLAYBOOK_POSTNUP],
@@ -1083,14 +1100,16 @@ const POSTNUP_RULES: Rule[] = [
   }),
   presence({
     id: "EST-052",
+    version: "1.1.0",
     name: "Execution — signatures + notarial acknowledgment",
-    description: "Postnup must be executed in writing, signed, and (in many states) notarized.",
-    citation: upmaa("4", "Execution"),
+    description:
+      "Postnup must be in a record signed by both parties; check state law for any added formalities.",
+    citation: upmaa("6", "Formation requirements"),
     playbooks: [EST_PLAYBOOK_POSTNUP],
     missing_title: "Execution / notary clause missing",
     missing_description: "No execution / notary clause was found.",
     explanation:
-      "Written + signed + (in many states) notarized. Execution formalities cannot be verified from text — see EST-060.",
+      "UPMAA § 6 requires a marital agreement to be in a record signed by both parties; neither the UPMAA nor the UPAA requires notarization. Execution formalities cannot be verified from text — see EST-060.",
     recommendation:
       "Add execution block with signatures and notarial acknowledgment where required.",
     present_patterns: [/(signature|signed)/i, /(notary|notar(y|ial)|acknowledg(ment|ed))/i],
@@ -1185,6 +1204,7 @@ const FAMILY_MSA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-057",
+    version: "1.1.0",
     name: "Tax provisions — dependency exemption / filing status",
     description:
       "MSA should address tax issues (dependency / child tax credit, filing status, IRC § 71 alimony treatment post-TCJA).",
@@ -1197,9 +1217,9 @@ const FAMILY_MSA_RULES: Rule[] = [
     missing_title: "Tax provisions clause missing",
     missing_description: "No tax-provisions clause was found.",
     explanation:
-      "Post-TCJA (effective for 2019+ divorces), alimony is no longer deductible / taxable. Dependency-exemption / Form 8332 release affect child tax credit. Ignored at the parties' peril.",
+      "Post-TCJA (effective for 2019+ divorces), alimony is no longer deductible / taxable. The dependency exemption amount is $0 (TCJA suspended it for 2018–2025 and the 2025 reconciliation act made that permanent); a Form 8332 release now matters mainly for the child tax credit. Ignored at the parties' peril.",
     recommendation:
-      "Add 'Tax Provisions' covering filing status, dependency exemption (Form 8332), child tax credit allocation, and post-TCJA alimony treatment.",
+      "Add 'Tax Provisions' covering filing status, which parent claims the child (Form 8332 release), child tax credit allocation, and post-TCJA alimony treatment.",
     present_patterns: [
       /(tax|filing\s+status|dependency|form\s+8332|tcja)/i,
       /(child\s+tax\s+credit|exemption|deduction)/i,
@@ -1208,21 +1228,22 @@ const FAMILY_MSA_RULES: Rule[] = [
   }),
   presence({
     id: "EST-058",
-    name: "Retirement-plan division — QDRO / DRO",
+    version: "1.1.0",
+    name: "Retirement-plan division — QDRO / federal court order",
     description:
-      "MSAs dividing qualified retirement plans must reference a QDRO (or DRO for federal employees).",
+      "MSAs dividing qualified retirement plans must reference a QDRO (or, for federal employees, the court order FERS / CSRS or the TSP requires).",
     citation: estPractice(
       "qdro",
-      "ERISA QDRO / DRO baseline (29 U.S.C. § 1056(d)(3))",
+      "ERISA QDRO baseline (29 U.S.C. § 1056(d)(3)); 5 C.F.R. parts 838 and 1653",
       "https://www.dol.gov/agencies/ebsa/laws-and-regulations/laws/erisa",
     ),
     playbooks: [EST_PLAYBOOK_FAMILY_MSA],
     missing_title: "QDRO / retirement division clause missing",
-    missing_description: "No QDRO / DRO retirement-plan division clause was found.",
+    missing_description: "No QDRO / retirement-plan division clause was found.",
     explanation:
-      "Under ERISA 29 U.S.C. § 1056(d)(3), a Qualified Domestic Relations Order is required to divide qualified plans; DRO required for federal employees (FERS / CSRS / TSP).",
+      "Under ERISA 29 U.S.C. § 1056(d)(3), a Qualified Domestic Relations Order is required to divide qualified plans. Federal plans use their own orders: FERS / CSRS require a court order acceptable for processing (5 C.F.R. part 838), and the TSP a retirement benefits court order (5 C.F.R. part 1653).",
     recommendation:
-      "Add 'Retirement Plan Division' identifying the plans and the form of order (QDRO / DRO) required to effect division.",
+      "Add 'Retirement Plan Division' identifying the plans and the form of order (QDRO, court order acceptable for processing, or retirement benefits court order) required to effect division.",
     present_patterns: [
       /(qdro|domestic\s+relations\s+order|retirement\s+plan)/i,
       /(401\(k\)|pension|ira|fers|csrs|tsp)/i,

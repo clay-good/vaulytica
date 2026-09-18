@@ -4,7 +4,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
 /** FIN-004 — Late payment interest rate sanity (warning). */
 export const rule: Rule = {
   id: "FIN-004",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Late payment interest rate sanity",
   category: "financial",
   default_severity: "warning",
@@ -29,7 +29,7 @@ export const rule: Rule = {
       description: `Stated late-payment rate: ${rate}%.`,
       excerpt: hit.match[0],
       explanation:
-        "Some jurisdictions cap interest on overdue amounts. New York's civil usury limit, for example, is generally 16% per year. A stated periodic rate above 12% warrants a usury check against the governing-law jurisdiction.",
+        "Some jurisdictions cap interest on overdue amounts. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. A stated periodic rate above 12% warrants a check against the governing-law jurisdiction.",
       recommendation: "Confirm the rate is enforceable in the governing-law jurisdiction.",
       position: hit.position,
     });

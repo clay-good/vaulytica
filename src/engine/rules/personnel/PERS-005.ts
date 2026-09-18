@@ -10,7 +10,8 @@ import { allMatches, describesCovenantElsewhere, emit, excerptWindow } from "../
  * sharply by jurisdiction:
  *
  *   - California: void per Bus. & Prof. Code § 16600 (with narrow
- *     exceptions tied to sale of a business).
+ *     exceptions for the sale of a business or dissolution of a
+ *     partnership or LLC, §§ 16601–16602.5).
  *   - North Dakota / Oklahoma / Minnesota: largely unenforceable.
  *   - Washington: narrow (RCW 49.62 income threshold).
  *   - Texas: enforceable only under Bus. & Com. Code § 15.50.
@@ -38,7 +39,7 @@ export const NON_COMPETE_DISCLAIMED =
 
 export const rule: Rule = {
   id: "PERS-005",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Non-compete clause present",
   category: "personnel",
   default_severity: "warning",
@@ -90,7 +91,7 @@ export const rule: Rule = {
       description: hit.match[0],
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
-        "Non-compete clauses have sharply divergent enforceability by jurisdiction. California prohibits them outright (Bus. & Prof. Code § 16600); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
+        "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       recommendation:
         "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       position: hit.position,
