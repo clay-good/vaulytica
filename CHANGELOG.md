@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.719.0] — 2026-09-18
+
+### Added
+- **A page for every document type** — `/review/<playbook-id>` for all 265,
+  and `/reviews` grouping them as the landing page does. Each lists the checks
+  that run on that document (name, what it checks, severity, rule id), the
+  number of general checks that also run, its sources, and the documents it is
+  usually reviewed with. The data (`tools/site/doc-types.json`, from
+  `npm run site:doc-types`) is computed from the rule catalog, and
+  `tests/integration/site-doc-types.test.ts` proves it against the **runner
+  itself**: it forces each sampled playbook, reads the engine's execution log,
+  and fails if a page lists a check that does not run or misses one that does
+  (shown to fail by breaking the selection). Playbook descriptions lose their
+  engine-internal selectors ("Selects the COMM-140..145 ruleset") before they
+  reach a reader. Every entry of the landing page's document-type list now
+  links to its page; the sitemap grows from 11 URLs to 277.
+
 ## [9.718.0] — 2026-09-18
 
 ### Fixed

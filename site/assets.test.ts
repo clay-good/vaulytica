@@ -34,8 +34,9 @@ const ORIGIN = "https://vaulytica.com";
  * absolute URLs on the production origin.
  *
  * The bare document path `/` is not an asset — it is this page — and
- * neither is a search-landing page, which the build renders from
- * `tools/site/seo-pages.ts` (its reach is guarded in `seo-pages.test.ts`).
+ * neither is a search-landing or document-type page, which the build renders
+ * from `tools/site/seo-pages.ts` (guarded in `seo-pages.test.ts` and
+ * `site-doc-types.test.ts`).
  */
 function referencedAssetPaths(): string[] {
   const paths = new Set<string>();
@@ -47,6 +48,7 @@ function referencedAssetPaths(): string[] {
     if (!url.startsWith("/")) continue;
     if (url === "/") continue;
     if (SEO_PAGES.some((p) => url === `/${p.slug}`)) continue;
+    if (url === "/reviews" || url.startsWith("/review/")) continue;
     paths.add(url.replace(/[?#].*$/, ""));
   }
   return [...paths].sort();

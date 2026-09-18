@@ -5,8 +5,11 @@ import {
   SEO_PAGES,
   buildLlmsTxt,
   buildSitemap,
+  linkDocTypeIndex,
   readHeadlineCounts,
   render404,
+  renderDocTypeIndex,
+  renderDocTypePage,
   renderSeoPage,
 } from "./tools/site/seo-pages.js";
 import { createHash } from "node:crypto";
@@ -14,6 +17,7 @@ import { createRequire } from "node:module";
 import {
   copyFileSync,
   cpSync,
+  readdirSync,
   existsSync,
   mkdirSync,
   readFileSync,
@@ -249,6 +253,20 @@ function deployAssets(): Plugin {
         writeFileSync(resolve(DIST, `${page.slug}.html`), renderSeoPage(page, counts), "utf8");
       }
       writeFileSync(resolve(DIST, "404.html"), render404(), "utf8");
+      const docTypes = loadDocTypes();
+      mkdirSync(resolve(DIST, "review"), { recursive: true });
+      for (const t of docTypes.types) {
+        writeFileSync(
+          resolve(DIST, "review", `${t.id}.html`),
+          renderDocTypePage(t, docTypes.types, counts),
+          "utf8",
+        );
+      }
+      writeFileSync(
+        resolve(DIST, "reviews.html"),
+        renderDocTypeIndex(docTypes.types, counts, docTypes.groups),
+        "utf8",
+      );
       writeFileSync(resolve(DIST, "llms.txt"), buildLlmsTxt(counts), "utf8");
     },
   };
@@ -268,6 +286,38 @@ function deployAssets(): Plugin {
  * Tracked as a hardening-roadmap item in [`docs/threat-model.md`].
  */
 /**
+ * The per-document-type data (`npm run site:doc-types`), plus every playbook
+ * name by id so a deprecated playbook's index entry can link to its successor.
+ */
+function loadDocTypes(): {
+  types: Parameters<typeof renderDocTypeIndex>[0];
+  groups: string[];
+  superseded: Record<string, string>;
+  names: Map<string, string>;
+} {
+  const data = JSON.parse(
+    readFileSync(resolve(REPO_ROOT, "tools", "site", "doc-types.json"), "utf8"),
+  ) as {
+    types: Parameters<typeof renderDocTypeIndex>[0];
+    groups: string[];
+    superseded: Record<string, string>;
+  };
+  const names = new Map<string, string>();
+  const dir = resolve(REPO_ROOT, "playbooks");
+  for (const file of readdirSync(dir)) {
+    if (!file.endsWith(".json")) continue;
+    const parsed = JSON.parse(readFileSync(resolve(dir, file), "utf8")) as unknown;
+    for (const p of (Array.isArray(parsed) ? parsed : [parsed]) as Array<{
+      id: string;
+      name: string;
+    }>) {
+      names.set(p.id, p.name);
+    }
+  }
+  return { ...data, names };
+}
+
+/**
  * Stamp the real release version into the landing page's JSON-LD, so the
  * structured data search engines read is never a hand-typed number that
  * stopped matching the product long ago.
@@ -279,9 +329,12 @@ function jsonLdVersion(): Plugin {
   return {
     name: "vaulytica-jsonld-version",
     transformIndexHtml(html) {
-      return html.replace(
-        '"softwareVersion": "__APP_VERSION__"',
-        `"softwareVersion": "${pkg.version}"`,
+      const docTypes = loadDocTypes();
+      return linkDocTypeIndex(
+        html.replace('"softwareVersion": "__APP_VERSION__"', `"softwareVersion": "${pkg.version}"`),
+        docTypes.types,
+        docTypes.superseded,
+        docTypes.names,
       );
     },
   };
@@ -463,7 +516,7 @@ export function buildRobotsTxt(): string {
  * search engines drop the fragment, so they were duplicates of the home page.
  */
 export function buildSitemapXml(): string {
-  return buildSitemap();
+  return buildSitemap(loadDocTypes().types);
 }
 
 /**

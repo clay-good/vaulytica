@@ -612,7 +612,7 @@ h1,h2,h3{color:var(--heading);line-height:1.15;margin:0 0 .5em}h1,h2{font-family
 p{margin:0 0 1em}.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
 header{border-bottom:1px solid var(--line)}header .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px}
 .wordmark{display:inline-flex;align-items:center;gap:9px;font:600 24px var(--serif);color:var(--heading);text-decoration:none}.wordmark span{width:11px;height:11px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);box-shadow:0 0 0 1.5px var(--accent)}
-header nav a{margin-left:18px;font-size:16px}
+header nav a{margin-left:14px;font-size:15px;white-space:nowrap}
 .crumbs{font-size:15px;color:var(--muted);margin:28px 0 0}.crumbs a{color:var(--muted)}
 .hero{padding:28px 0 48px}.lead{font-size:20px;max-width:760px}
 .cta{display:inline-block;background:var(--accent);color:#0e1119;font-weight:700;padding:14px 22px;border-radius:10px;text-decoration:none;margin:8px 12px 8px 0}.cta:hover{background:#f0c862}
@@ -622,7 +622,7 @@ section{padding:44px 0;border-top:1px solid var(--line)}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}.card p{margin:0;font-size:16.5px}
 ol.steps{padding-left:22px}ol.steps li{margin-bottom:10px}
 pre{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;overflow-x:auto;font-size:14.5px;color:var(--heading)}
-.faq h3{margin-top:24px}.links{columns:2 240px;padding-left:20px}
+.sev{margin-top:10px!important;font-size:14px!important;color:var(--muted)}.faq h3{margin-top:24px}.links{columns:2 240px;padding-left:20px}
 footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:15px;color:var(--muted)}footer a{color:var(--muted)}
 `.trim();
 
@@ -681,7 +681,7 @@ function footer(): string {
   const links = SEO_PAGES.map((p) => `<a href="/${p.slug}">${escapeHtml(p.label)}</a>`).join(" · ");
   return `<footer>
       <div class="wrap">
-        <p><a href="/">Vaulytica</a> · ${links}</p>
+        <p><a href="/">Vaulytica</a> · ${links} · <a href="/reviews">All document types</a></p>
         <p>Free and open source under the MIT license · <a href="https://github.com/clay-good/vaulytica">Source on GitHub</a> · Made by <a href="https://claygood.com">Clay Good</a></p>
         <p>Vaulytica is a software tool, not a law firm. It does not give legal advice, and using it does not create an attorney-client relationship.</p>
       </div>
@@ -826,7 +826,7 @@ export function render404(): string {
 }
 
 /** `sitemap.xml`: the home page and every landing page. No fragment URLs. */
-export function buildSitemap(): string {
+export function buildSitemap(docTypes: ReadonlyArray<{ readonly id: string }> = []): string {
   const url = (loc: string): string =>
     `  <url>\n    <loc>${loc}</loc>\n    <lastmod>${CONTENT_UPDATED}</lastmod>\n  </url>`;
   return [
@@ -834,6 +834,8 @@ export function buildSitemap(): string {
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     url(`${ORIGIN}/`),
     ...SEO_PAGES.map((p) => url(pageUrl(p.slug))),
+    ...(docTypes.length > 0 ? [url(`${ORIGIN}/reviews`)] : []),
+    ...docTypes.map((t) => url(docTypeUrl(t.id))),
     "</urlset>",
     "",
   ].join("\n");
@@ -859,8 +861,247 @@ export function buildLlmsTxt(counts: HeadlineCounts): string {
     "## Project",
     "",
     `- [Use the tool](${ORIGIN}/): the browser app`,
+    `- [Every document type](${ORIGIN}/reviews): each of the ${counts.docTypes} document types and the checks it gets`,
     "- [Source code](https://github.com/clay-good/vaulytica): MIT-licensed repository",
     "- [CI integration](https://github.com/clay-good/vaulytica/blob/main/docs/ci-integration.md): CLI and GitHub Action",
     "",
   ].join("\n");
+}
+
+// ---------------------------------------------------------------------------
+// Per-document-type pages (`/review/<id>`) and their index (`/reviews`).
+// Data: tools/site/doc-types.json, generated from the rule catalog.
+// ---------------------------------------------------------------------------
+
+export interface DocTypePageData {
+  readonly id: string;
+  readonly name: string;
+  readonly group: string;
+  readonly summary: string;
+  readonly checks: ReadonlyArray<{
+    readonly id: string;
+    readonly name: string;
+    readonly description: string;
+    readonly severity: string;
+  }>;
+  readonly general_checks: number;
+  readonly companions: ReadonlyArray<string>;
+  readonly sources: ReadonlyArray<{ readonly title: string; readonly url: string }>;
+}
+
+export const docTypeUrl = (id: string): string => `${ORIGIN}/review/${id}`;
+
+const SEVERITY_LABEL: Record<string, string> = {
+  critical: "Critical",
+  warning: "Warning",
+  info: "Note",
+};
+
+/** `<title>`: the longest form that still fits a search result. */
+export function docTypeTitle(name: string): string {
+  for (const t of [`Free ${name} Review | Vaulytica`, `${name} Review | Vaulytica`]) {
+    if (t.length <= 65) return t;
+  }
+  return `${name} | Vaulytica`;
+}
+
+/** Meta description: what it checks, in the reader's words, under 160 characters. */
+export function docTypeDescription(t: DocTypePageData): string {
+  const n = t.checks.length;
+  const tail = " Free, cited, nothing uploaded.";
+  const base =
+    n === 0
+      ? `Free ${t.name} review in your browser: ${t.general_checks} general contract checks.`
+      : `Free ${t.name} review: ${n} document-specific check${n === 1 ? "" : "s"} plus ${t.general_checks} general checks.`;
+  const named = t.checks.slice(0, 3).map((c) => c.name);
+  for (let k = named.length; k > 0; k--) {
+    const d = `${base} Includes ${named.slice(0, k).join("; ")}.${tail}`;
+    if (d.length <= 160) return d;
+  }
+  return (base + tail).length <= 160 ? base + tail : base;
+}
+
+export function renderDocTypePage(
+  t: DocTypePageData,
+  all: ReadonlyArray<DocTypePageData>,
+  counts: HeadlineCounts,
+): string {
+  const url = docTypeUrl(t.id);
+  const byId = new Map(all.map((x) => [x.id, x]));
+  const title = docTypeTitle(t.name);
+  const description = docTypeDescription(t);
+  const checks =
+    t.checks.length === 0
+      ? `<p>Vaulytica recognizes this document type and runs its ${t.general_checks} general checks on it — structure, parties and signatures, defined terms, cross-references, dates, amounts, and one-sided terms. It has no checks written for this document type alone yet.</p>`
+      : `<div class="grid">
+          ${t.checks
+            .map(
+              (c) =>
+                `<div class="card"><h3>${escapeHtml(c.name)}</h3><p>${escapeHtml(c.description)}</p><p class="sev">${SEVERITY_LABEL[c.severity] ?? escapeHtml(c.severity)} · <code>${escapeHtml(c.id)}</code></p></div>`,
+            )
+            .join("\n          ")}
+        </div>
+        <p style="margin-top:20px">Every run also applies ${t.general_checks} general checks that belong to any agreement: structure, parties and signatures, defined terms, cross-references, dates, amounts, and one-sided terms.</p>`;
+  const sources =
+    t.sources.length === 0
+      ? ""
+      : `<section>
+        <h2>Sources</h2>
+        <ul>${t.sources.map((s) => `<li><a href="${escapeHtml(s.url)}" rel="noopener">${escapeHtml(s.title)}</a></li>`).join("")}</ul>
+      </section>`;
+  const companions = t.companions.filter((c) => byId.has(c));
+  const related =
+    companions.length === 0
+      ? ""
+      : `<section>
+        <h2>Often reviewed with</h2>
+        <ul class="links">${companions.map((c) => `<li><a href="/review/${c}">${escapeHtml(byId.get(c)!.name)}</a></li>`).join("")}</ul>
+      </section>`;
+  const siblings = all.filter((x) => x.group === t.group && x.id !== t.id);
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+      url,
+      name: title,
+      description,
+      inLanguage: "en-US",
+      dateModified: CONTENT_UPDATED,
+      isPartOf: { "@id": `${ORIGIN}/#website` },
+      about: { "@id": `${ORIGIN}/#webapp` },
+      breadcrumb: { "@id": `${url}#breadcrumb` },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${url}#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Vaulytica", item: `${ORIGIN}/` },
+        { "@type": "ListItem", position: 2, name: "Document types", item: `${ORIGIN}/reviews` },
+        { "@type": "ListItem", position: 3, name: t.name, item: url },
+      ],
+    },
+  ];
+  return `${head({ title, description, canonical: url, robots: "index, follow, max-image-preview:large, max-snippet:-1", jsonLd })}
+  <body>
+    ${HEADER}
+    <main class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Vaulytica</a> › <a href="/reviews">Document types</a> › ${escapeHtml(t.name)}</nav>
+      <div class="hero">
+        <h1>${escapeHtml(t.name)} review</h1>
+        <p class="lead">${escapeHtml(t.summary)}</p>
+        <a class="cta" href="/">Review your document — free →</a>
+        <ul class="trust" aria-label="At a glance">
+          <li>${t.checks.length} document-specific check${t.checks.length === 1 ? "" : "s"}</li>
+          <li>+ ${t.general_checks} general checks</li>
+          <li>Nothing uploaded</li>
+          <li>Free forever (MIT)</li>
+        </ul>
+      </div>
+      <section>
+        <h2>What it checks</h2>
+        ${checks}
+      </section>
+      ${sources}
+      ${related}
+      <section>
+        <h2>How it works</h2>
+        <ol class="steps">
+          <li><strong>Open <a href="/">vaulytica.com</a></strong> — no account, nothing to install.</li>
+          <li><strong>Drop your PDF or DOCX.</strong> The document type is detected and only the checks that belong to it run, inside your browser tab.</li>
+          <li><strong>Get a Word report</strong> in which every finding quotes the clause and cites the rule and source behind it — one of ${counts.rules} checks across ${counts.docTypes} document types.</li>
+        </ol>
+        <a class="cta" href="/">Review your document — free →</a>
+      </section>
+      <section>
+        <h2>More ${escapeHtml(t.group.toLowerCase())} documents</h2>
+        <ul class="links">${siblings.map((x) => `<li><a href="/review/${x.id}">${escapeHtml(x.name)}</a></li>`).join("")}</ul>
+        <p><a href="/reviews">Every document type →</a></p>
+      </section>
+    </main>
+    ${footer()}
+  </body>
+</html>
+`;
+}
+
+/** `/reviews`: every document type, grouped as the landing page groups them. */
+export function renderDocTypeIndex(
+  all: ReadonlyArray<DocTypePageData>,
+  counts: HeadlineCounts,
+  groupOrder: ReadonlyArray<string>,
+): string {
+  const url = `${ORIGIN}/reviews`;
+  const title = "Every Document Type Vaulytica Reviews | Vaulytica";
+  const description = `The ${all.length} contracts and legal documents Vaulytica reviews for free, and the checks each one gets. Every finding cited; nothing uploaded.`;
+  // The landing page's group order, which is the order of `all` by group.
+  const groups = [...new Set(all.map((t) => t.group))].sort(
+    (a, b) => groupOrder.indexOf(a) - groupOrder.indexOf(b),
+  );
+  const body = groups
+    .map((g) => {
+      const items = all.filter((t) => t.group === g);
+      return `<section>
+        <h2>${escapeHtml(g)} <span style="color:var(--muted);font-size:.6em">${items.length}</span></h2>
+        <ul class="links">${items.map((t) => `<li><a href="/review/${t.id}">${escapeHtml(t.name)}</a></li>`).join("")}</ul>
+      </section>`;
+    })
+    .join("\n      ");
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "@id": `${url}#webpage`,
+      url,
+      name: title,
+      description,
+      inLanguage: "en-US",
+      dateModified: CONTENT_UPDATED,
+      isPartOf: { "@id": `${ORIGIN}/#website` },
+    },
+  ];
+  return `${head({ title, description, canonical: url, robots: "index, follow, max-image-preview:large, max-snippet:-1", jsonLd })}
+  <body>
+    ${HEADER}
+    <main class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Vaulytica</a> › Document types</nav>
+      <div class="hero">
+        <h1>Every document type Vaulytica reviews.</h1>
+        <p class="lead">${all.length} kinds of contracts and legal documents, backed by ${counts.rules} checks in all. Pick one to see exactly what is checked, or drop any document on the home page and the type is detected for you.</p>
+        <a class="cta" href="/">Review a document — free →</a>
+      </div>
+      ${body}
+    </main>
+    ${footer()}
+  </body>
+</html>
+`;
+}
+
+/**
+ * Link every entry of the landing page's document-type index to its page.
+ * Done at build time so `site/index.html` stays a readable list; a deprecated
+ * playbook's entry links to the playbook that superseded it.
+ */
+export function linkDocTypeIndex(
+  html: string,
+  types: ReadonlyArray<{ readonly id: string; readonly name: string }>,
+  superseded: Readonly<Record<string, string>>,
+  allNames: ReadonlyMap<string, string>,
+): string {
+  const start = html.indexOf('<div class="doc-groups">');
+  if (start < 0) throw new Error("seo-pages: the document-type index is missing from index.html");
+  const end = html.indexOf("</details>", start);
+  const byName = new Map<string, string>();
+  for (const t of types) byName.set(escapeHtml(t.name), t.id);
+  for (const [old, next] of Object.entries(superseded)) {
+    const name = allNames.get(old);
+    if (name !== undefined) byName.set(escapeHtml(name), next);
+  }
+  const region = html.slice(start, end).replace(/<li>([^<]+)<\/li>/g, (m, raw: string) => {
+    const id = byName.get(raw.trim());
+    return id === undefined ? m : `<li><a href="/review/${id}">${raw.trim()}</a></li>`;
+  });
+  return html.slice(0, start) + region + html.slice(end);
 }
