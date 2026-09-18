@@ -285,14 +285,17 @@ const ENDORSEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "INS-012",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Waiver of subrogation (where required by contract)",
     description:
       "If the underlying contract requires waiver of subrogation, the endorsement (CG 24 04 or equivalent) must be attached.",
     citation: isoForm("CG 24 04", "Waiver of Transfer of Rights of Recovery Against Others To Us"),
     playbooks: [INS_PLAYBOOK_ENDORSEMENT],
-    missing_title: "Waiver-of-subrogation endorsement missing",
-    missing_description: "No waiver-of-subrogation endorsement was found.",
+    // The precondition — what the UNDERLYING contract requires — cannot be read
+    // from the endorsement, so this is a question to ask, not a defect found.
+    missing_title: "No waiver of subrogation — check the underlying contract",
+    missing_description:
+      "No waiver-of-subrogation endorsement was found. Whether one is needed depends on the contract this endorsement supports, which is not in this document.",
     explanation:
       "Many leases, construction contracts, and service agreements require a waiver of subrogation in favor of the other party. Without the CG 24 04 (or equivalent), the insurer can sue under subrogation.",
     recommendation:

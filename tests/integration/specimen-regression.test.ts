@@ -1993,6 +1993,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // own description says "where an adequacy decision is relied on". These
   // documents transfer on the Standard Contractual Clauses and never mention
   // adequacy at all — the SCCs ARE the fallback.
+  // DPA-032, DPA-054, DPA-055, TRANSFER-019 and TRANSFER-020 came off in
+  // 9.723.0, for the same reason. Each states a precondition ("where
+  // international transfers occur", "where SCCs apply") and tested none. This
+  // DPA mentions transfers only in the Art. 28(3)(a) instruction clause
+  // ("including with regard to transfers"); it never says data leaves the EEA
+  // and never mentions the SCCs, so it has no Chapter V obligation to meet —
+  // and was told so at CRITICAL, plus four findings about SCC clauses.
   "dpa-defined-term.txt": {
     playbook: "dpa-controller-processor",
     findings: [
@@ -2003,7 +2010,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-022",
       "DPA-028",
       "DPA-030",
-      "DPA-032",
       "DPA-033",
       "DPA-034",
       "DPA-040",
@@ -2012,11 +2018,7 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-051",
       "DPA-052",
       "DPA-053",
-      "DPA-054",
-      "DPA-055",
       "OBLI-005",
-      "TRANSFER-019",
-      "TRANSFER-020",
     ],
   },
 

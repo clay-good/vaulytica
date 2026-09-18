@@ -659,7 +659,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-025",
-    version: "1.4.0",
+    version: "1.5.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -705,6 +705,10 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
         String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|eighteen|twenty-four|thirty-six)\s+(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|must|agrees?|covenants?)\s+not\b`,
         "is",
       ),
+    ],
+    // A missing non-compete DURATION is only a defect in an agreement that has a non-compete.
+    applicable_if: [
+      /\bnon[- ]?compet\w*|\bcovenants?\s+not\s+to\s+compete\b|\b(?:shall|will|must)\s+not(?:,?\s+directly\s+or\s+indirectly,?)?\s+(?:compete|engage\s+in\s+(?:any\s+)?(?:competing|competitive))/i,
     ],
   }),
   presence({

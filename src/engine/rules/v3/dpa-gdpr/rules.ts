@@ -21,6 +21,7 @@ import {
   type PresenceSpec,
   type RegulatedRuleConfig,
 } from "../_regulated-rule.js";
+import { INTERNATIONAL_TRANSFER } from "../_transfer-context.js";
 
 const DPA_PLAYBOOKS = [
   "dpa-controller-processor",
@@ -579,10 +580,10 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-017",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Subprocessor flow-down of same obligations (Art. 28(4))",
     description:
-      "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
+      "The DPA must require that any subprocessor the processor engages is bound by contract to the same data-protection obligations — a term Art. 28(3)(d) makes mandatory whether or not one is engaged yet.",
     citation: "GDPR Art. 28(4)",
     missing_title: "Subprocessor flow-down clause missing",
     missing_description:
@@ -932,6 +933,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-032",
+    version: "1.1.0",
     name: "International transfer mechanism named",
     description: "Where international transfers occur, the DPA must name a Chapter V mechanism.",
     citation: "GDPR Arts. 44–49",
@@ -944,6 +946,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     present_patterns: [
       /(international\s+transfer|chapter\s+V|standard\s+contractual\s+clauses|\bSCCs?\b|adequacy\s+decision|binding\s+corporate\s+rules|\bBCRs?\b)/i,
     ],
+    applicable_if: [INTERNATIONAL_TRANSFER],
   }),
   presence({
     id: "DPA-033",
@@ -1410,6 +1413,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-054",
+    version: "1.1.0",
     name: "Onward transfer obligations (SCC Clause 8.8)",
     description:
       "Where SCCs apply, the DPA should reference onward-transfer obligations per SCC Clause 8.8.",
@@ -1422,9 +1426,11 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Add: 'Onward transfers shall be subject to the same data protection obligations as set out in this Agreement.'",
     present_patterns: [/(onward\s+transfer|clause\s+8\.8|onward[- ]transfer)/i],
     default_severity: "warning",
+    applicable_if: [INTERNATIONAL_TRANSFER],
   }),
   presence({
     id: "DPA-055",
+    version: "1.1.0",
     name: "Local-law disclosure obligations (Clause 14 / 15)",
     description:
       "Where SCCs apply, processor must notify controller of legally-binding requests by public authorities.",
@@ -1440,6 +1446,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       /(public\s+authority|government\s+request|law\s+enforcement\s+request|clause\s+14|clause\s+15)/i,
     ],
     default_severity: "warning",
+    applicable_if: [INTERNATIONAL_TRANSFER],
   }),
 ];
 

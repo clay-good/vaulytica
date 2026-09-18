@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.723.0] — 2026-09-18
+
+### Fixed
+- 🥇 **The class is closed: a rule that states a precondition must test it.**
+  After MSA-016 and MSA-030, a sweep of every rule whose description opens
+  with "Where", "When" or "If" found the rest. New guard
+  `tests/integration/stated-precondition.test.ts`: each such rule is gated or
+  carries a written reason on a reviewed list (shown to fail when a reason is
+  removed). What the sweep found:
+  - **Five DPA rules accused a DPA with no international transfer.**
+    DPA-032 ("where international transfers occur", **critical**), DPA-054,
+    DPA-055, TRANSFER-019 and TRANSFER-020 ("where SCCs apply") fired on
+    `dpa-defined-term`, which mentions transfers only in the Art. 28(3)(a)
+    instruction clause and never the SCCs. Gated on international-transfer
+    language (`src/engine/rules/v3/_transfer-context.ts`); every planted DPA
+    fixture contemplates a transfer, so no golden moved.
+  - 🚨 **IPL-032 was inverted.** "If GPL / AGPL components are used…" — and
+    its present-patterns accepted the bare word "gpl" as *addressing* the
+    obligations, so it stayed silent on an inventory listing a GPL component
+    with no source offer, and fired only on inventories with no copyleft at
+    all. Its own test pinned that: it asserted a finding on lodash (MIT),
+    libfoo (Apache-2.0) and libbar (BSD). Now gated on a copyleft licence and
+    satisfied only by an actual source mechanism; both directions pinned.
+  - **EMP-025** reported "Non-compete duration missing" (**critical**) on
+    agreements with no non-compete. Gated on one.
+  - **INS-012** asserted "Waiver-of-subrogation endorsement missing" when
+    whether one is needed depends on the underlying contract, which the
+    endorsement does not contain. It now asks the question: "No waiver of
+    subrogation — check the underlying contract."
+- **Two gates I wrote were wrong, and are not shipped.** Art. 28(3)(d) GDPR
+  makes the Art. 28(2) authorisation conditions and the 28(4) flow-down a
+  mandatory term of *every* DPA, so DPA-016 and DPA-017 are right to fire on a
+  DPA silent about sub-processors (DPA-016 already stands down for prior
+  specific authorisation, 9.637.0). DPA-017's description no longer reads as
+  conditional; DPA-016 is on the reviewed list with that reason.
+
+Specimen row updated: `dpa-defined-term` (DPA-032, DPA-054, DPA-055,
+TRANSFER-019, TRANSFER-020), with the reasoning beside it.
+
 ## [9.722.0] — 2026-09-18
 
 ### Fixed

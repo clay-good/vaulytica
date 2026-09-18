@@ -146,7 +146,22 @@ describe("v4 IP & licensing — failure cases", () => {
     expect(run.findings.some((f) => f.rule_id === "IPL-020")).toBe(true);
   });
 
-  it("IPL-032 fires when OSS compliance does not address GPL / AGPL source", async () => {
+  // IPL-032 reads "If GPL / AGPL components are used" — and fired on an
+  // inventory of MIT, Apache and BSD components with no copyleft in it. The
+  // condition is tested now (9.723.0); both directions are pinned.
+  it("IPL-032 fires when a GPL component's source obligations are not addressed", async () => {
+    const ctx = withPb(
+      buildContext([
+        "OSS Compliance",
+        "Third-party software inventory: lodash MIT; libfoo GPL-2.0; libbar BSD-3-Clause. Components are tracked in SBOM (SPDX). NOTICE file generated automatically.",
+      ]),
+      OSS_PB,
+    );
+    const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });
+    expect(run.findings.some((f) => f.rule_id === "IPL-032")).toBe(true);
+  });
+
+  it("IPL-032 stands down on an inventory with no copyleft component", async () => {
     const ctx = withPb(
       buildContext([
         "OSS Compliance",
@@ -155,7 +170,7 @@ describe("v4 IP & licensing — failure cases", () => {
       OSS_PB,
     );
     const run = await runEngine({ rules: IP_LICENSING_RULES, ctx, source_file: SRC });
-    expect(run.findings.some((f) => f.rule_id === "IPL-032")).toBe(true);
+    expect(run.findings.some((f) => f.rule_id === "IPL-032")).toBe(false);
   });
 
   it("IPL-036 fires when WFH omits § 101 specially-commissioned recital", async () => {

@@ -18,6 +18,7 @@ import {
   type PresenceSpec,
   type RegulatedRuleConfig,
 } from "../_regulated-rule.js";
+import { INTERNATIONAL_TRANSFER } from "../_transfer-context.js";
 
 // Two scopes:
 //   SCC_PLAYBOOKS: rules about SCC Module 2/3 clauses (do not run on UK).
@@ -485,6 +486,7 @@ export const TRANSFER_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presenceAll({
     id: "TRANSFER-019",
+    version: "1.1.0",
     name: "TIA / Transfer Risk Assessment reference",
     description:
       "Where SCCs / IDTA cover transfers to a non-adequate country, the DPA must reference a TIA / TRA.",
@@ -498,9 +500,11 @@ export const TRANSFER_RULES: Rule[] = [
     present_patterns: [
       /(transfer\s+(?:impact|risk)\s+assessment|\bTIA\b|\bTRA\b|local\s+laws\s+and\s+practices|supplementary\s+measures)/i,
     ],
+    applicable_if: [INTERNATIONAL_TRANSFER],
   }),
   presenceAll({
     id: "TRANSFER-020",
+    version: "1.1.0",
     name: "Onward-transfer terms (Clause 8.7 / 8.8)",
     description:
       "Where SCCs apply, the DPA should address onward-transfer terms per SCC Clause 8.7 / 8.8.",
@@ -512,6 +516,7 @@ export const TRANSFER_RULES: Rule[] = [
     recommendation: "Include the Clause 8.7 / 8.8 text or its substantive equivalent in the DPA.",
     present_patterns: [/(onward\s+transfer|clause\s+8\.7|clause\s+8\.8)/i],
     default_severity: "warning",
+    applicable_if: [INTERNATIONAL_TRANSFER],
   }),
 ];
 

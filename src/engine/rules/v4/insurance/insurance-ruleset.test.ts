@@ -334,7 +334,7 @@ describe("INS-012 — express denial of the subrogation waiver", () => {
       await run(
         "This endorsement modifies coverage under the commercial general liability policy.",
       ),
-    ).toEqual(["Waiver-of-subrogation endorsement missing"]);
+    ).toEqual(["No waiver of subrogation — check the underlying contract"]);
   });
 
   it.each([

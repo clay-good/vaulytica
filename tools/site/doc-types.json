@@ -4321,7 +4321,7 @@
     {
      "id": "DPA-017",
      "name": "Subprocessor flow-down of same obligations (Art. 28(4))",
-     "description": "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
+     "description": "The DPA must require that any subprocessor the processor engages is bound by contract to the same data-protection obligations — a term Art. 28(3)(d) makes mandatory whether or not one is engaged yet.",
      "severity": "critical"
     },
     {
@@ -4864,7 +4864,7 @@
     {
      "id": "DPA-017",
      "name": "Subprocessor flow-down of same obligations (Art. 28(4))",
-     "description": "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
+     "description": "The DPA must require that any subprocessor the processor engages is bound by contract to the same data-protection obligations — a term Art. 28(3)(d) makes mandatory whether or not one is engaged yet.",
      "severity": "critical"
     },
     {
@@ -12515,7 +12515,7 @@
     {
      "id": "DPA-017",
      "name": "Subprocessor flow-down of same obligations (Art. 28(4))",
-     "description": "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
+     "description": "The DPA must require that any subprocessor the processor engages is bound by contract to the same data-protection obligations — a term Art. 28(3)(d) makes mandatory whether or not one is engaged yet.",
      "severity": "critical"
     },
     {
@@ -12947,7 +12947,7 @@
     {
      "id": "DPA-017",
      "name": "Subprocessor flow-down of same obligations (Art. 28(4))",
-     "description": "Where the processor engages a subprocessor, the same data-protection obligations must be imposed on the subprocessor by contract.",
+     "description": "The DPA must require that any subprocessor the processor engages is bound by contract to the same data-protection obligations — a term Art. 28(3)(d) makes mandatory whether or not one is engaged yet.",
      "severity": "critical"
     },
     {

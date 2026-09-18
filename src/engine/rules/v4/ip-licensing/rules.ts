@@ -837,6 +837,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-032",
+    version: "1.1.0",
     name: "Copyleft (GPL / AGPL) obligations addressed",
     description:
       "If GPL / AGPL components are used, source-availability and notice obligations must be addressed.",
@@ -851,8 +852,16 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
       "Add 'Copyleft Compliance' identifying GPL / LGPL / AGPL components, the source-availability mechanism (e.g., URL, written offer, accompanying source), and AGPL network-use treatment.",
     present_patterns: [
       /(source\s+(availability|disclosure)|corresponding\s+source)/i,
-      /(written\s+offer|accompanying\s+source|gpl|agpl)/i,
+      // Naming the licence is not addressing it. A bare "gpl" here satisfied
+      // the rule on every document that lists a GPL component, so it fired
+      // only on inventories with no copyleft at all — the rule inverted.
+      /(written\s+offer|accompanying\s+source|source\s+code\s+(?:will\s+be\s+|is\s+)?(?:made\s+)?available)/i,
       /(network\s+use|remote\s+interaction)/i,
+    ],
+    // "If GPL / AGPL components are used" — tested now: no copyleft licence
+    // named, no copyleft duty to address.
+    applicable_if: [
+      /\b(?:A?GPL|LGPL|GNU\s+(?:Affero\s+|Lesser\s+)?General\s+Public\s+Licen[cs]e|copyleft)\b/i,
     ],
   }),
   presence({
