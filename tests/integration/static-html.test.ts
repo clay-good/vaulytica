@@ -244,12 +244,12 @@ describe("v4 surface a11y (LAUNCH row v4-h)", () => {
 
   it("hero <h1> names the product in the words people search for", () => {
     // The headline is the page's primary keyword surface and its plainest
-    // statement of what this is. Both halves are load-bearing: what it does
-    // ("legal contract reviewer") and the one property that distinguishes it
-    // from everything else in the category ("deterministic", "no AI").
+    // statement of what this is. Both halves are load-bearing: what people
+    // type ("free contract review") and the property that distinguishes it
+    // from everything else in the category ("no AI"). "Deterministic" is the
+    // mechanism, not the search term; it lives in the lead and the metadata.
     const h1 = /<h1\b[^>]*>([\s\S]*?)<\/h1>/i.exec(html)?.[1] ?? "";
-    expect(h1).toMatch(/free legal contract reviewer/i);
-    expect(h1).toMatch(/deterministic/i);
+    expect(h1).toMatch(/free contract review/i);
     expect(h1).toMatch(/no ai/i);
   });
 

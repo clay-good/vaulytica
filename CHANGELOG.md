@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.717.0] — 2026-09-18
+
+### Added
+- **Ten search-landing pages**, one per question people actually type:
+  `/nda-review`, `/msa-review`, `/saas-agreement-review`, `/dpa-review`,
+  `/baa-review`, `/employment-contract-review`, `/lease-review`,
+  `/ai-contract-review-alternative`, `/contract-review-for-lawyers` and
+  `/contract-linter-ci`. The site was one URL, so it could rank for one set of
+  queries. Each page states what the engine checks for that document (drawn
+  from its playbook), answers the common questions as visible text and
+  `FAQPage` JSON-LD, and sends the reader to the tool. Rendered at build time
+  from `tools/site/seo-pages.ts`; static HTML with no script, so the CSP is
+  unchanged. The rule and document-type counts are read from the landing
+  page, where `headline-count-drift.test.ts` already pins them — the pages
+  cannot state a different number.
+- **`llms.txt`**, a plain summary for AI search engines and assistants.
+- **A real `404.html`** (noindex).
+- The landing page now sells the outcome before the mechanism: an
+  outcome-led hero ("Free contract review in seconds. Every finding cited. No
+  AI. Nothing uploaded."), a **What you get back** section (Word report,
+  comments on your own draft, calendar deadlines, obligations and fix lists,
+  the whole-deal cross-check, the verification certificate), a **Free reviews
+  by document** section and a footer linking every landing page.
+
+### Fixed
+- **Every unknown URL was a copy of the home page.** `_redirects` rewrote
+  `/*` to `/index.html` with a 200 — a soft 404 that search engines index as
+  duplicate content — although the app never routes client-side. The rule is
+  gone; Cloudflare Pages now answers an unknown path with `404.html` and a 404.
+- **The sitemap listed fragment URLs** (`/#faq`, `/#privacy`), which search
+  engines collapse into `/`, and stamped every URL with the build date, a
+  `lastmod` that is always today and so is ignored. It now lists the home
+  page and the ten landing pages with the date their content last changed.
+- **The JSON-LD said `softwareVersion: "1.0"`.** The build now stamps the
+  release version from `package.json`.
+
 ## [9.716.0] — 2026-09-11
 
 ### Fixed

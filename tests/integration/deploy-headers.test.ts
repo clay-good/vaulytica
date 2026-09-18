@@ -56,8 +56,11 @@ describe("_headers", () => {
 });
 
 describe("_redirects", () => {
-  it("is the SPA fallback", () => {
-    expect(buildRedirectsFile().trim()).toBe("/*    /index.html   200");
+  it("has no catch-all rewrite, so an unknown URL is a real 404 and not a copy of the home page", () => {
+    const rules = buildRedirectsFile()
+      .split("\n")
+      .filter((l) => l.trim() !== "" && !l.trim().startsWith("#"));
+    expect(rules).toEqual([]);
   });
 });
 
@@ -85,17 +88,12 @@ describe("sitemap.xml", () => {
     expect(sitemap).toContain("</urlset>");
   });
 
-  it("lists the canonical home with priority 1.0", () => {
-    expect(sitemap).toMatch(
-      /<loc>https:\/\/vaulytica\.com\/<\/loc>[\s\S]*?<priority>1\.0<\/priority>/,
-    );
+  it("lists the canonical home", () => {
+    expect(sitemap).toContain("<loc>https://vaulytica.com/</loc>");
   });
 
-  it("includes the four primary in-page sections", () => {
-    expect(sitemap).toContain("https://vaulytica.com/#how-it-works");
-    expect(sitemap).toContain("https://vaulytica.com/#sources");
-    expect(sitemap).toContain("https://vaulytica.com/#faq");
-    expect(sitemap).toContain("https://vaulytica.com/#privacy");
+  it("lists no fragment URLs (search engines drop the fragment, so each is a duplicate of /)", () => {
+    expect(sitemap).not.toMatch(/<loc>[^<]*#/);
   });
 
   it("uses an ISO 8601 date for lastmod", () => {

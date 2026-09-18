@@ -1,10 +1,12 @@
 /**
  * Asset-reference resolvability guard for `site/index.html`.
  *
- * Cloudflare Pages serves this site with a `/* -> /index.html 200`
- * SPA fallback, so a reference to a file that does not exist does not
- * 404 — it answers 200 with 96 KB of HTML as `text/html`. Nothing in a
- * build log, a status code, or a smoke test notices.
+ * Cloudflare Pages used to serve this site with a `/* -> /index.html 200`
+ * SPA fallback, so a reference to a file that does not exist did not
+ * 404 — it answered 200 with 96 KB of HTML as `text/html`. Nothing in a
+ * build log, a status code, or a smoke test noticed. The fallback is gone
+ * (an unknown path now gets `404.html`), but a missing asset is still
+ * only visible in production, so the guard stays.
  *
  * That is how `<link rel="apple-touch-icon" href="/apple-touch-icon.png">`
  * shipped to production pointing at a file no build step ever produced:
@@ -18,6 +20,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { SEO_PAGES } from "../tools/site/seo-pages.js";
 
 const SITE = join(process.cwd(), "site");
 const html = readFileSync(join(SITE, "index.html"), "utf8");
@@ -30,7 +33,9 @@ const ORIGIN = "https://vaulytica.com";
  * `content` of the Open Graph / Twitter image meta tags, which are
  * absolute URLs on the production origin.
  *
- * The bare document path `/` is not an asset — it is this page.
+ * The bare document path `/` is not an asset — it is this page — and
+ * neither is a search-landing page, which the build renders from
+ * `tools/site/seo-pages.ts` (its reach is guarded in `seo-pages.test.ts`).
  */
 function referencedAssetPaths(): string[] {
   const paths = new Set<string>();
@@ -41,6 +46,7 @@ function referencedAssetPaths(): string[] {
     if (url.startsWith(`${ORIGIN}/`)) url = url.slice(ORIGIN.length);
     if (!url.startsWith("/")) continue;
     if (url === "/") continue;
+    if (SEO_PAGES.some((p) => url === `/${p.slug}`)) continue;
     paths.add(url.replace(/[?#].*$/, ""));
   }
   return [...paths].sort();

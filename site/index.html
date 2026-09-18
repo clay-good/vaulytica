@@ -3,10 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Vaulytica — Free Legal Contract Reviewer (Deterministic, No AI)</title>
+    <title>Free Contract Review — Instant, Private &amp; Cited | Vaulytica</title>
     <meta
       name="description"
-      content="Free legal contract reviewer that is deterministic, not AI. Drop an NDA, MSA, SaaS agreement, DPA (GDPR/CCPA), HIPAA BAA, employment agreement, lease, M&A or estate document and get a Word report where every finding quotes the clause and cites its rule and source. 1,825 checks across 268 document types, run entirely in your browser. Open source, MIT, no account, no upload."
+      content="Free contract review in seconds. Find missing clauses, one-sided terms and hidden deadlines in any NDA, MSA, lease, DPA or employment contract, each finding cited. 1,825 checks across 268 document types. Nothing uploaded, no signup."
     />
     <meta
       name="keywords"
@@ -36,10 +36,10 @@
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Vaulytica" />
     <meta property="og:locale" content="en_US" />
-    <meta property="og:title" content="Vaulytica — Free Legal Contract Reviewer (Deterministic, No AI)" />
+    <meta property="og:title" content="Free Contract Review — Instant, Private &amp; Cited | Vaulytica" />
     <meta
       property="og:description"
-      content="Free legal contract reviewer — deterministic, no AI. Every finding quotes the clause and cites its rule and source. 268 document types, 1,825 checks, entirely in your browser."
+      content="Find missing clauses, one-sided terms and hidden deadlines in any contract. Free, in seconds, every finding cited. Nothing uploaded, no signup, no AI guesswork."
     />
     <meta property="og:url" content="https://vaulytica.com/" />
     <!-- Primary share image: PNG (Twitter / LinkedIn / Slack prefer raster). -->
@@ -55,10 +55,10 @@
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vaulytica — Free Legal Contract Reviewer (Deterministic, No AI)" />
+    <meta name="twitter:title" content="Free Contract Review — Instant, Private &amp; Cited | Vaulytica" />
     <meta
       name="twitter:description"
-      content="Free legal contract reviewer — deterministic, no AI. Every finding quotes the clause it came from and cites its rule and source. Runs entirely in your browser."
+      content="Find missing clauses, one-sided terms and hidden deadlines in any contract. Free, in seconds, every finding cited. Nothing uploaded, no signup, no AI guesswork."
     />
     <meta name="twitter:image" content="https://vaulytica.com/og-image.png" />
     <meta name="twitter:image:alt" content="Vaulytica — free, deterministic legal contract reviewer" />
@@ -1604,6 +1604,19 @@
           transform: translateY(-2px);
         }
       }
+      a.card {
+        display: block;
+        text-decoration: none;
+      }
+      .site-footer {
+        border-top: 1px solid var(--line);
+        padding: 32px 0 48px;
+        font-size: 15px;
+        color: var(--muted);
+      }
+      .site-footer a {
+        color: var(--muted);
+      }
       .card:hover {
         border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
         box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
@@ -2104,7 +2117,7 @@
           "availability": "https://schema.org/InStock"
         },
         "license": "https://opensource.org/licenses/MIT",
-        "softwareVersion": "1.0",
+        "softwareVersion": "__APP_VERSION__",
         "softwareRequirements": "Any modern web browser",
         "permissions": "No permissions required; runs entirely client-side.",
         "description": "A free legal contract reviewer. Deterministic, not AI. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease, M&A, estate, court filing — and get a Microsoft Word report in which every finding quotes the clause it came from, gives its exact position, and cites the rule and source behind it. 1,825 checks across 268 document types. No AI, no account, no server, no telemetry.",
@@ -2330,12 +2343,13 @@
     <main id="main" class="wrap">
       <!-- Hero -->
       <section class="hero" aria-labelledby="hero-h1">
-        <h1 id="hero-h1">Free legal contract reviewer.<br /><span class="accent-line">Deterministic. No AI.</span></h1>
+        <h1 id="hero-h1">Free contract review in seconds.<br /><span class="accent-line">Every finding cited. No AI. Nothing uploaded.</span></h1>
         <p class="lead">
-          Drop a contract and get a Word report in seconds. Every finding quotes the clause it
-          came from, gives its exact position in the document, and names the rule and the statute
-          or practice source behind it. Same file in, same report out — on any machine, at any
-          time. Nothing is uploaded. Free and open source under MIT.
+          Drop an NDA, MSA, lease, DPA or employment contract and see what is missing, what is
+          one-sided, and what is due when — each finding quoted from your document and tied to the
+          rule and the statute or practice source behind it. It is a deterministic rule engine, so
+          the same file always gives the same report; it never leaves your browser; and it is free
+          forever under MIT. No account needed.
         </p>
 
         <!--
@@ -2373,6 +2387,60 @@
           <li><strong>0</strong> servers</li>
           <li><strong>0</strong> AI</li>
         </ul>
+      </section>
+
+      <!-- What you get -->
+      <section id="what-you-get" aria-labelledby="get-h2">
+        <h2 id="get-h2">What you get back.</h2>
+        <p class="section-lead">
+          Not a chatbot summary — a record you can act on, send to the other side, and defend.
+        </p>
+        <div class="grid grid-3">
+          <div class="card">
+            <h3>A Word report</h3>
+            <p>Findings ranked by severity, each quoting the clause, its exact position, the rule, and the statute or practice source behind it.</p>
+          </div>
+          <div class="card">
+            <h3>Comments on your own draft</h3>
+            <p>Your .docx back with every finding attached as a Word comment on the clause it is about — ready to send.</p>
+          </div>
+          <div class="card">
+            <h3>Deadlines on your calendar</h3>
+            <p>Renewal, notice and cure dates the document states, as an .ics file for Google, Outlook or Apple Calendar.</p>
+          </div>
+          <div class="card">
+            <h3>Obligations and fix lists</h3>
+            <p>Who owes what, and what to fix before signing, as spreadsheets you can sort and share.</p>
+          </div>
+          <div class="card">
+            <h3>A whole-deal cross-check</h3>
+            <p>Drop up to four related documents and conflicts between them are flagged — different governing law, a BAA broader than its MSA.</p>
+          </div>
+          <div class="card">
+            <h3>Proof for the file</h3>
+            <p>An optional verification certificate with the input's SHA-256 and the result hash, for courts that require a no-AI certification.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Free reviews by document (search-landing pages, tools/site/seo-pages.ts) -->
+      <section id="guides" aria-labelledby="guides-h2">
+        <h2 id="guides-h2">Free reviews by document.</h2>
+        <p class="section-lead">What Vaulytica checks, and why it matters, for the documents people sign most.</p>
+        <div class="grid grid-3">
+          <a class="card" href="/nda-review"><h3>NDA review</h3><p>DTSA notice, exclusions, residuals, mutual symmetry.</p></a>
+          <a class="card" href="/msa-review"><h3>MSA &amp; SOW review</h3><p>Liability caps, indemnity, SLAs, order of precedence.</p></a>
+          <a class="card" href="/saas-agreement-review"><h3>SaaS agreement review</h3><p>Auto-renewal windows, change-of-terms rights, IP indemnity.</p></a>
+          <a class="card" href="/dpa-review"><h3>DPA review (GDPR / CCPA)</h3><p>Article 28 terms, sub-processors, transfers, US state laws.</p></a>
+          <a class="card" href="/baa-review"><h3>HIPAA BAA review</h3><p>§ 164.504(e) required terms, breach notice, subcontractors.</p></a>
+          <a class="card" href="/employment-contract-review"><h3>Employment contract review</h3><p>Offer letters, IP assignment, non-competes, contractors.</p></a>
+          <a class="card" href="/lease-review"><h3>Lease review</h3><p>Commercial and residential: rent, renewals, insurance, assignment.</p></a>
+          <a class="card" href="/contract-review-for-lawyers"><h3>For lawyers</h3><p>Word comments, firm playbooks, a no-AI verification certificate.</p></a>
+          <a class="card" href="/contract-linter-ci"><h3>CLI &amp; GitHub Action</h3><p>Lint contracts in CI with SARIF and severity gates.</p></a>
+        </div>
+        <p style="margin-top: 20px">
+          Comparing AI tools? <a href="/ai-contract-review-alternative">How deterministic review differs from AI contract review</a>.
+        </p>
       </section>
 
       <!-- What it reviews -->
@@ -3230,6 +3298,22 @@
         </div>
       </section>
     </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>
+          <a href="/nda-review">NDA review</a> · <a href="/msa-review">MSA &amp; SOW review</a> ·
+          <a href="/saas-agreement-review">SaaS agreement review</a> · <a href="/dpa-review">DPA review</a> ·
+          <a href="/baa-review">HIPAA BAA review</a> · <a href="/employment-contract-review">Employment contract review</a> ·
+          <a href="/lease-review">Lease review</a> · <a href="/ai-contract-review-alternative">AI contract review alternative</a> ·
+          <a href="/contract-review-for-lawyers">For lawyers</a> · <a href="/contract-linter-ci">CLI &amp; GitHub Action</a>
+        </p>
+        <p>
+          Free and open source under the MIT license. Vaulytica is a software tool, not a law firm; it
+          does not give legal advice.
+        </p>
+      </div>
+    </footer>
 
     <!-- UI wiring lives in src/ui/main.ts so the CSP can stay tight
          (script-src 'self') and not need an inline-script hash. The tag

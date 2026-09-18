@@ -1,6 +1,14 @@
 import { defineConfig, type Plugin } from "vite";
 import { resolve, sep } from "node:path";
 import { pickLatestDkb } from "./tools/dkb/resolve.js";
+import {
+  SEO_PAGES,
+  buildLlmsTxt,
+  buildSitemap,
+  readHeadlineCounts,
+  render404,
+  renderSeoPage,
+} from "./tools/site/seo-pages.js";
 import { createHash } from "node:crypto";
 import { createRequire } from "node:module";
 import {
@@ -121,6 +129,14 @@ function serveExtras(): Plugin {
     apply: "serve",
     configureServer(server) {
       server.middlewares.use((req, res, next) => {
+        const slug = (req.url ?? "").split("?")[0]!.slice(1);
+        const page = SEO_PAGES.find((p) => p.slug === slug);
+        if (page !== undefined) {
+          const index = readFileSync(resolve(REPO_ROOT, "site", "index.html"), "utf8");
+          res.setHeader("Content-Type", "text/html; charset=utf-8");
+          res.end(renderSeoPage(page, readHeadlineCounts(index)));
+          return;
+        }
         const path = resolveMountedFile(mounts, req.url ?? "");
         if (path === null) {
           next();
@@ -224,6 +240,16 @@ function deployAssets(): Plugin {
       writeFileSync(resolve(DIST, "_redirects"), buildRedirectsFile(), "utf8");
       writeFileSync(resolve(DIST, "robots.txt"), buildRobotsTxt(), "utf8");
       writeFileSync(resolve(DIST, "sitemap.xml"), buildSitemapXml(), "utf8");
+
+      // Search-landing pages (tools/site/seo-pages.ts). Each is served by
+      // Cloudflare Pages at `/<slug>`. The counts come from the built landing
+      // page, which the headline-count drift test pins to the live catalog.
+      const counts = readHeadlineCounts(readFileSync(resolve(DIST, "index.html"), "utf8"));
+      for (const page of SEO_PAGES) {
+        writeFileSync(resolve(DIST, `${page.slug}.html`), renderSeoPage(page, counts), "utf8");
+      }
+      writeFileSync(resolve(DIST, "404.html"), render404(), "utf8");
+      writeFileSync(resolve(DIST, "llms.txt"), buildLlmsTxt(counts), "utf8");
     },
   };
 }
@@ -241,6 +267,26 @@ function deployAssets(): Plugin {
  *
  * Tracked as a hardening-roadmap item in [`docs/threat-model.md`].
  */
+/**
+ * Stamp the real release version into the landing page's JSON-LD, so the
+ * structured data search engines read is never a hand-typed number that
+ * stopped matching the product long ago.
+ */
+function jsonLdVersion(): Plugin {
+  const pkg = JSON.parse(readFileSync(resolve(REPO_ROOT, "package.json"), "utf8")) as {
+    version: string;
+  };
+  return {
+    name: "vaulytica-jsonld-version",
+    transformIndexHtml(html) {
+      return html.replace(
+        '"softwareVersion": "__APP_VERSION__"',
+        `"softwareVersion": "${pkg.version}"`,
+      );
+    },
+  };
+}
+
 function subresourceIntegrity(): Plugin {
   return {
     name: "vaulytica-sri",
@@ -382,9 +428,14 @@ export function buildHeadersFile(inlineScriptHashes: string[] = []): string {
   ].join("\n");
 }
 
-/** SPA fallback. Vaulytica is single-page, so this is mostly courtesy. */
+/**
+ * No SPA fallback. The app never routes client-side, and a `/* /index.html 200`
+ * rewrite answered every unknown URL with a copy of the home page and a 200 —
+ * a soft 404 that search engines index as duplicate content. With the rule
+ * gone, Cloudflare Pages serves `dist/404.html` with a real 404 status.
+ */
 export function buildRedirectsFile(): string {
-  return "/*    /index.html   200\n";
+  return "# No rewrites: unknown paths get /404.html with a 404 status.\n";
 }
 
 /**
@@ -407,33 +458,12 @@ export function buildRobotsTxt(): string {
 }
 
 /**
- * `sitemap.xml` — single-page site, one URL plus deep links to the
- * primary in-page sections. Search engines treat anchored URLs as
- * lower-priority alternates of the canonical home, which keeps the
- * indexing surface clean while still surfacing section names.
+ * `sitemap.xml` — the home page plus every search-landing page, each with the
+ * date its content last changed. Fragment URLs (`/#faq`) are not listed:
+ * search engines drop the fragment, so they were duplicates of the home page.
  */
 export function buildSitemapXml(): string {
-  const today = new Date().toISOString().slice(0, 10);
-  const url = (loc: string, priority: string, freq = "weekly"): string =>
-    [
-      "  <url>",
-      `    <loc>${loc}</loc>`,
-      `    <lastmod>${today}</lastmod>`,
-      `    <changefreq>${freq}</changefreq>`,
-      `    <priority>${priority}</priority>`,
-      "  </url>",
-    ].join("\n");
-  return [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    url("https://vaulytica.com/", "1.0", "weekly"),
-    url("https://vaulytica.com/#how-it-works", "0.8"),
-    url("https://vaulytica.com/#sources", "0.7"),
-    url("https://vaulytica.com/#faq", "0.7"),
-    url("https://vaulytica.com/#privacy", "0.6"),
-    "</urlset>",
-    "",
-  ].join("\n");
+  return buildSitemap();
 }
 
 /**
@@ -580,5 +610,5 @@ export default defineConfig({
       "@": resolve(__dirname, "src"),
     },
   },
-  plugins: [serveExtras(), deployAssets(), subresourceIntegrity()],
+  plugins: [serveExtras(), jsonLdVersion(), deployAssets(), subresourceIntegrity()],
 });
