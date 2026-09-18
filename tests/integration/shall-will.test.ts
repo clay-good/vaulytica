@@ -429,7 +429,6 @@ describe("shall and will are the same obligation", () => {
       "DARK-008",
       "DARK-009",
       "MSA-023",
-      "TEMP-002",
       "TERM-003",
       "TERM-009",
     ]);
