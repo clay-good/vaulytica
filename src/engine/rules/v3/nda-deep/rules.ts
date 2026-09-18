@@ -114,6 +114,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-003",
+    version: "1.1.0",
     name: "Confidentiality term clause present",
     description:
       "NDA must state how long confidentiality obligations endure — either a definite term, perpetual for trade secrets, or both.",
@@ -122,7 +123,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     missing_description:
       "No clause was found defining the duration of confidentiality obligations.",
     explanation:
-      "Industry consensus and UTSA practice require an explicit confidentiality term. Without one, the duration is ambiguous and may not be enforceable in some jurisdictions.",
+      "The Uniform Trade Secrets Act does not itself require a term, but courts in some states have declined to enforce a perpetual confidentiality obligation over information that is not a trade secret, and a silent agreement leaves the duration to argument. A stated term — with a longer or perpetual term for trade secrets — is standard practice.",
     recommendation:
       "Add a clause stating either a definite term (e.g., 5 years from disclosure) or, preferably, a definite term for confidential information plus a perpetual term for trade secrets.",
     present_patterns: [
@@ -479,6 +480,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-015",
+    version: "1.1.0",
     name: "Injunctive-relief / irreparable-harm clause present",
     description:
       "NDA should acknowledge that breach causes irreparable harm and that injunctive relief is appropriate.",
@@ -487,7 +489,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     missing_description:
       "No clause was found acknowledging irreparable harm or entitlement to injunctive relief.",
     explanation:
-      "Without an irreparable-harm acknowledgment, a court may require the discloser to prove inadequate-remedy-at-law from scratch, slowing emergency relief in a leak scenario.",
+      "Courts generally still require a party seeking an injunction to show irreparable harm, and many treat a contractual stipulation as persuasive rather than binding. The clause strengthens an emergency motion after a leak; its absence does not bar equitable relief.",
     recommendation:
       "Add: 'The parties agree that monetary damages would be an inadequate remedy for any breach of this Agreement and that the non-breaching party shall be entitled to seek injunctive or other equitable relief, in addition to any other available remedies.'",
     present_patterns: [
@@ -495,6 +497,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       /injunctive\s+(relief|remedy)/i,
       /equitable\s+relief/i,
     ],
+    default_severity: "warning",
   }),
 
   presence({
@@ -636,6 +639,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-021",
+    version: "1.1.0",
     name: "No-license / no-ownership-transfer clause",
     description:
       "NDA should state that disclosure does not transfer ownership or grant a license in the Confidential Information.",
@@ -644,7 +648,7 @@ export const NDA_DEEP_RULES: Rule[] = [
     missing_description:
       "No clause was found stating that disclosure does not grant a license or ownership interest.",
     explanation:
-      "Without a no-license clause, an aggressive receiver could argue an implied license arose from disclosure. The fix is a one-line denial.",
+      "Courts rarely find that disclosure under an NDA implies a license, but a receiver can still argue it. A one-line denial removes the argument.",
     recommendation:
       "Add: 'No license or other right is granted to Receiving Party in or to the Confidential Information except as expressly set forth in this Agreement.'",
     // "Nothing in this Agreement grants Recipient any licence or ownership
@@ -657,6 +661,7 @@ export const NDA_DEEP_RULES: Rule[] = [
       /(does\s+not\s+(grant|convey|transfer)|(?:shall|will|must)\s+not\s+be\s+construed.{0,40}licen[cs]e)/is,
       /\bnothing\b[^.]{0,120}?\b(?:grants?|convey(?:s)?|transfers?|confers?)\b[^.]{0,80}?\blicen[cs]e\b/is,
     ],
+    default_severity: "warning",
   }),
 
   presence({

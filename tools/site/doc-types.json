@@ -9587,7 +9587,7 @@
      "id": "NDA-D-015",
      "name": "Injunctive-relief / irreparable-harm clause present",
      "description": "NDA should acknowledge that breach causes irreparable harm and that injunctive relief is appropriate.",
-     "severity": "critical"
+     "severity": "warning"
     },
     {
      "id": "NDA-D-016",
@@ -9623,7 +9623,7 @@
      "id": "NDA-D-021",
      "name": "No-license / no-ownership-transfer clause",
      "description": "NDA should state that disclosure does not transfer ownership or grant a license in the Confidential Information.",
-     "severity": "critical"
+     "severity": "warning"
     },
     {
      "id": "NDA-D-022",
@@ -15216,7 +15216,7 @@
      "id": "NDA-D-015",
      "name": "Injunctive-relief / irreparable-harm clause present",
      "description": "NDA should acknowledge that breach causes irreparable harm and that injunctive relief is appropriate.",
-     "severity": "critical"
+     "severity": "warning"
     },
     {
      "id": "NDA-D-016",
@@ -15252,7 +15252,7 @@
      "id": "NDA-D-021",
      "name": "No-license / no-ownership-transfer clause",
      "description": "NDA should state that disclosure does not transfer ownership or grant a license in the Confidential Information.",
-     "severity": "critical"
+     "severity": "warning"
     },
     {
      "id": "NDA-D-022",

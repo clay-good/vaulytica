@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.728.0] — 2026-09-18
+
+### Fixed
+- **Three NDA findings overstated the law — found reading the sample report
+  the way a litigator would.**
+  - **NDA-D-003** said "UTSA practice require[s] an explicit confidentiality
+    term". The Uniform Trade Secrets Act requires no such thing; the real risk
+    is that some courts decline to enforce a perpetual confidentiality
+    obligation over information that is not a trade secret. It now says so.
+  - **NDA-D-015** (injunctive relief) implied that without the clause the
+    discloser must prove irreparable harm "from scratch". Courts generally
+    require that showing either way and treat the stipulation as persuasive,
+    not binding. Corrected, and **critical → warning**: the clause helps an
+    emergency motion; its absence does not bar equitable relief.
+  - **NDA-D-021** (no-license clause) — courts rarely find that NDA disclosure
+    implies a license. The clause removes an argument. **Critical → warning.**
+  Goldens: 22 NDA-D-015 and 19 NDA-D-021 findings change severity and
+  explanation; none added or removed.
+
 ## [9.727.0] — 2026-09-18
 
 ### Fixed
