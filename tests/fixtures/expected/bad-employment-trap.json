@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "599ba7fee366e0475b74f1101f4688f50d62ba8e66e01f39d8e4475015e2d373",
+  "result_hash": "f610850630c0bc37dd738cd6aa0671a67a8e0563c6f4880dd220d8b02f33dbe5",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.723.0"
+  "version": "9.724.0"
 }

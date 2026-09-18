@@ -308,10 +308,10 @@ const NPP_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-012",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Effective date of notice",
     description: "NPP must include an effective date.",
-    citation: hipaa("520(b)(1)(v)(C)", "Effective date"),
+    citation: hipaa("520(b)(1)(viii)", "Effective date"),
     playbooks: [PRV_PLAYBOOK_NPP],
     missing_title: "Effective-date clause missing",
     missing_description: "No effective date was found.",
@@ -342,16 +342,17 @@ const NPP_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-014",
+    version: "1.1.0",
     name: "Specific high-sensitivity disclosure provisions (substance use / mental health / HIV / genetic)",
     description:
       "NPP should address specific protections that may apply to substance use, mental health, HIV, or genetic information.",
-    citation: hipaa("520(b)(1)(ii)(E)", "Heightened disclosures"),
+    citation: hipaa("520(b)(1)(ii)(C)", "Uses and disclosures limited by more stringent law"),
     playbooks: [PRV_PLAYBOOK_NPP],
     missing_title: "High-sensitivity disclosures clause missing",
     missing_description:
       "No clause was found addressing substance-use / mental-health / HIV / genetic information.",
     explanation:
-      "42 C.F.R. Part 2 (substance use), 42 U.S.C. § 290dd-2, state mental-health-record statutes, GINA (genetic information), and many state HIV-confidentiality statutes impose stricter disclosure rules. NPPs covering these categories should describe the heightened protection.",
+      "Where other law is more stringent — 42 C.F.R. Part 2 and 42 U.S.C. § 290dd-2 (substance use disorder records), state mental-health-record statutes, GINA (genetic information), and many state HIV-confidentiality statutes — the notice's description of uses and disclosures must reflect the stricter rule (45 C.F.R. § 164.520(b)(1)(ii)(C)–(D)). Since February 16, 2026, a covered entity that creates or maintains Part 2 records must also state that those records will not be used or disclosed in proceedings against the individual without written consent or a court order, and must give a clear opportunity to opt out before using them for fundraising (§ 164.520(b)(1)(iii)(D)–(E)).",
     recommendation:
       "Add a paragraph addressing substance-use disorder (Part 2), mental-health, HIV / AIDS, and genetic (GINA) information protections where applicable.",
     present_patterns: [

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.724.0] — 2026-09-18
+
+### Fixed
+- **Two HIPAA Notice-of-Privacy-Practices findings cited the wrong
+  paragraph.** Checked against 45 C.F.R. § 164.520 as published on the eCFR:
+  - PRV-012 (effective date) cited § 164.520(b)(1)(v)(C) — the reservation of
+    the right to change the notice. The effective-date requirement is
+    **(b)(1)(viii)**.
+  - PRV-014 (substance use / mental health / HIV / genetic information) cited
+    (b)(1)(ii)(E) as "heightened disclosures" — that paragraph is the
+    authorization-and-revocation statement. The more-stringent-law requirement
+    ("such as 42 CFR part 2") is **(b)(1)(ii)(C)–(D)**.
+  Every other HIPAA pinpoint in the catalog (§ 164.508(c) authorization
+  elements, § 164.520(b)(1)(i)–(vii), (c)(2)(ii)–(iii)) was checked and is
+  right.
+- **PRV-014 now states the 2026 substance-use-record requirement.** Since
+  February 16, 2026, a covered entity that creates or maintains 42 C.F.R.
+  Part 2 records must state in its notice that those records will not be used
+  against the individual in civil, criminal, administrative or legislative
+  proceedings without written consent or a court order, and must offer a clear
+  opt-out before using them for fundraising (§ 164.520(b)(1)(iii)(D)–(E)).
+
 ## [9.723.0] — 2026-09-18
 
 ### Fixed
