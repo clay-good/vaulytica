@@ -238,5 +238,29 @@
     "id": "stat-restatement-205-good-faith",
     "jurisdiction": "us-federal",
     "retrieved_at": "2026-05-11T00:00:00Z"
+  },
+  {
+    "canonical_url": "https://www.law.cornell.edu/uscode/text/15/8403",
+    "citation": "15 U.S.C. § 8403 (Restore Online Shoppers' Confidence Act — Internet sales to consumers through a negative option feature)",
+    "excerpt": "It shall be unlawful for any person to charge or attempt to charge any consumer for any goods or services sold in a transaction effected on the Internet through a negative option feature (as defined in the Federal Trade Commission's Telemarketing Sales Rule in part 310 of title 16, Code of Federal Regulations), unless the person— (1) provides text that clearly and conspicuously discloses all material terms of the transaction before obtaining the consumer's billing information; (2) obtains a consumer's express informed consent before charging the consumer's credit card, debit card, bank account, or other financial account for products or services through such transaction; and (3) provides simple mechanisms for a consumer to stop recurring charges from being placed on the consumer's credit card, debit card, bank account, or other financial account.",
+    "id": "stat-15-usc-8403",
+    "jurisdiction": "us-federal",
+    "retrieved_at": "2026-09-18T00:00:00Z"
+  },
+  {
+    "canonical_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602",
+    "citation": "Cal. Bus. & Prof. Code §§ 17600–17606 (California Automatic Renewal Law, as amended effective Jan. 1, 2025 — consumer automatic-renewal and continuous-service offers)",
+    "excerpt": "It is unlawful for any business that makes an automatic renewal offer or continuous service offer to a consumer in this state to do any of the following: (1) Fail to present the automatic renewal offer terms or continuous service offer terms in a clear and conspicuous manner before the subscription or purchasing agreement is fulfilled and in visual proximity, or, in the case of an offer conveyed by voice, in temporal proximity, to the request for consent to the offer.",
+    "id": "stat-ca-bp-17600",
+    "jurisdiction": "us-ca",
+    "retrieved_at": "2026-09-18T00:00:00Z"
+  },
+  {
+    "canonical_url": "https://www.nysenate.gov/legislation/laws/GOB/5-903",
+    "citation": "N.Y. Gen. Oblig. Law § 5-903 (automatic renewal of contracts for service, maintenance or repair — unenforceable against the recipient unless written notice of the renewal provision is served 15 to 30 days before the non-renewal deadline; applies to business as well as consumer contracts)",
+    "excerpt": "No provision of a contract for service, maintenance or repair to or for any real or personal property which states that the term of the contract shall be deemed renewed for a specified additional period unless the person receiving the service, maintenance or repair gives notice to the person furnishing such contract service, maintenance or repair of his intention to terminate the contract at the expiration of such term, shall be enforceable against the person receiving the service, maintenance or repair, unless the person furnishing the service, maintenance or repair, at least fifteen days and not more than thirty days previous to the time specified for serving such notice upon him, shall give to the person receiving the service, maintenance or repair written notice, served personally or by certified mail, calling the attention of that person to the existence of such provision in the contract.",
+    "id": "stat-ny-gol-5-903",
+    "jurisdiction": "us-ny",
+    "retrieved_at": "2026-09-18T00:00:00Z"
   }
 ]

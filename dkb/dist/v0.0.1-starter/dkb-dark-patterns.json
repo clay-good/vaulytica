@@ -36,12 +36,28 @@
     "harm_pattern": "Unintended renewal commits the customer to another term without negotiation.",
     "authorities": [
       {
-        "id": "ftc-negative-option-rule",
-        "source": "FTC Negative Option Rule, 16 C.F.R. Part 425",
-        "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425",
-        "retrieved_at": "2026-05-11T00:00:00Z",
+        "id": "stat-ny-gol-5-903",
+        "source": "N.Y. Gen. Oblig. Law § 5-903 (automatic renewal of service contracts, including business contracts)",
+        "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-903",
+        "retrieved_at": "2026-09-18T00:00:00Z",
+        "license": "Public domain (New York statute)",
+        "license_url": "https://www.nysenate.gov/legislation"
+      },
+      {
+        "id": "rosca-15-usc-8403",
+        "source": "Restore Online Shoppers' Confidence Act, 15 U.S.C. § 8403 (consumer Internet transactions)",
+        "source_url": "https://www.law.cornell.edu/uscode/text/15/8403",
+        "retrieved_at": "2026-09-18T00:00:00Z",
         "license": "Public domain (US government work)",
         "license_url": "https://www.usa.gov/government-works"
+      },
+      {
+        "id": "ca-arl-bpc-17600",
+        "source": "California Automatic Renewal Law, Cal. Bus. & Prof. Code §§ 17600–17606 (consumer offers)",
+        "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602",
+        "retrieved_at": "2026-09-18T00:00:00Z",
+        "license": "Public domain (California statute)",
+        "license_url": "https://www.ca.gov/"
       }
     ]
   },

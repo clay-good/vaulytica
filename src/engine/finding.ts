@@ -317,11 +317,19 @@ export function findSource(dkb: DKB, id: string): SourceCitation | undefined {
  * simply true — a document served from eur-lex.europa.eu is not a work of the
  * United States government.
  *
- * The fallback stays the US public-domain licence, which is right for the other
- * 27 entries (federal and state codes on `.gov` and Cornell LII), so this
- * changes exactly the three citations it should.
+ * 🚨 The fallback was also stamped on state statutes, the UCC and the
+ * Restatements. "US government work" is 17 U.S.C. § 105, which covers FEDERAL
+ * works only. A state statute is public domain for a different reason — the
+ * government-edicts doctrine (Georgia v. Public.Resource.Org, Inc., 2020) —
+ * and the UCC and the Restatements are copyrighted works of the American Law
+ * Institute and the Uniform Law Commission. For state law the DKB's
+ * `jurisdiction` IS reliable (every `us-<state>` entry is a state code on a
+ * state legislature's site), so it is read here.
  */
-function statuteLicense(canonical_url: string): { license: string; license_url: string } {
+function statuteLicense(
+  canonical_url: string,
+  jurisdiction: string,
+): { license: string; license_url: string } {
   if (/(^|\.)europa\.eu/.test(canonical_url)) {
     return {
       license: "Public domain or regulator re-use",
@@ -330,6 +338,24 @@ function statuteLicense(canonical_url: string): { license: string; license_url: 
   }
   if (/(^|\.)uniformlaws\.org/.test(canonical_url)) {
     return { license: "Uniform Law Commission", license_url: "https://www.uniformlaws.org/" };
+  }
+  if (/law\.cornell\.edu\/ucc\//.test(canonical_url)) {
+    return {
+      license: "Uniform Commercial Code (American Law Institute and Uniform Law Commission)",
+      license_url: "https://www.law.cornell.edu/ucc",
+    };
+  }
+  if (/law\.cornell\.edu\/wex\//.test(canonical_url)) {
+    return {
+      license: "Cornell LII Wex summary (Restatement text: American Law Institute)",
+      license_url: "https://www.law.cornell.edu/wex",
+    };
+  }
+  if (/^us-(?!federal$)[a-z]{2}$/.test(jurisdiction)) {
+    return {
+      license: "Public domain (state statute; government-edicts doctrine)",
+      license_url: "https://www.supremecourt.gov/opinions/19pdf/18-1150_7m58.pdf",
+    };
   }
   return {
     license: "Public domain (US government work)",
@@ -347,6 +373,6 @@ export function findStatuteCitation(dkb: DKB, id: string): SourceCitation | unde
     source_url: stat.canonical_url,
     retrieved_at: stat.retrieved_at,
     source_published_at: stat.source_published_at,
-    ...statuteLicense(stat.canonical_url),
+    ...statuteLicense(stat.canonical_url, stat.jurisdiction),
   };
 }

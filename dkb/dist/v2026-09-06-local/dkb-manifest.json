@@ -19,7 +19,7 @@
     "dark_patterns": {
       "entries": 8,
       "filename": "dkb-dark-patterns.json",
-      "sha256": "bc4a708fa66b4473b77d2d2ebb1f4f2de57b105c9b5c87707f563ca9d09c2d60"
+      "sha256": "ba05a9821aa6019a307dfc5ab0f1c39f81b159739e5dac44d8786832ac050be2"
     },
     "definitions": {
       "entries": 10,
@@ -32,9 +32,9 @@
       "sha256": "5603c320fb04deff3d5c27d8d267d7dc54817fd93b457daafd93fdb0255c411d"
     },
     "statutes": {
-      "entries": 30,
+      "entries": 33,
       "filename": "dkb-statutes.json",
-      "sha256": "866022e55bcd9f2c9b87b7a4224187abb18276290bad83d74e040b1eed4706bc"
+      "sha256": "6c1c8b8818da53529a2d58889cb7e03f8b913f193f2be6751ea0c9f2a9274207"
     }
   },
   "schema_version": "1.0.0",

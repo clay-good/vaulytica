@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
 import { truncate } from "../../text.js";
+import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
 
 /**
  * TEMP-011 — Auto-renewal notice window shorter than 30 days
@@ -16,12 +17,12 @@ import { truncate } from "../../text.js";
  */
 export const rule: Rule = {
   id: "TEMP-011",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Auto-renewal notice window shorter than 30 days",
   category: "temporal",
   default_severity: "warning",
   description: "Flags auto-renewal clauses whose non-renewal notice window is fewer than 30 days.",
-  dkb_citations: ["stat-16-cfr-425"],
+  dkb_citations: [...AUTO_RENEWAL_CITATIONS],
   check(ctx: RuleContext): Finding | null {
     const hit = firstUnnegatedParagraphMatch(
       ctx,
@@ -46,7 +47,9 @@ export const rule: Rule = {
       description: `Auto-renewal requires non-renewal notice ${days} day${days === 1 ? "" : "s"} in advance.`,
       excerpt: truncate(hit.text, 280),
       explanation:
-        "An under-30-day non-renewal window compresses the customer's decision time. ROSCA (15 U.S.C. § 8403) and state-level auto-renewal statutes (California BPC §17600 et seq., New York GBL §527-a, and similar) constrain this in consumer contexts; even where the contract is B2B, short windows are widely reported as a friction-based dark pattern.",
+        "An under-30-day non-renewal window compresses the customer's decision time. " +
+        AUTO_RENEWAL_LAW +
+        " New York's consumer automatic-renewal law (Gen. Bus. Law § 527-a) and similar statutes in other states apply to consumer contracts.",
       recommendation: "Negotiate a 30- or 60-day non-renewal notice window.",
       position: hit.position,
     });

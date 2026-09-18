@@ -100,7 +100,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -738,14 +738,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-005",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -787,7 +787,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-011",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -890,20 +890,36 @@
         "start_offset": 1175,
         "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer tha…"
       },
-      "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. ROSCA (15 U.S.C. § 8403) and the state automatic-renewal statutes address this pattern.",
+      "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
       "id": "DARK-002-s1.4-1175",
       "recommendation": "Move the cancellation window and the renewal date into the same paragraph as the renewal itself, make the window no shorter than the notice you are able to give, and send a reminder before it opens. A window that closes months before renewal is the term most often litigated as unfair.",
       "rule_id": "DARK-002",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "warning",
       "source_citations": [
         {
-          "id": "stat-16-cfr-425",
+          "id": "stat-15-usc-8403",
           "license": "Public domain (US government work)",
           "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule — prenotification plans only. The 2024 amendments (the \"click-to-cancel\" rule) were vacated in their entirety, Custom Communications, Inc. v. FTC (8th Cir. July 8, 2025), never took effect, and Part 425 has been recodified to its pre-2024 text. For consumer subscriptions generally the operative federal authority is ROSCA, 15 U.S.C. § 8403, plus the state automatic-renewal statutes.)",
-          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+          "retrieved_at": "2026-09-18T00:00:00Z",
+          "source": "15 U.S.C. § 8403 (Restore Online Shoppers' Confidence Act — Internet sales to consumers through a negative option feature)",
+          "source_url": "https://www.law.cornell.edu/uscode/text/15/8403"
+        },
+        {
+          "id": "stat-ca-bp-17600",
+          "license": "Public domain (state statute; government-edicts doctrine)",
+          "license_url": "https://www.supremecourt.gov/opinions/19pdf/18-1150_7m58.pdf",
+          "retrieved_at": "2026-09-18T00:00:00Z",
+          "source": "Cal. Bus. & Prof. Code §§ 17600–17606 (California Automatic Renewal Law, as amended effective Jan. 1, 2025 — consumer automatic-renewal and continuous-service offers)",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602"
+        },
+        {
+          "id": "stat-ny-gol-5-903",
+          "license": "Public domain (state statute; government-edicts doctrine)",
+          "license_url": "https://www.supremecourt.gov/opinions/19pdf/18-1150_7m58.pdf",
+          "retrieved_at": "2026-09-18T00:00:00Z",
+          "source": "N.Y. Gen. Oblig. Law § 5-903 (automatic renewal of contracts for service, maintenance or repair — unenforceable against the recipient unless written notice of the renewal provision is served 15 to 30 days before the non-renewal deadline; applies to business as well as consumer contracts)",
+          "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-903"
         }
       ],
       "title": "Auto-renewal with notice window buried or long"
@@ -1033,20 +1049,36 @@
         "start_offset": 1175,
         "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than ninety (90) days prior to the renewal"
       },
-      "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
+      "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
       "id": "TEMP-004-s1.4-1175",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "warning",
       "source_citations": [
         {
-          "id": "stat-16-cfr-425",
+          "id": "stat-15-usc-8403",
           "license": "Public domain (US government work)",
           "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "16 C.F.R. Part 425 (FTC Negative Option Rule — prenotification plans only. The 2024 amendments (the \"click-to-cancel\" rule) were vacated in their entirety, Custom Communications, Inc. v. FTC (8th Cir. July 8, 2025), never took effect, and Part 425 has been recodified to its pre-2024 text. For consumer subscriptions generally the operative federal authority is ROSCA, 15 U.S.C. § 8403, plus the state automatic-renewal statutes.)",
-          "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-425"
+          "retrieved_at": "2026-09-18T00:00:00Z",
+          "source": "15 U.S.C. § 8403 (Restore Online Shoppers' Confidence Act — Internet sales to consumers through a negative option feature)",
+          "source_url": "https://www.law.cornell.edu/uscode/text/15/8403"
+        },
+        {
+          "id": "stat-ca-bp-17600",
+          "license": "Public domain (state statute; government-edicts doctrine)",
+          "license_url": "https://www.supremecourt.gov/opinions/19pdf/18-1150_7m58.pdf",
+          "retrieved_at": "2026-09-18T00:00:00Z",
+          "source": "Cal. Bus. & Prof. Code §§ 17600–17606 (California Automatic Renewal Law, as amended effective Jan. 1, 2025 — consumer automatic-renewal and continuous-service offers)",
+          "source_url": "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=17602"
+        },
+        {
+          "id": "stat-ny-gol-5-903",
+          "license": "Public domain (state statute; government-edicts doctrine)",
+          "license_url": "https://www.supremecourt.gov/opinions/19pdf/18-1150_7m58.pdf",
+          "retrieved_at": "2026-09-18T00:00:00Z",
+          "source": "N.Y. Gen. Oblig. Law § 5-903 (automatic renewal of contracts for service, maintenance or repair — unenforceable against the recipient unless written notice of the renewal provision is served 15 to 30 days before the non-renewal deadline; applies to business as well as consumer contracts)",
+          "source_url": "https://www.nysenate.gov/legislation/laws/GOB/5-903"
         }
       ],
       "title": "Auto-renewal clause present"
@@ -1130,8 +1162,8 @@
       "source_citations": [
         {
           "id": "stat-restatement-205-good-faith",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
+          "license": "Cornell LII Wex summary (Restatement text: American Law Institute)",
+          "license_url": "https://www.law.cornell.edu/wex",
           "retrieved_at": "2026-05-11T00:00:00Z",
           "source": "Restatement (Second) of Contracts § 205 (Duty of Good Faith and Fair Dealing)",
           "source_url": "https://www.law.cornell.edu/wex/good_faith"
@@ -1143,11 +1175,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "a87cb7106080acd0c506fe9dbfd0c026378657111b766d8786301f6e11bba6fb",
+  "result_hash": "bc93635d2d2a0d7200cffb493bf4e422cd351d9929aaba0a526a039b2d43c43e",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.717.0"
+  "version": "9.718.0"
 }

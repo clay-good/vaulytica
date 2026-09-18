@@ -39,7 +39,7 @@ describe("loadDkb", () => {
     expect(dkb.jurisdictions).toHaveLength(12);
     expect(dkb.definitions).toHaveLength(10);
     expect(dkb.dark_patterns).toHaveLength(8);
-    expect(dkb.statutes).toHaveLength(30);
+    expect(dkb.statutes).toHaveLength(33);
     expect(dkb.classifier.patterns.length).toBeGreaterThan(0);
   });
 

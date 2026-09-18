@@ -26,7 +26,7 @@ const STARTER_COUNTS = {
   jurisdictions: 12,
   definitions: 10,
   dark_patterns: 8,
-  statutes: 30,
+  statutes: 33,
 } as const;
 
 const tmp = mkdtempSync(join(tmpdir(), "vaul-dkb-build-"));

@@ -1,15 +1,16 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, excerptWindow, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
 
 /** TEMP-004 — Auto-renewal present and parseable (warning). */
 export const rule: Rule = {
   id: "TEMP-004",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Auto-renewal present",
   category: "temporal",
   default_severity: "warning",
   description: "Detects auto-renewal clauses; surfaces the renewal term length and notice window.",
-  dkb_citations: ["stat-16-cfr-425"],
+  dkb_citations: [...AUTO_RENEWAL_CITATIONS],
   check(ctx: RuleContext): Finding | null {
     // The renewal is as often stated verb-first ("the term shall be renewed
     // automatically", "renews automatically"), as an "evergreen" term, or as a
@@ -44,7 +45,8 @@ export const rule: Rule = {
       description: "The contract contains automatic-renewal language.",
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 200),
       explanation:
-        "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located.",
+        "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. " +
+        AUTO_RENEWAL_LAW,
       recommendation:
         "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       position: hit.position,

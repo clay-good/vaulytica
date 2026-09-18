@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.718.0] — 2026-09-18
+
+### Fixed
+- 🚨 **Every auto-renewal finding cited a regulation that does not govern
+  it.** TEMP-004, TEMP-005, TEMP-011 and DARK-002 cited 16 C.F.R. Part 425.
+  Since the 2024 click-to-cancel amendments were vacated (*Custom
+  Communications, Inc. v. FTC*, 8th Cir. July 8, 2025), Part 425 reaches
+  prenotification negative-option plans only; it never governed a renewal
+  notice window. 9.41.0 corrected the prose and left the citation. The four
+  rules now cite the authorities that do govern — ROSCA (15 U.S.C. § 8403),
+  the California Automatic Renewal Law (Cal. Bus. & Prof. Code §§ 17600–17606)
+  and **N.Y. Gen. Oblig. Law § 5-903** — added to the DKB with excerpts
+  checked against the official text, and the auto-renewal dark-pattern entry
+  now names them too.
+- **The business-contract rule was missing entirely.** No renewal rule told a
+  customer-side reviewer that under N.Y. Gen. Oblig. Law § 5-903 an
+  automatic-renewal clause in a contract for service, maintenance or repair
+  is unenforceable against the customer unless the provider serves written
+  notice of it 15 to 30 days before the non-renewal deadline. It is stated
+  once, in `src/engine/rules/_auto-renewal-law.ts`, for all four rules.
+- 🚨 **The bibliography called state statutes, the UCC and the Restatements
+  "US government works."** That licence is 17 U.S.C. § 105 and covers federal
+  works only. State statutes now read "public domain (state statute;
+  government-edicts doctrine)" (*Georgia v. Public.Resource.Org*, 2020); the
+  UCC and the Restatements name the American Law Institute and the Uniform Law
+  Commission. 43 citations across the goldens changed label; no finding moved.
+  Guarded by `tests/integration/statute-license.test.ts`.
+
 ## [9.717.0] — 2026-09-18
 
 ### Added
