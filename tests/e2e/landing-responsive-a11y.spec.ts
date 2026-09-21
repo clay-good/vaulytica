@@ -18,6 +18,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { SEO_PAGES, readHeadlineCounts, renderSeoPage } from "../../tools/site/seo-pages.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const LANDING_HTML = readFileSync(join(__dirname, "..", "..", "site", "index.html"), "utf8");
@@ -66,6 +67,28 @@ for (const theme of ["dark", "light"] as const) {
     }
   });
 
+  test(`expanded landing details fit narrow screens — ${theme} theme`, async ({ page }) => {
+    await loadLanding(page, theme);
+    await page.locator("#details details, #document-types details").evaluateAll((details) => {
+      for (const detail of details) (detail as HTMLDetailsElement).open = true;
+    });
+    for (const bp of BREAKPOINTS) {
+      await page.setViewportSize({ width: bp.width, height: bp.height });
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `expanded landing overflows at ${bp.label}`).toBeLessThanOrEqual(1);
+      if (bp.width === 320) {
+        const splitIds = await page
+          .locator("#what-it-checks .ids code")
+          .evaluateAll((ids) =>
+            ids.filter((id) => id.getBoundingClientRect().height > 28).map((id) => id.textContent),
+          );
+        expect(splitIds, "rule IDs must stay on one line").toEqual([]);
+      }
+    }
+  });
+
   test(`landing page has zero axe violations (WCAG 2 AA) — ${theme} theme`, async ({ page }) => {
     await loadLanding(page, theme);
     const results = await new AxeBuilder({ page })
@@ -79,3 +102,24 @@ for (const theme of ["dark", "light"] as const) {
     ).toEqual([]);
   });
 }
+
+test("search pages fit phone screens without horizontal scrolling", async ({ page }) => {
+  const counts = readHeadlineCounts(LANDING_HTML);
+  for (const slug of ["nda-review", "contract-linter-ci"]) {
+    const seoPage = SEO_PAGES.find((entry) => entry.slug === slug)!;
+    await page.setContent(renderSeoPage(seoPage, counts));
+    for (const width of [320, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `${slug} overflows at ${width}px`).toBeLessThanOrEqual(1);
+      const scrolling = await page
+        .locator("pre")
+        .evaluateAll(
+          (blocks) => blocks.filter((block) => block.scrollWidth > block.clientWidth + 1).length,
+        );
+      expect(scrolling, `${slug} has a scrolling code sample`).toBe(0);
+    }
+  }
+});

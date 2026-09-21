@@ -1567,18 +1567,18 @@
         gap: 18px;
       }
       .grid-3 {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(3, minmax(0, 1fr));
       }
       .grid-2 {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
       .grid-4 {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, minmax(0, 1fr));
       }
       @media (max-width: 900px) {
         .grid-3,
         .grid-4 {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
       @media (max-width: 560px) {
@@ -1639,11 +1639,13 @@
         line-height: 1.8;
       }
       .card .ids code {
+        display: inline-block;
         background: color-mix(in srgb, var(--bg) 60%, var(--surface));
         border: 1px solid var(--line);
         padding: 1px 6px;
         border-radius: 4px;
         margin-right: 4px;
+        margin-bottom: 4px;
         color: var(--body);
       }
 
@@ -2129,7 +2131,7 @@
         "description": "A free legal contract reviewer. Deterministic, not AI. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease, M&A, estate, court filing — and get a Microsoft Word report in which every finding quotes the clause it came from, gives its exact position, and cites the rule and source behind it. 1,825 checks across 268 document types. No AI, no account, no server, no telemetry.",
         "featureList": [
           "Deterministic rule engine — 1,825 rules across launch + v3 + v4 + v5 + v6 rulesets",
-          "265 document-type playbooks — only the checks that belong to your document run",
+          "268 document-type playbooks — only the checks that belong to your document run",
           "Every finding quotes the clause it fired on, with its exact character range in the document",
           "Cited findings — rules that assert what the law is cite a regulator or statute; drafting-practice rules cite their practice source",
           "Reviewed copy export — your own DOCX with findings as anchored Word comments (never a generated redline)",
@@ -2260,14 +2262,6 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "There is no server. Your contract never leaves the tab. Nothing is logged, nothing is uploaded, nothing is retained. Open DevTools, open the Network tab, and confirm it: the only requests are same-origin fetches of the app's own rule data and playbooks, and none carries any of your document."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Why no AI?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Probabilistic answers cannot be cited. A senior partner cannot sign off on a chatbot output. An auditor cannot trace it. A client cannot reproduce it. Vaulytica does the work AI tools cannot do: exhaustive, identical, cited checking."
             }
           },
           {

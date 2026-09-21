@@ -136,4 +136,15 @@ describe("schema.org JSON-LD blocks in site/index.html", () => {
       expect(name).toBe(name.trim());
     }
   });
+
+  it("only marks up questions visible in the on-page FAQ", () => {
+    const html = readFileSync(INDEX_HTML, "utf8");
+    const faq = blocks.find((b) => b["@type"] === "FAQPage")!;
+    const mainEntity = faq.mainEntity as Array<{ name: string }>;
+    for (const question of mainEntity) {
+      expect(html, `FAQ question is not visible: ${question.name}`).toContain(
+        `<h4>${question.name}</h4>`,
+      );
+    }
+  });
 });
