@@ -4,7 +4,8 @@ Synthetic fixtures plus committed golden EngineRun outputs. The
 [golden-output integration test](../integration/golden-output.test.ts)
 re-runs the full pipeline against every fixture and asserts the
 `result_hash` matches the golden. The DKB-rebuild workflow uses the
-same test as the regression gate.
+same test, with the rest of `tests/integration` and `tests/golden`, as its
+regression gate.
 
 ## Layout
 

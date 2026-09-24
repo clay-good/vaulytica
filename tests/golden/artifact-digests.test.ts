@@ -22,6 +22,14 @@
  * Regenerate on a version bump (the engine version is stamped into every
  * artifact) and whenever a renderer deliberately changes — never to make a
  * red matrix green.
+ *
+ * 🚨 The DKB is PINNED, not "latest". Every artifact stamps `dkb_version`, and
+ * `result_hash` folds it in, so reading the newest `dkb/dist/` meant the weekly
+ * bot rebuild (which commits straight to main) moved every digest here and left
+ * main red for the next human push — 2026-09-20 did exactly that, with a report
+ * that differed from the previous DKB's in the stamp and nothing else. This file
+ * is about machine-independence, not DKB currency; move the pin deliberately,
+ * together with a regeneration.
  */
 
 import { describe, expect, it } from "vitest";
@@ -48,8 +56,12 @@ const EXPECTED = join(process.cwd(), "tests", "golden", "artifact-digests.json")
 /** Two specimens with different shapes: a letter-form NDA and a services agreement. */
 const FIXTURES = ["mutual-nda-letter.txt", "msa-customer-side.txt"];
 
+/** The DKB these digests were rendered against (see the 🚨 note above). */
+const DKB_VERSION = "v2026-09-06-local";
+const DKB_DIR = join(process.cwd(), "dkb", "dist", DKB_VERSION);
+
 async function digests(name: string): Promise<Record<string, string>> {
-  const deps = await loadAccuracyDeps();
+  const deps = await loadAccuracyDeps({ dkbDir: DKB_DIR });
   const r = await analyzeFile(join(process.cwd(), "tests", "fixtures", "specimens", name), {
     deps,
     secondaryFamilies: true,
@@ -71,6 +83,7 @@ async function digests(name: string): Promise<Record<string, string>> {
 
 describe("every text artifact is byte-identical on any machine", () => {
   it("matches the committed per-artifact digests", async () => {
+    expect(existsSync(DKB_DIR), `pinned DKB ${DKB_VERSION} is missing — move the pin and regenerate`).toBe(true);
     const got: Record<string, Record<string, string>> = {};
     for (const f of FIXTURES) got[f] = await digests(f);
 

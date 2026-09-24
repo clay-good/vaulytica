@@ -60,11 +60,15 @@ jobs:
           npx tsx tools/citation-check/run.ts --reachability --attest dkb/v3/validation-status.json \
             || echo "citation check reported issues — attestation records the pending count"
 
+      # tests/golden is in the gate as well as tests/integration: a green
+      # gate commits straight to main, so any suite that reads the DKB and
+      # is left out is one this job can turn red for the next human push
+      # (the 2026-09-20 rebuild did, through artifact-digests).
       - name: Run regression check
         id: regression
         run: |
           set +e
-          npm test -- tests/integration --reporter=default
+          npm test -- tests/integration tests/golden --reporter=default
           echo "exit_code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Commit DKB on green regression
