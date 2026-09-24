@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.732.0] — 2026-09-24
+
+### Fixed
+- **A clean Texas will was told its testator had not signed it.** EST-104
+  (warning, under `--estate-checks`) read a testator block only when the role
+  sat directly under the ruled line (`____ Testator`) or after a conformed
+  `/s/`. The commonest block of all puts the printed name between them —
+  a line, then "Margaret Ellen Doyle, Testator" — and the will carried it
+  twice. It now reads the name-then-role block, the name and role on separate
+  lines, and "Testatrix". A witness line followed by prose about the testator
+  still does not count.
+- **The estate report's scope statement denied the review it had just done.**
+  "Not reviewed for" said per-state witness/notary rules were "a separate
+  change pending statutory verification" under a header showing the verified
+  Texas overlay applied — the overlay has covered all 50 states and DC since
+  July. The statement now says what `--state` does (witness blocks against
+  the statute's count, worded to that statute) and what it does not (witness
+  age or interest, holographic and electronic wills, effectiveness).
+- **The privacy-notice scope statement said the same of state regimes that
+  ship.** It listed Colorado, Virginia, Texas and Oregon as "a separate
+  change", while `--regime co,va,tx,or` runs them, including Texas's mandated
+  notice text. Fixed on the scope statement and in `docs/verticals.md`.
+- **STRUCT-006 reported a statutory fiduciary office as an undefined term.**
+  "Independent Executor" (Tex. Est. Code § 22.017), "Independent
+  Administrator" and the UPC's "Personal Representative" (§ 1-201(35)) are
+  defined by statute, like the public offices the rule already exempts. Kept
+  narrow: "Successor Trustee" is the instrument's own vocabulary and is still
+  reported.
+- **Every weekly DKB rebuild turned main red.** The bot rebuild commits to
+  main after a regression gate of `tests/integration` only, and
+  `artifact-digests` — the one golden that read the newest DKB rather than a
+  pinned one — moved on the `dkb_version` stamp alone. The test now pins its
+  DKB and the gate runs `tests/golden` too.
+
+Goldens: 370 rewritten for the rule versions; `golden:churn` reports 0 changed
+finding sets.
+
 ## [9.731.0] — 2026-09-18
 
 ### Fixed

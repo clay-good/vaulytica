@@ -83,7 +83,10 @@ async function digests(name: string): Promise<Record<string, string>> {
 
 describe("every text artifact is byte-identical on any machine", () => {
   it("matches the committed per-artifact digests", async () => {
-    expect(existsSync(DKB_DIR), `pinned DKB ${DKB_VERSION} is missing — move the pin and regenerate`).toBe(true);
+    expect(
+      existsSync(DKB_DIR),
+      `pinned DKB ${DKB_VERSION} is missing — move the pin and regenerate`,
+    ).toBe(true);
     const got: Record<string, Record<string, string>> = {};
     for (const f of FIXTURES) got[f] = await digests(f);
 

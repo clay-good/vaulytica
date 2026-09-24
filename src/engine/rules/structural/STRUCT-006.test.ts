@@ -275,3 +275,35 @@ describe("STRUCT-006 — a job title is not a defined term", () => {
     expect(STRUCT_006.check(ctx)?.description).toMatch(/Successor Trustee/);
   });
 });
+
+/**
+ * A fiduciary office a statute creates is not a term the will forgot to define.
+ *
+ * A clean Texas will appointing "my spouse, Thomas James Doyle, as Independent
+ * Executor" (Tex. Est. Code § 22.017) was told "Independent Executor" is an
+ * undefined term, and a UPC will's "Personal Representative" (UPC § 1-201(35))
+ * reads the same way. The one-word offices — Executor, Trustee — never reached
+ * the check because it reads multi-word phrases only.
+ */
+describe("STRUCT-006 — a statutory fiduciary office is not an undefined term", () => {
+  const will = (office: string) =>
+    buildContext([
+      "Last Will and Testament of Margaret Ellen Doyle",
+      `I appoint my spouse, Thomas James Doyle, as ${office} of this Will. No ${office} shall be required to post bond.`,
+      `My ${office} may sell any property of my estate without court order.`,
+    ]);
+
+  it("is silent on Independent Executor, Independent Administrator, and Personal Representative", () => {
+    for (const office of [
+      "Independent Executor",
+      "Independent Administrator",
+      "Personal Representative",
+    ]) {
+      expect(STRUCT_006.check(will(office)), office).toBeNull();
+    }
+  });
+
+  it("still reports a Title-Case fiduciary phrase no statute creates", () => {
+    expect(STRUCT_006.check(will("Estate Steward"))?.description).toContain("Estate Steward");
+  });
+});

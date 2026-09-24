@@ -92,6 +92,46 @@ describe("EST-104 / EST-105 — the conformed signature", () => {
   });
 });
 
+describe("EST-104 — the printed name between the line and the role", () => {
+  // The commonest testator block there is: a ruled line, the testator's
+  // printed name under it, and the role after the name. The patterns read
+  // "___ Testator" (role directly under the line) and "/s/ … Testator", so a
+  // clean Texas will signed twice this way was told its testator had not
+  // signed it.
+  it("reads a ruled line over 'Name, Testator'", () => {
+    expect(
+      rule("EST-104").check(
+        will(
+          "IN WITNESS WHEREOF, I have signed this Will on March 3, 2026, at Austin, Texas.",
+          "______________________________\nMargaret Ellen Doyle, Testator",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("reads the name and the role on separate lines, and 'Testatrix'", () => {
+    expect(
+      rule("EST-104").check(will("______________________________\nMargaret Ellen Doyle\nTestator")),
+    ).toBeNull();
+    expect(
+      rule("EST-104").check(
+        will("______________________________\nMargaret Ellen Doyle, Testatrix"),
+      ),
+    ).toBeNull();
+  });
+
+  it("is not satisfied by a witness line followed by prose about the testator", () => {
+    expect(
+      rule("EST-104").check(
+        will(
+          "______________________________\nWitness: Laura M. Chen",
+          "Address: 1400 Congress Avenue, Austin, Texas, signed at the testator's request.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});
+
 describe("a will's family are people, not defined terms", () => {
   it("does not report a relative introduced by their relationship", () => {
     const map = extractDefinitions(

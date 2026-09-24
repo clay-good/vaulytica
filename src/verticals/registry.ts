@@ -150,22 +150,23 @@ export const SCOPE_OF_REVIEW: Readonly<Record<string, ScopeStatement>> = {
     reviewed_for: [
       "presence of execution-formality recitals (attestation clause, self-proving affidavit, notary block, testator and witness signature blocks) when --estate-checks is asserted",
       "residuary share arithmetic (numeric shares that do not sum to 100%) and fiduciary/survivorship recitals (executor, successor, guardian for minors, survivorship)",
+      "when --state is asserted, witness signature blocks against the number of witnesses that state's execution statute expects, with the execution findings worded to that statute (no attesting witnesses for an ordinary signed will in Pennsylvania, notarization in lieu of witnesses in Colorado and North Dakota, Louisiana's notarial testament)",
     ],
     not_reviewed_for: [
       "estate-instrument checks at all unless --estate-checks is asserted",
       "whether the will is validly executed, or that witnesses were competent, disinterested, or present — recitals are checked, not valid execution",
-      "state-specific execution formalities (per-state witness/notary rules are a separate change pending statutory verification), and any conclusion that the instrument is effective in any jurisdiction",
+      "state execution formalities beyond the witness count and the notary alternatives above (witness age or interest, holographic-will and electronic-will requirements), and any conclusion that the instrument is effective in any jurisdiction",
     ],
   }),
   ...scopeForIds(["privacy-notice-us", "privacy-notice-gdpr"], {
     pack: "Privacy Notice Content",
     reviewed_for: [
-      "presence of the content items the asserted regime(s) enumerate — collection categories, rights disclosures, opt-out/limit mechanisms, retention, sources/recipients, and contact — when a --regime is asserted (CCPA/CPRA, GDPR Art. 13/14)",
+      "presence of the content items the asserted regime(s) enumerate — collection categories, rights disclosures, opt-out/limit mechanisms, retention, sources/recipients, and contact — when a --regime is asserted (CCPA/CPRA, GDPR Art. 13/14, and the Colorado, Virginia, Texas and Oregon statutory notice lists, including the notice text Texas mandates word for word)",
     ],
     not_reviewed_for: [
       "privacy-notice content at all unless a regime is asserted (--regime); which law applies is the attorney's call",
       "the adequacy or accuracy of any disclosure, or whether it matches the business's actual data practices",
-      "regimes beyond CCPA and GDPR Art. 13/14 (Texas exact-wording and other state analogs are a separate change), and any compliance conclusion",
+      "privacy regimes other than those listed above (the other state privacy acts), and any compliance conclusion",
     ],
   }),
   ...scopeForIds(["appellate-brief", "trial-motion", "petition"], {

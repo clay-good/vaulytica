@@ -70,6 +70,17 @@ const PUBLIC_OFFICE =
   /^(?:notary\s+public|justice\s+of\s+the\s+peace|commissioner\s+of\s+deeds|clerk\s+of\s+(?:the\s+)?court|register\s+of\s+deeds|recorder\s+of\s+deeds|county\s+(?:clerk|recorder)|secretary\s+of\s+state|attorney\s+general|clerk\s+of\s+the\s+circuit\s+court)$/i;
 
 /**
+ * A fiduciary office a STATUTE creates, like a public office, is defined by the
+ * state and not by the instrument that fills it. A clean Texas will appointing
+ * an "Independent Executor" (Tex. Est. Code § 22.017) was told the office is a
+ * term it forgot to define, and a UPC will's "Personal Representative" (UPC
+ * § 1-201(35)) reads the same way. Deliberately narrow: "Successor Trustee" is
+ * the instrument's own vocabulary, and trust fixtures rely on reporting it.
+ */
+const STATUTORY_FIDUCIARY_OFFICE =
+  /^(?:(?:independent|dependent)\s+(?:executor|executrix|administrator|administratrix)|personal\s+representative)$/i;
+
+/**
  * A person the document introduces by their relationship to the declarant.
  *
  * "I appoint my husband, Thomas Aurelio Harper, as Executor"; "I give my
@@ -123,7 +134,7 @@ function isJobTitle(documentBody: string, term: string): boolean {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
@@ -205,6 +216,7 @@ export const rule: Rule = {
       if (isNamedPerson(body, e.term)) return false;
       // A public office is defined by the state, not by this document.
       if (PUBLIC_OFFICE.test(e.term.trim())) return false;
+      if (STATUTORY_FIDUCIARY_OFFICE.test(e.term.trim())) return false;
       // The job the document offers is a role, not a term it forgot to define.
       if (isJobTitle(body, e.term)) return false;
       // An internal function is a department, not a defined term.

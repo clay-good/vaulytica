@@ -155,6 +155,7 @@ const EST_103: Rule = absenceRule(SPEC_103);
 
 const EST_104: Rule = absenceRule({
   id: "EST-104",
+  version: "1.1.0",
   name: "Testator signature block present",
   severity: "warning",
   // A will that is pasted, typed, or e-signed carries the CONFORMED
@@ -165,10 +166,16 @@ const EST_104: Rule = absenceRule({
   patterns: [
     /signature of.{0,20}testator/,
     /testator.{0,30}signature/,
-    /_{3,}\s*(the )?testator/,
+    /_{3,}\s*(the )?testat(?:or|rix)/,
+    // The commonest block of all puts the printed NAME between the line and
+    // the role — "____ / Margaret Ellen Doyle, Testator" — and a clean will
+    // signed that way twice was told nobody had signed it. The name is one
+    // line of name characters (no underscore, so a witness line cannot lend
+    // its rule to prose about the testator further down).
+    /_{3,}[ \t]*\n?[ \t]*[a-z][a-z .'’-]{0,60}?,?\s*\(?(the )?testat(?:or|rix)\b/,
     /by:?\s*_{3,}/,
-    /\/s\/[^.]{0,80}?testator/i,
-    /testator[^.]{0,40}?\/s\//i,
+    /\/s\/[^.]{0,80}?testat(?:or|rix)/i,
+    /testat(?:or|rix)[^.]{0,40}?\/s\//i,
   ],
   missingTitle: "No testator signature block detected",
   missingDescription: "No signature block for the testator was found in the document text.",

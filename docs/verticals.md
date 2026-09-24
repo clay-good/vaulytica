@@ -41,7 +41,7 @@ gate, or an assertion gate that is not registered.
 
 | Assertion | Pack | Status |
 | --- | --- | --- |
-| `estate-checks` | estate deepening (EST-1xx/2xx/3xx) | Shipped — gated because the will/trust playbooks already ship, so playbook gating alone would change existing hashes. Runs only under `--estate-checks`. |
+| `estate-checks` | estate deepening (EST-1xx/2xx/3xx) | Shipped — gated because the will/trust playbooks already ship, so playbook gating alone would change existing hashes. Runs only under `--estate-checks` (or `--state`, which implies it). |
 
 ### Shipped packs
 
@@ -75,12 +75,13 @@ playbooks. Dormant unless a regime is asserted (`--regime ccpa,gdpr`): the PNOT
 rules join the rule set only then, so a notice analyzed with no regime has an
 unchanged hash. Built on the v3 `_regulated-rule.ts` presence-rule factory, one
 rule per enumerated item (CCPA/CPRA per Cal. Civ. Code § 1798.130 + 11 CCR
-§ 7011; GDPR Articles 13 and 14), each citing its statutory item. The report
+§ 7011; GDPR Articles 13 and 14; the Colorado, Virginia, Texas and Oregon
+statutory notice lists, with Texas's mandated notice text matched word for
+word), each citing its statutory item. The report
 carries a per-regime coverage table (found / not detected) and stamps the
 asserted regimes into the run. Presence-only: it never states a notice is
 adequate, accurate, or compliant, and which law applies is the attorney's
-assertion. Texas exact-wording and the other state analogs (CO/VA/OR) are a
-separate change pending statutory-text verification.
+assertion.
 
 ## Namespace reservation
 
