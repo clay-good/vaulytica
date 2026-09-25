@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.743.0] — 2026-09-24
+
+### Fixed
+- **A consumer terms of service was told it states no venue.** "You may
+  bring any claim in small claims court or in the state or federal courts
+  located in King County, Washington" is a forum clause in the active voice,
+  which is how consumer terms are written; the venue patterns needed the
+  passive "claims shall be brought in …" or a consent to jurisdiction. The
+  active form is now read, with the same court-and-place scaffold required
+  after the verb and a determiner before the dispute noun ("any claim", "an
+  action") — so a demand letter's "we will file suit in the Circuit Court of
+  Cook County" stays a threat rather than a forum choice. Across the
+  specimens, four forum clauses gain their venue (a construction contract, a
+  design-build agreement, a D&O indemnification agreement, a listing
+  agreement). The place ends at a following function word, and the court's
+  own name ("Court of Chancery of the State of Delaware") is skipped, so the
+  same clause SHOUTED reads "DELAWARE" rather than "DELAWARE TO ENFORCE THIS
+  AGREEMENT" — `shouted-clause` caught that before it shipped — and one
+  `format-invariance` debt entry shrinks.
+- **IPDATA-001 said a terms of service allocates no IP ownership.** "You keep
+  ownership of the recipes, photos, and notes you post" is "retain
+  ownership" in plain language, and only "retain" was read.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.742.0] — 2026-09-24
 
 ### Fixed

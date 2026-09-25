@@ -414,6 +414,26 @@ const VENUE_CONSENT = new RegExp(
   String.raw`\b(?:consent|submit|agree|attorn|subject)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?(?:${COURT_NAME})?(?:(?:[A-Za-z-]+\s+){0,2}tribunals?\s+and\s+)?(?:tribunals?|courts?)\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
+/**
+ * The ACTIVE-voice forum clause, which is how consumer terms are written: "You
+ * may bring any claim in small claims court or in the state or federal courts
+ * located in King County, Washington". `VENUE_RESOLVED_IN` needs the passive
+ * "claims … shall be brought in", so a clean terms of service was told it
+ * states no venue. The same court scaffold is required after the verb — a
+ * court noun and a capitalized place — so "bring any claim to our attention"
+ * cannot match — and a DETERMINER before the dispute noun: a forum clause
+ * speaks of "any claim" or "an action", while a demand letter's "we will file
+ * suit in the Circuit Court of Cook County" is a threat, not a forum choice.
+ * The place ends at a following function word as well as at punctuation: the
+ * clause runs on ("… of the State of Delaware to enforce this Agreement"), and
+ * in a SHOUTED clause the lowercase cut that normally trims it has nothing to
+ * cut, so the venue read "DELAWARE TO ENFORCE THIS AGREEMENT".
+ */
+const VENUE_BRING_IN = new RegExp(
+  String.raw`\b(?:bring|file|commence|institute|litigate)\s+(?:any|a|an|such|all)\s+(?:${DISPUTE_NOUN})\b${RUNUP}{0,120}?\b(?:in|before)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?${COURT_NAME}courts?\s+(?:of\s+(?:chancery|common\s+pleas|claims|appeals)\s+)?(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+|in\s+|within\s+)${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:and|or|to|for|with|within|if|which|that|in|under|by)\b|$)`,
+  "gi",
+);
+
 // "The parties agree to venue in Harris County, Texas" — venue selected as the
 // object of "agree/consent/submit to venue in", with no "shall be … courts".
 const VENUE_AGREE_IN = new RegExp(
@@ -719,6 +739,7 @@ export function extractJurisdictions(
     runRegex(VENUE_RESOLVED_IN, ctx.text, recordVenue);
     runRegex(VENUE_CONSENT, ctx.text, recordVenue);
     runRegex(VENUE_AGREE_IN, ctx.text, recordVenue);
+    runRegex(VENUE_BRING_IN, ctx.text, recordVenue);
     runRegex(VENUE_SUBJECT, ctx.text, recordVenue);
     runRegex(VENUE_WAIVE_OBJECTION, ctx.text, recordVenue);
     // Only when nothing else in this paragraph named a forum: the fallback

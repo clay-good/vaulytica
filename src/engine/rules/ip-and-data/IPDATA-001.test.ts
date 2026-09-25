@@ -281,3 +281,16 @@ describe("IPDATA-001 — the family's word for its IP (v1.14.0)", () => {
     ).toBe(false);
   });
 });
+
+describe("IPDATA-001 — 'keep ownership' is 'retain ownership' in plain language", () => {
+  it("reads 'You keep ownership of the recipes, photos, and notes you post'", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Your Content",
+          'You keep ownership of the recipes, photos, and notes you post ("Your Content").',
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

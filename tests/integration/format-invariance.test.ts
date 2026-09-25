@@ -723,7 +723,7 @@ const HYPHEN_WRAP_DEBT: readonly string[] = [
   // finding appears.
   "asset-purchase-complete.txt: lost - gained CHOICE-003",
   "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
-  "construction-contract.txt: lost - gained CHOICE-003,CHOICE-006",
+  "construction-contract.txt: lost - gained CHOICE-006",
   "cookie-notice-uk.txt: lost - gained IPDATA-008",
   // 9.640.0 — the eighth clean document, and the THIRD instance of the one
   // shape the resolver cannot decide: a long word the document uses EXACTLY

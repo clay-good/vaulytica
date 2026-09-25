@@ -984,3 +984,54 @@ describe("venue capture — where the place name ends", () => {
     ).toContain("Delaware");
   });
 });
+
+/**
+ * A consumer's forum clause is in the ACTIVE voice. "You may bring any claim
+ * in small claims court or in the state or federal courts located in King
+ * County, Washington" names a forum as plainly as "claims shall be brought
+ * in …", and a clean terms of service was told it states no venue.
+ */
+describe("extractJurisdictions — an active-voice forum clause", () => {
+  const kinds = (t: string) =>
+    extractJurisdictions(buildTree(["Disputes", t])).map((j) => j.clause_kind);
+
+  it("reads 'You may bring any claim in … the courts located in …'", () => {
+    expect(
+      kinds(
+        "You may bring any claim in small claims court or in the state or federal courts located in King County, Washington, and you and we consent to the jurisdiction of those courts.",
+      ),
+    ).toContain("venue");
+  });
+
+  it("does not read 'bring any claim' without a court and place", () => {
+    expect(kinds("You may bring any claim you have to our attention by email.")).not.toContain(
+      "venue",
+    );
+  });
+});
+
+describe("extractJurisdictions — a threat to sue is not a forum clause", () => {
+  it("does not read a demand letter's 'we will file suit in' as a venue", () => {
+    const kinds = extractJurisdictions(
+      buildTree([
+        "Demand",
+        "If payment is not received, we will file suit in the Circuit Court of Cook County, Illinois.",
+      ]),
+    ).map((j) => j.clause_kind);
+    expect(kinds).not.toContain("venue");
+  });
+});
+
+describe("extractJurisdictions — an active-voice forum clause set in capitals", () => {
+  it("ends the place at the clause that runs on after it", () => {
+    const venues = extractJurisdictions(
+      buildTree([
+        "Enforcement",
+        "INDEMNITEE MAY BRING AN ACTION IN THE COURT OF CHANCERY OF THE STATE OF DELAWARE TO ENFORCE THIS AGREEMENT.",
+      ]),
+    )
+      .filter((j) => j.clause_kind === "venue")
+      .map((j) => j.raw_text);
+    expect(venues).toEqual(["DELAWARE"]);
+  });
+});
