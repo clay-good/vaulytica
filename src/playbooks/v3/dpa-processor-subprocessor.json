@@ -60,7 +60,7 @@
     "Sub-processor",
     "Processing"
   ],
-  "rule_overrides": {"CHOICE-001": { "skip": true }, "STRUCT-003": { "skip": true }},
+  "rule_overrides": {"STRUCT-002": { "skip": true }, "CHOICE-001": { "skip": true }, "STRUCT-003": { "skip": true }},
   "balanced_defaults": [],
   "sources": [
     {

@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.761.0] — 2026-09-25
+
+### Fixed
+- **Three more absences reported twice on their own playbooks.** A looser
+  name-similarity sweep, checked against co-firing in the goldens, found a
+  DPA with no effective date drawing STRUCT-002 and DPA-044, a BAA with no
+  governing law drawing CHOICE-001 and BAA-039, and a stock purchase
+  agreement drawing CHOICE-001 beside MNA-019 ("Governing law and forum").
+  Following the skips dozens of playbooks already carry, the DPA and SCC
+  playbooks now skip STRUCT-002, and the BAA and stock-purchase playbooks
+  skip CHOICE-001; the pack rules own the question there. The sweep's other
+  near-matches were read and are complementary (a clause's presence beside
+  its mutuality or asymmetry, a pleading's Rule 11 signature beside a
+  generic one that does not co-fire).
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 2
+changed finding sets, each a duplicate leaving beside its owner.
+
 ## [9.760.0] — 2026-09-25
 
 ### Fixed

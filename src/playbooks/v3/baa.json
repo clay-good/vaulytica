@@ -48,7 +48,7 @@
     "Unsecured PHI",
     "Security Incident"
   ],
-  "rule_overrides": {},
+  "rule_overrides": {"CHOICE-001": { "skip": true }},
   "balanced_defaults": [],
   "sources": [
     {

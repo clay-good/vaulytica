@@ -1904,7 +1904,11 @@
       "Unsecured PHI",
       "Security Incident"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [
       {
@@ -1996,6 +2000,9 @@
       "Security Incident"
     ],
     "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
       "OBLI-002": {
         "skip": true
       },
@@ -6547,6 +6554,9 @@
       "Processing"
     ],
     "rule_overrides": {
+      "STRUCT-002": {
+        "skip": true
+      },
       "CHOICE-001": {
         "skip": true
       },
@@ -6734,6 +6744,9 @@
       "Processing"
     ],
     "rule_overrides": {
+      "STRUCT-002": {
+        "skip": true
+      },
       "CHOICE-001": {
         "skip": true
       },
@@ -17530,6 +17543,9 @@
       "Data Subject"
     ],
     "rule_overrides": {
+      "STRUCT-002": {
+        "skip": true
+      },
       "CHOICE-001": {
         "skip": true
       },
@@ -17632,6 +17648,9 @@
       "Data Subject"
     ],
     "rule_overrides": {
+      "STRUCT-002": {
+        "skip": true
+      },
       "CHOICE-001": {
         "skip": true
       },
@@ -18960,7 +18979,11 @@
       "Closing",
       "Survival Period"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "DGCL",

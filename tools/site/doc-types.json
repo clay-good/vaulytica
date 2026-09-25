@@ -1241,7 +1241,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 114,
    "companions": [
     "msa-vendor-deep"
    ],
@@ -1529,7 +1529,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 110,
+   "general_checks": 109,
    "companions": [
     "baa",
     "msa-vendor-deep"
@@ -4571,7 +4571,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 111,
    "companions": [
     "msa-vendor-deep",
     "scc-module-2",
@@ -5108,7 +5108,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 112,
    "companions": [
     "dpa-controller-processor",
     "scc-module-3"
@@ -12801,7 +12801,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 107,
+   "general_checks": 106,
    "companions": [
     "dpa-controller-processor"
    ],
@@ -13227,7 +13227,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 107,
+   "general_checks": 106,
    "companions": [
     "dpa-processor-subprocessor"
    ],
@@ -14095,7 +14095,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 114,
    "companions": [
     "disclosure-schedules",
     "escrow-agreement",
