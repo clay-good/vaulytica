@@ -21,7 +21,7 @@
       "non-qualified stock option",
       "grant date"
     ],
-    "negative_features": ["restricted stock unit", "rsu", "safe", "convertible note"]
+    "negative_features": ["restricted stock unit", "rsu", "safe", "convertible note", "motion picture", "screenplay", "television rights", "option fee", "real property"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Grant Date", "Exercise Price", "Vesting Schedule", "Plan"],

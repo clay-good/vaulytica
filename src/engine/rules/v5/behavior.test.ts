@@ -1473,3 +1473,27 @@ describe("pledge agreement routing", () => {
     expect(r.run.playbook_id).toBe("security-agreement");
   });
 });
+
+/**
+ * "Option Agreement" is also the title of a film option and a real-estate
+ * option. A producer's option on a novel's screen rights routed to
+ * `stock-option-grant` on its title alone and drew seven equity criticals —
+ * no exercise price, no vesting schedule, no ISO/NSO designation.
+ */
+describe("option agreement routing", () => {
+  it("does not audit a film option as a stock option grant", async () => {
+    const r = await analyzeText(
+      'OPTION AGREEMENT\n\nThis Option Agreement is made between Lantern Pictures LLC ("Producer") and Dana Whitcomb ("Author"). Author grants Producer the exclusive option to acquire the motion picture and television rights in Author\'s novel for an option fee of $15,000.',
+      "film-option.txt",
+    );
+    expect(r.run.playbook_id).not.toBe("stock-option-grant");
+  });
+
+  it("still routes an equity option agreement to stock-option-grant", async () => {
+    const r = await analyzeText(
+      'OPTION AGREEMENT\n\nThis Option Agreement is made between Halcyon Robotics, Inc. (the "Company") and Priya Nair ("Optionee") under the 2024 Equity Incentive Plan. The Company grants Optionee an option to purchase 20,000 shares of Common Stock at an exercise price of $1.25 per share, vesting under the vesting schedule below. The grant date is March 1, 2026.',
+      "equity-option.txt",
+    );
+    expect(r.run.playbook_id).toBe("stock-option-grant");
+  });
+});

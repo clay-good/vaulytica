@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.777.0] — 2026-09-25
+
+### Fixed
+- **A film option was audited as a stock option grant.** "Option Agreement"
+  is also the title of a producer's option on screen rights and of a
+  real-estate option. A producer's option on a novel routed to
+  `stock-option-grant` on its title alone and drew seven equity criticals:
+  no exercise price, no vesting schedule, no ISO/NSO designation, and so
+  on. `stock-option-grant` now counts "motion picture", "screenplay",
+  "television rights", "option fee" and "real property" against itself. An
+  equity option agreement still routes there at 1.0.
+  - Found by a sweep of seven documents whose titles name more than one
+    instrument, after 9.776's pledge agreement.
+  - The other six routed acceptably: a SaaS subscription, a UK executive
+    "Service Agreement", a liability waiver, a rooftop licence, a
+    directors' consent and a litigation declaration.
+  - A real-estate option titled only "Option Agreement" now gets the
+    general review. Giving `option-to-purchase-real-estate` the bare title
+    would pull the film option toward it, since negative features weigh
+    only −0.1 each.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.776.0] — 2026-09-25
 
 ### Fixed

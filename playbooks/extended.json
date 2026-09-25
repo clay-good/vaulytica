@@ -18917,7 +18917,12 @@
         "restricted stock unit",
         "rsu",
         "safe",
-        "convertible note"
+        "convertible note",
+        "motion picture",
+        "screenplay",
+        "television rights",
+        "option fee",
+        "real property"
       ]
     },
     "expected_clauses": [],
