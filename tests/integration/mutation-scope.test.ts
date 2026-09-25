@@ -161,7 +161,7 @@ describe("mutation scope", () => {
   // in two places is one number too many unless they are pinned together.
   it("is quoted in the README with the same baseline score", () => {
     const row = /\|\s*\*\*All \(scoped\)\*\*\s*\|\s*\*\*([\d.]+)%\*\*/.exec(baselineDoc);
-    const readme = readFileSync(join(root, "README.md"), "utf8");
+    const readme = readFileSync(join(root, "docs", "reference.md"), "utf8");
     expect(
       readme,
       "README's mutation baseline disagrees with docs/v7/mutation-baseline.md",

@@ -29,7 +29,7 @@ const read = (...p: string[]): string => readFileSync(join(root, ...p), "utf8");
 
 const runSource = read("tools", "cli", "run.ts");
 const compareSource = read("tools", "cli", "compare.ts");
-const readme = read("README.md");
+const readme = read("docs", "reference.md");
 const ciDoc = read("docs", "ci-integration.md");
 const actionYml = read("action.yml");
 

@@ -28,7 +28,7 @@ const read = (...p: string[]): string => readFileSync(join(root, ...p), "utf8");
 const runSource = read("tools", "cli", "run.ts");
 const ciDoc = read("docs", "ci-integration.md");
 const actionYml = read("action.yml");
-const readme = read("README.md");
+const readme = read("docs", "reference.md");
 
 /** The `--fail-on*` flags `analyze` actually parses. */
 function gateFlags(): string[] {

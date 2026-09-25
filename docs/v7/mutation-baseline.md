@@ -1,6 +1,6 @@
 # Mutation-testing baseline (spec-v7 Steps 123–124)
 
-> Committed honestly, like the [coverage baseline](../../README.md#build--verify) and the [v5 accuracy scoreboard](../v5/methodology.md): a _measured number_, not a target. Re-measure with `npm run mutation`; the HTML report lands in `reports/mutation/` (gitignored).
+> Committed honestly, like the [coverage baseline](../reference.md#build--verify) and the [v5 accuracy scoreboard](../v5/methodology.md): a _measured number_, not a target. Re-measure with `npm run mutation`; the HTML report lands in `reports/mutation/` (gitignored).
 
 ## Why mutation testing
 

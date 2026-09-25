@@ -127,7 +127,7 @@ Those four are not the whole surface: the dispatcher exposes **34** commands in
 all — the four above plus `posture-review`, `compare-coherence`, and the 28
 `coherence-*` reads of the document-free posture family (`coherence-trend`,
 `coherence-arc`, `coherence-matrix`, …). `npx vaulytica --help` prints the
-current list; the [README's command table](../README.md#headless-api--cli)
+current list; the [reference's command table](reference.md#headless-api--cli)
 documents each one's flags and exit codes.
 
 ### Cross-document checks on a folder

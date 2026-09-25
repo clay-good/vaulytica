@@ -19,7 +19,7 @@ import { describe, expect, it } from "vitest";
 describe("README version badge", () => {
   const root = process.cwd();
   const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8")) as { version: string };
-  const readme = readFileSync(join(root, "README.md"), "utf8");
+  const readme = readFileSync(join(root, "docs", "reference.md"), "utf8");
 
   it("carries the released package version", () => {
     // The badge writes the version as a `v`-prefixed token delimited by

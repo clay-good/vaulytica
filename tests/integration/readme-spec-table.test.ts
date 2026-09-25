@@ -20,7 +20,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-const README = readFileSync("README.md", "utf8");
+const README = readFileSync("docs/reference.md", "utf8");
 /**
  * Prettier owns the column padding in a markdown table and re-aligns it
  * whenever a cell's width changes, so `| v4 |` becomes `| v4  |` the moment a

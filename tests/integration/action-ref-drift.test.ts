@@ -21,7 +21,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const ROOT = process.cwd();
-const DOCS = ["README.md", join("docs", "ci-integration.md")];
+const DOCS = ["README.md", join("docs", "reference.md"), join("docs", "ci-integration.md")];
 const USES = /uses:\s*clay-good\/vaulytica@([^\s#]+)/g;
 const major = (
   JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")) as { version: string }

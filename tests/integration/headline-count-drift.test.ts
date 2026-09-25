@@ -31,7 +31,7 @@ const TOTAL_PLAYBOOKS = EXTENDED.length + LAUNCH_PLAYBOOK_IDS.length;
 
 const grouped = (n: number) => n.toLocaleString("en-US");
 
-const README = readFileSync(join(process.cwd(), "README.md"), "utf8");
+const README = readFileSync(join(process.cwd(), "docs", "reference.md"), "utf8");
 const SITE = readFileSync(join(process.cwd(), "site", "index.html"), "utf8");
 
 describe("the headline rule and document-type counts", () => {

@@ -24,7 +24,7 @@ import { STATE_OVERLAYS } from "../../src/dkb/state-overlays.js";
 import { ESTATE_FORMALITIES } from "../../src/dkb/estate-formalities.js";
 
 const root = process.cwd();
-const readme = readFileSync(join(root, "README.md"), "utf8");
+const readme = readFileSync(join(root, "docs", "reference.md"), "utf8");
 const landing = readFileSync(join(root, "site", "index.html"), "utf8");
 
 /** Cheat-sheet table row label -> the rule-id prefix that row counts. */
