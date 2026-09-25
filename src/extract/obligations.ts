@@ -70,6 +70,9 @@ const MODALS = [
   "hereby covenants",
 ];
 
+/** A subject opened by a negative determiner: the negation belongs to the row. */
+const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
+
 /** A remedy limit's subject, and its verb — together, a cap rather than a covenant. */
 const CAP_SUBJECT = /\b(?:liabilit(?:y|ies)|damages|recovery)\b/i;
 const CAP_ACTION = /^not\s+exceed\b/i;
@@ -145,6 +148,25 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // PHRASE naming a party is a carve-out `scopeExclusion` reports.
         const subjectForObligor = stripExceptTail(subject);
         let obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
+        // A NEGATED SUBJECT CARRIES THE SENTENCE'S MEANING. Resolution shortens
+        // a long subject to its trailing noun phrase or a party mention, and
+        // "No delay or omission by Lender in exercising any right … shall
+        // operate as a waiver" printed as `exercising any right under this Note
+        // | shall | operate as a waiver` — the opposite of the note. Where the
+        // shortening would drop a leading No/Neither/None, the subject is kept
+        // as written. Short negated subjects ("No person") always kept it.
+        const negatedSubject = subjectForObligor.trim().replace(/[\s,;:]+$/, "");
+        // Only a subject that is ONE noun phrase: with a comma or semicolon in
+        // it, the "subject" spans a clause boundary and the negation belongs to
+        // an earlier clause ("Neither Party may assign … without consent, which
+        // shall not be unreasonably withheld").
+        if (
+          NEGATED_SUBJECT.test(negatedSubject) &&
+          !/[,;]/.test(negatedSubject) &&
+          !NEGATED_SUBJECT.test(obligor)
+        ) {
+          obligor = negatedSubject;
+        }
         // The apodosis of a conditional usually refers back to the protasis
         // with a pronoun — "If Supplier cannot meet accepted orders, IT shall
         // allocate available Products …" — and a ledger column reading "it"

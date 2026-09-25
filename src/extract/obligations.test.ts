@@ -1056,3 +1056,40 @@ describe("extractObligations — a liability cap is not an obligation", () => {
     expect(obl("Customer shall not exceed the usage limits in the Order Form.")).toHaveLength(1);
   });
 });
+
+/**
+ * A NEGATED SUBJECT CARRIES THE SENTENCE'S MEANING. "No delay or omission by
+ * Lender in exercising any right under this Note shall operate as a waiver"
+ * printed as `exercising any right under this Note | shall | operate as a
+ * waiver of that right` — the ledger said the opposite of the note — and "No
+ * failure by either party to enforce any provision shall operate as a waiver"
+ * as `the parties | shall | operate as a waiver`. Obligor resolution shortened
+ * the subject to a trailing noun phrase or a party mention and dropped the
+ * "No" that negates it. Short negated subjects ("No person", "NEITHER PARTY")
+ * always kept it.
+ */
+describe("extractObligations — a negated subject keeps its negation", () => {
+  const rows = (t: string) =>
+    extractObligations(buildTree(["Waivers", t]), []).map((o) => `${o.obligor} | ${o.action}`);
+
+  it.each([
+    [
+      "No delay or omission by Lender in exercising any right under this Note shall operate as a waiver of that right.",
+      /^No delay or omission by Lender/,
+    ],
+    [
+      "No failure by either party to enforce any provision shall operate as a waiver.",
+      /^No failure by either party/,
+    ],
+  ])("%s", (sentence, obligor) => {
+    const got = rows(sentence);
+    expect(got.length, "nothing extracted").toBeGreaterThan(0);
+    for (const r of got) expect(r).toMatch(obligor);
+  });
+
+  it("still resolves an affirmative subject to the party", () => {
+    expect(rows("Either party shall give prompt notice of any claim.")[0]).toMatch(
+      /^the parties \|/,
+    );
+  });
+});

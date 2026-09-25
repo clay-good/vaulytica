@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.746.0] — 2026-09-24
+
+### Fixed
+- 🚨 **The obligations ledger printed negated duties as their opposite.** A
+  promissory note's "No delay or omission by Lender in exercising any right
+  under this Note shall operate as a waiver" read `exercising any right under
+  this Note | shall | operate as a waiver of that right`; a stockholders
+  agreement's "No Key Holder shall transfer any shares of Common Stock" read
+  `Key Holder | shall | transfer any shares of Common Stock`. Obligor
+  resolution shortens a long subject to its trailing noun phrase or a party
+  mention, and dropped the "No" that negates it — short negated subjects
+  ("No person", "NEITHER PARTY") always kept it. A negated subject that is one
+  noun phrase is now kept as written. A subject with a comma or semicolon in
+  it is left alone: there the negation belongs to an earlier clause ("Neither
+  Party may assign … without consent, which shall not be unreasonably
+  withheld"). Five corpus rows change, each one previously inverted or
+  garbled: a stockholders agreement, an SNDA ("no notice to Landlord shall be
+  effective"), a CBA, a JV indemnity and a will's spendthrift clause.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.745.0] — 2026-09-24
 
 ### Fixed
