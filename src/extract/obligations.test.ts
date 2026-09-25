@@ -1572,3 +1572,31 @@ describe("extractObligations — an aside that opens a condition", () => {
     );
   });
 });
+
+describe("extractObligations — a section number is not the subject", () => {
+  const rows = (text: string) => extractObligations(buildTree(["Terms", text]), []);
+
+  it("reads '10.2 Any action arising out of this Agreement' whole", () => {
+    const [o] = rows(
+      "10.2 Any action arising out of this Agreement shall be brought exclusively in the Court of Chancery.",
+    );
+    expect(o!.obligor).toBe("Any action arising out of this Agreement");
+  });
+
+  it("reads a numbered condition's pronoun through to its party", () => {
+    const [o] = rows(
+      "5.2 If either Party learns of actual confusion between the marks, it will notify the other Party within fifteen business days.",
+    );
+    expect(o!.obligor).toBe("the parties");
+  });
+
+  it("does not stop a verb series at its last coordinator", () => {
+    const text =
+      'This Lease is made between Harbor Point LLC ("Landlord") and Wren Studio LLC ("Tenant"). 12.2 On a default, Landlord may terminate this Lease, recover possession, and recover damages, and shall use commercially reasonable efforts to relet the Premises.';
+    const [o] = extractObligations(
+      buildTree(["Default", text]),
+      extractParties(buildTree(["Default", text])),
+    ).filter((r) => /relet/.test(r.action));
+    expect(o!.obligor).toBe("Landlord");
+  });
+});

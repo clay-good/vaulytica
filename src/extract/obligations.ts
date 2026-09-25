@@ -474,7 +474,8 @@ function protasisObligor(
  * A sentence opening with a subordinate clause that closes on a comma. Bounded
  * and `[^.;]` so it cannot run past the sentence it fronts.
  */
-const PROTASIS = /^\s*(?:if|when|unless|should|in\s+the\s+event|where)\b[^.;]{3,200}?,\s/i;
+const PROTASIS =
+  /^\s*(?:(?:\d+(?:\.\d+)+\.?|\d+\.|\([a-z0-9]{1,4}\))\s+)?(?:if|when|unless|should|in\s+the\s+event|where)\b[^.;]{3,200}?,\s/i;
 
 const BARE_AND_NAMED_SUBJECT =
   /\s+and\s+(?=(?:the\s+|each\s+|either\s+)?[A-Z][\w'’-]*(?:\s+[A-Z][\w'’-]*){0,3}\s*$)/;
@@ -916,6 +917,15 @@ function stripFrontedAdverbial(subject: string): string {
   const lastComma = subject.lastIndexOf(",");
   if (lastComma < 0) return subject;
   const tail = subject.slice(lastComma + 1).trim();
+  // A tail that is only a coordinator is the seam of a verb series, not a
+  // subject: "On a default, Landlord may terminate this Lease, recover
+  // possession, and recover damages, and shall use …" — the subject is after
+  // the FIRST comma.
+  if (/^(?:and|or|but)$/i.test(tail)) {
+    const firstComma = subject.indexOf(",");
+    const rest = subject.slice(firstComma + 1).trim();
+    return rest.length > 0 ? rest : subject;
+  }
   return tail.length > 0 ? tail : subject;
 }
 
@@ -1007,10 +1017,15 @@ function resolveObligorInner(
   // fronted condition was stripped at that comma: "If …, Buyer may terminate
   // this Agreement, and the Earnest Money shall be refunded" → "and the
   // Earnest Money".
-  const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/).replace(
-    /^(?:and|but|or)\s+(?=\S)/i,
-    "",
-  );
+  // …and a SECTION NUMBER that opens the sentence is not part of the subject:
+  // "10.2 Any action arising out of this Agreement", "(b) The chair of the
+  // board" lost their determiners to the number in front of them.
+  const trimmed = trimEdges(
+    stripFrontedAdverbial(
+      subject.trim().replace(/^(?:\d+(?:\.\d+)+\.?|\d+\.|\([a-z0-9]{1,4}\))\s+(?=[A-Z])/, ""),
+    ),
+    /[,;.\s]/,
+  ).replace(/^(?:and|but|or)\s+(?=\S)/i, "");
   // A WARRANTY is the warrantor's: "Lessor warrants that the Equipment will be
   // in good working order on delivery" puts the Equipment before the modal,
   // and the ledger printed "Lessor warrants that the Equipment" as the party
@@ -1054,7 +1069,8 @@ function resolveObligorInner(
       for (let at = lower.indexOf(label); at !== -1; at = lower.indexOf(label, at + 1)) {
         const before = at === 0 ? "" : lower[at - 1]!;
         if (before && !/\s/.test(before)) continue;
-        if (!/^\s+[a-z]+s\b/.test(trimmed.slice(at + label.length))) continue;
+        if (!/^\s+(?:[a-z]+s|may|shall|will|must|can)\b/.test(trimmed.slice(at + label.length)))
+          continue;
         if (!best || at > best.at) best = { at, label };
       }
     }

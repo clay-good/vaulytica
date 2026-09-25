@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.796.0] — 2026-09-25
+
+### Fixed
+- **A section number opened the obligor.** "10.2 Any action arising out
+  of this Agreement shall be brought…" named "action arising out of this
+  Agreement", and "7.1 The Borrower shall…" named "7.1 The Borrower". A
+  numbered paragraph's number sat in front of its subject and defeated
+  every rule that reads a subject's first word. The number now comes off
+  before the subject is read. That includes the fronted-condition and
+  pronoun resolvers: "5.2 If either Party learns of actual confusion …, it
+  will notify" names the parties again. 55 corpus rows change: every
+  numbered clause of a UK facility agreement and of a consent judgment
+  ("Defendants"), "The indemnified Party", "Notices", and "The Challenging
+  Party".
+- **A verb series that ends on its coordinator.** "On a default, Landlord
+  may terminate this Lease, recover possession, and recover damages, and
+  shall use commercially reasonable efforts to relet" left "and" as the
+  subject after the fronted phrase was removed. The subject is now the
+  text after the first comma, and a party followed by a modal counts as
+  the series' opening clause, so the row is Landlord's.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.795.0] — 2026-09-25
 
 ### Fixed
