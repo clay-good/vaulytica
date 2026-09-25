@@ -112,6 +112,20 @@ const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+
 const CLAUSE_CHAR = String.raw`(?:[^,;.]|,(?=\d{3}(?!\d))|\.(?=\d))`;
 
 /**
+ * A deadline ends where a SECOND deliverable and its own deadline begin.
+ * "Developer shall deliver a design mockup within fifteen (15) business days
+ * after the Effective Date and a fully functional staging site within
+ * forty-five (45) days after Client approves the mockup" recorded the staging
+ * site and its deadline as part of the mockup's trigger; they belong in the
+ * action, where the second deliverable is named.
+ */
+function endAtSecondDeadline(trigger: string | undefined): string | undefined {
+  if (!trigger || !/^within\b/i.test(trigger)) return trigger;
+  const m = /\s+and\s+(?=(?:a|an|the|each|all|any|its|their)\s[^,;.]*?\bwithin\b)/i.exec(trigger);
+  return m ? trigger.slice(0, m.index) : trigger;
+}
+
+/**
  * A short prepositional aside set off by commas inside a condition: "If
  * Buyer, AFTER DILIGENT EFFORT, does not obtain the commitment" recorded the
  * trigger as "If Buyer". Led by a preposition, so ", Buyer may terminate," —
@@ -254,8 +268,9 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // "when does this bite?". 258 of the corpus's 3,688 obligations were
         // in that state. `stripFrontedAdverbial` already identifies exactly
         // this material to keep it out of the obligor, and then discards it.
-        const trigger =
-          TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject) ?? inherited;
+        const trigger = endAtSecondDeadline(
+          TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject) ?? inherited,
+        );
         const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
         const qualifier = withExceptListTail(predicate, QUALIFIER_RE.exec(predicate));
         let action = predicate;
@@ -841,7 +856,7 @@ const LEADING_SUBORDINATOR =
   /^(?:that|which|whereby|whereupon)\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those)\s+\S|(?:it|he|she|they|we|you|neither)\b)/i;
 
 const DECLARANT =
-  /^([^,;]{1,60}?)\s+(?:hereby\s+)?(?:represents?|warrants?|certif(?:y|ies))(?:\s+and\s+(?:represents?|warrants?|certif(?:y|ies)|covenants?))?\s+(?:to\s+(?:the\s+)?\w+\s+)?that\s+\S/i;
+  /^([^,;]{1,60}?)\s+(?:(?:hereby|further|also|expressly)\s+)?(?:represents?|warrants?|certif(?:y|ies))(?:\s+and\s+(?:represents?|warrants?|certif(?:y|ies)|covenants?))?\s+(?:to\s+(?:the\s+)?\w+\s+)?that\s+\S/i;
 
 /** A modal, an auxiliary, a copula or a past participle: the mark of a clause. */
 const CLAUSE_VERB =

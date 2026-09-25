@@ -1414,3 +1414,21 @@ describe("equipment-lease routing", () => {
     expect(r.run.playbook_id).toBe("equipment-lease");
   });
 });
+
+describe("website development agreement routing", () => {
+  it("routes to the services family, not to the EULA", async () => {
+    const r = await analyzeText(
+      [
+        "WEBSITE DEVELOPMENT AGREEMENT",
+        "",
+        'This Website Development Agreement is entered into between Larkspur Digital Studio LLC ("Developer") and Fenwick Family Dental, P.C. ("Client").',
+        "",
+        "1. Services. Developer shall design and build a website for Client as described in the Statement of Work attached as Exhibit A.",
+        "",
+        "2. Ownership. Developer retains its pre-existing tools and grants Client a perpetual, royalty-free, non-exclusive license to use them as incorporated in the software it delivers.",
+      ].join("\n"),
+      "website-development.txt",
+    );
+    expect(r.run.playbook_id).toBe("msa-general");
+  });
+});

@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.770.0] — 2026-09-25
+
+### Fixed
+- **A website development agreement was audited as a software EULA.** No
+  family knew the title, so it tied `eula` and `independent-contractor` at
+  0.6 on phrases like "non-exclusive" and "software", and lost to the
+  alphabet. `msa-general` describes itself as the fallback for B2B services
+  contracts. It now also names website, web, software and app development
+  agreements, and development services agreements. The document then
+  routes there at 0.9.
+- **A second deliverable was hidden inside the first one's deadline.**
+  "Developer shall deliver a design mockup within fifteen (15) business
+  days after the Effective Date and a fully functional staging site within
+  forty-five (45) days after Client approves the mockup" recorded the
+  staging site and its 45-day deadline in the mockup's trigger. A deadline
+  now ends where a second deliverable with its own deadline begins, and
+  that deliverable stays in the action.
+- "Developer further warrants that …" now names Developer, not "Developer
+  further".
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.769.0] — 2026-09-25
 
 ### Fixed

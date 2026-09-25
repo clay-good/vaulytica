@@ -1294,3 +1294,25 @@ describe("extractObligations — a fronted condition governs every coordinated d
     expect(got[1]).toBe("If the parties do not agree on an appraiser");
   });
 });
+
+describe("extractObligations — a website development agreement", () => {
+  const rows = (text: string, parties = extractParties(buildTree(["Agreement", text]))) =>
+    extractObligations(buildTree(["Agreement", text]), parties);
+
+  it("ends a deadline where a second deliverable and its own deadline begin", () => {
+    const [o] = rows(
+      "Developer shall deliver a design mockup within fifteen (15) business days after the Effective Date and a fully functional staging site within forty-five (45) days after Client approves the mockup.",
+    );
+    expect(o!.trigger).toBe("within fifteen (15) business days after the Effective Date");
+    expect(o!.action).toBe(
+      "deliver a design mockup and a fully functional staging site within forty-five (45) days after Client approves the mockup",
+    );
+  });
+
+  it("reads 'further warrants' as the warrantor's", () => {
+    const [o] = rows(
+      "Developer further warrants that the Website will meet the Web Content Accessibility Guidelines 2.1 Level AA at launch.",
+    );
+    expect(o!.obligor).toBe("Developer");
+  });
+});
