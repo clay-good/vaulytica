@@ -54,6 +54,15 @@ const ATTESTATION =
 // and old-form guaranties, bonds, and powers of attorney are set in capitals
 // throughout.
 const CONFORMED_SIG = /(?:^|[^\w/])\s*\/s\/\s+\S/im;
+// ENGLISH EXECUTION. "Signed by Imogen Tavistock, Director, for and on behalf
+// of Fernhollow Analytics Limited" over a dotted line is how a company signs a
+// contract under English law, and "Executed as a deed by … acting by …" how it
+// signs a deed — no "By:" label, no underscore rule, no "/s/", and a clean
+// mutual NDA reported "No signature block detected" at `critical`. The
+// representative clause is required, so "to be signed by both parties" does
+// not count.
+const ENGLISH_EXECUTION =
+  /\b(?:signed|executed)(?:\s+as\s+a\s+deed)?\s+by\s+\S[^.]{0,120}?\b(?:for\s+and\s+on\s+behalf\s+of|acting\s+by|in\s+the\s+presence\s+of)\b/i;
 // An E-SIGNATURE PLATFORM ARTIFACT is an executed signature. A contract signed
 // through DocuSign, Adobe Sign, or Dropbox Sign carries the platform's stamp
 // on every page of the executed copy, and the signature itself is a typed name
@@ -398,7 +407,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.21.0",
+  version: "1.22.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",
@@ -470,6 +479,7 @@ export const rule: Rule = {
         // that single line alone — so it is self-sufficient (+2), like the
         // bare-name / office-signature lines, not a weak token needing a second.
         if (CONFORMED_SIG.test(text)) signals += 2;
+        if (ENGLISH_EXECUTION.test(text)) signals += 2;
         if (ESIGN_ARTIFACT.test(text)) signals += 2;
         // An office-signature line ("____ Eleanor Harper, Settlor and Trustee",
         // "____ Jordan Ellis, Director") is an unambiguous affordance, and a

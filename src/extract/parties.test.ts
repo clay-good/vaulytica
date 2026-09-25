@@ -1381,3 +1381,25 @@ describe("extractParties — a signer in a joined signature block", () => {
     ).toContain("Desmond Achterberg");
   });
 });
+
+/**
+ * The English party clause: "Fernhollow Analytics Limited, incorporated and
+ * registered in England and Wales with company number 11234567 whose
+ * registered office is at 22 Bridge Street, Cambridge CB2 1UA ("Fernhollow")".
+ * "Limited" is not a US entity type, and a clean English NDA registered one
+ * party (via "Ltd") without its defined name, so STRUCT-006 reported the other
+ * party's legal name as an undefined term.
+ */
+describe("extractParties — an English company described by its registration", () => {
+  it("reads both numbered parties with their defined names", () => {
+    const got = extractParties(
+      buildTree([
+        "Parties",
+        '(1) Fernhollow Analytics Limited, incorporated and registered in England and Wales with company number 11234567 whose registered office is at 22 Bridge Street, Cambridge CB2 1UA ("Fernhollow"); and',
+        '(2) Kittering Robotics Ltd, incorporated and registered in Scotland with company number SC654321 whose registered office is at 8 Quay Road, Glasgow G2 8JB ("Kittering"),',
+      ]),
+    ).map((p) => [p.name, p.role]);
+    expect(got).toContainEqual(["Fernhollow Analytics Limited", "Fernhollow"]);
+    expect(got.some(([n, r]) => /^Kittering Robotics/.test(n!) && r === "Kittering")).toBe(true);
+  });
+});

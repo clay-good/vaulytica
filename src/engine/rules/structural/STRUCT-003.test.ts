@@ -276,3 +276,32 @@ describe("STRUCT-003 — the bare caption under the rule (v1.34.0)", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * English execution. "Signed by Imogen Tavistock, Director, for and on behalf
+ * of Fernhollow Analytics Limited" over a DOTTED line is how a company signs a
+ * contract under English law (and "Executed as a deed by … acting by …" how it
+ * signs a deed). No "By:" label, no underscore rule, no "/s/" — and a clean
+ * mutual NDA was told at `critical` that it has no signature block.
+ */
+describe("STRUCT-003 — an English execution clause", () => {
+  it("reads 'Signed by X, Director, for and on behalf of Y'", () => {
+    const ctx = buildContext([
+      "Mutual Non-Disclosure Agreement",
+      "The parties shall keep each other's information confidential.",
+      "This agreement has been entered into on the date stated at the beginning of it.",
+      "Signed by Imogen Tavistock, Director, for and on behalf of Fernhollow Analytics Limited ......................................",
+      "Signed by Callum MacAskill, Director, for and on behalf of Kittering Robotics Ltd ......................................",
+    ]);
+    expect(STRUCT_003.check(ctx)).toBeNull();
+  });
+
+  it("still fires when the document merely mentions signing", () => {
+    const ctx = buildContext([
+      "Mutual Non-Disclosure Agreement",
+      "The parties shall keep each other's information confidential.",
+      "This agreement is to be signed by both parties.",
+    ]);
+    expect(STRUCT_003.check(ctx)).not.toBeNull();
+  });
+});

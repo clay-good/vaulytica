@@ -541,3 +541,34 @@ describe("the clean-document findings — NDA-D-009 / NDA-D-010", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * An English NDA states its term by cross-reference: "the obligations in
+ * clauses 2 to 4 continue for five years after it ends". Both term patterns
+ * wanted "confidential" or "disclos" within 80 characters of the years, so a
+ * clean mutual NDA was told at `critical` that it never says how long its
+ * obligations last.
+ */
+describe("NDA-D-003 — a term stated by cross-reference", () => {
+  it("reads 'the obligations in clauses 2 to 4 continue for five years'", () => {
+    const r = NDA_DEEP_RULES.find((x) => x.id === "NDA-D-003")!;
+    const doc = (term: string) =>
+      withPb(
+        buildContext([
+          "Mutual Non-Disclosure Agreement",
+          "The Recipient shall keep the Discloser's Confidential Information secret and use it only for the Purpose.",
+          term,
+        ]),
+        MUTUAL,
+      );
+    expect(
+      r.check(
+        doc(
+          "This agreement continues for two years from its date, and the obligations in clauses 2 to 4 continue for five years after it ends.",
+        ),
+      ),
+    ).toBeNull();
+    // The load-bearing negative: the same NDA with no duration still fires.
+    expect(r.check(doc("This agreement may be varied only in writing."))).not.toBeNull();
+  });
+});

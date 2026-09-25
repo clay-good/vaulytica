@@ -669,6 +669,20 @@ const ADDRESSED_PERSON_ROLE_PARTY = new RegExp(
   "g",
 );
 
+/**
+ * The ENGLISH party clause: "Fernhollow Analytics Limited, incorporated and
+ * registered in England and Wales with company number 11234567 whose
+ * registered office is at 22 Bridge Street, Cambridge CB2 1UA ("Fernhollow")".
+ * "Limited" is not a US entity type, so a clean English NDA found one party
+ * (through "Ltd"), without its defined name, and STRUCT-006 reported the other
+ * party's legal name as an undefined term. The registration clause is
+ * required, which ordinary prose never carries.
+ */
+const REGISTERED_COMPANY_PARTY = new RegExp(
+  String.raw`(?<![\w&.'’-])([A-Z][\w&.'’-]*(?:\s+[A-Z][\w&.'’-]*){0,6}\s+(?:Limited|Ltd\.?|PLC|plc|LLP))\s*,\s*(?:a\s+company\s+)?(?:incorporated|registered)\b[^()]{0,240}?\(\s*(?:the\s+)?["“”']([^"“”')]{1,40})["“”']\s*\)`,
+  "g",
+);
+
 const NATURAL_PERSON_ROLE_PARTY = new RegExp(
   String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s*,\s*(?:an?|the)\s+(?:${NATURAL_PERSON_NOUN})\b[^)(]{0,240}?\(\s*(?:the\s+)?["“”'’](${NATURAL_PERSON_ROLE})["“”'’][^)]{0,60}\)`,
   "gi",
@@ -900,6 +914,16 @@ export function extractParties(tree: DocumentTree): Party[] {
       registerParty(partyMap, name, {
         role: nm[2],
         position: pos(nm.index, nm.index + nm[0].length),
+      });
+    }
+    REGISTERED_COMPANY_PARTY.lastIndex = 0;
+    let rc: RegExpExecArray | null;
+    while ((rc = REGISTERED_COMPANY_PARTY.exec(text)) !== null) {
+      const name = cleanPartyName(rc[1] ?? "");
+      if (!name || isBoilerplateName(name)) continue;
+      registerParty(partyMap, name, {
+        role: rc[2],
+        position: pos(rc.index, rc.index + rc[0].length),
       });
     }
     ADDRESSED_PERSON_ROLE_PARTY.lastIndex = 0;

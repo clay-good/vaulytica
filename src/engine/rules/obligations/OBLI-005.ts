@@ -88,12 +88,16 @@ const INSTRUMENT_SUBJECT = new RegExp(
 // rule and the obligations ledger agree.
 
 /**
+ * "Damages alone MAY NOT BE AN ADEQUATE remedy" (every injunctive-relief
+ * clause) is the same kind of statement, and an English NDA listed it as its
+ * one negative covenant.
+ *
  * "Material generated without human authorship MAY NOT BE ELIGIBLE for
  * copyright" states a possibility, not a prohibition. Only a status adjective
  * is excluded: "may not be assigned" is still a covenant, in the passive.
  */
 const STATUS_ACTION =
-  /^be\s+(?:eligible|entitled|enforceable|protectable|valid|available|possible)\b/i;
+  /^be\s+(?:an?\s+)?(?:eligible|entitled|enforceable|protectable|valid|available|possible|adequate|sufficient)\b/i;
 
 /** Up to 120 characters of a clause, cut at a word, marked when cut. */
 function clauseSnippet(raw: string): string {
@@ -105,7 +109,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",

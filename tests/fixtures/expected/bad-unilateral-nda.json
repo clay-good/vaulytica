@@ -360,7 +360,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -595,7 +595,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-003",
-      "rule_version": "1.21.0"
+      "rule_version": "1.22.0"
     },
     {
       "elapsed_ms": 0,
@@ -1061,7 +1061,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.2-334",
       "rule_id": "OBLI-005",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1087,11 +1087,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "4a7c40c104fa462f8d53df1e9366579a53897b8ccb99d9d9c2a9bad3c2e01729",
+  "result_hash": "07a822addd3fc1b5392fd35faa4f255580073a5087e2e48599a217c69b35b17e",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.743.0"
+  "version": "9.744.0"
 }

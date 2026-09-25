@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.744.0] — 2026-09-24
+
+### Fixed
+A clean English-law mutual NDA drew 2 criticals and 5 warnings; it now draws
+0 and 4 (US drafting suggestions: a trade-secret carve-out, a destruction
+certificate, an injunction-bond waiver, an authority representation).
+
+- 🚨 **STRUCT-003 (critical) said the NDA had no signature block.** "Signed
+  by Imogen Tavistock, Director, for and on behalf of Fernhollow Analytics
+  Limited" over a dotted line is how a company signs under English law (and
+  "Executed as a deed by … acting by …" how it signs a deed). The formula
+  is now a signature, with the representative clause required so "to be
+  signed by both parties" does not count.
+- 🚨 **NDA-D-003 (critical) said the NDA never says how long its obligations
+  last.** "The obligations in clauses 2 to 4 continue for five years after it
+  ends" states the term by cross-reference; the patterns wanted
+  "confidential" within 80 characters of the years.
+- **The English party clause was not read.** "Fernhollow Analytics Limited,
+  incorporated and registered in England and Wales with company number …
+  whose registered office is at … ("Fernhollow")" — "Limited" is not a US
+  entity type — so one party was missing and STRUCT-006 reported its legal
+  name as an undefined term. A reader for a Limited/Ltd/PLC/LLP name with a
+  registration clause and defined name now reads both.
+- **OBLI-005 listed "Damages alone may not be an adequate remedy" as a
+  negative covenant.** It is a statement about a remedy, like "may not be
+  eligible"; "adequate" and "sufficient" join the status adjectives.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.743.0] — 2026-09-24
 
 ### Fixed

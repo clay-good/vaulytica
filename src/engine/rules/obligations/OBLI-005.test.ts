@@ -117,3 +117,16 @@ describe("OBLI-005 — a provision named by what it does is not a party", () => 
     ).not.toBeNull();
   });
 });
+
+describe("OBLI-005 — 'may not be an adequate remedy' states a fact about a remedy", () => {
+  it("does not count the injunctive-relief recital as a negative covenant", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Remedies",
+          "Damages alone may not be an adequate remedy for a breach of this agreement, and the Discloser is entitled to seek injunctive relief.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

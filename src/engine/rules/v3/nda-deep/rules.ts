@@ -114,7 +114,7 @@ export const NDA_DEEP_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "NDA-D-003",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Confidentiality term clause present",
     description:
       "NDA must state how long confidentiality obligations endure — either a definite term, perpetual for trade secrets, or both.",
@@ -130,6 +130,14 @@ export const NDA_DEEP_RULES: Rule[] = [
       /\b(\d{1,2}|two|three|four|five|seven|ten)\s*\(?\d?\)?\s*years?\b.{0,80}(confidential|disclos)/is,
       /(confidential|disclos).{0,80}\b(\d{1,2}|two|three|four|five|seven|ten)\s*\(?\d?\)?\s*years?\b/is,
       new RegExp(String.raw`period\s+of\s+${PERIOD_COUNT}\s*years`, "i"),
+      // The term stated by CROSS-REFERENCE, as an English NDA writes it: "the
+      // obligations in clauses 2 to 4 continue for five years after it ends".
+      // Nothing within 80 characters says "confidential", and a clean mutual
+      // NDA was told at `critical` that it never says how long they last.
+      new RegExp(
+        String.raw`\bobligations?\b[^.]{0,80}?\b(?:continue|survive|remain\s+in\s+(?:force|effect)|last|endure)\s+for\s+(?:a\s+(?:period|term)\s+of\s+)?${PERIOD_COUNT}\s*(?:\(\d+\)\s*)?years?\b`,
+        "i",
+      ),
     ],
   }),
 
