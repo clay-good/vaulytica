@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.751.0] — 2026-09-24
+
+### Fixed
+- 🚨 **A clean non-exclusive software reseller agreement drew six
+  criticals.** The reseller / distribution playbook is written for a
+  stocking distributor of goods, and its terms stated premises they never
+  tested:
+  - **COMM-026 (exclusive dealing)** is gated on exclusivity, and the gate
+    read any "exclusiv…" not after "non-" — so the forum clause's "shall be
+    brought exclusively in the … courts" made a non-exclusive reseller owe
+    an exclusive-dealing term. The gate now reads an exclusive
+    *appointment* (exclusive reseller / distributor / rights / territory,
+    competing products, a non-compete).
+  - **COMM-009 (minimum purchases)** is premised in its own explanation on
+    "an exclusive appointment"; it no longer applies where the appointment
+    is expressly non-exclusive. A bare appointment that says neither is
+    still asked.
+  - **COMM-027 (recall) and COMM-038 (inventory / forecasting)** are
+    physical-goods terms; they no longer apply to a document about software
+    or subscriptions that shows no physical-goods signal (inventory,
+    shipping, warehouse, freight, FOB, packaging, labeling, manufacturing,
+    goods, recall).
+  - **COMM-013 (cease use)** now reads "After termination, Reseller may not
+    market the Products".
+  - **COMM-039 (warranty pass-through)** now reads a reseller's "no
+    authority to grant any warranty" beside the end-user licence that
+    carries the warranty.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.750.0] — 2026-09-24
 
 ### Fixed

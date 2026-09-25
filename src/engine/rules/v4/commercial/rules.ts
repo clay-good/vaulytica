@@ -297,6 +297,36 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
 // COMM-026..027, COMM-038..039 the second-wave additions.
 // ────────────────────────────────────────────────────────────────────
 
+/**
+ * An EXCLUSIVE appointment — the premise COMM-009 (minimums) and COMM-026
+ * (exclusive dealing) state in their own explanations. The old COMM-026 gate
+ * read any "exclusiv…" not after "non-", so a forum clause's "brought
+ * exclusively in the … courts" made a non-exclusive software reseller owe an
+ * exclusive-dealing term.
+ */
+const EXCLUSIVE_APPOINTMENT =
+  /(?<!non[\s-]?)\bexclusive\s+(?:reseller|distributor|dealer|agent|representative|licensee|rights?|appointment|territory|basis|distribution|distributorship|dealership)\b|\bexclusively\s+(?:appoint|to\s+(?:resell|distribute|sell))|\bsole\s+and\s+exclusive\s+(?:reseller|distributor|right)|\bcompeting\s+(?:product|line|brand)s?\b|\bnon[\s-]?compet\w*/i;
+
+/**
+ * NOT EXPRESSLY NON-EXCLUSIVE. COMM-009's explanation is premised on "an
+ * exclusive appointment"; a document that says the appointment is
+ * non-exclusive has answered it. A bare appointment that says neither is still
+ * asked. (A negative gate: matches at the start of any text WITHOUT the phrase.)
+ */
+const NOT_EXPRESSLY_NON_EXCLUSIVE =
+  /^(?![\s\S]*(?<!\w)non[\s-]?exclusive\s+(?:reseller|distributor|dealer|agent|representative|licen[cs]e|rights?|appointment|basis)\b)/i;
+
+/** A software / subscription product — the other half of the goods gate below. */
+const NOT_SOFTWARE = /^(?![\s\S]*\b(?:software|subscriptions?|SaaS)\b)/i;
+
+/**
+ * PHYSICAL GOODS — the premise of a recall term (COMM-027) and a stocking /
+ * forecasting term (COMM-038). Those apply unless the document is about
+ * software or subscriptions AND shows no physical-goods signal.
+ */
+const PHYSICAL_GOODS =
+  /\b(?:inventory|stocking|ship(?:s|ped|ping|ment|ments)|warehous\w*|freight|FOB|Incoterms?|packag(?:e|es|ed|ing)|labell?ing|manufactur\w*|goods|recall)\b/i;
+
 const DISTRIBUTION_RULES: Rule[] = [
   presence({
     id: "COMM-008",
@@ -322,7 +352,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Minimum purchase / performance requirements",
     description:
       "A distribution agreement should set minimum purchase or performance requirements that measure the distributor's commitment.",
@@ -338,6 +368,9 @@ const DISTRIBUTION_RULES: Rule[] = [
       "Without a stated minimum purchase or performance quota, an exclusive appointment gives the distributor the territory with no measurable obligation — the supplier cannot police under-performance or justify terminating a passive distributor.",
     recommendation:
       "Add 'Minimum Purchases' or 'Performance Requirements' with an annual minimum (units or dollars) and the consequence of a shortfall (loss of exclusivity or termination).",
+    // "an exclusive appointment gives the distributor the territory with no
+    // measurable obligation" — the explanation's premise, now tested.
+    applicable_if: [NOT_EXPRESSLY_NON_EXCLUSIVE],
     present_patterns: [
       // "shall purchase a minimum OF 10,000 units" is as common as "minimum
       // purchase/quantity" — the noun-only pattern missed the "minimum of
@@ -428,6 +461,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-013",
+    version: "1.1.0",
     name: "Post-termination — inventory repurchase and cease use",
     description:
       "A distribution agreement should address post-termination inventory repurchase / sell-off and cessation of use of the supplier's marks.",
@@ -449,10 +483,15 @@ const DISTRIBUTION_RULES: Rule[] = [
       /sell.?off|sell-through|dispose\s+of\s+.{0,20}inventory/is,
       /(cease|discontinue|stop)\s+(using|use\s+of).{0,30}(marks?|trademarks?|name)/is,
       /return\s+.{0,30}(materials|samples|inventory|marks)/is,
+      // "After termination, Reseller may not market the Products" — cease-use
+      // without the word "cease".
+      /\b(?:after|upon|following|on)\s+(?:the\s+)?(?:termination|expiration|expiry)\b[^.]{0,60}?\b(?:may|shall|will|must)\s+not\s+(?:market|sell|resell|distribute|promote|advertise)\b/i,
+      /\b(?:cease|stop|discontinue)\s+(?:marketing|reselling|selling|distributing|promoting)\b/i,
     ],
   }),
   presence({
     id: "COMM-026",
+    version: "1.1.0",
     name: "Competing-products restriction (exclusive dealing)",
     description:
       "A distribution agreement should address whether the Distributor may carry competing products.",
@@ -461,7 +500,7 @@ const DISTRIBUTION_RULES: Rule[] = [
     // Only relevant where the agreement actually addresses exclusivity or
     // competing products — a plain non-exclusive appointment need not restrict
     // the Distributor's line card.
-    applicable_if: [/(?<!non[\s-]?)exclusiv\w*|competing\s+(product|line|brand)|non.?compet\w*/i],
+    applicable_if: [EXCLUSIVE_APPOINTMENT],
     missing_title: "Competing-products / exclusive-dealing clause missing",
     missing_description:
       "The appointment is exclusive but no competing-products / exclusive-dealing term was found.",
@@ -478,6 +517,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-027",
+    version: "1.1.0",
     name: "Product liability, recall, and indemnity allocation",
     description:
       "A distribution agreement should allocate product-liability, recall, and indemnity responsibility between Supplier and Distributor.",
@@ -494,6 +534,7 @@ const DISTRIBUTION_RULES: Rule[] = [
       "As the party in the chain of distribution, the Distributor faces strict product-liability exposure for defects it did not create. The agreement should have the Supplier indemnify the Distributor for defect and design claims and allocate the cost and conduct of any recall.",
     recommendation:
       "Add a 'Product Liability' clause with a Supplier indemnity for defect / design / warning claims and a 'Recall' clause allocating who initiates, conducts, and pays for a recall.",
+    applicable_if: [NOT_SOFTWARE, PHYSICAL_GOODS],
     present_patterns: [
       /product\s+liability/i,
       /\brecall\b/i,
@@ -503,6 +544,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-038",
+    version: "1.1.0",
     name: "Inventory / stocking and forecasting",
     description:
       "A distribution agreement should require the Distributor to maintain adequate inventory and provide demand forecasts.",
@@ -518,6 +560,7 @@ const DISTRIBUTION_RULES: Rule[] = [
       "A stocking distributor is expected to hold enough inventory to serve the Territory and to give the Supplier rolling demand forecasts so the Supplier can plan production. Silence on stocking and forecasting invites stock-outs and over-production disputes; the agreement should set the stocking level and the forecast cadence.",
     recommendation:
       "Add an 'Inventory' clause setting a minimum stocking level and a 'Forecasting' clause requiring periodic (e.g., rolling 90-day) non-binding demand forecasts.",
+    applicable_if: [NOT_SOFTWARE, PHYSICAL_GOODS],
     present_patterns: [
       /(maintain|carry|hold|stock)[\s\S]{0,40}(inventory|stock)/is,
       /(inventory|stocking)\s+(level|requirement|obligation)/i,
@@ -527,7 +570,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-039",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Warranty pass-through and warranty-claim administration",
     description:
       "A distribution agreement should state how the Supplier's product warranty reaches end customers and who administers warranty claims and returns.",
@@ -549,6 +592,9 @@ const DISTRIBUTION_RULES: Rule[] = [
       /warrant\w*[\s\S]{0,40}(pass|extend|assign)\w*[\s\S]{0,30}(customer|end\s+user)/is,
       /\brma\b|return\s+material\s+authori[sz]\w+/i,
       /warranty\s+claim\w*[\s\S]{0,40}(administ|handl|process|honou?r)/is,
+      // A software reseller's warranty arrangement: the end-user licence
+      // carries the warranty, and the reseller may not add one.
+      /\bno\s+(?:authority|right)\s+to\s+(?:grant|make|give|extend|offer)\s+any\s+(?:additional\s+)?warrant/i,
       // EITHER ORDER. The clause is drafted in the ACTIVE voice as often as the
       // passive — "Distributor shall ADMINISTER end-user WARRANTY CLAIMS and
       // Supplier shall reimburse its labour and freight costs" — and a

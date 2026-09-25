@@ -509,3 +509,42 @@ describe("COMM-039 — who administers warranty claims, in either word order", (
     ).toBe(true);
   });
 });
+
+/**
+ * A NON-EXCLUSIVE SOFTWARE reseller is not a stocking goods distributor. A
+ * clean reseller agreement for endpoint-security subscriptions drew SIX
+ * criticals from the reseller / distribution playbook: a minimum purchase and
+ * an exclusive-dealing term (both premised on an exclusive appointment — and
+ * the exclusive-dealing gate was tripped by the forum clause's "brought
+ * exclusively in the … courts"), a product recall and an inventory forecast
+ * (premised on physical goods), a cease-use clause it has ("After
+ * termination, Reseller may not market the Products"), and a warranty
+ * arrangement it has ("governed by Vendor's end-user license agreement …
+ * Reseller has no authority to grant any warranty").
+ */
+describe("distribution playbook — a non-exclusive software reseller", () => {
+  const DIST: Playbook = { id: "distribution-agreement", version: "1.0.0" };
+  const RESELLER = [
+    "Vendor appoints Reseller as a non-exclusive reseller of Vendor's endpoint security software subscriptions (the Products) to business customers in the Territory. Vendor may appoint other resellers and may sell directly.",
+    "Each customer's use of the Products is governed by Vendor's end-user license agreement. Reseller has no authority to grant any warranty or make any commitment on Vendor's behalf beyond that agreement.",
+    "After termination, Reseller may not market the Products, but customer subscriptions sold before termination continue for their paid terms.",
+    "Any action arising out of this Agreement shall be brought exclusively in the state or federal courts located in New Castle County, Delaware.",
+  ].join(" ");
+
+  it("draws none of the six goods-and-exclusivity terms", async () => {
+    const ids = await fired(DIST, RESELLER);
+    for (const id of ["COMM-009", "COMM-013", "COMM-026", "COMM-027", "COMM-038", "COMM-039"]) {
+      expect(ids.has(id), id).toBe(false);
+    }
+  });
+
+  it("still asks an exclusive goods distributor for minimums, exclusivity, inventory and recall", async () => {
+    const ids = await fired(
+      DIST,
+      "Supplier appoints Distributor as its exclusive distributor of the Goods in the Territory. Distributor shall purchase the Goods by purchase order, and Supplier shall ship them FOB Supplier's warehouse.",
+    );
+    for (const id of ["COMM-009", "COMM-026", "COMM-027", "COMM-038"]) {
+      expect(ids.has(id), id).toBe(true);
+    }
+  });
+});
