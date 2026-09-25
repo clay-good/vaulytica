@@ -1184,7 +1184,10 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // forum)` reference to a different `{State B}`; choosing one
   // state's law but another state's forum forces the forum court
   // to apply foreign law, adding cost and uncertainty.
-  "msa-vendor-deep-governing-law-venue-mismatch-fail.txt": ["MSA-024"],
+  // CHOICE-004 since 9.760.0: it names both jurisdictions, and MSA-024 ("may
+  // be misaligned") reported the same split beside it; the MSA playbooks skip
+  // MSA-024.
+  "msa-vendor-deep-governing-law-venue-mismatch-fail.txt": ["CHOICE-004"],
 
   // Controller→processor GDPR DPA with Section 6's measure-(a)
   // rewritten as "network and storage-layer cryptographic

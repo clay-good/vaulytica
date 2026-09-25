@@ -51,7 +51,7 @@
     "Affiliate",
     "Fees"
   ],
-  "rule_overrides": {},
+  "rule_overrides": {"MSA-024": { "skip": true }},
   "balanced_defaults": [],
   "sources": [
     {

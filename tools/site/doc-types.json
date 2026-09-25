@@ -9198,12 +9198,6 @@
      "severity": "info"
     },
     {
-     "id": "MSA-024",
-     "name": "Governing-law / venue jurisdiction mismatch",
-     "description": "Flags when the governing-law jurisdiction differs from the venue jurisdiction.",
-     "severity": "info"
-    },
-    {
      "id": "MSA-025",
      "name": "Amendment-in-writing and no-waiver",
      "description": "MSA must include amendment-in-writing and no-waiver clauses.",
@@ -9414,12 +9408,6 @@
      "id": "MSA-023",
      "name": "Assignment silent on change-of-control",
      "description": "Flags an assignment clause silent on change-of-control / merger.",
-     "severity": "info"
-    },
-    {
-     "id": "MSA-024",
-     "name": "Governing-law / venue jurisdiction mismatch",
-     "description": "Flags when the governing-law jurisdiction differs from the venue jurisdiction.",
      "severity": "info"
     },
     {

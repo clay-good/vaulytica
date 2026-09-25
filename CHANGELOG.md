@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.760.0] — 2026-09-25
+
+### Fixed
+- **An MSA's law/venue split was still reported twice.** After 9.757.0 made
+  CHOICE-004 the owner, the MSA pack's own MSA-024 ("Governing-law and venue
+  may be misaligned", info) kept firing beside it on the MSA playbooks.
+  CHOICE-004 names both jurisdictions; the MSA playbooks now skip MSA-024,
+  which applies to no other playbook and is dormant as a result. The MSA
+  fixture built for the mismatch is pinned to CHOICE-004.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 1
+changed finding set (MSA-024 leaving beside CHOICE-004).
+
 ## [9.759.0] — 2026-09-24
 
 ### Fixed
