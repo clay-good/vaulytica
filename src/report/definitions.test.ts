@@ -278,3 +278,29 @@ describe("buildDefinitionsReport — one list of undefined terms", () => {
     expect(bucket).toContain("Vacation Property");
   });
 });
+
+describe("used-before-defined — occurrences that are not uses", () => {
+  const report = async (heading: string, ...paras: string[]) => {
+    const tree = buildTree([heading, ...paras]);
+    return buildDefinitionsReport(extractAll(tree), tree);
+  };
+
+  it("does not count the defining phrase, an inline heading, or a party's name", async () => {
+    const r = await report(
+      "Equipment Lease",
+      'This Equipment Lease Agreement (this "Lease") is made between Ridgeway Equipment Rentals, Inc. ("Lessor") and Blue Heron Landscaping LLC ("Lessee").',
+      '1. Lease of Equipment. Lessor leases to Lessee the equipment described in Schedule 1 (the "Equipment").',
+      '2. Term. The term of this Lease begins on April 6, 2026 and ends on April 5, 2029 (the "Term"). Lessee shall use the Equipment during the Term.',
+    );
+    expect(r.used_before_defined.map((u) => u.term)).toEqual([]);
+  });
+
+  it("still reports a term used in an earlier section than its definition", async () => {
+    const r = await report(
+      "Purchase",
+      "2. Price. The balance of the Purchase Price is payable at Closing.",
+      '7. Closing. Closing shall take place on June 19, 2026 (the "Closing").',
+    );
+    expect(r.used_before_defined.map((u) => u.term)).toContain("Closing");
+  });
+});

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.780.0] — 2026-09-25
+
+### Fixed
+- **Every document's definitions report said "Agreement: first use precedes
+  definition".** "This Website Development Agreement (this "Agreement")"
+  contains the word in the very phrase being defined. Reading five clean
+  documents' definitions CSVs (`--definitions --format definitions-csv`)
+  found three kinds of occurrence counted as a use before the definition:
+  - the defining phrase itself, running straight on to its parenthetical
+    ("… Company Act, 6 Del. C. § 18-101 et seq. (the "Act")");
+  - an inline heading ("2. Term. The term of this Lease begins …");
+  - a party's name ("Ridgeway Equipment Rentals, Inc." before "the
+    Equipment" is defined).
+
+  None of these is a use. Across the corpus the bucket falls from 438 rows
+  to 158, and none are added. What remains is genuine: "the balance …
+  payable at Closing" in § 2 with "Closing" defined in § 7, and "during
+  the Term" three sections before the Term is defined.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets. `artifact-digests` moves for the definitions artifacts.
+
 ## [9.779.0] — 2026-09-25
 
 ### Fixed

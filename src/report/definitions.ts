@@ -17,7 +17,7 @@
 
 import { csvField } from "./exports.js";
 import type { DocPosition, ExtractedData } from "../extract/types.js";
-import type { DocumentTree } from "../ingest/types.js";
+import { flattenText, type DocumentTree } from "../ingest/types.js";
 import { undefinedTermCandidates } from "../engine/rules/structural/STRUCT-006.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
@@ -54,6 +54,51 @@ export type DefinitionsReport = {
  * term order within), so the same extraction always yields the same
  * model and hash.
  */
+/**
+ * An occurrence before the definition that is not a USE of the term.
+ *
+ * Every clean document in a sweep reported "Agreement: first use precedes
+ * definition", because "This Website Development Agreement (this
+ * "Agreement")" contains the word in the very phrase being defined. The
+ * report rows were noise of three kinds:
+ * - the defining phrase itself, where the occurrence runs straight on in the
+ *   same sentence to a defining parenthetical ("… Company Act, 6 Del. C.
+ *   § 18-101 et seq. (the "Act")");
+ * - an inline heading ("2. Term. The term of this Lease begins …");
+ * - a party's name ("Ridgeway Equipment Rentals, Inc." before "the
+ *   Equipment" is defined).
+ *
+ * A term genuinely used in an earlier section ("the balance … at Closing" in
+ * § 2, "Closing" defined in § 7) is still reported.
+ */
+function isNotAUse(text: string, use: DocPosition, partyNames: readonly string[]): boolean {
+  const after = text.slice(use.end, use.end + 160);
+  // The defining phrase: no sentence break before a defining parenthetical.
+  const toParen =
+    /^[^\n;]*?\((?:the|this|each|together|collectively|its|individually)?[^)"“]{0,30}["“]/i.exec(
+      after,
+    );
+  if (toParen && !/\.\s+[A-Z][a-z]/.test(toParen[0])) return true;
+  // An inline heading: the line opens on a section number and the occurrence
+  // sits in the few words before the heading's closing period.
+  const lineStart = text.lastIndexOf("\n", use.start - 1) + 1;
+  const before = text.slice(lineStart, use.start);
+  if (
+    /^\s*(?:(?:[Ss]ection|SECTION|[Aa]rticle|ARTICLE)\s+)?(?:\d+(?:\.\d+)*\.?|[A-Z]\.)\s+(?:[\w'’&-]+\s+){0,5}$/.test(
+      before,
+    ) &&
+    /^[\w\s'’&;-]{0,40}\./.test(after)
+  ) {
+    return true;
+  }
+  // Inside a party's name.
+  for (const name of partyNames) {
+    const at = text.lastIndexOf(name, use.end);
+    if (at >= 0 && at <= use.start && at + name.length >= use.end) return true;
+  }
+  return false;
+}
+
 export async function buildDefinitionsReport(
   extracted: Pick<ExtractedData, "definitions" | "parties">,
   tree: DocumentTree,
@@ -66,6 +111,8 @@ export async function buildDefinitionsReport(
     byTerm.set(e.term, list);
   }
   const unusedSet = new Set(defs.unused_terms);
+  const text = flattenText(tree);
+  const partyNames = extracted.parties.map((p) => p.name).filter((n) => n.length > 0);
 
   const duplicates: DefinitionsReport["duplicates"] = [];
   const used_before_defined: DefinitionsReport["used_before_defined"] = [];
@@ -78,10 +125,12 @@ export async function buildDefinitionsReport(
       continue;
     }
     const entry = entries[0]!;
-    const earliestUse = entry.used_at.reduce<DocPosition | null>(
-      (min, p) => (min === null || p.start < min.start ? p : min),
-      null,
-    );
+    const earliestUse = entry.used_at
+      .filter((p) => !isNotAUse(text, p, partyNames))
+      .reduce<DocPosition | null>(
+        (min, p) => (min === null || p.start < min.start ? p : min),
+        null,
+      );
     if (earliestUse && earliestUse.start < entry.defined_at.start) {
       used_before_defined.push({
         term,
