@@ -176,3 +176,16 @@ describe("TERM-005 — 'at the end of the Term'", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-005 — a lease ends when the tenant vacates", () => {
+  it("reads a deposit returned after the tenant vacates as the effect of termination", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Security Deposit",
+          "Landlord shall return the deposit, less lawful deductions itemized in writing with copies of receipts as California Civil Code Section 1950.5 requires, within twenty-one (21) days after Tenant vacates the Premises.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

@@ -4678,17 +4678,14 @@ export const EXPECTED: Record<string, Expectation> = {
     findings: ["CHOICE-001", "STRUCT-006", "CHOICE-003", "CHOICE-006", "FIN-006"],
   },
 
+  // RISK-001 and TERM-005 left this row in 9.793.0. RISK-001's premise is
+  // "most commercial contracts allocate risk through an indemnification
+  // clause", and a residential lease is not one. TERM-005 was false: "Within
+  // fourteen days after the Tenant vacates, the Landlord will return the
+  // deposit" is the lease's effect-of-termination term.
   "ny-residential-lease.txt": {
     playbook: "lease-residential-us",
-    findings: [
-      "RISK-001",
-      "STRUCT-018",
-      "TERM-002",
-      "TERM-005",
-      "CHOICE-003",
-      "FIN-009",
-      "OBLI-005",
-    ],
+    findings: ["STRUCT-018", "TERM-002", "CHOICE-003", "FIN-009", "OBLI-005"],
   },
 
   // A telehealth consent, addressed to the patient as "you" throughout — which

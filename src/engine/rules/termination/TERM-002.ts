@@ -68,7 +68,10 @@ const FOR_CAUSE = new RegExp(
     "|" +
     String.raw`${TERMINATE}[^.]{0,80}\bupon\s+the\s+occurrence\s+of\s+any\s+of\s+the\s+following\b` +
     "|" +
-    String.raw`${TERMINATE}[^.]{0,120}\bfor\s+cause\b` +
+    // "Just cause" is the residential eviction standard (Cal. Civ. Code
+    // § 1946.2, local just-cause ordinances): "Landlord may terminate the
+    // tenancy only for just cause" is the lease's for-cause path.
+    String.raw`${TERMINATE}[^.]{0,120}\bfor\s+(?:just\s+|good\s+)?cause\b` +
     "|" +
     String.raw`\bmaterial(?:ly)?\s+breach` +
     "|" +
@@ -176,7 +179,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.15.0",
+  version: "1.16.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

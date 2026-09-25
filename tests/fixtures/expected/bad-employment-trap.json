@@ -808,7 +808,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "TERM-002",
-      "rule_version": "1.15.0"
+      "rule_version": "1.16.0"
     },
     {
       "elapsed_ms": 0,
@@ -830,7 +830,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.22.0"
+      "rule_version": "1.23.0"
     },
     {
       "elapsed_ms": 0,
@@ -1026,7 +1026,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.22.0",
+      "rule_version": "1.23.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "70c5bd0961e17ba6f162c76bb1dfb8a03e68efcd25367a4f0bef53cdac4bd324",
+  "result_hash": "974dc7a54ffa5ee27c7cdc5d1a7277eecbd7ffb003c6b041498d84d28af13401",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.792.0"
+  "version": "9.793.0"
 }

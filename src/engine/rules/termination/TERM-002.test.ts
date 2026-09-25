@@ -435,3 +435,16 @@ describe("TERM-002 — a loan's plain default-and-acceleration clause", () => {
     ).toBeNull();
   });
 });
+
+describe("TERM-002 — 'just cause' is a for-cause path", () => {
+  it("reads a residential lease's just-cause termination", () => {
+    expect(
+      TERM_002.check(
+        buildContext([
+          "Termination",
+          "Landlord may terminate the tenancy only for just cause as defined by California Civil Code Section 1946.2, with the notice required by law.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

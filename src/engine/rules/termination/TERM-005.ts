@@ -39,8 +39,11 @@ import { INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
 // check on the noun "release" in the consequence list, which is a coincidence
 // and not a statement of what happens on termination.
 const TERMINATION_NOUN = String.raw`expiration|expiry|termination|cessation|end|conclusion|completion`;
-const TERMINATION_VERB = String.raw`ends?|ended|terminates?|terminated|expires?|expired|ceases?|ceased|concludes?|concluded`;
-const TERMINATION_TRIGGER = String.raw`(?:(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:${TERMINATION_NOUN})(?:\s+or\s+(?:${TERMINATION_NOUN}))?|(?:when|once)\s+(?:the\s+|this\s+|your\s+)?(?:\w+\s+){0,2}?(?:${TERMINATION_VERB})\b)`;
+// A tenant VACATING or SURRENDERING the premises is a lease's end, and the
+// deposit that comes back "within twenty-one (21) days after Tenant vacates"
+// is its effect-of-termination term.
+const TERMINATION_VERB = String.raw`ends?|ended|terminates?|terminated|expires?|expired|ceases?|ceased|concludes?|concluded|vacates?|vacated|surrenders?|surrendered`;
+const TERMINATION_TRIGGER = String.raw`(?:(?:(?:up)?on|after|following)\s+(?:the\s+)?(?:any\s+|such\s+)?(?:(?:effective\s+)?date\s+of\s+)?(?:${TERMINATION_NOUN})(?:\s+or\s+(?:${TERMINATION_NOUN}))?|(?:when|once|after)\s+(?:the\s+|this\s+|your\s+)?(?:\w+\s+){0,2}?(?:${TERMINATION_VERB})\b)`;
 
 /**
  * What the clause says happens. "delete" and "export" belong here: a modern
@@ -105,7 +108,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // it — "This Agreement ends upon expiration of the Initial Term" defines a
     // term, it does not state what termination does.
     `|\\b${TERMINATION_TRIGGER}\\b${SAME_SENTENCE}{0,220}\\b(?:ends?|ended|expires?|lapses?|resumes?|is\\s+released|are\\s+released|becomes?\\s+(?:void|null))\\b` +
-    `|\\b(?:${CONSEQUENCE})\\b${SAME_SENTENCE}{0,120}\\b${TERMINATION_TRIGGER}\\b` +
+    `|\\b(?:${CONSEQUENCE})\\b${SAME_SENTENCE}{0,200}\\b${TERMINATION_TRIGGER}\\b` +
     // "AT the end of the Term, Lessee shall return the Equipment" is how an
     // equipment lease, a rental and many licences state their wind-down, and
     // the trigger above leads only on "on / upon / after / following". "at"
@@ -247,7 +250,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.22.0",
+  version: "1.23.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.793.0] — 2026-09-25
+
+### Fixed
+- **A clean California residential lease drew three warnings, none of
+  them true.**
+  - **TERM-002.** "Landlord may terminate the tenancy only for just cause
+    as defined by … Civil Code Section 1946.2" was read as no
+    termination-for-cause path. "Just cause" is the residential eviction
+    standard, and "for just / good cause" now reads as "for cause".
+  - **TERM-005.** The deposit returned "within twenty-one (21) days after
+    Tenant vacates the Premises" is a lease's effect-of-termination term. A
+    tenant vacating or surrendering the premises is now a termination
+    trigger after "after / when / once". The consequence-before-trigger
+    window widens to 200 characters, because a California deposit clause
+    cites § 1950.5's itemization rule between the two. The New York lease
+    specimen's TERM-005 ("Within fourteen days after the Tenant vacates, the
+    Landlord will return the deposit") was false the same way.
+  - **RISK-001.** RISK-001's premise is "most commercial contracts
+    allocate risk through an indemnification clause". A residential lease
+    is not a commercial contract, and California voids the clauses that
+    would shift a landlord's own negligence to a tenant (Civ. Code § 1953).
+    `lease-residential-us` now skips it. The two residential golden
+    fixtures and the New York lease pin drop it.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 2
+changed finding sets, the residential fixtures' RISK-001.
+
 ## [9.792.0] — 2026-09-25
 
 ### Changed
