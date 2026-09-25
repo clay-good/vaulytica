@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.775.0] — 2026-09-25
+
+### Fixed
+- **An Ontario employment agreement's statute citation was reported as a
+  broken internal reference.** "The Employment Standards Act, 2000
+  (Ontario) (the "ESA")" defines its acronym the Commonwealth way, with the
+  year after a comma and the jurisdiction in parentheses. The statute-acronym
+  reader expected "Act of 2000" or nothing at all. So "consistent with
+  section 67.2 of the ESA" drew STRUCT-007: "section 67.2 does not resolve
+  to any section".
+- **Negative inversion in the obligations ledger.** "In no event shall the
+  Escrow Agent be liable for consequential damages" printed `In no event |
+  shall | the Escrow Agent be liable …`. The phrase that carries the
+  negation stood as the party, and the party sat inside an action that
+  read as affirmative. The subject is now moved back before the modal and
+  the negation goes with the verb: `the Escrow Agent | shall | not be liable
+  …`. This changes five corpus rows: the Escrow Agent, the Funder and the
+  Claimant, and two subleases' terms. A sixth, an inverted liability cap
+  ("IN NO EVENT WILL PROVIDER'S AGGREGATE LIABILITY EXCEED …"), is now
+  dropped as the cap it is.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.774.0] — 2026-09-25
 
 ### Fixed

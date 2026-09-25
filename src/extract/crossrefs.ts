@@ -349,8 +349,12 @@ const STATUTE_LABEL_DECLARATION_LEADING =
 // numbering, not this document's outline, so the acronym is collected and the
 // cite reads as external. The defining phrase must end in a statute keyword
 // (Code / Act / Law / Regulation), and the acronym is a single all-caps token.
+// Canadian and Commonwealth statutes carry their year after a comma and their
+// jurisdiction in parentheses — "the Employment Standards Act, 2000 (Ontario)
+// (the "ESA")" — and an Ontario employment agreement's "section 67.2 of the
+// ESA" was reported as a broken reference to its own outline.
 const STATUTE_ACRONYM_DEFINITION =
-  /\b[A-Z][A-Za-z]+(?:\s+(?:[A-Z][A-Za-z]+|of|and|the)){0,8}\s+(?:Code|Acts?|Laws?|Regulations?)\b(?:\s+of\s+\d{4})?\s*\(\s*(?:the\s+)?["“]([A-Z][A-Za-z]{1,10})["”]\s*\)/g;
+  /\b[A-Z][A-Za-z]+(?:\s+(?:[A-Z][A-Za-z]+|of|and|the)){0,8}\s+(?:Code|Acts?|Laws?|Regulations?)\b(?:\s+of\s+\d{4}|,\s*\d{4})?(?:\s*\([A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\))?\s*\(\s*(?:the\s+)?["“]([A-Z][A-Za-z]{1,10})["”]\s*\)/g;
 
 /**
  * An acronym the document defines for ANOTHER INSTRUMENT — 'the Amended and

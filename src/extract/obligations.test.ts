@@ -1390,3 +1390,30 @@ describe("extractObligations — a subject that begins inside an earlier clause"
     expect(got).not.toContain("Inc");
   });
 });
+
+describe("extractObligations — negative inversion", () => {
+  it("reads 'In no event shall the Funder receive …' as the Funder's", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Cap on Return",
+        "In no event shall the Funder receive more than fifty percent (50%) of Proceeds.",
+      ]),
+      [],
+    );
+    expect([o!.obligor, o!.action]).toEqual([
+      "the Funder",
+      "not receive more than fifty percent (50%) of Proceeds",
+    ]);
+  });
+
+  it("drops an inverted liability cap like any other cap", () => {
+    const got = extractObligations(
+      buildTree([
+        "Limitation",
+        "IN NO EVENT WILL PROVIDER'S AGGREGATE LIABILITY EXCEED THE FEES PAID BY CUSTOMER IN THE THREE (3) MONTHS PRECEDING THE CLAIM.",
+      ]),
+      [],
+    );
+    expect(got).toEqual([]);
+  });
+});

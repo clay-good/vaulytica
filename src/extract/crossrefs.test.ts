@@ -1478,3 +1478,14 @@ describe("the section sign", () => {
     expect(unresolved(clause)).toEqual([]);
   });
 });
+
+describe("extractCrossRefs — a Canadian statute's acronym", () => {
+  it("reads 'section 67.2 of the ESA' as external when the ESA is defined with its year and province", () => {
+    const tree = buildTree([
+      "Hours",
+      'The Employee is entitled to overtime pay under the Employment Standards Act, 2000 (Ontario) (the "ESA"). This Agreement contains no non-competition covenant, consistent with section 67.2 of the ESA.',
+    ]);
+    const refs = extractCrossRefs(tree, extractSections(tree));
+    expect(refs.map((r) => r.raw_text)).not.toContain("section 67.2");
+  });
+});

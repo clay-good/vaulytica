@@ -112,6 +112,36 @@ const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+
 const CLAUSE_CHAR = String.raw`(?:[^,;.]|,(?=\d{3}(?!\d))|\.(?=\d))`;
 
 /**
+ * NEGATIVE INVERSION puts the subject after the modal: "In no event shall the
+ * Escrow Agent be liable for consequential damages", "in no event shall the
+ * Claimant receive less than …". The ledger printed `In no event | shall |
+ * the Escrow Agent be liable …` — the phrase that carries the negation as the
+ * party, and the party inside an action that reads as affirmative. The subject
+ * is moved back and the negation goes with the verb, as "the Escrow Agent
+ * shall not be liable" says the same thing. The verb list is closed: a
+ * subject cannot be told from its verb by case alone ("the term of this
+ * Sublease extend").
+ */
+const NEGATIVE_INVERSION = /^(?:in\s+no\s+event|under\s+no\s+circumstances|at\s+no\s+time)$/i;
+const INVERTED_VERB =
+  /^(.{2,80}?)\s+(be|have|receive|extend|exceed|pay|owe|become|include|survive|apply|continue|accrue|require|obligate|affect|limit|reduce|entitle)\b/i;
+
+function invertNegation(cl: { subject: string; predicate: string; modal: string }): {
+  subject: string;
+  predicate: string;
+  modal: string;
+} {
+  if (!NEGATIVE_INVERSION.test(cl.subject.trim())) return cl;
+  const m = INVERTED_VERB.exec(cl.predicate);
+  if (!m || /[,;]/.test(m[1]!)) return cl;
+  return {
+    subject: m[1]!,
+    predicate: `not ${cl.predicate.slice(m[1]!.length).trim()}`,
+    modal: cl.modal,
+  };
+}
+
+/**
  * A deadline ends where a SECOND deliverable and its own deadline begin.
  * "Developer shall deliver a design mockup within fifteen (15) business days
  * after the Effective Date and a fully functional staging site within
@@ -193,7 +223,7 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
       // clauses are coordinated ("Provider shall deliver …, and Customer shall
       // pay …"). Split into per-modal clauses so the second obligation is not
       // dropped and its text absorbed into the first (v7 §8 follow-up).
-      const clauses = splitModalClauses(sentence);
+      const clauses = splitModalClauses(sentence).map(invertNegation);
       // A fronted condition governs every duty COORDINATED under it: "If
       // Contractor fails to pay …, Subcontractor may stop work and Contractor
       // shall pay the cost of remobilization". The first clause reads it from
