@@ -1497,3 +1497,13 @@ describe("option agreement routing", () => {
     expect(r.run.playbook_id).toBe("stock-option-grant");
   });
 });
+
+describe("settlement agreement routing", () => {
+  it("routes a marital settlement titled only 'Settlement Agreement' to family-msa", async () => {
+    const r = await analyzeText(
+      'SETTLEMENT AGREEMENT\n\nThis Settlement Agreement is made between Laura Chen ("Wife") and Michael Chen ("Husband") in contemplation of the dissolution of their marriage. The parties divide their marital property as follows: Wife receives the residence; Husband receives the brokerage account. Husband shall pay Wife spousal support of $2,000 per month. The parties share joint legal custody of their child.',
+      "marital-settlement.txt",
+    );
+    expect(r.run.playbook_id).toBe("family-msa");
+  });
+});

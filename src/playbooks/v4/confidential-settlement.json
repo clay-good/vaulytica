@@ -17,7 +17,7 @@
       "resolve the lawsuit",
       "settlement agreement and release"
     ],
-    "negative_features": ["demand letter", "cease and desist", "tolling"]
+    "negative_features": ["demand letter", "cease and desist", "tolling", "spousal support", "child support", "marital property", "dissolution of their marriage"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Settlement Payment", "Effective Date", "Released Claims"],

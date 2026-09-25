@@ -118,7 +118,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Time of payment — demand or definite time",
     description:
       "Promissory note must be payable on demand or at a definite time (UCC § 3-104(a)(2)).",
@@ -138,10 +138,16 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       // "maturity date" / "due date" compounds above.
       /\bmatur(?:es|ing|ity|e)\b/i,
       /due\s+and\s+payable\s+(?:on|upon|in\s+full)/i,
+      // An INSTALLMENT SCHEDULE with a stated start date is a definite time
+      // (§ 3-108(b)): "in 24 equal monthly installments beginning June 1,
+      // 2026". A family note written that way has no maturity date and no
+      // demand language, and was told its time of payment was open-ended.
+      /\binstal?lments?\b[^.]{0,80}?\b(?:beginning|commencing|starting|due)\s+(?:on\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}\b/i,
     ],
   }),
   presence({
     id: "BNK-005",
+    version: "1.1.0",
     name: "Default + acceleration",
     description: "Promissory note must address events of default and acceleration on default.",
     citation: bnkPractice(
@@ -160,6 +166,17 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       /(events?\s+of\s+default|default)/i,
       /accelerat/i,
       /(insolvenc|bankruptc|payment\s+default)/i,
+      // Acceleration in plain words, without "default" or "accelerate": "If
+      // any installment is more than 15 days late, the entire balance becomes
+      // due at Lender's option", "Lender may declare the unpaid principal
+      // immediately due" — the same sentence BNK-012 and TERM-002 learned to
+      // read in 9.764.0.
+      /\b(?:entire|whole|full|unpaid|outstanding)\s+(?:unpaid\s+|outstanding\s+)?(?:balance|principal|amount|indebtedness|sum)\b[^.]{0,80}?\b(?:becomes?|(?:shall|will|must)\s+become)\s+(?:immediately\s+)?(?:due|payable)\b/i,
+      // The declaration only as a CONSEQUENCE of a failure: a clause that
+      // merely mentions "the circumstances under which the Lender may declare
+      // all outstanding principal … immediately due" in order to say it does
+      // not list them is not an acceleration clause.
+      /\b(?:if|upon)\b[^.]{0,160}\b(?:fails?\s+to\s+(?:make|pay)|defaults?|late)\b[^.]{0,160}\bdeclare[sd]?\b[^.]{0,120}?\b(?:immediately\s+)?due\b/i,
     ],
   }),
   presence({

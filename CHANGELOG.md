@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.778.0] — 2026-09-25
+
+### Fixed
+- **A family promissory note drew two criticals it answers.** "In 24
+  equal monthly installments beginning June 1, 2026" is payment at a
+  definite time (UCC § 3-108(b)), and "If any installment is more than 15
+  days late, the entire balance becomes due at Lender's option" is
+  acceleration. BNK-004 wanted a maturity date or demand language, and
+  BNK-005 wanted the words "default" or "accelerate".
+  - BNK-004 now also reads an installment schedule with a stated start
+    date.
+  - BNK-005 reads "the entire/unpaid balance becomes due".
+  - BNK-005 also reads a declaration that is the consequence of a failure
+    ("if … fails to pay …, Lender may declare … immediately due").
+
+  The golden fixture built to lack events of default caught a looser first
+  draft. That fixture mentions "the circumstances under which the Lender
+  may declare all outstanding principal … immediately due" in order to say
+  it does not list them.
+- **A marital settlement titled only "Settlement Agreement" was audited
+  as a litigation settlement.**
+  - `confidential-settlement` won on its title. `family-msa` could not
+    reach it, because its title keywords all name the marital instrument
+    ("marital settlement agreement").
+  - `family-msa` now also recognizes "marital property", "dissolution of
+    their marriage" and "marital residence".
+  - `confidential-settlement` counts spousal support, child support,
+    marital property and a dissolution of marriage against itself.
+  - `specimen-routing-margin` caught the QDRO specimen tying on "marital
+    property", so `family-msa` now counts "alternate payee" against
+    itself.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.777.0] — 2026-09-25
 
 ### Fixed

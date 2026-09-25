@@ -20,9 +20,12 @@
       "child support",
       "qdro",
       "custody",
-      "parenting plan"
+      "parenting plan",
+      "marital property",
+      "dissolution of their marriage",
+      "marital residence"
     ],
-    "negative_features": ["master services agreement", "prenuptial", "premarital", "postnuptial"]
+    "negative_features": ["master services agreement", "prenuptial", "premarital", "postnuptial", "alternate payee"]
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Petitioner", "Respondent", "Date of Separation"],
