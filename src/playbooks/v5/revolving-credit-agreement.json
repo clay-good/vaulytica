@@ -33,6 +33,9 @@
     "Applicable Margin"
   ],
   "rule_overrides": {
+    "OBLI-002": {
+      "skip": true
+    },
     "IPDATA-001": {
       "skip": true
     },

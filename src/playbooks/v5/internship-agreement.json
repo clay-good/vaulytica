@@ -18,6 +18,9 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Intern", "Internship Period"],
   "rule_overrides": {
+    "OBLI-002": {
+      "skip": true
+    },
     "RISK-001": {
       "skip": true
     },

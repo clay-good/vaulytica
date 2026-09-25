@@ -26,6 +26,9 @@
   "expected_clauses": [],
   "expected_defined_terms": [],
   "rule_overrides": {
+    "OBLI-002": {
+      "skip": true
+    },
     "CHOICE-001": {
       "skip": true
     },

@@ -33,6 +33,9 @@
     "Buyer"
   ],
   "rule_overrides": {
+    "OBLI-002": {
+      "skip": true
+    },
     "CHOICE-003": {
       "skip": true
     },

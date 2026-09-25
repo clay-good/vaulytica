@@ -128,9 +128,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // employment addendum that says in terms that it does not change Employee's
   // status was told it allocates no IP, provides no indemnity, caps no
   // liability, and states no termination path.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "remote-work.txt": {
     playbook: "remote-work-agreement",
-    findings: ["CHOICE-003", "OBLI-002", "OBLI-005"],
+    findings: ["CHOICE-003", "OBLI-005"],
   },
   // A second amendment to a revocable living trust. It routed to
   // `revocable-living-trust` and was told it states no pour-over reference and
@@ -514,9 +516,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // see the execution recital that dates the instrument at its foot.
   // SET-112 stays: a claim purchase should confirm the underlying claim is
   // assignable, and this one does not.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "assignment-of-claim.txt": {
     playbook: "assignment-of-claim",
-    findings: ["RISK-015", "SET-112", "STRUCT-018", "OBLI-002", "RISK-011"],
+    findings: ["RISK-015", "SET-112", "STRUCT-018", "RISK-011"],
   },
   // A one-step cash merger of a private target approved at a stockholder
   // MEETING. Two false positives: OBLI-004 reported the agreement as using
@@ -850,9 +854,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
   // is what an obligor is matched against. The asymmetry each of these
   // documents carries is real and was simply invisible.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "litigation-funding.txt": {
     playbook: "litigation-funding-agreement",
-    findings: ["STRUCT-018", "OBLI-002", "OBLI-005", "TEMP-006"],
+    findings: ["STRUCT-018", "OBLI-005", "TEMP-006"],
   },
   // A North Carolina residential purchase and sale contract. It routed to the
   // COMMERCIAL `real-estate-psa` and was told at `warning` to add a § 1031
@@ -1169,6 +1175,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
   // is what an obligor is matched against. The asymmetry each of these
   // documents carries is real and was simply invisible.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "revolving-credit-agreement.txt": {
     playbook: "revolving-credit-agreement",
     findings: [
@@ -1176,7 +1184,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-006",
       "STRUCT-018",
       "CHOICE-008",
-      "OBLI-002",
       "OBLI-003",
       "OBLI-005",
       "TEMP-007",
@@ -1864,22 +1871,15 @@ export const EXPECTED: Record<string, Expectation> = {
 
   // An executive employment agreement — 409A, 280G, Good Reason, and an
   // arbitration seat behind a named rule set.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "executive-employment.txt": {
     playbook: "executive-employment",
     // TERM-005 came off this row in 9.119.0: the agreement has a full
     // severance clause — "If the Company terminates Executive without Cause …
     // the Company shall pay Executive twelve (12) months of base salary" —
     // and was being told it does not state what happens on termination.
-    findings: [
-      "EMP-007",
-      "CHOICE-006",
-      "OBLI-002",
-      "OBLI-005",
-      "PERS-002",
-      "RISK-011",
-      "RISK-015",
-      "TEMP-008",
-    ],
+    findings: ["EMP-007", "CHOICE-006", "OBLI-005", "PERS-002", "RISK-011", "RISK-015", "TEMP-008"],
   },
 
   // A commercial real estate purchase and sale agreement.
@@ -2162,9 +2162,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // sentence before it opens "Either party may terminate", and the mutual
   // escape's window reached across the period into the NEXT sentence's "for
   // convenience".
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "work-for-hire.txt": {
     playbook: "work-for-hire-agreement",
-    findings: ["OBLI-002", "OBLI-005", "TERM-003"],
+    findings: ["OBLI-005", "TERM-003"],
   },
 
   // A founder restricted stock purchase agreement, the 236th specimen and the
@@ -2342,9 +2344,11 @@ export const EXPECTED: Record<string, Expectation> = {
   },
 
   // A bill of sale: a one-time conveyance, executed by the seller alone.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "bill-of-sale.txt": {
     playbook: "bill-of-sale",
-    findings: ["RISK-015", "STRUCT-018", "OBLI-002", "RISK-011"],
+    findings: ["RISK-015", "STRUCT-018", "RISK-011"],
   },
 
   // A fixed-rate promissory note with a flat late charge.
@@ -2359,9 +2363,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // left is real — the Schedule A that enumerates the Assigned IP is
   // referenced and not attached, and the indemnity states no notice,
   // defense-control, or settlement-consent mechanics.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "ip-assignment.txt": {
     playbook: "ip-assignment",
-    findings: ["STRUCT-018", "OBLI-002", "OBLI-005", "RISK-011"],
+    findings: ["STRUCT-018", "OBLI-005", "RISK-011"],
   },
 
   // A trademark cease-and-desist letter. Its playbook used to be reachable on
@@ -2790,9 +2796,11 @@ export const EXPECTED: Record<string, Expectation> = {
   //     Code of Federal Regulations names that instrument; the policy does not
   //     define it because it does not have to.
   "aml-policy.txt": { playbook: "aml-policy", findings: ["OBLI-005"] },
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "hold-harmless.txt": {
     playbook: "hold-harmless-agreement",
-    findings: ["OBLI-002", "OBLI-005", "RISK-010", "TEMP-007"],
+    findings: ["OBLI-005", "RISK-010", "TEMP-007"],
   },
 
   // An assignment and assumption of a commercial lease, with the landlord's
@@ -3655,6 +3663,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // whose entity type is written "LLC"/"LLP" was found with no ROLE, which
   // is what an obligor is matched against. The asymmetry each of these
   // documents carries is real and was simply invisible.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "physician-employment.txt": {
     playbook: "physician-employment-agreement",
     findings: [
@@ -3666,7 +3676,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "TEMP-005",
       "TEMP-012",
       "CHOICE-006",
-      "OBLI-002",
       "OBLI-005",
       "PERS-001",
       "PERS-002",
@@ -4106,9 +4115,11 @@ export const EXPECTED: Record<string, Expectation> = {
   //
   // OBLI-002 is fair and worth leaving: the confidentiality obligation really
   // does run one way.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "ca-separation-agreement.txt": {
     playbook: "separation-agreement",
-    findings: ["CHOICE-003", "OBLI-002", "OBLI-005"],
+    findings: ["CHOICE-003", "OBLI-005"],
   },
 
   // A California employment arbitration agreement drafted to Armendariz: a
@@ -4189,9 +4200,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // point of reviewing one, and a negotiated commercial indemnity often IS
   // capped, so the check still discriminates. INS-017 is right — the procedure
   // gives notice, control, and settlement consent but no cooperation covenant.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "commercial-indemnity-agreement.txt": {
     playbook: "indemnification-agreement",
-    findings: ["INS-017", "RISK-015", "TEMP-012", "OBLI-002", "OBLI-005", "RISK-010", "TEMP-007"],
+    findings: ["INS-017", "RISK-015", "TEMP-012", "OBLI-005", "RISK-010", "TEMP-007"],
   },
 
   // A processor-to-SUB-PROCESSOR agreement under Article 28(4) — the downstream
@@ -4706,12 +4719,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // relief. Two things did it: `equipment-lease` penalized its own fixture and
   // landlord-waiver vocabulary ("real property", "landlord"), and `complaint`
   // could not recognize a contract preamble.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "equipment-lease.txt": {
     playbook: "equipment-lease",
     findings: [
       "CHOICE-008",
       "FIN-009",
-      "OBLI-002",
       "OBLI-005",
       "RISK-005",
       "RISK-010",
@@ -4729,10 +4743,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // and its dispute clause sends the parties to MEDIATION administered by the
   // American Arbitration Association, whose name CHOICE-006 read as an
   // arbitration clause with the seat unspecified.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "franchise.txt": {
     playbook: "franchise-agreement",
     findings: [
-      "OBLI-002",
       "OBLI-003",
       "OBLI-005",
       "PERS-001",
@@ -4792,12 +4807,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // consequence list held only the passive "is released". BNK-126 stays: the
   // facility states its fee schedule and no effective-APR equivalent, which is
   // the disclosure the rule is about.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "factoring.txt": {
     playbook: "factoring-agreement",
     findings: [
       "BNK-126",
       "CHOICE-008",
-      "OBLI-002",
       "OBLI-005",
       "OBLI-006",
       "RISK-002",
@@ -5226,11 +5242,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // non-compete and non-solicit reported as present, and a D&O indemnity with
   // no defense-control or settlement-consent mechanics and no aggregate cap —
   // which is what a D&O indemnity is.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "executive-employment-complete.txt": {
     playbook: "executive-employment",
     findings: [
       "EMP-007",
-      "OBLI-002",
       "OBLI-004",
       "OBLI-005",
       "OBLI-008",
@@ -5273,13 +5290,14 @@ export const EXPECTED: Record<string, Expectation> = {
   // obligation extractor emits ONE obligation per sentence, and §6 is one
   // sentence with a colon and semicolons. Splitting an enumerated covenant list
   // is a measured, deliberately unfixed extractor decision.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "credit-agreement-complete.txt": {
     playbook: "security-agreement",
     findings: [
       "CHOICE-008",
       "FIN-009",
       "IPDATA-001",
-      "OBLI-002",
       "OBLI-005",
       "OBLI-007",
       "RISK-005",
@@ -5417,10 +5435,11 @@ export const EXPECTED: Record<string, Expectation> = {
   //
   // PERS-009 (24-month non-solicit) and RISK-015 (indemnity outside the cap)
   // are true of the document and deliberate in the family.
+  // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
+  // so a one-sided duty here is the instrument, not an asymmetry.
   "franchise-complete.txt": {
     playbook: "franchise-agreement",
     findings: [
-      "OBLI-002",
       "OBLI-005",
       "OBLI-008",
       "PERS-002",

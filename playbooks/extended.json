@@ -1736,6 +1736,9 @@
       "Assignee"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -2183,6 +2186,9 @@
       "Buyer"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "CHOICE-003": {
         "skip": true
       },
@@ -7504,6 +7510,9 @@
       "Rent"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       }
@@ -7853,6 +7862,9 @@
       "Disability"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "RISK-001": {
         "skip": true
       },
@@ -8072,6 +8084,9 @@
       "Reserve"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       }
@@ -8661,7 +8676,11 @@
       "System",
       "Territory"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "FTC-FRANCHISE-RULE",
@@ -9051,6 +9070,9 @@
       "Underlying Obligation"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "RISK-001": {
         "skip": true
       },
@@ -9304,6 +9326,9 @@
       "Participant"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -9466,6 +9491,9 @@
       "Loss"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "FIN-005": {
         "skip": true
       },
@@ -10078,6 +10106,9 @@
       "Internship Period"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "RISK-001": {
         "skip": true
       },
@@ -10413,6 +10444,9 @@
       "Assigned IP"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "TERM-002": {
         "skip": true
       },
@@ -11106,6 +11140,9 @@
       "Proceeds"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -11262,6 +11299,9 @@
       "Commitment"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -12844,6 +12884,9 @@
     "expected_clauses": [],
     "expected_defined_terms": [],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "CHOICE-001": {
         "skip": true
       },
@@ -13738,6 +13781,9 @@
       "Compensation"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "RISK-001": {
         "skip": true
       },
@@ -13799,6 +13845,9 @@
       "Confidential Information"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "CHOICE-003": {
         "skip": true
       },
@@ -15124,6 +15173,9 @@
       "Principal Amount"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "CHOICE-003": {
         "skip": true
       },
@@ -16125,6 +16177,9 @@
       "Equipment"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -16660,6 +16715,9 @@
       "Applicable Margin"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -17916,6 +17974,9 @@
       "Collateral"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "FIN-005": {
         "skip": true
       }
@@ -18063,6 +18124,9 @@
       "Revocation Period"
     ],
     "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      },
       "IPDATA-001": {
         "skip": true
       },
@@ -21642,7 +21706,11 @@
       "Contractor",
       "Client"
     ],
-    "rule_overrides": {},
+    "rule_overrides": {
+      "OBLI-002": {
+        "skip": true
+      }
+    },
     "balanced_defaults": [],
     "sources": [],
     "regulator_frame": "17-USC-101",

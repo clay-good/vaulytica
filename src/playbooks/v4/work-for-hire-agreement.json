@@ -17,7 +17,7 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Work Product", "Contractor", "Client"],
-  "rule_overrides": {},
+  "rule_overrides": { "OBLI-002": { "skip": true } },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "17-USC-101",

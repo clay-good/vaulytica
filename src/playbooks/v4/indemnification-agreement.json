@@ -23,6 +23,9 @@
   "expected_clauses": [],
   "expected_defined_terms": ["Indemnitor", "Indemnitee", "Loss"],
   "rule_overrides": {
+    "OBLI-002": {
+      "skip": true
+    },
     "FIN-005": {
       "skip": true
     },

@@ -24,7 +24,7 @@
   },
   "expected_clauses": [],
   "expected_defined_terms": ["Franchisee", "Franchisor", "System", "Territory"],
-  "rule_overrides": {},
+  "rule_overrides": { "OBLI-002": { "skip": true } },
   "balanced_defaults": [],
   "sources": [],
   "regulator_frame": "FTC-FRANCHISE-RULE",

@@ -38,6 +38,9 @@
     "Commitment"
   ],
   "rule_overrides": {
+    "OBLI-002": {
+      "skip": true
+    },
     "IPDATA-001": {
       "skip": true
     }, "RISK-005": { "skip": true }, "TERM-005": { "skip": true }

@@ -908,7 +908,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 111,
+   "general_checks": 110,
    "companions": [
     "litigation-funding-agreement"
    ],
@@ -1625,7 +1625,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 109,
+   "general_checks": 108,
    "companions": [
     "asset-purchase-agreement",
     "assignment-and-assumption-agreement"
@@ -5685,7 +5685,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 113,
    "companions": [
     "equipment-finance-agreement"
    ],
@@ -5961,7 +5961,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 112,
    "companions": [
     "piia",
     "employment-restrictive-covenant"
@@ -6110,7 +6110,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 113,
    "companions": [
     "security-agreement",
     "ucc-1-financing-statement"
@@ -6532,7 +6532,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 114,
    "companions": [
     "franchise-disclosure-document"
    ],
@@ -6833,7 +6833,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 109,
+   "general_checks": 108,
    "companions": [
     "loan-agreement"
    ],
@@ -7003,7 +7003,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 110,
+   "general_checks": 109,
    "companions": [],
    "sources": []
   },
@@ -7109,7 +7109,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 111,
+   "general_checks": 110,
    "companions": [],
    "sources": []
   },
@@ -7519,7 +7519,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 112,
    "companions": [
     "offer-letter",
     "piia"
@@ -7675,7 +7675,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 111,
    "companions": [],
    "sources": []
   },
@@ -8224,7 +8224,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 111,
    "companions": [
     "assignment-of-claim",
     "engagement-letter"
@@ -8345,7 +8345,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 111,
    "companions": [
     "promissory-note",
     "security-agreement",
@@ -9963,7 +9963,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 107,
+   "general_checks": 106,
    "companions": [
     "piia"
    ],
@@ -10515,7 +10515,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 111,
    "companions": [
     "medical-director-agreement",
     "employment-restrictive-covenant"
@@ -10571,7 +10571,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 109,
+   "general_checks": 108,
    "companions": [
     "offer-letter",
     "executive-employment"
@@ -11079,7 +11079,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 109,
+   "general_checks": 108,
    "companions": [],
    "sources": []
   },
@@ -11583,7 +11583,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 110,
+   "general_checks": 109,
    "companions": [
     "employee-handbook",
     "employment-at-will-us"
@@ -11866,7 +11866,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 110,
+   "general_checks": 109,
    "companions": [
     "security-agreement",
     "intercreditor-agreement"
@@ -13392,7 +13392,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 113,
    "companions": [
     "loan-agreement",
     "ucc-1-financing-statement"
@@ -13517,7 +13517,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 111,
+   "general_checks": 110,
    "companions": [],
    "sources": []
   },
@@ -15903,7 +15903,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },

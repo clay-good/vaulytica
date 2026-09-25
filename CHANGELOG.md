@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.792.0] — 2026-09-25
+
+### Changed
+- **OBLI-002 no longer asks whether a one-way instrument's one-way duty is
+  intended.** The rule says confidentiality, indemnity and representations
+  are "usually mutual; a one-sided version is sometimes intentional but
+  worth confirming". It fired on 46 pinned specimens. On many of them the
+  one-sided duty *is* the instrument:
+  - an indemnity or hold-harmless agreement, a guaranty;
+  - a security agreement, a loan, a note, a revolving credit facility,
+    factoring;
+  - an equipment lease, a franchise;
+  - a bill of sale, an IP assignment, an assignment of a claim, a
+    work-for-hire agreement, litigation funding;
+  - the employee's confidentiality duty in an executive, physician,
+    remote-work, internship or separation agreement, an offer letter or a
+    PIIA.
+
+  Those 22 families now skip it through their playbook overrides. 18
+  specimen pins drop OBLI-002, each with a note. Bilateral commercial
+  agreements, where reciprocity is the norm and a one-sided term is worth
+  a second look, keep it.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.791.0] — 2026-09-25
 
 ### Fixed
