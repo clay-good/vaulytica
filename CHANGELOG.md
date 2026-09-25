@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. Format adap
 ## [9.785.0] — 2026-09-25
 
 ### Fixed
-- **Forty-five rules printed a regex's span as a finding's description.** The
+- **Forty-four rules printed a regex's span as a finding's description.** The
   line under a finding's title, the first thing a reader sees on every
   surface, was `hit.match[0]`. It began and ended wherever the pattern
   did. Reading a clean Australian services agreement's DOCX report found
@@ -17,8 +17,9 @@ All notable changes to this project will be documented in this file. Format adap
     sentence longer than 280 characters is cut at a word boundary with a
     trailing ellipsis, so it is still text the document contains and says
     so when shortened.
-  - All 45 call sites use it: the dark-pattern, termination, risk,
-    personnel, IP/data, obligations, choice and structural rules.
+  - All 48 call sites, in 44 rule files, use it: the dark-pattern,
+    termination, risk, personnel, IP/data, obligations, choice and
+    structural rules.
   - `description-is-a-sentence.test.ts` closes the class. A rule that
     prints `.match[0]` as its description fails the build. The first
     codemod missed five camelCase call sites (`oneSided`, `noRepair`,
