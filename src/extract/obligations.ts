@@ -156,6 +156,12 @@ function endAtSecondDeadline(trigger: string | undefined): string | undefined {
 }
 
 /**
+ * The aside can also OPEN the condition, straight after "If": "If, within
+ * ninety (90) days after this Agreement ends, Client signs a lease for a
+ * property Broker identified" — a broker's protection period — recorded only
+ * "within ninety (90) days after this Agreement ends", the half that says
+ * when and not the half that says what. (The branch before INTERRUPTER.)
+ *
  * A short prepositional aside set off by commas inside a condition: "If
  * Buyer, AFTER DILIGENT EFFORT, does not obtain the commitment" recorded the
  * trigger as "If Buyer". Led by a preposition, so ", Buyer may terminate," —
@@ -164,7 +170,7 @@ function endAtSecondDeadline(trigger: string | undefined): string | undefined {
 const INTERRUPTER = String.raw`(?:,\s*(?:after|in|at|for|with|without|despite|by|through|acting|using|on)\s[^,;.]{1,40},(?!\s*(?:and|or|but)\b)${CLAUSE_CHAR}+)?`;
 
 const TRIGGER_RE = new RegExp(
-  String.raw`\b(upon\s${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
+  String.raw`\b(upon\s${CLAUSE_CHAR}+|if,\s*(?:after|in|at|for|with|within|during|before|on|by)\s[^,;.]{1,60},${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
   "i",
 );
 

@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.795.0] — 2026-09-25
+
+### Fixed
+- **A condition that opens with an aside kept only its timing.** A broker's
+  protection period, "If, within ninety (90) days after this Agreement
+  ends, Client signs a lease for a property that Broker identified, Client
+  shall pay Broker the commission", recorded the trigger as "within ninety
+  (90) days after this Agreement ends". That is the half that says when,
+  not the half that says what. "If," followed by a short prepositional
+  aside now reads through to the condition's end. Five corpus triggers are
+  completed:
+  - a listing agreement's own protection period;
+  - a relocation repayment trigger ("…you voluntarily resign or the Company
+    terminates your employment for Cause");
+  - two processors' "if, in its opinion, an instruction infringes
+    Applicable Data Protection Law";
+  - an SCC importer's "if, after entering into these Clauses, it has reason
+    to believe…".
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.794.0] — 2026-09-25
 
 ### Fixed

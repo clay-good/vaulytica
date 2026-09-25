@@ -1557,3 +1557,18 @@ describe("extractObligations — a verb series under one named subject", () => {
     expect(o!.obligor).toBe("Licensee");
   });
 });
+
+describe("extractObligations — an aside that opens a condition", () => {
+  it("keeps what the condition is, not only when", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Protection Period",
+        "If, within ninety (90) days after this Agreement ends, Client signs a lease for a property that Broker identified, Client shall pay Broker the commission.",
+      ]),
+      [],
+    );
+    expect(o!.trigger).toBe(
+      "If, within ninety (90) days after this Agreement ends, Client signs a lease for a property that Broker identified",
+    );
+  });
+});
