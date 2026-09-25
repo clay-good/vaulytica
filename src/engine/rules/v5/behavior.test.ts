@@ -1432,3 +1432,44 @@ describe("website development agreement routing", () => {
     expect(r.run.playbook_id).toBe("msa-general");
   });
 });
+
+/**
+ * "Pledge agreement" names two instruments: a pledge of COLLATERAL (a UCC
+ * Article 9 security agreement) and a charitable PLEDGE of a gift. A donor's
+ * $250,000 pledge to a library foundation routed to `security-agreement` and
+ * drew six criticals — no debtor, no granting clause, no collateral, no UCC-1
+ * authorization.
+ */
+describe("pledge agreement routing", () => {
+  it("does not audit a charitable gift pledge as a security agreement", async () => {
+    const r = await analyzeText(
+      [
+        "PLEDGE AGREEMENT",
+        "",
+        'This Pledge Agreement is made between Harold and Miriam Castellano (the "Donors") and the Riverbend Community Library Foundation, a nonprofit corporation exempt under Section 501(c)(3) of the Internal Revenue Code (the "Foundation").',
+        "",
+        "1. Pledge. The Donors irrevocably pledge to give the Foundation $250,000 to support construction of the children's wing.",
+        "",
+        "2. Payment. The Donors shall pay the pledge in five equal annual installments.",
+      ].join("\n"),
+      "charitable-pledge.txt",
+    );
+    expect(r.run.playbook_id).not.toBe("security-agreement");
+  });
+
+  it("still routes a stock pledge to security-agreement", async () => {
+    const r = await analyzeText(
+      [
+        "PLEDGE AGREEMENT",
+        "",
+        'This Pledge Agreement is made between Harbor Holdings LLC ("Pledgor") and First Coast Bank ("Secured Party").',
+        "",
+        "1. Grant. Pledgor grants Secured Party a security interest in the Pledged Shares and all proceeds as collateral for the Obligations.",
+        "",
+        "2. Debtor. Pledgor is the debtor and Secured Party is the secured party under Article 9.",
+      ].join("\n"),
+      "stock-pledge.txt",
+    );
+    expect(r.run.playbook_id).toBe("security-agreement");
+  });
+});

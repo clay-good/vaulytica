@@ -18,7 +18,11 @@
       "after-acquired"
     ],
     "negative_features": [
-      "guaranty"
+      "guaranty",
+      "501(c)(3)",
+      "charitable",
+      "donor",
+      "donors"
     ]
   },
   "expected_clauses": [],

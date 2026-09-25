@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.776.0] — 2026-09-25
+
+### Fixed
+- **A charitable gift pledge was audited as a UCC security agreement.**
+  "Pledge Agreement" names two instruments: a pledge of collateral, which is
+  a security agreement under Article 9, and a donor's pledge of a gift. A
+  $250,000 pledge to a library foundation routed to `security-agreement` on
+  its title and drew six criticals: no debtor or secured party, no
+  granting clause, no collateral description, no UCC-1 authorization, no
+  ownership representations and no default remedies. `security-agreement`
+  now counts "501(c)(3)", "charitable", "donor" and "donors" against
+  itself. The gift pledge falls to the general review, and a stock pledge
+  still routes to `security-agreement`. The catalog has no gift-pledge
+  family; `grant-agreement` reviews a funder's grant to a grantee, which is
+  the other direction.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.775.0] — 2026-09-25
 
 ### Fixed
