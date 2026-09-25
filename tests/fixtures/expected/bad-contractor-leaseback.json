@@ -148,7 +148,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-009",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -361,7 +361,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -1005,7 +1005,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.1-402",
       "rule_id": "OBLI-005",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1031,11 +1031,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "1210c21ed01d83a3eb9f75174c6d8378b9a5781df1bd26870651e8bd90e1c352",
+  "result_hash": "5a675d4e971dde86b34db476cff1d27f53b926261b33bd02c533b83ebf4cdeaf",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.781.0"
+  "version": "9.782.0"
 }

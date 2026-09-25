@@ -1454,3 +1454,42 @@ describe("extractObligations — what a row says it is", () => {
     ).toEqual([]);
   });
 });
+
+describe("extractObligations — a consumer store's terms", () => {
+  const rows = (text: string) => extractObligations(buildTree(["Terms", text]), []);
+
+  it("names the subject pronoun after a comma-less condition", () => {
+    const [o] = rows(
+      "We may cancel any order, and if we cancel an order after charging you we will refund the full amount within five (5) business days.",
+    ).filter((r) => /refund/.test(r.action));
+    expect(o!.obligor).toBe("we");
+  });
+
+  it("does not name a participial aside", () => {
+    const [o] = rows(
+      "Final-sale items, marked as such on the Site, cannot be returned unless defective.",
+    );
+    expect(o!.obligor).toBe("Final-sale items");
+  });
+
+  it("does not read the acronym IT as a pronoun", () => {
+    const [o] = rows(
+      "Hiring managers and IT shall revoke a departing employee's access on the last day.",
+    );
+    expect(o!.obligor).not.toBe("IT");
+  });
+});
+
+describe("extractObligations — the consumer caveat after a disclaimer", () => {
+  it("does not record 'so this limitation may not apply to you' as a duty", () => {
+    expect(
+      extractObligations(
+        buildTree([
+          "Warranty",
+          "Some states do not allow limitations on implied warranties, so this limitation may not apply to you.",
+        ]),
+        [],
+      ),
+    ).toEqual([]);
+  });
+});

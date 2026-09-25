@@ -104,3 +104,27 @@ describe("DARK-009 — reversed continued-use order & spaced 'making … availab
     expect(fires(b)).toBe(false);
   });
 });
+
+describe("DARK-009 — per-order terms cannot change retroactively", () => {
+  it("does not flag re-posted terms of sale that govern each order as placed", () => {
+    expect(
+      DARK_009.check(
+        buildContext([
+          "Changes",
+          "We may change these Terms by posting a new version on the Site. The Terms in effect when you place an order apply to that order.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags posting without that limit", () => {
+    expect(
+      DARK_009.check(
+        buildContext([
+          "Changes",
+          "We may change these Terms by posting a new version on the Site.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

@@ -175,3 +175,16 @@ describe("OBLI-005 — a provision named by pronoun states its scope (v1.6.0)", 
     ).not.toBeNull();
   });
 });
+
+describe("OBLI-005 — a liability allocation is not a covenant (v1.7.0)", () => {
+  it("does not list 'we will not be liable for indirect damages'", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Liability",
+          "We will not be liable for any indirect or consequential damages.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

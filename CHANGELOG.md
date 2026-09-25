@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.782.0] — 2026-09-25
+
+### Fixed
+- **A store's terms of sale drew a dark-pattern warning for being fair.**
+  "We may change these Terms by posting a new version on the Site. The
+  Terms in effect when you place an order apply to that order." DARK-009's
+  own explanation names the harm as a retroactive material change, and per-
+  order terms cannot have one: a re-posted version governs only the next
+  order. The rule now stands down where the document says the version in
+  effect when an order is placed governs it, or that changes apply only to
+  orders placed afterwards.
+- **Obligors in consumer terms.**
+  - "…and if we cancel an order after charging you we will refund" named
+    "an order after charging you we". A subject pronoun that ends the
+    subject after a coordinator or a subordinate clause is now the obligor.
+    This does not fire after a preposition ("granted under it"), and not on
+    the acronym "IT". 25 corpus rows change.
+  - "Final-sale items, marked as such on the Site, cannot be returned" named
+    the aside and now names the items.
+  - "…so this limitation may not apply to you", the caveat after every
+    consumer disclaimer, is no longer an obligation (2 corpus rows).
+- **OBLI-005 listed "we will not be liable for indirect damages" as a
+  negative covenant.** It allocates a loss; nobody refrains from anything.
+  `redundant-findings` caught it on the website-terms specimen: once the
+  caveat row left, OBLI-005's first item was the sentence RISK-007 reports
+  as a consequential-damages waiver. "Not be liable / responsible" joins
+  the status predicates the rule already excludes.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.781.0] — 2026-09-25
 
 ### Fixed

@@ -96,8 +96,12 @@ const INSTRUMENT_SUBJECT = new RegExp(
  * copyright" states a possibility, not a prohibition. Only a status adjective
  * is excluded: "may not be assigned" is still a covenant, in the passive.
  */
+// "Shall not be LIABLE / RESPONSIBLE for" allocates a loss; nobody refrains
+// from anything. A website's "WE WILL NOT BE LIABLE FOR ANY INDIRECT …
+// DAMAGES" was listed as a negative covenant on the sentence RISK-007 reports
+// as the consequential-damages waiver it is.
 const STATUS_ACTION =
-  /^be\s+(?:an?\s+)?(?:eligible|entitled|enforceable|protectable|valid|available|possible|adequate|sufficient)\b/i;
+  /^(?:not\s+)?be\s+(?:an?\s+)?(?:eligible|entitled|enforceable|protectable|valid|available|possible|adequate|sufficient|liable|responsible)\b/i;
 
 /**
  * An instrument that "may not be offered, sold or transferred" is restricted,
@@ -134,7 +138,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",

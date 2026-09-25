@@ -26,9 +26,12 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  * available" at / on a URL / website / portal, with implicit
  * acceptance by continued use.
  */
+const PER_ORDER_VERSION =
+  /\b(?:terms|version)\s+(?:in\s+effect|posted)\s+(?:when|at\s+the\s+time)\s+(?:you\s+)?(?:place|placed|submit|submitted|make|made)\s+(?:an?\s+|your\s+)?(?:order|purchase)|\bchanges?\s+(?:will\s+)?appl(?:y|ies)\s+only\s+to\s+(?:orders|purchases|transactions)\s+(?:placed|made|submitted)\s+after\b|\b(?:will|do|does)\s+not\s+apply\s+to\s+(?:orders|purchases)\s+(?:already\s+)?(?:placed|made|submitted)\b/i;
+
 export const rule: Rule = {
   id: "DARK-009",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Unilateral amendment by posting",
   category: "dark-patterns",
   default_severity: "warning",
@@ -36,6 +39,13 @@ export const rule: Rule = {
     "Detects clauses that let one party change the agreement by posting a new version online, with implicit acceptance by continued use.",
   dkb_citations: ["stat-ftc-deception-statement"],
   check(ctx: RuleContext): Finding | null {
+    // PER-ORDER TERMS CANNOT BE CHANGED RETROACTIVELY. A store's terms of
+    // sale that say "The Terms in effect when you place an order apply to
+    // that order" can be re-posted for the next order without touching a
+    // concluded one — the retroactive material change this rule's explanation
+    // is about cannot happen. A clean consumer terms of sale drew this
+    // warning on exactly that sentence pair.
+    if (firstParagraphMatch(ctx, PER_ORDER_VERSION)) return null;
     // Pattern A: "Vendor may modify/amend the Agreement by posting…"
     const a = firstParagraphMatch(
       ctx,

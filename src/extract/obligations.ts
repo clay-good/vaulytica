@@ -376,6 +376,19 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         ) {
           continue;
         }
+        // …nor is the consumer caveat that follows a disclaimer: "Some states
+        // do not allow limitations on implied warranties, so THIS LIMITATION
+        // MAY NOT APPLY to you" says the law may override the clause, and
+        // printed `…so this limitation | may not | apply to you`.
+        if (
+          /^may\s+not$/i.test(modal) &&
+          /^apply\b/i.test(action) &&
+          /\b(?:this|these|the|such|that)\s+(?:limitations?|exclusions?|disclaimers?|provisions?|waivers?)\s*$/i.test(
+            cl.subject,
+          )
+        ) {
+          continue;
+        }
 
         // A WARRANTY'S ROW SAYS WHAT IS WARRANTED. With the warrantor as the
         // obligor, "Supplier warrants that the Services will be provided with
@@ -1047,6 +1060,26 @@ function resolveObligorInner(
   }
   if (/\b(?:the\s+parties|each\s+party|either\s+party)\b/i.test(trimmed)) {
     return "the parties";
+  }
+  // A SUBJECT PRONOUN AT THE END of a longer subject is the subject: "…and if
+  // we cancel an order after charging you WE will refund", "contact us within
+  // the warranty period and WE will repair it". Only after a coordinator, a
+  // subordinate clause or another pronoun, so "Buyer and you" is untouched.
+  const pronoun =
+    /(?:\b(?:and|so|then|or)\s+|\b(?:[Ii]f|[Ww]hen|[Uu]nless|[Oo]nce|[Aa]fter|[Bb]efore|[Uu]ntil|[Ww]here)\b[^,;]*\s(?<!\b(?:under|to|with|from|by|of|for|in|on|at|about|against|into|through|over)\s))(we|We|they|They|he|He|she|She|I|you|You|YOU|it|It)$/.exec(
+      trimmed,
+    );
+  if (pronoun && trimmed.split(/\s+/).length > 1) return pronoun[1]!;
+  // A PARTICIPIAL ASIDE between commas is not the subject: "Final-sale items,
+  // marked as such on the Site, cannot be returned" is the items'.
+  const aside =
+    /^((?:[A-Z]|(?:the|any|each|all|no)\s)[^,;]{1,60}),\s+(?:\w+ed|\w+ing)\b[^,;]*$/.exec(trimmed);
+  if (
+    aside &&
+    !CLAUSE_VERB.test(aside[1]!.replace(/-\w+ed\b/g, "")) &&
+    !/\b(?:which|that|who)\b/i.test(trimmed)
+  ) {
+    return resolveObligorInner(aside[1]!, partyNames, partyRoles);
   }
   // Last-resort: the last 2–6 words of the subject.
   //
