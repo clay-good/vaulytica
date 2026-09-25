@@ -270,3 +270,16 @@ describe("FIN-009 — the rent's cadence is not the rate's period", () => {
     expect(FIN_009.check(lease(text))?.title).toBe("Late-payment rate above 18%/year: ~24.0%");
   });
 });
+
+describe("FIN-009 — a branch that asserts no law cites none", () => {
+  it("prints no usury statute under a one-time late fee", () => {
+    const f = FIN_009.check(
+      buildContext([
+        "Rent",
+        "Any rent not paid within ten (10) days after its due date bears a late charge of five percent (5%) of the overdue amount.",
+      ]),
+    );
+    expect(f?.title).toMatch(/One-time late fee/);
+    expect(f?.source_citations).toEqual([]);
+  });
+});

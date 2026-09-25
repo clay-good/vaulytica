@@ -26,7 +26,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -133,6 +133,10 @@ export const rule: Rule = {
           recommendation:
             "Confirm the fee is genuinely one-time. If it recurs or compounds per period, state the period explicitly and check the implied annual rate against the controlling state's usury rules.",
           position: hit.position,
+          // No usury comparison is made, so no usury statute is the
+          // authority: an Ohio equipment lease's flat late fee printed New
+          // York's GOL § 5-501 under "Authority".
+          dkb_citations: [],
         });
       }
 
@@ -146,6 +150,7 @@ export const rule: Rule = {
         recommendation:
           "State the rate's period explicitly (e.g., 'one-time', 'per month', 'per annum'), then confirm any periodic rate against the controlling state's usury rules.",
         position: hit.position,
+        dkb_citations: [],
       });
     }
 

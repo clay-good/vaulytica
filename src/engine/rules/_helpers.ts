@@ -446,6 +446,12 @@ export function emit(
     explanation: string;
     recommendation?: string;
     position: DocPosition;
+    /**
+     * The authority THIS finding rests on, when it is not the rule's own. A
+     * branch that asserts no law — "no usury comparison applies" — should not
+     * print the rule's usury statute as its authority.
+     */
+    dkb_citations?: readonly string[];
   },
 ): import("../finding.js").Finding {
   return makeFinding({
@@ -457,7 +463,7 @@ export function emit(
     explanation: args.explanation,
     recommendation: args.recommendation,
     position: args.position,
-    source_citations: resolveCitations(ctx, rule.dkb_citations),
+    source_citations: resolveCitations(ctx, args.dkb_citations ?? rule.dkb_citations),
   });
 }
 

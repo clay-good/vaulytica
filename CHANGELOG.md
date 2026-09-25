@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.783.0] — 2026-09-25
+
+### Fixed
+- **An Ohio lease's flat late fee cited New York's usury statute as its
+  authority.** Reading the HTML report of a clean equipment lease found
+  FIN-009's one-time late-fee note. It says "no annualized usury comparison
+  applies", then printed "Authority: New York General Obligations Law
+  § 5-501 (civil usury)" beneath it. The rule's citation belongs to its
+  usury comparison. The two branches that make no comparison (a one-time
+  fee, and a rate with no stated period) now cite nothing. `emit` takes a
+  per-finding citation override for exactly this case.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.782.0] — 2026-09-25
 
 ### Fixed
