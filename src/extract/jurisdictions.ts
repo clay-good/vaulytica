@@ -414,6 +414,9 @@ const VENUE_CONSENT = new RegExp(
   String.raw`\b(?:consent|submit|agree|attorn|subject)\w*\s+(?:[^.;)]{0,40}?\s+)?to\s+(?:the\s+)?(?:${COURT_ADJECTIVE}|exclusive\s+|non-?exclusive\s+|personal\s+|sole\s+|general\s+)*jurisdiction\s+(?:and\s+venue\s+)?(?:of|in)\s+(?:any\s+|the\s+|a\s+)?(?:${COURT_ADJECTIVE})?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_ADJECTIVE})?(?:${COURT_NAME})?(?:(?:[A-Za-z-]+\s+){0,2}tribunals?\s+and\s+)?(?:tribunals?|courts?)\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
+/** Every way a clause names the jurisdiction of England and Wales. */
+const ENGLISH_JURISDICTION = /^(?:England(?:\s+(?:and|&)\s+Wales)?|English(?:\s+and\s+Welsh)?)$/i;
+
 /**
  * Major foreign venue cities → the jurisdiction as a governing-law clause names
  * it. Deliberately a short list of the seats a contract actually chooses; a
@@ -823,6 +826,12 @@ export function extractJurisdictions(
     });
   });
 
+  // England is ONE jurisdiction however a clause names it: "the laws of
+  // England" and "English law" against "the courts of England and Wales" were
+  // reported as a law/venue split.
+  for (const j of out) {
+    if (ENGLISH_JURISDICTION.test(j.raw_text.trim())) j.raw_text = "England and Wales";
+  }
   return out;
 }
 

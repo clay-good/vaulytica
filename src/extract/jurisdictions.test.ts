@@ -1065,3 +1065,19 @@ describe("extractJurisdictions — a foreign venue named by its city", () => {
     ).toBe("Uppsala");
   });
 });
+
+/**
+ * England is one jurisdiction however a clause names it. "the laws of England"
+ * and "English law" against "the courts of England and Wales" were reported by
+ * CHOICE-004 as a law/venue split. Every form is recorded as "England and
+ * Wales".
+ */
+describe("extractJurisdictions — England, English, England and Wales", () => {
+  const raws = (t: string) => extractJurisdictions(buildTree(["Law", t])).map((j) => j.raw_text);
+  it.each([
+    "This Agreement is governed by the laws of England. The courts of England and Wales have exclusive jurisdiction.",
+    "This Agreement is governed by English law. The courts of England and Wales have exclusive jurisdiction.",
+  ])("%s", (t) => {
+    expect(new Set(raws(t))).toEqual(new Set(["England and Wales"]));
+  });
+});

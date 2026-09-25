@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.766.0] — 2026-09-25
+
+### Fixed
+- **English law and English courts were reported as a law/venue split.**
+  "The laws of England" and the adjectival "English law" against "the courts
+  of England and Wales" drew CHOICE-004's "Governing law (England) and venue
+  (England and Wales) differ" — one jurisdiction named two ways. Every form
+  (England, English, England & Wales, English and Welsh) is now recorded as
+  "England and Wales", for governing law, venue and arbitral seat alike.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.765.0] — 2026-09-25
 
 ### Fixed
