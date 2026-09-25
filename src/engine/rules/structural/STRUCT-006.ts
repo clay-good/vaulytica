@@ -105,6 +105,20 @@ function isNamedPerson(documentBody: string, term: string): boolean {
 }
 
 /**
+ * A name the document ALSO writes with an honorific is a person: a board
+ * consent appoints "Ingrid Sørensen" and then contracts "with Ms. Sørensen".
+ * Keyed on the phrase's LAST word after Mr./Ms./Mrs./Mx./Dr., so a defined
+ * term (nothing writes "Ms. Stock") is untouched.
+ */
+function isHonorificNamed(documentBody: string, term: string): boolean {
+  const surname = term.trim().split(/\s+/).pop()!;
+  const escaped = surname.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(String.raw`\b(?:Mr|Ms|Mrs|Mx|Dr)\.?\s+${escaped}(?![\p{L}\p{N}])`, "u").test(
+    documentBody,
+  );
+}
+
+/**
  * A JOB TITLE is not a defined term.
  *
  * An offer letter is written in Title Case throughout about the one thing it
@@ -216,6 +230,7 @@ export function undefinedTermCandidates(ctx: {
     // A person the document names by their relationship to the declarant is
     // a person, not a term the drafter forgot to define.
     if (isNamedPerson(body, e.term)) return false;
+    if (isHonorificNamed(body, e.term)) return false;
     // A public office is defined by the state, not by this document.
     if (PUBLIC_OFFICE.test(e.term.trim())) return false;
     if (STATUTORY_FIDUCIARY_OFFICE.test(e.term.trim())) return false;
@@ -239,7 +254,7 @@ export function undefinedTermCandidates(ctx: {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",

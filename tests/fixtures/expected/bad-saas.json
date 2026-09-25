@@ -622,7 +622,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-006",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -1076,7 +1076,7 @@
       "id": "STRUCT-006-s1.1-253",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
-      "rule_version": "1.9.0",
+      "rule_version": "1.10.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Undefined Title-Case terms: 1"
@@ -1276,11 +1276,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "84c3cb1a6f4a0e3c2c407c644bef19c5e2fcd5b7f19051f1bb3e42cbf6cee3de",
+  "result_hash": "f7c966cd4a476b5f44a5a10d3a2e9156fcdeb2f717c104bf9be0591c177e2f08",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.734.0"
+  "version": "9.735.0"
 }

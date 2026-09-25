@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.735.0] — 2026-09-24
+
+### Fixed
+- **The definitions report cut a name in half at its first accented
+  letter.** The Title-Case matcher was ASCII (`[A-Z][a-z]+`) and bounded by
+  `\b`, which JavaScript reads as ASCII-only even under the `u` flag, so a
+  statement of work's engagement lead was printed as "Desmond
+  Achebe-Lindstr", and a name like "José García" or "Ingrid Sørensen" could
+  never be read whole. Letters are now Unicode and the edges are lookarounds.
+  Across the specimens the matcher changes exactly two terms: the cut name
+  is read whole, and one name that had been invisible appears.
+- **That newly visible name would have been a new false accusation**, so
+  the same release teaches STRUCT-006 that a name the document also writes
+  with an honorific is a person: a board consent appointing "Ingrid
+  Sørensen" and contracting "with Ms. Sørensen" is not missing a
+  definition. Keyed on the surname after Mr./Ms./Mrs./Mx./Dr.; nothing
+  writes "Ms. Stock".
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets and no STRUCT-006 description moved.
+
 ## [9.734.0] — 2026-09-24
 
 ### Fixed

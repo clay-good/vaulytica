@@ -406,8 +406,17 @@ const GUARD_WINDOW = 400;
  */
 const DEFINITION_TEXT_MAX = 4000;
 
-const TITLE_CASE_PHRASE =
-  /\b((?:[A-Z][a-z]+(?:-[A-Z][a-z]+)*(?:\s+[A-Z][a-z]+(?:-[A-Z][a-z]+)*){1,4}))\b/g;
+/**
+ * A run of two to five Title-Case words. The letters are UNICODE and the edges
+ * are lookarounds, not `\b`: `[A-Z][a-z]+` stopped inside "Lindström", and `\b`
+ * (ASCII-only even under the `u` flag) accepted the cut, so the definitions
+ * report printed "Desmond Achebe-Lindstr" and "José García" was never read.
+ */
+const TITLE_CASE_WORD = String.raw`\p{Lu}\p{Ll}+(?:-\p{Lu}\p{Ll}+)*`;
+const TITLE_CASE_PHRASE = new RegExp(
+  String.raw`(?<![\p{L}\p{N}_])(${TITLE_CASE_WORD}(?:\s+${TITLE_CASE_WORD}){1,4})(?![\p{L}\p{N}_])`,
+  "gu",
+);
 
 /**
  * Place names are proper nouns, never contractual defined terms. A

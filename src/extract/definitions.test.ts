@@ -2760,3 +2760,32 @@ describe("an instrument's name is not a use of the defined term inside it", () =
     expect(term!.used_at.length).toBeGreaterThan(0);
   });
 });
+
+/**
+ * A Title-Case phrase is not an ASCII phrase. `[A-Z][a-z]+` stopped inside
+ * "Lindström" and JavaScript's `\b` treats "ö" as a non-word character, so the
+ * definitions report printed "Desmond Achebe-Lindstr" — a name cut mid-letter —
+ * and "José García" or "São Paulo" could never be read whole.
+ */
+describe("extractDefinitions — a Title-Case word may carry a diacritic", () => {
+  const terms = (...paras: string[]) =>
+    extractDefinitions(buildTree(["Statement of Work", ...paras])).undefined_capitalized.map(
+      (e) => e.term,
+    );
+
+  it("never cuts a name mid-letter", () => {
+    const got = terms(
+      "Desmond Achebe-Lindström will serve as Engagement Lead.",
+      "Supplier shall not replace Desmond Achebe-Lindström without consent.",
+    );
+    expect(got.some((t) => t.endsWith("Lindstr"))).toBe(false);
+  });
+
+  it("reads an accented Title-Case phrase whole", () => {
+    const got = terms(
+      "The Étude Services are described below.",
+      "Supplier shall perform the Étude Services and the Étude Services only.",
+    );
+    expect(got).toContain("Étude Services");
+  });
+});

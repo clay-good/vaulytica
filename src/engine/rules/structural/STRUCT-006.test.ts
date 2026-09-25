@@ -307,3 +307,27 @@ describe("STRUCT-006 — a statutory fiduciary office is not an undefined term",
     expect(STRUCT_006.check(will("Estate Steward"))?.description).toContain("Estate Steward");
   });
 });
+
+/**
+ * A name the document also writes with an honorific is a person. A board
+ * consent appointing "Ingrid Sørensen" as Chief Financial Officer, and later
+ * entering into an agreement "with Ms. Sørensen", was told her name is a term
+ * it forgot to define — once the Title-Case matcher could read the "ø" at all.
+ */
+describe("STRUCT-006 — a person the document calls Ms. or Mr. is not an undefined term", () => {
+  const consent = (honorific: boolean) =>
+    buildContext([
+      "Action by Written Consent of the Board of Directors",
+      "RESOLVED, that Ingrid Sørensen is hereby appointed Chief Financial Officer of the Corporation.",
+      `RESOLVED FURTHER, that the Corporation may enter into an indemnification agreement with ${honorific ? "Ms. Sørensen" : "the Chief Financial Officer"}.`,
+      "RESOLVED, that Ingrid Sørensen is authorized to open accounts in the name of the Corporation.",
+    ]);
+
+  it("is silent on a name the document also writes with an honorific", () => {
+    expect(STRUCT_006.check(consent(true))).toBeNull();
+  });
+
+  it("still reports the name where nothing marks it as a person", () => {
+    expect(STRUCT_006.check(consent(false))?.description).toContain("Ingrid Sørensen");
+  });
+});
