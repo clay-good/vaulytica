@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.734.0] — 2026-09-24
+
+### Fixed
+- **The definitions report contradicted the findings in the same run.** Its
+  "undefined-but-used" bucket read the extractor's raw list, while STRUCT-006
+  reports that list after a dozen documented exemptions. A clean will's
+  definitions CSV named the testator's husband, daughter and sister, and its
+  "Independent Executor", as undefined terms that no finding accused. The
+  list now has one owner (`undefinedTermCandidates` in STRUCT-006), read by
+  the rule, the definitions CSV/JSON/Markdown, the bundle projection, the
+  browser and the CLI. Across the specimens, **55 terms leave the bucket on
+  35 documents** — each one an exemption the rule already documents: a lease
+  amendment's parent-lease vocabulary ("Base Rent", "Proportionate Share"),
+  "Notary Public", a job title, a department, a document's own name, a
+  person named by relationship. `buildDefinitionsReport` now takes the
+  document tree, so no caller can skip the exemptions.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets (the rule's own output is unchanged).
+
 ## [9.733.0] — 2026-09-24
 
 ### Fixed

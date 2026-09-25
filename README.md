@@ -4,7 +4,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,980+ passing tests` · `v9.733.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `14,980+ passing tests` · `v9.734.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](docs/images/hero.png)
 
@@ -845,7 +845,7 @@ It prints one row per front (its per-round `cells`), the per-round column summar
 
 <img src="docs/images/report-mobile.png" alt="Vaulytica report card on a phone: severity counts, a California non-compete jurisdiction overlay with citation, and one-click exports — Word, JSON, fix-list (Markdown/CSV), obligations, deadlines (.ics), HTML report, and SARIF" width="320" align="right" />
 
-The drop zone transforms in place into a result card: severity counts (critical / warning / informational), the matched playbook with a "why," any jurisdiction overlays for the governing-law state, and one-click exports — the **Word report** you can cite, the structured **JSON** with its `result_hash`, **SARIF 2.1.0** for code-scanning/PR annotation, a self-contained **single-file HTML** report that prints clean to PDF, the **fix-list** (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics` calendar**. As of v8 **every** one of those carries each finding's resolvable citation — the URL rides into the spreadsheet row, the SARIF result, and the calendar event, not just the Word doc. And for DOCX uploads there is a **reviewed copy (.docx)**: your own draft, byte-for-byte, with each finding attached as an anchored Word comment — review metadata in your document, never a generated redline. A **definitions report** (CSV / JSON, `--definitions` headless) inventories every defined term with its location — used-but-undefined first, then duplicates, terms used before they're defined, and unused terms — with its own `definitions_hash`.
+The drop zone transforms in place into a result card: severity counts (critical / warning / informational), the matched playbook with a "why," any jurisdiction overlays for the governing-law state, and one-click exports — the **Word report** you can cite, the structured **JSON** with its `result_hash`, **SARIF 2.1.0** for code-scanning/PR annotation, a self-contained **single-file HTML** report that prints clean to PDF, the **fix-list** (Markdown / CSV), the obligations ledger (CSV), and deadlines as an **`.ics` calendar**. As of v8 **every** one of those carries each finding's resolvable citation — the URL rides into the spreadsheet row, the SARIF result, and the calendar event, not just the Word doc. And for DOCX uploads there is a **reviewed copy (.docx)**: your own draft, byte-for-byte, with each finding attached as an anchored Word comment — review metadata in your document, never a generated redline. A **definitions report** (CSV / JSON, `--definitions` headless) inventories every defined term with its location — used-but-undefined first (the same list `STRUCT-006` reports, with the same exemptions), then duplicates, terms used before they're defined, and unused terms — with its own `definitions_hash`.
 
 Under those counts the card says **what the findings rest on**, because a count read without it is read wrong. Three lines, and each appears on _every_ surface — the tab, the DOCX, the HTML, the JSON, SARIF and the bundle report — not just in the Word file:
 
@@ -1390,7 +1390,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 14,936+ tests, ~140s
+npm run test         # vitest — 14,980+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

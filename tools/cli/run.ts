@@ -1713,7 +1713,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     // add-defined-terms-report — projection over a classifier-free
     // re-extract (definitions don't need the classifier), outside the run.
     const definitions = args.definitions
-      ? await buildDefinitionsReport(extractAll(r.ingest.tree))
+      ? await buildDefinitionsReport(extractAll(r.ingest.tree), r.ingest.tree)
       : undefined;
 
     for (const fmt of args.formats) {

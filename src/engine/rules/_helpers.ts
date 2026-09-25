@@ -954,7 +954,7 @@ export function isIncorporatedExhibit(ctx: RuleContext): boolean {
   return INCORPORATED_INTO_PARENT.test(documentTextOf(ctx));
 }
 
-function documentTextOf(ctx: RuleContext): string {
+function documentTextOf(ctx: Pick<RuleContext, "tree">): string {
   const parts: string[] = [];
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
     for (const section of sections) {
@@ -1097,7 +1097,7 @@ const NAMED_AS_A_PROVISION =
 const ASSUMES_PARENT_OBLIGATIONS =
   /\bassum(?:e|es|ed|ing|ption\s+of)\b[^.;]{0,140}?\bobligations\s+of\s+the\s+(?:tenant|lessee|sublessee|landlord|lessor|borrower|obligor|debtor|maker|seller|purchaser|buyer|contractor|subcontractor|licensee|licensor|franchisee|assignor|transferor|member|partner|employer)\b[^.;]{0,80}?\bunder\s+the\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Lease|Sublease|Agreement|Contract|Note|Indenture|Mortgage|Plan)\b|\bas\s+if\s+\w[^.;]{0,80}?\bwere\s+(?:the\s+)?(?:an\s+)?original\s+(?:tenant|lessee|borrower|party|signatory|contractor|licensee|member|partner)\b/;
 
-export function borrowsParentVocabulary(ctx: RuleContext): boolean {
+export function borrowsParentVocabulary(ctx: Pick<RuleContext, "tree">): boolean {
   const text = documentTextOf(ctx);
   return (
     RATIFIES_PARENT.test(text) ||

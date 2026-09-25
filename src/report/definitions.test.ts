@@ -13,6 +13,12 @@ import {
   verifyDefinitionsHash,
 } from "./definitions.js";
 import type { DefinitionEntry, DocPosition, ExtractedData } from "../extract/types.js";
+import { buildTree } from "../extract/_fixtures.js";
+import { extractAll } from "../extract/index.js";
+import { undefinedTermCandidates } from "../engine/rules/structural/STRUCT-006.js";
+
+/** The bucketing tests run over a synthetic inventory with no document behind it. */
+const EMPTY_TREE = buildTree(["Agreement"]);
 
 const pos = (section: string, start: number): DocPosition => ({
   section_id: section,
@@ -56,8 +62,9 @@ function extractedWith(defs: {
   unused_terms?: string[];
   undefined_capitalized?: Array<{ term: string; positions: DocPosition[] }>;
   circular_terms?: string[][];
-}): Pick<ExtractedData, "definitions"> {
+}): Pick<ExtractedData, "definitions" | "parties"> {
   return {
+    parties: [],
     definitions: {
       entries: defs.entries ?? [],
       unused_terms: defs.unused_terms ?? [],
@@ -82,7 +89,7 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
   });
 
   it("assigns every term to exactly one primary bucket, risk-ordered", async () => {
-    const r = await buildDefinitionsReport(extracted);
+    const r = await buildDefinitionsReport(extracted, EMPTY_TREE);
     expect(r.undefined_used.map((u) => u.term)).toEqual(["Ghost Term"]);
     expect(r.duplicates.map((d) => d.term)).toEqual(["Twice Term"]);
     expect(r.duplicates[0]!.defined_at).toHaveLength(2);
@@ -100,8 +107,8 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
   });
 
   it("is deterministic and hash-verifiable; edits are detected", async () => {
-    const a = await buildDefinitionsReport(extracted);
-    const b = await buildDefinitionsReport(extracted);
+    const a = await buildDefinitionsReport(extracted, EMPTY_TREE);
+    const b = await buildDefinitionsReport(extracted, EMPTY_TREE);
     expect(JSON.stringify(a)).toBe(JSON.stringify(b));
     expect(await verifyDefinitionsHash(a)).toBe(true);
     expect(await verifyDefinitionsHash({ ...a, unused: [] })).toBe(false);
@@ -112,7 +119,7 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
   // have carried all along. Defined terms are verbatim document text, so a
   // term starting `=`, `+`, `-`, or `@` opened as a live formula in Excel.
   it("neutralizes a defined term that would open as a spreadsheet formula", async () => {
-    const r = await buildDefinitionsReport(extracted);
+    const r = await buildDefinitionsReport(extracted, EMPTY_TREE);
     const poisoned: typeof r = {
       ...r,
       undefined_used: [
@@ -128,7 +135,7 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
   });
 
   it("renders CSV (risk-ordered, header first) and Markdown", async () => {
-    const r = await buildDefinitionsReport(extracted);
+    const r = await buildDefinitionsReport(extracted, EMPTY_TREE);
     const csv = buildDefinitionsCsv(r);
     expect(csv.startsWith("bucket,term,detail,locations")).toBe(true);
     expect(csv.indexOf("undefined-but-used")).toBeLessThan(csv.indexOf("defined-but-unused"));
@@ -141,13 +148,13 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
   it("ends its rows with CRLF, like every other CSV export in the tree", async () => {
     // It used bare LF, and nothing noticed while the browser was its only
     // consumer — a Blob handed to a download is never split on a line ending.
-    const csv = buildDefinitionsCsv(await buildDefinitionsReport(extracted));
+    const csv = buildDefinitionsCsv(await buildDefinitionsReport(extracted, EMPTY_TREE));
     expect(csv.includes("\r\n")).toBe(true);
     expect(/[^\r]\n/.test(csv)).toBe(false);
   });
 
   it("quotes the undefined-but-used detail so its literal comma keeps the row 4-field (RFC 4180)", async () => {
-    const r = await buildDefinitionsReport(extracted);
+    const r = await buildDefinitionsReport(extracted, EMPTY_TREE);
     const csv = buildDefinitionsCsv(r);
     const row = csv.split("\r\n").find((l) => l.startsWith("undefined-but-used"))!;
     // The "N use(s), never defined" detail must be quoted, or its comma splits
@@ -179,7 +186,10 @@ describe("buildDefinitionsReport — buckets over a known inventory", () => {
               entries.push(entry(t, 600 + i, [700]));
             }
           });
-          const r = await buildDefinitionsReport(extractedWith({ entries, unused_terms: unused }));
+          const r = await buildDefinitionsReport(
+            extractedWith({ entries, unused_terms: unused }),
+            EMPTY_TREE,
+          );
           const buckets = [
             ...r.undefined_used.map((x) => x.term),
             ...r.duplicates.map((x) => x.term),
@@ -205,6 +215,7 @@ describe("bundle mode", () => {
         playbook_id: "msa",
         tree: { type: "document", sections: [] },
         extracted: {
+          parties: [],
           definitions: {
             entries: [
               {
@@ -229,5 +240,41 @@ describe("bundle mode", () => {
       "Confidential Information",
     );
     expect(bundle.definitions_hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+/**
+ * The "undefined-but-used" bucket is STRUCT-006's list, not the extractor's raw
+ * one. A clean will's definitions CSV named the testator's husband, daughter
+ * and sister, and its "Independent Executor", as undefined terms in the same
+ * run whose findings exempted all four.
+ */
+describe("buildDefinitionsReport — one list of undefined terms", () => {
+  const tree = buildTree([
+    "Last Will and Testament of Margaret Ellen Doyle",
+    "I give my jewelry to my daughter, Claire Anne Doyle, if she survives me.",
+    "I appoint my spouse, Thomas James Doyle, as Independent Executor of this Will.",
+    "If Thomas James Doyle fails to serve, I appoint my sister, Ruth Anne Keller, as successor Independent Executor.",
+    "Claire Anne Doyle and Ruth Anne Keller shall share the Vacation Property equally.",
+    "My Executor may sell the Vacation Property without court order.",
+  ]);
+  const extracted = extractAll(tree);
+
+  it("prints exactly what STRUCT-006 reports", async () => {
+    const r = await buildDefinitionsReport(extracted, tree);
+    const bucket = r.undefined_used.map((u) => u.term);
+    expect(bucket).toEqual(
+      undefinedTermCandidates({ tree, extracted })
+        .map((u) => u.term)
+        .sort(),
+    );
+    // The raw list DOES carry the people and the office — the exemptions are
+    // what this asserts, not an extractor that never saw them.
+    expect(extracted.definitions.undefined_capitalized.map((u) => u.term)).toContain(
+      "Independent Executor",
+    );
+    expect(bucket).not.toContain("Independent Executor");
+    expect(bucket).not.toContain("Claire Anne Doyle");
+    expect(bucket).toContain("Vacation Property");
   });
 });

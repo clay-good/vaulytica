@@ -846,7 +846,7 @@ export async function runReport(
       : undefined;
   const certificate_docx_blob = await buildCertificateDocx(run);
   const certificate_json_blob = certificateJsonBlob(await buildCertificateJson(run));
-  const definitionsReport = await buildDefinitionsReport(prepared.extracted);
+  const definitionsReport = await buildDefinitionsReport(prepared.extracted, prepared.ingest.tree);
   const definitions_csv_blob = definitionsCsvBlob(definitionsReport);
   const definitions_json_blob = definitionsJsonBlob(definitionsReport);
 

@@ -17,6 +17,8 @@
 
 import { csvField } from "./exports.js";
 import type { DocPosition, ExtractedData } from "../extract/types.js";
+import type { DocumentTree } from "../ingest/types.js";
+import { undefinedTermCandidates } from "../engine/rules/structural/STRUCT-006.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 
@@ -53,7 +55,8 @@ export type DefinitionsReport = {
  * model and hash.
  */
 export async function buildDefinitionsReport(
-  extracted: Pick<ExtractedData, "definitions">,
+  extracted: Pick<ExtractedData, "definitions" | "parties">,
+  tree: DocumentTree,
 ): Promise<DefinitionsReport> {
   const defs = extracted.definitions;
   const byTerm = new Map<string, typeof defs.entries>();
@@ -94,9 +97,13 @@ export async function buildDefinitionsReport(
     defined.push({ term, defined_at: entry.defined_at, use_count: entry.used_at.length });
   }
 
-  const undefined_used: DefinitionsReport["undefined_used"] = defs.undefined_capitalized.map(
-    (u) => ({ term: u.term, use_count: u.positions.length, positions: u.positions }),
-  );
+  // The same list STRUCT-006 reports — its exemptions (a named person, a
+  // public or statutory office, a job title, the document's own name, a
+  // document whose definitions live in a parent) are not the rule's alone.
+  const undefined_used: DefinitionsReport["undefined_used"] = undefinedTermCandidates({
+    tree,
+    extracted,
+  }).map((u) => ({ term: u.term, use_count: u.positions.length, positions: u.positions }));
 
   const byTermName = <T extends { term: string }>(arr: T[]): T[] =>
     [...arr].sort((a, b) => (a.term < b.term ? -1 : a.term > b.term ? 1 : 0));
@@ -279,7 +286,7 @@ export async function buildBundleDefinitionsReport(
   for (const d of docs) {
     documents.push({
       document: d.source_file_name,
-      report: await buildDefinitionsReport(d.extracted),
+      report: await buildDefinitionsReport(d.extracted, d.tree),
     });
   }
   const cross: BundleDefinitionsReport["cross_document_redefinitions"] = [];

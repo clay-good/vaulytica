@@ -88,7 +88,7 @@ describe("every artifact a user receives, over the clean documents", () => {
       const r = await analyzeText(text, file);
       const register = await buildCriticalDates(extracted, ingest.tree);
       const checklist = buildClosingChecklist(r.run);
-      const definitions = await buildDefinitionsReport(extracted);
+      const definitions = await buildDefinitionsReport(extracted, ingest.tree);
 
       const artifacts: ReadonlyArray<[string, string]> = [
         ["fix list (md)", buildFixListMarkdown(r.run, extracted)],
