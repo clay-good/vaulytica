@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.739.0] — 2026-09-24
+
+### Fixed
+- **PERS-006 told a severance agreement to add carve-outs it already had.**
+  Its explanation says a non-disparagement clause *without* carve-outs for
+  protected speech and agency reports is indefensible, and its
+  recommendation says to add them — but the rule only checked that a
+  non-disparagement clause existed. A clean separation agreement whose clause
+  carves out "any statement protected by … Section 7 of the National Labor
+  Relations Act", beside a Protected Rights section preserving EEOC, NLRB and
+  SEC charges, drew the warning anyway. The rule now reads all four
+  carve-outs across the whole document (NLRA activity, agency reports,
+  truthful testimony, statements required by law), states which it found,
+  asks only for the missing ones, and drops to info when both the NLRA and
+  agency carve-outs — the two its McLaren Macomb / Rule 21F-17 explanation
+  turns on — are present. On the one specimen it reaches, it stays a warning
+  (no NLRA carve-out) and now asks for two carve-outs rather than four.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.738.0] — 2026-09-24
 
 ### Fixed

@@ -46,3 +46,34 @@ describe("PERS-006 — non-disparagement clause present", () => {
     }
   });
 });
+
+/**
+ * The explanation says a clause WITHOUT carve-outs is indefensible, and the
+ * recommendation says to add them — and the rule never looked for them. A
+ * clean severance agreement whose clause carves out "any statement protected
+ * by … Section 7 of the National Labor Relations Act", beside a Protected
+ * Rights section preserving EEOC, NLRB and SEC charges, was told at `warning`
+ * to add both. A rule that states a precondition must test it.
+ */
+describe("PERS-006 — reads the carve-outs it recommends", () => {
+  const NONDISP =
+    "Employee shall not make any false and disparaging statement about the Company's products or services.";
+  const NLRA =
+    "This Section does not restrict any statement protected by Section 7 of the National Labor Relations Act.";
+  const AGENCY =
+    "Nothing in this Agreement prevents Employee from filing a charge with, or participating in an investigation by, the Equal Employment Opportunity Commission, the National Labor Relations Board, or the Securities and Exchange Commission.";
+
+  it("is info, naming what is present, when the NLRA and agency carve-outs are both there", () => {
+    const f = PERS_006.check(buildContext(["Separation Agreement", `${NONDISP} ${NLRA}`, AGENCY]));
+    expect(f?.severity).toBe("info");
+    expect(f?.title).toBe("Non-disparagement clause present, with protected-activity carve-outs");
+    expect(f?.recommendation).not.toMatch(/NLRA-protected/);
+  });
+
+  it("stays a warning and names the missing carve-out when only one is there", () => {
+    const f = PERS_006.check(buildContext(["Separation Agreement", `${NONDISP} ${NLRA}`]));
+    expect(f?.severity).toBe("warning");
+    expect(f?.recommendation).toMatch(/agency/i);
+    expect(f?.recommendation).not.toMatch(/NLRA-protected/);
+  });
+});
