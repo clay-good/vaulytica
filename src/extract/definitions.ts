@@ -172,6 +172,39 @@ const DEFINITION_ALIASED =
  * "Pro Rata Share")" how a stockholders agreement does. Neither was read, so
  * an LLC agreement was told "Percentage Interests" is used but never defined.
  */
+/**
+ * The phrase a parenthetical definition names: the text before the "(", back
+ * to where that phrase begins.
+ *
+ * A fixed 160-character window cut the definitions table mid-word and ran
+ * back through the previous party's clause: an Australian agreement's
+ * "Supplier" was defined as "es Agreement (this "Agreement") is made on 3
+ * August 2026 between Coastline Analytics …", and its "Customer" as the
+ * Supplier's address followed by the Customer's name. The phrase now starts
+ * after the nearest preceding sentence break, closing parenthesis, "between"
+ * or colon — and when none is in reach, at a word boundary marked "…".
+ */
+function namedPhraseBefore(text: string, index: number): string {
+  const from = Math.max(0, index - 200);
+  const window = text.slice(from, index);
+  let cut = -1;
+  // Only a parenthesis that closes a DEFINITION ends the previous phrase — a
+  // registration number, "(ABN 12 345 678 901)", sits inside the name.
+  for (const re of [/[.;:]\s/g, /["”'’]\s*\)/g, /\bbetween\s/gi, /\bamong\s/gi]) {
+    let b: RegExpExecArray | null;
+    while ((b = re.exec(window)) !== null) cut = Math.max(cut, b.index + b[0].length);
+  }
+  let phrase = cut >= 0 ? window.slice(cut) : window;
+  // A phrase that starts after a party's closing parenthesis opens on the
+  // conjunction or comma that joined the two parties.
+  phrase = phrase.replace(/^(?:\s*(?:,|and\b|or\b))+\s*/i, "").trim();
+  if (cut < 0 && from > 0) {
+    const firstSpace = phrase.search(/\s/);
+    phrase = `…${firstSpace >= 0 ? phrase.slice(firstSpace).trim() : phrase}`;
+  }
+  return phrase;
+}
+
 const DEFINITION_PARENTHETICAL =
   /\((?:\s*(?:(?:each|collectively|together|individually)\s+(?:such\s+)?[a-z][a-z\s]{0,30}?,|the|this|these|each|an?|its|his|her|their|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|ITS|HIS|HER|THEIR|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C](?:(?:[Tt]he|[Tt]his|[Aa]n?)\s+)?([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
@@ -2273,12 +2306,7 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
     // the nearest clause break. That is what the drafter defined the term to
     // mean, and it keeps the entry's `definition` from swallowing the whole
     // paragraph.
-    const before = text.slice(Math.max(0, m.index - 160), m.index);
-    const definition =
-      before
-        .split(/[.;]\s/)
-        .pop()
-        ?.trim() ?? "";
+    const definition = namedPhraseBefore(text, m.index);
     out.push({
       term,
       definition,
@@ -2295,12 +2323,7 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   DEFINITION_TRAILING_PARENTHETICAL.lastIndex = 0;
   while ((m = DEFINITION_TRAILING_PARENTHETICAL.exec(text)) !== null) {
     const term = m[1]!.trim();
-    const before = text.slice(Math.max(0, m.index - 160), m.index);
-    const definition =
-      before
-        .split(/[.;]\s/)
-        .pop()
-        ?.trim() ?? "";
+    const definition = namedPhraseBefore(text, m.index);
     out.push({
       term,
       definition,
@@ -2321,12 +2344,7 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   ]) {
     pairRe.lastIndex = 0;
     while ((m = pairRe.exec(text)) !== null) {
-      const before = text.slice(Math.max(0, m.index - 160), m.index);
-      const definition =
-        before
-          .split(/[.;]\s/)
-          .pop()
-          ?.trim() ?? "";
+      const definition = namedPhraseBefore(text, m.index);
       for (const g of [m[1]!, m[2]!]) {
         out.push({
           term: g.trim(),

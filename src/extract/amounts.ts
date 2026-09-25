@@ -111,7 +111,13 @@ const COMPOSITE_DOLLAR: Record<string, string> = {
  */
 export const CURRENCY_GLYPHS = "$€£¥₹₩₽";
 
-export const CURRENCY_TOKEN = String.raw`\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[${CURRENCY_GLYPHS}]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
+// The ISO code SPACED from the dollar sign — "AUD $5,000,000", "NZD $250",
+// "CAD $1,200" — is how an Australian or Canadian contract writes its own
+// currency, and the code was not adjacent to the digits, so the bare `$` that
+// followed read the amount as USD: an Australian supplier's AUD $5,000,000
+// insurance minimum was recorded as five million US dollars. Three-letter codes
+// only: "a $500 fee" must never read as A$.
+export const CURRENCY_TOKEN = String.raw`\b(?:USD|CAD|AUD|NZD|HKD|SGD|MXN|BRL)\s\$|\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[${CURRENCY_GLYPHS}]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
 const CUR = CURRENCY_TOKEN;
 // Digit counts are BOUNDED (`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`
@@ -540,6 +546,8 @@ function computeAmount(
 }
 
 function resolveCurrency(symOrCode: string): string {
+  const spaced = /^([A-Za-z]{3})\s\$$/.exec(symOrCode);
+  if (spaced) return spaced[1]!.toUpperCase();
   const upper = symOrCode.toUpperCase();
   if (COMPOSITE_DOLLAR[upper]) return COMPOSITE_DOLLAR[upper]!;
   if (CURRENCY_CODES.has(upper)) return upper;

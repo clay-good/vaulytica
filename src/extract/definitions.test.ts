@@ -2802,3 +2802,21 @@ describe("extractDefinitions — a possessive introduces a parenthetical term", 
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Percentage Interests");
   });
 });
+
+describe("extractDefinitions — the phrase a parenthetical names", () => {
+  it("names each party's own clause, not the one before it", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Services Agreement",
+        'This Services Agreement (this "Agreement") is made on 3 August 2026 between Coastline Analytics Pty Ltd (ABN 51 824 753 556) of Level 12, 60 Martin Place, Sydney NSW 2000 (the "Supplier") and Harbourview Health Group Pty Ltd (ABN 12 345 678 901) of 200 George Street, Sydney NSW 2000 (the "Customer").',
+      ]),
+    );
+    const def = (t: string) => map.entries.find((e) => e.term === t)?.definition;
+    expect(def("Supplier")).toBe(
+      "Coastline Analytics Pty Ltd (ABN 51 824 753 556) of Level 12, 60 Martin Place, Sydney NSW 2000",
+    );
+    expect(def("Customer")).toBe(
+      "Harbourview Health Group Pty Ltd (ABN 12 345 678 901) of 200 George Street, Sydney NSW 2000",
+    );
+  });
+});

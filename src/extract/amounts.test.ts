@@ -361,3 +361,18 @@ describe("wordAmountValue", () => {
     expect(wordAmountValue("")).toBeNull();
   });
 });
+
+describe("extractAmounts — an ISO code spaced from the dollar sign", () => {
+  it("reads 'AUD $5,000,000' as Australian dollars, and leaves 'a $500 fee' in USD", () => {
+    const got = extractAmounts(
+      buildTree([
+        "Insurance",
+        "The Supplier shall maintain insurance of at least AUD $5,000,000, and a $500 fee is payable.",
+      ]),
+    ).map((a) => [a.currency, a.amount]);
+    expect(got).toEqual([
+      ["AUD", "5000000"],
+      ["USD", "500"],
+    ]);
+  });
+});

@@ -1429,3 +1429,29 @@ describe("extractParties — an LLC agreement among individuals", () => {
     expect(got.some((n) => /agree/i.test(n))).toBe(false);
   });
 });
+
+describe("extractParties — an Australian party clause", () => {
+  it("reads Pty Ltd, a registration number and a floor address, and keeps both roles", () => {
+    const got = extractParties(
+      buildTree([
+        "Services Agreement",
+        'This Services Agreement is made on 3 August 2026 between Coastline Analytics Pty Ltd (ABN 51 824 753 556) of Level 12, 60 Martin Place, Sydney NSW 2000 (the "Supplier") and Harbourview Health Group Pty Ltd (ABN 12 345 678 901) of 200 George Street, Sydney NSW 2000 (the "Customer").',
+      ]),
+    ).map((p) => [p.name, p.role, p.entity_type]);
+    expect(got).toEqual([
+      ["Coastline Analytics Pty Ltd", "Supplier", "Pty Ltd"],
+      ["Harbourview Health Group Pty Ltd", "Customer", "Pty Ltd"],
+    ]);
+  });
+
+  it("merges a P.C. with its bare name", () => {
+    const got = extractParties(
+      buildTree([
+        "Agreement",
+        'This Agreement is made between Larkspur Digital Studio LLC ("Developer") and Fenwick Family Dental, P.C., a Colorado professional corporation ("Client").',
+        "CLIENT: FENWICK FAMILY DENTAL",
+      ]),
+    ).map((p) => p.name.toLowerCase());
+    expect(got.filter((n) => n.startsWith("fenwick family dental"))).toHaveLength(1);
+  });
+});

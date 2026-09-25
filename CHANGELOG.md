@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.787.0] — 2026-09-25
+
+### Fixed
+- **The DOCX appendix of a clean Australian services agreement found four
+  extraction defects.**
+  - **Currency.** "AUD $5,000,000" was recorded as five million US
+    dollars. The ISO code sits apart from the dollar sign, so the bare `$`
+    read the amount. A spaced three-letter code before `$` (AUD, CAD, NZD,
+    HKD, SGD, USD, MXN, BRL) now sets the currency. "A $500 fee" still
+    reads as USD.
+  - **"Pty Ltd".** "Coastline Analytics Pty Ltd" was registered as a party
+    named "Coastline Analytics Pty" of entity type "Ltd". A proprietary
+    company's "Pty"/"Pte" now joins its type, and two Singapore "Pte Ltd"
+    corpus parties get the right type.
+  - **A registration number blocked the role.**
+    - "Harbourview Health Group Pty Ltd (ABN 12 345 678 901) of 200 George
+      Street, Sydney NSW 2000 (the "Customer")" registered a second party
+      with the ABN in its name, and the Customer lost its role.
+    - Registration-number parentheticals (ABN, ACN, NZBN, company or
+      registration number) are now blanked before the party readers run,
+      at the same length so every offset still holds. They are also
+      stripped from a name.
+    - An address opening on "Level", "Suite" or "Unit" is a descriptor,
+      like one that opens on a street number.
+    - "P.C." and "P.A." with their periods, and "Pty Ltd", now merge with
+      the bare name ("Fenwick Family Dental, P.C." had stood beside
+      "Fenwick Family Dental").
+  - **The definitions table named the wrong phrase.** A fixed 160-character
+    window before each parenthetical cut mid-word and ran back into the
+    previous party's clause. "Supplier" was defined as "es Agreement (this
+    "Agreement") is made on 3 August 2026 between…", and "Customer" as the
+    Supplier's address followed by the Customer. One helper,
+    `namedPhraseBefore`, now starts the phrase after the nearest sentence
+    break, closing definition parenthesis, "between" or colon. The three
+    call sites that carried copies of the window use it.
+
+Goldens: 370 rewritten; `golden:churn` reports 0 changed finding sets.
+
 ## [9.786.0] — 2026-09-25
 
 ### Fixed

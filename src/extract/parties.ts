@@ -827,7 +827,13 @@ export function extractParties(tree: DocumentTree): Party[] {
 
   forEachParagraph(tree, (ctx) => {
     allText.push({
-      text: ctx.text,
+      // A company's REGISTRATION NUMBER sits between its name and the rest of
+      // the party clause — "Harbourview Health Group Pty Ltd (ABN 12 345 678
+      // 901) of 200 George Street, Sydney NSW 2000 (the "Customer")" — and
+      // every reader that joins a name to its role stopped at it, so the
+      // Customer lost its role. Blanked to spaces of the same length, so every
+      // offset still points at the document.
+      text: ctx.text.replace(REGISTRATION_NUMBER, (m) => " ".repeat(m.length)),
       pos: (start, end) => ({
         section_id: ctx.section.id,
         paragraph_id: ctx.paragraph.id,
@@ -875,11 +881,18 @@ export function extractParties(tree: DocumentTree): Party[] {
       // party literally named "OPERATING AGREEMENT OF HARBOR POINT VENTURES
       // LLC" — which then stood beside the real party and made RISK-002 read
       // the indemnity as running one way.
-      const name = cleanPartyName(
+      const rawName = cleanPartyName(
         (m[1] ?? "").replace(TITLE_BEFORE_NAME, "").replace(PREAMBLE_LEADIN_BEFORE_NAME, ""),
       );
       const state = m[2];
-      const entity = m[3];
+      // "Pty Ltd" / "Pte. Ltd." is ONE entity type — an Australian proprietary
+      // company, a Singapore private company — and the name run took "Pty"
+      // as the last word of the name: "Coastline Analytics Pty" of type "Ltd".
+      const proprietary = /^(.*?)\s+(Pty|Pte)\.?$/i.exec(rawName);
+      const name =
+        proprietary && /^(?:ltd\.?|limited)$/i.test(m[3] ?? "") ? proprietary[1]! : rawName;
+      const entity =
+        proprietary && name !== rawName ? `${proprietary[2]} ${m[3]!.replace(/\.$/, "")}` : m[3];
       const role = m[4];
       if (!name || isBoilerplateName(name)) continue;
       // "individual" DESCRIBES a person only with its article or comma, or a
@@ -1263,7 +1276,10 @@ function bareEntityName(name: string): string {
   return name
     .toLowerCase()
     .replace(
-      /,?\s+(?:inc|incorporated|llc|l\.l\.c|ltd|limited|corp|corporation|co|company|lp|l\.p|llp|plc|gmbh|pllc|pc|na|n\.a)\.?$/,
+      // "P.C." and "P.A." carry their periods as often as not ("Fenwick
+      // Family Dental, P.C." stood beside "Fenwick Family Dental"), and a
+      // proprietary company's suffix is two words ("Pty Ltd", "Pte. Ltd.").
+      /,?\s+(?:(?:pty|pte)\.?\s+(?:ltd|limited)|inc|incorporated|llc|l\.l\.c|ltd|limited|corp|corporation|co|company|lp|l\.p|llp|plc|gmbh|pllc|pc|p\.c|pa|p\.a|na|n\.a)\.?$/,
       "",
     )
     .trim();
@@ -1656,6 +1672,10 @@ function stripAllCapsRoleLabel(n: string): string {
   return n.slice(m[0].length);
 }
 
+/** "(ABN 12 345 678 901)", "(Company No. 11234567)" — a registration number. */
+const REGISTRATION_NUMBER =
+  /\((?:ABN|ACN|ARBN|NZBN|CRN|UEN|EIN|[Cc]ompany\s+(?:[Nn]o\.?|[Nn]umber|[Rr]egistration)|[Rr]egistration\s+(?:[Nn]o\.?|[Nn]umber)|[Rr]egistered\s+(?:[Nn]o\.?|[Nn]umber))\b[^)]*\)/g;
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // A document's own title is not one of its parties.
@@ -1677,6 +1697,17 @@ function cleanPartyName(raw: string): string {
   // under the street name. Requires the street NUMBER, so "Bank of America" and
   // "University of Chicago" keep their "of".
   n = n.replace(/,?\s+(?:of|residing\s+at|whose\s+address\s+is)\s+\d.*$/i, "");
+  // …and an address that opens on the floor or suite rather than the street
+  // number, as an Australian or UK office address does: "Coastline Analytics
+  // Pty Ltd of Level 12, 60 Martin Place, Sydney NSW 2000".
+  n = n.replace(/,?\s+of\s+(?:Level|Suite|Unit|Floor|Ste\.?|Flat)\s+\d.*$/i, "");
+  // A company's REGISTRATION NUMBER is its descriptor too: "Harbourview
+  // Health Group Pty Ltd (ABN 12 345 678 901)" registered a second party
+  // beside "Harbourview Health Group", because the number blocked the merge.
+  n = n
+    .replace(REGISTRATION_NUMBER, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
   // A person's PROFESSIONAL CREDENTIAL is not part of their name, for the same
   // reason a corporate suffix is not part of an entity's. A signature block
   // writes "By: /s/ Ruth Okonjo" over "Name: Ruth Okonjo, M.D.", and where a
