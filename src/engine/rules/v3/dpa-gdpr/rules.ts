@@ -163,7 +163,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-002",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Duration of processing specified",
     description: "DPA must specify the duration of the processing.",
     citation: "GDPR Art. 28(3) introductory",
@@ -180,6 +180,9 @@ export const DPA_GDPR_RULES: Rule[] = [
       /duration\s+of\s+(the\s+)?processing|processing\s+(shall|will|must)\s+continue\s+for/i,
       /duration\b[^.\n]{0,60}?\bof\s+(?:the\s+)?processing\b/i,
       /processing\s+(?:shall\s+|will\s+)?(?:continue|last)s?\s+for/i,
+      // The duration stated as the PRINCIPAL AGREEMENT'S: "The Processor
+      // processes personal data … for the duration of the Agreement".
+      /\bprocess\w*\b[^.]{0,160}?\bfor\s+the\s+(?:duration|term|life)\s+of\s+the\s+(?:Principal\s+|Main\s+|Services\s+|Master\s+)?(?:Agreement|Contract|services)\b/i,
       // Annex I.B states the duration as a RETENTION period, which is the
       // wording the Decision's own template uses: "Period for which the
       // personal data will be retained".
@@ -670,6 +673,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-022",
+    version: "1.1.0",
     name: "Regular testing of measures",
     description:
       "Art. 32(1)(d) — process for regularly testing, assessing and evaluating effectiveness.",
@@ -683,6 +687,9 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Reference periodic penetration testing, vulnerability scanning, or independent assessments.",
     present_patterns: [
       /(testing.*(measures|controls)|penetration\s+test|vulnerability\s+(scan|assessment)|periodic\s+assess)/i,
+      // Article 32(1)(d)'s own words: "a process for regularly testing,
+      // assessing and evaluating the effectiveness of" the measures.
+      /\b(?:regularly\s+)?(?:testing|assessing|evaluating)\b[^.]{0,60}\beffectiveness\b/i,
     ],
     default_severity: "warning",
   }),

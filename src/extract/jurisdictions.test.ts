@@ -1035,3 +1035,33 @@ describe("extractJurisdictions — an active-voice forum clause set in capitals"
     expect(venues).toEqual(["DELAWARE"]);
   });
 });
+
+/**
+ * A foreign venue is often named by its CITY — "the courts of Stockholm have
+ * exclusive jurisdiction" — and a US venue is already recorded as its state.
+ * A Swedish DPA with Swedish law and Stockholm courts was told its law and
+ * venue "differ", and that Stockholm is a "foreign venue without standard
+ * enforceability treaty". A bare, well-known city is recorded as its country.
+ */
+describe("extractJurisdictions — a foreign venue named by its city", () => {
+  const venue = (t: string) =>
+    extractJurisdictions(buildTree(["Law", t])).find((j) => j.clause_kind === "venue")?.raw_text;
+
+  it.each([
+    ["the courts of Stockholm have exclusive jurisdiction.", "Sweden"],
+    ["The parties submit to the exclusive jurisdiction of the courts of Dublin.", "Ireland"],
+    ["the courts of London have exclusive jurisdiction.", "England and Wales"],
+  ])("%s → %s", (sentence, country) => {
+    expect(venue(`This Agreement is governed by the law of ${country}, and ${sentence}`)).toBe(
+      country,
+    );
+  });
+
+  it("leaves a city that is not on the list as written", () => {
+    expect(
+      venue(
+        "This Agreement is governed by the law of Sweden, and the courts of Uppsala have exclusive jurisdiction.",
+      ),
+    ).toBe("Uppsala");
+  });
+});

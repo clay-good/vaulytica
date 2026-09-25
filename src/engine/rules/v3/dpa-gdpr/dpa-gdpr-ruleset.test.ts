@@ -789,3 +789,25 @@ describe("the clean-document findings — DPA-024 / DPA-006", () => {
     ).toBe(false);
   });
 });
+
+/**
+ * A clean GDPR DPA said it processes "for the duration of the Agreement" and
+ * kept "a process for regularly testing their effectiveness" — Article
+ * 32(1)(d)'s own words — and was told at `critical` that it states no
+ * duration and at `warning` that it has no testing-of-measures clause.
+ */
+describe("DPA-002 / DPA-022 — the DPA's own wording", () => {
+  const rule = (id: string) => DPA_GDPR_RULES.find((r) => r.id === id)!;
+  const ctx = {
+    ...buildContext([
+      "Data Processing Agreement",
+      "The Processor processes personal data on behalf of the Controller to provide customer-analytics services under the Agreement, for the duration of the Agreement.",
+      "The Processor shall implement technical and organisational measures appropriate to the risk, including encryption and a process for regularly testing their effectiveness.",
+    ]),
+    playbook: DPA_PLAYBOOK,
+  };
+
+  it.each(["DPA-002", "DPA-022"])("%s reads the clause", (id) => {
+    expect(rule(id).check(ctx), id).toBeNull();
+  });
+});

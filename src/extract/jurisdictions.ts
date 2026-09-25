@@ -415,6 +415,49 @@ const VENUE_CONSENT = new RegExp(
   "gi",
 );
 /**
+ * Major foreign venue cities → the jurisdiction as a governing-law clause names
+ * it. Deliberately a short list of the seats a contract actually chooses; a
+ * city not on it is recorded as written, never guessed.
+ */
+const FOREIGN_VENUE_CITY: Readonly<Record<string, string>> = {
+  london: "England and Wales",
+  manchester: "England and Wales",
+  edinburgh: "Scotland",
+  glasgow: "Scotland",
+  belfast: "Northern Ireland",
+  dublin: "Ireland",
+  paris: "France",
+  berlin: "Germany",
+  frankfurt: "Germany",
+  munich: "Germany",
+  hamburg: "Germany",
+  amsterdam: "Netherlands",
+  "the hague": "Netherlands",
+  rotterdam: "Netherlands",
+  brussels: "Belgium",
+  luxembourg: "Luxembourg",
+  zurich: "Switzerland",
+  zürich: "Switzerland",
+  geneva: "Switzerland",
+  vienna: "Austria",
+  stockholm: "Sweden",
+  copenhagen: "Denmark",
+  oslo: "Norway",
+  helsinki: "Finland",
+  madrid: "Spain",
+  barcelona: "Spain",
+  milan: "Italy",
+  rome: "Italy",
+  lisbon: "Portugal",
+  warsaw: "Poland",
+  prague: "Czech Republic",
+  tokyo: "Japan",
+  seoul: "South Korea",
+  "tel aviv": "Israel",
+  dubai: "United Arab Emirates",
+};
+
+/**
  * The ACTIVE-voice forum clause, which is how consumer terms are written: "You
  * may bring any claim in small claims court or in the state or federal courts
  * located in King County, Washington". `VENUE_RESOLVED_IN` needs the passive
@@ -721,7 +764,15 @@ export function extractJurisdictions(
       const normalizedCapture = stateOfTail?.[1] ? stateOfTail[1].trim() : place;
       const end = ext.end;
       const jurisdiction = JURISDICTION_AFTER_LOCALITY.exec(ctx.text.slice(end))?.[1];
-      const raw = jurisdiction ? jurisdiction.replace(/\s+/g, " ") : normalizedCapture;
+      // A foreign venue named by its CITY is recorded as its country, the way
+      // a US locality is recorded as its state: a Swedish DPA's "the courts of
+      // Stockholm" was told it "differs" from Swedish law and has no treaty.
+      const cityCountry = jurisdiction
+        ? undefined
+        : FOREIGN_VENUE_CITY[normalizedCapture.toLowerCase().normalize("NFC")];
+      const raw = jurisdiction
+        ? jurisdiction.replace(/\s+/g, " ")
+        : (cityCountry ?? normalizedCapture);
       const key = `${m.index}:${raw.toLowerCase()}`;
       if (seenVenue.has(key)) return;
       seenVenue.add(key);

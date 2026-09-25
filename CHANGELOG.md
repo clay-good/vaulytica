@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.765.0] — 2026-09-25
+
+### Fixed
+A clean GDPR controller-processor DPA (Swedish controller, English
+processor) drew 3 criticals and 20 warnings; four of them were false.
+
+- **"Governing law (Sweden) and venue (Stockholm) differ"**, and Stockholm
+  called a "foreign venue without standard enforceability treaty". A US
+  venue has always been recorded as its state; a foreign venue named by its
+  city was recorded as the bare city, so it "differed" from its own
+  country's law. A short list of the seats contracts actually choose
+  (London, Dublin, Paris, Frankfurt, Amsterdam, Zurich, Stockholm, Tokyo, …)
+  is now recorded as the jurisdiction a governing-law clause names; a city
+  not on the list stays as written, never guessed.
+- **DPA-002 (critical): "Duration of processing not specified"** — the
+  processing ran "for the duration of the Agreement"; the patterns wanted
+  "duration of the processing".
+- **DPA-022: "Testing-of-measures clause missing"** — "a process for
+  regularly testing their effectiveness" is Article 32(1)(d)'s own wording.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.764.0] — 2026-09-25
 
 ### Fixed
