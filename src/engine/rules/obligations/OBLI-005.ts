@@ -99,6 +99,17 @@ const INSTRUMENT_SUBJECT = new RegExp(
 const STATUS_ACTION =
   /^be\s+(?:an?\s+)?(?:eligible|entitled|enforceable|protectable|valid|available|possible|adequate|sufficient)\b/i;
 
+/**
+ * An instrument that "may not be offered, sold or transferred" is restricted,
+ * not describing its own scope. A SAFE's securities legend — "THIS INSTRUMENT
+ * AND ANY SECURITIES ISSUABLE PURSUANT HERETO … MAY NOT BE OFFERED, SOLD, OR
+ * OTHERWISE TRANSFERRED" — is the holder's transfer restriction, and once the
+ * ledger named its whole subject the instrument-subject filter above dropped
+ * it as though it read "this Section shall not apply".
+ */
+const TRANSFER_RESTRICTION =
+  /^be\s+(?:offered|sold|resold|transferred|assigned|pledged|hypothecated|encumbered)\b/i;
+
 /** Up to 120 characters of a clause, cut at a word, marked when cut. */
 function clauseSnippet(raw: string): string {
   const text = raw.trim();
@@ -109,7 +120,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",
@@ -120,7 +131,7 @@ export const rule: Rule = {
     const negs = ctx.extracted.obligations.filter(
       (o) =>
         (NEG_MODAL.test(o.modal) || NEG_ACTION.test(o.action) || NEG_PHRASE.test(o.action)) &&
-        !INSTRUMENT_SUBJECT.test(o.obligor.trim()) &&
+        (!INSTRUMENT_SUBJECT.test(o.obligor.trim()) || TRANSFER_RESTRICTION.test(o.action)) &&
         !STATUS_ACTION.test(o.action),
     );
     if (negs.length === 0) return null;

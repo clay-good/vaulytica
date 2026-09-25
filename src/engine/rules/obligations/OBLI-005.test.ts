@@ -130,3 +130,24 @@ describe("OBLI-005 — 'may not be an adequate remedy' states a fact about a rem
     ).toBeNull();
   });
 });
+
+describe("OBLI-005 — a securities legend's transfer restriction (v1.5.0)", () => {
+  it("lists 'THIS INSTRUMENT … MAY NOT BE OFFERED, SOLD, OR OTHERWISE TRANSFERRED'", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Legend",
+          "THIS INSTRUMENT AND ANY SECURITIES ISSUABLE PURSUANT HERETO HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933, AND MAY NOT BE OFFERED, SOLD, OR OTHERWISE TRANSFERRED EXCEPT PURSUANT TO AN EFFECTIVE REGISTRATION STATEMENT.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+
+  it("still leaves out a provision describing its own scope", () => {
+    expect(
+      OBLI_005.check(
+        buildContext(["Limitation", "This Section shall not apply to claims of fraud."]),
+      ),
+    ).toBeNull();
+  });
+});

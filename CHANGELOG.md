@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.773.0] — 2026-09-25
+
+### Fixed
+- **The obligations ledger cut the head off a seven-word subject.** When no
+  party could be named, the last-resort obligor was the subject's last six
+  words. "Any action arising out of this Agreement shall be brought …" became
+  "action arising out of this Agreement" (26 rows). "Neither party's
+  aggregate liability …" lost its "neither". "The number of directors
+  constituting the whole Board" became "constituting the whole Board of
+  Directors". A subject that is a single noun phrase of up to ten words is
+  now kept whole. That means it:
+  - opens on a determiner or a capital;
+  - has no comma or clause verb;
+  - is not a fronted phrase that lost its comma ("At the end of the
+    engagement we");
+  - has no relative clause, no section number, and no trailing "and".
+
+  75 corpus rows change: 72 read correctly and 3 stay fragments.
+- **OBLI-005 dropped a SAFE's transfer restriction.** With its whole
+  subject named, the securities legend — "THIS INSTRUMENT AND ANY
+  SECURITIES ISSUABLE PURSUANT HERETO … MAY NOT BE OFFERED, SOLD, OR
+  OTHERWISE TRANSFERRED" — started matching the filter for a provision that
+  describes its own scope ("this Section shall not apply"). An instrument
+  that may not be offered, sold, transferred, assigned or pledged is now
+  kept as the restriction it is. `specimen-regression` caught this.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.772.0] — 2026-09-25
 
 ### Fixed

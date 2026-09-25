@@ -1342,3 +1342,27 @@ describe("extractObligations — 'at will' is not the modal", () => {
     expect(got.some((o) => o.modal.toLowerCase() === "will")).toBe(false);
   });
 });
+
+describe("extractObligations — a whole noun phrase keeps its head", () => {
+  it("names 'Any action arising out of this Agreement', not 'action arising out of …'", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Venue",
+        "Any action arising out of this Agreement shall be brought in the state courts located in Denver County, Colorado.",
+      ]),
+      [],
+    );
+    expect(o!.obligor).toBe("Any action arising out of this Agreement");
+  });
+
+  it("does not keep a fronted phrase that lost its comma", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Files",
+        "At the end of the engagement we will return your original documents to you.",
+      ]),
+      [],
+    );
+    expect(o!.obligor).not.toMatch(/^At the end/);
+  });
+});

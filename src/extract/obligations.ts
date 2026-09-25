@@ -1001,6 +1001,28 @@ function resolveObligorInner(
   if (relative) return relative[1]!;
   const words = trimmed.split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
+  // A WHOLE NOUN PHRASE is kept whole. Six trailing words cut the head off a
+  // seven-word subject: "Any action arising out of this Agreement shall be
+  // brought …" became "action arising out of this Agreement", and "Ad valorem
+  // taxes for the current year" became "valorem taxes …". A subject that
+  // opens on a determiner or a capital and carries no comma, semicolon or
+  // clause verb is one phrase up to ten words.
+  if (
+    words.length <= 10 &&
+    /^(?:[A-Z]|(?:the|any|each|all|no|every|such|either|neither|both|a|an)\s)/.test(trimmed) &&
+    !/[,;:]/.test(trimmed) &&
+    !CLAUSE_VERB.test(trimmed) &&
+    // Not a fronted phrase missing its comma ("At the end of the engagement
+    // we", "As a Tier 2 issuer the Company"), a relative clause, a section
+    // number, or a subject that stops on a coordinator.
+    !FRONTED_ADVERBIAL.test(trimmed) &&
+    !/^(?:as|if|by)\b/i.test(trimmed) &&
+    !/\b(?:that|which|who|whom)\b/i.test(trimmed) &&
+    !/\b\d+\.\d+\b/.test(trimmed) &&
+    !/\b(?:and|or)$/i.test(trimmed)
+  ) {
+    return trimmed;
+  }
   return words.slice(Math.max(0, words.length - 6)).join(" ");
 }
 
