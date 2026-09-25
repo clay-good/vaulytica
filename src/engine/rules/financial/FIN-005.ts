@@ -40,6 +40,10 @@ const PAYMENT_TERMS = new RegExp(
     // way, and each was told it references fees and states no payment term.
     `\\b(?:repayable|payable|amorti[sz](?:ed|able)|due)\\s+in\\s+[\\s\\w,()-]{0,40}?\\b(?:monthly|quarterly|annual|equal|consecutive|successive)\\s+instal?lments?\\b`,
     `\\b(?:monthly|quarterly|annual)\\s+instal?lments?\\s+of\\s+(?:principal|interest|rent|[${CURRENCY_GLYPHS}])`,
+    // The verb, not the adjective: "Borrower shall REPAY the Loan with
+    // interest in thirty-six (36) equal monthly PAYMENTS" — a family loan was
+    // told it states no payment term.
+    `\\b(?:shall|will|must|agrees\\s+to)\\s+(?:re)?pay\\b[^.;]{0,80}?\\bin\\s+[\\s\\w,()-]{0,40}?\\b(?:monthly|quarterly|annual|weekly|equal|consecutive)\\s+(?:instal?lments?|payments?)\\b`,
     // A LEASE states its payment term as a RECURRING DUE DATE, and states it
     // in the ACTIVE voice: "Lessee shall pay rent of $4,180.00 per month in
     // advance on the first day of each month". The due-date branch below leads
@@ -207,7 +211,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.5.3",
+  version: "1.6.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

@@ -230,7 +230,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.3"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -814,7 +814,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.14.0"
+      "rule_version": "1.15.0"
     },
     {
       "elapsed_ms": 0,
@@ -1005,7 +1005,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.5.3",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1137,7 +1137,7 @@
       "id": "TERM-002-s1-0",
       "recommendation": "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
       "rule_id": "TERM-002",
-      "rule_version": "1.14.0",
+      "rule_version": "1.15.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1276,11 +1276,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "450c5a0503095be145f77190d35989acea93746e24afb162e456983c2a85e3ce",
+  "result_hash": "08acb06df7eda7ee0b54dd8a7fc8ea7bd7543c91427f7ce7fd1f5919366f75bc",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.763.0"
+  "version": "9.764.0"
 }

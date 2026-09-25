@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.764.0] — 2026-09-25
+
+### Fixed
+A clean loan between two individuals (a mother lending her son $30,000 at
+the applicable federal rate) drew 3 criticals and 6 warnings from the
+commercial loan playbook; it now draws 0 and 1.
+
+- **BNK-008 (critical): "interest rate missing"** — the rate was "four and
+  one-half percent (4.5%) per year", and only "per annum" was read.
+- **BNK-012 (critical): "events of default missing"** — a plain default
+  clause ("If Borrower fails to make a payment within thirty (30) days after
+  it is due, Lender may declare the entire unpaid balance immediately due")
+  has no "Event of Default", "cure period" or "insolvency"; the
+  default-and-acceleration sentence now counts. **TERM-002** reads the same
+  sentence as the loan's for-cause path.
+- **BNK-009 (critical) and BNK-011 (warning): affirmative and financial
+  covenants** presuppose a business borrower (maintain existence, deliver
+  financial statements, leverage ratios). They now apply where the parties
+  include an entity or the document shows a business borrower (financial
+  statements, EBITDA, "its business") — so a covenant-lite corporate loan is
+  still asked, and a family loan is not.
+- **FIN-005: "no payment term"** — "Borrower shall repay the Loan with
+  interest in thirty-six (36) equal monthly payments" (the verb, where only
+  "repayable in … installments" was read).
+- **The loan playbook asked for a limitation of liability and an
+  effect-of-termination clause.** Neither is a loan term; it now skips
+  RISK-005 and TERM-005, as the promissory-note playbook already does. Five
+  loan goldens drop the two.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+5 changed finding sets (the two skipped checks).
+
 ## [9.763.0] — 2026-09-25
 
 ### Fixed

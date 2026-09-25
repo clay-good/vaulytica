@@ -422,3 +422,16 @@ describe("TERM-002 — a purchase agreement's default-and-remedy clause", () => 
     ).not.toBeNull();
   });
 });
+
+describe("TERM-002 — a loan's plain default-and-acceleration clause", () => {
+  it("reads 'If Borrower fails to make a payment …, Lender may declare the entire unpaid balance immediately due'", () => {
+    expect(
+      TERM_002.check(
+        buildContext([
+          "Default",
+          "If Borrower fails to make a payment within thirty (30) days after it is due, Lender may declare the entire unpaid balance immediately due by written notice to Borrower.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

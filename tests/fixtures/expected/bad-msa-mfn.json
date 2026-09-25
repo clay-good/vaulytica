@@ -226,7 +226,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.3"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -807,7 +807,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.14.0"
+      "rule_version": "1.15.0"
     },
     {
       "elapsed_ms": 0,
@@ -874,7 +874,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.5.3",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -963,7 +963,7 @@
       "id": "TERM-002-s1-0",
       "recommendation": "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
       "rule_id": "TERM-002",
-      "rule_version": "1.14.0",
+      "rule_version": "1.15.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "668a3c8f377af7bc8e7ff19129d69c4f7e7350fdc568f128f9c542a71508655f",
+  "result_hash": "ad59155d9dcc4cf4fc8849933df49ed112919e63a94f98dd2e616c1af00dcd14",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.763.0"
+  "version": "9.764.0"
 }

@@ -36,6 +36,20 @@ import {
   bnkPractice,
 } from "./_helpers.js";
 
+/**
+ * An ENTITY among the parties — the premise of the affirmative covenants
+ * (maintain existence, deliver financial statements) and the financial
+ * covenants (leverage, coverage) a commercial facility carries. A loan between
+ * two individuals has neither, and a mother's $30,000 loan to her son drew
+ * both at `critical` / `warning`.
+ */
+/** A borrower that runs a business, whether or not the document names its form. */
+const BUSINESS_BORROWER =
+  /\bfinancial\s+statements\b|\bEBITDA\b|\b(?:its|the\s+Borrower['’]s)\s+business\b/i;
+
+const ENTITY_PARTY =
+  /\b(?:L\.?L\.?C|Inc|Corp(?:oration)?|Company|Co|L\.?L\.?P|L\.?P|Ltd|Limited|GmbH|PLC|N\.A|Bank|Credit\s+Union|Trust\s+Company|Partnership|Association)\b/;
+
 const CATEGORY = "banking";
 
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
@@ -257,7 +271,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-008",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Interest rate / margin / floor",
     description:
       "Loan agreement must state the interest rate / margin / floor (SOFR / prime / fixed).",
@@ -278,11 +292,12 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       // "fixed", so recognize it: "fixed rate of eight percent (8.0%) per
       // annum" / "interest at 8% per annum".
       /fixed\s+(?:interest\s+)?rate/i,
-      /(?:percent|%|interest\s+rate|rate\s+of)[^.]{0,25}?per\s+annum/i,
+      /(?:percent|%|interest\s+rate|rate\s+of)[^.]{0,25}?(?:per\s+(?:annum|year)|a\s+year|annually)/i,
     ],
   }),
   presence({
     id: "BNK-009",
+    version: "1.1.0",
     name: "Affirmative covenants",
     description:
       "Loan agreement must include affirmative covenants (financials, compliance, books-and-records).",
@@ -298,6 +313,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       "Affirmative covenants (maintain existence, comply with law, deliver financials, notify of defaults) protect the lender's information rights.",
     recommendation:
       "Add 'Affirmative Covenants' covering existence, compliance with law, taxes, financial statements, books-and-records, and notice of defaults.",
+    applicable_if: [ENTITY_PARTY, BUSINESS_BORROWER],
     present_patterns: [
       /affirmative\s+covenants?/i,
       /(financial\s+statements?|books\s+and\s+records|maintenance)/i,
@@ -327,6 +343,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-011",
+    version: "1.1.0",
     name: "Financial covenants",
     description:
       "Most loan agreements include financial covenants (leverage, interest coverage, fixed-charge coverage, minimum liquidity).",
@@ -342,6 +359,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       "Financial covenants are the early-warning system; covenant-lite deals are common but should be intentional, not accidental.",
     recommendation:
       "Add 'Financial Covenants' (leverage ratio, interest coverage, fixed-charge coverage, minimum liquidity) — or explicitly note 'covenant-lite' design.",
+    applicable_if: [ENTITY_PARTY, BUSINESS_BORROWER],
     present_patterns: [
       /financial\s+covenants?/i,
       // The four original metrics missed the most common ratio of all — the
@@ -356,6 +374,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-012",
+    version: "1.1.0",
     name: "Events of default + cross-default + cure periods",
     description:
       "Loan agreement must enumerate events of default with cure periods and cross-default to material indebtedness.",
@@ -375,6 +394,10 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       /events?\s+of\s+default/i,
       /(cross.?default|cure\s+period|grace\s+period)/i,
       /(insolvenc|bankruptc)/i,
+      // A plain default clause accelerates without the term of art: "If
+      // Borrower fails to make a payment within thirty (30) days after it is
+      // due, Lender may declare the entire unpaid balance immediately due".
+      /\b(?:if|upon)\b[^.]{0,160}\b(?:fails?\s+to\s+(?:make|pay)|defaults?)\b[^.]{0,160}\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\b/i,
     ],
   }),
   presence({

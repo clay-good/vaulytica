@@ -11254,6 +11254,12 @@
     "rule_overrides": {
       "IPDATA-001": {
         "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
       }
     },
     "balanced_defaults": [],

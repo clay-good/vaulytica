@@ -584,3 +584,19 @@ describe("FIN-005 — payment due at the closing", () => {
     expect(finding!.title).toBe("No payment-term clause detected");
   });
 });
+
+describe("FIN-005 — 'shall repay … in N equal monthly payments'", () => {
+  it("reads an amortizing loan's repayment schedule as a payment term", async () => {
+    const { rule } = await import("./FIN-005.js");
+    const f = rule.check(
+      buildContext([
+        "Loan Agreement",
+        "Lender agrees to lend Borrower Thirty Thousand Dollars ($30,000.00) (the Loan). Lender will transfer the Loan to Borrower's bank account within five (5) days after both parties sign this Agreement.",
+        "The unpaid principal will bear interest at four and one-half percent (4.5%) per year.",
+        "Borrower shall repay the Loan with interest in thirty-six (36) equal monthly payments of $892.42 each, beginning on May 1, 2026 and continuing on the first day of each month until April 1, 2029.",
+        "If a payment is more than fifteen (15) days late, Borrower will pay a late charge of $25.00.",
+      ]),
+    );
+    expect(f?.title ?? "").not.toMatch(/No payment-term clause/);
+  });
+});

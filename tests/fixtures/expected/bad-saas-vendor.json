@@ -225,7 +225,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.5.3"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -815,7 +815,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.14.0"
+      "rule_version": "1.15.0"
     },
     {
       "elapsed_ms": 0,
@@ -1095,7 +1095,7 @@
       "id": "TERM-002-s1-0",
       "recommendation": "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
       "rule_id": "TERM-002",
-      "rule_version": "1.14.0",
+      "rule_version": "1.15.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1251,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "d15dce56d6cdc7c8a773615b3b747bdc6407f84d6e9c5538b63207015f41b4b5",
+  "result_hash": "44ba47c6108c6b563676e744cb8eba3a67f375d5d463fc692a17c5bcbb9a600c",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.763.0"
+  "version": "9.764.0"
 }

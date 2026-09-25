@@ -487,3 +487,43 @@ describe("BNK-024 — a scope bounded by time", () => {
     ).toBe(true);
   });
 });
+
+/**
+ * A loan between two INDIVIDUALS — a mother lending her son $30,000 at the
+ * applicable federal rate — drew three criticals and six warnings from the
+ * credit-agreement playbook. Its interest is "four and one-half percent
+ * (4.5%) per year" (only "per annum" was read), its default clause
+ * accelerates without the words "Event of Default", and the affirmative and
+ * financial covenants a commercial facility carries presuppose a borrower that
+ * is an ENTITY (maintain existence, deliver financials, leverage ratios).
+ */
+describe("banking playbook — a loan between individuals", () => {
+  const rule = (id: string) => BANKING_RULES.find((r) => r.id === id)!;
+  const PB: Playbook = { id: "loan-agreement", version: "1.0.0" };
+  const FAMILY = {
+    ...buildContext([
+      "Loan Agreement",
+      'This Loan Agreement is made between Margaret L. Toussaint ("Lender") and her son, Julien R. Toussaint ("Borrower").',
+      "The unpaid principal will bear interest at four and one-half percent (4.5%) per year.",
+      "Borrower shall repay the Loan with interest in thirty-six (36) equal monthly payments of $892.42 each, beginning on May 1, 2026.",
+      "If Borrower fails to make a payment within thirty (30) days after it is due, Lender may declare the entire unpaid balance immediately due by written notice to Borrower.",
+    ]),
+    playbook: PB,
+  };
+
+  it.each(["BNK-008", "BNK-009", "BNK-011", "BNK-012"])("%s is silent", (id) => {
+    expect(rule(id).check(FAMILY), id).toBeNull();
+  });
+
+  it("still asks a corporate borrower for affirmative and financial covenants", () => {
+    const corp = {
+      ...buildContext([
+        "Credit Agreement",
+        'This Credit Agreement is made between First Harbor Bank, N.A. ("Lender") and Kestrel Foods, Inc., a Delaware corporation ("Borrower").',
+      ]),
+      playbook: PB,
+    };
+    expect(rule("BNK-009").check(corp)).not.toBeNull();
+    expect(rule("BNK-011").check(corp)).not.toBeNull();
+  });
+});

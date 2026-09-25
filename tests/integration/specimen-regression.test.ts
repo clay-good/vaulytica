@@ -1475,15 +1475,16 @@ export const EXPECTED: Record<string, Expectation> = {
   },
 
   // A syndicated credit agreement: venue laid in a borough inside a city.
+  // RISK-005 and TERM-005 left this row in 9.764.0: the loan playbook skips a
+  // limitation of liability and an effect-of-termination clause, as the
+  // promissory-note playbook does — neither is a loan term.
   "loan-agreement.txt": {
     playbook: "loan-agreement",
     findings: [
       "RISK-001",
-      "RISK-005",
       "RISK-016",
       "STRUCT-006",
       "STRUCT-018",
-      "TERM-005",
       "CHOICE-008",
       "FIN-009",
       "OBLI-003",

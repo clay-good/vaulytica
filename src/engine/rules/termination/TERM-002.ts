@@ -164,14 +164,19 @@ const FOR_CAUSE = new RegExp(
     "|" +
     String.raw`\bEvents?\s+of\s+Default\b[\s\S]{0,600}?\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\s+and\s+payable\b` +
     "|" +
-    String.raw`\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\s+and\s+payable\b[\s\S]{0,600}?\bEvents?\s+of\s+Default\b`,
+    String.raw`\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\s+and\s+payable\b[\s\S]{0,600}?\bEvents?\s+of\s+Default\b` +
+    // A plain default-and-acceleration sentence without the term of art: "If
+    // Borrower fails to make a payment within thirty (30) days after it is
+    // due, Lender may declare the entire unpaid balance immediately due".
+    "|" +
+    String.raw`\b(?:if|upon)\b[^.]{0,160}\b(?:fails?\s+to\s+(?:make|pay)|defaults?)\b[^.]{0,160}\b(?:declare|declared)\b[^.]{0,120}?\b(?:immediately\s+)?due\b`,
   "i",
 );
 
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.14.0",
+  version: "1.15.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
