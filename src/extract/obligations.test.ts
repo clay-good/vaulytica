@@ -1145,3 +1145,59 @@ describe("extractObligations — a negated shared subject does not carry across 
     expect(got.some((o) => /^Neither/i.test(o))).toBe(false);
   });
 });
+
+describe("extractObligations — an LLC agreement's obligors and carve-outs", () => {
+  const rows = (text: string, parties = extractParties(buildTree(["Agreement", text]))) =>
+    extractObligations(buildTree(["Agreement", text]), parties);
+
+  it("keeps the whole carve-out list in the qualifier, not in the action", () => {
+    const [o] = rows(
+      "No Manager shall be liable to the Company for any loss arising from an act or omission taken in good faith, except for fraud, gross negligence, willful misconduct, or a knowing violation of law.",
+    );
+    expect(o!.qualifier).toBe(
+      "except for fraud, gross negligence, willful misconduct, or a knowing violation of law",
+    );
+    expect(o!.action).toBe(
+      "be liable to the Company for any loss arising from an act or omission taken in good faith",
+    );
+  });
+
+  it("does not stretch the qualifier over a second predicate", () => {
+    const [o] = rows(
+      "Each party shall promptly return or destroy the other's confidential information, except as retention is required by law, and Sections 3.3 and 7.4 survive.",
+    );
+    expect(o!.qualifier).toBe("except as retention is required by law");
+  });
+
+  it("does not end a sentence at a party's middle initial", () => {
+    const text =
+      "This Agreement is entered into by and among Maya R. Okafor, Daniel Reyes and Priya Natarajan. Maya R. Okafor is designated the partnership representative and shall keep the Members informed of any tax audit.";
+    expect(rows(text).map((o) => o.obligor)).toEqual(["Maya R. Okafor"]);
+  });
+
+  it("reads the subject of a coordinated second clause", () => {
+    const [o] = rows(
+      "Additional contributions may be made only with the approval of Members holding a majority of the Percentage Interests, and Percentage Interests shall be adjusted in proportion to the total contributions made.",
+    );
+    expect(o!.obligor).toBe("Percentage Interests");
+  });
+
+  it("does not read the last item of a list subject as a new clause", () => {
+    const [o] = rows("Every director, officer, and employee shall complete the annual training.");
+    expect(o!.obligor).not.toBe("employee");
+  });
+
+  it("reads the subject before a lexical first verb", () => {
+    const [o] = rows(
+      "Each Manager owes the Company the duties of loyalty and care under the Act and applicable law, and shall discharge those duties in good faith.",
+    );
+    expect(o!.obligor).toBe("Each Manager");
+  });
+
+  it("names the head of a subject a relative clause modifies", () => {
+    const [o] = rows(
+      "A Member who receives a bona fide offer for its interest shall first offer that interest to the other Members on the same terms.",
+    );
+    expect(o!.obligor).toBe("A Member");
+  });
+});

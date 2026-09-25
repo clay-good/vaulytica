@@ -28,6 +28,12 @@
     "Membership Interest"
   ],
   "rule_overrides": {
+    "FIN-005": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    },
     "IPDATA-001": {
       "skip": true
     },

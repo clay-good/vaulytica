@@ -1403,3 +1403,29 @@ describe("extractParties — an English company described by its registration", 
     expect(got.some(([n, r]) => /^Kittering Robotics/.test(n!) && r === "Kittering")).toBe(true);
   });
 });
+
+describe("extractParties — an LLC agreement among individuals", () => {
+  it("reads a middle initial inside an 'among' list, and strips a statutory title", () => {
+    const got = extractParties(
+      buildTree([
+        "LIMITED LIABILITY COMPANY AGREEMENT OF HARBORLIGHT DESIGN LLC",
+        'This Limited Liability Company Agreement of Harborlight Design LLC (the "Company") is entered into as of March 1, 2026 by and among Maya R. Okafor, Daniel Reyes and Priya Natarajan (each a "Member").',
+      ]),
+    ).map((p) => p.name);
+    expect(got).toEqual(
+      expect.arrayContaining(["Maya R. Okafor", "Daniel Reyes", "Priya Natarajan"]),
+    );
+    expect(got.some((n) => /AGREEMENT/i.test(n))).toBe(false);
+    expect(got).not.toContain("Maya R");
+  });
+
+  it("still ends an 'among' list at a schedule letter", () => {
+    const got = extractParties(
+      buildTree([
+        "Agreement",
+        "This Agreement is entered into by and among Acme Corp. and the Members listed on Schedule A. The Members agree to the terms below.",
+      ]),
+    ).map((p) => p.name);
+    expect(got.some((n) => /agree/i.test(n))).toBe(false);
+  });
+});

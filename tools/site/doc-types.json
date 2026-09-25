@@ -10036,7 +10036,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 110,
    "companions": [],
    "sources": []
   },
@@ -10197,7 +10197,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 111,
    "companions": [],
    "sources": []
   },

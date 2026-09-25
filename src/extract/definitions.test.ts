@@ -2789,3 +2789,16 @@ describe("extractDefinitions — a Title-Case word may carry a diacritic", () =>
     expect(got).toContain("Étude Services");
   });
 });
+
+describe("extractDefinitions — a possessive introduces a parenthetical term", () => {
+  it('reads (its "Percentage Interest") as a definition, and its plural as a use', () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Contributions",
+        'Each Member holds the percentage interest in the Company set out in the table (its "Percentage Interest"). Distributions are made in proportion to the Percentage Interests, and Percentage Interests are adjusted on each contribution.',
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).toContain("Percentage Interest");
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Percentage Interests");
+  });
+});

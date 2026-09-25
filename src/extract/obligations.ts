@@ -72,7 +72,7 @@ const MODALS = [
 
 /** "S <finite verb> … and" — the subject of an elided second verb phrase is S. */
 const SHARED_SUBJECT =
-  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?\s+and\s*$/i;
+  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should|owes?|holds?|commenced|acknowledges?|agrees?|represents?|retains?|receives?|remains?)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?\s+and\s*$/i;
 
 /** A subject opened by a negative determiner: the negation belongs to the row. */
 const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
@@ -121,16 +121,51 @@ const QUALIFIER_RE = new RegExp(
   "i",
 );
 
+/**
+ * An `except` qualifier whose carve-outs are a LIST runs to the end of the
+ * list, not to its first comma.
+ *
+ * 🚨 "No Manager shall be liable … for any act or omission taken in good
+ * faith, except for fraud, gross negligence, willful misconduct, or a knowing
+ * violation of law" reached the ledger with the qualifier "except for fraud"
+ * and the action "be liable … taken in good faith, gross negligence, willful
+ * misconduct, or a knowing violation of law" — an exculpation that reads as
+ * covering gross negligence, the exact opposite of the clause.
+ *
+ * Extended only when everything after the first carve-out is a comma list that
+ * ends the sentence on "or"/"and" and carries no second predicate: no modal
+ * ("except for fraud, and shall pay the costs"), no finite verb outside a
+ * relative clause ("except as retention is required by law, and Sections 3.3
+ * and 7.4 survive"), no "and that" ("… and that the Company is under no
+ * obligation to register them"), and no lettered list, whose later items are
+ * the duty's own ("shall not (a) name Tenant … except where joinder is
+ * required, (b) terminate the Lease …").
+ */
+const SECOND_PREDICATE =
+  /\b(?:shall|will|must|may)\b|(?<!\b(?:who|which|that)\s)\b(?:is|are|become|becomes|survive|survives|confers?)\b|,\s*(?:and|or)\s+that\b|\(\s*[a-z]{1,3}\s*\)/i;
+const EXCEPT_LIST_TAIL = /^(?:,\s*[^,;]+?)*,?\s+(?:or|and)\s+[^,;]+$/i;
+
+function withExceptListTail(predicate: string, m: RegExpExecArray | null): string | undefined {
+  if (!m) return undefined;
+  const q = m[0];
+  if (!/^except\s/i.test(q)) return q.trim();
+  const rest = predicate.slice(m.index + q.length);
+  if (SECOND_PREDICATE.test(rest)) return q.trim();
+  if (!EXCEPT_LIST_TAIL.test(rest)) return q.trim();
+  return trimEnd(q + rest, /[\s.]/);
+}
+
 export function extractObligations(tree: DocumentTree, parties: Party[]): Obligation[] {
   const partyNames = new Set(parties.map((p) => p.name.toLowerCase()));
   const partyRoles = new Set(parties.flatMap((p) => (p.role ? [p.role.toLowerCase()] : [])));
+  const initialedNames = parties.map((p) => p.name).filter((n) => MIDDLE_INITIAL.test(n));
 
   const out: Obligation[] = [];
   let counter = 0;
   const nextId = (): string => `obli-${++counter}`;
 
   forEachParagraph(tree, (ctx) => {
-    const sentences = splitSentences(ctx.text);
+    const sentences = splitSentences(ctx.text, initialedNames);
     for (const { text: sentence, start } of sentences) {
       // A single sentence can carry more than one obligation when independent
       // clauses are coordinated ("Provider shall deliver …, and Customer shall
@@ -201,7 +236,7 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // this material to keep it out of the obligor, and then discards it.
         const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject);
         const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
-        const qualifier = QUALIFIER_RE.exec(predicate)?.[0]?.trim();
+        const qualifier = withExceptListTail(predicate, QUALIFIER_RE.exec(predicate));
         let action = predicate;
         if (trigger) action = action.replace(trigger, "").trim();
         if (qualifier) action = action.replace(qualifier, "").trim();
@@ -591,7 +626,30 @@ function scopeExclusion(subject: string): string | undefined {
   return excluded;
 }
 
-function splitSentences(text: string): { text: string; start: number }[] {
+/** A party name written with an initial: "Maya R. Okafor", "J. Robert Hale". */
+const MIDDLE_INITIAL = /\b[A-Z]\.\s+[A-Z]/;
+
+/**
+ * Split a paragraph into sentences.
+ *
+ * `initialedNames` are the parties whose names carry an initial. "Maya R.
+ * Okafor is designated the partnership representative … and shall keep the
+ * Members informed" is one sentence, and a period followed by a space and a
+ * capital looks like a boundary — so the duty reached the ledger with the
+ * obligor "Okafor". Reading every "R. Okafor" as a name would merge "under
+ * Schedule A. The Company shall …", so only the names the document itself
+ * gives its parties are protected.
+ */
+function splitSentences(
+  text: string,
+  initialedNames: readonly string[] = [],
+): { text: string; start: number }[] {
+  const inName = new Set<number>();
+  for (const name of initialedNames) {
+    for (let at = text.indexOf(name); at !== -1; at = text.indexOf(name, at + 1)) {
+      for (let k = 0; k < name.length; k++) if (name[k] === ".") inName.add(at + k);
+    }
+  }
   // An O(n) manual scan, byte-for-byte equivalent to the prior
   // `/[^.!?]+[.!?]+/g` (a maximal run of non-terminators followed by ≥1
   // terminator). That global regex is O(n²) on a paragraph with NO `.!?`
@@ -635,6 +693,7 @@ function splitSentences(text: string): { text: string; start: number }[] {
     const c = text[i]!;
     if (c === "!" || c === "?") return true;
     if (c !== ".") return false;
+    if (inName.has(i)) return false;
     if (i >= 2 && /[a-z]/.test(text[i - 1]!) && text[i - 2] === ".") return false;
     let j = i + 1;
     let sawSpace = false;
@@ -736,7 +795,11 @@ function stripFrontedAdverbial(subject: string): string {
  * "that **the** recipient", never "that party".
  */
 const LEADING_SUBORDINATOR =
-  /^(?:that|which|whereby|whereupon)\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those)\s+\S)/i;
+  /^(?:that|which|whereby|whereupon)\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those)\s+\S|(?:it|he|she|they|we|you|neither)\b)/i;
+
+/** A modal, an auxiliary, a copula or a past participle: the mark of a clause. */
+const CLAUSE_VERB =
+  /\b(?:shall|will|must|may|can|is|are|was|were|has|have|had|be|been|does|do|did|[a-z]{3,}ed)\b/i;
 
 function resolveObligor(subject: string, partyNames: Set<string>, partyRoles: Set<string>): string {
   return stripSubordinator(resolveObligorInner(subject, partyNames, partyRoles));
@@ -805,6 +868,35 @@ function resolveObligorInner(
   // repairs do not pay for a concept the data does not support. The remaining
   // 124 are subjects that begin mid-sentence, which is the general fragment
   // problem above, not a sub-shape with its own answer.
+  // A NEW CLAUSE'S SUBJECT after a coordinator: "Additional contributions may
+  // be made only with the approval of Members holding a majority of the
+  // Percentage Interests, and Percentage Interests shall be adjusted" is two
+  // clauses, and the second one's subject is everything after ", and". Only
+  // when the text before the coordinator has a verb of its own — otherwise
+  // the comma is a LIST's ("Every director, officer, and employee shall",
+  // "Any change to the scope, Deliverables, dates, or fees must").
+  const coordinated = /[,;]\s+(?:and|but|or)\s+([^,;]+)$/i.exec(trimmed);
+  if (
+    coordinated &&
+    coordinated[1]!.trim().split(/\s+/).length <= 6 &&
+    // A noun phrase, not an adverbial ("at Closing") or a relative clause
+    // whose own subject is still to come ("any other liability that").
+    !/^(?:at|to|for|in|on|by|with|from|under|upon)\b|\b(?:that|which|who)$/i.test(
+      coordinated[1]!.trim(),
+    ) &&
+    CLAUSE_VERB.test(trimmed.slice(0, coordinated.index))
+  ) {
+    return coordinated[1]!.trim();
+  }
+  // A subject that a RELATIVE CLAUSE modifies names the head noun phrase: "A
+  // Member who receives a bona fide offer for its interest shall first offer
+  // it to the other Members" is owed by a Member, not by "bona fide offer for
+  // its interest".
+  const relative =
+    /^((?:a|an|the|each|any|every|no)\s+(?:[A-Za-z][\w'’-]*\s+){0,2}?[A-Za-z][\w'’-]*)\s+(?:who|whom|whose)\s/i.exec(
+      trimmed,
+    );
+  if (relative) return relative[1]!;
   const words = trimmed.split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
   return words.slice(Math.max(0, words.length - 6)).join(" ");

@@ -462,6 +462,7 @@ const OP_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-020",
+    version: "1.1.0",
     name: "Fiduciary duty waiver / modification (DE LLC Act § 18-1101)",
     description:
       "DE LLC Act § 18-1101(c) allows fiduciary duties to be modified or eliminated but not the implied covenant of good faith and fair dealing. A clause is either expected (waiver) or expected to acknowledge default duties.",
@@ -473,7 +474,15 @@ const OP_AGREEMENT_RULES: Rule[] = [
       "DE LLC Act § 18-1101 lets members tailor fiduciary duties broadly. Without an explicit treatment, default common-law duties apply — investors often want the question answered.",
     recommendation:
       "Add a 'Fiduciary Duties' section either (a) preserving default common-law fiduciary duties or (b) modifying them subject to the implied covenant of good faith and fair dealing.",
-    present_patterns: [/fiduciary\s+(duty|duties)/i, /implied\s+covenant/i],
+    // The duties by NAME are the treatment: "Each Manager owes the Company
+    // the duties of loyalty and care that a manager of a Delaware limited
+    // liability company owes under the Act" preserves the default fiduciary
+    // duties in terms, and never writes the word "fiduciary".
+    present_patterns: [
+      /fiduciary\s+(duty|duties)/i,
+      /implied\s+covenant/i,
+      /\bdut(?:y|ies)\s+of\s+(?:loyalty|care)\b/i,
+    ],
     default_severity: "warning",
   }),
   presence({

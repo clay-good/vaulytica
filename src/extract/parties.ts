@@ -1,6 +1,7 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { Party, DocPosition } from "./types.js";
 import { forEachParagraph, trimEdges, trimEnd } from "./walk.js";
+import { ATTACHMENT_KIND } from "./attachment-kinds.js";
 
 /**
  * Extract contracting parties from the document preamble and signature
@@ -292,6 +293,20 @@ const BETWEEN_RE = new RegExp(
  */
 const AMONG_RE = /\bamong\s+((?:[^.;\n]|\.(?!\s|$)|\.(?=\s+(?:and\s|["“(])))+)(?:[.;]|$)/gi;
 
+/**
+ * The period of a middle initial inside a personal name: "by and among Maya
+ * R. Okafor, Daniel Reyes and Priya Natarajan" ended the list at "Maya R",
+ * so an LLC agreement among three individuals registered one party, named
+ * "Maya R". `BETWEEN_RE` already declines to end a name on a lone capital;
+ * this is the same call for "among". Case-SENSITIVE on purpose (AMONG_RE is
+ * not), and a reference noun is excluded, so "the Members listed on Schedule
+ * A. The Members agree …" still ends the list.
+ */
+const MIDDLE_INITIAL_DOT = new RegExp(
+  String.raw`(?<!\b(?:${ATTACHMENT_KIND}|Section|Article|Class|Series|Part|Tranche)\s[A-Z])(?<=\b[A-Z][a-z]+\s[A-Z])\.(?=\s+[A-Z][a-z])`,
+  "g",
+);
+
 // A member that is nothing but an entity-type suffix — produced when an "among"
 // list separates the suffix from the name with a comma ("Alpha Holdings, L.P.")
 // and `AMONG_SEP` splits on that comma. The name (e.g. "Alpha Holdings") is kept
@@ -348,10 +363,12 @@ const INSTRUMENT =
  * party's name: "OPERATING AGREEMENT OF Harbor Point Ventures LLC", "DEED OF
  * TRUST OF ...". Anchored at the start of the captured name and requiring the
  * "of", so an entity whose name merely contains one of these words is
- * untouched.
+ * untouched. Three words may precede the instrument noun, because Delaware
+ * titles the document by its statute: "LIMITED LIABILITY COMPANY AGREEMENT OF
+ * HARBORLIGHT DESIGN LLC" registered a party named with the whole title.
  */
 const TITLE_BEFORE_NAME = new RegExp(
-  String.raw`^(?:this\s+)?(?:[A-Za-z]+\s+){0,2}${INSTRUMENT}\s+of\s+`,
+  String.raw`^(?:this\s+)?(?:[A-Za-z]+\s+){0,3}${INSTRUMENT}\s+of\s+`,
   "i",
 );
 
@@ -1033,13 +1050,17 @@ export function extractParties(tree: DocumentTree): Party[] {
     // preamble introduces "between". Each list member is registered; entity
     // descriptors and boilerplate fall out in cleanPartyName / isBoilerplateName.
     AMONG_RE.lastIndex = 0;
+    // A middle initial's period is masked (same length, so every index still
+    // points into `text`) before the list is read; see MIDDLE_INITIAL_DOT.
+    const amongText = text.replace(MIDDLE_INITIAL_DOT, "\u2024");
     let amongMatch: RegExpExecArray | null;
-    while ((amongMatch = AMONG_RE.exec(text)) !== null) {
+    while ((amongMatch = AMONG_RE.exec(amongText)) !== null) {
       const lead = text.slice(Math.max(0, amongMatch.index - LEAD_WINDOW), amongMatch.index);
       if (NEGATED_PREAMBLE.test(lead)) continue;
       if (!hasPreambleLead(lead)) continue;
       const listStart = amongMatch.index + amongMatch[0].indexOf(amongMatch[1] ?? "");
-      for (const member of (amongMatch[1] ?? "").split(AMONG_SEP)) {
+      const list = text.slice(listStart, listStart + (amongMatch[1] ?? "").length);
+      for (const member of list.split(AMONG_SEP)) {
         const { name, role } = splitNameAndRole(member);
         if (!name || isBoilerplateName(name) || BARE_ENTITY_SUFFIX.test(name)) continue;
         const at = text.indexOf(member, listStart);

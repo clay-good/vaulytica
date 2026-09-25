@@ -165,9 +165,15 @@ const DEFINITION_ALIASED =
  * so a contingency fee agreement that defines both its parties in its first
  * sentence was reported as having no defined terms at all. The article is not
  * part of the term: the body writes "the Firm", and the term is "Firm".
+ *
+ * A POSSESSIVE determiner introduces a term as readily as an article: "holds
+ * the percentage interest set out in Schedule A (its "Percentage Interest")"
+ * is how an operating agreement defines each member's share, and "(their
+ * "Pro Rata Share")" how a stockholders agreement does. Neither was read, so
+ * an LLC agreement was told "Percentage Interests" is used but never defined.
  */
 const DEFINITION_PARENTHETICAL =
-  /\((?:\s*(?:(?:each|collectively|together|individually)\s+(?:such\s+)?[a-z][a-z\s]{0,30}?,|the|this|these|each|an?|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C](?:(?:[Tt]he|[Tt]his|[Aa]n?)\s+)?([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:(?:each|collectively|together|individually)\s+(?:such\s+)?[a-z][a-z\s]{0,30}?,|the|this|these|each|an?|its|his|her|their|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|ITS|HIS|HER|THEIR|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C](?:(?:[Tt]he|[Tt]his|[Aa]n?)\s+)?([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * The paired collective/individual parenthetical \u2014 the party-definition idiom

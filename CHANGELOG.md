@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.767.0] — 2026-09-25
+
+### Fixed
+- 🚨 **An exculpation clause read as covering gross negligence.** "No
+  Manager shall be liable … for any act or omission taken in good faith,
+  except for fraud, gross negligence, willful misconduct, or a knowing
+  violation of law" reached the obligations ledger with the qualifier
+  "except for fraud". The rest of the carve-outs landed in the action, where
+  they read as part of what is exculpated. An `except` qualifier now runs to
+  the end of its carve-out list. It stops before a second predicate: a
+  modal, a finite verb outside a relative clause, "and that", or a lettered
+  list. Across the specimen corpus, 22 qualifiers gain their full list and
+  none takes in another clause.
+- **A clean Delaware LLC agreement drew four warnings and a misread
+  ledger.**
+  - **Parties.** "by and among Maya R. Okafor, Daniel Reyes and Priya
+    Natarajan" registered one party, named "Maya R". The "among" list now
+    reads a middle initial, but still stops at "Schedule A." and similar
+    letters. The statutory title "LIMITED LIABILITY COMPANY AGREEMENT OF
+    HARBORLIGHT DESIGN LLC" was also registered as a party. Now three title
+    words may precede the instrument noun.
+  - **Sentence split at a middle initial.** A party's own name no longer
+    ends a sentence at its initial. Before this fix, "Maya R. Okafor … shall
+    keep the Members informed" was owed by "Okafor".
+  - **Possessive definitions.** "(its "Percentage Interest")" is now read
+    as a definition. STRUCT-006 had reported "Percentage Interests" as
+    undefined.
+  - **GOV-020** (fiduciary duties) now accepts the duties named by their
+    content: "the duties of loyalty and care".
+  - **FIN-005 and OBLI-002 no longer run on an operating agreement.** An
+    LLC agreement has no invoices; the only "payable" is indemnification.
+    The company indemnifying its managers is inherently one-way.
+    FIN-005 is also skipped on a partnership agreement, for the same
+    reason.
+- **Obligors.** The corpus has 88 changed obligor rows, each read by hand:
+  - The subject of a coordinated second clause is now read correctly.
+    Before: "…of the Percentage Interests, and Percentage Interests". After:
+    "Percentage Interests". This applies only when the text before ", and"
+    has a verb of its own, so "Every director, officer, and employee" stays
+    a list.
+  - A shared subject whose first verb is lexical is now read. "Each Manager
+    owes …, and shall discharge" → "Each Manager". "Licensee represents
+    that it … and shall" → "Licensee".
+  - A relative clause's head is now the obligor. "A Member who receives a
+    bona fide offer …" → "A Member".
+  - "that" is dropped before a pronoun: "and that you" → "you".
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.766.0] — 2026-09-25
 
 ### Fixed
