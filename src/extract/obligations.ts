@@ -828,7 +828,7 @@ function frontedTrigger(subject: string): string | undefined {
 }
 
 const TEMPORAL_ADVERBIAL =
-  /^(?:at\s+the\s+(?:end|expiration|expiry|termination|conclusion|beginning|start)\s+of|on|upon|after|before|following|during|until|beginning|commencing|promptly|immediately|no\s+later\s+than|not\s+later\s+than)\b/i;
+  /^(?:at\s+the\s+(?:end|expiration|expiry|termination|conclusion|beginning|start)\s+of|for\s+(?:a\s+period\s+of\s+)?[\w-]+(?:\s+\(\d{1,3}\))?\s+(?:business\s+|calendar\s+)?(?:days?|weeks?|months?|years?)\b|on|upon|after|before|following|during|until|beginning|commencing|promptly|immediately|no\s+later\s+than|not\s+later\s+than)\b/i;
 
 function stripFrontedAdverbial(subject: string): string {
   if (!FRONTED_ADVERBIAL.test(subject.trimStart())) return subject;

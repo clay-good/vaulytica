@@ -228,6 +228,7 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-008",
+    version: "1.1.0",
     name: "Termination / expiration date",
     description: "LOI should have an expiration date (drop-dead date).",
     citation: dealPoints("loi-termination", "LOI termination date"),
@@ -238,7 +239,22 @@ const LOI_TERM_SHEET_RULES: Rule[] = [
       "Without a drop-dead the LOI's binding provisions (especially exclusivity) could run indefinitely.",
     recommendation:
       "Add 'Termination' with a fixed expiration date (typically the exclusivity end date).",
-    present_patterns: [/termin(ate|ation|ates)/i, /expir(es|ation)/i, /drop.dead\s+date/i],
+    // The concern is a binding term that runs indefinitely, and an LOI
+    // answers it two more ways than a termination date: a right to walk away
+    // ("Either party may end negotiations at any time") and an exclusivity
+    // period that is itself bounded ("For sixty (60) days after the date of
+    // this letter, the Company shall not solicit …"). An acquisition LOI with
+    // both was told at CRITICAL that its exclusivity could run forever.
+    present_patterns: [
+      /termin(ate|ation|ates)/i,
+      /expir(es|ation)/i,
+      /drop.dead\s+date/i,
+      /\b(?:end|discontinue|cease|break\s+off)\s+(?:the\s+|all\s+)?(?:negotiations|discussions)\b/i,
+      new RegExp(
+        String.raw`\b(?:for|during)\s+(?:a\s+period\s+of\s+)?${PERIOD_COUNT}\s*(?:business\s+)?(?:days|months)\s+(?:after|following|from)\b[^.]{0,160}\b(?:shall|will|must)\s+not\s+(?:solicit|negotiate|encourage|initiate|entertain)`,
+        "i",
+      ),
+    ],
   }),
   presence({
     id: "MNA-009",

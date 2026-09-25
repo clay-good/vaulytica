@@ -1316,3 +1316,16 @@ describe("extractObligations — a website development agreement", () => {
     expect(o!.obligor).toBe("Developer");
   });
 });
+
+describe("extractObligations — a fronted duration is the trigger", () => {
+  it("records 'For five (5) years after the Closing'", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Non-Competition",
+        "For five (5) years after the Closing, Seller shall not own or operate a competing business in the Territory.",
+      ]),
+      [],
+    );
+    expect(o!.trigger).toBe("For five (5) years after the Closing");
+  });
+});

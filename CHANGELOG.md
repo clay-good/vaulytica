@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.771.0] — 2026-09-25
+
+### Fixed
+- **A clean acquisition letter of intent drew a CRITICAL "no drop-dead
+  date".** MNA-008 exists because an LOI's binding terms, especially
+  exclusivity, could otherwise run indefinitely. This letter answered that
+  twice: "Either party may end negotiations at any time", and an
+  exclusivity period bounded to "sixty (60) days after the date of this
+  letter". It looked only for the words termination, expiration and
+  drop-dead. It now also accepts a right to end or break off negotiations,
+  and a no-shop that is bounded by a stated number of days or months.
+- **A fronted duration is the trigger in the obligations ledger.** "For
+  five (5) years after the Closing, Seller shall not compete" left the
+  trigger empty. That is the one column that says how long a restrictive
+  covenant lasts. 17 corpus rows are filled: non-competes in
+  asset-purchase, stock-purchase and sale-of-goodwill agreements; a
+  merger's six-year D&O tail; an earnout's objection window; and
+  post-employment restrictions.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.770.0] — 2026-09-25
 
 ### Fixed
