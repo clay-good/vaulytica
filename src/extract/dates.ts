@@ -397,16 +397,28 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       // verify-manually instead of guessing a wrong calendar day (72h ≠ 72d).
       const isHours = /^hours?$/.test(unit);
       const days = count !== null && !isHours ? count * unitToDays(unit) * direction : undefined;
+      // The count slot takes two words, so a comparative before the count
+      // is cut in half: "no later than thirty (30) days before the Event"
+      // reached the calendar as "than thirty (30) days before the Event", and
+      // "at least sixty (60) days before" as "least sixty (60) days before".
+      // The first half is restored to the label; the offset is unchanged.
+      const lead =
+        /\b(?:no|not|more|less|fewer|at|no\s+later|not\s+later|no\s+earlier|not\s+earlier|in\s+no\s+(?:case|event)\s+later)\s+$/i.exec(
+          ctx.text.slice(Math.max(0, start - 24), start),
+        );
+      const cutComparative =
+        /^(?:than|later\s+than|earlier\s+than|sooner\s+than|least|most)\s/i.test(m[0]);
+      const labelStart = lead && cutComparative ? start - lead[0].length : start;
       out.push({
         id: nextId(),
         type: "relative",
-        raw_text: m[0],
+        raw_text: ctx.text.slice(labelStart, end),
         anchor,
         offset_days: days,
         ...(count !== null
           ? { offset_unit: unitToCalendar(unit), offset_count: count * direction }
           : {}),
-        position: posInParagraph(ctx, start, end),
+        position: posInParagraph(ctx, labelStart, end),
       });
     }
     const seenAnchor = new Set<number>();

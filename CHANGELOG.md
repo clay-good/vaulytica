@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.784.0] — 2026-09-25
+
+### Fixed
+- **Calendar entries cut in half at their comparative.** A clean wedding
+  photography agreement's calendar read "Notice deadline: than thirty (30)
+  days before the Event" and "…than ninety (90) days before the Event". The
+  deadline's count slot takes two words, so it swallowed the second half
+  of "no later than" and "more than" and left the first half off the label.
+  "At least sixty (60) days" lost its "at", and "in no event later than"
+  lost "in no event later". The comparative is now restored to the label
+  and its position, and the computed offset is unchanged. 45 corpus
+  deadline labels read whole again.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.783.0] — 2026-09-25
 
 ### Fixed

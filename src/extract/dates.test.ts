@@ -593,3 +593,26 @@ describe("extractDates — a deadline's anchor, a period's end, and a lookback",
     expect(d?.offset_days).toBe(-90);
   });
 });
+
+describe("extractDates — a deadline's label keeps its comparative", () => {
+  const relative = (text: string) =>
+    extractDates(buildTree(["Terms", text])).filter((d) => d.type === "relative");
+
+  it.each([
+    [
+      "the balance no later than thirty (30) days before the Event",
+      "no later than thirty (30) days before the Event",
+    ],
+    [
+      "give notice at least sixty (60) days before the expiration date",
+      "at least sixty (60) days before the expiration date",
+    ],
+    [
+      "and in no event later than sixty (60) days after the end of the Policy Period",
+      "in no event later than sixty (60) days after the end of the Policy Period",
+    ],
+  ])("labels %s", (text, label) => {
+    const [d] = relative(`The Clients shall pay ${text}.`);
+    expect(d?.raw_text).toBe(label);
+  });
+});
