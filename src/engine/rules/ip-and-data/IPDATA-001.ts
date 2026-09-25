@@ -5,6 +5,9 @@ import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from ".
 const INVENTION_AGREEMENT =
   /\b(?:invention\s+assignment|inventions?\s+(?:and|&)\s+(?:non-?disclosure|confidentiality)|proprietary\s+information\s+(?:and|&)\s+inventions?(?:\s+assignment)?|intellectual\s+property\s+assignment)\s+agreement\b|\b(?:PIIA|CIIAA)\b/i;
 
+const HOUSEHOLD_EMPLOYMENT =
+  /\b(?:nanny|au\s+pair|housekeeper|household\s+(?:employee|employment|worker)|domestic\s+(?:worker|employee|employment)|babysitter|home\s+caregiver|personal\s+care\s+(?:aide|attendant))\b/i;
+
 function documentTextOf(ctx: RuleContext): string {
   const parts: string[] = [];
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
@@ -20,7 +23,7 @@ function documentTextOf(ctx: RuleContext): string {
 /** IPDATA-001 — IP ownership clause present (warning). */
 export const rule: Rule = {
   id: "IPDATA-001",
-  version: "1.17.0",
+  version: "1.18.0",
   name: "IP ownership clause present",
   category: "ip-and-data",
   default_severity: "warning",
@@ -39,6 +42,12 @@ export const rule: Rule = {
     // Assignment Agreement" — which is the standard structure; a clean
     // California offer letter was told it allocates no IP ownership.
     if (INVENTION_AGREEMENT.test(documentTextOf(ctx))) return null;
+    // HOUSEHOLD employment produces nothing to own. A nanny's, housekeeper's
+    // or home caregiver's agreement — childcare, meals, laundry, driving —
+    // was told at WARNING that it "does not allocate ownership of
+    // intellectual property"; no template for one carries such a clause.
+    // Read from the opening of the document, where the position is named.
+    if (HOUSEHOLD_EMPLOYMENT.test(documentTextOf(ctx).slice(0, 400))) return null;
     // The assignment alternation requires an IP object within the clause
     // (fix-rule-detection-fidelity): a bare `hereby assigns` anywhere —
     // receivables, a lease, a security interest — used to silently satisfy

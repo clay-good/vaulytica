@@ -1329,3 +1329,16 @@ describe("extractObligations — a fronted duration is the trigger", () => {
     expect(o!.trigger).toBe("For five (5) years after the Closing");
   });
 });
+
+describe("extractObligations — 'at will' is not the modal", () => {
+  it("does not print 'Employment is at | will | : either party may end it'", () => {
+    const got = extractObligations(
+      buildTree([
+        "At-Will Employment",
+        "Employment is at will: either the Employer or the Nanny may end it at any time, with or without cause.",
+      ]),
+      [],
+    );
+    expect(got.some((o) => o.modal.toLowerCase() === "will")).toBe(false);
+  });
+});

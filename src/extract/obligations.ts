@@ -424,6 +424,11 @@ function splitModalClauses(
     // compound. A dash that OPENS a clause ("— shall pay") is not one, and an
     // em-dash is not a hyphen at all.
     if (m.index > 0 && /\w[-\u2010\u2011]$/.test(sentence.slice(0, m.index))) continue;
+    // …and the same idiom UNHYPHENATED, as a predicate: "Employment is at
+    // will: either party may end it at any time" printed the row
+    // `Employment is at | will | : either the Employer or the Nanny may end
+    // it`. No modal ever follows "at" directly.
+    if (/^will$/i.test(m[1]!) && /\bat\s+$/i.test(sentence.slice(0, m.index))) continue;
     // "WILL" THE INSTRUMENT IS A NOUN, AND A WILL SAYS IT ON EVERY PAGE. The
     // empty-action guard below only catches the noun at the end of a sentence;
     // mid-sentence the words after it pass for an action. A clean Texas will

@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.772.0] — 2026-09-25
+
+### Fixed
+- **"at will" without a hyphen was read as the modal "will".** "Employment
+  is at will: either party may end it at any time" printed the ledger row
+  `Employment is at | will | : either the Employer or the Nanny may end it`.
+  9.656 fixed the hyphenated "at-will"; the unhyphenated predicate is just
+  as common. Five nonsense rows leave the corpus: an executive employment
+  agreement, a restrictive-covenant agreement, a PIP, a relocation
+  agreement, and a second executive agreement.
+- **A nanny was told her agreement allocates no intellectual property.**
+  IPDATA-001 no longer applies when the document opens by naming household
+  employment: a nanny, au pair, housekeeper, household or domestic worker,
+  babysitter, home caregiver or personal care aide. Childcare, meals and
+  driving produce nothing to own, and no template for these agreements
+  carries an IP clause. An ordinary employment agreement is still asked.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.771.0] — 2026-09-25
 
 ### Fixed

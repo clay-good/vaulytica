@@ -262,7 +262,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.17.0"
+      "rule_version": "1.18.0"
     },
     {
       "elapsed_ms": 0,
@@ -920,7 +920,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.17.0",
+      "rule_version": "1.18.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "ba8da505bb1a2fecc53a18589cacab00be8bf8fb0fd40966e4588a97e7b81ec0",
+  "result_hash": "3539fa4c74055c4168e4352ee86ea865dc30af3978a0a6ffbbf6103d98715803",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.771.0"
+  "version": "9.772.0"
 }

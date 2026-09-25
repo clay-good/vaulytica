@@ -264,7 +264,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.17.0"
+      "rule_version": "1.18.0"
     },
     {
       "elapsed_ms": 0,
@@ -982,7 +982,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.17.0",
+      "rule_version": "1.18.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1175,11 +1175,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "736262e2a938a854147c66f7422c096fee1869d44adce34a7e9515918e09809b",
+  "result_hash": "b6c43a06fe523f2da7d739c7c1b3d5da7da0d4e9291ab0aab4260fbcd065667f",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.771.0"
+  "version": "9.772.0"
 }

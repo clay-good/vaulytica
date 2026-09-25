@@ -263,7 +263,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.17.0"
+      "rule_version": "1.18.0"
     },
     {
       "elapsed_ms": 0,
@@ -892,7 +892,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.17.0",
+      "rule_version": "1.18.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "e9c0a9a4449f6f4e5798ab87b3e6bceb57feda31bda93bf299f9d6bb5f71715a",
+  "result_hash": "4c0eb35edfeefe90f171010a5a973e8d9869523dd0909a5bb0f48e73d91b6a9a",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.771.0"
+  "version": "9.772.0"
 }

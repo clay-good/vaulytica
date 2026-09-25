@@ -309,3 +309,27 @@ describe("IPDATA-001 — IP allocated by a required invention-assignment agreeme
     expect(IPDATA_001.check(buildContext(["Offer Letter", sentence]))).toBeNull();
   });
 });
+
+describe("IPDATA-001 — household employment produces nothing to own", () => {
+  it("does not ask a nanny agreement to allocate IP", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Nanny Employment Agreement",
+          "The Employer employs the Nanny to care for the Employer's two children, prepare their meals, and drive the older child to school.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still asks an ordinary employment agreement", () => {
+    expect(
+      IPDATA_001.check(
+        buildContext([
+          "Employment Agreement",
+          "The Company employs the Employee as a software engineer to design and build its products.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
