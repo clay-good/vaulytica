@@ -62,6 +62,10 @@ const NEG_PHRASE =
  * **apply** to register the Licensed Marks" is a real covenant, and excluding
  * "not apply" would drop it.
  */
+// A provision that names itself by what it does is a provision too: "except
+// that this LIMITATION shall not apply to fraud" carves out of a cap, and with
+// the cap no longer mistaken for a covenant (9.737.0), the metamorphic relation
+// in `present-indicative.test.ts` exposed it as one.
 const INSTRUMENT_SUBJECT = new RegExp(
   // A fronted conditional keeps its subordinator on the subject ("If the Act
   // shall not apply…"), so one is allowed before the determiner.
@@ -73,19 +77,15 @@ const INSTRUMENT_SUBJECT = new RegExp(
   // written by hand it listed "agreement" and not "contract", so
   // `instrument-vocabulary.test.ts` rewrote one specimen's Agreement as a
   // Contract and the covenant count moved.
-  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|act\b|statute|law|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
+  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|act\b|statute|law|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
   "i",
 );
 
-/**
- * 🚨 **A cap is not a covenant.** "Seller's aggregate liability under Section
- * 8.1(a) shall not exceed the escrow amount" limits a remedy; nobody promises
- * to refrain from anything. Fourteen corpus caps were listed as negative
- * covenants — the subject is a LIABILITY, which is what separates them from
- * "Customer shall not exceed the usage limits", a real one.
- */
-const CAP_SUBJECT = /\b(?:liabilit(?:y|ies)|damages|recovery)\b/i;
-const CAP_ACTION = /^not\s+exceed\b/i;
+// 🚨 A cap is not a covenant — and it is no longer an obligation at all. The
+// filter that lived here read the OBLIGOR, which the extractor's mutual-subject
+// resolution had already turned from "EACH PARTY'S TOTAL LIABILITY" into "the
+// parties"; `extractObligations` now drops caps on the raw subject, so this
+// rule and the obligations ledger agree.
 
 /**
  * "Material generated without human authorship MAY NOT BE ELIGIBLE for
@@ -105,7 +105,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",
@@ -117,7 +117,6 @@ export const rule: Rule = {
       (o) =>
         (NEG_MODAL.test(o.modal) || NEG_ACTION.test(o.action) || NEG_PHRASE.test(o.action)) &&
         !INSTRUMENT_SUBJECT.test(o.obligor.trim()) &&
-        !(CAP_ACTION.test(o.action) && CAP_SUBJECT.test(o.obligor)) &&
         !STATUS_ACTION.test(o.action),
     );
     if (negs.length === 0) return null;

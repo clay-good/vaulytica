@@ -15,9 +15,12 @@ function documentText(ctx: RuleContext): string {
   return parts.join(" ");
 }
 
+const CARVE_OUT =
+  /\b(?:pre[- ]?existing|background|prior|existing|retained)\s+(?:[\w-]+(?:,\s*(?:and\s+|or\s+)?|\s+(?:and|or)\s+)){0,3}(?:IP\b|intellectual\s+property|inventions?|technology|materials?|works?|know[- ]how|tools?|software|code|components?|templates?|libraries|methodolog(?:y|ies))\b/i;
+
 export const rule: Rule = {
   id: "IPDATA-002",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Pre-existing IP carve-out",
   category: "ip-and-data",
   default_severity: "warning",
@@ -40,12 +43,14 @@ export const rule: Rule = {
     // carve-out is almost always its own section — "Limited Exclusion",
     // "Prior Inventions" — sitting after the assignment it qualifies, and the
     // paragraph-scoped test could never see it.
-    if (
-      /\b(?:pre[- ]?existing|background|prior|existing|retained)\s+(?:IP\b|intellectual\s+property|inventions?|technology|materials?|works?|know[- ]how)\b/i.test(
-        documentText(ctx),
-      )
-    )
-      return null;
+    //
+    // A carve-out keeps TOOLS as often as it keeps "IP", and it lists them:
+    // "its pre-existing tools and know-how" stood the carve-out down on a clean
+    // contractor agreement, because "tools" was not a noun here and "know-how"
+    // sat behind "tools and". Up to three list items may precede the head noun,
+    // each joined by a comma or "and/or" — so a temporal "prior to the date of
+    // …" still cannot reach one.
+    if (CARVE_OUT.test(documentText(ctx))) return null;
     return emit(ctx, rule, {
       title: "Pre-existing IP carve-out not stated",
       description: "An IP assignment is present but pre-existing IP is not expressly carved out.",

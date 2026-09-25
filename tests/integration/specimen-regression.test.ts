@@ -1286,9 +1286,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // with roles and gives signature lines to two of them — the Counterparty's
   // consent is a separate instrument, attached (or here, not attached) as
   // Exhibit A, which STRUCT-018 reports on the next line.
+  // OBLI-005 left this row in 9.737.0: the document's only "shall not" is a
+  // liability cap ("… shall not exceed …"), which is not a covenant, and the
+  // pinned expectation had been carrying the false finding.
   "assignment-assumption.txt": {
     playbook: "assignment-and-assumption-agreement",
-    findings: ["STRUCT-017", "STRUCT-018", "OBLI-005", "RISK-011"],
+    findings: ["STRUCT-017", "STRUCT-018", "RISK-011"],
   },
   // An AI addendum to a master services agreement. Three false positives, all
   // vocabulary: "Vendor shall not PERMIT any subprocessor ... to use Customer
@@ -3045,9 +3048,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // district ("the District Court of the Fourth Judicial District of the State
   // of Idaho, in and for Ada County") — the capture requires an uppercase
   // start, and that form puts a lowercase "the" there.
+  // OBLI-005 left this row in 9.737.0: the bond's only "shall not" is a
+  // liability cap ("… shall not exceed …"), which is not a covenant, and the
+  // pinned expectation had been carrying the false finding.
   "performance-bond.txt": {
     playbook: "payment-performance-bond",
-    findings: ["OBLI-005"],
+    findings: [],
   },
 
   // A permanent utility easement. RE-028 reported the maintenance allocation
@@ -3128,9 +3134,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // CHOICE-001 and CHOICE-003 stay and are fair: the bond names Colorado law
   // only as a savings clause on the suit-limitation period, and a surety bond
   // that does not choose its law leaves the claimant to find out where.
+  // OBLI-005 left this row in 9.737.0: the bond's only "shall not" is a
+  // liability cap ("… shall not exceed …"), which is not a covenant, and the
+  // pinned expectation had been carrying the false finding.
   "payment-performance-bond.txt": {
     playbook: "payment-performance-bond",
-    findings: ["CHOICE-001", "CHOICE-003", "OBLI-005"],
+    findings: ["CHOICE-001", "CHOICE-003"],
   },
 
   // Sweepstakes official rules with no-purchase-necessary, the free alternate

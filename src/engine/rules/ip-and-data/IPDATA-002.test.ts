@@ -44,3 +44,30 @@ describe("IPDATA-002 — pre-existing IP carve-out", () => {
     expect(IPDATA_002.check(ctx)).toBeNull();
   });
 });
+
+/**
+ * The carve-out names what the assignor keeps, and it keeps TOOLS. A clean
+ * contractor agreement — "Contractor retains ownership of its pre-existing
+ * tools and know-how and grants Company a non-exclusive … license" — was told
+ * it states no carve-out, because "tools" was not a noun the rule knew and
+ * "know-how" sat after "tools and" rather than directly after "pre-existing".
+ */
+describe("IPDATA-002 — a coordinated carve-out", () => {
+  const assign =
+    "To the extent any Deliverable is not a work made for hire, Contractor assigns to Company all right, title, and interest in it, including all intellectual property rights.";
+
+  it.each([
+    "Contractor retains ownership of its pre-existing tools and know-how and grants Company a non-exclusive license to use any of them incorporated into a Deliverable.",
+    "Consultant keeps its pre-existing software, templates, and components.",
+  ])("is silent on %s", (carveOut) => {
+    expect(IPDATA_002.check(buildContext(["Intellectual Property", assign, carveOut]))).toBeNull();
+  });
+
+  it("still fires on an assignment that keeps nothing back", () => {
+    expect(
+      IPDATA_002.check(
+        buildContext(["Intellectual Property", assign, "Contractor shall use its own tools."]),
+      ),
+    ).not.toBeNull();
+  });
+});

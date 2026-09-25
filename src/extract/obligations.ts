@@ -70,6 +70,10 @@ const MODALS = [
   "hereby covenants",
 ];
 
+/** A remedy limit's subject, and its verb — together, a cap rather than a covenant. */
+const CAP_SUBJECT = /\b(?:liabilit(?:y|ies)|damages|recovery)\b/i;
+const CAP_ACTION = /^not\s+exceed\b/i;
+
 /**
  * A word that makes the "will" right after it the testamentary instrument — a
  * determiner, "by", or a possessive ("the other's will"), optionally opening a
@@ -212,6 +216,14 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // dropped. 7 of the corpus's 8 empty actions are the noun; the eighth
         // is that swallowed trigger, and it survives.
         if (!action && !trigger && !qualifier) continue;
+
+        // A CAP IS NOT A DUTY. "Each party's total liability … shall not exceed
+        // the amounts paid" limits a remedy; nobody promises to refrain from
+        // anything. Judged on the RAW subject: the mutual-subject resolution
+        // turns "EACH PARTY'S TOTAL LIABILITY" into "the parties", and the
+        // ledger printed `the parties | shall | NOT EXCEED …`. "Customer shall
+        // not exceed the usage limits" has no liability subject and stays.
+        if (CAP_ACTION.test(action) && CAP_SUBJECT.test(cl.subject)) continue;
 
         out.push({
           id: nextId(),

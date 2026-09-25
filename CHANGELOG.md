@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.737.0] — 2026-09-24
+
+### Fixed
+- **A clean contractor agreement was told it carves out no pre-existing IP.**
+  IPDATA-002 (warning) knew "pre-existing IP / technology / materials /
+  know-how" and required the noun directly after the adjective, so
+  "Contractor retains ownership of its pre-existing tools and know-how and
+  grants Company a … license" read as an assignment that keeps nothing back.
+  It now knows tools, software, code, components, templates, libraries and
+  methodologies, and accepts up to three list items before the head noun,
+  each joined by a comma or "and/or" — so a temporal "prior to the date of …"
+  still cannot qualify.
+- **The obligations ledger listed liability caps as duties.** "EACH PARTY'S
+  TOTAL LIABILITY … SHALL NOT EXCEED THE AMOUNTS PAID" printed as `the
+  parties | shall | NOT EXCEED …`: the mutual-subject resolution had already
+  turned the liability into "the parties", so OBLI-005's cap filter — which
+  read the obligor — could not see it either. The extractor now drops a cap
+  on its raw subject (liability, damages or recovery + "not exceed"), and
+  OBLI-005's copy of the test is gone. **23 cap rows leave the ledger on 20
+  specimens** (asset purchases, a guaranty, escrow, bonds, and ALL-CAPS EULA
+  and website-terms caps); nothing is added. "Customer shall not exceed the
+  usage limits" is still a duty.
+- **Three pinned expectations had been carrying the cap as a covenant.** An
+  assignment-and-assumption agreement and two surety bonds drew OBLI-005 only
+  because their one "shall not" is a cap ("shall not exceed the penal sum");
+  the specimen pins now omit it, and the performance bond expects no findings.
+  Removing the cap also exposed a metamorphic divergence it had been masking:
+  rewritten as "except that this limitation **shall** not apply to fraud",
+  the carve-out read as a negative covenant of "this limitation". OBLI-005's
+  provision-subject class now includes a provision named by what it does
+  (limitation, exclusion, waiver, restriction, cap).
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.736.0] — 2026-09-24
 
 ### Fixed

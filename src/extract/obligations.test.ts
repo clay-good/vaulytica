@@ -1032,3 +1032,27 @@ describe("resolveObligor — a leading subordinator", () => {
     expect(oblis.every((o) => !/^which\s/i.test(o.obligor))).toBe(true);
   });
 });
+
+/**
+ * A cap is not a duty. "EACH PARTY'S TOTAL LIABILITY … SHALL NOT EXCEED THE
+ * AMOUNTS PAID" limits a remedy; nobody promises to refrain from anything. The
+ * ledger printed it as `the parties | shall | NOT EXCEED …` — the mutual-subject
+ * resolution had already turned "EACH PARTY'S TOTAL LIABILITY" into "the
+ * parties", so OBLI-005's own cap filter, which read the OBLIGOR, could not see
+ * it either. The cap is judged on the raw subject, before resolution.
+ */
+describe("extractObligations — a liability cap is not an obligation", () => {
+  const obl = (text: string) => extractObligations(buildTree(["Limitation", text]), []);
+
+  it.each([
+    "NEITHER PARTY SHALL BE LIABLE FOR CONSEQUENTIAL DAMAGES, AND EACH PARTY'S TOTAL LIABILITY UNDER THIS AGREEMENT SHALL NOT EXCEED THE AMOUNTS PAID OR PAYABLE UNDER THIS AGREEMENT.",
+    "Seller's aggregate liability under Section 8.1(a) shall not exceed the Escrow Amount.",
+    "The total damages recoverable by either party shall not exceed $50,000.",
+  ])("drops the cap in %s", (text) => {
+    expect(obl(text).filter((o) => /^not exceed/i.test(o.action))).toEqual([]);
+  });
+
+  it("keeps a party's real duty not to exceed a limit", () => {
+    expect(obl("Customer shall not exceed the usage limits in the Order Form.")).toHaveLength(1);
+  });
+});

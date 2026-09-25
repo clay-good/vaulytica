@@ -96,3 +96,24 @@ describe("OBLI-005 — negative covenants list", () => {
     expect(f?.description).not.toMatch(/Busine…$/);
   });
 });
+
+describe("OBLI-005 — a provision named by what it does is not a party", () => {
+  it("does not count 'this limitation shall not apply' as a negative covenant", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Limitation of Liability",
+          "The aggregate liability of each party shall not exceed $2,000,000, except that this limitation shall not apply to fraud or willful misconduct.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still counts a party's covenant in the same sentence shape", () => {
+    expect(
+      OBLI_005.check(
+        buildContext(["Covenants", "Assignee shall not apply the Assets to any unlawful purpose."]),
+      ),
+    ).not.toBeNull();
+  });
+});
