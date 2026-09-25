@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.736.0] — 2026-09-24
+
+### Fixed
+- **FIN-009 quoted late-fee clauses from the middle of a word.** It sliced a
+  raw 30 characters back from its match, so four specimens (a credit
+  agreement, an equipment finance agreement, an office lease and a
+  promissory note) printed "ys after its due date bears a late charge…" and
+  "s due date, Maker shall pay…". It now uses `excerptWindow`, the
+  word-snapping helper thirty other rule files already share.
+- **Closed as a class:** `excerpt-is-evidence` now also requires every
+  spanned quote to begin, and unless it is marked as truncated end, on a
+  word edge somewhere in the document. Across 1,026 spanned excerpts on the
+  specimen corpus FIN-009 was the only rule that failed it. Every
+  occurrence is tried, because a term's first occurrence can sit inside its
+  plural ("Covered Claim" in "Covered Claims") while a later one stands
+  alone.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.735.0] — 2026-09-24
 
 ### Fixed

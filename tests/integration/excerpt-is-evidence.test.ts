@@ -29,6 +29,18 @@ const SPECIMENS = readdirSync(DIR)
 /** Whitespace is normalized on both sides: ingest rewraps, the document does not. */
 const flat = (s: string) => s.replace(/\s+/g, " ").trim();
 
+/** Does SOME occurrence of the quote begin (and, unless truncated, end) on a word edge? */
+function wordAligned(haystack: string, needle: string, truncated: boolean): boolean {
+  const word = (c: string | undefined) => c !== undefined && /\w/.test(c);
+  for (let at = haystack.indexOf(needle); at >= 0; at = haystack.indexOf(needle, at + 1)) {
+    const startOk = !(word(haystack[at - 1]) && word(needle[0]));
+    const endOk =
+      truncated || !(word(haystack[at + needle.length]) && word(needle[needle.length - 1]));
+    if (startOk && endOk) return true;
+  }
+  return false;
+}
+
 describe("an excerpt with a span is text the document contains", () => {
   it.each(SPECIMENS)(
     "%s",
@@ -61,8 +73,19 @@ describe("an excerpt with a span is text the document contains", () => {
           bad.push(`${finding.rule_id}: spliced quote — ${JSON.stringify(raw.slice(0, 100))}`);
         // A very short excerpt matches too easily to mean anything.
         if (needle.length < 8) continue;
-        if (!haystack.includes(needle))
+        if (!haystack.includes(needle)) {
           bad.push(`${finding.rule_id}: ${JSON.stringify(needle.slice(0, 100))}`);
+          continue;
+        }
+        // 🚨 A QUOTE STARTS AND ENDS ON A WORD. FIN-009 sliced a raw 30
+        // characters back from its match and quoted four specimens from the
+        // middle of a word — "ys after its due date bears a late charge" —
+        // while `excerptWindow` sat in `_helpers.ts`. Every occurrence is
+        // tried, because a term's first occurrence may sit inside its plural
+        // ("Covered Claim" in "Covered Claims") while a later one stands
+        // alone. A truncated quote's END is the ellipsis's business.
+        if (!wordAligned(haystack, needle, flat(excerpt.text) !== needle))
+          bad.push(`${finding.rule_id}: cut mid-word — ${JSON.stringify(needle.slice(0, 60))}`);
       }
       expect(bad, `${name} quotes text it does not contain:\n  ${bad.join("\n  ")}`).toEqual([]);
     },

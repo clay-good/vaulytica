@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
 
 /**
  * FIN-009 — Late fee or interest exceeds 1.5%/month / 18%/year
@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.7.0",
+  version: "1.7.1",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -75,7 +75,7 @@ export const rule: Rule = {
     const period = (hit.match[2] ?? "").toLowerCase();
     if (!Number.isFinite(rate) || rate <= 0) return null;
 
-    const excerpt = hit.text.slice(Math.max(0, hit.match.index - 30), hit.match.index + 240);
+    const excerpt = excerptWindow(hit.text, hit.match.index, 30, 240);
 
     // Normalize to an annual rate ONLY from an explicitly stated period.
     let annualRate: number | null = null;
