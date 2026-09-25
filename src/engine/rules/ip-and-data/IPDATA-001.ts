@@ -1,10 +1,26 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
 
+/** A separate invention-assignment agreement, named by any of its usual titles. */
+const INVENTION_AGREEMENT =
+  /\b(?:invention\s+assignment|inventions?\s+(?:and|&)\s+(?:non-?disclosure|confidentiality)|proprietary\s+information\s+(?:and|&)\s+inventions?(?:\s+assignment)?|intellectual\s+property\s+assignment)\s+agreement\b|\b(?:PIIA|CIIAA)\b/i;
+
+function documentTextOf(ctx: RuleContext): string {
+  const parts: string[] = [];
+  const walk = (sections: RuleContext["tree"]["sections"]): void => {
+    for (const s of sections) {
+      for (const p of s.paragraphs) for (const r of p.runs) parts.push(r.text);
+      walk(s.children);
+    }
+  };
+  walk(ctx.tree.sections);
+  return parts.join(" ");
+}
+
 /** IPDATA-001 — IP ownership clause present (warning). */
 export const rule: Rule = {
   id: "IPDATA-001",
-  version: "1.16.0",
+  version: "1.17.0",
   name: "IP ownership clause present",
   category: "ip-and-data",
   default_severity: "warning",
@@ -18,6 +34,11 @@ export const rule: Rule = {
     // this clause as absent has no answer short of restating the parent
     // inside its own amendment.
     if (amendsParentAgreement(ctx)) return null;
+    // An offer letter allocates IP by requiring a SEPARATE agreement — "you
+    // must sign the Company's Confidential Information and Invention
+    // Assignment Agreement" — which is the standard structure; a clean
+    // California offer letter was told it allocates no IP ownership.
+    if (INVENTION_AGREEMENT.test(documentTextOf(ctx))) return null;
     // The assignment alternation requires an IP object within the clause
     // (fix-rule-detection-fidelity): a bare `hereby assigns` anywhere —
     // receivables, a lease, a security interest — used to silently satisfy

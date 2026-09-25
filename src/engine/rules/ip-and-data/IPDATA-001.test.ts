@@ -294,3 +294,18 @@ describe("IPDATA-001 — 'keep ownership' is 'retain ownership' in plain languag
     ).toBeNull();
   });
 });
+
+/**
+ * An offer letter allocates IP by requiring a separate agreement: "you must
+ * sign the Company's Confidential Information and Invention Assignment
+ * Agreement". That is the standard structure, and a clean California offer
+ * letter was told at `warning` that it allocates no IP ownership.
+ */
+describe("IPDATA-001 — IP allocated by a required invention-assignment agreement", () => {
+  it.each([
+    "As a condition of employment, you must sign the Company's Confidential Information and Invention Assignment Agreement.",
+    "You will be required to sign the Company's standard Proprietary Information and Inventions Agreement.",
+  ])("is silent on %s", (sentence) => {
+    expect(IPDATA_001.check(buildContext(["Offer Letter", sentence]))).toBeNull();
+  });
+});

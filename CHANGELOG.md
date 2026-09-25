@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.748.0] — 2026-09-24
+
+### Fixed
+- **IPDATA-001 told an offer letter it allocates no IP ownership.** An offer
+  letter allocates IP by requiring a separate agreement — "you must sign the
+  Company's Confidential Information and Invention Assignment Agreement" —
+  and a clean California offer letter that did exactly that (with the Labor
+  Code § 2870 carve-out spelled out) drew the warning. A required or
+  continuing invention-assignment agreement, under any of its usual titles
+  (CIIAA, PIIA, Proprietary Information and Inventions Agreement), now
+  counts. Three specimens lose the finding: an offer letter, a separation
+  agreement continuing the employee's PIIA, and an investor rights agreement
+  requiring employees to sign one.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+1 changed finding set — IPDATA-001 leaves a v4 executive-employment golden
+whose text relies on "a separately executed Confidentiality and Invention
+Assignment Agreement" (read, and correct; its target finding is unchanged).
+
 ## [9.747.0] — 2026-09-24
 
 ### Fixed
