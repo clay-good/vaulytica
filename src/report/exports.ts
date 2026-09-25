@@ -30,13 +30,14 @@ import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
 import type { IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
+import { deriveDate } from "./critical-dates.js";
 import type { ChecklistCategory, ClosingChecklist } from "./closing-checklist.js";
 import type {
   NegotiationPosture,
   NegotiationTier,
   NegotiationPositionResult,
 } from "../playbooks/custom-interpreter.js";
-import { firstAbsoluteIso } from "../extract/absolute-date.js";
+import { definitionAnchorIso } from "../extract/absolute-date.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -432,7 +433,7 @@ function normalizeAnchor(anchor: string): string {
 function buildAnchorMap(extracted: ExtractedData): Map<string, string> {
   const map = new Map<string, string>();
   for (const entry of extracted.definitions.entries) {
-    const iso = firstAbsoluteIso(entry.definition);
+    const iso = definitionAnchorIso(entry);
     if (iso) map.set(normalizeAnchor(entry.term), iso);
   }
   return map;
@@ -557,11 +558,18 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
   return { events, unresolved };
 }
 
+// Calendar arithmetic is `deriveDate`'s, the critical-dates register's single
+// owner: this export added the day-collapsed `offset_days`, so "twenty-four
+// (24) months from the Effective Date" (June 1, 2026) became 720 days —
+// 2028-05-21, not 2028-06-01 — and a business-day window was pinned to a
+// calendar date the register itself refuses to guess.
 function resolveRelative(date: DateReference, anchors: Map<string, string>): DeadlineEvent | null {
   if (date.anchor === undefined || date.offset_days === undefined) return null;
   const base = anchors.get(normalizeAnchor(date.anchor));
   if (!base) return null;
-  const iso = addDays(base, date.offset_days);
+  const derived = deriveDate(date, base);
+  if (!derived.resolved || !derived.computed_date) return null;
+  const iso = derived.computed_date;
   const notice = date.offset_days < 0;
   return {
     iso,

@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.747.0] — 2026-09-24
+
+### Fixed
+- 🚨 **The deadlines calendar and the critical-dates register put defined
+  dates on the wrong day — years early.** A parenthetical definition's text
+  is everything before the parenthetical, and the anchor map took the FIRST
+  date in it. So "beginning on July 1, 2026 … and ending on June 30, 2033
+  (the "Expiration Date")" put an office lease's expiration on its
+  commencement date; a sublease's did the same (and its 30-day surrender
+  deadline with it); a credit agreement's and a promissory note's "Maturity
+  Date" landed on the first payment date, five years early. The date a
+  parenthetical names is the one nearest the term, and one shared helper,
+  `definitionAnchorIso`, now serves both artifacts. The register's second
+  path — binding a "(the "X Date")" parenthetical to its paragraph's first
+  date — had the same fault and now takes the date nearest before the
+  parenthetical; `register-format-invariance` caught it, because under Word
+  smart quotes the register fell back to that path and returned the old
+  dates.
+- **The calendar added months as 30 days.** "Twenty-four (24) months from
+  the Effective Date" (June 1, 2026) was exported as 2028-05-21, not
+  2028-06-01, and five years lost the leap day. The calendar export now uses
+  the register's own `deriveDate`, which has done calendar arithmetic all
+  along — which also stops it pinning a business-day window to a date the
+  register itself refuses to guess (six specimens' business-day deadlines
+  now read "verify manually", as they do in the register).
+
+Across the specimens 17 calendar events move on 11 documents, each checked
+against its text. Goldens: 370 rewritten for the engine version;
+`golden:churn` reports 0 changed finding sets.
+
 ## [9.746.0] — 2026-09-24
 
 ### Fixed

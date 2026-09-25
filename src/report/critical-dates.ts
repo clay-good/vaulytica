@@ -44,7 +44,11 @@ import {
   type DeadlineResult,
 } from "../deadlines/compute.js";
 import type { DeadlineProfile, ServiceMethod } from "../deadlines/profile.js";
-import { firstAbsoluteIso } from "../extract/absolute-date.js";
+import {
+  definitionAnchorIso,
+  firstAbsoluteIso,
+  lastAbsoluteIso,
+} from "../extract/absolute-date.js";
 
 /** The five derived-deadline families (spec §27 / companion §4). */
 export type CriticalDateKind =
@@ -309,7 +313,7 @@ function normalizeAnchor(anchor: string): string {
 export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): Map<string, string> {
   const map = new Map<string, string>();
   for (const entry of extracted.definitions.entries) {
-    const iso = firstAbsoluteIso(entry.definition);
+    const iso = definitionAnchorIso(entry);
     if (iso) map.set(normalizeAnchor(entry.term), iso);
   }
   if (tree) {
@@ -317,14 +321,18 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
     // names an anchor (via "(the 'X Date')" or a bare "X Date") binds them.
     const anchorParen =
       /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”'’]?\s*\)/g;
+    // Each anchor binds to the date NEAREST BEFORE its parenthetical, not the
+    // paragraph's first: "beginning on July 1, 2026 (the 'Commencement Date')
+    // and ending on June 30, 2033 (the 'Expiration Date')" put both on July 1.
+    // A paragraph whose date follows the anchor falls back to its first date.
     forEachParagraph(tree, (ctx) => {
-      const iso = firstAbsoluteIso(ctx.text);
-      if (!iso) return;
+      const first = firstAbsoluteIso(ctx.text);
+      if (!first) return;
       anchorParen.lastIndex = 0;
       let m: RegExpExecArray | null;
       while ((m = anchorParen.exec(ctx.text)) !== null) {
         const key = normalizeAnchor(m[1]!);
-        if (!map.has(key)) map.set(key, iso);
+        if (!map.has(key)) map.set(key, lastAbsoluteIso(ctx.text.slice(0, m.index)) ?? first);
       }
     });
   }

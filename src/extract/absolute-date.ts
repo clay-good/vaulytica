@@ -132,3 +132,58 @@ export function firstAbsoluteIso(text: string): string | undefined {
   }
   return undefined;
 }
+
+/**
+ * The LAST absolute date in `text` as ISO, or undefined — every ordering
+ * `firstAbsoluteIso` reads, and the match that ends latest wins.
+ */
+export function lastAbsoluteIso(text: string): string | undefined {
+  let best: { end: number; iso: string } | undefined;
+  const consider = (re: RegExp, toIsoOf: (m: RegExpExecArray) => string | undefined): void => {
+    const g = new RegExp(re.source, re.flags.includes("g") ? re.flags : `${re.flags}g`);
+    for (let m = g.exec(text); m !== null; m = g.exec(text)) {
+      const iso = toIsoOf(m);
+      const end = m.index + m[0].length;
+      if (iso && (!best || end > best.end)) best = { end, iso };
+    }
+  };
+  consider(ISO, (m) =>
+    validIso(+m[1]!, +m[2]!, +m[3]!) ? toIso(+m[1]!, +m[2]!, +m[3]!) : undefined,
+  );
+  consider(MONTH_FIRST, (m) => {
+    const mo = monthNumber(m[1]!);
+    return mo !== undefined && validIso(+m[3]!, mo, +m[2]!) ? toIso(+m[3]!, mo, +m[2]!) : undefined;
+  });
+  for (const re of [DAY_OF_MONTH, DAY_FIRST]) {
+    consider(re, (m) => {
+      const mo = monthNumber(m[2]!);
+      return mo !== undefined && validIso(+m[3]!, mo, +m[1]!)
+        ? toIso(+m[3]!, mo, +m[1]!)
+        : undefined;
+    });
+  }
+  consider(US_NUMERIC, (m) => {
+    let y = +m[3]!;
+    if (m[3]!.length === 2) y = y < TWO_DIGIT_YEAR_PIVOT ? 2000 + y : 1900 + y;
+    return validIso(y, +m[1]!, +m[2]!) ? toIso(y, +m[1]!, +m[2]!) : undefined;
+  });
+  return best?.iso;
+}
+
+/**
+ * The calendar date a DEFINED TERM names. A parenthetical definition's text is
+ * everything BEFORE the parenthetical, so the date it names is the one nearest
+ * the term — the LAST: "… beginning on May 1, 2026 and continuing … until April
+ * 1, 2031 (the "Maturity Date")" put a note's maturity on its first payment
+ * date, five years early, in both the calendar export and the critical-dates
+ * register. A "means"-form definition states its date after the term, so the
+ * first is right there.
+ */
+export function definitionAnchorIso(entry: {
+  definition: string;
+  form?: string;
+}): string | undefined {
+  return entry.form === "parenthetical"
+    ? lastAbsoluteIso(entry.definition)
+    : firstAbsoluteIso(entry.definition);
+}

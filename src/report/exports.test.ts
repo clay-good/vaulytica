@@ -12,6 +12,8 @@ import {
 } from "./exports.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { DateReference, ExtractedData, Obligation } from "../extract/types.js";
+import { extractAll } from "../extract/index.js";
+import { buildTree } from "../extract/_fixtures.js";
 
 // --- fixtures ---------------------------------------------------------------
 
@@ -977,5 +979,43 @@ describe("the Markdown artifacts carry the honesty caveats", () => {
     // artifact it did before the parameter existed.
     expect(build(undefined)).toBe(build({ warnings: [], classification_notice: undefined }));
     expect(build(undefined)).not.toContain("About this input");
+  });
+});
+
+/**
+ * Two calendar errors a lender or an advisor would act on.
+ *
+ * A parenthetical definition names the date NEAREST it: "… beginning on May 1,
+ * 2026 and continuing … until April 1, 2031 (the "Maturity Date")". The anchor
+ * map took the FIRST date in the definition text and put the note's maturity
+ * on the first payment date, five years early.
+ *
+ * And a relative deadline in MONTHS was added as 30-day months: "twenty-four
+ * (24) months from the Effective Date" (June 1, 2026) landed on 2028-05-21, not
+ * 2028-06-01. The critical-dates register's `deriveDate` has done calendar
+ * arithmetic all along; the calendar export now uses it.
+ */
+describe("collectDeadlines — the date a definition names, and months as months", () => {
+  const events = (...paras: string[]) =>
+    collectDeadlines(extractAll(buildTree(["Agreement", ...paras]))).events.map(
+      (e) => `${e.iso} ${e.summary}`,
+    );
+
+  it("anchors a parenthetical defined date on the date nearest the term", () => {
+    const got = events(
+      'Borrower shall pay sixty installments beginning on May 1, 2026 and continuing on the first day of each month until April 1, 2031 (the "Maturity Date").',
+      "The unpaid balance bears default interest from the Maturity Date.",
+    );
+    expect(got).toContain("2031-04-01 Maturity Date");
+    expect(got).not.toContain("2026-05-01 Maturity Date");
+  });
+
+  it("adds calendar months, not 30-day months", () => {
+    const got = events(
+      'This Agreement is entered into as of June 1, 2026 (the "Effective Date").',
+      "The option will vest in equal monthly installments over twenty-four (24) months from the Effective Date.",
+    );
+    expect(got.some((e) => e.startsWith("2028-06-01 "))).toBe(true);
+    expect(got.some((e) => e.startsWith("2028-05-21 "))).toBe(false);
   });
 });
