@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. Format adap
 - **"at will" without a hyphen was read as the modal "will".** "Employment
   is at will: either party may end it at any time" printed the ledger row
   `Employment is at | will | : either the Employer or the Nanny may end it`.
-  9.656 fixed the hyphenated "at-will"; the unhyphenated predicate is just
+  9.653 fixed the hyphenated "at-will"; the unhyphenated predicate is just
   as common. Five nonsense rows leave the corpus: an executive employment
   agreement, a restrictive-covenant agreement, a PIP, a relocation
   agreement, and a second executive agreement.
