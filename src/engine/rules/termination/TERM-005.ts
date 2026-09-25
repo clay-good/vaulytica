@@ -106,6 +106,12 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // term, it does not state what termination does.
     `|\\b${TERMINATION_TRIGGER}\\b${SAME_SENTENCE}{0,220}\\b(?:ends?|ended|expires?|lapses?|resumes?|is\\s+released|are\\s+released|becomes?\\s+(?:void|null))\\b` +
     `|\\b(?:${CONSEQUENCE})\\b${SAME_SENTENCE}{0,120}\\b${TERMINATION_TRIGGER}\\b` +
+    // "AT the end of the Term, Lessee shall return the Equipment" is how an
+    // equipment lease, a rental and many licences state their wind-down, and
+    // the trigger above leads only on "on / upon / after / following". "at"
+    // is scoped to the end of the Term or of the instrument itself, so "at
+    // the end of each month, Provider shall deliver an invoice" stays out.
+    String.raw`|\bat\s+the\s+(?:end|expiration|expiry|termination)\s+(?:or\s+(?:earlier\s+)?termination\s+)?of\s+(?:the|this)\s+(?:(?:initial|renewal|rental|lease)\s+)?(?:term|${INSTRUMENT_NOUN})\b${SAME_SENTENCE}{0,160}?\b(?:${CONSEQUENCE})\b` +
     // "Customer shall pay for all Services performed … through the
     // termination date" — the pay-for-work-performed wind-down consequence
     // states what happens on termination without the "upon termination"
@@ -241,7 +247,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.21.0",
+  version: "1.22.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

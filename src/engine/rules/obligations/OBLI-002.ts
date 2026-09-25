@@ -56,6 +56,9 @@ const RECIPROCAL_PATTERNS = [
   { label: "warranties", pattern: /\bwarrant(?:y|ies)\b|\bwarrants?\s+that\b|\bwarranted\b/i },
 ] as const;
 
+const SUPPLIED_THING_WARRANTY =
+  /\bwarrants?\s+(?:to\s+\w+\s+)?that\s+(?:the|each|all|any|its)\s+(?:[\w-]+\s+){0,4}?(?:services?|software|products?|goods|media|equipment|work|deliverables?|materials|api|site|platform|units?)\b/i;
+
 /**
  * Role labels that name a POSITION either party can occupy, not a specific
  * party — a mutual NDA / BAA defines "Receiving Party" so that each side is the
@@ -106,7 +109,7 @@ function statedMutually(ctx: RuleContext, pattern: RegExp): boolean {
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -148,6 +151,12 @@ export const rule: Rule = {
         // governs is skipped, not just the first.
         const lead = o.action.slice(0, m.index);
         if (NEGATED_LIST.test(lead)) continue;
+        // A warranty OF THE THING SUPPLIED is the supplier's by nature, not a
+        // mutual term one side has left out: "Vendor warrants that the
+        // services will conform to the SOW", "Licensor warrants that the
+        // media … will be free from defects". The customer has nothing to
+        // warrant about the vendor's services.
+        if (label === "warranties" && SUPPLIED_THING_WARRANTY.test(o.raw_text)) continue;
         const o2 = o.obligor.toLowerCase().trim();
         // A generic reciprocal subject ("the parties", "each party") bearing the
         // obligation makes it mutual by construction — and such a subject is NOT

@@ -192,3 +192,30 @@ describe("OBLI-001 — a passive clause naming its agent is not ambiguous (v1.1.
     ).toBeNull();
   });
 });
+
+describe("OBLI-002 — a warranty of the thing supplied is the supplier's (v1.7.0)", () => {
+  const msa = (warranty: string) =>
+    OBLI002.check(
+      doc(
+        "Master Services Agreement",
+        'This Agreement is made between Northwind Systems Inc. ("Vendor") and Harbor Bank N.A. ("Customer").',
+        warranty,
+      ),
+    );
+
+  it("does not call a vendor's services warranty a one-sided mutual term", () => {
+    expect(
+      msa(
+        'Vendor warrants that the services will conform substantially to the applicable SOW for ninety (90) days following delivery (the "Warranty Period").',
+      ),
+    ).toBeNull();
+  });
+
+  it("still reports a one-sided warranty about the party itself", () => {
+    expect(
+      msa(
+        "Vendor warrants that it will maintain all licenses required to perform, and that its warranties survive termination.",
+      ),
+    ).not.toBeNull();
+  });
+});

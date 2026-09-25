@@ -112,7 +112,7 @@ const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+
 const CLAUSE_CHAR = String.raw`(?:[^,;.]|,(?=\d{3}(?!\d))|\.(?=\d))`;
 
 const TRIGGER_RE = new RegExp(
-  String.raw`\b(upon\s${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+|when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
+  String.raw`\b(upon\s${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+|(?<!\bas\s)when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
   "i",
 );
 
@@ -769,8 +769,20 @@ function frontedTrigger(subject: string): string | undefined {
   // subject follows it — not a fronted clause, and `stripFrontedAdverbial`
   // leaves it alone for the same reason.
   if (lastComma < 0 || !s.slice(lastComma + 1).trim()) return undefined;
-  return TRIGGER_RE.exec(s.slice(0, lastComma))?.[0]?.trim();
+  const adverbial = s.slice(0, lastComma);
+  // A TEMPORAL adverbial is the trigger whole, even when TRIGGER_RE knows none
+  // of its words: "At the end of the Term, Lessee shall return the Equipment",
+  // "On signing, Lessee shall pay a security deposit". Not a conditional or
+  // scope phrase ("Notwithstanding …", "To the extent …"), which is not a
+  // time.
+  return (
+    TRIGGER_RE.exec(adverbial)?.[0]?.trim() ??
+    (TEMPORAL_ADVERBIAL.test(adverbial) && !/[,;]/.test(adverbial) ? adverbial.trim() : undefined)
+  );
 }
+
+const TEMPORAL_ADVERBIAL =
+  /^(?:at\s+the\s+(?:end|expiration|expiry|termination|conclusion|beginning|start)\s+of|on|upon|after|before|following|during|until|beginning|commencing|promptly|immediately|no\s+later\s+than|not\s+later\s+than)\b/i;
 
 function stripFrontedAdverbial(subject: string): string {
   if (!FRONTED_ADVERBIAL.test(subject.trimStart())) return subject;
@@ -797,6 +809,9 @@ function stripFrontedAdverbial(subject: string): string {
 const LEADING_SUBORDINATOR =
   /^(?:that|which|whereby|whereupon)\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those)\s+\S|(?:it|he|she|they|we|you|neither)\b)/i;
 
+const DECLARANT =
+  /^([^,;]{1,60}?)\s+(?:hereby\s+)?(?:represents?|warrants?|certif(?:y|ies))(?:\s+and\s+(?:represents?|warrants?|certif(?:y|ies)|covenants?))?\s+(?:to\s+(?:the\s+)?\w+\s+)?that\s+\S/i;
+
 /** A modal, an auxiliary, a copula or a past participle: the mark of a clause. */
 const CLAUSE_VERB =
   /\b(?:shall|will|must|may|can|is|are|was|were|has|have|had|be|been|does|do|did|[a-z]{3,}ed)\b/i;
@@ -815,6 +830,26 @@ function resolveObligorInner(
   partyRoles: Set<string>,
 ): string {
   const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/);
+  // A WARRANTY is the warrantor's: "Lessor warrants that the Equipment will be
+  // in good working order on delivery" puts the Equipment before the modal,
+  // and the ledger printed "Lessor warrants that the Equipment" as the party
+  // who owes it. Not "acknowledges" or "agrees" — "Employee acknowledges that
+  // the Company will …" is the Company's duty.
+  // Only where the that-clause runs straight to the modal: "Each party
+  // represents that it has dealt with no broker other than X, whose commission
+  // Seller shall pay" is Seller's duty, reached through a relative clause. And
+  // not a DISCLAIMER ("Licensor does not represent or warrant that …") or a
+  // fronted phrase the declarant slot would swallow ("By accepting this offer
+  // you represent that …").
+  const declared = DECLARANT.exec(trimmed);
+  if (
+    declared &&
+    !/[,;]/.test(trimmed.slice(declared[0].length)) &&
+    !/\b(?:not|never|or)$/i.test(declared[1]!.trim()) &&
+    !/^(?:by|in|on|at|for|upon|after|if|when)\b/i.test(declared[1]!.trim())
+  ) {
+    return resolveObligorInner(declared[1]!, partyNames, partyRoles);
+  }
   const lower = trimmed.toLowerCase();
   // A compound subject naming TWO parties ("The Provider and the Customer shall
   // each …", "Acme Corp. and Globex Inc. shall jointly …") states a MUTUAL
@@ -827,20 +862,20 @@ function resolveObligorInner(
   if (segments.length >= 2) {
     const resolvedCount = segments.filter((seg) => {
       const t = seg.trim();
-      for (const name of partyNames) if (t.endsWith(name)) return true;
-      for (const role of partyRoles) if (t.endsWith(role) || t.endsWith(`the ${role}`)) return true;
+      for (const name of partyNames) if (endsWithWord(t, name)) return true;
+      for (const role of partyRoles) if (endsWithWord(t, role)) return true;
       return false;
     }).length;
     if (resolvedCount >= 2) return "the parties";
   }
   // Direct party-name match.
   for (const name of partyNames) {
-    if (lower.endsWith(name)) {
+    if (endsWithWord(lower, name)) {
       return findOriginalCasing(trimmed, name);
     }
   }
   for (const role of partyRoles) {
-    if (lower.endsWith(role) || lower.endsWith(`the ${role}`)) {
+    if (endsWithWord(lower, role)) {
       return findOriginalCasing(trimmed, role);
     }
   }
@@ -900,6 +935,17 @@ function resolveObligorInner(
   const words = trimmed.split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
   return words.slice(Math.max(0, words.length - 6)).join(" ");
+}
+
+/**
+ * `haystack` ends with `word` as a whole word. A bare `endsWith` read
+ * "Subcontractor warrants that the Work" as ending in the role "contractor",
+ * and the ledger gave the subcontractor's warranty to the contractor.
+ */
+function endsWithWord(haystack: string, word: string): boolean {
+  if (!haystack.endsWith(word)) return false;
+  const before = haystack.charAt(haystack.length - word.length - 1);
+  return before === "" || !/[\p{L}\p{N}]/u.test(before);
 }
 
 function findOriginalCasing(source: string, lowerNeedle: string): string {

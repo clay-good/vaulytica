@@ -1345,7 +1345,7 @@ describe("COMM-112 — the covenant as a drafter writes it", () => {
     rule("COMM-112").check(
       doc(
         "Equipment Lease",
-        "Lessor leases to Lessee the equipment described in Schedule A.",
+        "Lessor leases to Lessee the equipment described in Schedule A, which Lessor buys from the supplier Lessee selected.",
         covenant,
       ),
     );
@@ -1370,5 +1370,47 @@ describe("COMM-112 — the covenant as a drafter writes it", () => {
     expect(
       lease("Rent is payable monthly in advance on the first day of each month."),
     ).not.toBeNull();
+  });
+  // A RENTAL company leasing its own fleet supplies the goods, so it cannot
+  // designate a finance lease (§ 2A-103(1)(g)); it was told at CRITICAL to.
+  it("does not apply to a rental from the lessor's own fleet", () => {
+    expect(
+      rule("COMM-112").check(
+        doc(
+          "Equipment Lease",
+          "Lessor leases to Lessee the equipment described in Schedule 1. Lessor warrants that the Equipment will be in good working order on delivery.",
+          "Rent is payable monthly in advance. Lessee authorizes Lessor to file a precautionary UCC financing statement.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});
+
+/**
+ * An equipment RENTAL routed to the multi-tenant office lease. Titled
+ * "Equipment Lease Agreement", it matched `equipment-lease` on its title
+ * (0.6) and lost to `lease-commercial-multitenant` on "lease agreement" plus
+ * the "term" clause every lease has (0.7). Its schedule's stipulated loss
+ * values and serial numbers are what only an equipment lease carries.
+ */
+describe("equipment-lease routing", () => {
+  it("routes a rental with a stipulated-loss schedule to equipment-lease", async () => {
+    const r = await analyzeText(
+      [
+        "EQUIPMENT LEASE AGREEMENT",
+        "",
+        'This Equipment Lease Agreement is made between Ridgeway Equipment Rentals, Inc. ("Lessor") and Blue Heron Landscaping LLC ("Lessee").',
+        "",
+        "1. Term. The term of this Lease begins on April 6, 2026 and ends on April 5, 2029.",
+        "",
+        "2. Rent. Lessee shall pay rent of $2,150.00 per month, in advance, on the first day of each month.",
+        "",
+        "3. Loss. If any item of Equipment is lost, Lessee shall pay Lessor its stipulated loss value set out in Schedule 1.",
+        "",
+        "SCHEDULE 1 — Item 1: compact track loader, serial number KBCZ075CVK1A45102. Stipulated loss value: $68,000.",
+      ].join("\n"),
+      "equipment-rental.txt",
+    );
+    expect(r.run.playbook_id).toBe("equipment-lease");
   });
 });

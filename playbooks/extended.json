@@ -7482,7 +7482,9 @@
         "lessee's obligations are absolute",
         "equipment schedule",
         "quiet enjoyment",
-        "return of the equipment"
+        "return of the equipment",
+        "stipulated loss value",
+        "serial number"
       ],
       "negative_features": [
         "lease of the premises",

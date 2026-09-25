@@ -1201,3 +1201,44 @@ describe("extractObligations — an LLC agreement's obligors and carve-outs", ()
     expect(o!.obligor).toBe("A Member");
   });
 });
+
+describe("extractObligations — an equipment lease's triggers and obligors", () => {
+  const rows = (text: string, parties = extractParties(buildTree(["Lease", text]))) =>
+    extractObligations(buildTree(["Lease", text]), parties);
+
+  it("records a fronted 'At the end of the Term' as the trigger", () => {
+    const [o] = rows(
+      "At the end of the Term, Lessee shall return the Equipment to Lessor's facility in the same condition as when delivered, ordinary wear and tear excepted.",
+    );
+    expect(o!.trigger).toBe("At the end of the Term");
+    // "as when delivered" is a comparison, not a trigger, and stays in the action.
+    expect(o!.action).toContain("in the same condition as when delivered");
+  });
+
+  it("does not read a fronted scope phrase as a trigger", () => {
+    const [o] = rows(
+      "Notwithstanding anything to the contrary, Lessee shall keep the Equipment free of all liens.",
+    );
+    expect(o!.trigger).toBeUndefined();
+  });
+
+  it("gives a warranty to the warrantor", () => {
+    const [o] = rows(
+      "Lessor warrants that the Equipment will be in good working order on delivery.",
+    );
+    expect(o!.obligor).toBe("Lessor");
+  });
+
+  it("does not give a disclaimer's subject clause to the disclaiming party", () => {
+    const [o] = rows(
+      "Licensor does not represent or warrant that the Licensed Patents will be held valid.",
+    );
+    expect(o!.obligor).not.toBe("Licensor");
+  });
+
+  it("does not read the role 'Contractor' inside 'Subcontractor'", () => {
+    const text =
+      'This Subcontract is made between Apex Builders, Inc. ("Contractor") and Delta Electric LLC ("Subcontractor"). Subcontractor shall perform the Work in accordance with the Contract Documents.';
+    expect(rows(text).map((o) => o.obligor)).toEqual(["Subcontractor"]);
+  });
+});

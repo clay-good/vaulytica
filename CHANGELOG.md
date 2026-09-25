@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.768.0] — 2026-09-25
+
+### Fixed
+- 🚨 **Every subcontractor duty went to the contractor.** The obligations
+  ledger matched a party's role at the end of the subject with a bare
+  `endsWith`. "Subcontractor" ends in "contractor", so all 35 Subcontractor
+  obligations in `subcontract.txt` and `subcontract-complete.txt` named the
+  prime contractor, the other side of the contract. Party names and roles
+  now have to match as whole words.
+- **A clean equipment rental drew a CRITICAL it could not answer.**
+  - **Routing.** Titled "Equipment Lease Agreement", it scored 0.6 on
+    `equipment-lease` and lost 0.7 to the multi-tenant office lease, which
+    earns 0.4 for the "term" clause every lease has. `equipment-lease` now
+    also recognizes "stipulated loss value" and "serial number", the
+    schedule terms only an equipment lease carries.
+  - **COMM-112** (finance-lease designation and hell-or-high-water) then
+    told a rental company, at CRITICAL, to designate its lease a finance
+    lease. Under UCC § 2A-103(1)(g), a lessor that supplies the goods
+    cannot make that designation. The rule now applies only where the
+    document shows the three-party or financing structure: a supplier or
+    vendor, "leasing", a master lease, a purchase option, "absolute and
+    unconditional", hell or high water, or "finance"/"financing". A
+    precautionary UCC "financing statement" does not count.
+  - **TERM-005.** "At the end of the Term, Lessee shall return the
+    Equipment" is now read as an effect-of-termination clause. The "at" is
+    scoped to the end of the Term or the instrument, so "at the end of each
+    month" is not.
+- **The ledger's trigger column.** A fronted temporal phrase is now the
+  trigger: "At the end of the Term", "On termination", "During the Term and
+  for twelve (12) months afterward", "Before commencing litigation". In the
+  corpus, 94 empty triggers are filled and no existing trigger changes.
+  "In the same condition as when delivered" is no longer cut at "when
+  delivered".
+- **A warranty goes to the warrantor.** "Lessor warrants that the Equipment
+  will be in good working order" named "Lessor warrants that the Equipment"
+  as the obligor; 18 rows in the corpus now name the warrantor. This does
+  not apply to a disclaimer ("does not represent or warrant that"), to a
+  relative clause naming a different party, or to a fronted "By accepting
+  this offer, you represent".
+- **OBLI-002** no longer counts a warranty of the thing supplied ("Vendor
+  warrants that the services will conform …") as a one-sided mutual term.
+  The customer has nothing to warrant about the vendor's services. The
+  warrantor fix above would otherwise have added this finding to 24 golden
+  fixtures, including `eula-minimal-pass`.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.767.0] — 2026-09-25
 
 ### Fixed

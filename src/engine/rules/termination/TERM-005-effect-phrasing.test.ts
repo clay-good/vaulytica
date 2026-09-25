@@ -152,3 +152,27 @@ describe("TERM-005 reads the instrument by every one of its names", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-005 — 'at the end of the Term'", () => {
+  it("recognizes an equipment lease's return clause", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Return",
+          "At the end of the Term, Lessee shall return the Equipment to Lessor's facility in the same condition as when delivered.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("does not read a monthly cadence as a wind-down", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Invoices",
+          "At the end of each month, Provider shall deliver an invoice for the Services performed.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

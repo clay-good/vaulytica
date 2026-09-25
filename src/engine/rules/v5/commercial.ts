@@ -179,7 +179,7 @@ const EQUIPMENT_LEASE = pack("equipment-lease", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.2.0",
+    ver: "1.3.0",
     name: "Finance-lease designation and hell-or-high-water covenant",
     cite: ucc("2A-407", "Irrevocable promises: finance leases"),
     pat: [
@@ -196,6 +196,16 @@ const EQUIPMENT_LEASE = pack("equipment-lease", C, [
     ],
     why: "§ 2A-407 makes the lessee's promises irrevocable and independent only in a finance lease of goods that is not a consumer lease. Without the designation and the supporting language, the lessee keeps setoff and abatement rights the lessor's pricing assumed away.",
     fix: 'Designate the transaction a finance lease under § 2A-103(1)(g) and add: "Lessee\'s obligation to pay Rent is absolute and unconditional and is not subject to abatement, setoff, or counterclaim."',
+    // A FINANCE lease is one where the lessor does not select, manufacture or
+    // supply the goods (§ 2A-103(1)(g)) — a funder buys them from a supplier
+    // for the lessee. An equipment RENTAL company leasing its own fleet is the
+    // supplier, cannot make the designation, and was told at CRITICAL to make
+    // it. The rule applies where the document shows the three-party
+    // structure or financing language; "financing statement" (the
+    // precautionary UCC-1 every true lease files) is not financing language.
+    when: [
+      /\b(?:suppliers?|vendors?|leasing|master\s+(?:equipment\s+)?lease|purchase\s+option|absolute\s+and\s+unconditional|hell\s+or\s+high\s+water|financ(?:e|ing)\b(?!\s+statements?))/i,
+    ],
     sev: "critical",
   },
   {
