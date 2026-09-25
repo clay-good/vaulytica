@@ -744,7 +744,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1052,7 +1052,7 @@
       "id": "TEMP-004-s1.5-956",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1251,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "d4a402a3718ac224feb944b458799d72570ca5f074d9f14fa146657b94b58dc6",
+  "result_hash": "86d87100662804e3d48434090d0d80fda614d5919e4383b21973b72339d852d1",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.753.0"
+  "version": "9.754.0"
 }

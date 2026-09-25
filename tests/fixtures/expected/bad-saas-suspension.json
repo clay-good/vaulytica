@@ -738,7 +738,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1053,7 +1053,7 @@
       "id": "TEMP-004-s1.4-1175",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1175,11 +1175,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "7b3b6701e7a8f81d95fe9eac38df959c96ff263289206e7356e911c9dd17d4ae",
+  "result_hash": "6c94ce9a17dfab0f7a88be53accb20282693babee18e4edcf7c4f6b5d710318f",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.753.0"
+  "version": "9.754.0"
 }

@@ -1,11 +1,21 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, excerptWindow, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { fullText } from "../v4/_helpers.js";
 import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
+
+/**
+ * An EASY CANCELLATION PATH — what the recommendation says auto-renewal
+ * statutes require, and what the rule never looked for: a gym membership and
+ * a consumer terms of service that let the customer cancel online, at any
+ * time, drew the same warning as a renewal with no way out.
+ */
+const ONLINE_CANCELLATION =
+  /\bcancel\w*\b[^.]{0,120}\b(?:online|on\s+(?:our|the)\s+(?:website|site|app)|in\s+(?:your\s+)?(?:account|account\s+settings|the\s+app)|by\s+e-?mail)\b|\b(?:online|in\s+(?:your\s+)?account\s+settings)\b[^.]{0,60}\bcancel\w*\b/i;
 
 /** TEMP-004 — Auto-renewal present and parseable (warning). */
 export const rule: Rule = {
   id: "TEMP-004",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Auto-renewal present",
   category: "temporal",
   default_severity: "warning",
@@ -40,8 +50,12 @@ export const rule: Rule = {
       /(?:automatically|automatic)\s+(?:renew|renewal|extend)|(?<!\b(?:may|can|(?:shall|will|must)\s+have\s+the\s+right\s+to|elect\s+to|option\s+to|right\s+to)\s)renews?\s+(?:automatically\s+)?(?:for\s+|on\s+)?(?:an?\s+)?(?:successive|additional|further|one|two|three|annual|month-to-month|year-to-year|week-to-week|day-to-day)|(?:shall|will|must)\s+renew\s+(?:automatically|for)|auto-?renew|(?:renew|extend)\w*\s+automatically|rolls?\s+over\b[^.]{0,40}?(?:successive|additional|further|renew|term|period)|successive\s[^.]{0,30}?renewal\s+(?:terms?|periods?)|(?:is|remains?|be|on\s+an?)\s+evergreen\b|\bevergreen\s+(?:basis|term|renewal|contract|clause|provision)/i,
     );
     if (!hit) return null;
+    const easyExit = ONLINE_CANCELLATION.test(fullText(ctx));
     return emit(ctx, rule, {
-      title: "Auto-renewal clause present",
+      ...(easyExit ? { severity: "info" as const } : {}),
+      title: easyExit
+        ? "Auto-renewal clause present, with an online cancellation path"
+        : "Auto-renewal clause present",
       description: "The contract contains automatic-renewal language.",
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 200),
       explanation:

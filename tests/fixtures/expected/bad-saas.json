@@ -743,7 +743,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1094,7 +1094,7 @@
       "id": "TEMP-004-s1.3-634",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1276,11 +1276,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "977b41a898f0ee8b41fc764807eba652c29cfc1adf66ffb296fbd12637a526b5",
+  "result_hash": "7c95085cc5b1d88779ee116242883ef726ff30e0fff1fc71a437735907532ecc",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.753.0"
+  "version": "9.754.0"
 }

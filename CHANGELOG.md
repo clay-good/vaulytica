@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.754.0] — 2026-09-24
+
+### Fixed
+- **TEMP-004 warned about auto-renewals that give the customer an easy way
+  out.** Its recommendation says auto-renewal statutes require "an easy
+  cancellation path", and it never looked for one: a gym membership and a
+  consumer terms of service that let the customer cancel online, at any
+  time, drew the same warning as a renewal with no way out. Where the
+  document states an online, in-account or email cancellation path the
+  finding is now info — "Auto-renewal clause present, with an online
+  cancellation path". Two specimens move (an auto-renewal terms page and a
+  SaaS terms of service), both with a genuine online cancellation path.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.753.0] — 2026-09-24
 
 ### Changed
