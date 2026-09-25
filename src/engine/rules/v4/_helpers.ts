@@ -20,7 +20,7 @@ import type { Finding, Rule, RuleContext, Severity } from "../../finding.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
-import { findDenial, isNonOperative, isTableOfContents } from "../_helpers.js";
+import { distributeListModal, findDenial, isNonOperative, isTableOfContents } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
 import { isLegendLine } from "../../../extract/legends.js";
 import { truncate } from "../../text.js";
@@ -243,9 +243,13 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
           });
         }
       }
+      // Also read with a lettered list's modal distributed over its items
+      // (`distributeListModal`): "shall not (a) X; (b) Y" states "shall not Y".
+      const listed = distributeListModal(text);
+      const reads = (re: RegExp): boolean => re.test(text) || (listed !== text && re.test(listed));
       const present = spec.require_all_present
-        ? spec.present_patterns.every((re) => re.test(text))
-        : spec.present_patterns.some((re) => re.test(text));
+        ? spec.present_patterns.every(reads)
+        : spec.present_patterns.some(reads);
       if (present) return null;
       return makeFinding({
         rule: this as Rule,

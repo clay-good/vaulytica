@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.753.0] — 2026-09-24
+
+### Changed
+- **The lettered-list reading reaches every presence builder.** 9.752.0 taught
+  the regulated (v3) packs that "shall not (a) X; (b) Y; (c) Z" states "shall
+  not" of every item. The v4 packs and the v5 compliance-matrix packs check
+  their presence patterns the same way and had the same blindness; the helper
+  (`distributeListModal`, now in the shared rules helpers with its own unit
+  test) is read by all three. As before it only ever adds a reading, so no
+  finding can appear from it; across the goldens nothing moves.
+
 ## [9.752.0] — 2026-09-24
 
 ### Fixed

@@ -1304,3 +1304,22 @@ export function firstBadPatternHit(
   });
   return hit;
 }
+
+/**
+ * A LETTERED LIST UNDER ONE MODAL. "Service Provider shall not (a) Sell or
+ * Share the Personal Information; (b) retain, use, or disclose it for any other
+ * purpose; or (c) combine it with other personal information" is how a US
+ * state-privacy addendum is drafted, and every presence pattern wants the modal
+ * next to its verb — the "(a)" broke the first item and items (b) and (c) have
+ * no modal at all. A clean CCPA addendum was told at `critical` that it
+ * prohibits neither selling nor combining. The modal is distributed over the
+ * list; the presence check reads this form AS WELL AS the text as written, so
+ * nothing that matched before stops matching.
+ */
+export function distributeListModal(text: string): string {
+  return text.replace(
+    /\b((?:shall|will|may|must)(?:\s+not)?)\s*:?\s*\((?:a|i|1)\)\s*([^.]*)/gi,
+    (_m, modal: string, rest: string) =>
+      `${modal} ${rest.replace(/\((?:[a-z]|[ivx]{1,4}|\d{1,2})\)\s*/gi, `${modal} `)}`,
+  );
+}
