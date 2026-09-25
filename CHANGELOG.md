@@ -21,8 +21,9 @@ All notable changes to this project will be documented in this file. Format adap
     Landlord will return the deposit") was false the same way.
   - **RISK-001.** RISK-001's premise is "most commercial contracts
     allocate risk through an indemnification clause". A residential lease
-    is not a commercial contract, and California voids the clauses that
-    would shift a landlord's own negligence to a tenant (Civ. Code § 1953).
+    is not a commercial contract, and California voids a residential
+    tenant's waiver of future claims against the landlord and of the
+    landlord's standard of care (Civ. Code § 1953(a)).
     `lease-residential-us` now skips it. The two residential golden
     fixtures and the New York lease pin drop it.
 
