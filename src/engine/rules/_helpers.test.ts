@@ -9,6 +9,7 @@ import {
   isIncorporatedExhibit,
   isPresenceDisclaimed,
   expressDenial,
+  matchedSentence,
 } from "./_helpers.js";
 import type { RuleContext } from "../finding.js";
 import { buildContext } from "../_test-fixtures.js";
@@ -833,5 +834,24 @@ describe("amendsParentAgreement — 'forms part of' and a shouted self-name", ()
         ctxWith("The obligations of the Borrower are subject to the Senior Credit Agreement."),
       ),
     ).toBe(false);
+  });
+});
+
+describe("matchedSentence", () => {
+  it("returns the whole sentence the pattern matched in", () => {
+    const text =
+      "10. Termination. On termination, the Supplier shall return or destroy the Customer's confidential information. Fees stop accruing.";
+    const m = /On termination[\s\S]{0,80}?confidential/.exec(text)!;
+    expect(matchedSentence(text, m)).toBe(
+      "On termination, the Supplier shall return or destroy the Customer's confidential information.",
+    );
+  });
+
+  it("holds a long sentence to 280 characters and says so", () => {
+    const text = `Lessee shall ${"maintain the Equipment in good order and ".repeat(12)}return it.`;
+    const got = matchedSentence(text, /Lessee shall/.exec(text)!);
+    expect(got.endsWith("…")).toBe(true);
+    expect(got.length).toBeLessThan(310);
+    expect(text.includes(got.slice(0, -1))).toBe(true);
   });
 });

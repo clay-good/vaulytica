@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 
 /**
  * DARK-007 — Browsewrap / "by using the Service you agree" without
@@ -40,7 +40,7 @@ export const rule: Rule = {
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Browsewrap / passive-acceptance language",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. Assent to online terms is a question of state contract-formation law; the FTC's .com Disclosures guidance addresses clear-and-conspicuous advertising disclosures, not contract assent.",

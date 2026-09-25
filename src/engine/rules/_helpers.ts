@@ -368,6 +368,34 @@ export function enclosingSentence(paragraph: string, matchIndex: number): string
   return paragraph.slice(start, end);
 }
 
+/**
+ * The sentence a pattern matched in, for a finding's DESCRIPTION.
+ *
+ * 🚨 Forty rules printed `hit.match[0]` — the regex's own span — as the line
+ * under a finding's title, so the description began and ended wherever the
+ * pattern happened to: "On termination, the Supplier shall return or destroy
+ * the Customer's confidential" (TERM-007 stops at its data-object noun),
+ * "property insurance on the Equipment for its full replacement value, naming
+ * Lessor as loss payee, and (b) commercial general liability insurance of at
+ * least $1,000,000" (RISK-010, mid-list). A reader sees a sentence cut off.
+ *
+ * The enclosing sentence, held to 280 characters at a word boundary with a
+ * trailing ellipsis when it is longer — so the text is still one the document
+ * contains, and says so when it is shortened.
+ */
+export function matchedSentence(text: string, match: RegExpMatchArray): string {
+  const at = match.index ?? 0;
+  const sentence = enclosingSentence(text, at).trim();
+  // A sentence the pattern ran past (a cross-sentence window) keeps the match.
+  const base =
+    sentence.length >= match[0].trim().length && sentence.includes(match[0].trim())
+      ? sentence
+      : match[0].trim();
+  if (base.length <= 280) return base;
+  const cut = excerptWindow(base, 0, 0, 280);
+  return `${cut.replace(/[\s,;:]+$/, "")}…`;
+}
+
 /** Returns true if any classified paragraph belongs to `category`. */
 export function hasCategory(ctx: RuleContext, category: string): boolean {
   return ctx.extracted.classified.some((c) => c.category === category);

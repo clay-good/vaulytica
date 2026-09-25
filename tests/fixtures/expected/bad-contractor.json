@@ -867,7 +867,7 @@
   ],
   "findings": [
     {
-      "description": "on an individual basis only",
+      "description": "All disputes shall be resolved on an individual basis only and not as part of any class action.",
       "document_position": 1231,
       "excerpt": {
         "end_offset": 1258,
@@ -894,7 +894,7 @@
       "title": "Class-action waiver present"
     },
     {
-      "description": "shall not directly or indirectly compete",
+      "description": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California.",
       "document_position": 739,
       "excerpt": {
         "end_offset": 779,
@@ -981,7 +981,7 @@
       "title": "No IP-ownership clause detected"
     },
     {
-      "description": "shall not directly or indirectly compete",
+      "description": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California.",
       "document_position": 739,
       "excerpt": {
         "end_offset": 779,
@@ -1008,7 +1008,7 @@
       "title": "Non-compete clause present"
     },
     {
-      "description": "not disparage",
+      "description": "Contractor shall not disparage Company, its officers, or its products at any time.",
       "document_position": 890,
       "excerpt": {
         "end_offset": 903,
@@ -1116,7 +1116,7 @@
       "title": "No effect-of-termination clause detected"
     },
     {
-      "description": "Company may terminate this Agreement at any time",
+      "description": "Company may terminate this Agreement at any time in its sole discretion.",
       "document_position": 971,
       "excerpt": {
         "end_offset": 1019,
@@ -1206,11 +1206,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "92ce405ed7dbae5c37e93388974e89fdb1897c9f3f8eedcd56be273476892631",
+  "result_hash": "a219957527c765d52ee04053e1e4815e3f7ecf0555580c6d883427b73561a98c",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

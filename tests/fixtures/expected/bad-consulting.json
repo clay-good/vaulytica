@@ -901,7 +901,7 @@
       "title": "No IP-ownership clause detected"
     },
     {
-      "description": "shall not directly or indirectly compete",
+      "description": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer or perform services for any other party within the State of California.",
       "document_position": 910,
       "excerpt": {
         "end_offset": 950,
@@ -935,7 +935,7 @@
       "title": "Non-compete scope: for twelve (12) months, within the State of California"
     },
     {
-      "description": "shall not directly or indirectly compete",
+      "description": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer or perform services for any other party within the State of California.",
       "document_position": 910,
       "excerpt": {
         "end_offset": 950,
@@ -962,7 +962,7 @@
       "title": "Non-compete clause present"
     },
     {
-      "description": "not disparage",
+      "description": "Consultant shall not disparage Customer, its officers, or its products in any public or private communication.",
       "document_position": 1075,
       "excerpt": {
         "end_offset": 1088,
@@ -1177,11 +1177,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected consulting-agreement (score 1). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\", \"consulting services\", \"consultant\".",
-  "result_hash": "7198fe68150d43c89251d4f92f034a4b4d90a6720dda1d22f910deab60dd71a0",
+  "result_hash": "feab7de04f6ea91d5e01529c859fe4e191f081ec0b92ca9817e422e323275a9e",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

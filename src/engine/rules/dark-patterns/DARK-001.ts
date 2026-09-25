@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** DARK-001 — Unilateral modification right (warning). */
@@ -40,7 +40,7 @@ export const rule: Rule = {
     if (/\b(?:right\s+to\s+terminate|customer\s+may\s+terminate)\b/i.test(hit.text)) return null;
     return emit(ctx, rule, {
       title: "Unilateral right to modify terms",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 280),
       explanation:
         "A unilateral modification right without a corresponding customer termination right shifts re-pricing and re-negotiation power to the drafter.",

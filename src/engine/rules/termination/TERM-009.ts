@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { COUNTERPARTY_ROLE, INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -100,7 +100,7 @@ export const rule: Rule = {
 
     return emit(ctx, rule, {
       title: "Asymmetric termination-for-convenience",
-      description: convenienceHit.match[0],
+      description: matchedSentence(convenienceHit.text, convenienceHit.match),
       excerpt: convenienceHit.text.slice(
         Math.max(0, convenienceHit.match.index - 30),
         convenienceHit.match.index + 280,

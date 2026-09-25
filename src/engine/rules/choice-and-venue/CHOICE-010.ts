@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 
 // The waived right is usually introduced by a POSSESSIVE determiner — "waives
 // ITS right", "waives THE right", "waives HIS OR HER right" — not the bare
@@ -51,7 +51,7 @@ export const rule: Rule = {
     }
     return emit(ctx, rule, {
       title: "Asymmetric jury-trial waiver",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",

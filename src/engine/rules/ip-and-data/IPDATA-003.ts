@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** IPDATA-003 — License grant scope (info). */
@@ -32,7 +32,7 @@ export const rule: Rule = {
     }
     return emit(ctx, rule, {
       title: "License grant scope stated",
-      description: hit.match[0].slice(0, 240),
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 280),
       explanation:
         "Verify the four classic license dimensions: exclusive vs. non-exclusive, transferable vs. non-transferable, geographic territory, and term.",

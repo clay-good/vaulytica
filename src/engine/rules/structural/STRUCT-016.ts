@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { allMatches, emit, enclosingSentence, excerptWindow } from "../_helpers.js";
+import {
+  allMatches,
+  emit,
+  enclosingSentence,
+  excerptWindow,
+  matchedSentence,
+} from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
 
 // A reference the document itself carves out ("not part of this Agreement",
@@ -74,7 +80,7 @@ export const rule: Rule = {
       const first = urlMatches[0]!;
       return emit(ctx, rule, {
         title: "Incorporation by reference to a URL-hosted document",
-        description: first.match[0].slice(0, 240),
+        description: matchedSentence(first.text, first.match),
         excerpt: excerptWindow(first.text, first.match.index, 30, 320),
         explanation:
           "A clause that incorporates an Acceptable Use Policy, Privacy Policy, SLA, Documentation, or similar by URL makes the linked page part of the binding agreement. Because the vendor controls the page, the vendor can change the contract unilaterally by updating it. This compounds the 'post-and-pray' amendment risk (see DARK-009).",

@@ -918,7 +918,7 @@
       "title": "Indemnification without aggregate cap"
     },
     {
-      "description": "shall maintain commercial general liability insurance",
+      "description": "Tenant shall maintain commercial general liability insurance during the Term.",
       "document_position": 2375,
       "excerpt": {
         "end_offset": 2428,
@@ -1089,11 +1089,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "a834b0a4180ebcdfbb868701c2f9147652db9797fa14f8872ba71f722661dc92",
+  "result_hash": "954e35f06eb1f76a0d4515fd9852b9426dba5c6c5299d2d5df990e1c394f1856",
   "source_file": {
     "name": "bad-lease-cam.docx",
     "sha256": "1de7804edf376ad66d1a78b0c998aa4a479a18835fa4e104e20057385337a0b6",
     "size_bytes": 9885
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
 
 /**
@@ -52,7 +52,7 @@ export const rule: Rule = {
     }
     return emit(ctx, rule, {
       title: "Asymmetric pre-suit notice / cure window",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "A pre-suit notice or cure window imposed on one party (typically the consumer / customer / employee) but not on the drafter compresses the affected party's ability to act quickly — by the time the notice period expires, evidence has aged and pressure to settle has built. The drafter, meanwhile, can initiate proceedings without warning. Confirm whether the asymmetry is a legitimate dispute-resolution structure (e.g., an MSA's 'cure for material breach' provision) or a one-sided friction gate.",

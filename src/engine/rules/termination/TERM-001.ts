@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
 import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
 import { truncate } from "../../text.js";
 
@@ -43,7 +43,7 @@ export const rule: Rule = {
     const days = countValue(hit.match[1] ?? hit.match[2] ?? "");
     return emit(ctx, rule, {
       title: `Termination for convenience: ${days} days' notice`,
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 240),
       explanation:
         "Termination for convenience permits exit without cause; the notice period determines how quickly the parties can unwind.",

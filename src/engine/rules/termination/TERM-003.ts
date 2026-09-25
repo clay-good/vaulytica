@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** Every party granted a termination-for-convenience right in `text`. */
@@ -57,7 +57,7 @@ export const rule: Rule = {
     if (countConvenienceGrantees(oneSided.text) >= 2) return null;
     return emit(ctx, rule, {
       title: "Only one party may terminate for convenience",
-      description: oneSided.match[0].slice(0, 200),
+      description: matchedSentence(oneSided.text, oneSided.match),
       excerpt: truncate(oneSided.text, 240),
       explanation:
         "An asymmetric termination-for-convenience right is sometimes intentional (e.g., paid-up vendors), but the asymmetry should be deliberate.",

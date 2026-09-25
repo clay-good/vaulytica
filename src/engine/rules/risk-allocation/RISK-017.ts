@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 
 /**
  * RISK-017 — One-way attorneys'-fees clause (warning).
@@ -97,7 +97,7 @@ export const rule: Rule = {
     if (asymHit) {
       return emit(ctx, rule, {
         title: `Asymmetric attorneys'-fees award (only to ${(asymHit[1] ?? "").replace(/^the\s+/i, "")})`,
-        description: m.match[0],
+        description: matchedSentence(m.text, m.match),
         excerpt: excerptWindow(para, m.match.index, 30, 280),
         explanation:
           "An attorneys'-fees award flowing in only one direction is enforceable in most US jurisdictions but is widely recognized as unbalanced drafting. A handful of states (California Civ. Code § 1717, Florida Stat. § 57.105(7), Oregon ORS 20.096, Washington RCW 4.84.330) statutorily convert one-way clauses into mutual ones — a sign that the legislative consensus treats one-way fee shifters as inherently unfair.",

@@ -885,7 +885,7 @@
       "title": "Out-of-state choice-of-law on California-based party"
     },
     {
-      "description": "shall not directly or indirectly compete",
+      "description": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America.",
       "document_position": 704,
       "excerpt": {
         "end_offset": 744,
@@ -965,7 +965,7 @@
       "title": "Negative covenants: 1"
     },
     {
-      "description": "shall not directly or indirectly compete",
+      "description": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America.",
       "document_position": 704,
       "excerpt": {
         "end_offset": 744,
@@ -1002,11 +1002,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "ea603f87bc42d3b8599c6d0a6acf72590d3480580380e7c6bdb2a0595bacbf56",
+  "result_hash": "2e9c296cf4ccc49e2c26f184cb2208de3cf888bd0d37872cf6681a007c5d76a2",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

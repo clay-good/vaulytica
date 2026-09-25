@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.785.0] — 2026-09-25
+
+### Fixed
+- **Forty-five rules printed a regex's span as a finding's description.** The
+  line under a finding's title, the first thing a reader sees on every
+  surface, was `hit.match[0]`. It began and ended wherever the pattern
+  did. Reading a clean Australian services agreement's DOCX report found
+  TERM-007's "On termination, the Supplier shall return or destroy the
+  Customer's confidential". The pattern stops at its data-object noun, and
+  a duty the Customer owes in the same sentence was cut away. RISK-010
+  stopped mid-list; RISK-007 began mid-sentence.
+  - One helper, `matchedSentence`, now returns the enclosing sentence. A
+    sentence longer than 280 characters is cut at a word boundary with a
+    trailing ellipsis, so it is still text the document contains and says
+    so when shortened.
+  - All 45 call sites use it: the dark-pattern, termination, risk,
+    personnel, IP/data, obligations, choice and structural rules.
+  - `description-is-a-sentence.test.ts` closes the class. A rule that
+    prints `.match[0]` as its description fails the build. The first
+    codemod missed five camelCase call sites (`oneSided`, `noRepair`,
+    `convenienceHit`, `b2`), and the sweep found them.
+
+Goldens: 370 rewritten; `golden:churn` reports 0 changed finding sets. The
+descriptions change, the findings do not.
+
 ## [9.784.0] — 2026-09-25
 
 ### Fixed

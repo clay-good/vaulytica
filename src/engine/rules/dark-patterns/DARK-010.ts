@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import {
+  emit,
+  excerptWindow,
+  firstParagraphMatch,
+  isPresenceDisclaimed,
+  matchedSentence,
+} from "../_helpers.js";
 
 /**
  * DARK-010 — Residential-lease waiver of the implied warranty of
@@ -47,7 +53,7 @@ export const rule: Rule = {
     if (waiver && !isPresenceDisclaimed(waiver.text, waiver.match.index)) {
       return emit(ctx, rule, {
         title: "Waiver of the implied warranty of habitability",
-        description: waiver.match[0],
+        description: matchedSentence(waiver.text, waiver.match),
         excerpt: excerptWindow(waiver.text, waiver.match.index, 30, 280),
         explanation:
           "In a residential tenancy the implied warranty of habitability cannot be waived — the landlord must keep the premises fit for human habitation (Javins v. First National Realty; state residential landlord-tenant acts). A lease term purporting to waive it is void and unenforceable, and inserting it imposes an illegal term on the tenant.",
@@ -76,7 +82,7 @@ export const rule: Rule = {
       }
       return emit(ctx, rule, {
         title: "Landlord relieved of the duty to maintain a habitable premises",
-        description: noRepair.match[0],
+        description: matchedSentence(noRepair.text, noRepair.match),
         excerpt: noRepair.text.slice(
           Math.max(0, noRepair.match.index - 30),
           noRepair.match.index + 280,
@@ -108,7 +114,7 @@ export const rule: Rule = {
       }
       return emit(ctx, rule, {
         title: "Disclaimer of the implied warranty of habitability",
-        description: denial.match[0],
+        description: matchedSentence(denial.text, denial.match),
         excerpt: excerptWindow(denial.text, denial.match.index, 30, 280),
         explanation:
           "Denying that any warranty of habitability is made or given ('Landlord makes no warranty of habitability') is an unenforceable attempt to disclaim the non-waivable implied warranty of habitability in a residential tenancy (Javins v. First National Realty; state residential landlord-tenant acts). The duty to keep a residential premises habitable cannot be disclaimed by lease.",

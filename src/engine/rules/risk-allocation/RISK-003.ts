@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** RISK-003 — Indemnity cap present (info). */
@@ -36,7 +36,7 @@ export const rule: Rule = {
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Indemnity cap stated",
-      description: hit.match[0].slice(0, 240),
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 240),
       explanation:
         "A cap on indemnity exposure is stated. Verify it is reasonable for the deal size.",

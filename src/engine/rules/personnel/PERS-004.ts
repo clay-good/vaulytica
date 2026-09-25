@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** Limited to the people who worked on the engagement. */
@@ -51,7 +51,7 @@ export const rule: Rule = {
     if (/\bsolicit/i.test(hit.match[0]) && NARROWED.test(hit.text) && BOUNDED.test(hit.text)) {
       return emit(ctx, rule, {
         title: "Employee non-solicit limited to engagement personnel",
-        description: hit.match[0],
+        description: matchedSentence(hit.text, hit.match),
         excerpt: truncate(hit.text, 280),
         severity: "info",
         explanation:
@@ -63,7 +63,7 @@ export const rule: Rule = {
     }
     return emit(ctx, rule, {
       title: "Anti-poaching / no-hire clause present",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 280),
       explanation:
         "Naked no-poach agreements between competing employers can violate Sherman Act § 1 (15 U.S.C. § 1). DOJ has prosecuted no-poach agreements between competitors.",

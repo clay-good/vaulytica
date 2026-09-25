@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 
 /**
  * DARK-015 — Waiver of non-waivable Article 9 debtor protections (critical,
@@ -101,7 +101,7 @@ export const rule: Rule = {
     if (SAVED_BY_LAW.test(hit.text)) return null;
     return emit(ctx, rule, {
       title: "Waiver of non-waivable Article 9 protections",
-      description: hit.match[0].trim().slice(0, 200),
+      description: matchedSentence(hit.text, hit.match),
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "U.C.C. § 9-602 lists the debtor protections a security agreement may not waive: the breach-of-the-peace limit on self-help repossession (§ 9-609), commercial reasonableness of the disposition (§ 9-610(b)), notification of the disposition (§§ 9-611, 9-613 and 9-614), the right to redeem the collateral (§ 9-623), the calculation of a deficiency or surplus (§ 9-615(c), (d), (f)), and the remedies for noncompliance (§§ 9-625 to 9-626). A clause purporting to waive them is void as to those rights, and a secured party that repossesses or sells in reliance on it risks losing its deficiency altogether.",

@@ -863,7 +863,7 @@
   ],
   "findings": [
     {
-      "description": "license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning",
+      "description": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…",
       "document_position": 662,
       "excerpt": {
         "end_offset": 876,
@@ -943,7 +943,7 @@
       "title": "No IP-ownership clause detected"
     },
     {
-      "description": "grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developi",
+      "description": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…",
       "document_position": 598,
       "excerpt": {
         "end_offset": 604,
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "5d4eb2e021d582696c090fbc73560a5173b0ab9971ea99f11fec6383cd99912f",
+  "result_hash": "b1c3cfbd90c0585c82d1c4dce21e7ea4cc766e0f85c171afcba731d6831d3d74",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

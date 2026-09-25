@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** CHOICE-008 — Jury trial waiver (info). */
@@ -28,7 +28,7 @@ export const rule: Rule = {
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Jury trial waiver present",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 240),
       explanation:
         "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",

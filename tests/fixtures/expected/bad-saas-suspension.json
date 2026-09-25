@@ -925,7 +925,7 @@
       "title": "Auto-renewal with notice window buried or long"
     },
     {
-      "description": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion",
+      "description": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion that Customer has breached this Agreement or that continued access poses a risk to Vendor or its other customers.",
       "document_position": 144,
       "excerpt": {
         "end_offset": 293,
@@ -1175,11 +1175,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "6ac176f2b06f012002e6a4a2b7266e2c143772eabaa1eb0df8182fd541e2cf2c",
+  "result_hash": "857f66ba96f5ac0d9043e741aa11288cdbc03f0a6b31f86876bef7400983cae4",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

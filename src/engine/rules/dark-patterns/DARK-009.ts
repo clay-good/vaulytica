@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, excerptWindow, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 
 /**
  * DARK-009 — Unilateral amendment by posting to a URL (warning,
@@ -72,7 +72,7 @@ export const rule: Rule = {
     if (a && !compliantNotice) {
       return emit(ctx, rule, {
         title: "Unilateral amendment by posting to a URL",
-        description: a.match[0],
+        description: matchedSentence(a.text, a.match),
         excerpt: excerptWindow(a.text, a.match.index, 30, 320),
         explanation:
           "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. Cal. Bus. & Prof. Code § 17602 requires clear and conspicuous notice of a material change and how to cancel — not affirmative consent. ROSCA regulates negative-option billing, not unilateral amendment; the FTC has challenged retroactive material changes under Section 5. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
@@ -107,7 +107,7 @@ export const rule: Rule = {
     if (b2) {
       return emit(ctx, rule, {
         title: "Continued-use-as-acceptance amendment clause",
-        description: b2.match[0],
+        description: matchedSentence(b2.text, b2.match),
         excerpt: excerptWindow(b2.text, b2.match.index, 30, 320),
         explanation:
           "A clause that deems continued use of the service to be acceptance of unilateral amendments has been criticized as illusory: the party 'consenting' has no real notice and no real ability to refuse without disrupting their business. The FTC has challenged retroactive material changes under Section 5.",

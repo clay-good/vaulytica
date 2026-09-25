@@ -1049,7 +1049,7 @@
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
     },
     {
-      "description": "indemnify, and hold harmless Customer from any claim that the Services infringe",
+      "description": "Provider shall defend, indemnify, and hold harmless Customer from any claim that the Services infringe any third-party intellectual property right, and shall pay all damages and costs awarded.",
       "document_position": 207,
       "excerpt": {
         "end_offset": 286,
@@ -1084,7 +1084,7 @@
       "title": "Defined terms with no uses: 1"
     },
     {
-      "description": "transition assistance",
+      "description": "Within thirty (30) days of any termination, Vendor shall, at no additional cost to Customer, deliver Customer Data in such file formats and schemas as Customer may reasonably request and provide such transition assistance as Customer deems necessary.",
       "document_position": 703,
       "excerpt": {
         "end_offset": 724,
@@ -1104,11 +1104,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "77dda503ec96be260e381e438403972eda9a8f32452160271020d176f0443394",
+  "result_hash": "6ae1133ffa3b204e3316b4bcc7a584ac0711ae2581748492be2856e8cf5378e3",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
 import { truncate } from "../../text.js";
 
@@ -32,7 +32,7 @@ export const rule: Rule = {
     if (!hit) return null;
     return emit(ctx, rule, {
       title: "Confidentiality term length stated",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 240),
       explanation:
         "Typical post-termination confidentiality terms run 3–5 years for general information, with a perpetual duty for trade secrets. Verify the term matches the sensitivity of the information.",

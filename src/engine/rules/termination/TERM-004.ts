@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
 /** TERM-004 — Notice of termination form requirement (info). */
@@ -26,7 +26,7 @@ export const rule: Rule = {
     if (isPresenceDisclaimed(hit.text, kwIndex)) return null;
     return emit(ctx, rule, {
       title: "Termination notice form specified",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: truncate(hit.text, 240),
       explanation:
         "The required form of termination notice (writing, certified mail, email) determines whether a notice is effective. Verify the chosen form is reasonable and feasible.",

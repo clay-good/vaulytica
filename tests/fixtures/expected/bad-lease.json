@@ -887,7 +887,7 @@
       "title": "Unfilled template placeholders: 1"
     },
     {
-      "description": "Tenant hereby waives any right to trial by jury",
+      "description": "Tenant hereby waives any right to trial by jury in any action arising from this Lease.",
       "document_position": 1168,
       "excerpt": {
         "end_offset": 1215,
@@ -905,7 +905,7 @@
       "title": "Asymmetric jury-trial waiver"
     },
     {
-      "description": "Tenant shall provide Landlord at least 60 days written notice of any claim before initiating suit",
+      "description": "Tenant shall provide Landlord at least 60 days written notice of any claim before initiating suit.",
       "document_position": 1069,
       "excerpt": {
         "end_offset": 1166,
@@ -995,7 +995,7 @@
       "title": "Indemnification without aggregate cap"
     },
     {
-      "description": "shall maintain commercial general liability insurance",
+      "description": "Tenant shall maintain commercial general liability insurance during the Term.",
       "document_position": 843,
       "excerpt": {
         "end_offset": 896,
@@ -1222,7 +1222,7 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "waives any right to trial by jury",
+      "description": "Tenant hereby waives any right to trial by jury in any action arising from this Lease.",
       "document_position": 1182,
       "excerpt": {
         "end_offset": 1215,
@@ -1276,11 +1276,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "7e1a1a514bb626a1b2f6a257b864bd7371730237bf0a214f4c534dbe22d66f48",
+  "result_hash": "83a2b37e1762db0b54387d973a6735ff545eaa27d3a5ba8b48dfe601a98888df",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

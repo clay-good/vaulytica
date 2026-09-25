@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import {
+  emit,
+  excerptWindow,
+  firstParagraphMatch,
+  isPresenceDisclaimed,
+  matchedSentence,
+} from "../_helpers.js";
 import { fullText } from "../v4/_helpers.js";
 
 /**
@@ -93,7 +99,7 @@ export const rule: Rule = {
       title: covered
         ? "Non-disparagement clause present, with protected-activity carve-outs"
         : "Non-disparagement clause present",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
       explanation:
         "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's McLaren Macomb decision (Feb 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1); it remains Board law, though the General Counsel's 2023 enforcement guidance was rescinded in February 2025 (GC 25-05). SEC Rule 21F-17 separately prohibits any action, including enforcing or threatening to enforce a confidentiality agreement, that impedes communicating with the SEC about a possible securities violation. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible." +

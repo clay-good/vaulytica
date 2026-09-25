@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { MODAL_QUALIFIER, OBLIGATION_MODAL } from "../_helpers.js";
+import { MODAL_QUALIFIER, OBLIGATION_MODAL, matchedSentence } from "../_helpers.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 import { truncate } from "../../text.js";
 
@@ -59,7 +59,7 @@ export const rule: Rule = {
     if (/\bprevailing\s+party\b/i.test(oneSided.text)) return null;
     return emit(ctx, rule, {
       title: "One-way attorneys' fee-shifting",
-      description: oneSided.match[0],
+      description: matchedSentence(oneSided.text, oneSided.match),
       excerpt: truncate(oneSided.text, 280),
       explanation:
         "Fee-shifting that runs only one way stacks the cost of disputes asymmetrically. The standard 'prevailing party' formulation runs both ways.",

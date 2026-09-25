@@ -863,7 +863,7 @@
   ],
   "findings": [
     {
-      "description": "waives any right to bring or participate in any class, collective, or representative action",
+      "description": "Employee waives any right to bring or participate in any class, collective, or representative action.",
       "document_position": 1208,
       "excerpt": {
         "end_offset": 1299,
@@ -890,7 +890,7 @@
       "title": "Class-action waiver present"
     },
     {
-      "description": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay",
+      "description": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost…",
       "document_position": 280,
       "excerpt": {
         "end_offset": 538,
@@ -908,7 +908,7 @@
       "title": "Training-repayment / stay-or-pay clause"
     },
     {
-      "description": "Employee hereby waives any right to a trial by jury",
+      "description": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement.",
       "document_position": 1301,
       "excerpt": {
         "end_offset": 1352,
@@ -1084,7 +1084,7 @@
       "title": "Arbitration clause present"
     },
     {
-      "description": "waives any right to a trial by jury",
+      "description": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement.",
       "document_position": 1317,
       "excerpt": {
         "end_offset": 1352,
@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "fac841d2398f545e1b3db3ebba283a07d04423e683b80c3d4f9b3df78e257db7",
+  "result_hash": "08225e37689b472915d56b62ab3380a685c06fd2964f3cf82fa59757d0c2fde9",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

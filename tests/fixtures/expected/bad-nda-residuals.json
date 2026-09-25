@@ -895,7 +895,7 @@
       "title": "No IP-ownership clause detected"
     },
     {
-      "description": "Residuals",
+      "description": "Notwithstanding anything herein to the contrary, Recipient and its Representatives shall be free to use for any purpose the Residuals resulting from access to or work with Confidential Information, where \"Residuals\" means information in non-tangible form which may be retained in…",
       "document_position": 697,
       "excerpt": {
         "end_offset": 706,
@@ -1032,11 +1032,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "75418ac54536443699b7bf4f71494dc37c676659db84792945dbe19534cb0398",
+  "result_hash": "3a2a4a01aead4befa7137a798f8e2c67ab92a27f9807b8e8e924c8e43e127be8",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.784.0"
+  "version": "9.785.0"
 }

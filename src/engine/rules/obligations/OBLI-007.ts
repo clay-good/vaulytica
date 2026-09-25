@@ -5,6 +5,7 @@ import {
   excerptWindow,
   firstParagraphMatch,
   isPresenceDisclaimed,
+  matchedSentence,
 } from "../_helpers.js";
 
 /**
@@ -50,7 +51,7 @@ export const rule: Rule = {
     }
     return emit(ctx, rule, {
       title: "Material Adverse Change clause present",
-      description: hit.match[0],
+      description: matchedSentence(hit.text, hit.match),
       excerpt: excerptWindow(hit.text, hit.match.index, 40, 280),
       explanation:
         "A MAC / MAE clause lets one party terminate or refuse to close based on a qualitative judgment about the other party's business. The Delaware Chancery Court has historically set a very high bar (Akorn v. Fresenius is the first published MAC win in a public M&A deal), but the cost-of-litigation alone is meaningful. Confirm the definition is bounded (specific carve-outs for industry-wide events, market conditions, pandemic-style risks where relevant) and that the trigger threshold is intentional.",
