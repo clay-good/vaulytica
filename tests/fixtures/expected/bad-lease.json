@@ -22,7 +22,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1207,7 +1207,7 @@
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1276,11 +1276,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "5f12a268a12b95ddf3cdbce00f65f28b0fb707afe174f8f1d3e4de8cd846c3b3",
+  "result_hash": "e0363405c2315f36b1b3646c9c0d748478bfca7c908313633e8c9f119f979443",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.744.0"
+  "version": "9.745.0"
 }

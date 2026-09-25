@@ -571,3 +571,43 @@ describe('SET-015 — "(if applicable)" is now in the logic (v1.1.0)', () => {
     ).toContain("SET-015");
   });
 });
+
+/**
+ * SET-009's categories — § 104 physical injury, W-2 wages, emotional distress —
+ * are an individual's. Two companies settling a contract claim have nothing to
+ * allocate, and a clean commercial settlement was told at `warning` to add a
+ * tax-allocation clause.
+ */
+describe("SET-009 — tax allocation applies to an individual's claim", () => {
+  const set009 = SETTLEMENT_RULES.find((r) => r.id === "SET-009")!;
+  const pb: Playbook = { id: "confidential-settlement", version: "1.0.0" };
+  const doc = (release: string) =>
+    withPb(
+      buildContext([
+        "Settlement Agreement and Mutual Release",
+        "Tamarack shall pay Brookfield $125,000 within fifteen business days.",
+        release,
+      ]),
+      pb,
+    );
+
+  it("is silent on a company-to-company contract settlement", () => {
+    expect(
+      set009.check(
+        doc(
+          "Each party releases the other and its officers, directors, employees and agents from all claims arising out of the Services Agreement.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on an employment settlement with no allocation", () => {
+    expect(
+      set009.check(
+        doc(
+          "Employee releases the Company from all claims arising out of Employee's employment, including claims for wages.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

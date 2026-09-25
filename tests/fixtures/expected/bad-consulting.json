@@ -22,7 +22,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -1081,7 +1081,7 @@
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.2.0",
+      "rule_version": "1.3.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1177,11 +1177,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected consulting-agreement (score 1). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\", \"consulting services\", \"consultant\".",
-  "result_hash": "8de820bed57d3131ecac52041a4911078f7c269bf93dc2e044df3352ed275a73",
+  "result_hash": "24ee37c3da9010a633051bb67cf1864a2019329cb1e15e8dba45c608d8528969",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.744.0"
+  "version": "9.745.0"
 }

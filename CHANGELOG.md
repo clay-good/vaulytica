@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.745.0] — 2026-09-24
+
+### Fixed
+A clean commercial settlement agreement drew a warning and an info finding;
+it now draws neither.
+
+- **SET-009 told two companies to allocate their settlement payment for
+  tax.** Its categories — § 104 physical-injury damages, W-2 back wages,
+  emotional distress — are an individual's; a freight-contract or
+  warranty settlement between companies has nothing to allocate. The rule
+  now applies where the document carries such a claim (employment, wages,
+  personal or bodily injury, emotional distress, discrimination,
+  harassment, wrongful termination, Title VII / ADEA / FLSA / ADA / FEHA),
+  the same kind of gate SET-010 already has. "Employees" alone is not one:
+  every release lists "officers, directors, employees and agents". The
+  settlement specimen's pin had been carrying the finding.
+- **CHOICE-003 said a settlement states no venue.** "The Court shall retain
+  jurisdiction to enforce this Agreement" is a settlement's forum clause —
+  the court is the one the recitals name, and retention is what lets a
+  federal court enforce a settlement after dismissal (*Kokkonen v. Guardian
+  Life*, 511 U.S. 375 (1994)).
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+2 changed finding sets, both SET-009 leaving a v4 settlement golden between
+two companies (Acme Health LLC and Globex Services Inc.) — read, and correct.
+
 ## [9.744.0] — 2026-09-24
 
 ### Fixed

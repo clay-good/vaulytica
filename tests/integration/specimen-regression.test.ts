@@ -1523,9 +1523,12 @@ export const EXPECTED: Record<string, Expectation> = {
   "will.txt": { playbook: "last-will-and-testament", findings: ["EST-060"] },
 
   // A confidential settlement agreement enforceable in a named federal court.
+  // SET-009 left this row in 9.745.0: two companies settling a warranty claim
+  // have no wages or injury damages to allocate for tax, and the pin had been
+  // carrying the finding.
   "settlement.txt": {
     playbook: "confidential-settlement",
-    findings: ["OBLI-005", "SET-009", "TEMP-008"],
+    findings: ["OBLI-005", "TEMP-008"],
   },
 
   // A desktop EULA that recites FAR 12.212's quoted phrase.

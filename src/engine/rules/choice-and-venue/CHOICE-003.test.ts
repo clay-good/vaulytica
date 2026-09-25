@@ -31,3 +31,24 @@ describe("CHOICE-003 — venue / forum clause present", () => {
     expect(CHOICE_003.check(ctx)).not.toBeNull();
   });
 });
+
+/**
+ * A settlement names its forum by RETAINED jurisdiction: "The Court shall
+ * retain jurisdiction to enforce this Agreement" — the court is the one the
+ * recitals name, and retention is what lets a federal court enforce a
+ * settlement after dismissal (Kokkonen v. Guardian Life, 511 U.S. 375). A clean
+ * commercial settlement was told it states no venue.
+ */
+describe("CHOICE-003 — retained enforcement jurisdiction is a forum clause", () => {
+  it("is silent on 'The Court shall retain jurisdiction to enforce this Agreement'", () => {
+    expect(
+      CHOICE_003.check(
+        buildContext([
+          "Settlement Agreement",
+          "The parties shall file a stipulation dismissing the Action with prejudice.",
+          "The Court shall retain jurisdiction to enforce this Agreement.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

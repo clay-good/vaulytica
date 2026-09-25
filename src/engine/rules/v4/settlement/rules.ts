@@ -330,6 +330,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-009",
+    version: "1.1.0",
     name: "Tax allocation / IRS Form 1099 / W-2 treatment",
     description:
       "Settlement of employment / personal-injury / contract claims should allocate payment among taxable categories.",
@@ -348,6 +349,20 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /(1099|w.?2|w2|form\s+1099|tax\s+(allocation|treatment))/i,
       /(internal\s+revenue\s+code|irc\s+§|section\s+104)/i,
+    ],
+    // The categories this rule allocates among — § 104 physical injury, W-2
+    // wages, emotional distress — are an INDIVIDUAL's. Two companies settling
+    // a freight contract or a turbine-housing warranty claim have nothing to
+    // allocate: the payment is ordinary business income to the recipient. The
+    // gate is the claim that makes allocation matter; "employees" alone is not
+    // one (every release lists "officers, directors, employees and agents").
+    applicable_if: [
+      /\bemployment\b/i,
+      /\b(?:back\s+pay|front\s+pay|wages?|overtime|severance)\b/i,
+      /\b(?:personal|bodily|physical)\s+injur/i,
+      /\bemotional\s+distress\b|\bpain\s+and\s+suffering\b/i,
+      /\bdiscriminat|\bharassment\b|\bretaliation\b|\bwrongful\s+(?:termination|discharge|death)\b/i,
+      /\b(?:title\s+vii|ADEA|FLSA|ADA|FEHA)\b/i,
     ],
     default_severity: "warning",
   }),
