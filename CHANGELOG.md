@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.774.0] — 2026-09-25
+
+### Fixed
+- **Obligors that began inside an earlier clause.** When the subject
+  reached back past a comma into the previous clause, the ledger named the
+  fragment instead of the party:
+  - "…to all interested persons, a Party";
+  - "…to comply with discovery, the court";
+  - "…days after the Effective Date, Defendants";
+  - "…is held invalid or unenforceable, it".
+
+  The noun phrase after the last comma is now the obligor. It must be up
+  to four words and open on a determiner, a pronoun or a capital. It is not
+  taken when it is a coordinator, a preposition, an entity descriptor ("a
+  Delaware corporation"), a legal suffix that the comma split off a name
+  ("Components, Inc"), or a relative clause. 48 corpus rows change, among
+  them the six duties in a consent judgment now named "Defendants", the
+  court in both restrictive-covenant agreements, and the Escrow Agent.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.773.0] — 2026-09-25
 
 ### Fixed

@@ -1366,3 +1366,27 @@ describe("extractObligations — a whole noun phrase keeps its head", () => {
     expect(o!.obligor).not.toMatch(/^At the end/);
   });
 });
+
+describe("extractObligations — a subject that begins inside an earlier clause", () => {
+  it("names the noun phrase after the last comma", () => {
+    const got = extractObligations(
+      buildTree([
+        "Sanctions",
+        "If a party fails to comply with discovery, the court may order a remedy, and on a finding of bad faith, the court shall require the offending party to pay the reasonable expenses.",
+      ]),
+      [],
+    ).map((o) => o.obligor);
+    expect(got).toContain("the court");
+  });
+
+  it("does not take a legal suffix split off by a comma", () => {
+    const got = extractObligations(
+      buildTree([
+        "Notice",
+        "Pursuant to Rule 30(b)(6), Plaintiff Ridgeline Aerospace Components, Inc. shall produce the documents described in Schedule A.",
+      ]),
+      [],
+    ).map((o) => o.obligor);
+    expect(got).not.toContain("Inc");
+  });
+});

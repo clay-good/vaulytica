@@ -990,6 +990,33 @@ function resolveObligorInner(
       trimmed,
     );
   if (permissive) return permissive[2]!;
+  // A subject that begins inside an earlier clause ends on its own noun
+  // phrase after the last comma: "…shall not be filed except on notice to all
+  // interested persons, a Party shall …" is the Party's duty, and "…to comply
+  // with discovery, the court may …" the court's. Only a short phrase that
+  // opens on a determiner, a pronoun or a capital — not a coordinator, a
+  // preposition, or an entity descriptor ("Acme Corp., a Delaware
+  // corporation").
+  const afterComma =
+    /,\s+((?:the|a|an|no|each|any|it|we|you|they|he|she|[A-Z][\w'’-]*)(?:\s+[\w'’-]+){0,3})$/.exec(
+      trimmed,
+    );
+  if (
+    afterComma &&
+    !/\b(?:corporation|company|partnership|llc|l\.?p\.?|entity|association|trust|bank|individual|resident)$/i.test(
+      afterComma[1]!,
+    ) &&
+    // A legal suffix is the end of a NAME the comma split ("Ridgeline
+    // Aerospace Components, Inc"), and "each of which" is a relative clause.
+    !/^(?:inc|corp|co|ltd|llc|llp|l\.?p|n\.?a|plc|gmbh|s\.?a)\.?$/i.test(afterComma[1]!) &&
+    !/\b(?:which|whom|whose)\b/i.test(afterComma[1]!) &&
+    !/^(?:and|or|but|nor|at|in|on|for|by|with|from|to|under|upon|without|subject|including|except|if|when|unless|which|who|that)\b/i.test(
+      afterComma[1]!,
+    ) &&
+    !CLAUSE_VERB.test(afterComma[1]!)
+  ) {
+    return afterComma[1]!;
+  }
   // A subject that a RELATIVE CLAUSE modifies names the head noun phrase: "A
   // Member who receives a bona fide offer for its interest shall first offer
   // it to the other Members" is owed by a Member, not by "bona fide offer for
