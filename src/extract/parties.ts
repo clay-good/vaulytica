@@ -845,6 +845,11 @@ export function extractParties(tree: DocumentTree): Party[] {
       const entity = m[3];
       const role = m[4];
       if (!name || isBoilerplateName(name)) continue;
+      // "individual" DESCRIBES a person only with its article or comma, or a
+      // role — "Alex Smith, an individual". Bare, it is the adjective: "that
+      // Party's individual property" registered a party named "Party's".
+      if (/^individual$/i.test(entity ?? "") && !role && !/(?:,|\ban?)\s*individual\b/i.test(m[0]))
+        continue;
       // A DISCLAIMED relationship names the entities precisely to say they are
       // NOT in one: "Nothing in this Agreement creates a partnership among
       // Acme Corp, Beta LLC, and Gamma Inc." `BETWEEN_RE` has always been
@@ -852,6 +857,14 @@ export function extractParties(tree: DocumentTree): Party[] {
       // upper-case entity abbreviation at all and so never reached such a
       // sentence.
       if (DISCLAIMED_RELATIONSHIP.test(text.slice(Math.max(0, m.index - LEAD_WINDOW), m.index)))
+        continue;
+      // COUNSEL named in prose is not a contracting party: a prenup's "Yusuf
+      // is represented by Castellano Family Law LLC" registered the law firm.
+      if (
+        /\b(?:represented\s+by|counsel\s+(?:to|for)|attorneys?\s+for)\s*$/i.test(
+          text.slice(Math.max(0, m.index - 40), m.index),
+        )
+      )
         continue;
       registerParty(partyMap, name, {
         role,

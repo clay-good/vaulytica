@@ -1311,3 +1311,43 @@ describe("extractParties — a person described by address", () => {
     expect(parties("Deliveries go to the warehouse of 12 Elm Street, Boston.")).toEqual([]);
   });
 });
+
+/**
+ * "individual" is a person DESCRIPTOR only with its article or comma — "Alex
+ * Smith, an individual". A prenuptial agreement's "is that Party's individual
+ * property" registered a party named "Party's": the entity-type list admits
+ * "individual", and the article before a type is optional for companies.
+ */
+describe("extractParties — 'individual' as an adjective", () => {
+  it("does not read 'that Party's individual property' as a party", () => {
+    const got = extractParties(
+      buildTree([
+        "Separate Property",
+        "The property listed on a Party's schedule is that Party's individual property and is not marital property.",
+      ]),
+    ).map((p) => p.name);
+    expect(got).toEqual([]);
+  });
+
+  it("still reads 'Alex Smith, an individual'", () => {
+    const got = extractParties(
+      buildTree([
+        "Agreement",
+        'This Agreement is made by Acme Corp, a Delaware corporation ("Company"), and Alex Smith, an individual ("Consultant").',
+      ]),
+    ).map((p) => p.name);
+    expect(got).toContain("Alex Smith");
+  });
+});
+
+describe("extractParties — counsel named in prose is not a party", () => {
+  it("does not register the firm a party is represented by", () => {
+    const got = extractParties(
+      buildTree([
+        "Counsel",
+        "Rosalie is represented by Halvorsen & Nkemelu S.C. Yusuf is represented by Castellano Family Law LLC. Each Party has consulted independently with counsel.",
+      ]),
+    ).map((p) => p.name);
+    expect(got).not.toContain("Castellano Family Law");
+  });
+});

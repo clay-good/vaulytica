@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.741.0] — 2026-09-24
+
+### Fixed
+- **Three junk parties and two law firms left the party list.** "individual"
+  is on the entity-type list and the article before a type is optional, so
+  "is that Party's individual property" registered a party named "Party's"
+  (a prenup) and "Your individual …" one named "Your" (a WARN notice).
+  "individual" now describes a person only with its article, a comma or a
+  role. And counsel named in prose — "Yusuf is represented by Castellano
+  Family Law LLC" — registered the firm as a contracting party (a prenup and
+  a cohabitation agreement); a declaration right after "represented by",
+  "counsel to/for" or "attorneys for" is now skipped. The party list is what
+  the report's party table prints and what party-comparing rules tally.
+  `extraction-format-invariance` carried "Party's" as a known layout debt
+  (it read differently under smart quotes); that entry is paid off.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.740.0] — 2026-09-24
 
 ### Fixed
