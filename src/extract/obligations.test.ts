@@ -1093,3 +1093,29 @@ describe("extractObligations — a negated subject keeps its negation", () => {
     );
   });
 });
+
+/**
+ * Two verb phrases under ONE subject — "THIS NOTE AND THE SECURITIES … HAVE
+ * NOT BEEN REGISTERED UNDER … ANY STATE SECURITIES LAW AND MAY NOT BE SOLD" —
+ * printed the obligor as the words just before the modal: `OR ANY STATE
+ * SECURITIES LAW AND`. The subject of the second verb phrase is the subject of
+ * the first.
+ */
+describe("extractObligations — a subject shared by two verb phrases", () => {
+  const obligors = (t: string) =>
+    extractObligations(buildTree(["Note", t]), []).map((o) => o.obligor);
+
+  it("reads the securities legend's subject", () => {
+    expect(
+      obligors(
+        "THIS NOTE AND THE SECURITIES ISSUABLE ON ITS CONVERSION HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933 OR ANY STATE SECURITIES LAW AND MAY NOT BE SOLD OR TRANSFERRED WITHOUT REGISTRATION.",
+      ),
+    ).toEqual([expect.stringMatching(/SECURITIES ISSUABLE ON ITS CONVERSION$/)]);
+  });
+
+  it("reads 'Customer has paid the setup fee and shall pay the monthly fees'", () => {
+    expect(
+      obligors("Customer has paid the setup fee and shall pay the monthly fees when due."),
+    ).toEqual(["Customer"]);
+  });
+});

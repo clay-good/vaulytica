@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.755.0] — 2026-09-24
+
+### Fixed
+- **The obligations ledger named a fragment as the obligor when one subject
+  carried two verb phrases.** A convertible note's securities legend —
+  "THIS NOTE AND THE SECURITIES … HAVE NOT BEEN REGISTERED UNDER … ANY STATE
+  SECURITIES LAW AND MAY NOT BE SOLD" — printed `OR ANY STATE SECURITIES LAW
+  AND | may not | BE SOLD …`: the obligor was the words just before the
+  modal. When the text before the modal ends in "and" and carries an earlier
+  finite verb, the subject is what precedes that verb. Across the specimens
+  54 obligors change, nearly every one from a fragment ending in "and" to a
+  subject: `Buyer does not assume, and` → `Buyer`, `right to grant this
+  Easement, and` → `Grantor`, `Rent is absolute and unconditional and` →
+  `Tenant's obligation to pay Rent`, and a guaranty's, a BAA's, a staffing
+  agreement's and an IDTA's parties. A few stay imperfect (a pronoun, a
+  time phrase) where the fragment was no better.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.754.0] — 2026-09-24
 
 ### Fixed

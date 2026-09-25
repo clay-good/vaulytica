@@ -70,6 +70,10 @@ const MODALS = [
   "hereby covenants",
 ];
 
+/** "S <finite verb> … and" — the subject of an elided second verb phrase is S. */
+const SHARED_SUBJECT =
+  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did)\s+(?:not\s+)?(?:been\s+)?\w[\w'’-]*\b[^;]*?\s+and\s*$/i;
+
 /** A subject opened by a negative determiner: the negation belongs to the row. */
 const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
 
@@ -146,7 +150,13 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // provided in a". Stripping and RECORDING are separate questions: an
         // `except` clause is a qualifier on the duty, and only an `except`
         // PHRASE naming a party is a carve-out `scopeExclusion` reports.
-        const subjectForObligor = stripExceptTail(subject);
+        // TWO VERB PHRASES UNDER ONE SUBJECT: "THIS NOTE AND THE SECURITIES …
+        // HAVE NOT BEEN REGISTERED UNDER … ANY STATE SECURITIES LAW AND MAY NOT
+        // BE SOLD" printed the obligor as `OR ANY STATE SECURITIES LAW AND`.
+        // When the text before the modal ends in "and" and carries an earlier
+        // finite verb, the subject is what precedes that verb.
+        const shared = SHARED_SUBJECT.exec(stripExceptTail(subject));
+        const subjectForObligor = shared ? shared[1]! : stripExceptTail(subject);
         let obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
         // A NEGATED SUBJECT CARRIES THE SENTENCE'S MEANING. Resolution shortens
         // a long subject to its trailing noun phrase or a party mention, and
