@@ -4232,7 +4232,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-006",
       "STRUCT-018",
       "TERM-002",
-      "TRANSFER-020",
       "OBLI-005",
     ],
   },
@@ -4889,7 +4888,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "DPA-055",
       "STRUCT-006",
       "TRANSFER-018",
-      "TRANSFER-020",
     ],
   },
   // A prime/subcontractor teaming agreement for a federal procurement. It
@@ -5148,7 +5146,6 @@ export const EXPECTED: Record<string, Expectation> = {
       "STRUCT-007",
       "TERM-007",
       "TRANSFER-019",
-      "TRANSFER-020",
     ],
   },
   // A COMPLETE construction subcontract — the seventh clean document (9.639.0),

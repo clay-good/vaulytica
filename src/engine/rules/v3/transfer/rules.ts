@@ -505,9 +505,13 @@ export const TRANSFER_RULES: Rule[] = [
     ],
     applicable_if: [INTERNATIONAL_TRANSFER],
   }),
-  presenceAll({
+  // UK IDTA addendum only. On the DPA and SCC playbooks DPA-054 asks the same
+  // question with the same patterns and the same transfer gate, and every DPA
+  // missing an onward-transfer clause drew two warnings for it (a co-firing
+  // sweep, 9.758.0: Jaccard 1.00 over the specimens).
+  presenceUk({
     id: "TRANSFER-020",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
     description:
       "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",

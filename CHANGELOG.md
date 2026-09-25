@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.758.0] — 2026-09-24
+
+### Fixed
+- **Every DPA missing an onward-transfer clause drew two warnings for it.**
+  A co-firing sweep over the specimens (rule pairs that nearly always fire
+  together, read for whether they say the same thing) found DPA-054 and
+  TRANSFER-020 at Jaccard 1.00: the same absence, the same patterns, the
+  same international-transfer gate, on the same DPA and SCC playbooks.
+  TRANSFER-020 now runs on the UK IDTA addendum only — the one playbook
+  DPA-054 does not cover, and the one its explanation discusses. Sixty v3
+  goldens drop the duplicate and keep DPA-054, and the SCC fixture built
+  without onward-transfer terms is pinned to DPA-054. The sweep's other
+  pairs were read and left: a non-compete's presence and its scope are
+  different findings, and three pairs are unrelated topics that co-occur.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+60 changed finding sets, each TRANSFER-020 leaving beside DPA-054.
+
 ## [9.757.0] — 2026-09-24
 
 ### Fixed

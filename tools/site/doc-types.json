@@ -4569,12 +4569,6 @@
      "name": "TIA / Transfer Risk Assessment reference",
      "description": "Where SCCs / IDTA cover transfers to a non-adequate country, the DPA must reference a TIA / TRA.",
      "severity": "critical"
-    },
-    {
-     "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
-     "severity": "warning"
     }
    ],
    "general_checks": 114,
@@ -5112,12 +5106,6 @@
      "name": "TIA / Transfer Risk Assessment reference",
      "description": "Where SCCs / IDTA cover transfers to a non-adequate country, the DPA must reference a TIA / TRA.",
      "severity": "critical"
-    },
-    {
-     "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
-     "severity": "warning"
     }
    ],
    "general_checks": 115,
@@ -12823,12 +12811,6 @@
      "name": "TIA / Transfer Risk Assessment reference",
      "description": "Where SCCs / IDTA cover transfers to a non-adequate country, the DPA must reference a TIA / TRA.",
      "severity": "critical"
-    },
-    {
-     "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
-     "severity": "warning"
     }
    ],
    "general_checks": 109,
@@ -13255,12 +13237,6 @@
      "name": "TIA / Transfer Risk Assessment reference",
      "description": "Where SCCs / IDTA cover transfers to a non-adequate country, the DPA must reference a TIA / TRA.",
      "severity": "critical"
-    },
-    {
-     "id": "TRANSFER-020",
-     "name": "Onward-transfer terms (Clause 8.8; Clause 8.7 in Module One)",
-     "description": "Where SCCs apply, the DPA should address onward-transfer terms (SCC Clause 8.8 in Modules Two and Three; Clause 8.7 in Module One).",
-     "severity": "warning"
     }
    ],
    "general_checks": 109,

@@ -1557,7 +1557,9 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // mechanism to ensure that downstream recipients are bound by
   // equivalent safeguards, defeating the Article 46 Schrems II
   // protection chain.
-  "scc-module-2-missing-onward-transfer-terms-fail.txt": ["TRANSFER-020"],
+  // DPA-054 since 9.758.0: on the SCC and DPA playbooks it and TRANSFER-020
+  // asked the same question, and TRANSFER-020 now runs on the UK addendum only.
+  "scc-module-2-missing-onward-transfer-terms-fail.txt": ["DPA-054"],
 
   // BAA with the "Mitigation" paragraph removed entirely; every
   // other clause (Permitted Uses, Safeguards, Reporting,
