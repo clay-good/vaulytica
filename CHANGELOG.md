@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.759.0] — 2026-09-24
+
+### Fixed
+- **An NDA with no governing-law clause drew three findings for it — one of
+  them nonsense.** NDA-D-017 ("Governing-law clause missing"), CHOICE-001
+  ("No governing-law clause detected") and NDA-D-018 ("Governing law not
+  from a typical viable jurisdiction", whose own description begins
+  "Governing-law clause is present but …"). NDA-D-018 now applies only where
+  a governing-law clause exists.
+- **Generic checks duplicated the NDA and DPA packs' own.** A name-similarity
+  sweep over the catalog (the complement of 9.758.0's co-firing sweep, for
+  duplicates the corpus never triggers) found CHOICE-001 beside NDA-D-017
+  and DPA-046, and STRUCT-003 beside DPA-043 — a DPA with no signatures drew
+  a critical and a warning for one absence. The pack rules are the pinned
+  owners on their playbooks, so the NDA-deep playbooks now skip CHOICE-001
+  and the DPA and SCC playbooks skip CHOICE-001 and STRUCT-003
+  (`rule_overrides`, the precedent the residential purchase playbook set
+  for RISK-001). 72 goldens drop the duplicate; every one keeps the owner.
+  The SCC Module 3 specimen's pin loses CHOICE-001, which had been telling
+  an executed SCC set whose Clause 17 selects the law of Ireland that it has
+  no governing-law clause; DPA-046 reads the clause.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+72 changed finding sets, each a duplicate leaving beside its owner.
+
 ## [9.758.0] — 2026-09-24
 
 ### Fixed

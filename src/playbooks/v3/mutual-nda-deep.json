@@ -52,7 +52,7 @@
     "Trade Secret",
     "Representatives"
   ],
-  "rule_overrides": {
+  "rule_overrides": {"CHOICE-001": { "skip": true }, 
     "FIN-003": {
       "skip": true
     },

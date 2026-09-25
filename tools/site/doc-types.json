@@ -4571,7 +4571,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 112,
    "companions": [
     "msa-vendor-deep",
     "scc-module-2",
@@ -5108,7 +5108,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 113,
    "companions": [
     "dpa-controller-processor",
     "scc-module-3"
@@ -9632,7 +9632,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 102,
+   "general_checks": 101,
    "companions": [
     "msa-vendor-deep"
    ],
@@ -12813,7 +12813,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 109,
+   "general_checks": 107,
    "companions": [
     "dpa-controller-processor"
    ],
@@ -13239,7 +13239,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 109,
+   "general_checks": 107,
    "companions": [
     "dpa-processor-subprocessor"
    ],
@@ -15249,7 +15249,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 102,
+   "general_checks": 101,
    "companions": [
     "msa-vendor-deep"
    ],

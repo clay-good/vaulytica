@@ -4385,11 +4385,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // The nine that remain are fair: no transfer impact assessment is referenced,
   // no Article 27 representative is named, and there is no separate notice
   // clause.
+  // CHOICE-001 left this row in 9.759.0: it said "No governing-law clause
+  // detected" about a set whose Clause 17 selects the law of Ireland. DPA-046
+  // owns the question on the SCC playbooks and reads the clause.
   "scc-module-3.txt": {
     playbook: "scc-module-3",
     findings: [
       "TRANSFER-019",
-      "CHOICE-001",
       "DPA-030",
       "DPA-034",
       "DPA-051",

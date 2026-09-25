@@ -567,6 +567,7 @@ export const NDA_DEEP_RULES: Rule[] = [
 
   presence({
     id: "NDA-D-018",
+    version: "1.1.0",
     name: "Governing law from a viable jurisdiction",
     description:
       "Governing law should be chosen from a list of generally viable jurisdictions (Delaware, New York, California, Texas, England & Wales, Massachusetts, Illinois, Washington).",
@@ -578,6 +579,14 @@ export const NDA_DEEP_RULES: Rule[] = [
       "Unusual jurisdictions can produce unpredictable outcomes for NDA enforcement. Vaulytica only flags this as a soft warning; small-state choice may be deliberate.",
     recommendation:
       "Consider whether a more conventional jurisdiction (Delaware, New York, California, Texas) better serves the parties.",
+    // "Governing-law clause is present but the chosen jurisdiction is unusual"
+    // — its own description — and it fired on an NDA with NO governing-law
+    // clause, beside NDA-D-017 and CHOICE-001 reporting that absence.
+    applicable_if: [
+      /(governing\s+law|governed\s+by\s+the\s+laws?\s+of|laws?\s+of\s+(?:the\s+)?(?:State|Commonwealth|country|Republic)\s+of)/i,
+      /\b[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\s+(?:governs?|applies|controls?|(?:shall|will|must)\s+(?:govern|apply|control))/,
+      /\bgoverned\s+by\s+[A-Z][A-Za-z]+(?:\s+[A-Z][A-Za-z]+)?\s+law\b/,
+    ],
     present_patterns: [
       // SINGULAR. The list already names England, and an English agreement
       // says "the LAW of England and Wales" — one law — so the plural-only
