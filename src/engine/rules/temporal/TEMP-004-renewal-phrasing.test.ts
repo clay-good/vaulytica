@@ -41,3 +41,16 @@ describe("TEMP-004 auto-renewal phrasing guard", () => {
     });
   }
 });
+
+describe("TEMP-004 — a convenience exit softens an auto-renewal", () => {
+  it("is info when either party may terminate for convenience", () => {
+    const f = TEMP_004.check(
+      buildContext([
+        "Term",
+        "This Agreement renews for successive one-year terms unless either party gives notice of non-renewal. Either party may terminate this Agreement for convenience on sixty (60) days' written notice.",
+      ]),
+    );
+    expect(f?.severity).toBe("info");
+    expect(f?.title).toBe("Auto-renewal clause present, with a right to terminate for convenience");
+  });
+});

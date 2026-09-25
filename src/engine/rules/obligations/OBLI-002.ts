@@ -56,8 +56,11 @@ const RECIPROCAL_PATTERNS = [
   { label: "warranties", pattern: /\bwarrant(?:y|ies)\b|\bwarrants?\s+that\b|\bwarranted\b/i },
 ] as const;
 
+// With or without "that": "Landlord warrants the Tenant Improvements against
+// defects in materials and workmanship" is the same warranty of the thing
+// supplied as "warrants that the Work will conform".
 const SUPPLIED_THING_WARRANTY =
-  /\bwarrants?\s+(?:to\s+\w+\s+)?that\s+(?:the|each|all|any|its)\s+(?:[\w-]+\s+){0,4}?(?:services?|software|products?|goods|media|equipment|work|deliverables?|materials|api|site|platform|units?)\b/i;
+  /\bwarrants?\s+(?:to\s+\w+\s+)?(?:that\s+)?(?:the|each|all|any|its)\s+(?:[\w-]+\s+){0,4}?(?:services?|software|products?|goods|media|equipment|work|deliverables?|materials|api|site|platform|units?|improvements?|installation|construction|repairs?)\b/i;
 
 /**
  * Role labels that name a POSITION either party can occupy, not a specific
@@ -109,7 +112,7 @@ function statedMutually(ctx: RuleContext, pattern: RegExp): boolean {
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",

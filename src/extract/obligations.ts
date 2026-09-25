@@ -370,7 +370,9 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // relative clause; the ledger printed `any claim that | cannot | be
         // released as a matter of law` as though a claim owed something.
         if (
-          /\b(?:that|which)\s*$/i.test(cl.subject) &&
+          /\b(?:that|which|to\s+the\s+extent\s+(?:they|it|such\s+\w+)|insofar\s+as\s+(?:they|it))\s*$/i.test(
+            cl.subject,
+          ) &&
           /^(?:cannot|can not|may not|must not)$/i.test(modal) &&
           /^(?:\w+ly\s+)?be\s+\w+(?:ed|en)\b/i.test(action)
         ) {
@@ -1030,6 +1032,28 @@ function resolveObligorInner(
   const antecedent = antecedentOf(trimmed);
   if (antecedent) return resolveObligorInner(antecedent, partyNames, partyRoles);
   const lower = trimmed.toLowerCase();
+  // A VERB SERIES under one named subject: "The Representative controls its
+  // own methods of work, pays its own expenses, and is responsible for its own
+  // taxes" puts the modal-like phrase last, and the subject before it is the
+  // whole series. When the series opens on a party and ends on "and", the
+  // party is the obligor.
+  // The NEAREST such clause wins: "University bears the cost … unless …, in
+  // which case Licensee bears the cost and shall pay the shortfall" is the
+  // Licensee's duty, not the University's.
+  if (/\band$/i.test(trimmed)) {
+    let best: { at: number; label: string } | undefined;
+    for (const label of [...partyNames, ...partyRoles]) {
+      // The label case-insensitively, the verb after it case-SENSITIVELY: a
+      // lowercase third-person verb, so "Tenant Improvements" is no clause.
+      for (let at = lower.indexOf(label); at !== -1; at = lower.indexOf(label, at + 1)) {
+        const before = at === 0 ? "" : lower[at - 1]!;
+        if (before && !/\s/.test(before)) continue;
+        if (!/^\s+[a-z]+s\b/.test(trimmed.slice(at + label.length))) continue;
+        if (!best || at > best.at) best = { at, label };
+      }
+    }
+    if (best) return findOriginalCasing(trimmed, best.label);
+  }
   // A compound subject naming TWO parties ("The Provider and the Customer shall
   // each …", "Acme Corp. and Globex Inc. shall jointly …") states a MUTUAL
   // obligation. The endsWith matches below key on the tail of the subject, so

@@ -12,10 +12,19 @@ import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.j
 const ONLINE_CANCELLATION =
   /\bcancel\w*\b[^.]{0,120}\b(?:online|on\s+(?:our|the)\s+(?:website|site|app)|in\s+(?:your\s+)?(?:account|account\s+settings|the\s+app)|by\s+e-?mail)\b|\b(?:online|in\s+(?:your\s+)?account\s+settings)\b[^.]{0,60}\bcancel\w*\b/i;
 
+/**
+ * A right to walk away at any time is the easiest exit there is. A sales
+ * representative agreement that renews year to year and lets "either party
+ * terminate this Agreement for convenience on sixty (60) days' written notice"
+ * holds no one to a renewal term, and drew the same warning as one that does.
+ */
+const CONVENIENCE_EXIT =
+  /\b(?:either\s+party|each\s+party|(?:the\s+)?(?:customer|client|you|subscriber|member|licensee|representative|buyer|tenant))\s+may\s+terminate\b[^.]{0,100}\b(?:for\s+convenience|at\s+any\s+time|for\s+any\s+reason|without\s+cause)\b/i;
+
 /** TEMP-004 — Auto-renewal present and parseable (warning). */
 export const rule: Rule = {
   id: "TEMP-004",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Auto-renewal present",
   category: "temporal",
   default_severity: "warning",
@@ -50,11 +59,14 @@ export const rule: Rule = {
       /(?:automatically|automatic)\s+(?:renew|renewal|extend)|(?<!\b(?:may|can|(?:shall|will|must)\s+have\s+the\s+right\s+to|elect\s+to|option\s+to|right\s+to)\s)renews?\s+(?:automatically\s+)?(?:for\s+|on\s+)?(?:an?\s+)?(?:successive|additional|further|one|two|three|annual|month-to-month|year-to-year|week-to-week|day-to-day)|(?:shall|will|must)\s+renew\s+(?:automatically|for)|auto-?renew|(?:renew|extend)\w*\s+automatically|rolls?\s+over\b[^.]{0,40}?(?:successive|additional|further|renew|term|period)|successive\s[^.]{0,30}?renewal\s+(?:terms?|periods?)|(?:is|remains?|be|on\s+an?)\s+evergreen\b|\bevergreen\s+(?:basis|term|renewal|contract|clause|provision)/i,
     );
     if (!hit) return null;
-    const easyExit = ONLINE_CANCELLATION.test(fullText(ctx));
+    const text = fullText(ctx);
+    const easyExit = ONLINE_CANCELLATION.test(text) || CONVENIENCE_EXIT.test(text);
     return emit(ctx, rule, {
       ...(easyExit ? { severity: "info" as const } : {}),
       title: easyExit
-        ? "Auto-renewal clause present, with an online cancellation path"
+        ? ONLINE_CANCELLATION.test(text)
+          ? "Auto-renewal clause present, with an online cancellation path"
+          : "Auto-renewal clause present, with a right to terminate for convenience"
         : "Auto-renewal clause present",
       description: "The contract contains automatic-renewal language.",
       excerpt: excerptWindow(hit.text, hit.match.index, 30, 200),

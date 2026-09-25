@@ -1536,3 +1536,24 @@ describe("extractObligations — a subject that defines a term", () => {
     expect(o!.obligor).toBe("the parties");
   });
 });
+
+describe("extractObligations — a verb series under one named subject", () => {
+  const rows = (text: string) =>
+    extractObligations(buildTree(["Terms", text]), extractParties(buildTree(["Terms", text])));
+  const preamble =
+    'This Agreement is made between Kestrel Pump & Valve Co. (the "Company") and Northline Industrial Sales LLC (the "Representative"). ';
+
+  it("names the party that opens the series", () => {
+    const got = rows(
+      `${preamble}The Representative controls its own methods of work, pays its own expenses, and is responsible for its own taxes.`,
+    ).filter((o) => /taxes/.test(o.action));
+    expect(got[0]!.obligor).toBe("Representative");
+  });
+
+  it("names the nearest party clause, not the first", () => {
+    const text =
+      'This Agreement is made between Cascade University ("University") and Lumen Bio Inc. ("Licensee"). University bears the cost of the audit unless it reveals an underpayment of more than five percent (5%), in which case Licensee bears the cost and shall pay the shortfall with interest.';
+    const [o] = rows(text).filter((r) => /shortfall/.test(r.action));
+    expect(o!.obligor).toBe("Licensee");
+  });
+});

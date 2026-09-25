@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.794.0] — 2026-09-25
+
+### Fixed
+- **A clean sales representative agreement: an auto-renewal warning with an
+  exit at any time, and two ledger fragments.**
+  - **TEMP-004** warned "Auto-renewal clause present" on a year-to-year
+    renewal in an agreement that lets "either party terminate this
+    Agreement for convenience on sixty (60) days' written notice". A right
+    to walk away is the easiest exit there is. Like the online cancellation
+    path 9.754 recognized, it now makes the finding info, titled "…with a
+    right to terminate for convenience".
+  - **A verb series under one named subject.** "The Representative
+    controls its own methods of work, pays its own expenses, and is
+    responsible for its own taxes" printed the obligor "work, pays its own
+    expenses, and". When the subject ends on "and", the nearest "<party>
+    <verb>s" clause names the obligor. The verb must be lower-case, so
+    "Tenant Improvements" is not a clause. 24 corpus rows change, among
+    them:
+    - "Subtenant assumes and agrees to perform";
+    - "Licensee bears the cost and shall pay the shortfall", which
+      correctly skips an earlier "University bears the cost";
+    - "Assignee assumes and agrees".
+  - **"…to the extent they cannot be waived"** is a statement of law, as
+    9.781's relative-clause case was, and is no longer an obligation.
+- **OBLI-002's warranty-of-the-thing-supplied exemption** now also reads
+  the form without "that" ("Landlord warrants the Tenant Improvements
+  against defects in materials and workmanship"), and counts improvements,
+  installation, construction and repairs as things supplied. The ledger
+  change above named Landlord as that warranty's obligor. That would have
+  made the work letter specimen report a one-sided warranty; its pin
+  caught it.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.793.0] — 2026-09-25
 
 ### Fixed
