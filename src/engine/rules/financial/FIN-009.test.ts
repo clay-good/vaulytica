@@ -242,3 +242,31 @@ describe("FIN-009 — a rent-based late fee is one-time", () => {
     expect(found?.title).toBe("One-time late fee of 5% (not annualized)");
   });
 });
+
+/**
+ * "Monthly" can describe the BASE, not the period. Chicago's RLTO permits a
+ * late fee of "$10.00 for the first $1,000 of monthly rent plus five percent
+ * (5%) of any monthly rent over $1,000" — a one-time charge — and FIN-009
+ * found "month" in the words before the rate, annualized 5% to "~60%", and
+ * warned a lease drafted to the ordinance that it charges a usurious rate.
+ */
+describe("FIN-009 — the rent's cadence is not the rate's period", () => {
+  const lease = (text: string) => buildContext(["Late Fee", text]);
+
+  it("reads the Chicago RLTO formula as a one-time fee", () => {
+    const f = FIN_009.check(
+      lease(
+        "If rent is not received by the fifth (5th) day of the month, Tenant shall pay a late fee of Ten Dollars ($10.00) for the first $1,000 of monthly rent plus five percent (5%) of any monthly rent over $1,000.",
+      ),
+    );
+    expect(f?.severity).toBe("info");
+    expect(f?.title).toBe("One-time late fee of 5% (not annualized)");
+  });
+
+  it.each([
+    "Overdue amounts accrue interest at the monthly rate of 2% until paid.",
+    "Tenant shall pay a late charge of 2% per month on any unpaid monthly rent.",
+  ])("still annualizes a stated monthly rate: %s", (text) => {
+    expect(FIN_009.check(lease(text))?.title).toBe("Late-payment rate above 18%/year: ~24.0%");
+  });
+});

@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.738.0] — 2026-09-24
+
+### Fixed
+A clean Chicago residential lease drew 1 critical and 4 warnings; it now
+draws 0 and 2 (no indemnity, no effect-of-termination clause — left as they
+are).
+
+- 🚨 **STRUCT-013 (critical) called the tenants' signature lines unfilled
+  template placeholders.** An individual signs on a rule over a printed name
+  and a dated line ("____ / Daniel K. Osei / Date: July 15, 2026"); the
+  caption strip removed a bare "Date" and not a date line that had been
+  filled in.
+- **The party extractor stopped at a middle initial.** The preamble capture
+  ended at any period, so "and Daniel K. Osei ("Tenant")" produced a second
+  party "Daniel K" with no role, and joint tenants "Daniel K. Osei and Maria
+  L. Osei (together, "Tenant")" lost the second tenant and the role. A period
+  straight after a lone capital letter no longer ends a party. Across the
+  specimens: a physician agreement loses a stray "Naomi K" party, and a
+  warranty deed's grantor "MARGERY R" is read as "MARGERY R. PIKE".
+- **FIN-009 warned that the Chicago RLTO's own late-fee formula was a ~60%
+  rate.** "$10.00 for the first $1,000 of monthly rent plus five percent (5%)
+  of any monthly rent over $1,000" is a one-time charge; the rule found
+  "month" in "monthly rent" (the base) and annualized 5% as monthly. The base
+  phrase is now removed before the period is looked for, and the flat-fee
+  reading accepts "of any/each/such" and a longer lead-in. It now reports the
+  info-level "One-time late fee of 5% (not annualized)".
+- **STRUCT-006 reported the front half of an enactment's name.** "Chicago
+  Residential Landlord and Tenant Ordinance" holds a lowercase "and", so
+  "Chicago Residential Landlord" was an undefined term. A phrase that runs on
+  through and/of/for into Ordinance/Act/Code/Law/Statute/Regulations/Rules is
+  part of a law's name.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.737.0] — 2026-09-24
 
 ### Fixed

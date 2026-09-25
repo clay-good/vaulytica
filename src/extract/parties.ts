@@ -253,8 +253,12 @@ const LEGAL_SUFFIX = String.raw`l\.?p\.?|l\.?l\.?c\.?|inc\.?|corp\.?|corporation
 // looking for one, which is O(n) per occurrence and quadratic overall: a
 // preamble naming parties took 3.5 seconds at 480 KB. A party's name and
 // descriptor together are a couple of hundred characters.
+// A MIDDLE INITIAL'S PERIOD DOES NOT END A PARTY. "and Daniel K. Osei
+// ("Tenant")" stopped at "K.", so a residential lease named a second tenant
+// "Daniel K" with no role. A period straight after a lone capital letter is an
+// initial (or one letter of "L.P."), never the end of the preamble.
 const BETWEEN_RE = new RegExp(
-  String.raw`\bbetween\s+([^\n]{1,400}?)\s+and\s+([^\n]{1,400}?)(?:[.;]|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))(?![^()]{0,300}\))|$)`,
+  String.raw`\bbetween\s+([^\n]{1,400}?)\s+and\s+([^\n]{1,400}?)(?:;|(?<!\b[A-Z])\.|,(?!\s*(?:${LEGAL_SUFFIX})(?![A-Za-z]))(?![^()]{0,300}\))|$)`,
   "gi",
 );
 

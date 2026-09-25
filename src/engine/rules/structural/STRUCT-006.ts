@@ -119,6 +119,20 @@ function isHonorificNamed(documentBody: string, term: string): boolean {
 }
 
 /**
+ * The front half of an enactment's name. "Chicago Residential Landlord and
+ * Tenant Ordinance" holds a lowercase "and", the Title-Case matcher stops
+ * there, and a lease citing the ordinance was told "Chicago Residential
+ * Landlord" is a term it forgot to define. A phrase that runs on through
+ * and/of/for into an enactment noun is part of a law's name.
+ */
+function isEnactmentNameHead(documentBody: string, term: string): boolean {
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(
+    String.raw`${escaped}\s+(?:and|of|for|on)\s+(?:[A-Z][\w'’-]*\s+){0,4}(?:Ordinance|Act|Code|Law|Statute|Regulations?|Rules)\b`,
+  ).test(documentBody);
+}
+
+/**
  * A JOB TITLE is not a defined term.
  *
  * An offer letter is written in Title Case throughout about the one thing it
@@ -231,6 +245,7 @@ export function undefinedTermCandidates(ctx: {
     // a person, not a term the drafter forgot to define.
     if (isNamedPerson(body, e.term)) return false;
     if (isHonorificNamed(body, e.term)) return false;
+    if (isEnactmentNameHead(body, e.term)) return false;
     // A public office is defined by the state, not by this document.
     if (PUBLIC_OFFICE.test(e.term.trim())) return false;
     if (STATUTORY_FIDUCIARY_OFFICE.test(e.term.trim())) return false;
@@ -254,7 +269,7 @@ export function undefinedTermCandidates(ctx: {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",

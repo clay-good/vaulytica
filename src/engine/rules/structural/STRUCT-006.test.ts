@@ -331,3 +331,31 @@ describe("STRUCT-006 — a person the document calls Ms. or Mr. is not an undefi
     expect(STRUCT_006.check(consent(false))?.description).toContain("Ingrid Sørensen");
   });
 });
+
+/**
+ * An enactment's name can hold a lowercase word, and the Title-Case matcher
+ * stops there. A Chicago lease citing the "Chicago Residential Landlord and
+ * Tenant Ordinance" twice was told "Chicago Residential Landlord" is a term it
+ * forgot to define — the front half of a law's name.
+ */
+describe("STRUCT-006 — the front half of an enactment's name", () => {
+  const lease = (law: string) =>
+    buildContext([
+      "Residential Lease",
+      `Landlord shall pay interest on the deposit as required by the ${law}.`,
+      `Tenant acknowledges receiving the ${law} summary.`,
+    ]);
+
+  it.each([
+    "Chicago Residential Landlord and Tenant Ordinance",
+    "Uniform Residential Landlord and Tenant Act",
+  ])("is silent on %s", (law) => {
+    expect(STRUCT_006.check(lease(law))).toBeNull();
+  });
+
+  it("still reports a Title-Case phrase that is not part of a law's name", () => {
+    expect(
+      STRUCT_006.check(lease("Chicago Residential Landlord and the Tenant"))?.description,
+    ).toContain("Chicago Residential Landlord");
+  });
+});

@@ -82,7 +82,7 @@ const PATTERNS: Array<{ re: RegExp; label: string }> = [
 
 export const rule: Rule = {
   id: "STRUCT-013",
-  version: "1.17.0",
+  version: "1.18.0",
   name: "Unfilled template placeholders",
   category: "structural",
   default_severity: "critical",
@@ -335,8 +335,14 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
   // them and a limited-scope engagement letter reported its own signature
   // block as two unfilled template placeholders, at `critical`. STRUCT-003
   // reads the same construct correctly; this is the parity its comments claim.
+  // A FILLED-IN date line under the name is a caption too — "Daniel K. Osei /
+  // Date: July 15, 2026" is how an individual signs a lease, and stripping only
+  // a bare "Date" left the value behind, so a clean residential lease reported
+  // its tenants' signature lines at `critical`. Requires the colon: a
+  // "Date:" field label, never a surname.
   const withoutTrailingCaption = (seg: string): string =>
     seg
+      .replace(/\s+Dated?\s*:\s*[^_]*$/i, "")
       .replace(/(?:\s+(?:Date|Dated|Title|Signature|Print(?:ed)?\s+Name|Name))+[.:]?$/i, "")
       .trim();
   for (const raw of text

@@ -26,7 +26,7 @@ import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.7.1",
+  version: "1.8.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -78,12 +78,22 @@ export const rule: Rule = {
     const excerpt = excerptWindow(hit.text, hit.match.index, 30, 240);
 
     // Normalize to an annual rate ONLY from an explicitly stated period.
+    //
+    // "Monthly" can describe the BASE rather than the period: Chicago's RLTO
+    // late fee is "$10.00 for the first $1,000 of MONTHLY RENT plus five
+    // percent (5%) of any monthly rent over $1,000" — one-time — and reading
+    // "month" there annualized it to "~60%". The base phrase comes off before
+    // the words are searched for a period.
+    const periodWords = hit.match[0].replace(
+      /\b(?:monthly|annual|daily)\s+(?:rent|rental|instal?lments?|payments?|base\s+rent)\b/gi,
+      "",
+    );
     let annualRate: number | null = null;
-    if (period === "year" || period === "annum" || /\bannual/i.test(hit.match[0])) {
+    if (period === "year" || period === "annum" || /\bannual/i.test(periodWords)) {
       annualRate = rate;
-    } else if (period === "day" || /\bdaily/i.test(hit.match[0])) {
+    } else if (period === "day" || /\bdaily/i.test(periodWords)) {
       annualRate = rate * 365;
-    } else if (period === "month" || /\bmonth/i.test(hit.match[0])) {
+    } else if (period === "month" || /\bmonth/i.test(periodWords)) {
       annualRate = rate * 12;
     }
 
@@ -108,7 +118,7 @@ export const rule: Rule = {
       // stated period — a note asking the drafter to fix the one thing the
       // statute fixed for them.
       const flatFee =
-        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)){0,80}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+instal?lment|instal?lment|balance|amount\s+due|rental\s+payment)\b/i.test(
+        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)){0,120}?\d+(?:\.\d+)?\s*%\s*\)?,?\s*of\s+(?:the\s+|any\s+|each\s+|such\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+instal?lment|instal?lment|balance|amount\s+due|rental\s+payment)\b/i.test(
           hit.text,
         );
 

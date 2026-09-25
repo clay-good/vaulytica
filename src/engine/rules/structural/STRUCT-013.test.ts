@@ -453,3 +453,40 @@ describe("STRUCT-013 — a two-column signature block", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * An individual signs on a rule over a printed name and a DATED line — "____ /
+ * Daniel K. Osei / Date: July 15, 2026" — and a clean residential lease was
+ * told at `critical` that its tenants' signature lines are unfilled template
+ * placeholders. The caption strip removed a bare "Date" beneath the name, not
+ * a date line that has been filled in.
+ */
+describe("STRUCT-013 — a signature line over a name and a filled-in date", () => {
+  it.each(["Date: July 15, 2026", "Dated: 7/15/2026", "Date:"])(
+    "is silent on a name followed by %s",
+    (dateLine) => {
+      expect(
+        STRUCT_013.check(
+          buildContext([
+            "Lease",
+            "TENANT:",
+            `______________________________\nDaniel K. Osei\n${dateLine}`,
+          ]),
+        ),
+      ).toBeNull();
+    },
+  );
+
+  it("still reports a bare rule followed only by a date", () => {
+    expect(
+      STRUCT_013.check(
+        buildContext(["Lease", "Tenant name: ______________________________ Date: July 15, 2026"]),
+      ),
+    ).toBeNull(); // a labeled field — the form test's business, not a placeholder
+    expect(
+      STRUCT_013.check(
+        buildContext(["Lease", "The rent is ______________________________ per month."]),
+      ),
+    ).not.toBeNull();
+  });
+});
