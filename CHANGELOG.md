@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.790.0] — 2026-09-25
+
+### Fixed
+- **A letter's address block became a party.** An acquisition letter of
+  intent opens "Ms. Carla Benton / Chief Executive Officer / Benton
+  Precision Machining, Inc.". Pasted, those lines arrive as one, and the
+  name run walked from the addressee through her title into the company,
+  registering "Benton Chief Executive Officer Benton Precision Machining".
+  A multi-word executive title followed by more of a name is now where the
+  company's name begins: Chief … Officer, Vice President, General Counsel,
+  or Managing Director, Member or Partner. The same defect in the corpus
+  (`lease-loi.txt`'s "Alina Fenwick Chief Operating Officer Northgate
+  Diagnostics") is gone. Its entry comes off the
+  `extraction-format-invariance` debt list, which had declared it a known
+  layout divergence.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.789.0] — 2026-09-25
 
 ### Fixed

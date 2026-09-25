@@ -214,7 +214,6 @@ const PARTY_DEBT: readonly string[] = [
   "healthcare-poa.txt [double-spaced] lost:- gained:Tobias Osgood-Reyes|||",
   "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Ridgeline Constructors LLC|Named Insured|LLC| gained:Ridgeline Constructors||LLC|",
   "joint-representation-waiver-founders.txt [double-spaced] lost:Raghunathan Mr. Daniel Ostrowski Kestrel Grove Bakery||LLC| gained:-",
-  "lease-loi.txt [double-spaced] lost:Alina Fenwick Chief Operating Officer Northgate Diagnostics||Inc| gained:-",
   "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
   "nonprofit-bylaws.txt [double-spaced] lost:HARBORLIGHT LITERACY ALLIANCE||INC| gained:HARBORLIGHT LITERACY ALLIANCE||INC|North Carolina",
   "notice-of-furnishing.txt [blank lines stripped] lost:- gained:This is a Notice of Furnishing under Ohio Revised Code § 1311.05. It is given to|Lender||",

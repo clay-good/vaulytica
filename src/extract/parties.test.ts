@@ -1500,3 +1500,16 @@ describe("extractParties — two people with one role", () => {
     ]);
   });
 });
+
+describe("extractParties — a letter's address block", () => {
+  it("does not register the addressee and her title as part of the company's name", () => {
+    const got = extractParties(
+      buildTree([
+        "Letter of Intent",
+        "Ms. Carla Benton Chief Executive Officer Benton Precision Machining, Inc. 88 Foundry Road, Akron, Ohio 44308",
+        'This letter of intent sets out the terms on which Keystone Industrial Partners, LLC ("Buyer") proposes to acquire Benton Precision Machining, Inc. (the "Company").',
+      ]),
+    ).map((p) => p.name);
+    expect(got.some((n) => /Officer/.test(n))).toBe(false);
+  });
+});

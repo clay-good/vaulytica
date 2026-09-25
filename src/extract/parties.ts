@@ -1711,6 +1711,9 @@ function stripAllCapsRoleLabel(n: string): string {
   return n.slice(m[0].length);
 }
 
+const EXECUTIVE_TITLE_PREFIX =
+  /^(?:[A-Z][\w.'’-]*\s+){0,4}(?:Chief\s+(?:Executive|Financial|Operating|Legal|Technology|Information|Revenue|Marketing|People)\s+Officer|Vice\s+President|General\s+Counsel|Managing\s+(?:Director|Member|Partner))\s+(?=[A-Z])/;
+
 /** "X and Y (together, the "Role")" — two parties sharing one defined role. */
 const COLLECTIVE_GROUP =
   /(?<![\w&.'’-])([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,3})\s+and\s+([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,3})(?:,?\s+(?:of|residing\s+at)\s+[^()]{0,160}?)?\s*\(\s*(?:together|collectively|jointly)\s*,?\s+(?:the\s+)?["“]([^"”]{1,40})["”]\s*\)/g;
@@ -1725,6 +1728,12 @@ const REGISTRATION_NUMBER =
 
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
+  // A LETTER's address block arrives as one line — "Ms. Carla Benton / Chief
+  // Executive Officer / Benton Precision Machining, Inc." — and the name run
+  // walked from the addressee through her title into the company, registering
+  // "Benton Chief Executive Officer Benton Precision Machining". A multi-word
+  // executive title followed by more of a name is where the company begins.
+  n = n.replace(EXECUTIVE_TITLE_PREFIX, "");
   // A document's own title is not one of its parties.
   n = stripHeadingPrefix(n);
   // Strip a role label the preamble put in FRONT of the legal name.
