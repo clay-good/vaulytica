@@ -131,7 +131,7 @@ const RANGE_RELATIVE = new RegExp(
 // `[A-Z]` matches lowercase too, so a sentence-boundary test written on case
 // would be inert here (the same trap the `isBareOfDuration` comment records).
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$)`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+and\s+(?:a|an|the)\s|\s+\((?:the\s+)?["“])`,
   "gi",
 );
 
@@ -386,6 +386,12 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       const anchor = trimAnchorQualifier((m[4] ?? "").trim());
       if (isBareOfDuration(m[0], m[4] ?? "")) continue;
       const direction = /\bbefore\b|\bprior\s+to\b/i.test(m[0]) ? -1 : 1;
+      // A LOOKBACK is a period, not a date: "the fees paid in THE twelve (12)
+      // months before the claim" measures a cap, and the equipment lease's
+      // calendar carried it as "Verify manually: the twelve (12) months before
+      // the claim" — an appointment nobody can keep. The definite article
+      // before the count is what makes it a span rather than a deadline.
+      if (direction < 0 && /^the\s/i.test(m[0])) continue;
       // An hours window ("within 72 hours") is sub-day: it carries NO
       // day-collapsed offset_days, so the date-granular register surfaces it
       // verify-manually instead of guessing a wrong calendar day (72h ≠ 72d).

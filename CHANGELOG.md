@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.779.0] — 2026-09-25
+
+### Fixed
+- **Reading three clean documents' calendars (`--format deadlines-ics`)
+  found three defects in the deadline extractor.**
+  - **A deadline shared its sentence with a second deliverable and was
+    lost.** "…a design mockup within fifteen (15) business days after the
+    Effective Date and a fully functional staging site within forty-five
+    (45) days after Client approves the mockup" put only the staging site on
+    the calendar. A deadline's anchor had to end at punctuation, so "the
+    Effective Date and a …" never closed. It may now also end before "and
+    a/an/the".
+  - **An inspection period was never calendared.** "During the fourteen
+    (14) days after the Effective Date (the "Inspection Period")", which
+    decides when a home buyer's right to walk away expires, failed for the
+    same reason. The parenthetical naming the period now ends the anchor. A
+    numeral parenthetical such as "(1)" does not; that looser first draft
+    mangled three corpus dates.
+  - **A lookback period was calendared as an appointment.** "The rent paid
+    in the twelve (12) months before the claim" measures a liability cap,
+    and the equipment lease's calendar carried it as "Verify manually: the
+    twelve (12) months before the claim". A period written with "the" and
+    running before its anchor is now a span, not a date. 22 corpus
+    lookbacks leave the register: cap lookbacks, a CCPA notice's
+    twelve-month disclosure window, a HIPAA accounting window, and
+    restrictive-covenant client windows.
+
+  The register also gains a subscription agreement's recurring "120 days
+  after the end of each fiscal year" report and two escrow release dates.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.778.0] — 2026-09-25
 
 ### Fixed

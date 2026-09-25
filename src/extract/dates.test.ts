@@ -559,3 +559,37 @@ describe("the anchor and an abbreviation's period", () => {
     ).toBe("invoice");
   });
 });
+
+describe("extractDates — a deadline's anchor, a period's end, and a lookback", () => {
+  const relative = (text: string) =>
+    extractDates(buildTree(["Terms", text])).filter((d) => d.type === "relative");
+
+  it("reads both deadlines when two deliverables share a sentence", () => {
+    const got = relative(
+      "Developer shall deliver a design mockup within fifteen (15) business days after the Effective Date and a fully functional staging site within forty-five (45) days after Client approves the mockup.",
+    ).map((d) => d.anchor);
+    expect(got).toEqual(["Effective Date", "Client approves the mockup"]);
+  });
+
+  it("reads a period whose anchor is followed by its defined name", () => {
+    const [d] = relative(
+      'Buyer may have the Property inspected during the fourteen (14) days after the Effective Date (the "Inspection Period").',
+    );
+    expect([d?.anchor, d?.offset_days]).toEqual(["Effective Date", 14]);
+  });
+
+  it("does not calendar a lookback period", () => {
+    expect(
+      relative(
+        "Lessor's total liability will not exceed the rent paid in the twelve (12) months before the claim.",
+      ),
+    ).toEqual([]);
+  });
+
+  it("still reads a deadline before an event", () => {
+    const [d] = relative(
+      "Tenant shall give notice at least ninety (90) days before the Expiration Date.",
+    );
+    expect(d?.offset_days).toBe(-90);
+  });
+});
