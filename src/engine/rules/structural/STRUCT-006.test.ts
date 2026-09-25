@@ -359,3 +359,36 @@ describe("STRUCT-006 — the front half of an enactment's name", () => {
     ).toContain("Chicago Residential Landlord");
   });
 });
+
+/**
+ * A signature block's "Title:" value is a job title. A grant agreement signed
+ * by two "Title: Executive Director"s was told "Executive Director" is a term
+ * it forgot to define.
+ */
+describe("STRUCT-006 — a signature block's title", () => {
+  it("is silent on a phrase that appears as a 'Title:' value", () => {
+    expect(
+      STRUCT_006.check(
+        buildContext([
+          "Grant Agreement",
+          "The Foundation awards the Grantee a grant for the Project.",
+          "HARROWGATE FAMILY FOUNDATION By: ________ Name: Eleanor V. Harrowgate Title: Executive Director",
+          "NORTHSTAR LITERACY COLLABORATIVE By: ________ Name: Marcus T. Abernathy Title: Executive Director",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});
+
+describe("STRUCT-006 — a titled role the body gives duties to is still reported", () => {
+  it("reports 'Project Director' when the body uses it beyond the signature block", () => {
+    const f = STRUCT_006.check(
+      buildContext([
+        "Fiscal Sponsorship Agreement",
+        "The Project Director serves at the pleasure of the Sponsor. The Project Director shall submit monthly reports.",
+        "SPONSOR By: ________ Title: Board Chair    PROJECT By: ________ Title: Project Director",
+      ]),
+    );
+    expect(f?.description).toContain("Project Director");
+  });
+});

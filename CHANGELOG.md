@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.750.0] — 2026-09-24
+
+### Fixed
+A clean foundation grant agreement drew three warnings; it now draws none.
+
+- **GOV-137 said the grant has no lobbying or political-activity
+  restriction.** A private foundation restates IRC § 4945(d) in its own
+  words — "carry on propaganda, or otherwise attempt to influence
+  legislation", "influence the outcome of any public election", "carry on any
+  voter registration drive" — and the rule read only "lobby" and "political
+  campaign".
+- **GOV-134 said the grant states no restricted purpose.** "The Grantee
+  shall use the Grant only for the Project" is the active voice; only the
+  passive "shall be used only for" was read.
+- **STRUCT-006 reported "Executive Director" as an undefined term.** A
+  phrase used only as a signature block's "Title:" value is a job title.
+  Only then: a role the body gives duties to and never identifies ("The
+  Project Director serves at the pleasure of …") is still reported, as the
+  fiscal-sponsorship specimen's pin — which caught the first, broader draft —
+  says it should be.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.749.0] — 2026-09-24
 
 ### Fixed

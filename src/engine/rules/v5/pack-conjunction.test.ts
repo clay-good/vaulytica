@@ -182,3 +182,30 @@ describe("MNA-113 — an asset identified inline", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A private foundation's use restrictions are written in the words of IRC
+ * § 4945(d) — "carry on propaganda, or otherwise attempt to influence
+ * legislation", "influence the outcome of any public election", "carry on any
+ * voter registration drive" — and in the active voice ("The Grantee shall use
+ * the Grant only for the Project"). A clean grant agreement was told it states
+ * neither a restricted purpose nor a lobbying restriction.
+ */
+describe("GOV-134 / GOV-137 — a foundation grant's own words", () => {
+  const USE =
+    "The Grantee shall use the Grant only for the Project and in accordance with the budget in the proposal. The Grantee shall not use any part of the Grant to carry on propaganda or otherwise attempt to influence legislation, to influence the outcome of any public election, or to carry on any voter registration drive.";
+
+  it("GOV-134 reads 'shall use the Grant only for the Project'", () => {
+    expect(rule("GOV-134").check(named("Grant Agreement", USE))).toBeNull();
+  });
+
+  it("GOV-137 reads the § 4945(d) prohibitions", () => {
+    expect(rule("GOV-137").check(named("Grant Agreement", USE))).toBeNull();
+  });
+
+  it("both still fire on a grant with no use terms", () => {
+    const bare = named("Grant Agreement", "The Foundation awards the Grantee $150,000.");
+    expect(rule("GOV-134").check(bare)).not.toBeNull();
+    expect(rule("GOV-137").check(bare)).not.toBeNull();
+  });
+});

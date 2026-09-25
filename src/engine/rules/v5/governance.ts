@@ -466,10 +466,14 @@ const GRANT = pack("grant-agreement", C, [
   },
   {
     id: "GOV-134",
+    ver: "1.1.0",
     name: "Restricted purpose and budget deviation limits",
     cite: cfr("2", "200.308", "Uniform Guidance — revision of budget and program plans"),
     pat: [
       /(restricted\s+(purpose|use)|(?:shall|will|must)\s+be\s+used\s+(solely|only)\s+for|approved\s+budget)/i,
+      // The ACTIVE voice — "The Grantee shall use the Grant only for the
+      // Project" — is how a foundation writes it; only the passive was read.
+      /\b(?:shall|will|must)\s+use\b[^.]{0,60}?\b(?:solely|only|exclusively)\s+for\b/i,
       /(budget\s+(revision|modification|deviation)|prior\s+(written\s+)?approval|reallocat)/i,
     ],
     why: "Restricted funds used outside the stated purpose are a breach and, for federal funds, a questioned cost. § 200.308 requires prior approval for specific budget changes.",
@@ -499,10 +503,16 @@ const GRANT = pack("grant-agreement", C, [
   },
   {
     id: "GOV-137",
+    ver: "1.1.0",
     name: "Lobbying, political activity, and use restrictions",
     cite: byrdAmendment(),
     pat: [
       /(lobby|lobbying)/i,
+      // A private foundation's grant restates IRC § 4945(d) in its own words:
+      // "carry on propaganda, or otherwise attempt to influence legislation",
+      // "influence the outcome of any specific public election", "carry on
+      // any voter registration drive" — none of them "lobby".
+      /\battempt\s+to\s+influence\s+legislation\b|\binfluence\s+the\s+outcome\s+of\s+any\s+(?:specific\s+)?public\s+election\b|\bcarry\s+on\s+propaganda\b|\bvoter\s+registration\s+drives?\b/i,
       /(political\s+(campaign|activity|contribution)|(?:shall|will|must)\s+not\s+be\s+used\s+to\s+(influence|support))/i,
     ],
     why: "Federal funds may not be used for lobbying (the Byrd Amendment and § 501(c)(3) limits), and a charitable grantee's political intervention endangers exemption for both parties.",

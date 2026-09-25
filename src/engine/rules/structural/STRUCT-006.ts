@@ -156,9 +156,24 @@ function isEnactmentNameHead(documentBody: string, term: string): boolean {
  */
 const POSITION_INTRODUCTION = String.raw`(?:the\s+(?:position|role|title|job|post)\s+of|(?:employed|hired|engaged|promoted|appointed)\s+(?:as|to)\s+(?:an?\s+|the\s+)?|you\s+will\s+be\s+(?:an?\s+|the\s+)?)`;
 
+function onlyAsSignatureTitle(documentBody: string, escaped: string): boolean {
+  const all = documentBody.match(new RegExp(`\\b${escaped}\\b`, "g"))?.length ?? 0;
+  const titled =
+    documentBody.match(new RegExp(`\\bTitle\\s*[:|]\\s*${escaped}\\b`, "g"))?.length ?? 0;
+  return titled > 0 && titled === all;
+}
+
 function isJobTitle(documentBody: string, term: string): boolean {
   const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`${POSITION_INTRODUCTION}\\s*${escaped}\\b`, "i").test(documentBody);
+  return (
+    new RegExp(`${POSITION_INTRODUCTION}\\s*${escaped}\\b`, "i").test(documentBody) ||
+    // A signature block's "Title:" value is a job title too: a grant signed by
+    // two "Title: Executive Director"s was told the phrase is undefined. Only
+    // when EVERY use is a title — a role the body gives duties to ("The
+    // Project Director serves at the pleasure of …") and never identifies is
+    // the draft's own gap, and a fiscal-sponsorship specimen pins exactly that.
+    onlyAsSignatureTitle(documentBody, escaped)
+  );
 }
 
 /**
@@ -269,7 +284,7 @@ export function undefinedTermCandidates(ctx: {
 
 export const rule: Rule = {
   id: "STRUCT-006",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Used-but-never-defined capitalized terms",
   category: "structural",
   default_severity: "warning",
