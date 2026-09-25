@@ -47,7 +47,9 @@ const FRONTED =
  * is a separate decision with its own measurement. Widening WHERE a trigger is
  * looked for and widening WHAT counts as one are different changes.
  */
-const FRONTED_WITHOUT_TRIGGER = 48;
+// 33 at 9.769.0: a duty COORDINATED under the fronted condition ("If …,
+// Subcontractor may stop work and Contractor shall pay …") now inherits it.
+const FRONTED_WITHOUT_TRIGGER = 33;
 
 describe("the obligations ledger says when", () => {
   it("reads a fronted condition as the trigger", async () => {

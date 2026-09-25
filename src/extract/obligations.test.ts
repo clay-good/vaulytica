@@ -550,8 +550,10 @@ describe("extractObligations", () => {
       ]),
       [],
     );
-    expect(obs.map((o) => o.obligor)).toEqual(["Provider"]);
-    expect(obs[0]!.action.startsWith("submit the report described in Ex. 4")).toBe(true);
+    // Two duties, each with its own party — Client's used to be absorbed into
+    // Provider's action, which this test pinned as correct (9.769.0).
+    expect(obs.map((o) => o.obligor)).toEqual(["Provider", "Client"]);
+    expect(obs[0]!.action).toBe("submit the report described in Ex. 4 of this Agreement");
   });
 
   it("does not end a sentence at a cross-reference or date abbreviation", () => {
@@ -1240,5 +1242,55 @@ describe("extractObligations — an equipment lease's triggers and obligors", ()
     const text =
       'This Subcontract is made between Apex Builders, Inc. ("Contractor") and Delta Electric LLC ("Subcontractor"). Subcontractor shall perform the Work in accordance with the Contract Documents.';
     expect(rows(text).map((o) => o.obligor)).toEqual(["Subcontractor"]);
+  });
+});
+
+describe("extractObligations — a residential purchase agreement's two-party sentences", () => {
+  const rows = (text: string, parties = extractParties(buildTree(["Agreement", text]))) =>
+    extractObligations(buildTree(["Agreement", text]), parties);
+
+  it("splits a bare 'and' before a named subject into two duties", () => {
+    const got = rows(
+      "At Closing, Seller shall deliver the deed and Buyer shall pay the balance of the Purchase Price.",
+    ).map((o) => [o.obligor, o.action]);
+    expect(got).toEqual([
+      ["Seller", "deliver the deed"],
+      ["Buyer", "pay the balance of the Purchase Price"],
+    ]);
+  });
+
+  it("keeps a subordinate modal after 'and' merged", () => {
+    const got = rows("Customer shall pay the fees and expenses the Provider may incur.");
+    expect(got).toHaveLength(1);
+  });
+
+  it("reads a condition interrupted by a prepositional aside, and the subject after ', and'", () => {
+    const [o] = rows(
+      "If Buyer, after diligent effort, does not obtain the commitment within that period, Buyer may terminate this Agreement by written notice to Seller before the period ends, and the Earnest Money shall be refunded to Buyer.",
+    );
+    expect(o!.trigger).toBe(
+      "If Buyer, after diligent effort, does not obtain the commitment within that period",
+    );
+    expect(o!.obligor).toBe("the Earnest Money");
+  });
+
+  it("reads the subject after a permissive clause with no comma", () => {
+    const [o] = rows(
+      "If the Property is materially damaged before Closing, Buyer may terminate this Agreement and the Earnest Money shall be refunded to Buyer.",
+    );
+    expect(o!.obligor).toBe("the Earnest Money");
+  });
+});
+
+describe("extractObligations — a fronted condition governs every coordinated duty", () => {
+  it("gives the second duty the sentence's condition", () => {
+    const got = extractObligations(
+      buildTree([
+        "Changes",
+        "If the parties do not agree on an appraiser, each shall appoint one appraiser within ten (10) days, and the two appraisers shall appoint a third.",
+      ]),
+      [],
+    ).map((o) => o.trigger);
+    expect(got[1]).toBe("If the parties do not agree on an appraiser");
   });
 });

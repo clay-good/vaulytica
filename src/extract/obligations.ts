@@ -111,8 +111,16 @@ const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+
  */
 const CLAUSE_CHAR = String.raw`(?:[^,;.]|,(?=\d{3}(?!\d))|\.(?=\d))`;
 
+/**
+ * A short prepositional aside set off by commas inside a condition: "If
+ * Buyer, AFTER DILIGENT EFFORT, does not obtain the commitment" recorded the
+ * trigger as "If Buyer". Led by a preposition, so ", Buyer may terminate," —
+ * the next clause — is never read as one.
+ */
+const INTERRUPTER = String.raw`(?:,\s*(?:after|in|at|for|with|without|despite|by|through|acting|using|on)\s[^,;.]{1,40},(?!\s*(?:and|or|but)\b)${CLAUSE_CHAR}+)?`;
+
 const TRIGGER_RE = new RegExp(
-  String.raw`\b(upon\s${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+|(?<!\bas\s)when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
+  String.raw`\b(upon\s${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
   "i",
 );
 
@@ -171,9 +179,21 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
       // clauses are coordinated ("Provider shall deliver …, and Customer shall
       // pay …"). Split into per-modal clauses so the second obligation is not
       // dropped and its text absorbed into the first (v7 §8 follow-up).
-      for (const cl of splitModalClauses(sentence)) {
+      const clauses = splitModalClauses(sentence);
+      // A fronted condition governs every duty COORDINATED under it: "If
+      // Contractor fails to pay …, Subcontractor may stop work and Contractor
+      // shall pay the cost of remobilization". The first clause reads it from
+      // its own subject; a later one joined by "and" inherits it.
+      const sentenceCondition = clauses[0] ? frontedTrigger(clauses[0].subject) : undefined;
+      for (const [k, cl] of clauses.entries()) {
         const modal = cl.modal.toLowerCase().replace(/\s+/g, " ");
         const predicate = cl.predicate;
+        const inherited =
+          k > 0 &&
+          sentenceCondition &&
+          /\band\s*$/i.test(sentence.slice(0, sentence.indexOf(cl.subject)))
+            ? sentenceCondition
+            : undefined;
         // `except` has two grammars and they point at OPPOSITE parties, so
         // the subject is resolved before either is applied.
         const subject = exceptProvisoSubject(cl.subject);
@@ -234,7 +254,8 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // "when does this bite?". 258 of the corpus's 3,688 obligations were
         // in that state. `stripFrontedAdverbial` already identifies exactly
         // this material to keep it out of the obligor, and then discards it.
-        const trigger = TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject);
+        const trigger =
+          TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject) ?? inherited;
         const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
         const qualifier = withExceptListTail(predicate, QUALIFIER_RE.exec(predicate));
         let action = predicate;
@@ -364,6 +385,9 @@ function protasisObligor(
  */
 const PROTASIS = /^\s*(?:if|when|unless|should|in\s+the\s+event|where)\b[^.;]{3,200}?,\s/i;
 
+const BARE_AND_NAMED_SUBJECT =
+  /\s+and\s+(?=(?:the\s+|each\s+|either\s+)?[A-Z][\w'’-]*(?:\s+[A-Z][\w'’-]*){0,3}\s*$)/;
+
 function splitModalClauses(
   sentence: string,
 ): { subject: string; predicate: string; modal: string }[] {
@@ -462,6 +486,13 @@ function splitModalClauses(
     let em: RegExpExecArray | null;
     while ((em = EXCEPT_BOUNDARY.exec(region)) !== null) lastExcept = em;
     if (lastExcept && (!last || lastExcept.index > last.index)) last = lastExcept;
+    // A BARE "and" before a NAMED subject is a boundary too: "Seller shall
+    // deliver the deed and Buyer shall pay the balance of the Purchase Price"
+    // was one row, Seller's, with Buyer's duty inside its action. The subject
+    // must be a Title-Case name, optionally after a determiner, running
+    // straight to the modal — "pay the fees and expenses the Customer may
+    // incur" is a subordinate modal and stays merged.
+    if (!last) last = BARE_AND_NAMED_SUBJECT.exec(region);
     if (!last) continue; // no clause boundary → subordinate modal, keep merged
     const subjectStart = regionStart + last.index + last[0].length;
     // A proviso carries its own modal, so the semicolon boundary split it into
@@ -829,7 +860,14 @@ function resolveObligorInner(
   partyNames: Set<string>,
   partyRoles: Set<string>,
 ): string {
-  const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/);
+  // A clause's subject after ", and" arrives with the coordinator when a
+  // fronted condition was stripped at that comma: "If …, Buyer may terminate
+  // this Agreement, and the Earnest Money shall be refunded" → "and the
+  // Earnest Money".
+  const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/).replace(
+    /^(?:and|but|or)\s+(?=\S)/i,
+    "",
+  );
   // A WARRANTY is the warrantor's: "Lessor warrants that the Equipment will be
   // in good working order on delivery" puts the Equipment before the modal,
   // and the ledger printed "Lessor warrants that the Equipment" as the party
@@ -923,6 +961,15 @@ function resolveObligorInner(
   ) {
     return coordinated[1]!.trim();
   }
+  // The same boundary with no comma, after a PERMISSIVE clause the modal list
+  // does not split on: "Buyer may terminate this Agreement and the Earnest
+  // Money shall be refunded to Buyer" is the Earnest Money's row, not "this
+  // Agreement and the Earnest Money". Only a named subject after the "and".
+  const permissive =
+    /\b(?:may|can)\s+\S[^]*?(\s+and\s+)((?:the\s+|each\s+|either\s+)?[A-Z][\w'’-]*(?:\s+[A-Z][\w'’-]*){0,3})$/.exec(
+      trimmed,
+    );
+  if (permissive) return permissive[2]!;
   // A subject that a RELATIVE CLAUSE modifies names the head noun phrase: "A
   // Member who receives a bona fide offer for its interest shall first offer
   // it to the other Members" is owed by a Member, not by "bona fide offer for

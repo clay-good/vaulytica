@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.769.0] — 2026-09-25
+
+### Fixed
+- **Two parties' duties in one sentence joined by a bare "and".** "At
+  Closing, Seller shall deliver the deed and Buyer shall pay the balance of
+  the Purchase Price" was one row, Seller's, with Buyer's duty inside its
+  action. A plain "and" followed by a Title-Case subject, with an optional
+  "the"/"each"/"either", is now a clause boundary. "Customer shall pay the
+  fees and expenses the Provider may incur" stays one row. Across the
+  corpus this adds 9 obligations and loses none:
+  - Owner's payment duties in two construction contracts;
+  - Supplier's reimbursement duty in a distribution agreement;
+  - Husband's tax-claim duty in a marital settlement agreement;
+  - Buyer's duty in a residential purchase agreement;
+  - Contractor's duty to keep paying during a dispute;
+  - Landlord's duty to respond to a space plan;
+  - Licensee's duty to retest.
+
+  A pinned test had expected Client's duty to stay merged into Provider's
+  row. That test existed to stop the obligor "4 of this Agreement and
+  Client"; it now expects both duties.
+- **A fronted condition now governs every duty coordinated under it.** "If
+  the parties do not agree on an appraiser, each shall appoint one …, and
+  the two appraisers shall appoint a third" gave the second duty no
+  trigger. 22 rows inherit their sentence's condition, and
+  `obligation-trigger-reach` falls from 48 fronted-but-empty triggers to
+  33.
+- **A condition interrupted by an aside.** "If Buyer, after diligent
+  effort, does not obtain the commitment" was recorded as the trigger "If
+  Buyer". A short prepositional aside between commas is now read through.
+  The same fix completes two corpus triggers: "If a Receiving Party learns
+  that, by inadvertence or otherwise, it has disclosed …" and a D&O
+  indemnity's good-faith standard.
+- **"and the Earnest Money" as an obligor.** A subject after ", and" no
+  longer keeps the coordinator when a fronted condition was stripped at
+  that comma (16 corpus rows). After a permissive clause with no comma,
+  the named subject is taken: "Buyer may terminate this Agreement and the
+  Earnest Money shall be refunded" → "the Earnest Money".
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.768.0] — 2026-09-25
 
 ### Fixed
