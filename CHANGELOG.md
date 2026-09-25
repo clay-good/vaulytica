@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.742.0] — 2026-09-24
+
+### Fixed
+- **A signer was found or lost depending on how the signature block was laid
+  out.** `extraction-format-invariance` carried eight specimens whose
+  signers appeared only when every line was its own paragraph. In the joined
+  block, the signature-field reader had ASCII letters, so "By: /s/ Annika
+  Sjöberg" stopped at the "ö" and the field was skipped (Sjöberg,
+  Mbeki-Sørheim, Bhattacharya-Kovács, Kiruna-Bergström, Lefèvre); and a
+  conformed signature over its own printed name — "By: /s/ Desmond
+  Achterberg Desmond Achterberg Chief Executive Officer" — gave the name no
+  terminator within five words. Letters are now Unicode and the repeated
+  name ends the capture. Seven debt entries are paid off and two more
+  shrink.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.741.0] — 2026-09-24
 
 ### Fixed

@@ -1351,3 +1351,33 @@ describe("extractParties — counsel named in prose is not a party", () => {
     expect(got).not.toContain("Castellano Family Law");
   });
 });
+
+/**
+ * A signer is read the same whichever way the block is laid out.
+ * `extraction-format-invariance` recorded eight specimens whose signers were
+ * found only when every line was its own paragraph: the joined block read
+ * "By: /s/ Annika Sjöberg Name: Annika Sjöberg" and stopped at the "ö", or
+ * read a conformed signature over its own printed name with no terminator.
+ */
+describe("extractParties — a signer in a joined signature block", () => {
+  const names = (block: string) =>
+    extractParties(buildTree(["Agreement", "Body text of the agreement.", block])).map(
+      (p) => p.name,
+    );
+
+  it("reads a signer whose name carries a diacritic", () => {
+    expect(
+      names(
+        "HALVORSEN PHOTONICS AB By: /s/ Annika Sjöberg Name: Annika Sjöberg Title: Chief Executive Officer",
+      ),
+    ).toContain("Annika Sjöberg");
+  });
+
+  it("reads a conformed signature over its own printed name", () => {
+    expect(
+      names(
+        "CALLOWAY BIOSCIENCES, INC. By: /s/ Desmond Achterberg Desmond Achterberg Chief Executive Officer",
+      ),
+    ).toContain("Desmond Achterberg");
+  });
+});

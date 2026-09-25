@@ -745,8 +745,14 @@ const SIGNATURE_NAME_LINE = /^(?:By|Name)\s*:?\s*/i;
  * both parties' "By:"/"Name:" fields; capturing each segment recovers
  * the second party the leading-anchored regex drops. (v7 §7.)
  */
+// The letters are UNICODE: `[A-Z][\w…]` stopped at "Sj" in "Annika Sjöberg",
+// the terminator lookahead failed, and the signer was skipped — while the same
+// block laid out one line per paragraph registered her. And a CONFORMED
+// signature repeats the printed name ("By: /s/ Desmond Achterberg Desmond
+// Achterberg Chief Executive Officer"), which left no terminator within five
+// words; the repetition itself now ends the name.
 const SIGNATURE_FIELD =
-  /\b(?:By|Name)\s*:\s*(?:\/s\/\s*)?([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,4}?)(?=\s+(?:By|Name|Title|Date|its)\b|[,;]|\t|\s{2,}|$)/g;
+  /(?<![\p{L}\p{N}_])(?:By|Name)\s*:\s*(?:\/s\/\s*)?(\p{Lu}[\p{L}\p{N}_.'’-]*(?:\s+\p{Lu}[\p{L}\p{N}_.'’-]*){0,4}?)(?=\s+(?:By|Name|Title|Date|its)(?![\p{L}\p{N}_])|[,;]|\t|\s{2,}|$|\s+\1(?![\p{L}\p{N}_]))/gu;
 
 /**
  * "doing business as" / "d/b/a" operating name following a legal name.
