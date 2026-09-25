@@ -491,3 +491,24 @@ describe("TERM-005 — payment for work performed BEFORE termination", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A contingency clause states its condition at length before the effect: "If
+ * Buyer notifies Seller in writing by April 24, 2026 that Buyer is not
+ * satisfied with the inspection, this Agreement terminates and the earnest
+ * money deposit is returned to Buyer." The conditional branch allowed 80
+ * characters between "if" and "terminates", and a clean residential purchase
+ * agreement was told it states no effect of termination.
+ */
+describe("TERM-005 — a contingency's long condition", () => {
+  it("reads 'If Buyer notifies … inspection, this Agreement terminates and the deposit is returned'", () => {
+    expect(
+      TERM_005.check(
+        buildContext([
+          "Inspection",
+          "If Buyer notifies Seller in writing by April 24, 2026 that Buyer is not satisfied with the inspection, this Agreement terminates and the earnest money deposit is returned to Buyer.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

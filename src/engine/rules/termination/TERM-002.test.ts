@@ -394,3 +394,31 @@ describe("TERM-002 — acceleration on an Event of Default is the for-cause path
     ).not.toBeNull();
   });
 });
+
+/**
+ * A purchase agreement's for-cause path is its DEFAULT clause: "If Buyer
+ * defaults, Seller may retain the earnest money deposit as liquidated damages
+ * as Seller's sole remedy. If Seller defaults, Buyer may seek specific
+ * performance." A clean residential purchase agreement was told it has no
+ * termination-for-cause clause.
+ */
+describe("TERM-002 — a purchase agreement's default-and-remedy clause", () => {
+  it("reads 'If Buyer defaults, Seller may retain the earnest money deposit as liquidated damages'", () => {
+    expect(
+      TERM_002.check(
+        buildContext([
+          "Default",
+          "If Buyer defaults, Seller may retain the earnest money deposit as liquidated damages as Seller's sole remedy. If Seller defaults, Buyer may seek specific performance or the return of the earnest money deposit.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on 'default' without a remedy", () => {
+    expect(
+      TERM_002.check(
+        buildContext(["Notices", "If Buyer defaults on a payment, Buyer shall notify Seller."]),
+      ),
+    ).not.toBeNull();
+  });
+});

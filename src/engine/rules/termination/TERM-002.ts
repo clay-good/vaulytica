@@ -87,6 +87,14 @@ const FOR_CAUSE = new RegExp(
     String.raw`${TERMINATE}[^.]{0,140}\bmaterial(?:ly)?\b[^.]{0,80}${BREACH}` +
     "|" +
     String.raw`${TERMINATE}[^.]{0,140}${BREACH}[^.]{0,80}\bmaterial\b` +
+    // A PURCHASE AGREEMENT's for-cause path is its DEFAULT clause: "If Buyer
+    // defaults, Seller may retain the earnest money deposit as liquidated
+    // damages as Seller's sole remedy; if Seller defaults, Buyer may seek
+    // specific performance". There is no "terminate" in it — the remedy is the
+    // clause — and a clean residential purchase agreement was told it has no
+    // termination-for-cause path. A default with a stated REMEDY is required.
+    "|" +
+    String.raw`\bif\s+(?:either\s+party|a\s+party|any\s+party|buyer|seller|purchaser|vendor|the\s+(?:buyer|seller|purchaser|vendor|borrower|tenant))\s+(?:defaults|is\s+in\s+default|breaches)\b[^.]{0,120}?\b(?:retain\s+(?:the\s+)?(?:earnest\s+money|deposit)|liquidated\s+damages|specific\s+performance|terminat\w+|pursue\s+(?:any|all)\s+(?:available\s+)?remed)` +
     // The STRICT for-cause form: immediate termination on ANY breach, with no
     // materiality qualifier and no cure period — "the Licensor may terminate
     // this EULA immediately if the Licensee breaches any of its terms". A
@@ -163,7 +171,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.13.0",
+  version: "1.14.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",

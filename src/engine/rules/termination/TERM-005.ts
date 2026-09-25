@@ -128,7 +128,13 @@ const EFFECT_OF_TERMINATION = new RegExp(
     // `\w*` on the consequence: the conditional form conjugates its verb
     // ("the deposit shall be returnED") and a bare \b-wrapped stem rejects
     // every inflection.
-    String.raw`|\bif\s+${SAME_SENTENCE}{0,80}?\bterminat(?:es|ed)\b${SAME_SENTENCE}{0,160}?\b(?:${CONSEQUENCE})\w*` +
+    // The condition before "terminates" is allowed 160 characters, not 80: a
+    // contingency states its condition at length ("If Buyer notifies Seller in
+    // writing by April 24, 2026 that Buyer is not satisfied with the
+    // inspection, this Agreement terminates and the earnest money deposit is
+    // returned"), and a clean residential purchase agreement was told it
+    // states no effect of termination. Still one sentence.
+    String.raw`|\bif\s+${SAME_SENTENCE}{0,160}?\bterminat(?:es|ed)\b${SAME_SENTENCE}{0,160}?\b(?:${CONSEQUENCE})\w*` +
     // The purchase-agreement form pairs the termination VERB with the
     // consequence in one sentence and no "(up)on" noun trigger — "the Buyer
     // may terminate this Agreement, in which case the Earnest Money is
@@ -235,7 +241,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.20.0",
+  version: "1.21.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

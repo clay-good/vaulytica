@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.749.0] — 2026-09-24
+
+### Fixed
+A clean residential purchase agreement drew two termination warnings; it now
+draws neither.
+
+- **TERM-002 said the agreement has no termination-for-cause clause.** A
+  purchase agreement's word for it is its DEFAULT clause — "If Buyer
+  defaults, Seller may retain the earnest money deposit as liquidated
+  damages as Seller's sole remedy. If Seller defaults, Buyer may seek
+  specific performance" — which has no "terminate" in it; the remedy is the
+  clause. A default by a named party with a stated remedy (retaining the
+  deposit, liquidated damages, specific performance, termination) now
+  counts; "if Buyer defaults on a payment, Buyer shall notify Seller" does
+  not.
+- **TERM-005 said it states no effect of termination.** "If Buyer notifies
+  Seller in writing by April 24, 2026 that Buyer is not satisfied with the
+  inspection, this Agreement terminates and the earnest money deposit is
+  returned to Buyer" — a contingency states its condition at length, and the
+  branch allowed 80 characters before "terminates". It now allows 160, still
+  within one sentence; across the specimens one more document (an
+  easement's abandonment clause, "the Easement terminates … and Grantee shall
+  … record an instrument of release") is read.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.748.0] — 2026-09-24
 
 ### Fixed
