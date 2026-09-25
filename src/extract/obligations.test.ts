@@ -1493,3 +1493,46 @@ describe("extractObligations — the consumer caveat after a disclaimer", () => 
     ).toEqual([]);
   });
 });
+
+describe("extractObligations — a shared subject across 'but'", () => {
+  it("reads 'Sublandlord is not responsible …, but shall use reasonable efforts' as Sublandlord's", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Master Lease",
+        "Sublandlord is not responsible for Master Landlord's performance, but shall use reasonable efforts to enforce Master Landlord's obligations.",
+      ]),
+      [],
+    );
+    expect(o!.obligor).toBe("Sublandlord");
+  });
+});
+
+describe("extractObligations — a subject that defines a term", () => {
+  it("is named by the term, however its dates are written", () => {
+    const spelled = extractObligations(
+      buildTree([
+        "Tolling",
+        'The period from March 2, 2026 through September 2, 2026 (the "Tolling Period") shall not be counted in computing any statute of limitations.',
+      ]),
+      [],
+    )[0]!.obligor;
+    const slashed = extractObligations(
+      buildTree([
+        "Tolling",
+        'The period from 03/02/2026 through 09/02/2026 (the "Tolling Period") shall not be counted in computing any statute of limitations.',
+      ]),
+      [],
+    )[0]!.obligor;
+    expect([spelled, slashed]).toEqual(["the Tolling Period", "the Tolling Period"]);
+  });
+
+  it("names both parties when the subject defines both", () => {
+    const text =
+      'Calloway Labs Inc. ("Calloway") and Vantablack Therapeutics AS ("Vantablack") will exchange confidential information for the Purpose.';
+    const [o] = extractObligations(
+      buildTree(["Letter", text]),
+      extractParties(buildTree(["Letter", text])),
+    );
+    expect(o!.obligor).toBe("the parties");
+  });
+});

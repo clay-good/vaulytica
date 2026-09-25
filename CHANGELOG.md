@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.791.0] — 2026-09-25
+
+### Fixed
+- **A clean commercial sublease exposed three ledger defects.**
+  - **A term limit was a negative covenant.** After 9.775 moved the subject
+    of "In no event will the term extend beyond the day before the Master
+    Lease expires" back before its verb, OBLI-005 listed `the term | will |
+    not extend …` among the sublease's covenants. A term or period is a
+    duration, not a party. It joins the provision nouns OBLI-005 already
+    reads as the document describing itself.
+  - **"…, but shall" lost its subject.** "Sublandlord is not responsible
+    for Master Landlord's performance, but shall use reasonable efforts"
+    named the fragment "responsible for Master Landlord's performance,
+    but". The shared-subject reading now crosses "but" as well as "and".
+  - **A subject that defines a term is named by the term.** "The period
+    from March 2, 2026 through September 2, 2026 (the "Tolling Period")
+    shall not be counted" was named by the words before the parenthesis.
+    That made the obligor depend on how the dates were written:
+    `drafting-spellings` caught the tolling specimen resolving differently
+    once its dates were slashed. When a subject defines two party terms,
+    the row is both parties' ("Calloway Labs Inc. ("Calloway") and
+    Vantablack Therapeutics AS ("Vantablack") will exchange …"). A
+    one-term draft had made OBLI-002 report a one-sided confidentiality
+    duty on that specimen.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.790.0] — 2026-09-25
 
 ### Fixed

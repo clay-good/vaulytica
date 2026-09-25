@@ -362,7 +362,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1026,7 +1026,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.1-376",
       "rule_id": "OBLI-005",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1104,11 +1104,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "347566088e55c150c457585859d0120d24c3df61c937e3d434d5c21fb311b47d",
+  "result_hash": "9cada08c0139e6a9780a894c7da031eb04221d6aac6fabc787e58532651a9bfe",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.790.0"
+  "version": "9.791.0"
 }

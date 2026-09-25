@@ -72,7 +72,7 @@ const MODALS = [
 
 /** "S <finite verb> … and" — the subject of an elided second verb phrase is S. */
 const SHARED_SUBJECT =
-  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should|owes?|holds?|commenced|acknowledges?|agrees?|represents?|retains?|receives?|remains?)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?\s+and\s*$/i;
+  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should|owes?|holds?|commenced|acknowledges?|agrees?|represents?|retains?|receives?|remains?)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?\s+(?:and|but)\s*$/i;
 
 /** A subject opened by a negative determiner: the negation belongs to the row. */
 const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
@@ -1167,6 +1167,28 @@ function resolveObligorInner(
       trimmed,
     );
   if (relative) return relative[1]!;
+  // A SUBJECT THAT DEFINES A TERM is named by the term: "The period from
+  // March 2, 2026 through September 2, 2026 (the "Tolling Period") shall not
+  // be counted" is the Tolling Period's row. Taking the words before it made
+  // the obligor depend on how the dates were written — spelled out, they cost
+  // words and commas, and the same clause with slashed dates resolved
+  // differently (`drafting-spellings` caught it).
+  // …unless it defines TWO: "Calloway Labs Inc. ("Calloway") and Vantablack
+  // Therapeutics AS ("Vantablack") will exchange confidential information" is
+  // both parties' duty, and naming only the last term made OBLI-002 report a
+  // one-sided confidentiality obligation.
+  const definedTerms = [...trimmed.matchAll(/\(\s*(?:the\s+)?["“]([^"”]{1,40})["”]\s*\)/g)].map(
+    (d) => d[1]!.trim().toLowerCase(),
+  );
+  if (
+    definedTerms.length >= 2 &&
+    /\band\b/i.test(trimmed) &&
+    definedTerms.every((d) => partyNames.has(d) || partyRoles.has(d))
+  ) {
+    return "the parties";
+  }
+  const definedSubject = /\(\s*((?:the\s+)?)["“]([A-Z][^"”]{1,40})["”]\s*\)$/.exec(trimmed);
+  if (definedSubject) return `${definedSubject[1] ? "the " : ""}${definedSubject[2]!.trim()}`;
   const words = trimmed.split(/\s+/).filter(Boolean);
   if (words.length === 0) return "";
   // A WHOLE NOUN PHRASE is kept whole. Six trailing words cut the head off a

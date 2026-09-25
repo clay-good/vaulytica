@@ -368,7 +368,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1232,7 +1232,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.4-1143",
       "rule_id": "OBLI-005",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1276,11 +1276,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "079386ce5f88f534832129387d5ed2ed072564cf522c2b18ee854165c4c51b07",
+  "result_hash": "b00e85baa0ba85ea008ccb6b2cdea5c7bc1b77a426f7dce37608941bf1e91fa1",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.790.0"
+  "version": "9.791.0"
 }

@@ -188,3 +188,16 @@ describe("OBLI-005 — a liability allocation is not a covenant (v1.7.0)", () =>
     ).toBeNull();
   });
 });
+
+describe("OBLI-005 — a term limit is not a covenant (v1.8.0)", () => {
+  it("does not list 'in no event will the term extend beyond the Master Lease'", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Term",
+          "In no event will the term extend beyond the day before the Master Lease expires.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+});

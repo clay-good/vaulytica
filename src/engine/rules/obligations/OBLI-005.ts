@@ -77,7 +77,7 @@ const INSTRUMENT_SUBJECT = new RegExp(
   // written by hand it listed "agreement" and not "contract", so
   // `instrument-vocabulary.test.ts` rewrote one specimen's Agreement as a
   // Contract and the covenant count moved.
-  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|act\b|statute|law|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
+  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|act\b|statute|law|(?:(?:initial|renewal|sublease|lease|option)\s+)?(?:term|period)\b|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
   "i",
 );
 
@@ -138,7 +138,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",

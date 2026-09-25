@@ -359,7 +359,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -959,7 +959,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.2-637",
       "rule_id": "OBLI-005",
-      "rule_version": "1.7.0",
+      "rule_version": "1.8.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 1"
@@ -1002,11 +1002,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "7f2f289afc933db127009dc39f29668ca1524c5015ffe8fa6582d13c65bf9a51",
+  "result_hash": "170322fe1f2b07c8ea58bc17e08bb250c9d615a6694644f0fc0537b03d444908",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.790.0"
+  "version": "9.791.0"
 }
