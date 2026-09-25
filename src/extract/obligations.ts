@@ -70,6 +70,14 @@ const MODALS = [
   "hereby covenants",
 ];
 
+/**
+ * A word that makes the "will" right after it the testamentary instrument — a
+ * determiner, "by", or a possessive ("the other's will"), optionally opening a
+ * quotation (`(my "Will")`).
+ */
+const NOUN_WILL_BEFORE =
+  /(?:\b(?:this|my|his|her|their|our|your|the|a|an|last|prior|any|said|such|joint|mutual|holographic|living|own|free|by)|\w['’]s|\ws['’])\s+["“]?$/i;
+
 const MODAL_RE = new RegExp(String.raw`\b(${MODALS.join("|").replace(/ /g, "\\s+")})\b`, "gi");
 
 /**
@@ -293,6 +301,22 @@ function splitModalClauses(
     // compound. A dash that OPENS a clause ("— shall pay") is not one, and an
     // em-dash is not a hyphen at all.
     if (m.index > 0 && /\w[-\u2010\u2011]$/.test(sentence.slice(0, m.index))) continue;
+    // "WILL" THE INSTRUMENT IS A NOUN, AND A WILL SAYS IT ON EVERY PAGE. The
+    // empty-action guard below only catches the noun at the end of a sentence;
+    // mid-sentence the words after it pass for an action. A clean Texas will
+    // put 7 nonsense rows into a 14-row ledger: "LAST | will | AND TESTAMENT OF
+    // …", "all references in this | will | to "my spouse" are to him", "her
+    // last | will | and testament". A determiner or "by" directly before the
+    // word, or "and testament" after it, makes it the noun — no modal ever
+    // follows "this", "my", "the" or "last" directly. "that" and "each" are
+    // deliberately absent: "goods that will be delivered", "each will bear its
+    // own costs" are modals.
+    if (
+      /^will$/i.test(m[1]!) &&
+      (NOUN_WILL_BEFORE.test(sentence.slice(0, m.index)) ||
+        /^\s+and\s+testament\b/i.test(sentence.slice(m.index + m[0].length)))
+    )
+      continue;
     modals.push({ index: m.index, len: m[0].length, text: m[1]! });
   }
   if (modals.length === 0) return [];

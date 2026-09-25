@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.733.0] — 2026-09-24
+
+### Fixed
+- 🚨 **A will's obligations ledger read the word "Will" as a duty.** Half the
+  rows of a clean Texas will's obligations CSV were the NOUN: `LAST | will |
+  AND TESTAMENT OF …`, `all references in this | will | to "my spouse" are to
+  him`, `her last | will | and testament`. The earlier guard caught the noun
+  only at the end of a sentence (an empty action); mid-sentence, the words
+  after it passed for an action. "will" is now the instrument when a
+  determiner, "by", or a possessive sits directly before it (`this Will`,
+  `my Will`, `by will or intestacy`, `the other's will`, `(my "Will")`) or
+  "and testament" follows — no modal ever follows "this" or "my" directly.
+  "that will" and "each will" are deliberately still modals. Across the
+  specimens: **32 nonsense rows removed from 8 documents** (every will,
+  codicil, advance directive and health-care POA, plus the transfer
+  restrictions of an option grant, a ROFR and a stockholders agreement), and
+  one real duty recovered — the Ohio will's bond waiver now reads `No
+  fiduciary serving under this Will | shall | be required to post bond`
+  instead of `under this | will | shall be required…`.
+- Two test cases had been pinning rows that should never have existed: the
+  option grant's "not transferable except by will" and a postnuptial
+  waiver's "the other's will" were the vehicles for an obligor-exclusion
+  assertion, and their only "obligation" was the noun. Both now assert that
+  the sentence states no duty; the cross-reference exclusion is covered by a
+  sentence that carries one.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.732.0] — 2026-09-24
 
 ### Fixed

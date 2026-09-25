@@ -309,25 +309,16 @@ describe("extractObligations", () => {
   });
 
   it("does not read a cross-reference or a bare preposition as an excluded party", () => {
-    // The other three `except` subjects in the corpus. None carves out a
+    // The other `except` subjects in the corpus. None carves out a
     // party, and each produced a confident non-answer in a field whose whole
     // job is to name the party that does NOT owe the duty.
     const cases: [string, string][] = [
-      // "except as provided in …" — a cross-reference. Excluded "as provided
-      // in a".
+      // "except as provided in …" — a cross-reference, carried by a real duty
+      // (the corpus's own specimen of it turned out to state none; see below).
       [
-        "Waiver",
-        "Each Spouse waives the right to elect against the other's will, to a " +
-          "spousal or family allowance, to homestead, and to any statutory " +
-          "share, except as provided in a will, revocable trust, or " +
-          "beneficiary designation executed after the date of this Agreement.",
-      ],
-      // "except by will or the laws of descent" — a manner. Excluded "by".
-      [
-        "Transfer",
-        "The Option is not transferable except by will or the laws of descent " +
-          "and distribution, and during the Optionee's lifetime is exercisable " +
-          "only by the Optionee.",
+        "Taxes",
+        "Tenant shall pay all real estate taxes assessed against the Premises, " +
+          "except as provided in a separate written agreement of the parties.",
       ],
       // A shouted warranty disclaimer. Excluded "AS THOSE".
       [
@@ -347,6 +338,31 @@ describe("extractObligations", () => {
         expect(o.obligor_exclusion, `${heading} excluded ${o.obligor_exclusion}`).toBeUndefined();
       }
     }
+  });
+
+  it("reads 'except by will' and 'the other's will' as the instrument, not a modal or an excluded party", () => {
+    // This sentence used to sit in the case list above, excluding "by". Its
+    // only "obligation" was the NOUN — obligor "The Option is not transferable
+    // except by", action "or the laws of descent and distribution …" — so the
+    // case was pinning a row that should never have existed. The sentence
+    // states no duty at all.
+    const tree = buildTree([
+      "Transfer",
+      "The Option is not transferable except by will or the laws of descent " +
+        "and distribution, and during the Optionee's lifetime is exercisable " +
+        "only by the Optionee.",
+    ]);
+    expect(extractObligations(tree, [])).toEqual([]);
+    // Likewise the postnuptial waiver, which excluded "as provided in a": its
+    // only row was "the other's | will | to a spousal or family allowance".
+    const waiver = buildTree([
+      "Waiver",
+      "Each Spouse waives the right to elect against the other's will, to a " +
+        "spousal or family allowance, to homestead, and to any statutory " +
+        "share, except as provided in a will, revocable trust, or " +
+        "beneficiary designation executed after the date of this Agreement.",
+    ]);
+    expect(extractObligations(waiver, [])).toEqual([]);
   });
 
   it("splits a coordinated sentence into one obligation per party", () => {
@@ -729,6 +745,30 @@ describe("extractObligations — a modal with no verb phrase after it", () => {
     expect(
       obl(buildTree(["Last Will", "The residue passes to any trust created under this Will."])),
     ).toEqual([]);
+  });
+
+  it("does not read the instrument's own name mid-sentence as a modal", () => {
+    // A clean Texas will: 7 of its 14 ledger rows were the noun.
+    for (const sentence of [
+      "LAST WILL AND TESTAMENT OF MARGARET ELLEN DOYLE",
+      "I, Margaret Ellen Doyle, being of sound mind, declare this to be my Last Will and Testament.",
+      'I am married to Thomas James Doyle, and all references in this Will to "my spouse" are to him.',
+      "IN WITNESS WHEREOF, I have signed this Will on March 3, 2026, at Austin, Texas.",
+      "The testator declared that said instrument is her last will and testament.",
+      "Property passing by will or by intestacy is excluded.",
+      "Each Spouse waives the right to elect against the other's will, to a spousal or family allowance, and to homestead.",
+      'This is the First Codicil to my Last Will and Testament dated March 6, 2021 (my "Will").',
+    ]) {
+      expect(obl(buildTree(["Will", sentence])), sentence).toEqual([]);
+    }
+  });
+
+  it("still reads 'will' after 'that' and 'each' as the modal", () => {
+    const modals = (text: string) => obl(buildTree(["Agreement", text])).map((o) => o.modal);
+    expect(
+      modals("The goods that will be delivered shall conform to the Specifications."),
+    ).toContain("will");
+    expect(modals("The parties agree that each will bear its own costs.")).toEqual(["will"]);
   });
 
   it("still reads 'will' as a modal when a verb phrase follows it", () => {
