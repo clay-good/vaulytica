@@ -400,3 +400,28 @@ describe("INS-017 — the settlement-consent clause as drafters write it", () =>
     ).not.toBeNull();
   });
 });
+
+/**
+ * The hold-harmless playbook also receives RELEASES, which name the same
+ * things in their own words: the parties are the "Participant" who releases
+ * and the "Facility" released, and the scope is "arising out of my
+ * participation in the Activities". A clean climbing-gym waiver was told at
+ * `critical` that it identifies neither parties nor activity.
+ */
+describe("INS-020 / INS-021 — a release's own words", () => {
+  const rule = (id: string) => INSURANCE_RULES.find((r) => r.id === id)!;
+  const PB: Playbook = { id: "hold-harmless-agreement", version: "1.0.0" };
+  const RELEASE = {
+    ...buildContext([
+      "Release of Liability",
+      "Facility: Summit Crag Climbing Center, LLC. Participant: Aisha M. Rahimi.",
+      'I want to use Summit Crag\'s climbing walls and bouldering areas (the "Activities").',
+      "I release Summit Crag from any claim for injury arising out of my participation in the Activities.",
+    ]),
+    playbook: PB,
+  };
+
+  it.each(["INS-020", "INS-021"])("%s reads the release", (id) => {
+    expect(rule(id).check(RELEASE), id).toBeNull();
+  });
+});

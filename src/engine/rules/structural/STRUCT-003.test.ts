@@ -305,3 +305,22 @@ describe("STRUCT-003 — an English execution clause", () => {
     expect(STRUCT_003.check(ctx)).not.toBeNull();
   });
 });
+
+/**
+ * An individual signs a release on a rule over a printed name and a filled-in
+ * date — "____ Aisha M. Rahimi Date: September 14, 2026" — and a clean
+ * climbing-gym waiver reported "No signature block detected" at `critical`.
+ * The name test read the whole segment, date and all. (STRUCT-013 learned the
+ * same caption in 9.738.0.)
+ */
+describe("STRUCT-003 — a printed name over a filled-in date", () => {
+  it("reads '____ Aisha M. Rahimi Date: September 14, 2026' as a signature", () => {
+    const ctx = buildContext([
+      "Release of Liability",
+      "I release Summit Crag from claims caused by its ordinary negligence.",
+      "I HAVE READ THIS RELEASE AND SIGN IT VOLUNTARILY.",
+      "______________________________ Aisha M. Rahimi Date: September 14, 2026",
+    ]);
+    expect(STRUCT_003.check(ctx)).toBeNull();
+  });
+});

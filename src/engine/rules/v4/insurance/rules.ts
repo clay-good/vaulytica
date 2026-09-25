@@ -545,6 +545,7 @@ const INDEMNIFICATION_AGREEMENT_RULES: Rule[] = [
 const HOLD_HARMLESS_RULES: Rule[] = [
   presence({
     id: "INS-020",
+    version: "1.1.0",
     name: "Parties identified",
     description: "Hold-harmless agreement must identify protected party and protecting party.",
     citation: stateInsCode(),
@@ -555,14 +556,18 @@ const HOLD_HARMLESS_RULES: Rule[] = [
       "Hold-harmless obligations run between identified parties; affiliates / agents who benefit should be enumerated.",
     recommendation:
       "Add 'Parties' identifying the protected party (held harmless) and the protecting party (providing the hold-harmless).",
+    // A RELEASE names the same pair in its own words — the "Participant" who
+    // releases, the "Facility" released — and a clean climbing-gym waiver was
+    // told at `critical` it identifies no parties.
     present_patterns: [
-      /(hold\s+harmless|holds?\s+(.{0,40}\s+)?harmless)/i,
-      /(parties|protected\s+party|protecting\s+party)/i,
+      /(hold\s+harmless|holds?\s+(.{0,40}\s+)?harmless|\breleases?\b|\breleased\b)/i,
+      /(parties|protected\s+party|protecting\s+party|\b(?:participant|releasor|releasee|facility|operator|indemnitor|indemnitee)\b)/i,
     ],
     require_all_present: true,
   }),
   presence({
     id: "INS-021",
+    version: "1.1.0",
     name: "Activity / scope of risk identified",
     description: "Hold-harmless agreement must identify the activity or scope of risk covered.",
     citation: insPractice(
@@ -577,7 +582,12 @@ const HOLD_HARMLESS_RULES: Rule[] = [
       "A hold-harmless without an identified activity invites argument over reach; tie it to a specific event, location, premises, or activity period.",
     recommendation:
       "Add 'Activity / Scope' identifying the activity, location, and duration of the risk being held harmless.",
-    present_patterns: [/(activity|event|premises|location)/i, /(scope|period|while|during)/i],
+    // "Activities" is the plural the patterns missed, and a release states its
+    // scope as the claims "arising out of my participation in the Activities".
+    present_patterns: [
+      /(activit(?:y|ies)|event|premises|location)/i,
+      /(scope|period|while|during|participat\w*|arising\s+(?:out\s+of|from))/i,
+    ],
   }),
   language({
     id: "INS-022",

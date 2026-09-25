@@ -226,6 +226,11 @@ function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
     // in the body is neither.
     if (isSignatureCaption(seg)) return true;
     if (isPersonalName(seg)) return true;
+    // A FILLED-IN date caption after the printed name — "Aisha M. Rahimi Date:
+    // September 14, 2026" — is how an individual signs a release; the name
+    // test read the date with it. (Same caption STRUCT-013 strips.)
+    const undated = seg.replace(/\s+Dated?\s*:\s*[^_]*$/i, "").trim();
+    if (undated !== seg && isPersonalName(undated)) return true;
     const lower = seg.toLowerCase();
     const named = partyNames.some((n) => {
       // Strip a role parenthetical the extractor may attach —
@@ -407,7 +412,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.22.0",
+  version: "1.23.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

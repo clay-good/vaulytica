@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.762.0] — 2026-09-25
+
+### Fixed
+A clean climbing-gym release of liability drew 3 criticals and 2 warnings;
+it now draws 0 and 1.
+
+- 🚨 **STRUCT-003 (critical) said the release has no signature block.** "____
+  Aisha M. Rahimi Date: September 14, 2026" is how an individual signs; the
+  name test read the filled-in date with the name. The same caption
+  STRUCT-013 learned to strip in 9.738.0 is now stripped here.
+- **INS-020 and INS-021 (critical) said it identifies neither parties nor
+  activity.** The hold-harmless playbook also receives releases, which name
+  the pair as the "Participant" who releases and the "Facility" released,
+  and state the scope as claims "arising out of my participation in the
+  Activities" — a plural the activity pattern did not read.
+- **TERM-005 asked a one-time release for an effect-of-termination clause.**
+  The playbook already skipped TERM-002 for the same reason; it now skips
+  TERM-005 too.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.761.0] — 2026-09-25
 
 ### Fixed
