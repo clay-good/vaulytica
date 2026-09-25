@@ -2081,6 +2081,11 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
   // generically without using the statutory anchor language leaves
   // the operational handoff between controller and processor
   // unanchored to the underlying right.
+  // 9.752.0: the fixture used to say "Service Provider shall respond to
+  // verified consumer requests forwarded by Controller within fifteen (15)
+  // business days" — intake, verification, fulfillment and a timeline, the
+  // very process USDPA-023 asks for — and the old pattern could not read it.
+  // That sentence is gone; the bare "assist … with consumer requests" stays.
   "dpa-multi-state-us-missing-consumer-rights-process-fail.txt": ["USDPA-023"],
 
   // AI Addendum with Section 3 retitled "Affirmative Consent for AI

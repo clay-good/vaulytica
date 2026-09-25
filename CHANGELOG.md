@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.752.0] — 2026-09-24
+
+### Fixed
+- 🚨 **A clean CCPA service-provider addendum drew ten criticals.**
+  - **A lettered list under one modal hid the clauses.** "Service Provider
+    shall not (a) Sell or Share the Personal Information; (b) retain, use,
+    or disclose it …; or (c) combine it …" is how a US state-privacy
+    addendum is drafted, and every presence pattern wants the modal next to
+    its verb — the "(a)" broke the first item and (b) and (c) have no modal
+    at all. Every regulated (v3) pack now also reads the text with the
+    modal distributed over the list; nothing that matched before stops
+    matching. The multi-state DPA goldens all draft the no-sale term this
+    way ("shall not: (a) sell personal information …"), and **USDPA-002
+    leaves fifteen of them** — it had been a false finding in every one.
+  - **The other states' processor terms applied to a CCPA-only contract.**
+    Verified against 11 CCR § 7051(a): its ten required terms are the
+    business purpose, the sale/share and use limits, compliance,
+    oversight, notice, remediation and consumer requests — not documented
+    processing instructions, data categories, processing duration, a
+    confidentiality duty, a nature-and-purpose statement or a
+    compliance-demonstration duty, which come from the Virginia /
+    Colorado-style processor statutes. USDPA-011, -012, -013, -014, -016
+    and -019 no longer apply to a document scoped to the CCPA that names
+    no other state's privacy law.
+  - **Five terms in words the patterns did not know:** "combine the
+    Personal Information with … another person" (-004), a subcontractor
+    bound to "terms at least as protective as this Addendum" (-010),
+    "delete the Personal Information" at the end of the relationship
+    (-015), and consumer requests with their types or deadline (-023).
+- **A golden fixture built to lack a consumer-rights process had one.**
+  `dpa-multi-state-us-missing-consumer-rights-process-fail` said "Service
+  Provider shall respond to verified consumer requests forwarded by
+  Controller within fifteen (15) business days" — intake, verification,
+  fulfillment and timeline, the process USDPA-023 asks for. The sentence is
+  removed so the fixture tests what its name says; two looser drafts of the
+  -023 widening (a bare "consumer requests", and one stitched across a
+  sentence) were caught by that fixture first.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+15 changed finding sets, each USDPA-002 leaving a list-form no-sale term.
+
 ## [9.751.0] — 2026-09-24
 
 ### Fixed

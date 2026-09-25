@@ -14,6 +14,7 @@
 
 import { expressDenial } from "../../_helpers.js";
 import type { Rule } from "../../../finding.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 import {
   buildLanguageRule,
   buildPresenceRule,
@@ -34,6 +35,19 @@ import {
 // A DPA that really does cover both regimes belongs in `dpa-multi-state-us`,
 // which is on this list and which the EU/UK family now names as a companion.
 const US_STATE_PLAYBOOKS = ["dpa-ccpa-service-provider", "dpa-multi-state-us"];
+
+/**
+ * NOT A CCPA-ONLY CONTRACT. 11 CCR § 7051(a) lists what a CCPA service-provider
+ * contract must say, and the other states' processor terms — documented
+ * instructions, data categories, duration, a confidentiality duty — are not on
+ * it. Those rules apply unless the document is scoped to the CCPA and names no
+ * other state's privacy law. (Matches where there is NO CCPA reference, OR
+ * where another state's law — or state privacy laws generally — is named.)
+ */
+const NOT_CCPA_ONLY = [
+  /^(?![\s\S]*\b(?:CCPA|CPRA|California\s+(?:Consumer\s+Privacy|Privacy\s+Rights)\s+Act)\b)/,
+  /\b(?:Virginia|Colorado|Connecticut|Utah|Texas|Oregon|Montana|Iowa|Delaware|Tennessee|Indiana|New\s+Jersey|New\s+Hampshire|Nebraska|Kentucky|Maryland|Minnesota|Rhode\s+Island|VCDPA|CTDPA|UCPA|TDPSA|OCPA|DPDPA|ICDPA|MCDPA)\b|\b(?:other\s+)?(?:U\.?S\.?\s+)?state\s+privacy\s+laws?\b|\bColo\.\s+Rev\.\s+Stat\b|\bVa\.\s+Code\b/i,
+] as const;
 
 const CONFIG: RegulatedRuleConfig = {
   category: "dpa-us-state",
@@ -152,7 +166,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "CCPA: no-combining-with-other-data restriction",
     description:
       "CCPA service-provider contract must prohibit combining personal information with data from other sources.",
@@ -171,6 +185,9 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // for the data ("Covered Data", "Customer Personal Data") never says
       // "combine personal information" at all.
       /(combin\w+\s+(personal\s+information|the\s+personal\s+data)|7050\(c\)|(?:any\s+)?other\s+sources?|another\s+source)/i,
+      // "combine THE Personal Information with personal information it receives
+      // from or on behalf of another person" — the article, and "person".
+      /\bcombin\w+\s+(?:the\s+)?personal\s+(?:information|data)\b[^.]{0,120}\b(?:another|other)\s+(?:person|persons|sources?|business(?:es)?)\b/i,
     ],
     default_severity: "warning",
   }),
@@ -283,7 +300,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-010",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "CCPA: subcontractor flow-down",
     description:
       "CCPA service-provider must require subcontractors to meet the same CCPA obligations.",
@@ -297,6 +314,8 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Add a subcontractor flow-down requiring the same restrictions as in this Agreement.",
     present_patterns: [
       /(subcontractor|sub[- ]processor).{0,200}(same\s+(restrictions|obligations|provisions)|equivalent)/is,
+      // "binds the subcontractor to terms at least as protective as this Addendum".
+      /(subcontractor|sub[- ]processor)[^.]{0,200}\bat\s+least\s+as\s+(?:protective|restrictive|stringent)\b/i,
     ],
     denied_if: expressDenial(String.raw`subcontractors?|subprocessors?`),
     denied_title: "Subcontractor flow-down expressly disclaimed",
@@ -312,7 +331,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "USDPA-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Multi-state: processing instructions clear",
     description:
       "Processor contract must set out the processing instructions binding on the processor.",
@@ -324,6 +343,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Every state privacy statute requires the contract to clearly set out processing instructions.",
     recommendation:
       "Add a clause stating: 'Processor shall process personal data only pursuant to Controller's documented instructions, as set forth in this Agreement and any Annex.'",
+    applicable_if: [...NOT_CCPA_ONLY],
     present_patterns: [
       // The instruction is as often stated possessively — "on the Business's
       // instruction", "at Customer's written instruction" — as it is named
@@ -333,6 +353,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-012",
+    version: "1.1.0",
     name: "Multi-state: nature and purpose of processing",
     description: "Processor contract must specify the nature and purpose of the processing.",
     citation: "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / similar",
@@ -345,6 +366,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     // purposes by listing them: "the limited and specified Business Purposes
     // described in Exhibit A, which are: hosting and storage; fraud detection;
     // and the production of analytics reports".
+    applicable_if: [...NOT_CCPA_ONLY],
     present_patterns: [
       /nature\s+and\s+purpose\s+of\s+(?:the\s+)?processing/i,
       /purposes?\s+of\s+(?:the\s+)?(?:processing|transfer)/i,
@@ -354,6 +376,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-013",
+    version: "1.1.0",
     name: "Multi-state: type of personal data identified",
     description: "Processor contract must identify the type of personal data processed.",
     citation: "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / similar",
@@ -371,10 +394,12 @@ export const DPA_US_STATE_RULES: Rule[] = [
     // boundary, so it matched the first four letters of "types" and then
     // required a space that was not there. A clause that answers the question
     // in terms was reported as missing.
+    applicable_if: [...NOT_CCPA_ONLY],
     present_patterns: [/\b(?:types?|categor(?:y|ies))\s+of\s+(?:\w+\s+){0,2}(?:data|information)/i],
   }),
   presence({
     id: "USDPA-014",
+    version: "1.1.0",
     name: "Multi-state: duration of processing",
     description: "Processor contract must specify the duration of processing.",
     citation: "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / similar",
@@ -382,6 +407,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     missing_description: "No clause was found stating the duration of processing.",
     explanation: "Every state's processor-contract statute requires the duration to be set out.",
     recommendation: "State that processing continues for the term of the agreement.",
+    applicable_if: [...NOT_CCPA_ONLY],
     present_patterns: [
       /duration\s+of\s+(?:the\s+)?processing|processing\s+(?:shall|will|must)\s+continue/i,
       // The duration is stated by TYING it to the agreement's term, which is
@@ -393,7 +419,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-015",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "Multi-state: deletion or return",
     description:
       "Processor must delete or return personal data at end of services at controller's direction.",
@@ -413,6 +439,9 @@ export const DPA_US_STATE_RULES: Rule[] = [
       // Same defined-term object as USDPA-002, and case-sensitive for the same
       // reason: "shall return or delete all Covered Data".
       /(?:(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*)\s+or\s+[Rr]eturn\w*|[Rr]eturn\w*\s+or\s+(?:[Dd]elet\w*|[Dd]estroy\w*|[Dd]estruct\w*))[^.]{0,80}(?:[A-Z][a-z]+|[A-Z]{2,})\s+(?:Data|DATA|Information|INFORMATION)\b/,
+      // Deletion alone at the end of the relationship — "At the end of the
+      // Agreement, Service Provider shall delete the Personal Information".
+      /\b(?:at|upon|on|after|following)\s+(?:the\s+)?(?:end|termination|expiration|completion)\b[^.]{0,80}\b(?:delete|destroy)\s+(?:all\s+)?(?:the\s+)?personal\s+(?:information|data)\b/i,
     ],
     // Express-denial guard: the refusal names the same deletion-or-return duty
     // the requirement does. Every US state processor statute requires it at
@@ -433,7 +462,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-016",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Multi-state: confidentiality duty",
     description:
       "Processor must ensure persons processing personal data are subject to a duty of confidentiality.",
@@ -446,6 +475,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Add: 'Processor shall ensure that each person processing Personal Data is subject to a duty of confidentiality.'",
     // GDPR Art. 28(3)(b)'s own wording is "have committed THEMSELVES to
     // confidentiality" — a DPA quoting the regulation verbatim must count.
+    applicable_if: [...NOT_CCPA_ONLY],
     present_patterns: [
       /(duty\s+of\s+confidentiality|committed\s+(themselves\s+)?to\s+confidentiality|bound\s+by\s+confidentiality)/i,
     ],
@@ -490,6 +520,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-019",
+    version: "1.1.0",
     name: "Multi-state: information for compliance demonstration",
     description: "Processor must make information available to demonstrate compliance.",
     citation: "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / similar",
@@ -502,6 +533,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Add: 'Processor shall make available to Controller information necessary to demonstrate compliance with this Agreement and applicable state privacy law.'",
     // Compliance is demonstrated with a REPORT, and the addendum names it: a
     // SOC 2 Type II report, an ISO 27001 certificate, an audit report.
+    applicable_if: [...NOT_CCPA_ONLY],
     present_patterns: [
       /(demonstrate\s+compliance|information\s+necessary\s+to\s+demonstrate)/i,
       /soc\s*2|iso\s*27001|audit\s+report|assessment\s+report/i,
@@ -569,6 +601,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-023",
+    version: "1.1.0",
     name: "Consumer rights process documented",
     description: "DPA should document the process for handling consumer rights requests.",
     citation: "Multi-state consumer-rights obligations",
@@ -581,6 +614,15 @@ export const DPA_US_STATE_RULES: Rule[] = [
       "Add a 'Consumer Rights Requests' clause describing intake, verification, fulfillment, and timeline.",
     present_patterns: [
       /(consumer\s+rights?\s+(?:request|process)|access\s+request|deletion\s+request|opt[- ]out|right\s+to\s+(?:access|delete|opt-out|correct))/i,
+      // A documented process names the request types or a deadline — "within
+      // ten (10) business days …, in responding to verifiable consumer
+      // requests to know, delete, or correct". A bare "assist with consumer
+      // requests" is not one (the golden that pins this caught the looser form).
+      /\brequests?\s+to\s+(?:know|delete|correct|access|opt[\s-]out)\b/i,
+      new RegExp(
+        String.raw`\bconsumer\s+requests?\b[^.\n]{0,80}\bwithin\s+${PERIOD_COUNT}\s*(?:\(\d+\)\s*)?(?:business\s+)?days\b`,
+        "i",
+      ),
     ],
     default_severity: "warning",
   }),

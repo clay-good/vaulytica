@@ -16,7 +16,7 @@ This Multi-State Data Processing Addendum ("DPA") is entered into as of March 1,
 
 7. Sub-Processor Flow-Down. Service Provider shall impose equivalent obligations on any subprocessor under a written contract that satisfies the processor agreement requirements of each Applicable State Law. Service Provider shall notify Controller at least thirty (30) days before adding or replacing a subprocessor, giving Controller the opportunity to object.
 
-8. Consumer Requests Assistance. Service Provider shall assist Controller in responding to consumer requests within the time periods required by Applicable State Laws, including requests pertaining to: review of personal information held by Controller; erasure of personal information; correction of inaccurate personal information; portability of personal information; and the consumer's ability to decline sale or sharing. Service Provider shall respond to verified consumer requests forwarded by Controller within fifteen (15) business days.
+8. Consumer Requests Assistance. Service Provider shall assist Controller in responding to consumer requests within the time periods required by Applicable State Laws, including requests pertaining to: review of personal information held by Controller; erasure of personal information; correction of inaccurate personal information; portability of personal information; and the consumer's ability to decline sale or sharing.
 
 9. Annual Security Assessment. Service Provider shall conduct an annual data protection assessment covering the processing described in this DPA and shall make a summary of the assessment available to Controller upon request.
 

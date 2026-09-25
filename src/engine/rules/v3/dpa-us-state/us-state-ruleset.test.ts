@@ -340,3 +340,75 @@ describe("USDPA-013 — the plural form of the type-of-data clause", () => {
     ).not.toBeNull();
   });
 });
+
+/**
+ * A clean CCPA service-provider addendum drew TEN criticals. The lettered list
+ * under one modal ("shall not (a) Sell or Share …; (b) retain, use, or
+ * disclose …; or (c) combine …") hid the no-sale and no-combining terms (fixed
+ * in `_regulated-rule.ts` for every regulated pack), and five more terms were
+ * written in words the patterns did not know.
+ */
+describe("USDPA — a CCPA addendum's own wording", () => {
+  const rule = (id: string) => DPA_US_STATE_RULES.find((r) => r.id === id)!;
+  const ADDENDUM = withPb(
+    buildContext([
+      "Service Provider Data Protection Addendum",
+      "Service Provider shall not (a) Sell or Share the Personal Information; (b) retain, use, or disclose the Personal Information for any purpose other than the Business Purpose; or (c) combine the Personal Information with personal information it receives from or on behalf of another person.",
+      "Business may take reasonable and appropriate steps to ensure compliance, including by requesting written attestations and reviewing Service Provider's annual third-party security assessment.",
+      "Service Provider may engage a subcontractor to process Personal Information only under a written contract that binds the subcontractor to terms at least as protective as this Addendum.",
+      "Service Provider shall cooperate with Business in responding to verifiable consumer requests to know, delete, or correct Personal Information.",
+      "At the end of the Agreement, Service Provider shall delete the Personal Information, unless retention is required by law.",
+    ]),
+    CCPA,
+  );
+
+  it.each(["USDPA-002", "USDPA-003", "USDPA-004", "USDPA-010", "USDPA-015", "USDPA-023"])(
+    "%s reads the clause",
+    (id) => {
+      expect(rule(id).check(ADDENDUM), id).toBeNull();
+    },
+  );
+});
+
+/**
+ * 11 CCR § 7051(a) lists what a CCPA service-provider contract must say — the
+ * business purpose, the sale/share and use limits, compliance, oversight,
+ * notice, remediation, consumer requests — and none of the other states'
+ * processor terms (documented instructions, data categories, duration, a
+ * confidentiality duty). A CCPA-only addendum that names no other state's law
+ * was told at `critical` it lacks all four.
+ */
+describe("USDPA — a CCPA-only addendum and the other states' processor terms", () => {
+  const rule = (id: string) => DPA_US_STATE_RULES.find((r) => r.id === id)!;
+  const doc = (scope: string) =>
+    withPb(
+      buildContext([
+        "Service Provider Data Protection Addendum",
+        scope,
+        "Service Provider processes Personal Information on behalf of Business only to provide the loyalty-program analytics services described in the Agreement, which is the Business Purpose for which Business discloses the Personal Information.",
+      ]),
+      MULTI,
+    );
+  const CCPA_ONLY =
+    '"CCPA" means the California Consumer Privacy Act of 2018, as amended by the California Privacy Rights Act of 2020.';
+  const MULTI_STATE =
+    '"Privacy Laws" means the CCPA, the Virginia Consumer Data Protection Act, and the Colorado Privacy Act.';
+
+  it.each(["USDPA-011", "USDPA-013", "USDPA-014", "USDPA-016"])(
+    "%s does not apply to a CCPA-only addendum",
+    (id) => {
+      expect(rule(id).check(doc(CCPA_ONLY)), id).toBeNull();
+    },
+  );
+
+  it.each(["USDPA-011", "USDPA-013", "USDPA-014", "USDPA-016"])(
+    "%s still applies where another state's law is named",
+    (id) => {
+      expect(rule(id).check(doc(MULTI_STATE)), id).not.toBeNull();
+    },
+  );
+
+  it("USDPA-012 (nature and purpose) is also a multi-state term — the CCPA's business purpose is USDPA-001's", () => {
+    expect(rule("USDPA-012").check(doc(CCPA_ONLY))).toBeNull();
+  });
+});
