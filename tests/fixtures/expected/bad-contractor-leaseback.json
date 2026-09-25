@@ -335,11 +335,11 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1-0",
+      "finding_id": "OBLI-002-s1.4-1211",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -977,18 +977,18 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "Only contractor bears this typically-mutual obligation.",
-      "document_position": 0,
+      "description": "Only Contractor bears this typically-mutual obligation.",
+      "document_position": 1211,
       "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "indemnification obligation"
+        "end_offset": 1644,
+        "section_id": "s1.4",
+        "start_offset": 1211,
+        "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in any way to the Services or this Agreement, regardless of the cause thereof, including claims caused in whole or in part by Company's own acts or omissions."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1-0",
+      "id": "OBLI-002-s1.4-1211",
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1031,11 +1031,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "263c07d4b6806762ad0898c559ab5078aeefa8d86ffd11732a7f61e96c4039df",
+  "result_hash": "23835e9036e10c63aa31d5afc3a1fa529b95d659373cdba9b6f78f8193129220",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.796.0"
+  "version": "9.797.0"
 }

@@ -219,3 +219,19 @@ describe("OBLI-002 — a warranty of the thing supplied is the supplier's (v1.7.
     ).not.toBeNull();
   });
 });
+
+describe("OBLI-002 — names the party as written and quotes the clause (v1.9.0)", () => {
+  it("prints 'Representative', not the lowered key, and points at the obligation", () => {
+    const f = OBLI002.check(
+      doc(
+        "Sales Representative Agreement",
+        'This Agreement is made between Kestrel Pump & Valve Co. (the "Company") and Northline Industrial Sales LLC (the "Representative").',
+        "The Representative shall keep confidential the Company's pricing and customer lists.",
+      ),
+    );
+    expect(f?.description).toBe("Only Representative bears this typically-mutual obligation.");
+    expect(f?.excerpt.text).toBe(
+      "The Representative shall keep confidential the Company's pricing and customer lists.",
+    );
+  });
+});

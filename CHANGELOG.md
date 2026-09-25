@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.797.0] — 2026-09-25
+
+### Fixed
+- **OBLI-002 printed the party in lower case, anchored at the top of the
+  document, and quoted its own label.** Reading a clean sales
+  representative agreement's SARIF output found "Only representative
+  bears this typically-mutual obligation" at offset 0, with the excerpt
+  "confidentiality obligation". That is a finding about a clause that *is*
+  present, placed and quoted as if it were about an absence. It now names
+  the party as the document writes it ("Representative"), points at the
+  first one-sided obligation, and quotes that sentence. Two tests had
+  pinned the lower-cased key ("vendor", "company"). `redundant-findings`
+  now sees OBLI-002 share a consulting agreement's return-of-information
+  sentence with TERM-007. They are two different statements, so the pair
+  is declared, with the reason.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.796.0] — 2026-09-25
 
 ### Fixed

@@ -336,11 +336,11 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1-0",
+      "finding_id": "OBLI-002-s1.5-1584",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1017,18 +1017,18 @@
       "title": "No venue / forum clause detected"
     },
     {
-      "description": "Only advisor bears this typically-mutual obligation.",
-      "document_position": 0,
+      "description": "Only Advisor bears this typically-mutual obligation.",
+      "document_position": 1584,
       "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "confidentiality obligation"
+        "end_offset": 1816,
+        "section_id": "s1.5",
+        "start_offset": 1584,
+        "text": "Advisor shall hold all Confidential Information in strict confidence and shall not disclose it to any third party for any reason whatsoever, including in connection with any legal proceeding, without Client's prior written consent."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1-0",
+      "id": "OBLI-002-s1.5-1584",
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric confidentiality obligation"
@@ -1106,11 +1106,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "b283d22804a060b96d2f812be91d43b3c718a542df5e8026a4e384c3b03923fc",
+  "result_hash": "f1e5a29bd5376bd15cf3603e32d742f4863489d8247159b291b817017a1e2506",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.796.0"
+  "version": "9.797.0"
 }

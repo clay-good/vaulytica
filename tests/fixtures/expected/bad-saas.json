@@ -342,11 +342,11 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1-0",
+      "finding_id": "OBLI-002-s1.4-1014",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1204,18 +1204,18 @@
       "title": "Data ownership not separately addressed"
     },
     {
-      "description": "Only customer bears this typically-mutual obligation.",
-      "document_position": 0,
+      "description": "Only Customer bears this typically-mutual obligation.",
+      "document_position": 1014,
       "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "indemnification obligation"
+        "end_offset": 1143,
+        "section_id": "s1.4",
+        "start_offset": 1014,
+        "text": "Customer shall indemnify, defend, and hold Vendor harmless from any third-party claim arising from Customer's use of the Service."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1-0",
+      "id": "OBLI-002-s1.4-1014",
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1276,11 +1276,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "5343880a1b1721deb3d6d15a438d6fd8012cb205e91ab20e082c482f1411db14",
+  "result_hash": "f868a3a489b1fe9e15a43c2df0f7ecf753f8953dfc9aff66ad6cf9fa5714c871",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.796.0"
+  "version": "9.797.0"
 }

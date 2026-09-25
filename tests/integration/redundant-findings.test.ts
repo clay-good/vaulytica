@@ -93,6 +93,11 @@ const OVERLAPS_ON_PURPOSE: ReadonlySet<string> = new Set([
   // One says the post-termination obligations are enumerated; the other that
   // the enumeration omits categories the document has.
   "TEMP-007 + TERM-007 [info]",
+  // 9.797.0: OBLI-002 now points at the one-sided obligation it names rather
+  // than offset 0. On a consulting agreement that obligation is the
+  // return-of-confidential-information sentence TERM-007 enumerates — one
+  // says the duty runs one way, the other that the wind-down is spelled out.
+  "OBLI-002 + TERM-007 [info]",
 ]);
 
 /**

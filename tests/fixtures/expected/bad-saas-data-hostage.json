@@ -340,11 +340,11 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1-0",
+      "finding_id": "OBLI-002-s1.3-923",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1100,18 +1100,18 @@
       "title": "Data-regime references missing"
     },
     {
-      "description": "Only vendor bears this typically-mutual obligation.",
-      "document_position": 0,
+      "description": "Only Vendor bears this typically-mutual obligation.",
+      "document_position": 923,
       "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "indemnification obligation"
+        "end_offset": 1182,
+        "section_id": "s1.3",
+        "start_offset": 923,
+        "text": "Vendor shall have no obligation to indemnify Customer to the extent a claim arises from (i) use of the Services in combination with any software, hardware, data, or services not furnished by Vendor; or (ii) any modification of the Services not made by Vendor."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1-0",
+      "id": "OBLI-002-s1.3-923",
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "ea195550ed270c3c841ceecfa6c3374eb5bed9a6c596f2fd19e4869132f23c83",
+  "result_hash": "56078b42c300b9574028c831d40cf33844bd99328f452440eedf0fedd49a6ee3",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.796.0"
+  "version": "9.797.0"
 }

@@ -112,7 +112,7 @@ function statedMutually(ctx: RuleContext, pattern: RegExp): boolean {
 /** OBLI-002 — Reciprocity asymmetry (info). */
 export const rule: Rule = {
   id: "OBLI-002",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Reciprocity asymmetry",
   category: "obligations",
   default_severity: "info",
@@ -131,6 +131,10 @@ export const rule: Rule = {
     );
     for (const { label, pattern } of RECIPROCAL_PATTERNS) {
       const seenObligors = new Set<string>();
+      // The first obligation each obligor bears, so the finding can name the
+      // party as the document writes it ("Representative", not the lowered
+      // key "representative") and point at the clause instead of offset 0.
+      const firstOf = new Map<string, (typeof ctx.extracted.obligations)[number]>();
       /**
        * The subset of `seenObligors` that are party CLASSES. A class occupies
        * every side at once, exactly as "each party" does, so a class standing
@@ -174,6 +178,7 @@ export const rule: Rule = {
         }
         if (partySet.has(o2)) {
           seenObligors.add(o2);
+          if (!firstOf.has(o2)) firstOf.set(o2, o);
           continue;
         }
         // A CLASS of counterparties — "Each Investor shall keep confidential
@@ -192,6 +197,7 @@ export const rule: Rule = {
         // that matches lower-case prose.
         if (/^(?:[Ee]ach|[Ee]very)\s+(?:[a-z]+\s+){0,2}[A-Z][a-z]+$/.test(o.obligor.trim())) {
           seenObligors.add(o2);
+          if (!firstOf.has(o2)) firstOf.set(o2, o);
           classObligors.add(o2);
         }
       }
@@ -205,11 +211,11 @@ export const rule: Rule = {
         if (statedMutually(ctx, pattern)) continue;
         return emit(ctx, rule, {
           title: `Asymmetric ${label} obligation`,
-          description: `Only ${[...seenObligors][0]} bears this typically-mutual obligation.`,
-          excerpt: `${label} obligation`,
+          description: `Only ${firstOf.get([...seenObligors][0]!)?.obligor.trim() ?? [...seenObligors][0]} bears this typically-mutual obligation.`,
+          excerpt: firstOf.get([...seenObligors][0]!)?.raw_text ?? `${label} obligation`,
           explanation:
             "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-          position: topPosition(ctx),
+          position: firstOf.get([...seenObligors][0]!)?.position ?? topPosition(ctx),
         });
       }
     }

@@ -45,7 +45,7 @@ describe("OBLI-002 — reciprocity accounting", () => {
       ctxWith(PARTIES, [{ obligor: "Vendor", action: "indemnify Customer for all claims" }]),
     );
     expect(finding).not.toBeNull();
-    expect(finding?.description).toContain("vendor");
+    expect(finding?.description).toContain("Vendor");
   });
 
   it("does not count a disclaimed obligation as the party bearing it", () => {
@@ -216,7 +216,7 @@ describe("OBLI-002 v1.5.0 — the warranty SENSE, and a class of counterparties"
         { obligor: "Company", action: "warrants that the Shares are duly authorized" },
       ]),
     );
-    expect(f?.description).toContain("company");
+    expect(f?.description).toContain("Company");
   });
 
   /**

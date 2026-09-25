@@ -338,11 +338,11 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1-0",
+      "finding_id": "OBLI-002-s1.3-601",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1162,18 +1162,18 @@
       "title": "Data ownership not separately addressed"
     },
     {
-      "description": "Only provider bears this typically-mutual obligation.",
-      "document_position": 0,
+      "description": "Only Provider bears this typically-mutual obligation.",
+      "document_position": 601,
       "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "start_offset": 0,
-        "text": "indemnification obligation"
+        "end_offset": 756,
+        "section_id": "s1.3",
+        "start_offset": 601,
+        "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1-0",
+      "id": "OBLI-002-s1.3-601",
       "rule_id": "OBLI-002",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [],
       "title": "Asymmetric indemnification obligation"
@@ -1251,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "5eff646418af4e20cc3e2fa0023d6c4dbbd79597007969079dc333af34618ab5",
+  "result_hash": "d551cabc4727986149e2414d49ed2d6ecc9dbb8f99598dd45961238f15bd4c17",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.796.0"
+  "version": "9.797.0"
 }
