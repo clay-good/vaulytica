@@ -866,6 +866,40 @@ export function extractParties(tree: DocumentTree): Party[] {
   );
 
   for (let i = 0; i < preambleCount && i < allText.length; i += 1) {
+    // TWO PEOPLE WITH ONE ROLE. "Gregory T. Whitfield and Anne M. Whitfield
+    // (together, "Seller") and Rosa Delgado ("Buyer")" is how a married couple
+    // sells a house, and the between-reader split it at the first "and": one
+    // party "Gregory T. Whitfield" with no role, and one named "Anne M.
+    // Whitfield (together, "Seller") and Rosa Delgado". A nanny agreement's
+    // employing couple swallowed the nanny the same way. Each person is
+    // registered with the shared role, and the group is blanked (same length)
+    // so the readers below see only the other party.
+    {
+      const entry = allText[i]!;
+      let masked = entry.text;
+      COLLECTIVE_GROUP.lastIndex = 0;
+      let cg: RegExpExecArray | null;
+      while ((cg = COLLECTIVE_GROUP.exec(entry.text)) !== null) {
+        const role = cg[3]!.trim();
+        const first = cleanPartyName(cg[1] ?? "");
+        const second = cleanPartyName(cg[2] ?? "");
+        // "Harold and Miriam Castellano" share the surname.
+        const surname = /\s(\S+)$/.exec(second)?.[1];
+        const firstFull = first && !/\s/.test(first) && surname ? `${first} ${surname}` : first;
+        for (const name of [firstFull, second]) {
+          if (!name || isBoilerplateName(name)) continue;
+          registerParty(partyMap, name, {
+            role,
+            position: entry.pos(cg.index, cg.index + cg[0].length),
+          });
+        }
+        masked =
+          masked.slice(0, cg.index) +
+          " ".repeat(cg[0].length) +
+          masked.slice(cg.index + cg[0].length);
+      }
+      entry.text = masked;
+    }
     const { text, pos } = allText[i]!;
     PARTY_DECL.lastIndex = 0;
     let m: RegExpExecArray | null;
@@ -1676,6 +1710,10 @@ function stripAllCapsRoleLabel(n: string): string {
   if (!m || !label || label !== label.toUpperCase()) return n;
   return n.slice(m[0].length);
 }
+
+/** "X and Y (together, the "Role")" — two parties sharing one defined role. */
+const COLLECTIVE_GROUP =
+  /(?<![\w&.'’-])([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,3})\s+and\s+([A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,3})(?:,?\s+(?:of|residing\s+at)\s+[^()]{0,160}?)?\s*\(\s*(?:together|collectively|jointly)\s*,?\s+(?:the\s+)?["“]([^"”]{1,40})["”]\s*\)/g;
 
 /** The words that introduce where a company was formed. */
 const FORMATION_LEAD =

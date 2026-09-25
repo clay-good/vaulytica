@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.789.0] — 2026-09-25
+
+### Fixed
+- **Two people who share a role were read as one malformed party, and the
+  party after them was lost.** A married couple sells a house as
+  "Gregory T. Whitfield and Anne M. Whitfield (together, "Seller") and Rosa
+  Delgado ("Buyer")". The between-reader split that at its first "and". It
+  produced one roleless party and one named "Anne M. Whitfield (together,
+  "Seller") and Rosa Delgado". The same shape affected other documents:
+  - a nanny agreement's employing couple swallowed the nanny, who
+    disappeared from the party list;
+  - a photography contract registered "Jordan Ellis and Casey Morgan" as a
+    single client;
+  - a pledge registered "Harold" beside "Miriam Castellano".
+
+  "X and Y (together / collectively / jointly, the "Role")" now registers
+  each person with the shared role, reading through an address between the
+  names and the role. A shared surname is carried to a bare first name
+  ("Harold and Miriam Castellano" → Harold Castellano, Miriam Castellano).
+  The group is then blanked, at the same length, so the other readers see
+  only the remaining party. In the corpus, a listing agreement's second
+  owner gains the Seller role.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.788.0] — 2026-09-25
 
 ### Fixed

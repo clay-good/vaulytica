@@ -1470,3 +1470,33 @@ describe("extractParties — the place a company was formed is not a party", () 
     ]);
   });
 });
+
+describe("extractParties — two people with one role", () => {
+  it("gives a married couple the shared role and keeps the other party", () => {
+    const got = extractParties(
+      buildTree([
+        "Purchase Agreement",
+        'This Agreement is made on May 4, 2026 between Gregory T. Whitfield and Anne M. Whitfield (together, "Seller") and Rosa Delgado ("Buyer").',
+      ]),
+    ).map((p) => [p.name, p.role]);
+    expect(got).toEqual([
+      ["Gregory T. Whitfield", "Seller"],
+      ["Anne M. Whitfield", "Seller"],
+      ["Rosa Delgado", "Buyer"],
+    ]);
+  });
+
+  it("reads an address between the couple and their role, and a shared surname", () => {
+    const got = extractParties(
+      buildTree([
+        "Agreement",
+        'This Agreement is made between Harold and Miriam Castellano, of 12 Elm Street, Lansing, Michigan (together, the "Donors"), and Marisol Vega (the "Nanny").',
+      ]),
+    ).map((p) => [p.name, p.role]);
+    expect(got).toEqual([
+      ["Harold Castellano", "Donors"],
+      ["Miriam Castellano", "Donors"],
+      ["Marisol Vega", "Nanny"],
+    ]);
+  });
+});
