@@ -1,3 +1,4 @@
+import { isPersonalName, withoutFilledDate } from "./_signature-name.js";
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { ATTACHMENT_KIND } from "../../../extract/attachment-kinds.js";
 import { findStatuteCitation, makeFinding } from "../../finding.js";
@@ -94,26 +95,6 @@ const OFFICE_SIG_LINE =
 // signature rule.
 const STANDALONE_SIGNATORY_ROLE =
   /_{4,}\s*(?:\/s\/\s*)?(?:Notary\s+Public|Notary|Witness|Affiant|Declarant|Testat(?:or|rix)|Execut(?:or|rix)|Personal\s+Representative|Attorney-in-Fact|Patient|Participant|Judge|Justice|Magistrate(?:\s+Judge)?|Chief\s+Judge|Referee|Hearing\s+Officer|Administrative\s+Law\s+Judge|Clerk(?:\s+of\s+(?:the\s+)?Court)?)\b/i;
-
-// A template / field-label token that must NOT appear in a string accepted as
-// a printed personal name — "____ Company Name", "____ Insert Party" are
-// placeholders, not signatures. (Parity with STRUCT-013.)
-const NON_NAME_TOKEN =
-  /\b(?:Name|Date|Address|City|State|Zip|Country|Title|Code|Number|Amount|Value|Reference|Period|Term|Field|Information|Details|Description|Phone|Email|Sum|Fee|Rate|Price|Insert|Sign|Signature|Print(?:ed)?|Company|Corporation|Entity|Party|Here|TBD|TBA)\b/i;
-const HONORIFIC_PREFIX =
-  /^(?:Dr|Mr|Mrs|Ms|Mx|Prof(?:essor)?|Hon|Rev|Sir|Dame|Fr|Sr|Capt|Col|Gen|Lt|Sgt|Rabbi|Pastor|Judge)\.?\s+/i;
-
-/**
- * True if `s` is a bare printed personal name — 2–4 Title-Case words, each with
- * a lowercase tail, no field-label token, honorific stripped. (Parity with
- * STRUCT-013 so a unilateral instrument whose sole signatory is named only in
- * the block — "____ Gregory Halstead" on a seller non-compete — is recognized.)
- */
-function isPersonalName(s: string): boolean {
-  const t = s.replace(/,.*$/, "").trim().replace(HONORIFIC_PREFIX, "");
-  if (NON_NAME_TOKEN.test(t)) return false;
-  return /^[A-Z][a-z]+(?:\s+[A-Z][a-z.'’-]+){1,3}$/.test(t);
-}
 
 /**
  * The words a signature CAPTION is built from, and the nouns that make one a
@@ -229,7 +210,7 @@ function isBareNameSignatureLine(text: string, partyNames: string[]): boolean {
     // A FILLED-IN date caption after the printed name — "Aisha M. Rahimi Date:
     // September 14, 2026" — is how an individual signs a release; the name
     // test read the date with it. (Same caption STRUCT-013 strips.)
-    const undated = seg.replace(/\s+Dated?\s*:\s*[^_]*$/i, "").trim();
+    const undated = withoutFilledDate(seg);
     if (undated !== seg && isPersonalName(undated)) return true;
     const lower = seg.toLowerCase();
     const named = partyNames.some((n) => {
@@ -412,7 +393,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-003",
-  version: "1.23.0",
+  version: "1.24.0",
   name: "Signature block present",
   category: "structural",
   default_severity: "critical",

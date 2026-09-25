@@ -490,3 +490,16 @@ describe("STRUCT-013 — a signature line over a name and a filled-in date", () 
     ).not.toBeNull();
   });
 });
+
+describe("STRUCT-003 / STRUCT-013 — a signatory whose name is not ASCII", () => {
+  it("reads '____ José García' as a signature line, not a placeholder", async () => {
+    const { rule: STRUCT_003 } = await import("./STRUCT-003.js");
+    const ctx = buildContext([
+      "Consulting Agreement",
+      "The Consultant shall provide the Services.",
+      "______________________________\nJosé García\nDate: July 15, 2026",
+    ]);
+    expect(STRUCT_013.check(ctx)).toBeNull();
+    expect(STRUCT_003.check(ctx)).toBeNull();
+  });
+});

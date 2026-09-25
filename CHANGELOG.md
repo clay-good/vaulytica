@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.763.0] — 2026-09-25
+
+### Fixed
+- **A signatory named "José García" was a missing signature and an unfilled
+  placeholder.** STRUCT-003 (is there a signature block?) and STRUCT-013 (is
+  this rule an unfilled placeholder?) each carried a byte-identical copy of
+  the printed-name test and its vocabularies — which is how 9.762.0 had to
+  fix in STRUCT-003 the date caption STRUCT-013 had learned in 9.738.0. One
+  owner now, `structural/_signature-name.ts`, and its letters are Unicode
+  with an internal capital allowed: the ASCII form rejected "José García",
+  "Zoë Müller", "Siobhan O'Brien", "Ian McDonald" and "Anneke
+  Achebe-Lindström", each a real signatory reported at `critical`. A word
+  still needs a lowercase letter, so "TBD" is not a name; an initial ("K.")
+  still is.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.762.0] — 2026-09-25
 
 ### Fixed
