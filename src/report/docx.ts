@@ -326,7 +326,16 @@ function ingest_filename(ingest: IngestResult, run: EngineRun): string {
 
 function renderExecutiveSummary(run: EngineRun, playbook: Playbook): Paragraph[] {
   const counts = countFindings(run.findings);
-  const summary = `This report was generated against the ${playbook.name} playbook. It contains ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}; review the critical section first.`;
+  // "Review the critical section first" on a report with no critical
+  // section sends the reader to a heading that says "None." — the portfolio
+  // digest already says which section leads; the report says the same.
+  const lead =
+    counts.critical > 0
+      ? "review the critical section first"
+      : counts.warning > 0
+        ? "there are no critical findings, so review the warnings first"
+        : "there are no critical findings or warnings";
+  const summary = `This report was generated against the ${playbook.name} playbook. It contains ${plural(counts.critical, "critical finding")}, ${plural(counts.warning, "warning")}, and ${plural(counts.info, "informational item")}; ${lead}.`;
   return [h1("Executive Summary"), para({ text: summary }), pageBreak()];
 }
 

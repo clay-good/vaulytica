@@ -1234,3 +1234,23 @@ describe("DOCX Amounts table — the controlling bound", () => {
     expect(xml).not.toContain("50000 per");
   });
 });
+
+describe("the executive summary names the section that leads", () => {
+  async function text(run: EngineRun): Promise<string> {
+    const blob = await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda());
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    return (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+  }
+
+  it("sends the reader to the critical section only when there is one", async () => {
+    expect(await text(makeRun())).toContain("review the critical section first");
+    const noCritical = makeRun();
+    noCritical.findings = noCritical.findings.filter((f) => f.severity !== "critical");
+    const t = await text(noCritical);
+    expect(t).not.toContain("review the critical section first");
+    expect(t).toContain("there are no critical findings, so review the warnings first");
+  });
+});

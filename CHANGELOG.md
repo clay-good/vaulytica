@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.786.0] — 2026-09-25
+
+### Fixed
+- **The DOCX executive summary sent readers to an empty section.** "It
+  contains 0 critical findings, 1 warning, and 3 informational items;
+  review the critical section first" pointed to a heading that says
+  "None." The summary now names the section that leads, as the portfolio
+  digest already did:
+  - with criticals: "review the critical section first";
+  - with warnings but no criticals: "there are no critical findings, so
+    review the warnings first";
+  - with neither: "there are no critical findings or warnings".
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.785.0] — 2026-09-25
 
 ### Fixed
