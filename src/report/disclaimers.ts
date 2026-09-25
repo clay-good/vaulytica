@@ -66,17 +66,21 @@ export function privacyStatement(subject: PrivacySubject): string {
  * its comments quote Chancery practice and the Restatement — the surface most
  * likely to be forwarded to someone who did not run the tool, and the only one
  * that said nothing about what it is.
+ *
+ * It says DOCUMENT, not contract: the tool reads wills, policies, notices,
+ * terms of service and filings, and a Texas will's report told its reader it
+ * had been run "against a contract you provided".
  */
 export function nonAdviceStatement(subject: PrivacySubject): string {
   const WHAT: Record<PrivacySubject, string> = {
     document:
-      "This report is a checklist of mechanical findings produced by a deterministic rule engine against a contract you provided.",
+      "This report is a checklist of mechanical findings produced by a deterministic rule engine against a document you provided.",
     bundle:
       "This report is a checklist of mechanical findings produced by a deterministic rule engine against documents you provided.",
     comparison:
       "This comparison is a mechanical diff of two rule-engine runs over documents you provided.",
     review:
-      "These comments are a checklist of mechanical findings produced by a deterministic rule engine against the contract they are attached to.",
+      "These comments are a checklist of mechanical findings produced by a deterministic rule engine against the document they are attached to.",
   };
   const what = WHAT[subject];
   return (

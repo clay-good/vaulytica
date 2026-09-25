@@ -1119,3 +1119,29 @@ describe("extractObligations — a subject shared by two verb phrases", () => {
     ).toEqual(["Customer"]);
   });
 });
+
+describe("extractObligations — a shared subject whose first verb is permissive", () => {
+  it("reads 'The Trustee may distribute … and shall distribute …' as the Trustee's duty", () => {
+    const got = extractObligations(
+      buildTree([
+        "Trust",
+        "The Trustee may distribute to the beneficiary so much of the income as the Trustee considers advisable for the beneficiary's health, education, maintenance and support, and shall distribute the remaining property to the beneficiary at age twenty-five.",
+      ]),
+      [],
+    ).map((o) => o.obligor);
+    expect(got).toEqual(["The Trustee"]);
+  });
+});
+
+describe("extractObligations — a negated shared subject does not carry across 'and'", () => {
+  it("does not print 'Neither Party | shall | bind each approved subcontractor'", () => {
+    const got = extractObligations(
+      buildTree([
+        "Subcontracting",
+        "Neither Party may subcontract any Program task without the other's prior written approval, and shall bind each approved subcontractor in writing.",
+      ]),
+      [],
+    ).map((o) => o.obligor);
+    expect(got.some((o) => /^Neither/i.test(o))).toBe(false);
+  });
+});

@@ -72,7 +72,7 @@ const MODALS = [
 
 /** "S <finite verb> … and" — the subject of an elided second verb phrase is S. */
 const SHARED_SUBJECT =
-  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did)\s+(?:not\s+)?(?:been\s+)?\w[\w'’-]*\b[^;]*?\s+and\s*$/i;
+  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?\s+and\s*$/i;
 
 /** A subject opened by a negative determiner: the negation belongs to the row. */
 const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
@@ -155,7 +155,12 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // BE SOLD" printed the obligor as `OR ANY STATE SECURITIES LAW AND`.
         // When the text before the modal ends in "and" and carries an earlier
         // finite verb, the subject is what precedes that verb.
-        const shared = SHARED_SUBJECT.exec(stripExceptTail(subject));
+        // Not when that subject is NEGATED: "Neither Party may subcontract …
+        // without approval, and shall bind each approved subcontractor" means
+        // each party shall bind — the negation does not carry across "and".
+        const sharedMatch = SHARED_SUBJECT.exec(stripExceptTail(subject));
+        const shared =
+          sharedMatch && !NEGATED_SUBJECT.test(sharedMatch[1]!.trim()) ? sharedMatch : null;
         const subjectForObligor = shared ? shared[1]! : stripExceptTail(subject);
         let obligor = resolveObligor(subjectForObligor, partyNames, partyRoles);
         // A NEGATED SUBJECT CARRIES THE SENTENCE'S MEANING. Resolution shortens

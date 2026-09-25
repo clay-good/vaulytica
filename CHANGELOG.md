@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.756.0] — 2026-09-24
+
+### Fixed
+- **Every report told its reader it had been run "against a contract you
+  provided" — including a will's.** The not-legal-advice statement (one
+  owner, `nonAdviceStatement`, printed on the HTML and Word reports, the
+  bundle and the anchored review comments) now says "a document you
+  provided"; the tool reads wills, policies, notices, terms of service and
+  filings. `docs/spec.md` quotes the statement and is updated with it.
+- **A shared subject whose first verb is permissive.** "The Trustee may
+  distribute … for the beneficiary's health, education, maintenance and
+  support, and shall distribute the remaining property" printed the obligor
+  `health, education, maintenance and support, and`; the shared-subject
+  reading from 9.755.0 now counts "may", "can", "could", "might" and "should"
+  as the first verb. 34 more corpus obligors go from a fragment to a party
+  (Buyer, Lender, Trustee, the arbitrator, the Administrative Agent, …). A
+  NEGATED shared subject is left alone: "Neither Party may subcontract …
+  without approval, and shall bind each approved subcontractor" means each
+  party shall bind, and reading it as "Neither Party shall bind" would print
+  the opposite.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.755.0] — 2026-09-24
 
 ### Fixed
