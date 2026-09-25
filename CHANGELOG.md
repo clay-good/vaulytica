@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.788.0] — 2026-09-25
+
+### Fixed
+- **A province was registered as the employer.** "Northshore Analytics
+  Inc., a corporation incorporated under the laws of Ontario (the
+  "Employer")" registered a second party named "Ontario" and gave it the
+  Employer's role. That was found in the DOCX parties table of a clean
+  Ontario employment agreement. A US state never showed this: "Company" is
+  not on the one-sided role list, and "Employer" is. A name preceded by
+  "laws of", or by "incorporated / organized / registered / formed in or
+  under", is now never taken as a party.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets.
+
 ## [9.787.0] — 2026-09-25
 
 ### Fixed

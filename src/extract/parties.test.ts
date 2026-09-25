@@ -1455,3 +1455,18 @@ describe("extractParties — an Australian party clause", () => {
     expect(got.filter((n) => n.startsWith("fenwick family dental"))).toHaveLength(1);
   });
 });
+
+describe("extractParties — the place a company was formed is not a party", () => {
+  it("does not register 'Ontario' from 'incorporated under the laws of Ontario (the \"Employer\")'", () => {
+    const got = extractParties(
+      buildTree([
+        "Employment Agreement",
+        'This Employment Agreement is made between Northshore Analytics Inc., a corporation incorporated under the laws of Ontario (the "Employer"), and Aisha Rahman (the "Employee").',
+      ]),
+    ).map((p) => [p.name, p.role]);
+    expect(got).toEqual([
+      ["Northshore Analytics Inc", "Employer"],
+      ["Aisha Rahman", "Employee"],
+    ]);
+  });
+});

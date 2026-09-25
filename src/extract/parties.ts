@@ -930,6 +930,11 @@ export function extractParties(tree: DocumentTree): Party[] {
       const name = cleanPartyName(rm[1] ?? "");
       const role = rm[2];
       if (!name || isBoilerplateName(name)) continue;
+      // The place a company was FORMED sits right before the role it defines:
+      // "Northshore Analytics Inc., a corporation incorporated under the laws
+      // of Ontario (the "Employer")" registered a party named "Ontario" with
+      // the Employer's role. A jurisdiction is never the party.
+      if (FORMATION_LEAD.test(text.slice(Math.max(0, rm.index - 60), rm.index))) continue;
       registerParty(partyMap, name, {
         role,
         position: pos(rm.index, rm.index + rm[0].length),
@@ -1671,6 +1676,10 @@ function stripAllCapsRoleLabel(n: string): string {
   if (!m || !label || label !== label.toUpperCase()) return n;
   return n.slice(m[0].length);
 }
+
+/** The words that introduce where a company was formed. */
+const FORMATION_LEAD =
+  /\b(?:laws?\s+of(?:\s+the)?|(?:incorporated|organi[sz]ed|registered|formed|existing|domiciled)\s+(?:in|under)(?:\s+the\s+laws\s+of(?:\s+the)?)?)\s*$/i;
 
 /** "(ABN 12 345 678 901)", "(Company No. 11234567)" — a registration number. */
 const REGISTRATION_NUMBER =
