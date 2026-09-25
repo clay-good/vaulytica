@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.757.0] — 2026-09-24
+
+### Fixed
+- **One law/venue split drew three findings that disagreed with each
+  other.** CHOICE-004 (warning: a split is "sometimes deliberate"),
+  CHOICE-012 (warning: "almost always a drafting accident") and CHOICE-009
+  (info: "a legitimate drafting choice … usually deliberate") all reported
+  Delaware law with a Texas venue, and the reviewed copy of an MSA carried
+  three Word comments contradicting each other about one clause. CHOICE-004
+  owns the finding; CHOICE-012 and CHOICE-009 now report only what it does
+  not (a second venue that differs, a textual mismatch without normalized
+  ids). Three goldens drop the two duplicates and keep CHOICE-004.
+- **The review comments' disclaimer read "These comments are … It is not
+  legal advice".** The plural variant now says "They are".
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+3 changed finding sets, each CHOICE-009 and CHOICE-012 leaving beside
+CHOICE-004.
+
 ## [9.756.0] — 2026-09-24
 
 ### Fixed

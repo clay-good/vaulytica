@@ -48,8 +48,9 @@ describe("a venue named by city and state is that state", () => {
       "Any dispute shall be resolved exclusively in the state and federal courts located in San Francisco, California.",
     ]);
     expect(CHOICE_004.check(ctx)?.title).toMatch(/California/);
-    expect(CHOICE_009.check(ctx)).not.toBeNull();
-    expect(CHOICE_012.check(ctx)).not.toBeNull();
+    // Reported ONCE, by CHOICE-004 (9.757.0).
+    expect(CHOICE_009.check(ctx)).toBeNull();
+    expect(CHOICE_012.check(ctx)).toBeNull();
   });
 });
 

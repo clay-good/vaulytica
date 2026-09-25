@@ -83,8 +83,11 @@ export function nonAdviceStatement(subject: PrivacySubject): string {
       "These comments are a checklist of mechanical findings produced by a deterministic rule engine against the document they are attached to.",
   };
   const what = WHAT[subject];
+  // "These comments are … They are not legal advice": the review variant is
+  // plural, and the anchored comments read "These comments are … It is not".
+  const pronoun = subject === "review" ? "They are" : "It is";
   return (
-    `Vaulytica is a software tool, not a lawyer. ${what} It is not legal advice, and using ` +
+    `Vaulytica is a software tool, not a lawyer. ${what} ${pronoun} not legal advice, and using ` +
     "Vaulytica does not create an attorney-client relationship with anyone. The findings may be " +
     "incorrect, incomplete, or inapplicable to your situation. The decision to act on any " +
     "finding, or not, is yours and your counsel's. If something here matters to a transaction " +

@@ -137,7 +137,7 @@ const EXPECTED_RULE_IDS: Record<string, string[]> = {
     "OBLI-008", // `reasonable efforts` undefined
     "RISK-015", // indemnification without cap
     "RISK-016", // insurance without coverage minimum
-    "CHOICE-009", // Delaware law / Texas venue mismatch
+    "CHOICE-004", // Delaware law / Texas venue mismatch (its single owner since 9.757.0)
     "TERM-009", // asymmetric termination
   ],
 

@@ -1,4 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
+import { rule as CHOICE_004 } from "./CHOICE-004.js";
 import { emit } from "../_helpers.js";
 
 /**
@@ -28,7 +29,7 @@ import { emit } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "CHOICE-012",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Governing-law / venue jurisdiction mismatch",
   category: "choice-and-venue",
   default_severity: "warning",
@@ -37,6 +38,11 @@ export const rule: Rule = {
   dkb_citations: [],
 
   check(ctx: RuleContext): Finding | null {
+    // ONE law/venue split, ONE finding. CHOICE-004 owns it; this rule keeps
+    // only the cases CHOICE-004 does not report. The three used to fire
+    // together and disagree — "almost always a drafting accident" beside
+    // "usually deliberate" — in comments on one clause.
+    if (CHOICE_004.check(ctx) !== null) return null;
     const gov = ctx.extracted.jurisdictions.find((j) => j.clause_kind === "governing-law");
     if (!gov) return null;
     const venues = ctx.extracted.jurisdictions.filter((j) => j.clause_kind === "venue");

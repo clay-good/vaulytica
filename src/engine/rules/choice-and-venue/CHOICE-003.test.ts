@@ -52,3 +52,25 @@ describe("CHOICE-003 — retained enforcement jurisdiction is a forum clause", (
     ).toBeNull();
   });
 });
+
+/**
+ * One law/venue split, one comment. CHOICE-004 (warning, "sometimes
+ * deliberate"), CHOICE-012 (warning, "almost always a drafting accident") and
+ * CHOICE-009 (info, "a legitimate drafting choice … usually deliberate") all
+ * reported Delaware law with a Texas venue, and a reviewed copy of an MSA
+ * carried three comments disagreeing with each other about one clause.
+ * CHOICE-004 owns the finding; the other two keep only the cases it misses.
+ */
+describe("CHOICE-004 / -009 / -012 — one law-venue split, one finding", () => {
+  it("reports Delaware law with a Texas venue once", async () => {
+    const { rule: C4 } = await import("./CHOICE-004.js");
+    const { rule: C9 } = await import("./CHOICE-009.js");
+    const { rule: C12 } = await import("./CHOICE-012.js");
+    const ctx = buildContext([
+      "Governing Law",
+      "This Agreement is governed by the laws of the State of Delaware. Any action arising out of this Agreement shall be brought exclusively in the state or federal courts located in Travis County, Texas.",
+    ]);
+    const fired = [C4, C9, C12].filter((r) => r.check(ctx) !== null).map((r) => r.id);
+    expect(fired).toEqual(["CHOICE-004"]);
+  });
+});

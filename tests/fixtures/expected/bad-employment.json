@@ -62,11 +62,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-009-s1.10-1635",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "CHOICE-009",
-      "rule_version": "1.0.0"
+      "rule_version": "1.1.0"
     },
     {
       "elapsed_ms": 0,
@@ -86,11 +85,10 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-012-s1.10-1682",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "CHOICE-012",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -961,24 +959,6 @@
       "title": "Out-of-state choice-of-law on California-based party"
     },
     {
-      "description": "Governing law is Delaware; venue / exclusive jurisdiction is California.",
-      "document_position": 1682,
-      "excerpt": {
-        "end_offset": 1753,
-        "section_id": "s1.10",
-        "start_offset": 1682,
-        "text": "Delaware → California"
-      },
-      "explanation": "When the governing-law and venue clauses name different jurisdictions, the court hearing the dispute must apply another jurisdiction's law. Federal courts decide foreign-country law as a question of law (Fed. R. Civ. P. 44.1), and state courts routinely take judicial notice of sister-state law; a law/forum split adds cost and unpredictability. The mismatch is almost always a drafting accident — one side copy-pasted from a different template — rather than a deliberate strategic choice.",
-      "id": "CHOICE-012-s1.10-1682",
-      "recommendation": "Align governing law and venue to the same jurisdiction unless the mismatch is deliberate and documented. If deliberate, add a brief explanation in the choice-of-law section noting the rationale (typical use case: a neutral arbitral seat with a different governing law).",
-      "rule_id": "CHOICE-012",
-      "rule_version": "1.1.0",
-      "severity": "warning",
-      "source_citations": [],
-      "title": "Governing law (Delaware) and venue (California) name different jurisdictions"
-    },
-    {
       "description": "The contract does not allocate ownership of intellectual property.",
       "document_position": 0,
       "excerpt": {
@@ -1110,24 +1090,6 @@
       "severity": "info",
       "source_citations": [],
       "title": "Jury trial waiver present"
-    },
-    {
-      "description": "Governing law: 'Delaware' — venue: 'California'.",
-      "document_position": 1635,
-      "excerpt": {
-        "end_offset": 1680,
-        "section_id": "s1.10",
-        "start_offset": 1635,
-        "text": "Delaware / California"
-      },
-      "explanation": "Picking one jurisdiction's law and another's forum means a court applies foreign law — adding legal-research cost, raising the risk of jurisdiction-specific surprises (e.g., consumer-protection statutes the chosen-law state didn't anticipate), and sometimes triggering choice-of-law analysis the parties didn't expect. The pairing is legitimate (Delaware law + NY/DE forum is common in M&A) but a mismatch in routine commercial contracts is often unintentional.",
-      "id": "CHOICE-009-s1.10-1635",
-      "recommendation": "Confirm the pairing is deliberate. If not, align them — typically by changing venue to the chosen-law state. If the mismatch is intentional, note the reason in counsel's notes for future reference.",
-      "rule_id": "CHOICE-009",
-      "rule_version": "1.0.0",
-      "severity": "info",
-      "source_citations": [],
-      "title": "Governing law differs from venue jurisdiction"
     },
     {
       "description": "Only employee bears this typically-mutual obligation.",
@@ -1279,11 +1241,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "54a1eeddcbada8cb6c427cb5f368a21972574ed8c9d600bd95e0a393054d6afe",
+  "result_hash": "863504884a35c41b809e4032076b043d457cbeb24daa0764288fef8f607aead1",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.756.0"
+  "version": "9.757.0"
 }

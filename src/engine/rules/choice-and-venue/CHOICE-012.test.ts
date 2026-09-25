@@ -3,7 +3,9 @@ import { rule as CHOICE_012 } from "./CHOICE-012.js";
 import { buildContext } from "../../_test-fixtures.js";
 
 describe("CHOICE-012 — governing-law / venue mismatch", () => {
-  it("fires when governing law and venue name different jurisdictions", () => {
+  // 9.757.0: CHOICE-004 owns a plain law/venue split; this rule defers to it.
+  it("defers to CHOICE-004 when governing law and venue name different jurisdictions", async () => {
+    const { rule: CHOICE_004 } = await import("./CHOICE-004.js");
     const ctx = buildContext(
       [
         "14.1 Governing Law",
@@ -14,11 +16,10 @@ describe("CHOICE-012 — governing-law / venue mismatch", () => {
         "The exclusive jurisdiction for any dispute shall be the state and federal courts located in New York.",
       ],
     );
-    const finding = CHOICE_012.check(ctx);
-    expect(finding).not.toBeNull();
-    expect(finding?.severity).toBe("warning");
-    expect(finding?.title).toMatch(/Delaware/);
-    expect(finding?.title).toMatch(/New York/);
+    const owner = CHOICE_004.check(ctx);
+    expect(owner?.title).toMatch(/Delaware/);
+    expect(owner?.title).toMatch(/New York/);
+    expect(CHOICE_012.check(ctx)).toBeNull();
   });
 
   it("silent when governing law and venue name the same jurisdiction", () => {

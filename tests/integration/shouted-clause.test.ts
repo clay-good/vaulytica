@@ -77,7 +77,7 @@ const DISCLAIMER_DEBT: readonly string[] = [
   "franchise.txt: lost STRUCT-006 gained -",
   "net-lease.txt: lost STRUCT-018 gained -",
   "stock-purchase-agreement.txt: lost - gained STRUCT-005",
-  "warrant.txt: lost STRUCT-006 gained CHOICE-004,CHOICE-009,CHOICE-012",
+  "warrant.txt: lost STRUCT-006 gained CHOICE-004",
 ];
 
 const LIABILITY_DEBT: readonly string[] = [
