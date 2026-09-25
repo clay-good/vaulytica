@@ -561,8 +561,10 @@ const ONE_SIDED_ROLE = String.raw`Guarantor|Grantor|Grantee|Settlor|Trustor|Trus
 // person as both settlor and trustee: "Margaret Okafor (the \"Grantor\" and
 // initial \"Trustee\")" — so allow trailing content (no nested close paren)
 // after the role before the paren closes.
+// The name must START at a word edge: without one, "Manchester M4 5CD (the
+// "Employee")" registered a party "CD" out of the tail of a UK postcode.
 const ROLE_LABELED_PARTY = new RegExp(
-  String.raw`([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,5})\s*\(\s*(?:the\s+)?["“”'](${ONE_SIDED_ROLE})["“”'][^)]{0,60}\)`,
+  String.raw`(?<![\w&.'’-])([A-Z][\w&.,'’-]{0,80}(?:\s+[A-Z][\w&.,'’-]{0,80}){0,5})\s*\(\s*(?:the\s+)?["“”'](${ONE_SIDED_ROLE})["“”'][^)]{0,60}\)`,
   "g",
 );
 
@@ -580,7 +582,7 @@ const ROLE_LABELED_PARTY = new RegExp(
  * restricted to all-caps, so nothing a mixed-case document produces can change.
  */
 const ROLE_LABELED_PARTY_CAPS = new RegExp(
-  String.raw`([A-Z][A-Z&.,'’\d-]{0,80}(?:\s+[A-Z][A-Z&.,'’\d-]{0,80}){0,5})\s*\(\s*(?:THE\s+)?["“”'](${ONE_SIDED_ROLE})["“”'][^)]{0,60}\)`,
+  String.raw`(?<![\w&.'’-])([A-Z][A-Z&.,'’\d-]{0,80}(?:\s+[A-Z][A-Z&.,'’\d-]{0,80}){0,5})\s*\(\s*(?:THE\s+)?["“”'](${ONE_SIDED_ROLE})["“”'][^)]{0,60}\)`,
   "gi",
 );
 
@@ -651,6 +653,19 @@ const FOREIGN_SUFFIX_TAIL = new RegExp(
 
 const FOREIGN_ENTITY_ROLE_PARTY = new RegExp(
   String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){0,5})\s+(${FOREIGN_ENTITY_SUFFIX})\s*\(\s*(?:(?:the|each|collectively,?|together|individually)\s+){0,2}["“”']([^"”'’)]{1,60})["“”']\s*\)`,
+  "g",
+);
+
+/**
+ * A person described by ADDRESS, the way a company is described by its state
+ * and entity type: "Samuel J. Ortega of 418 Maple Avenue, Madison, Wisconsin
+ * 53703 ("Seller") sells … to Leah M. Brandt of 92 Lakeview Drive, … ("Buyer")".
+ * A clean vehicle bill of sale reported "No parties identified". The address
+ * must open with a street number, and the name is case-SENSITIVE — every word
+ * capitalized — so "sells and transfers to" cannot join it.
+ */
+const ADDRESSED_PERSON_ROLE_PARTY = new RegExp(
+  String.raw`([A-Z][\w&.'’-]{0,80}(?:\s+[A-Z][\w&.'’-]{0,80}){1,4})\s*,?\s+(?:of|residing\s+at|whose\s+address\s+is)\s+\d[^)(]{0,160}?\(\s*(?:the\s+)?["“”'’](${NATURAL_PERSON_ROLE})["“”'’][^)]{0,60}\)`,
   "g",
 );
 
@@ -866,6 +881,16 @@ export function extractParties(tree: DocumentTree): Party[] {
       registerParty(partyMap, name, {
         role: nm[2],
         position: pos(nm.index, nm.index + nm[0].length),
+      });
+    }
+    ADDRESSED_PERSON_ROLE_PARTY.lastIndex = 0;
+    let am: RegExpExecArray | null;
+    while ((am = ADDRESSED_PERSON_ROLE_PARTY.exec(text)) !== null) {
+      const name = cleanPartyName(am[1] ?? "");
+      if (!name || isBoilerplateName(name)) continue;
+      registerParty(partyMap, name, {
+        role: am[2],
+        position: pos(am.index, am.index + am[0].length),
       });
     }
     FOREIGN_ENTITY_ROLE_PARTY.lastIndex = 0;
@@ -1583,6 +1608,11 @@ function cleanPartyName(raw: string): string {
   // "Tallgrass Industrial GP LLC, its general partner". No legal name carries
   // a possessive appositive, so the comma is where the name ended.
   n = n.replace(/,\s*(?:its|their)\s+.+$/i, "");
+  // A person's ADDRESS is their descriptor, the way a company's state and type
+  // are: "DEVON ACHEBE of 88 Beech Row, Manchester M4 5CD" registered a party
+  // under the street name. Requires the street NUMBER, so "Bank of America" and
+  // "University of Chicago" keep their "of".
+  n = n.replace(/,?\s+(?:of|residing\s+at|whose\s+address\s+is)\s+\d.*$/i, "");
   // A person's PROFESSIONAL CREDENTIAL is not part of their name, for the same
   // reason a corporate suffix is not part of an entity's. A signature block
   // writes "By: /s/ Ruth Okonjo" over "Name: Ruth Okonjo, M.D.", and where a

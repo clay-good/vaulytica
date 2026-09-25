@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.740.0] — 2026-09-24
+
+### Fixed
+A clean vehicle bill of sale drew 1 critical and 4 warnings; it now draws 0
+and 3, each a true absence (governing law, further assurances, indemnity).
+
+- 🚨 **MNA-113 (critical) told a bill of sale for one car that it conveys
+  unidentified assets.** The column asks for a schedule of "the Purchased
+  Assets", which is how an M&A closing conveys a business; a bill of sale for
+  one thing identifies it inline. "The following motor vehicle / equipment /
+  goods …" and a VIN, serial number or hull identification number now
+  satisfy it.
+- **STRUCT-001 reported "No parties identified" about a preamble naming
+  both.** An individual is described by address the way a company is by
+  state and type — "Samuel J. Ortega of 418 Maple Avenue, Madison, Wisconsin
+  53703 ("Seller")" — and no reader accepted that. A new reader does (the
+  address must open with a street number; the name is case-sensitive), and
+  the shared name cleaner strips an address descriptor. Across the
+  specimens: two party names lose the address glued to them ("Devon Achebe,
+  residing at 88 Beech Row, …"), a marital settlement agreement gains
+  "Adaeze Nwachukwu-Hollis (Wife)", a durable POA's principal and agent gain
+  their roles, and a UK employment contract's employee is "DEVON ACHEBE"
+  instead of "CD" — the tail of the postcode "M4 5CD", read because the
+  role-labeled reader had no left word boundary.
+
+Goldens: 370 rewritten for the rule/engine versions; `golden:churn` reports
+0 changed finding sets.
+
 ## [9.739.0] — 2026-09-24
 
 ### Fixed

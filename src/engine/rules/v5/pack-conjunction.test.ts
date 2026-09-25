@@ -155,3 +155,30 @@ describe("MNA-116 — an effective time and further assurances", () => {
     expect(f, "MNA-116 accepted an instrument with no effective time").not.toBeNull();
   });
 });
+
+/**
+ * A bill of sale for ONE thing identifies it inline. MNA-113 asked every bill
+ * of sale for a schedule of "the Purchased Assets", which is how an M&A closing
+ * conveys a business — and a clean vehicle bill of sale that names the car by
+ * make, model and VIN was told, at `critical`, that it conveys unidentified
+ * assets.
+ */
+describe("MNA-113 — an asset identified inline", () => {
+  it.each([
+    "Seller sells and transfers to Buyer the following motor vehicle: 2021 Subaru Outback, Vehicle Identification Number (VIN): 4S4BTACC5M3104712.",
+    "Seller sells to Buyer one Bobcat S650 skid-steer loader, Serial Number B3NK11427.",
+  ])("is silent on %s", (sentence) => {
+    expect(rule("MNA-113").check(named("Bill of Sale", sentence))).toBeNull();
+  });
+
+  it("still fires on a bill of sale that conveys 'the assets' and identifies nothing", () => {
+    expect(
+      rule("MNA-113").check(
+        named(
+          "Bill of Sale",
+          "Seller sells and conveys to Buyer all of the assets of the business.",
+        ),
+      ),
+    ).not.toBeNull();
+  });
+});

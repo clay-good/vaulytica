@@ -1275,3 +1275,39 @@ describe("the party shapes that had no test", () => {
     expect(parties.map((p) => p.name).sort()).toEqual(["Acme Holdings LLC", "Acme LLC"]);
   });
 });
+
+/**
+ * An individual is described by ADDRESS the way a company is described by its
+ * state and entity type. A clean vehicle bill of sale — "Samuel J. Ortega of
+ * 418 Maple Avenue, Madison, Wisconsin 53703 ("Seller") sells and transfers to
+ * Leah M. Brandt of 92 Lakeview Drive, … ("Buyer")" — reported "No parties
+ * identified": the role readers need the parenthetical straight after the name,
+ * or ", an individual".
+ */
+describe("extractParties — a person described by address", () => {
+  const parties = (t: string) =>
+    extractParties(buildTree(["Bill of Sale", t])).map((p) => [p.name, p.role]);
+
+  it("reads both parties of an address-described preamble", () => {
+    expect(
+      parties(
+        'For the sum of $18,500.00, Samuel J. Ortega of 418 Maple Avenue, Madison, Wisconsin 53703 ("Seller") sells and transfers to Leah M. Brandt of 92 Lakeview Drive, Middleton, Wisconsin 53562 ("Buyer") the following motor vehicle:',
+      ),
+    ).toEqual([
+      ["Samuel J. Ortega", "Seller"],
+      ["Leah M. Brandt", "Buyer"],
+    ]);
+  });
+
+  it("reads 'residing at'", () => {
+    expect(
+      parties(
+        'This Lease is made with Priya Raman, residing at 12 Elm Street, Boston, Massachusetts ("Tenant").',
+      ),
+    ).toContainEqual(["Priya Raman", "Tenant"]);
+  });
+
+  it("does not read a street address without a role as a party", () => {
+    expect(parties("Deliveries go to the warehouse of 12 Elm Street, Boston.")).toEqual([]);
+  });
+});

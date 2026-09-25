@@ -196,11 +196,17 @@ const ASSIGNMENT = pack("assignment-and-assumption-agreement", C, [
 const BILL_OF_SALE = pack("bill-of-sale", C, [
   {
     id: "MNA-113",
+    ver: "1.1.0",
     name: "Assets conveyed with schedule reference",
     cite: ucc("2-401", "Passing of title; reservation for security"),
     pat: [
       /(purchased\s+assets|assets\s+(described|listed|set\s+forth))/i,
       /(schedule|exhibit|annexure|annex|appendix)/i,
+      // A bill of sale for ONE thing identifies it inline — "the following
+      // motor vehicle: … VIN 4S4BTACC5M3104712". A clean vehicle bill of sale
+      // was told at `critical` that it conveys unidentified assets.
+      /\bthe\s+following\s+(?:described\s+)?(?:motor\s+vehicle|vehicle|vessel|boat|trailer|aircraft|equipment|goods|items?|property|personal\s+property|assets?)\b/i,
+      /\bvehicle\s+identification\s+number\b|\bVIN\b|\bserial\s+(?:number|no\.?)|\bhull\s+identification\s+number\b/i,
     ],
     why: "A bill of sale is the instrument of conveyance for tangible property. Conveying 'the assets' without a schedule leaves the identification to the purchase agreement, which is not what a lender or a court will be handed.",
     fix: "Identify the conveyed assets by schedule reference and incorporate the schedule into the bill of sale itself.",
