@@ -363,15 +363,40 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // not exceed the usage limits" has no liability subject and stays.
         if (CAP_ACTION.test(action) && CAP_SUBJECT.test(cl.subject)) continue;
 
+        // A STATEMENT OF LAW IS NOT A DUTY. "…any claim THAT CANNOT BE
+        // RELEASED as a matter of law", "…a right that may not be waived",
+        // "…liability that cannot be limited under applicable law" describe
+        // what the law forbids the parties to do, inside a restrictive
+        // relative clause; the ledger printed `any claim that | cannot | be
+        // released as a matter of law` as though a claim owed something.
+        if (
+          /\b(?:that|which)\s*$/i.test(cl.subject) &&
+          /^(?:cannot|can not|may not|must not)$/i.test(modal) &&
+          /^(?:\w+ly\s+)?be\s+\w+(?:ed|en)\b/i.test(action)
+        ) {
+          continue;
+        }
+
+        // A WARRANTY'S ROW SAYS WHAT IS WARRANTED. With the warrantor as the
+        // obligor, "Supplier warrants that the Services will be provided with
+        // due care" printed `The Supplier | will | be provided with due care`
+        // — the Services' predicate on the Supplier, which inverts it. The
+        // declaring verb is the modal and the that-clause is the action.
+        const declared = declarationOf(subjectForObligor);
+        const rowModal = declared ? declared.verb : modal;
+        const rowAction = declared
+          ? `that ${declared.clauseSubject} ${cl.modal} ${action}`.replace(/\s+/g, " ").trim()
+          : action;
+
         out.push({
           id: nextId(),
           obligor,
-          action,
+          action: rowAction,
           trigger,
           qualifier,
           ...(nested ? { nested_triggers: nested } : {}),
           ...(obligorExclusion ? { obligor_exclusion: obligorExclusion } : {}),
-          modal,
+          modal: rowModal,
           raw_text: sentence.trim(),
           position: posInParagraph(ctx, start, start + sentence.length),
         });
@@ -891,7 +916,54 @@ const LEADING_SUBORDINATOR =
   /^(?:that|which|whereby|whereupon)\s+(?=(?:the|a|an|its|his|her|their|our|your|each|any|no|such|all|either|both|every|this|these|those)\s+\S|(?:it|he|she|they|we|you|neither)\b)/i;
 
 const DECLARANT =
-  /^([^,;]{1,60}?)\s+(?:(?:hereby|further|also|expressly)\s+)?(?:represents?|warrants?|certif(?:y|ies))(?:\s+and\s+(?:represents?|warrants?|certif(?:y|ies)|covenants?))?\s+(?:to\s+(?:the\s+)?\w+\s+)?that\s+\S/i;
+  /^([^,;]{1,60}?)\s+((?:(?:hereby|further|also|expressly)\s+)?(?:represents?|warrants?|certif(?:y|ies))(?:\s+and\s+(?:represents?|warrants?|certif(?:y|ies)|covenants?))?)\s+(?:to\s+(?:the\s+)?\w+\s+)?that\s+(?=\S)/i;
+
+/**
+ * A warranty's declarant, its declaring verb, and the that-clause's own
+ * subject — or null when the subject is not a plain declaration (a comma
+ * before the modal, a disclaimer, a fronted phrase). One owner for the
+ * obligor resolution and for the row's modal and action.
+ */
+function declarationOf(
+  subject: string,
+): { declarant: string; verb: string; clauseSubject: string } | null {
+  const trimmed = trimEdges(stripFrontedAdverbial(subject), /[,;.\s]/);
+  const declared = DECLARANT.exec(trimmed);
+  if (
+    !declared ||
+    /[,;]/.test(trimmed.slice(declared[0].length)) ||
+    /\b(?:not|never|or)$/i.test(declared[1]!.trim()) ||
+    /^(?:by|in|on|at|for|upon|after|if|when)\b/i.test(declared[1]!.trim())
+  ) {
+    return null;
+  }
+  return {
+    declarant: declared[1]!,
+    verb: declared[2]!.toLowerCase().replace(/\s+/g, " "),
+    clauseSubject: trimmed.slice(declared[0].length).trim(),
+  };
+}
+
+/**
+ * The antecedent of a trailing non-restrictive "…, who" / "…, which": the
+ * NEAREST phrase opened by a determiner ("The Company communicates revisions
+ * to ALL USERS, who" → "all Users"; "the liens listed on Schedule 4.3, which"
+ * keeps its head), else a capitalized name ("Escrow Agent's then-current
+ * rates"). Up to seven words back.
+ */
+function antecedentOf(subject: string): string | undefined {
+  const m = /,\s+(?:who|which)$/.exec(subject);
+  if (!m) return undefined;
+  const words = subject.slice(0, m.index).trim().split(/\s+/);
+  const window = words.slice(Math.max(0, words.length - 7));
+  for (let i = window.length - 1; i >= 0; i -= 1) {
+    if (/^(?:the|a|an|all|each|any|every|its|our|their)$/i.test(window[i]!)) {
+      return window.slice(i).join(" ");
+    }
+  }
+  const named = window.findIndex((w) => /^[A-Z]/.test(w));
+  return named >= 0 ? window.slice(named).join(" ") : undefined;
+}
 
 /** A modal, an auxiliary, a copula or a past participle: the mark of a clause. */
 const CLAUSE_VERB =
@@ -929,15 +1001,21 @@ function resolveObligorInner(
   // not a DISCLAIMER ("Licensor does not represent or warrant that …") or a
   // fronted phrase the declarant slot would swallow ("By accepting this offer
   // you represent that …").
-  const declared = DECLARANT.exec(trimmed);
-  if (
-    declared &&
-    !/[,;]/.test(trimmed.slice(declared[0].length)) &&
-    !/\b(?:not|never|or)$/i.test(declared[1]!.trim()) &&
-    !/^(?:by|in|on|at|for|upon|after|if|when)\b/i.test(declared[1]!.trim())
-  ) {
-    return resolveObligorInner(declared[1]!, partyNames, partyRoles);
-  }
+  const declared = declarationOf(trimmed);
+  if (declared) return resolveObligorInner(declared.declarant, partyNames, partyRoles);
+  // A CONSENT QUALIFIER is the consenting party's duty: "without Seller's
+  // prior written consent, which shall not be unreasonably withheld" binds
+  // Seller, and the ledger printed "Seller's consent, which" as the obligor.
+  const consent =
+    /(?:^|\s)((?:[Tt]he\s+other\s+|[Tt]he\s+|[Ee]ach\s+)?(?:[A-Z][\w.-]*|other|indemnifying\s+party|other\s+party)(?:\s+[A-Z][\w.-]*){0,3})['’]s?\s+(?:prior\s+)?(?:written\s+)?(?:consent|approval),\s+which$/.exec(
+      trimmed,
+    ) ?? /\b(?:consent|approval)\s+of\s+([^,;]{2,60}?),\s+which$/i.exec(trimmed);
+  if (consent) return resolveObligorInner(consent[1]!, partyNames, partyRoles);
+  // A NON-RESTRICTIVE RELATIVE names its antecedent: "communicates revisions to
+  // all Users, who must acknowledge this policy" is the Users' duty; "the
+  // appellate CM/ECF system, which will serve counsel" the system's.
+  const antecedent = antecedentOf(trimmed);
+  if (antecedent) return resolveObligorInner(antecedent, partyNames, partyRoles);
   const lower = trimmed.toLowerCase();
   // A compound subject naming TWO parties ("The Provider and the Customer shall
   // each …", "Acme Corp. and Globex Inc. shall jointly …") states a MUTUAL

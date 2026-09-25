@@ -5,7 +5,7 @@ import { truncate } from "../../text.js";
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
   id: "IPDATA-005",
-  version: "1.7.0",
+  version: "1.8.0",
   // The regime is as often cited by its NUMBER as by its acronym — a European
   // distribution agreement writes "shall comply with EU Regulation 2016/679"
   // and never says "GDPR" — so a contract that names the governing regime
@@ -37,6 +37,13 @@ export const rule: Rule = {
         // (VCDPA, Colorado Privacy Act), and the current EU→US transfer
         // instruments (Data Privacy Framework, Privacy Shield) are recognized.
         // All are unambiguous data-protection references (unlike a bare "CPA").
+        // The other national comprehensive laws are named the same way: an
+        // Australian services agreement that binds the supplier to "the
+        // Privacy Act 1988 (Cth) and the Australian Privacy Principles" was
+        // told it cites no data regime. New Zealand (Privacy Act 2020), Canada
+        // (PIPEDA spelled out), South Africa (POPIA), Singapore and Malaysia
+        // (PDPA), Japan (APPI), India (DPDP Act) and China (PIPL spelled out)
+        // join for the same reason.
         // HIPAA is the one regime a document routinely names in FULL — an
         // estate instrument authorizing a successor trustee to receive medical
         // records writes "the Health Insurance Portability and Accountability
@@ -53,7 +60,7 @@ export const rule: Rule = {
         // redisclosure warning 45 C.F.R. § 164.508(c)(2)(iii) requires an
         // authorization to carry: "may then no longer be protected by the
         // federal privacy regulations".
-        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Health\s+Insurance\s+Portability\s+and\s+Accountability\s+Act|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s*C\.?\s*F\.?\s*R\.?(?:\s|§|\.|,|\d|Parts?|and|to|–|-){0,30}16[04]\b|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|Children['’]?s?\s+Online\s+Privacy\s+Protection\s+Act|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs|Regulation\s*\(?:EU\s*\)?\s*2016\/679|EU\s+Regulation\s+2016\/679|Directive\s+2002\/58|e[- ]?Privacy\s+Directive|UK\s+GDPR|Data\s+Protection\s+Act\s+2018|Notice\s+of\s+Privacy\s+Practices|designated\s+record\s+set|unsecured\s+protected\s+health\s+information|psychotherapy\s+notes|federal\s+privacy\s+(?:regulations?|rules?))\b/i,
+        /\b(?:GDPR|General\s+Data\s+Protection\s+Regulation|CCPA|California\s+Consumer\s+Privacy\s+Act|CPRA|California\s+Privacy\s+Rights\s+Act|HIPAA|Health\s+Insurance\s+Portability\s+and\s+Accountability\s+Act|Business\s+Associate\s+Agreement|BAA|Covered\s+Entit(?:y|ies)|45\s*C\.?\s*F\.?\s*R\.?(?:\s|§|\.|,|\d|Parts?|and|to|–|-){0,30}16[04]\b|GLBA|Gramm[- ]Leach[- ]Bliley|FERPA|COPPA|Children['’]?s?\s+Online\s+Privacy\s+Protection\s+Act|VCDPA|Virginia\s+Consumer\s+Data\s+Protection\s+Act|Colorado\s+Privacy\s+Act|Data\s+Privacy\s+Framework|Privacy\s+Shield|LGPD|PIPEDA|PIPL|Data\s+Processing\s+(?:Agreement|Addendum)|Standard\s+Contractual\s+Clauses|SCCs|Regulation\s*\(?:EU\s*\)?\s*2016\/679|EU\s+Regulation\s+2016\/679|Directive\s+2002\/58|e[- ]?Privacy\s+Directive|UK\s+GDPR|Data\s+Protection\s+Act\s+2018|Notice\s+of\s+Privacy\s+Practices|designated\s+record\s+set|unsecured\s+protected\s+health\s+information|psychotherapy\s+notes|federal\s+privacy\s+(?:regulations?|rules?)|Privacy\s+Act\s+1988|Australian\s+Privacy\s+Principles|Privacy\s+Act\s+2020|Personal\s+Information\s+Protection\s+and\s+Electronic\s+Documents\s+Act|POPIA|Protection\s+of\s+Personal\s+Information\s+Act|PDPA|Personal\s+Data\s+Protection\s+Act|APPI|Act\s+on\s+the\s+Protection\s+of\s+Personal\s+Information|Digital\s+Personal\s+Data\s+Protection\s+Act|Personal\s+Information\s+Protection\s+Law)\b/i,
       )
     )
       return null;

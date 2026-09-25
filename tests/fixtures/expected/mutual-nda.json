@@ -289,7 +289,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -359,7 +359,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -760,14 +760,14 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-008",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-009",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -994,11 +994,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "82dad46f696522612796cb8cbb2074b70f749c2da4123932c970cb29bafea612",
+  "result_hash": "06ba34f2c8251f6636a21c9784bf8c6a18ae6dcef854179cb10a613c8effa45d",
   "source_file": {
     "name": "mutual-nda.docx",
     "sha256": "ef50f0dcb7abba00b9213ddb4a8a77a2ab5f0bc1f3ee2394f809706622bf8151",
     "size_bytes": 9274
   },
-  "version": "9.780.0"
+  "version": "9.781.0"
 }

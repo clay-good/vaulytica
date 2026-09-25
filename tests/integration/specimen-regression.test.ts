@@ -2484,9 +2484,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // was reported as never used at all — while STRUCT-009 was separately
   // reporting the same term as inconsistently capitalized. Both cannot be
   // true.
+  //
+  // OBLI-005 left this row in 9.781.0: the trust's only "negative covenant"
+  // was "the duty to act in good faith, which may not be eliminated" — a
+  // statement of what the law forbids, not a duty anyone owes.
   "revocable-trust.txt": {
     playbook: "revocable-living-trust",
-    findings: ["EST-060", "OBLI-005"],
+    findings: ["EST-060"],
   },
 
   // A notice of stock option grant. Every equity award carries its plan's
@@ -4337,9 +4341,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // What stays is fair. EQT-130 is right that the agreement allocates taxes
   // without addressing 409A. STRUCT-018 is right that Exhibit A is not
   // attached.
+  //
+  // OBLI-005 left this row in 9.781.0: its only "negative covenant" was
+  // "liability under … Rule 10b-5, which may not be waived" — a statement of
+  // law, not a covenant.
   "secondary-stock-transfer.txt": {
     playbook: "secondary-stock-transfer",
-    findings: ["EQT-130", "RISK-001", "STRUCT-006", "STRUCT-018", "CHOICE-003", "OBLI-005"],
+    findings: ["EQT-130", "RISK-001", "STRUCT-006", "STRUCT-018", "CHOICE-003"],
   },
 
   // A lobbying and political contributions policy. It fell to

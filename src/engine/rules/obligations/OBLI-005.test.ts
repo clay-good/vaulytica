@@ -151,3 +151,27 @@ describe("OBLI-005 — a securities legend's transfer restriction (v1.5.0)", () 
     ).toBeNull();
   });
 });
+
+describe("OBLI-005 — a provision named by pronoun states its scope (v1.6.0)", () => {
+  it("does not count 'it shall not apply to a Settlor's own interest'", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Spendthrift",
+          "This Section does not restrict a Settlor's power to revoke or amend, and it shall not apply to a Settlor's own beneficial interest during that Settlor's lifetime.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still counts 'Licensee shall not apply to register the Marks'", () => {
+    expect(
+      OBLI_005.check(
+        buildContext([
+          "Marks",
+          "Licensee shall not apply to register the Licensed Marks in any country.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

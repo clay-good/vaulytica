@@ -2,6 +2,52 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.781.0] — 2026-09-25
+
+### Fixed
+- **A clean Australian services agreement exposed four defects.**
+  - **IPDATA-005** told a contract binding the supplier to "the Privacy Act
+    1988 (Cth) and the Australian Privacy Principles" that it cites no data
+    regime. It now recognizes the other national comprehensive laws by
+    name: Australia's Privacy Act 1988 and APPs, New Zealand's Privacy Act
+    2020, PIPEDA spelled out, POPIA, PDPA, APPI, India's DPDP Act, and
+    China's PIPL spelled out.
+  - **TEMP-008 / TEMP-009** printed "Cure period: 20 days" for twenty
+    business days. The unit now comes from the document, and the
+    count-first and cure-first patterns read "business", "working" and
+    "calendar" days. A pinned test had expected "10 days" for ten business
+    days.
+  - **A warranty's ledger row inverted its meaning.** 9.768 named the
+    warrantor, so "The Supplier warrants that the Services will be provided
+    with due care" printed `The Supplier | will | be provided with due
+    care`. The declaring verb is now the row's modal and the that-clause is
+    its action: `The Supplier | warrants | that the Services will be
+    provided …`. 20 corpus rows change.
+  - **A statement of law was a duty.** "…any right or remedy that cannot be
+    excluded under the Australian Consumer Law" printed `…remedy that |
+    cannot | be excluded`. A restrictive relative clause with "cannot / may
+    not / must not be <participle>" describes what the law forbids, not what
+    anyone owes, and is no longer an obligation (17 corpus rows).
+- **Relative clauses name their party.**
+  - "Without Seller's prior written consent, which shall not be
+    unreasonably withheld" is Seller's duty (15 rows).
+  - "…all Users, who must acknowledge this policy" is the Users' duty, and
+    "the appellate CM/ECF system, which will serve counsel" the system's.
+    The antecedent is the nearest phrase opened by a determiner.
+- **OBLI-005** had counted those statements of law as negative covenants.
+  Two specimen pins carried them as the only one:
+  - a trust's "duty to act in good faith, which may not be eliminated";
+  - "Rule 10b-5, which may not be waived".
+
+  With those gone, the `present-indicative` relation exposed a second
+  class. In "…and it shall not apply to a Settlor's own beneficial
+  interest", the pronoun stands for "This Section", so the line states the
+  provision's scope and is no longer counted. "Licensee shall not apply to
+  register the Marks" still is.
+
+Goldens: 370 rewritten for the engine version; `golden:churn` reports 0
+changed finding sets. `obligation-trigger-reach` falls to 32.
+
 ## [9.780.0] — 2026-09-25
 
 ### Fixed

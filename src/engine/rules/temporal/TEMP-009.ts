@@ -1,11 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
-import { CURE_PERIOD, curePeriodDays, isUnusualCurePeriod } from "./_cure.js";
+import { CURE_PERIOD, curePeriodDays, curePeriodUnit, isUnusualCurePeriod } from "./_cure.js";
 
 /** TEMP-009 — Cure period length unusual (info). */
 export const rule: Rule = {
   id: "TEMP-009",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Cure period length unusual",
   category: "temporal",
   default_severity: "info",
@@ -16,9 +16,10 @@ export const rule: Rule = {
     if (!hit) return null;
     const days = curePeriodDays(hit.match);
     if (!isUnusualCurePeriod(days)) return null;
+    const unit = curePeriodUnit(hit.match);
     return emit(ctx, rule, {
-      title: `Cure period of ${days} days is unusual`,
-      description: `Cure period: ${days} days.`,
+      title: `Cure period of ${days} ${unit} is unusual`,
+      description: `Cure period: ${days} ${unit}.`,
       excerpt: hit.match[0],
       explanation:
         "Standard cure periods are 10–60 days; outside that range, confirm the intent. Very short windows may be impossible to use; very long windows can frustrate termination.",

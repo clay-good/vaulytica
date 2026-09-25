@@ -13,16 +13,18 @@ describe("TEMP-008 — the fails-to-cure form", () => {
   it.each([
     [
       "Either party may terminate this Agreement if the other materially breaches it and fails to cure within thirty (30) days after written notice.",
-      30,
+      "30 days",
     ],
     [
+      // The unit as the document states it (9.781.0): this row once expected
+      // "10 days" for ten BUSINESS days, which pinned the defect.
       "Company may terminate if Vendor does not cure within ten (10) business days after notice.",
-      10,
+      "10 business days",
     ],
-    ["If Supplier fails to cure within sixty (60) days, Buyer may terminate the order.", 60],
-  ])("reads %s", (text, days) => {
+    ["If Supplier fails to cure within sixty (60) days, Buyer may terminate the order.", "60 days"],
+  ])("reads %s", (text, period) => {
     const f = TEMP_008.check(doc(text));
-    expect(f?.title).toBe(`Cure period: ${days} days`);
+    expect(f?.title).toBe(`Cure period: ${period}`);
   });
 
   // "CORRECT" IS AN ORDINARY WORD AND "CURE" IS A TERM OF ART. An
@@ -48,5 +50,17 @@ describe("TEMP-008 — the fails-to-cure form", () => {
         ),
       )?.title,
     ).toBe("Cure period: 30 days");
+  });
+});
+
+describe("TEMP-008 — the cure period's unit", () => {
+  it("says business days when the document does", () => {
+    const f = TEMP_008.check(
+      buildContext([
+        "Termination",
+        "Either party may terminate if the other commits a material breach and does not remedy it within twenty (20) business days after notice.",
+      ]),
+    );
+    expect(f?.title).toBe("Cure period: 20 business days");
   });
 });

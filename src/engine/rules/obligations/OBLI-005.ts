@@ -110,6 +110,20 @@ const STATUS_ACTION =
 const TRANSFER_RESTRICTION =
   /^be\s+(?:offered|sold|resold|transferred|assigned|pledged|hypothecated|encumbered)\b/i;
 
+/**
+ * A provision referred to by PRONOUN is still a provision: "This Section does
+ * not restrict a Settlor's power to revoke, and IT shall not apply to a
+ * Settlor's own beneficial interest" states the Section's scope. The
+ * instrument-subject filter reads the noun, so the pronoun passed as a party
+ * and the scope statement counted as a negative covenant — found by the
+ * `present-indicative` relation once the trust's only other "covenant" (a
+ * statement of law, 9.781.0) left the ledger. "Licensee shall not apply to
+ * REGISTER the Marks" is a covenant and keeps its verb after "to".
+ */
+const PRONOUN_SUBJECT = /^(?:it|they|this|these)$/i;
+const SCOPE_ACTION =
+  /^not\s+apply(?:\s*$|\s+to\s+(?:a|an|the|any|such|its|his|her|their|this|that|these|those|each|all|[A-Z])|\s+(?:if|where|when|unless|in|during|after|before)\b)/;
+
 /** Up to 120 characters of a clause, cut at a word, marked when cut. */
 function clauseSnippet(raw: string): string {
   const text = raw.trim();
@@ -120,7 +134,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",
@@ -132,6 +146,7 @@ export const rule: Rule = {
       (o) =>
         (NEG_MODAL.test(o.modal) || NEG_ACTION.test(o.action) || NEG_PHRASE.test(o.action)) &&
         (!INSTRUMENT_SUBJECT.test(o.obligor.trim()) || TRANSFER_RESTRICTION.test(o.action)) &&
+        !(PRONOUN_SUBJECT.test(o.obligor.trim()) && SCOPE_ACTION.test(o.action)) &&
         !STATUS_ACTION.test(o.action),
     );
     if (negs.length === 0) return null;

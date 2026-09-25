@@ -34,7 +34,7 @@ const CURE_TRIGGER =
 // correct" with no explicit breach noun — "shall have 90 days to cure" — which
 // the count-first drafting frequently leaves implicit.
 const REVERSED_ANCHOR = `to\\s+(?:cure|remed(?:y|ies)|correct)\\b|${CURE_TRIGGER}`;
-const DAYS = `(${PERIOD_COUNT})[-\\s]days?`;
+const DAYS = `(${PERIOD_COUNT})[-\\s](?:business\\s+|calendar\\s+|working\\s+)?days?`;
 
 // In the count-first branch the count must sit CLOSE to the cure phrase
 // ("30-day cure period", "30 days to cure", "30 days from notice to cure") — a
@@ -64,6 +64,16 @@ export const CURE_PERIOD = new RegExp(
   `\\b(?:${CURE_TRIGGER})[\\s\\S]{0,80}?${DAYS}|${DAYS}\\b[\\s\\S]{0,20}?(?:${REVERSED_ANCHOR})|${FAILS_TO_CURE}`,
   "i",
 );
+
+/**
+ * The cure period's unit as the document states it. "Does not remedy it within
+ * twenty (20) business days" was reported as "Cure period: 20 days" — four
+ * weeks of business days printed as under three calendar weeks.
+ */
+export function curePeriodUnit(m: RegExpMatchArray): string {
+  const unit = /\b(business|working|calendar)\s+days?\b/i.exec(m[0])?.[1]?.toLowerCase();
+  return unit ? `${unit} days` : "days";
+}
 
 /** The cure-period length in days from a `CURE_PERIOD` match (either branch). */
 export function curePeriodDays(m: RegExpMatchArray): number {

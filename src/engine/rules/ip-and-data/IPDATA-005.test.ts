@@ -140,3 +140,27 @@ describe("IPDATA-005 — HIPAA terms of art count as a regime reference", () => 
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-005 — national privacy laws outside the US and EU", () => {
+  it("accepts the Privacy Act 1988 (Cth) and the Australian Privacy Principles", () => {
+    expect(
+      IPDATA005.check(
+        buildContext([
+          "Privacy",
+          "The Supplier shall handle all personal information it receives in accordance with the Privacy Act 1988 (Cth) and the Australian Privacy Principles.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still flags personal information with no regime named", () => {
+    expect(
+      IPDATA005.check(
+        buildContext([
+          "Privacy",
+          "The Supplier shall protect all personal information it receives.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

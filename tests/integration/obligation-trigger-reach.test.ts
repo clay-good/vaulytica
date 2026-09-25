@@ -49,7 +49,9 @@ const FRONTED =
  */
 // 33 at 9.769.0: a duty COORDINATED under the fronted condition ("If …,
 // Subcontractor may stop work and Contractor shall pay …") now inherits it.
-const FRONTED_WITHOUT_TRIGGER = 33;
+// 32 at 9.781.0: a statement of law ("… a right that cannot be waived")
+// is no longer an obligation at all.
+const FRONTED_WITHOUT_TRIGGER = 32;
 
 describe("the obligations ledger says when", () => {
   it("reads a fronted condition as the trigger", async () => {

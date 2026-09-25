@@ -1417,3 +1417,40 @@ describe("extractObligations — negative inversion", () => {
     expect(got).toEqual([]);
   });
 });
+
+describe("extractObligations — what a row says it is", () => {
+  const rows = (text: string) => extractObligations(buildTree(["Terms", text]), []);
+
+  it("gives a warranty the declaring verb and the warranted clause", () => {
+    const [o] = rows(
+      "The Supplier warrants that the Services will be provided with due care and skill.",
+    );
+    expect([o!.obligor, o!.modal, o!.action]).toEqual([
+      "The Supplier",
+      "warrants",
+      "that the Services will be provided with due care and skill",
+    ]);
+  });
+
+  it("names the consenting party of 'consent, which shall not be unreasonably withheld'", () => {
+    const [o] = rows(
+      "Any sublease requires Landlord's prior written consent, which shall not be unreasonably withheld.",
+    ).filter((r) => /withheld/.test(r.action));
+    expect(o!.obligor).toBe("Landlord");
+  });
+
+  it("names the antecedent of a non-restrictive relative", () => {
+    const [o] = rows(
+      "The Company communicates revisions to all Users, who must acknowledge this policy on hire and annually thereafter.",
+    );
+    expect(o!.obligor).toBe("all Users");
+  });
+
+  it("does not record a statement of law as a duty", () => {
+    expect(
+      rows(
+        "Nothing in this Agreement excludes any right or remedy that cannot be excluded under the Australian Consumer Law.",
+      ),
+    ).toEqual([]);
+  });
+});

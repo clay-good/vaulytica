@@ -1,11 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
-import { CURE_PERIOD, curePeriodDays, isUnusualCurePeriod } from "./_cure.js";
+import { CURE_PERIOD, curePeriodDays, curePeriodUnit, isUnusualCurePeriod } from "./_cure.js";
 
 /** TEMP-008 — Cure period present (info). */
 export const rule: Rule = {
   id: "TEMP-008",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Cure period present",
   category: "temporal",
   default_severity: "info",
@@ -20,9 +20,10 @@ export const rule: Rule = {
     // its own headline restated. Defer to the sibling that carries the
     // judgment.
     if (isUnusualCurePeriod(days)) return null;
+    const unit = curePeriodUnit(hit.match);
     return emit(ctx, rule, {
-      title: `Cure period: ${days} days`,
-      description: `Material breach cure period of ${days} days is stated.`,
+      title: `Cure period: ${days} ${unit}`,
+      description: `Material breach cure period of ${days} ${unit} is stated.`,
       excerpt: hit.match[0],
       explanation:
         "Most contracts give the breaching party a window to cure before termination for cause is permitted. The customary length is 30 days.",

@@ -290,7 +290,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -361,7 +361,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -769,14 +769,14 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-008",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-009",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1171,7 +1171,7 @@
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
       "id": "OBLI-005-s1.3-673",
       "rule_id": "OBLI-005",
-      "rule_version": "1.5.0",
+      "rule_version": "1.6.0",
       "severity": "info",
       "source_citations": [],
       "title": "Negative covenants: 2"
@@ -1206,11 +1206,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "102616c10cf1de146c6d73a9893c2d6e36a076708f4d1c230a8229d50e5a76b7",
+  "result_hash": "2d18b136fdf1593669f59ea60ef1a6ae97e6aa78ce4e94b237fc12e9d7efa237",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.780.0"
+  "version": "9.781.0"
 }
