@@ -945,7 +945,7 @@
         "end_offset": 992,
         "section_id": "s1.3",
         "start_offset": 941,
-        "text": "revised version on its website; continued use of the Service constitutes acceptance."
+        "text": "continued use of the Service constitutes acceptance."
       },
       "explanation": "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. Assent to online terms is a question of state contract-formation law; the FTC's .com Disclosures guidance addresses clear-and-conspicuous advertising disclosures, not contract assent.",
       "id": "DARK-007-s1.3-941",
@@ -972,7 +972,7 @@
         "end_offset": 939,
         "section_id": "s1.3",
         "start_offset": 838,
-        "text": "(d) Modifications. Vendor may modify the terms of this Agreement at any time by posting a revised version on its website; continued use of the Service constitutes acceptance."
+        "text": "Vendor may modify the terms of this Agreement at any time by posting a revised version on its website;"
       },
       "explanation": "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. Cal. Bus. & Prof. Code § 17602 requires clear and conspicuous notice of a material change and how to cancel — not affirmative consent. ROSCA regulates negative-option billing, not unilateral amendment; the FTC has challenged retroactive material changes under Section 5. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
       "id": "DARK-009-s1.3-838",
@@ -1088,7 +1088,7 @@
         "end_offset": 653,
         "section_id": "s1.3",
         "start_offset": 634,
-        "text": "Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current Subscription Term."
+        "text": "This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current Subscription Term."
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
       "id": "TEMP-004-s1.3-634",
@@ -1276,11 +1276,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "7f8c8669abd6ef3ae6489e74a49b2050e30696c0d76a813648ff3eb4a3494aa6",
+  "result_hash": "6b97650dd1f2c24f5367bebbade807de21609be52c6e4f5840fe207dd8d7cf8b",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

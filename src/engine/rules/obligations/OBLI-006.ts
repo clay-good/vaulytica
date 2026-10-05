@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch } from "../_helpers.js";
+import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
 
 /** OBLI-006 — Standalone discretionary language (info). */
 export const rule: Rule = {
@@ -28,7 +28,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "'In its sole discretion' clause present",
       description: "One party retains sole discretion over a stated determination.",
-      excerpt: excerptWindow(hit.text, hit.match.index, 40, 160),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       position: hit.position,

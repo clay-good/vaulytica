@@ -1047,7 +1047,7 @@
         "end_offset": 1197,
         "section_id": "s1.4",
         "start_offset": 1175,
-        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than ninety (90) days prior to the renewal"
+        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than ninety (90) days prior to the renewal date."
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
       "id": "TEMP-004-s1.4-1175",
@@ -1152,7 +1152,7 @@
         "end_offset": 293,
         "section_id": "s1.1",
         "start_offset": 271,
-        "text": "and without notice if Vendor determines in its sole discretion that Customer has breached this Agreement or that continued access poses a risk to Vendor or its other customers."
+        "text": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion that Customer has breached this Agreement or that continued access poses a risk to Vendor or its other customers."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.1-271",
@@ -1175,11 +1175,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "cc2208c223b00d8b28ddbdc846072001497cfc7a922084307c18663ee32a3905",
+  "result_hash": "8f91e599b61826ac5c28628442d4c9d15905e051892322c1124206fa643b4a71",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

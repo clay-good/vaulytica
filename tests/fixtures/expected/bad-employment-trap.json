@@ -869,7 +869,7 @@
         "end_offset": 1299,
         "section_id": "s1.4",
         "start_offset": 1208,
-        "text": "Rules then in effect. Employee waives any right to bring or participate in any class, collective, or representative action."
+        "text": "Employee waives any right to bring or participate in any class, collective, or representative action."
       },
       "explanation": "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
       "id": "DARK-005-s1.4-1208",
@@ -896,7 +896,7 @@
         "end_offset": 538,
         "section_id": "s1.2",
         "start_offset": 280,
-        "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost"
+        "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost…"
       },
       "explanation": "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024), which had treated 'stay-or-pay' provisions as presumptively unlawful, was rescinded by GC 25-05 on February 14, 2025 (and a General Counsel memo is not Board law). The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated. New York's Trapped at Work Act (signed December 2025, amended February 2026) prohibits requiring an employment promissory note once it takes effect — confirm its effective date. California's AB 692 (Bus. & Prof. Code § 16608) restricts stay-or-pay terms in employment contracts entered on or after January 1, 2026. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
       "id": "PERS-008-s1.2-280",
@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "f96aa3aba542e9eec0b4c20b0e96d982709b1d1de43b6a8c39474933293d4990",
+  "result_hash": "50385ec898db41d9996affdda62caa8d6f9e5159e2f6b238eef52215cb55b771",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

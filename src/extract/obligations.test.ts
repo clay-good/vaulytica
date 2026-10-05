@@ -1600,3 +1600,27 @@ describe("extractObligations — a section number is not the subject", () => {
     expect(o!.obligor).toBe("Landlord");
   });
 });
+
+describe("a deadline that belongs to one item of a listed schedule", () => {
+  const rowsOf = (text: string) => {
+    const tree = buildTree(["Body", text]);
+    return extractObligations(tree, extractParties(tree));
+  };
+
+  it("stays in the action instead of becoming the trigger for every item", () => {
+    // The first installment's deadline was lifted into the trigger column,
+    // where it read as the deadline for both payments.
+    const [row] = rowsOf(
+      "Sponsor shall pay the Sponsorship Fee in two installments: $22,500 within thirty (30) days after the Effective Date, and $22,500 on or before July 15, 2026.",
+    );
+    expect(row?.trigger ?? "").toBe("");
+    expect(row?.action).toContain("$22,500 within thirty (30) days after the Effective Date");
+  });
+
+  it("still lifts a deadline that governs the whole duty", () => {
+    const [row] = rowsOf(
+      "Sponsor shall deliver its logo files and its brand guidelines within thirty (30) days after the Effective Date.",
+    );
+    expect(row?.trigger).toBe("within thirty (30) days after the Effective Date");
+  });
+});

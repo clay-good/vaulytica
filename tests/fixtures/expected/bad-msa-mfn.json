@@ -1053,7 +1053,7 @@
         "end_offset": 620,
         "section_id": "s1.2",
         "start_offset": 598,
-        "text": "Customer may, in its sole discretion and upon written notice to Provider, modify the scope, specifications, or deliverables of any SOW. Provider shall implement such modifications"
+        "text": "Customer may, in its sole discretion and upon written notice to Provider, modify the scope, specifications, or deliverables of any SOW."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.2-598",
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "09b0fed1475df66a2be5e9c0e5f8d831f601b851d513f3e43552f39513a77aea",
+  "result_hash": "b39444d9b1e8dbd728fc572184df38d2723bf8466a8c6ab1301be5d3ddbe3370",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

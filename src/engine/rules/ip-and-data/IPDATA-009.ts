@@ -2,7 +2,6 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import {
   clauseStartBefore,
   emit,
-  excerptWindow,
   firstParagraphMatch,
   isPresenceDisclaimed,
   matchedSentence,
@@ -66,7 +65,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "AI / model-training rights over Customer Data",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: excerptWindow(hit.text, hit.match.index, 40, 280),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (Andersen v. Stability AI, Getty Images) flows back via indemnity.",
       recommendation:

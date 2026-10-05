@@ -1,11 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import {
-  allMatches,
-  emit,
-  enclosingSentence,
-  excerptWindow,
-  matchedSentence,
-} from "../_helpers.js";
+import { allMatches, emit, enclosingSentence, matchedSentence } from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
 
 // A reference the document itself carves out ("not part of this Agreement",
@@ -81,7 +75,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: "Incorporation by reference to a URL-hosted document",
         description: matchedSentence(first.text, first.match),
-        excerpt: excerptWindow(first.text, first.match.index, 30, 320),
+        excerpt: matchedSentence(first.text, first.match),
         explanation:
           "A clause that incorporates an Acceptable Use Policy, Privacy Policy, SLA, Documentation, or similar by URL makes the linked page part of the binding agreement. Because the vendor controls the page, the vendor can change the contract unilaterally by updating it. This compounds the 'post-and-pray' amendment risk (see DARK-009).",
         recommendation:
@@ -155,7 +149,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: `${niceKind} ${niceId} referenced but ${present ? "empty" : "missing"}`,
         description: `${r.match[0]} — ${niceKind} ${niceId} ${status}.`,
-        excerpt: excerptWindow(r.text, r.match.index, 40, 240),
+        excerpt: matchedSentence(r.text, r.match),
         explanation:
           "The agreement refers to an exhibit / schedule / attachment as the source of operative terms, but the referenced exhibit is missing or empty. The operative terms are therefore not in the contract. If the exhibit is meant to be supplied later, that later supplement is a new contractual document and should be governed by an amendment process.",
         recommendation: `Attach a substantive ${niceKind} ${niceId} before execution, or remove the reference. If the exhibit is genuinely intended to be filled in later, mark it 'to be agreed' and add a process: who proposes, by when, what happens if the parties cannot agree.`,

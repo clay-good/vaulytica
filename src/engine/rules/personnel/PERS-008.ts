@@ -1,11 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import {
-  emit,
-  excerptWindow,
-  firstParagraphMatch,
-  isPresenceDisclaimed,
-  matchedSentence,
-} from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
 
 /**
  * PERS-008 — Training-Repayment ("TRAP") / Stay-or-Pay clause
@@ -49,7 +43,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Training-repayment / stay-or-pay clause",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024), which had treated 'stay-or-pay' provisions as presumptively unlawful, was rescinded by GC 25-05 on February 14, 2025 (and a General Counsel memo is not Board law). The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated. New York's Trapped at Work Act (signed December 2025, amended February 2026) prohibits requiring an employment promissory note once it takes effect — confirm its effective date. California's AB 692 (Bus. & Prof. Code § 16608) restricts stay-or-pay terms in employment contracts entered on or after January 1, 2026. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
       recommendation:

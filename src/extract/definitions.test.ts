@@ -2820,3 +2820,32 @@ describe("extractDefinitions — the phrase a parenthetical names", () => {
     );
   });
 });
+
+describe("a name conferred in quotation marks is not an undefined term", () => {
+  it("does not flag a sponsor's designation, quoted or later unquoted", () => {
+    // A sponsorship agreement grants the right "to be designated the 'Official
+    // Coffee Sponsor'" and later announces "Sponsor as Official Coffee
+    // Sponsor". The quotation marks introduce the name; STRUCT-006 called it a
+    // term the agreement forgot to define.
+    const map = extractDefinitions(
+      buildTree([
+        "Grant",
+        'Property grants Sponsor the right to be designated the "Official Coffee Sponsor" of the Event.',
+        "Property shall post two announcements naming Sponsor as Official Coffee Sponsor.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Official Coffee Sponsor");
+  });
+
+  it("still flags the same phrase when nothing introduces it", () => {
+    // Used twice: a single unintroduced use is not reported at all.
+    const map = extractDefinitions(
+      buildTree([
+        "Grant",
+        "Property shall post two announcements naming Sponsor as Official Coffee Sponsor.",
+        "Each post shall name Sponsor the Official Coffee Sponsor.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).toContain("Official Coffee Sponsor");
+  });
+});

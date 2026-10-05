@@ -987,7 +987,7 @@
         "end_offset": 779,
         "section_id": "s1.3",
         "start_offset": 739,
-        "text": "months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California."
+        "text": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California."
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       "id": "PERS-005-s1.3-739",
@@ -1183,7 +1183,7 @@
         "end_offset": 1042,
         "section_id": "s1.5",
         "start_offset": 1020,
-        "text": "may terminate this Agreement at any time in its sole discretion."
+        "text": "Company may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.5-1020",
@@ -1206,11 +1206,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "6e6a8759b88dde1658f8f1d295b3ceaeec935bab6884dfd5948e35f7679e7c98",
+  "result_hash": "0f2513b3afc205f06038bdbdc328100bf728ad29ee082464a36fd0c870410f7a",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

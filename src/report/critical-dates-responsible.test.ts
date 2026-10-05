@@ -142,9 +142,10 @@ describe("an unattributable deadline names nobody", () => {
       `Acme Holdings LLC shall deliver quarterly financial statements to the Lender. ${filler}The option expires thirty (30) days after the Effective Date.`,
     ]);
     expect(rows.length).toBeGreaterThan(0);
-    // An obligation IS in the section — more than RESPONSIBLE_PROXIMITY_CHARS
-    // away from the date, which is the middle of the three declines and the
-    // one the credit-agreement regression was about.
+    // An obligation IS in the section, but its sentence does not contain the
+    // date, and the date's own clause ("The option expires") names no party.
+    // Proximity used to decide this, and proximity is how the credit
+    // agreement's equity cure was given to "Each Lender severally".
     expect(rows.every((r) => r.responsible === "")).toBe(true);
   });
 
@@ -157,5 +158,48 @@ describe("an unattributable deadline names nobody", () => {
     // "Each party" is a real obligor and a useless name in a register row read
     // on its own: it identifies neither side.
     expect(rows.every((r) => r.responsible === "")).toBe(true);
+  });
+
+  it("does not give a refund deadline to the party that pays, on a shared opening phrase", async () => {
+    // Both deadlines open "within thirty (30) days ". Matching on that prefix
+    // published the festival's refund as owed by the Sponsor.
+    const rows = await register([
+      "Sponsorship",
+      "Sponsor shall pay the first installment within thirty (30) days after the Effective Date.",
+      "If the Event is cancelled for any reason other than Sponsor's breach, Property shall refund all installments paid within thirty (30) days after the cancellation.",
+    ]);
+    const refund = rows.find((r) => r.trigger.includes("after the cancellation"));
+    expect(refund?.responsible).toBe("Property");
+    // An exception that names a breach is not a cure provision, and an event
+    // "cancelled for any reason" is not a convenience exit.
+    expect(refund?.kind).toBe("notice-period");
+  });
+
+  it("names the subject of a permission, not the party in the next sentence", async () => {
+    const rows = await register([
+      "Acceptance",
+      "Customer may reject a nonconforming shipment by notice within thirty (30) days after delivery. Supplier shall replace the rejected Product at its cost.",
+    ]);
+    expect(rows.find((r) => r.trigger.includes("after delivery"))?.responsible).toBe("Customer");
+  });
+
+  it("names nobody for a mutual cure window", async () => {
+    const rows = await register([
+      "Termination",
+      "Either Party may terminate this Agreement if the other Party fails to cure a material breach within fifteen (15) days after written notice.",
+      "Property shall refund a pro rata portion of the fee within thirty (30) days after termination.",
+    ]);
+    const cure = rows.find((r) => r.trigger.includes("fifteen"));
+    expect(cure?.kind).toBe("cure-window");
+    expect(cure?.responsible).toBe("");
+  });
+
+  it("names nobody when a later clause, whose subject it cannot read, holds the date", async () => {
+    // "We may suspend …" opens the sentence, but the ten days are the user's.
+    const rows = await register([
+      "Suspension",
+      "We may suspend your API key if you materially breach these API Terms and do not cure the breach within ten (10) days after we notify you.",
+    ]);
+    expect(rows.find((r) => r.trigger.includes("ten (10) days"))?.responsible).toBe("");
   });
 });

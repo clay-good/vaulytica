@@ -943,7 +943,7 @@
         "end_offset": 554,
         "section_id": "s1.3",
         "start_offset": 531,
-        "text": "Services is conditioned on the absence of any material adverse change in Customer's financial condition."
+        "text": "Provider's obligation to continue providing the Services is conditioned on the absence of any material adverse change in Customer's financial condition."
       },
       "explanation": "A MAC / MAE clause lets one party terminate or refuse to close based on a qualitative judgment about the other party's business. The Delaware Chancery Court has historically set a very high bar (Akorn v. Fresenius is the first published MAC win in a public M&A deal), but the cost-of-litigation alone is meaningful. Confirm the definition is bounded (specific carve-outs for industry-wide events, market conditions, pandemic-style risks where relevant) and that the trigger threshold is intentional.",
       "id": "OBLI-007-s1.3-531",
@@ -1086,7 +1086,7 @@
         "end_offset": 922,
         "section_id": "s1.6",
         "start_offset": 900,
-        "text": "may terminate this Agreement at any time in its sole discretion."
+        "text": "Provider may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
       "id": "OBLI-006-s1.6-900",
@@ -1144,11 +1144,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Master Agreement\".",
-  "result_hash": "615f08497fe682641a3af366150cfda00c2f87c241d2df906942990a0054d9b3",
+  "result_hash": "e5a6c8723d951f7da852489c1c91ccea5f8bd64e32b785958afa575135520453",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
     "size_bytes": 9221
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

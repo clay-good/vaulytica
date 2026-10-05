@@ -876,7 +876,7 @@
         "end_offset": 345,
         "section_id": "s1.1",
         "start_offset": 342,
-        "text": "uptime each calendar month, measured by [TBD methodology]."
+        "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
       "explanation": "Template placeholders such as [insert] or TBD are draft markers that should be filled before signing. Leaving them in is a serious drafting defect.",
       "id": "STRUCT-011-s1.1-342",
@@ -912,7 +912,7 @@
         "end_offset": 583,
         "section_id": "s1.2",
         "start_offset": 559,
-        "text": "fee of $50,000.00 due Net 30. Late fee: 2.5% per month."
+        "text": "Late fee: 2.5% per month."
       },
       "explanation": "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. Confirm against the controlling jurisdiction.",
       "id": "FIN-009-s1.2-559",
@@ -1251,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "f4f12918ede09bad2bcad1475a33008c3b652fc62a6bf83a1927d279bbdb323e",
+  "result_hash": "0d7891700084f624e20df1f0577a26795e4de14855ab6cd17ac19a374567b73d",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

@@ -383,7 +383,7 @@ export function enclosingSentence(paragraph: string, matchIndex: number): string
  * trailing ellipsis when it is longer — so the text is still one the document
  * contains, and says so when it is shortened.
  */
-export function matchedSentence(text: string, match: RegExpMatchArray): string {
+export function matchedSentence(text: string, match: { 0: string; index?: number }): string {
   const at = match.index ?? 0;
   const sentence = enclosingSentence(text, at).trim();
   // A sentence the pattern ran past (a cross-sentence window) keeps the match.

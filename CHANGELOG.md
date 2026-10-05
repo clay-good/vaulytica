@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.799.0] — 2026-10-05
+
+Found by reading every artifact of a clean event sponsorship agreement.
+
+### Fixed
+- **The critical-dates register named the wrong party.** A date was given to
+  any obligation whose text shared the date's first 24 characters, and
+  "within thirty (30) days " opens a sponsor's payment and a festival's
+  refund alike, so the refund was published as owed by the Sponsor. A date
+  now goes to the obligation whose sentence contains it; failing that, to the
+  subject of its own clause ("The Company may elect to purchase … within
+  thirty (30) days"), and to nobody when that clause is mutual ("if the other
+  Party fails to cure") or opens a subject the reader cannot parse. The old
+  fallback took the nearest obligation within 400 characters, which named
+  the Supplier for "Customer may reject a shipment … within thirty (30)
+  days". Across the 312 specimens: 492 rows unchanged, 100 lose a guessed
+  name, 44 gain or correct one, and two pairs that had been merged under one
+  party are now two rows (a merger's termination fee and reverse fee).
+- **A refund deadline was filed as a cure window, then as an opt-out.** "If
+  the Event is cancelled for any reason other than Sponsor's breach" matched
+  the cure pattern on "breach" and the opt-out pattern on "for any reason".
+  An excepted breach no longer counts, and "for any reason" / "without
+  cause" mark an opt-out only when a termination verb governs them.
+- **An installment's deadline became the trigger for the whole schedule.**
+  "pay … in two installments: $22,500 within thirty (30) days after the
+  Effective Date, and $22,500 on or before July 15, 2026" put the first
+  deadline in the ledger's trigger column. A deadline inside a colon-led list
+  that runs on past it now stays with its item (5 corpus rows, all list
+  items: a grant's first disbursement, a franchisee's de-identification).
+- **Excerpts were character windows.** 43 rule sites quoted 30 characters
+  before the match and 280 after, so OBLI-008 began "gives prompt notice
+  and…" and ran into the next sentence. They quote the sentence now
+  (`matchedSentence`), and `description-is-a-sentence.test.ts` forbids the
+  window. RISK-017's fallback printed its 200-character regex span as the
+  description; the guard's pattern missed the bare `altHit[0]` form.
+- **A name conferred in quotes was "undefined".** STRUCT-006 warned that a
+  sponsorship agreement never defined "Official Coffee Sponsor", the title
+  it grants ("designated the "Official Coffee Sponsor""). A quoted name after
+  designated / named / known as / referred to as / called / titled is now
+  introduced, wherever it is later used.
+
 ## [9.798.0] — 2026-10-05
 
 ### Fixed

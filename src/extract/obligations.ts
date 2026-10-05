@@ -174,6 +174,23 @@ const TRIGGER_RE = new RegExp(
   "i",
 );
 
+/**
+ * A trigger the predicate states — unless it is ONE ITEM of a schedule the
+ * predicate lists. "Sponsor shall pay the Sponsorship Fee in two installments:
+ * $22,500 within thirty (30) days after the Effective Date, and $22,500 on or
+ * before July 15, 2026" lifted the first item's deadline into the trigger
+ * column, where it read as the deadline for both payments and left the action
+ * as "$22,500, and $22,500 on or before July 15, 2026". After a colon, with
+ * the list running on past it, the deadline stays in the action it belongs to.
+ */
+function listItemFree(predicate: string, m: RegExpExecArray | null): string | undefined {
+  if (!m) return undefined;
+  const after = predicate.slice(m.index + m[0].length);
+  if (predicate.slice(0, m.index).includes(":") && /^\s*(?:,\s*(?:and|or)\s|;)/.test(after))
+    return undefined;
+  return m[0].trim();
+}
+
 const QUALIFIER_RE = new RegExp(
   String.raw`\b(subject\s+to\s${CLAUSE_CHAR}+|except\s${CLAUSE_CHAR}+|provided\s+that\s${CLAUSE_CHAR}+|provided,\s+however,\s+that\s${CLAUSE_CHAR}+)`,
   "i",
@@ -305,7 +322,9 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // in that state. `stripFrontedAdverbial` already identifies exactly
         // this material to keep it out of the obligor, and then discards it.
         const trigger = endAtSecondDeadline(
-          TRIGGER_RE.exec(predicate)?.[0]?.trim() ?? frontedTrigger(subject) ?? inherited,
+          listItemFree(predicate, TRIGGER_RE.exec(predicate)) ??
+            frontedTrigger(subject) ??
+            inherited,
         );
         const nested = trigger ? decomposeNestedTriggers(trigger) : undefined;
         const qualifier = withExceptListTail(predicate, QUALIFIER_RE.exec(predicate));

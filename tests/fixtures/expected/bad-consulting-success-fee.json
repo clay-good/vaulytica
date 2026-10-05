@@ -1040,7 +1040,7 @@
         "end_offset": 272,
         "section_id": "s1.1",
         "start_offset": 260,
-        "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis. Advisor shall also"
+        "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis."
       },
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
       "id": "OBLI-004-s1.1-260",
@@ -1074,7 +1074,7 @@
         "end_offset": 272,
         "section_id": "s1.1",
         "start_offset": 260,
-        "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis. Advisor shall also identify and introduce potential investors."
+        "text": "Advisor shall use best efforts to provide strategic, capital-raising, and M&A advisory services on a non-exclusive basis."
       },
       "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
       "id": "OBLI-008-s1.1-260",
@@ -1106,11 +1106,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "9779a5f17574c8a838be8e9d2435a07eb8a5edd8029f87041e9b74f4d3cf848a",
+  "result_hash": "2021cad59e4d65a055ae2425aba25fe0b0122616b2b1e95876c85b84c10a7ee6",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.798.0"
+  "version": "9.799.0"
 }

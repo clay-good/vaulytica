@@ -2,7 +2,6 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import {
   emit,
   enclosingSentence,
-  excerptWindow,
   firstParagraphMatch,
   MODAL_QUALIFIER,
   OBLIGATION_MODAL,
@@ -102,7 +101,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Insurance requirement without coverage minimum",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "A bare 'shall maintain insurance' clause is essentially unenforceable: the indemnitee has no way to test whether the counterparty's coverage is adequate, and a $1,000 homeowner policy formally satisfies the clause. Standard commercial drafting names a per-occurrence limit (typically $1M), an aggregate limit (typically $2M), and the coverage type (CGL, professional liability, cyber, etc.).",
       recommendation:

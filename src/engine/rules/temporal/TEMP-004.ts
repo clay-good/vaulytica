@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstUnnegatedParagraphMatch } from "../_helpers.js";
+import { emit, firstUnnegatedParagraphMatch, matchedSentence } from "../_helpers.js";
 import { fullText } from "../v4/_helpers.js";
 import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
 
@@ -69,7 +69,7 @@ export const rule: Rule = {
           : "Auto-renewal clause present, with a right to terminate for convenience"
         : "Auto-renewal clause present",
       description: "The contract contains automatic-renewal language.",
-      excerpt: excerptWindow(hit.text, hit.match.index, 30, 200),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. " +
         AUTO_RENEWAL_LAW,

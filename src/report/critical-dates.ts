@@ -354,7 +354,12 @@ const KIND_PATTERNS: Array<{ kind: CriticalDateKind; re: RegExp }> = [
   },
   {
     kind: "opt-out-window",
-    re: /\b(?:terminat\w+\s+for\s+convenience|opt[-\s]?out|terminat\w+\s+(?:this\s+)?(?:agreement|contract)|without\s+cause|for\s+any\s+reason)\b/i,
+    // "without cause" / "for any reason" mark a convenience exit only when a
+    // termination verb governs them. Bare, "for any reason" read a festival's
+    // refund deadline ("If the Event is cancelled for any reason other than
+    // Sponsor's breach, Property shall refund … within thirty (30) days") as
+    // an opt-out window.
+    re: /\b(?:terminat\w+\s+for\s+convenience|opt[-\s]?out|terminat\w+\s+(?:this\s+)?(?:agreement|contract)|terminat\w*\b[^.;]{0,60}?\b(?:without\s+cause|for\s+any\s+(?:or\s+no\s+)?reason))\b/i,
   },
   {
     kind: "survival-end",
@@ -362,13 +367,21 @@ const KIND_PATTERNS: Array<{ kind: CriticalDateKind; re: RegExp }> = [
   },
 ];
 
+/** "other than Sponsor's breach", "except for a default by Tenant" — a breach named only to be excluded. */
+const EXCEPTED_BREACH =
+  /\b(?:other\s+than|except(?:\s+for)?|excluding)\s+(?:[^,.;]{0,40}?\s)?(?:breach|default)(?:\s+(?:by|of)\s+[^,.;]{0,30})?/gi;
+
 /**
  * Classify a relative date into a deadline family from the clause text
  * around it. The classification is render/grouping metadata; it never
  * changes the computed date. Defaults to the general notice-period family.
  */
 function classifyDeadline(ref: DateReference, contextText: string): CriticalDateKind {
-  const hay = `${ref.raw_text} ${contextText}`;
+  // An exception that NAMES a breach is not a cure provision: "If the Event is
+  // cancelled for any reason other than Sponsor's breach, Property shall
+  // refund … within thirty (30) days" is a refund deadline, and was filed as a
+  // cure window on the word "breach".
+  const hay = `${ref.raw_text} ${contextText}`.replace(EXCEPTED_BREACH, " ");
   for (const { kind, re } of KIND_PATTERNS) {
     if (re.test(hay)) return kind;
   }
@@ -376,42 +389,85 @@ function classifyDeadline(ref: DateReference, contextText: string): CriticalDate
 }
 
 /**
- * How far from a date an obligation may sit and still be read as the one that
- * owes it. A clause and its deadline are in the same sentence or the next one;
- * beyond that the association is a guess.
+ * The subject of the clause a date sits in, when no obligation contains it:
+ * the last "<Name> may / shall / must / does not / fails to …" before the date
+ * in its sentence. "The Company may elect to purchase … within thirty (30)
+ * days" is the Company's window; "If Halloran fails to pay … and does not cure
+ * within ten (10) business days" is Halloran's. "If the other Party fails to
+ * cure" names nobody, and the register then says nothing.
  */
-const RESPONSIBLE_PROXIMITY_CHARS = 400;
+const CLAUSE_SUBJECT =
+  /(?:^|[.;:,]\s+|\b(?:[Ii]f|[Uu]nless|[Ww]here|[Ww]hen|and|or)\s+)(?:the\s+)?([A-Z][\w'’-]*(?:\s+[A-Z][\w'’-]*){0,3})\s+(?:may|shall|must|will|(?:does|did)\s+not|fails?\s+to|elects?\s+to|is\s+entitled)\b/g;
+
+const NEW_CLAUSE =
+  /,\s+(?:and|or|but)\s+(?:the\s+)?(?:[A-Z]|you\b|we\b|they\b)|\b(?:[Ii]f|[Uu]nless|provided|[Ww]here|[Ww]hen)\s+(?:that\s+)?(?:the\s+)?(?:[A-Z]|you\b|we\b|they\b)|\b(?:and|or)\s+(?:the\s+)?[A-Z][\w'’-]*(?:\s+[A-Z][\w'’-]*){0,3}\s+(?:has|have|is|are|does|did|fails?|shall|may|must|will)\b|;\s/;
+
+const NOT_A_PARTY =
+  /\b(?:Agreement|Amendment|Contract|Lease|Sublease|Note|Term|Period|Notice|Section|Event|Date|Order|Plan|Policy|Fee|Payment)$/;
+
+function clauseSubject(paragraph: string, offset: number): string {
+  const before = paragraph.slice(0, offset);
+  const sentenceStart = Math.max(0, before.search(/[.;]\s+(?=[A-Z0-9(])[^.;]*$/) + 1);
+  const sentence = before.slice(sentenceStart).trimStart();
+  let last = "";
+  let lastEnd = 0;
+  for (const m of sentence.matchAll(CLAUSE_SUBJECT)) {
+    last = m[1]!;
+    lastEnd = m.index + m[0].length;
+  }
+  // A NEW clause between that subject and the date has a subject this reader
+  // could not parse, and it is that clause's: "We may suspend your API key …
+  // if you … do not cure the breach within 10 days" is the user's window, not
+  // ours; "the Company fails to cure within thirty (30) days, and Executive
+  // resigns within thirty (30) days after the cure period ends" is the
+  // Executive's.
+  if (NEW_CLAUSE.test(sentence.slice(lastEnd))) return "";
+  // A clause's subject is not always a party: "This Agreement will renew",
+  // "Neither Party may", "the Term shall end".
+  // A sentence-initial connector is captured with the name ("If Landlord").
+  last = last.replace(/^(?:If|Unless|Where|When|And|Or|But)\s+(?:the\s+)?/, "");
+  if (/^(?:this|such|any|no|neither|either|each|both|all)\b/i.test(last) || NOT_A_PARTY.test(last))
+    return "";
+  return last;
+}
 
 /** Find the responsible party for a date from the obligation that owes it. */
-function responsibleFor(ref: DateReference, obligations: readonly Obligation[]): string {
+function responsibleFor(
+  ref: DateReference,
+  obligations: readonly Obligation[],
+  paragraph: { text: string; start: number } | undefined,
+): string {
   const section = ref.position.section_id;
   const inSection = obligations.filter((o) => o.position.section_id === section);
-  if (inSection.length === 0) return "";
-  // Prefer an obligation whose clause overlaps the date's raw text.
-  const overlap = inSection.find(
-    (o) => ref.raw_text.length > 0 && o.raw_text.includes(ref.raw_text.slice(0, 24)),
+  // The obligation whose sentence CONTAINS the date owes it. This used to be
+  // any obligation whose text included the date's first 24 characters, and
+  // those are rarely distinctive: "within thirty (30) days " opens a sponsor's
+  // payment deadline and a festival's refund deadline alike, so the refund was
+  // published as owed by the Sponsor — the party it is owed TO. Where one
+  // sentence carries several obligations, the one that quotes the whole
+  // trigger is the one that owes it.
+  const containing = inSection.filter(
+    (o) => o.position.start <= ref.position.start && ref.position.start < o.position.end,
   );
-  // Otherwise the NEAREST obligation, and only if it is close enough to be
-  // the one that owes this date.
-  //
-  // The old fallback took `inSection[0]` — the first obligation in the
-  // section. That is fine for a DOCX with real headings and wrong for
-  // everything else: a pasted or plain-text document is a single section, so
-  // the filter above admits the whole document and the fallback attributes
-  // every unmatched date to whatever the document happens to say first. A
-  // credit agreement's equity cure ("the Borrower may cure ... within ten
-  // Business Days") was published in the register as owed by "Each Lender
-  // severally" — a fragment of the revolving-commitment sentence forty
-  // paragraphs earlier. The register is an attorney-facing artifact; a wrong
-  // name in it is worse than no name, which the type already contemplates.
-  const nearest = inSection.reduce<{ o: Obligation; d: number } | null>((best, o) => {
-    const d = Math.abs(o.position.start - ref.position.start);
-    return best === null || d < best.d ? { o, d } : best;
-  }, null);
   const chosen =
-    overlap ?? (nearest && nearest.d <= RESPONSIBLE_PROXIMITY_CHARS ? nearest.o : undefined);
-  if (!chosen) return "";
-  const obligor = chosen.obligor.trim();
+    containing.find((o) => ref.raw_text.length > 0 && o.raw_text.includes(ref.raw_text)) ??
+    containing[0];
+  // Otherwise the date sits in a permission or a condition, which the ledger
+  // does not hold, and the clause's own subject names the party. The fallback
+  // this replaces took the NEAREST obligation within 400 characters, which in
+  // a plain-text document is whatever sentence happens to sit beside the date:
+  // "Customer may reject a shipment … within thirty (30) days after delivery"
+  // was given to the Supplier of the next sentence, and a mutual cure window
+  // ("Either Party may terminate … if the other Party fails to cure") to
+  // whichever party's duty came next. (Before that it took the section's
+  // FIRST obligation, which named "Each Lender severally" for a borrower's
+  // equity cure forty paragraphs away.) The register is an attorney-facing
+  // artifact; a wrong name in it is worse than no name.
+  const obligor = chosen
+    ? chosen.obligor.trim()
+    : paragraph
+      ? clauseSubject(paragraph.text, ref.position.start - paragraph.start)
+      : "";
   // A bare "each party" / generic obligor is not a named responsible party.
   if (!obligor || /^(?:each|either|both|the)\s+part/i.test(obligor)) return "";
   // Beyond that, the register publishes a name only if it LOOKS like one.
@@ -557,7 +613,10 @@ export async function buildCriticalDates(
 ): Promise<CriticalDatesRegister> {
   const anchors = resolveAnchors(extracted, tree);
   const sectionText = tree ? buildSectionText(tree) : new Map<string, string>();
-  const paragraphText = tree ? buildParagraphText(tree) : new Map<string, string>();
+  const paragraphSpans = tree
+    ? buildParagraphSpans(tree)
+    : new Map<string, { text: string; start: number }>();
+  const paragraphText = new Map([...paragraphSpans].map(([id, p]) => [id, p.text]));
 
   let rows: CriticalDate[] = [];
   for (const ref of extracted.dates) {
@@ -571,7 +630,11 @@ export async function buildCriticalDates(
       sectionText.get(ref.position.section_id ?? "") ??
       "";
     const kind = classifyDeadline(ref, context);
-    const responsible = responsibleFor(ref, extracted.obligations);
+    const responsible = responsibleFor(
+      ref,
+      extracted.obligations,
+      paragraphSpans.get(ref.position.paragraph_id ?? ""),
+    );
     const base: CriticalDate = {
       rule_id: KIND_RULE_ID[kind],
       kind,
@@ -664,10 +727,10 @@ function buildSectionText(tree: DocumentTree): Map<string, string> {
  * somewhere. A DOCX section spanning several pages had the same problem more
  * quietly.
  */
-function buildParagraphText(tree: DocumentTree): Map<string, string> {
-  const map = new Map<string, string>();
+function buildParagraphSpans(tree: DocumentTree): Map<string, { text: string; start: number }> {
+  const map = new Map<string, { text: string; start: number }>();
   forEachParagraph(tree, (ctx) => {
-    map.set(ctx.paragraph.id, ctx.text);
+    map.set(ctx.paragraph.id, { text: ctx.text, start: ctx.start });
   });
   return map;
 }

@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow } from "../_helpers.js";
+import { emit, matchedSentence } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 import type { DocPosition } from "../../../extract/types.js";
 
@@ -220,7 +220,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Non-solicit duration ${h.months} months ${tier} 12 months`,
       description: `${h.raw} — non-solicit duration ${h.months} months`,
-      excerpt: excerptWindow(h.text, h.matchIndex, 20, 280),
+      excerpt: matchedSentence(h.text, { 0: h.raw, index: h.matchIndex }),
       explanation:
         h.months >= 24
           ? "Non-solicit duration is judged case by case for reasonableness; 12–24 months is common and often enforced (BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999), partially enforced an 18-month client non-solicit), while California generally voids them (Bus. & Prof. Code §§ 16600 / 16600.5). Massachusetts's Noncompetition Agreement Act (G.L. c. 149 § 24L) caps non-competes at 12 months but expressly excludes employee and customer non-solicitation covenants. A restriction of 24 months or longer is beyond the range commonly enforced."

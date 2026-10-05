@@ -1,5 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, excerptWindow, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
+import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 
 /**
@@ -61,7 +61,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Efforts standard "${phrase}" undefined`,
       description: `The contract uses "${phrase}" without defining it.`,
-      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
       recommendation: `Either delete the qualifier (let the obligation be absolute) or add an explicit definition of "${phrase}" — typically a list of required actions ("including obtaining all consents, devoting professional staff, and absorbing reasonable costs") plus carve-outs ("but not requiring litigation, financial harm, etc.").`,

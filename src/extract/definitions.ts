@@ -326,6 +326,10 @@ const DEFINITION_MEANING_TAIL =
 const DEFINITION_CONSTRUED_TAIL =
   /\b(?:shall|will|must|is\s+to|are\s+to)\s+(?:each\s+)?be\s+construed\s+accordingly\b/g;
 
+/** A quoted Title-Case name conferred by a naming verb: designated the "X", known as "X". */
+const DESIGNATED_NAME =
+  /\b(?:designated|named|known|referred\s+to|styled|called|titled|entitled)\s+(?:as\s+)?(?:the\s+|an?\s+)?["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
+
 /** A quoted Title-Case phrase inside a term list. */
 const QUOTED_TERM = /["“]([A-Z][\w\s\-&/'’.]{0,60}?)["”]/g;
 
@@ -1282,6 +1286,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     // states it.
     for (const runIn of runInHeadingTitles(ctx.text)) headings.add(runIn.toLowerCase());
   });
+  // A name the document confers in quotation marks — "the right to be
+  // designated the "Official Coffee Sponsor"", "a program known as "Partner
+  // Rewards"" — is introduced there exactly as a defined term is, and the
+  // document may then use it unquoted ("announcing Sponsor as Official Coffee
+  // Sponsor"). A sponsorship agreement's own title for its sponsor was
+  // reported as a term it forgot to define.
+  const designatedNames = new Set<string>();
+  forEachParagraph(tree, (ctx) => {
+    for (const m of ctx.text.matchAll(DESIGNATED_NAME))
+      designatedNames.add(m[1]!.trim().toLowerCase());
+  });
   // Names of natural persons who sign or appear before a notary — collected
   // from conformed-signature lines ("/s/ Nora Castellanos") and notarial
   // recitals ("personally appeared Nora Castellanos") — are people, not
@@ -1479,6 +1494,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         continue;
       const phraseLower = phrase.toLowerCase();
       if (definedNames.has(phraseLower)) continue;
+      if (designatedNames.has(phraseLower)) continue;
       // A named institution or legal term of art is a proper noun, not a term
       // the document left undefined. Test the article-stripped form too, since a
       // sentence-initial "The Federal Reserve" is canonicalized to "Federal

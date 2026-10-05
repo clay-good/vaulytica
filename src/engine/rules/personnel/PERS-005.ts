@@ -1,11 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import {
-  allMatches,
-  describesCovenantElsewhere,
-  emit,
-  excerptWindow,
-  matchedSentence,
-} from "../_helpers.js";
+import { allMatches, describesCovenantElsewhere, emit, matchedSentence } from "../_helpers.js";
 
 /**
  * PERS-005 — Non-compete clause present (warning, personnel).
@@ -95,7 +89,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Non-compete clause present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: excerptWindow(hit.text, hit.match.index, 30, 280),
+      excerpt: matchedSentence(hit.text, hit.match),
       explanation:
         "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
       recommendation:
