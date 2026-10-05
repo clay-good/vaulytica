@@ -1,0 +1,432 @@
+[
+  {
+    "id": "def-affiliate-v1",
+    "term": "Affiliate",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Affiliate\" of a party means any entity that, directly or indirectly, controls, is controlled by, or is under common control with such party, where \"control\" means the ownership of more than 50% of the voting equity interests or the power to direct the management and policies of the entity."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Affiliate\" of a party means any entity that controls, is controlled by, or is under common control with such party, including parents, subsidiaries, and entities under common ownership at any tier, where \"control\" means the power, direct or indirect, to direct or cause the direction of the management or policies of the entity."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Affiliate\" of a party means any entity that, directly, is controlled by such party, where \"control\" means the ownership of more than 50% of the voting equity interests."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-confidential-information-v1",
+    "term": "Confidential Information",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Confidential Information\" means non-public information disclosed by Discloser to Recipient that is marked as confidential, identified as confidential at the time of disclosure, or that a reasonable person would understand to be confidential given its nature and the circumstances of disclosure."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Confidential Information\" means all non-public information disclosed by Discloser to Recipient, whether oral, written, electronic, or in any other form, regardless of whether it is marked or identified as confidential."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Confidential Information\" means non-public information identified in writing as confidential at the time of disclosure."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-material-adverse-effect-v1",
+    "term": "Material Adverse Effect",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0",
+          "id": "common-paper-professional-services-agreement-v1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Professional Services Agreement, v1",
+          "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement"
+        },
+        "text": "\"Material Adverse Effect\" means any event, change, or effect that, individually or in the aggregate, has a material adverse effect on the financial condition, business, or results of operations of a party, taken as a whole."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0",
+          "id": "common-paper-professional-services-agreement-v1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Professional Services Agreement, v1",
+          "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement"
+        },
+        "text": "\"Material Adverse Effect\" means any event, change, or effect that adversely affects, or could reasonably be expected to adversely affect, the financial condition, business, results of operations, or prospects of a party."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0",
+          "id": "common-paper-professional-services-agreement-v1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Professional Services Agreement, v1",
+          "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement"
+        },
+        "text": "\"Material Adverse Effect\" means any event, change, or effect that, individually or in the aggregate, has a material adverse effect on the financial condition, business, or results of operations of a party, taken as a whole, but excluding effects arising from changes in general economic conditions, changes in the industry generally, changes in law, and acts of war or terrorism."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-force-majeure-event-v1",
+    "term": "Force Majeure Event",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Force Majeure Event\" means an event beyond the reasonable control of the affected party, including acts of God, war, terrorism, civil disturbance, government action, pandemic, or failure of public infrastructure."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Force Majeure Event\" means any event or circumstance, whether or not foreseeable, that prevents or delays a party's performance, including without limitation any economic downturn, supply-chain disruption, labor dispute, vendor failure, or governmental action."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Force Majeure Event\" means an act of God, war, terrorism, or natural disaster."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-permitted-transferee-v1",
+    "term": "Permitted Transferee",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Permitted Transferee\" means (a) an Affiliate of the assigning party, or (b) a successor in connection with a merger, acquisition, or sale of all or substantially all of the assigning party's assets, in each case that assumes the assigning party's obligations under this Agreement."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Permitted Transferee\" means any Affiliate of the assigning party or any third party identified by the assigning party in writing."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Permitted Transferee\" means a wholly-owned subsidiary of a party that has executed a written assumption of all obligations under this Agreement."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-change-of-control-v1",
+    "term": "Change of Control",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Change of Control\" means (a) the sale of all or substantially all of a party's assets, (b) a merger or consolidation in which the party's stockholders immediately prior to the transaction hold less than 50% of the voting securities of the surviving entity immediately after the transaction, or (c) the acquisition by any person or group of more than 50% of the voting securities of the party."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Change of Control\" means any transaction or series of related transactions that results in a change in the ownership, management, or control of a party."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Cloud Service Agreement, v2, CC BY 4.0",
+          "id": "common-paper-cloud-service-agreement-v2",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Cloud Service Agreement, v2",
+          "source_url": "https://github.com/CommonPaper/Cloud-Service-Agreement"
+        },
+        "text": "\"Change of Control\" means the sale of all or substantially all of a party's assets, or a merger or consolidation in which the party's stockholders immediately prior to the transaction hold less than 50% of the voting securities of the surviving entity immediately after the transaction."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-effective-date-v1",
+    "term": "Effective Date",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Effective Date\" means the date set forth on the first page of this Agreement, or, if no date is set forth, the date on which the last party signs this Agreement."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Effective Date\" means the date set forth on the first page of this Agreement."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Effective Date\" means the date on which the last party signs this Agreement."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-term-v1",
+    "term": "Term",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Term\" means the period beginning on the Effective Date and continuing for the Initial Term and any Renewal Terms, unless earlier terminated in accordance with this Agreement."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Term\" means the period beginning on the Effective Date and continuing in perpetuity, unless earlier terminated in accordance with this Agreement."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Term\" means the period beginning on the Effective Date and continuing for one (1) year, unless earlier terminated."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-party-v1",
+    "term": "Party",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Party\" means a signatory to this Agreement. \"Parties\" means the signatories collectively. References to a Party include its Permitted Transferees."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Party\" means a signatory to this Agreement and any Affiliate, successor, or assign of such signatory."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Mutual NDA, v1.1, CC BY 4.0",
+          "id": "common-paper-mutual-nda-v1.1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Mutual NDA, v1.1",
+          "source_url": "https://github.com/CommonPaper/Mutual-NDA"
+        },
+        "text": "\"Party\" means a signatory to this Agreement. \"Parties\" means the signatories collectively."
+      }
+    },
+    "version": "1.0.0"
+  },
+  {
+    "id": "def-notice-v1",
+    "term": "Notice",
+    "variants": {
+      "balanced": {
+        "source": {
+          "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0",
+          "id": "common-paper-professional-services-agreement-v1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Professional Services Agreement, v1",
+          "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement"
+        },
+        "text": "\"Notice\" means a written communication delivered by hand, by overnight courier, or by email to the address designated by the receiving party."
+      },
+      "permissive": {
+        "source": {
+          "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0",
+          "id": "common-paper-professional-services-agreement-v1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Professional Services Agreement, v1",
+          "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement"
+        },
+        "text": "\"Notice\" means any communication, in any form, that a reasonable person would understand to convey the substance of the notice."
+      },
+      "restrictive": {
+        "source": {
+          "attribution": "Common Paper, Professional Services Agreement, v1, CC BY 4.0",
+          "id": "common-paper-professional-services-agreement-v1",
+          "license": "CC-BY-4.0",
+          "license_url": "https://creativecommons.org/licenses/by/4.0/",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "Common Paper Professional Services Agreement, v1",
+          "source_url": "https://github.com/CommonPaper/Professional-Services-Agreement"
+        },
+        "text": "\"Notice\" means a written communication delivered by hand or by certified mail, return receipt requested, to the address designated by the receiving party."
+      }
+    },
+    "version": "1.0.0"
+  }
+]

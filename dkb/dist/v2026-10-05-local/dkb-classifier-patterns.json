@@ -1,0 +1,164 @@
+[
+  {
+    "category": "governing-law",
+    "confidence": 0.98,
+    "flags": "i",
+    "pattern": "governed\\s+by\\s+(?:and\\s+construed\\s+(?:in\\s+accordance\\s+)?with\\s+)?the\\s+laws\\s+of"
+  },
+  {
+    "category": "governing-law",
+    "confidence": 0.97,
+    "flags": "i",
+    "pattern": "this\\s+agreement\\s+shall\\s+be\\s+governed\\s+by"
+  },
+  {
+    "category": "indemnification",
+    "confidence": 0.98,
+    "flags": "i",
+    "pattern": "(?:shall|will|agrees?\\s+to)\\s+indemnify[\\s,]+(?:and\\s+)?(?:defend|hold\\s+harmless)"
+  },
+  {
+    "category": "indemnification",
+    "confidence": 0.92,
+    "flags": "i",
+    "pattern": "hold\\s+\\w+\\s+harmless\\s+from"
+  },
+  {
+    "category": "limitation-of-liability",
+    "confidence": 0.95,
+    "flags": "i",
+    "pattern": "(?:in\\s+no\\s+event|under\\s+no\\s+circumstances)\\s+(?:shall|will)"
+  },
+  {
+    "category": "limitation-of-liability",
+    "confidence": 0.97,
+    "flags": "i",
+    "pattern": "aggregate\\s+liability.*?(?:shall|will)?\\s*not\\s+exceed"
+  },
+  {
+    "category": "consequential-damages-waiver",
+    "confidence": 0.94,
+    "flags": "i",
+    "pattern": "(?:no|not|excluding)\\s+(?:indirect|consequential|incidental|special|punitive)\\s+damages"
+  },
+  {
+    "category": "confidentiality-obligation",
+    "confidence": 0.86,
+    "flags": "i",
+    "pattern": "confidential\\s+information"
+  },
+  {
+    "category": "confidentiality-obligation",
+    "confidence": 0.93,
+    "flags": "i",
+    "pattern": "shall\\s+(?:not\\s+disclose|maintain\\s+the\\s+confidentiality|treat\\s+as\\s+confidential)"
+  },
+  {
+    "category": "permitted-disclosures",
+    "confidence": 0.9,
+    "flags": "is",
+    "pattern": "may\\s+disclose.*?(?:employees|advisors|contractors|representatives)\\s+who"
+  },
+  {
+    "category": "term",
+    "confidence": 0.95,
+    "flags": "i",
+    "pattern": "term\\s+of\\s+this\\s+agreement\\s+(?:shall|will)\\s+(?:be|commence|begin)"
+  },
+  {
+    "category": "renewal-term",
+    "confidence": 0.95,
+    "flags": "i",
+    "pattern": "(?:shall|will)\\s+(?:automatically|auto-)?\\s*renew\\s+for"
+  },
+  {
+    "category": "termination-for-cause",
+    "confidence": 0.96,
+    "flags": "is",
+    "pattern": "may\\s+terminate\\s+this\\s+agreement.*?(?:for\\s+cause|material\\s+breach)"
+  },
+  {
+    "category": "termination-for-convenience",
+    "confidence": 0.94,
+    "flags": "is",
+    "pattern": "may\\s+terminate.*?(?:for\\s+(?:any|convenience))"
+  },
+  {
+    "category": "force-majeure",
+    "confidence": 0.98,
+    "flags": "i",
+    "pattern": "force\\s+majeure"
+  },
+  {
+    "category": "force-majeure",
+    "confidence": 0.9,
+    "flags": "is",
+    "pattern": "neither\\s+party\\s+(?:shall|will)\\s+be\\s+liable.*?(?:beyond\\s+(?:its|their)\\s+reasonable\\s+control)"
+  },
+  {
+    "category": "assignment",
+    "confidence": 0.96,
+    "flags": "i",
+    "pattern": "(?:may\\s+not|shall\\s+not)\\s+assign(?:\\s+this\\s+agreement)?\\s+without"
+  },
+  {
+    "category": "entire-agreement",
+    "confidence": 0.97,
+    "flags": "i",
+    "pattern": "entire\\s+agreement\\s+(?:of|between)\\s+the\\s+parties"
+  },
+  {
+    "category": "entire-agreement",
+    "confidence": 0.95,
+    "flags": "i",
+    "pattern": "supersedes\\s+all\\s+(?:prior|previous)\\s+(?:agreements|understandings|communications)"
+  },
+  {
+    "category": "severability",
+    "confidence": 0.94,
+    "flags": "is",
+    "pattern": "if\\s+any\\s+(?:provision|portion|part).*?(?:invalid|unenforceable|illegal)"
+  },
+  {
+    "category": "waiver",
+    "confidence": 0.94,
+    "flags": "i",
+    "pattern": "no\\s+waiver\\s+of\\s+any\\s+(?:provision|term|right)"
+  },
+  {
+    "category": "notices",
+    "confidence": 0.96,
+    "flags": "i",
+    "pattern": "(?:all\\s+)?notices?\\s+(?:under|required\\s+by|pursuant\\s+to)\\s+this\\s+agreement\\s+(?:shall|must)\\s+be\\s+in\\s+writing"
+  },
+  {
+    "category": "counterparts",
+    "confidence": 0.97,
+    "flags": "i",
+    "pattern": "may\\s+be\\s+executed\\s+in\\s+(?:one\\s+or\\s+more\\s+)?counterparts"
+  },
+  {
+    "category": "jury-trial-waiver",
+    "confidence": 0.98,
+    "flags": "i",
+    "pattern": "(?:waives?|waiv(?:er|ing))\\s+(?:any\\s+)?right\\s+to\\s+(?:a\\s+)?trial\\s+by\\s+jury"
+  },
+  {
+    "category": "arbitration",
+    "confidence": 0.97,
+    "flags": "i",
+    "pattern": "shall\\s+be\\s+(?:finally\\s+)?(?:settled|resolved|determined)\\s+by\\s+(?:binding\\s+)?arbitration"
+  },
+  {
+    "category": "venue",
+    "confidence": 0.96,
+    "flags": "i",
+    "pattern": "exclusive\\s+(?:jurisdiction|venue)\\s+(?:of|in)\\s+the\\s+(?:state|federal)\\s+courts"
+  },
+  {
+    "category": "ip-ownership",
+    "confidence": 0.94,
+    "flags": "i",
+    "pattern": "(?:all\\s+)?(?:work\\s+product|deliverables)\\s+(?:shall|will)\\s+be\\s+(?:owned\\s+by|the\\s+(?:sole\\s+)?property\\s+of)"
+  }
+]
