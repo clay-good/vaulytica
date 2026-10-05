@@ -859,3 +859,39 @@ describe("the critical-dates calendar states what a date rests on", () => {
     expect(unfold(buildCriticalDatesIcs(reg))).toContain(`Responsible: ${named!.responsible}.`);
   });
 });
+
+describe("a defined period anchors deadlines at both ends", () => {
+  async function rows(paras: [string, ...string[]]) {
+    const tree = buildTree(paras);
+    return (await buildCriticalDates(extractAll(tree), tree)).register;
+  }
+
+  it("computes from the start and the end of a period whose definition states both", async () => {
+    const r = await rows([
+      "Rental",
+      'The rental period begins at 7:00 a.m. on April 22, 2027 and ends at 11:00 p.m. on April 23, 2027 (the "Rental Period").',
+      "Client shall deliver a certificate of insurance at least fourteen (14) days before the Rental Period begins.",
+      "Venue shall return the security deposit within fourteen (14) days after the end of the Rental Period.",
+    ]);
+    const date = (needle: string) => r.find((x) => x.trigger.includes(needle))?.computed_date;
+    expect(date("before the Rental Period begins")).toBe("2027-04-08");
+    expect(date("after the end of the Rental Period")).toBe("2027-05-07");
+  });
+
+  it("does not take a renewable Term's stated end as its end", async () => {
+    const r = await rows([
+      "Term",
+      'This Agreement begins on January 1, 2027 and ends on December 31, 2027 (the "Term"), and renews for successive one-year periods unless either party gives notice.',
+      "Each party shall return the other's materials within thirty (30) days after the end of the Term.",
+    ]);
+    expect(r.find((x) => x.trigger.includes("end of the Term"))?.resolved).toBe(false);
+  });
+
+  it("does not file a force-majeure refund as a cure window", async () => {
+    const r = await rows([
+      "Force Majeure",
+      "Neither party is liable for a failure to perform caused by fire, flood or government order. If such an event prevents the Event, Venue shall refund all amounts paid within thirty (30) days after the date the Event was to begin.",
+    ]);
+    expect(r.find((x) => x.trigger.includes("was to begin"))?.kind).toBe("notice-period");
+  });
+});

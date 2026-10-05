@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.800.0] — 2026-10-05
+
+Found by reading every artifact of a clean venue rental agreement.
+
+### Added
+- **Deadlines anchored on a defined period now compute.** A "… Period"
+  whose definition states both ends ("begins at 7:00 a.m. on April 22, 2027
+  and ends at 11:00 p.m. on April 23, 2027 (the "Rental Period")") anchors
+  its start and end, so "at least fourteen (14) days before the Rental
+  Period begins" is April 8 and "within fourteen (14) days after the end of
+  the Rental Period" is May 7 instead of "verify manually". Four of the
+  venue agreement's six manual rows compute; in the corpus, a grant's final
+  reports (60 days after the Grant Period ends: June 29, 2028). A "Term" is
+  not used, because a term can renew.
+
+### Fixed
+- **RISK-011 missed "control its defense".** The defense-control element
+  accepted "control the defense" and "control of the defense" only; an
+  indemnity procedure that let the indemnifying party "control its defense"
+  was reported as naming no one to control it.
+- **A force-majeure refund was a cure window.** "Neither party is liable for
+  a failure to perform caused by fire …" matched the cure pattern on
+  "failure to perform". An excused failure no longer counts.
+- **The ledger named "10:30 p.m. (c) Loading dock access".** A run-in list
+  whose boundary an abbreviation hides joined two items; the subject now
+  starts after the last list marker. (No corpus row has this shape.)
+
 ## [9.799.0] — 2026-10-05
 
 Found by reading every artifact of a clean event sponsorship agreement.

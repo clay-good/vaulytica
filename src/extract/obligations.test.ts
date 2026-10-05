@@ -1624,3 +1624,16 @@ describe("a deadline that belongs to one item of a listed schedule", () => {
     expect(row?.trigger).toBe("within thirty (30) days after the Effective Date");
   });
 });
+
+describe("a list marker inside the subject", () => {
+  it("starts the subject after the last marker of a run-in list", () => {
+    // "p.m." hides the sentence boundary, so items (b) and (c) arrive as one
+    // sentence and the obligor read "10:30 p.m. (c) Loading dock access".
+    const tree = buildTree([
+      "Exhibit A",
+      "(a) No open flames. (b) Amplified sound ends at 10:30 p.m. (c) Loading dock access must be scheduled 48 hours in advance.",
+    ]);
+    const obligors = extractObligations(tree, extractParties(tree)).map((o) => o.obligor);
+    expect(obligors).toContain("Loading dock access");
+  });
+});

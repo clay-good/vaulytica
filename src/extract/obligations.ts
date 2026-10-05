@@ -1039,9 +1039,16 @@ function resolveObligorInner(
   // …and a SECTION NUMBER that opens the sentence is not part of the subject:
   // "10.2 Any action arising out of this Agreement", "(b) The chair of the
   // board" lost their determiners to the number in front of them.
+  // So is a list MARKER inside it: a run-in list joins its items into one
+  // sentence when an abbreviation hides the boundary ("(b) Amplified sound
+  // ends at 10:30 p.m. (c) Loading dock access must be scheduled"), and the
+  // subject is what follows the last marker.
   const trimmed = trimEdges(
     stripFrontedAdverbial(
-      subject.trim().replace(/^(?:\d+(?:\.\d+)+\.?|\d+\.|\([a-z0-9]{1,4}\))\s+(?=[A-Z])/, ""),
+      subject
+        .trim()
+        .replace(/^(?:\d+(?:\.\d+)+\.?|\d+\.|\([a-z0-9]{1,4}\))\s+(?=[A-Z])/, "")
+        .replace(/^[\s\S]*\s\((?:[a-z]|[ivx]{1,4}|\d{1,2})\)\s+(?=[A-Z])/, ""),
     ),
     /[,;.\s]/,
   ).replace(/^(?:and|but|or)\s+(?=\S)/i, "");

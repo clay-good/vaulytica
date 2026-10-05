@@ -28,7 +28,10 @@ const PROCEDURE = [
     // this repo already reads "licence" beside "license" for the same reason.
     // "gives Contractor control of the defence" is the textbook clause and was
     // reported as an indemnity missing its defence-control element.
-    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+the\s+(?:defen[cs]e|claim|litigation|proceeding|action)|control\s+the\s+defen[cs]e|(?:assume|conduct)\s+(?:the\s+)?defen[cs]e|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b/i,
+    // The determiner varies: "allow the indemnifying party to control ITS
+    // defense" is the same element, and a venue rental agreement that said so
+    // was told its indemnity named no one to control the defense.
+    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+(?:the|its|their|such|any\s+such)\s+(?:defen[cs]e|claim|litigation|proceeding|action)|control\s+(?:the|its|their|such)\s+defen[cs]e|(?:assume|conduct)\s+(?:the\s+)?defen[cs]e|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b/i,
   ],
   // "shall not settle any claim in a manner that imposes liability on the
   // indemnified party without the indemnified party's prior written consent"

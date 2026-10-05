@@ -106,3 +106,13 @@ describe("RISK-011 — settlement consent written as approval", () => {
     expect(f!.description).toContain("settlement consent");
   });
 });
+
+describe("RISK-011 — defense control with a possessive determiner", () => {
+  it("reads 'allow the indemnifying party to control its defense'", () => {
+    const ctx = buildContext([
+      "Indemnification",
+      "Client shall indemnify, defend and hold harmless Venue from third-party claims arising out of the Event. The indemnified party shall give the indemnifying party prompt written notice of a claim, allow the indemnifying party to control its defense, and cooperate in it. The indemnifying party shall not settle a claim without the indemnified party's consent.",
+    ]);
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+});

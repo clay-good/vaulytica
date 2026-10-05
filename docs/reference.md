@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.799.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `5 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `20 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.800.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -158,7 +158,7 @@ The extractor already pulls "sixty (60) days prior to the Renewal Date." v9 adds
 ```mermaid
 flowchart LR
   A[DateReference<br/>anchor · offset_unit · offset_count] --> D[deriveDate]
-  B[Resolved anchor<br/>definition / parenthetical] --> D
+  B[Resolved anchor<br/>definition / parenthetical / defined period] --> D
   D --> E[Absolute date<br/>month-end-clamped · leap-year-correct]
   E --> R[Critical-dates register<br/>+ critical_dates_hash]
   R --> I[".ics · Markdown · JSON · tab"]
@@ -168,7 +168,8 @@ flowchart LR
 ```
 
 - **`deriveDate(reference, anchor)`** is pure calendar arithmetic — `anchor ± N {days|weeks|months|years}`, with `Jan 31 + 1 month = Feb 28` clamping and leap-year handling proven by property tests. It reads **no clock**. An undated anchor or a business-day count (no holiday calendar is asserted) yields an **unresolved** "verify manually" item, never a guess. Opt into `--deadline-profile frcp-6` (or `cal-ccp-12`) and those business-day/court-day and roll-forward offsets resolve under the cited rule — court-day counting for "business days", FRCP 6(a) roll + 6(d) service for "days" — each step recorded and the calendar year-bounded so it never extrapolates. Details: [`deadlines`](../docs/deadlines.md). Without the flag the register and its hash are unchanged.
-- **`DATE-001…005`** classify each deadline — auto-renewal notice, cure window, opt-out window, survival end, notice-period — with the responsible party drawn from the obligations extractor.
+- **Anchors** come from a definition that pins a date, a dated parenthetical ("as of March 2, 2026 (the "Effective Date")"), or a defined **period** whose definition states both ends ("begins … April 22, 2027 and ends … April 23, 2027 (the "Rental Period")"), which anchors "first day of the Rental Period" and "end of the Rental Period". A renewable "Term" is not used: its stated end is not reliably its end.
+- **`DATE-001…005`** classify each deadline — auto-renewal notice, cure window, opt-out window, survival end, notice-period. The **responsible party** is the obligor of the obligation whose sentence contains the date, or else the subject of the date's own clause ("The Company may elect to purchase … within thirty (30) days"); a mutual clause ("if the other Party fails to cure") names nobody. A blank is deliberate: a wrong name in an attorney's calendar is worse than none.
 - The **register** carries its own `critical_dates_hash`, a JSON `critical_dates` block, a deepened `.ics` (render-only DISPLAY alarm on notice/opt-out/cure rows), a Markdown register, a CLI `--critical-dates` flag, and a tab "Your calendar, computed" view.
 
 **The wall-clock trap, closed.** Only the _absolute_ computed date enters the register or its hash. Anything relative to _today_ — "due in 12 days", "overdue", soonest-first — is render-only. A metamorphic gate re-runs the same document under two different "today" values and asserts a byte-identical register, hash, `.ics`, and Markdown, so a later edit cannot leak an elapsed value into a hashed artifact and quietly break reproducibility.

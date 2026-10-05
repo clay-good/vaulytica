@@ -300,13 +300,44 @@ function normalizeAnchor(anchor: string): string {
     .replace(/\s+/g, " ");
 }
 
+const PERIOD_BEGIN = /\b(?:begin(?:s|ning)?|commenc(?:es|ing)|start(?:s|ing)?|from)\b/gi;
+const PERIOD_END = /\b(?:end(?:s|ing)?|expir(?:es|ing)|through|until)\b/gi;
+const PERIOD_START_FORMS = (p: string): string[] => [
+  `${p} begins`,
+  `${p} commences`,
+  `${p} starts`,
+  `beginning of the ${p}`,
+  `commencement of the ${p}`,
+  `start of the ${p}`,
+  `first day of the ${p}`,
+];
+const PERIOD_END_FORMS = (p: string): string[] => [
+  `${p} ends`,
+  `${p} expires`,
+  `end of the ${p}`,
+  `expiration of the ${p}`,
+  `expiry of the ${p}`,
+  `last day of the ${p}`,
+];
+
+/** Index of the last match of a global pattern in `text`, or -1. */
+function lastMatchIndex(text: string, re: RegExp): number {
+  let at = -1;
+  for (const m of text.matchAll(re)) at = m.index;
+  return at;
+}
+
 /**
- * Build the anchor → ISO map. Two sources, both deterministic:
+ * Build the anchor → ISO map. Three sources, all deterministic:
  *   1. A definition whose text pins a single absolute date
  *      ("'Effective Date' means January 1, 2025").
  *   2. An absolute date co-located in the same paragraph as the anchor's
  *      defining parenthetical ("as of January 1, 2025 (the 'Effective
  *      Date')") — recovered by walking the tree once.
+ *   3. A defined "… Period" whose definition states its start and end
+ *      ("begins … on April 22, 2027 and ends … on April 23, 2027 (the
+ *      'Rental Period')"), which anchors "first day of the Rental Period",
+ *      "end of the Rental Period" and their variants.
  * Never a guess: an anchor with no concrete date simply stays unmapped,
  * and the derived date is unresolved.
  */
@@ -321,6 +352,7 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
     // names an anchor (via "(the 'X Date')" or a bare "X Date") binds them.
     const anchorParen =
       /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”'’]?\s*\)/g;
+    const periodParen = /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Period)["“”'’]?\s*\)/g;
     // Each anchor binds to the date NEAREST BEFORE its parenthetical, not the
     // paragraph's first: "beginning on July 1, 2026 (the 'Commencement Date')
     // and ending on June 30, 2033 (the 'Expiration Date')" put both on July 1.
@@ -333,6 +365,28 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
       while ((m = anchorParen.exec(ctx.text)) !== null) {
         const key = normalizeAnchor(m[1]!);
         if (!map.has(key)) map.set(key, lastAbsoluteIso(ctx.text.slice(0, m.index)) ?? first);
+      }
+      // A defined PERIOD whose definition states both ends — "The rental
+      // period begins at 7:00 a.m. on April 22, 2027 and ends at 11:00 p.m. on
+      // April 23, 2027 (the 'Rental Period')" — pins its start and its end, and
+      // a venue rental agreement's deposit return, insurance certificate and
+      // cancellation cut-off were all left "verify manually" against it. Only
+      // a "… Period": a "Term" can renew, so its stated end is not reliably
+      // its end.
+      periodParen.lastIndex = 0;
+      while ((m = periodParen.exec(ctx.text)) !== null) {
+        const lead = ctx.text.slice(0, m.index);
+        const begin = lastMatchIndex(lead, PERIOD_BEGIN);
+        if (begin < 0) continue;
+        const span = lead.slice(begin);
+        const endAt = lastMatchIndex(span, PERIOD_END);
+        if (endAt < 0) continue;
+        const start = firstAbsoluteIso(span.slice(0, endAt));
+        const end = lastAbsoluteIso(span.slice(endAt));
+        if (!start || !end || start > end) continue;
+        const period = normalizeAnchor(m[1]!);
+        for (const k of PERIOD_START_FORMS(period)) if (!map.has(k)) map.set(k, start);
+        for (const k of PERIOD_END_FORMS(period)) if (!map.has(k)) map.set(k, end);
       }
     });
   }
@@ -367,9 +421,14 @@ const KIND_PATTERNS: Array<{ kind: CriticalDateKind; re: RegExp }> = [
   },
 ];
 
-/** "other than Sponsor's breach", "except for a default by Tenant" — a breach named only to be excluded. */
+/**
+ * A breach or failure named only to exclude or excuse it: "other than
+ * Sponsor's breach", "except for a default by Tenant", and a force-majeure
+ * excuse, "Neither party is liable for a failure to perform caused by fire …",
+ * which filed a venue's force-majeure refund as a cure window.
+ */
 const EXCEPTED_BREACH =
-  /\b(?:other\s+than|except(?:\s+for)?|excluding)\s+(?:[^,.;]{0,40}?\s)?(?:breach|default)(?:\s+(?:by|of)\s+[^,.;]{0,30})?/gi;
+  /\b(?:other\s+than|except(?:\s+for)?|excluding)\s+(?:[^,.;]{0,40}?\s)?(?:breach|default)(?:\s+(?:by|of)\s+[^,.;]{0,30})?|\bliable\s+for\s+(?:a|any)\s+(?:failure|delay)\s+(?:to\s+perform|in\s+perform\w*)/gi;
 
 /**
  * Classify a relative date into a deadline family from the clause text
