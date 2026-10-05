@@ -31,6 +31,7 @@
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { load } from "js-yaml";
 import { describe, expect, it } from "vitest";
 import { EXCLUDED_COVERING_SUITES } from "../../vitest.mutation.config.js";
 
@@ -41,6 +42,9 @@ const stryker = JSON.parse(readFileSync(join(root, "stryker.config.json"), "utf8
 };
 const mutationConfig = readFileSync(join(root, "vitest.mutation.config.ts"), "utf8");
 const baselineDoc = readFileSync(join(root, "docs", "v7", "mutation-baseline.md"), "utf8");
+const workflow = load(readFileSync(join(root, ".github", "workflows", "mutation.yml"), "utf8")) as {
+  jobs: { mutation: { strategy: { matrix: { shard: Array<{ name: string; mutate: string }> } } } };
+};
 
 /** The string literals inside the config's `include: [...]` array. */
 function includedTestFiles(source: string): string[] {
@@ -176,5 +180,19 @@ describe("mutation scope", () => {
     );
     const expected = stryker.mutate.map((f) => f.split("/").pop()!);
     expect([...new Set(documented)].sort()).toEqual(expected.slice().sort());
+  });
+  // The workflow mutates the scope in parallel shards (one job stopped fitting
+  // in 180 minutes). Each shard carries its own `mutate` list, a third copy of
+  // the scope: a module added to stryker.config.json but to no shard would
+  // never be mutated, and the pooled score would quietly describe less than
+  // the floor was measured over. The aggregate job does catch a module with no
+  // report — as "incomplete", every week, which nobody would read as a config
+  // error. A module in two shards would be counted twice.
+  it("shards the workflow over exactly the mutated modules, once each", () => {
+    const sharded = workflow.jobs.mutation.strategy.matrix.shard.flatMap((s) =>
+      s.mutate.split(","),
+    );
+    expect(sharded.length, "a module appears in more than one shard").toBe(new Set(sharded).size);
+    expect(sharded.slice().sort()).toEqual(stryker.mutate.slice().sort());
   });
 });

@@ -109,6 +109,18 @@ failure (the same trap `test-matrix.yml` documents). The budget is raised to 180
 on that evidence, the way this repo has raised every other one: after measuring,
 with the numbers written down.
 
+**2026-10-05: 180 was not enough either, so the job is sharded.** Every run
+from 09-14 to 10-05 hit the 180-minute limit and reported `cancelled` — four
+weeks without a score. In that time `obligations.ts` grew from 434 to 1,280
+lines, and `parties.ts` and `exports.ts` by about 200 each. The workflow now
+runs five parallel shards, each mutating part of the scope with no `break` of
+its own; a `score` job pools every shard's `mutation.json` with Stryker's own
+formula ([`tools/mutation/aggregate.ts`](../../tools/mutation/aggregate.ts)) and
+applies `break` to the whole. A shard that dies leaves a module with no report,
+and the run is then reported **incomplete**, not scored — a subset is not
+comparable to a floor measured over every module. `mutation-scope.test.ts`
+asserts the shards cover the `mutate` list exactly, once each.
+
 📊 19 mutants **errored** (16 in `obligations.ts`, 3 in `parties.ts`) — a mutant
 that cannot compile or run is neither killed nor survived. Unchanged in kind from
 previous runs; recorded so the column is not read as a defect.
