@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.798.0] — 2026-10-05
+
+### Fixed
+- **"400 pounds of roasted coffee" was read as £400.** A clean event
+  sponsorship agreement, priced entirely in dollars, supplied its coffee by
+  weight and was told at warning that it mixed GBP and USD (FIN-003). The
+  trailing-currency reader took any bare "pound(s)" after a number as
+  sterling. A bare "pound(s)" followed by "of" or "per" is now a weight —
+  money is never counted out as "pounds of" a thing — in both the digit and
+  the spelled-out forms. "Pounds sterling", "£" and a bare "500 pounds,
+  payable on signing" still read as GBP.
+
+### CI
+- **The weekly DKB rebuild retries a rate-limited request.** HuggingFace
+  answered the LEDGAR pull with HTTP 429 on 2026-09-27 and 2026-10-04, the
+  fetcher treated it as a config error, and the source's whole vocabulary was
+  lost; the shrinkage gate then refused to publish. `docs/data-sources.md`
+  now says what each source actually contributes (only LEDGAR feeds data;
+  statutes and clauses come from the curated baseline).
+- **Mutation testing runs in five shards.** Every weekly run from
+  2026-09-14 hit the 180-minute job limit and reported `cancelled`; a
+  `score` job now pools the shard reports and applies the `break` floor.
+
 ## [9.797.0] — 2026-09-25
 
 ### Fixed

@@ -179,6 +179,17 @@ function postfixCurrency(token: string): string {
 }
 
 /**
+ * A bare "pound(s)" followed by "of" or "per" is a WEIGHT: "400 pounds of
+ * roasted coffee", "50 pounds per square inch". Money is never counted out as
+ * "pounds of" a thing, so this costs no sterling amount, and "pounds sterling"
+ * is never a weight. Without it a clean US sponsorship agreement that supplied
+ * coffee by the pound was told it mixed GBP and USD (FIN-003).
+ */
+function isWeightPound(currencyWord: string, after: string): boolean {
+  return /^pounds?$/i.test(currencyWord) && /^\s+(?:of|per)\b/i.test(after);
+}
+
+/**
  * Range amounts: "$100k to $200k", "between USD 50,000 and USD 100,000".
  * Matched before the single NUMERIC pass; the span suppresses the
  * single-amount pass so the same phrase is not double-counted. The
@@ -446,6 +457,7 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
       const start = m.index;
       const end = m.index + m[0].length;
       if (rangeSpans.some(([s, e]) => start < e && end > s)) continue;
+      if (isWeightPound(m[3]!, ctx.text.slice(end))) continue;
       const currency = postfixCurrency(m[3]!);
       const computed = computeAmount(currency, m[1], m[2]);
       if (!computed) continue;
@@ -485,6 +497,7 @@ export function extractAmounts(tree: DocumentTree): MoneyReference[] {
     while ((m = WORD_FORM.exec(ctx.text)) !== null) {
       const phrase = m[1]!.toLowerCase();
       const currencyWord = m[2]!.toLowerCase();
+      if (isWeightPound(m[2]!, ctx.text.slice(m.index + m[0].length))) continue;
       const amount = parseWordPhrase(phrase);
       if (amount === null) continue;
       const currency = currencyWord.startsWith("euro")

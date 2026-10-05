@@ -10,6 +10,8 @@ const REGISTERS: Array<[text: string, value: number, cur: string]> = [
   ["A fee of 750 USD is charged.", 750, "USD"],
   ["The price is 1,500,000 USD.", 1_500_000, "USD"],
   ["The cap is 5 million pounds sterling.", 5_000_000, "GBP"],
+  // A bare "pounds" that is not followed by "of"/"per" is still money.
+  ["The deposit is 500 pounds, payable on signing.", 500, "GBP"],
   ["A grant of 200,000 EUR applies.", 200_000, "EUR"],
   ["The award was 1.2m dollars.", 1_200_000, "USD"],
   ["The purchase price is 5,000,000 yuan.", 5_000_000, "CNY"],
@@ -21,6 +23,10 @@ const NOT_MONEY: string[] = [
   "The option covers 50,000 shares of common stock.",
   "Each party has 30 days to cure any breach.",
   "The company employs 1,500 people across three offices.",
+  // A weight, not sterling: goods counted out "by the pound".
+  "Sponsor shall supply up to 400 pounds of roasted coffee at no charge.",
+  "The vessel is rated to 150 pounds per square inch.",
+  "Supplier shall deliver four hundred pounds of flour each week.",
 ];
 
 describe("trailing-currency amount guard", () => {
