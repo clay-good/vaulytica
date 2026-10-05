@@ -1488,7 +1488,7 @@ playbooks/     served playbook JSON; tools/ bundles the v3+v4 catalog
 
 ## How the DKB stays current
 
-The Deterministic Knowledge Base is rebuilt via a GitHub Action that fetches from SEC EDGAR, the US Code, the eCFR, govinfo, Common Paper, CUAD, LEDGAR, and the ULC. Each build is content-hashed and regression-checked against fixed test contracts before publishing; a stale regulator URL disables the affected rule until a human reviews the diff rather than silently serving outdated law.
+The Deterministic Knowledge Base is rebuilt weekly by a GitHub Action with fetchers for SEC EDGAR, the US Code, the eCFR, govinfo, Common Paper, CUAD, LEDGAR, and the ULC; today only LEDGAR contributes data, and the statutes and clauses rules cite come from a curated baseline (see [data-sources.md](data-sources.md#what-each-source-contributes-today)). Each build is content-hashed and regression-checked against fixed test contracts before publishing; a stale regulator URL disables the affected rule until a human reviews the diff rather than silently serving outdated law.
 
 ```mermaid
 flowchart LR

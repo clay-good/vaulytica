@@ -13,6 +13,23 @@ Vaulytica's Deterministic Knowledge Base (DKB) is rebuilt from the public source
 | **LEDGAR (lex_glue)**                    | CC BY-NC 4.0                         | 100-category clause-labeled corpus         | [`fetchers/ledgar.ts`](../dkb/build/fetchers/ledgar.ts)         |
 | **Uniform Law Commission**               | Permissive (per ULC publication)     | UETA, UCC Article 2, UCITA                 | [`fetchers/ulc.ts`](../dkb/build/fetchers/ulc.ts)               |
 
+## What each source contributes today
+
+Measured on the weekly rebuild logs and every `dkb/dist/` manifest through 2026-10-05. **Only LEDGAR feeds real data into the build.** The statutes and model clauses that rules cite (33 statutes, 30 clauses) come from the hand-curated baseline in [`dkb/dist/v0.0.1-starter/`](../dkb/dist/v0.0.1-starter/), which every build merges in first; no fetched statute or clause has ever reached a published version.
+
+| Source       | Contributes                                   | Why not more                                                                                                   |
+| ------------ | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| LEDGAR       | 100 classifier categories (5,000 provisions)  | —                                                                                                              |
+| SEC EDGAR    | 3 classifier categories                       | The search endpoint returns filing metadata, so the "examples" are filer names and dates, not exhibit text.   |
+| US Code      | Nothing                                       | Downloads from uscode.house.gov were cut off mid-transfer or served a maintenance page on every recent build. |
+| eCFR         | Nothing                                       | The fetcher asks for today's date; eCFR publishes a few days behind, so every title 404s.                      |
+| govinfo      | Nothing                                       | The single `PLAW-118publ.xml` file it requests does not exist; public laws are one file each under `public/`. |
+| Common Paper | Nothing                                       | Repos were renamed (`CSA`, `PSA`), One-Way NDA was removed, and each README now holds an FAQ, not the terms.   |
+| CUAD         | Nothing                                       | HuggingFace's rows API no longer serves `cuad-qa` (it is a script-based dataset).                              |
+| ULC          | Nothing                                       | The download URLs use placeholder keys; the real ones are GUIDs.                                               |
+
+Two things limit how much fixing these would change today. The analysis pipeline does not use the trained vocabulary ([`src/ui/pipeline.ts`](../src/ui/pipeline.ts) passes an empty one; patterns do the classifying), and fetched statutes carry ids like `cfr-16-310.3` while rules cite curated ids like `stat-16-cfr-425`, so a fetched section is never looked up. Importing whole CFR titles would add thousands of unreferenced entries to a file the browser downloads.
+
 ## Etiquette
 
 - Every fetcher carries the descriptive User-Agent `Vaulytica DKB Builder (vaulytica.com)`. EDGAR rejects unidentified clients; the others do not require it but get it anyway.

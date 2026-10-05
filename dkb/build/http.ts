@@ -6,7 +6,10 @@
  *   a token-bucket style delay so EDGAR's 10-RPS rule is respected
  *   even if a single fetcher does thousands of requests.
  * - Exponential backoff on 5xx and network errors. 4xx is returned
- *   without retry — bad URLs are a config error, not a transient.
+ *   without retry — bad URLs are a config error, not a transient —
+ *   except 429, which is the server asking us to slow down: it is
+ *   retried after the `Retry-After` the server sends (capped), or a
+ *   backoff long enough to matter when it sends none.
  * - Every request carries the source-declared User-Agent. EDGAR
  *   rejects unidentified clients; this is enforced at the type level
  *   by requiring the UA at construction.
@@ -25,11 +28,14 @@ export type RateLimitedHttpOptions = {
   fetchImpl?: typeof fetch;
   /** Sleeper — tests inject a no-op. Defaults to setTimeout-based delay. */
   sleep?: (ms: number) => Promise<void>;
-  /** Retry attempts on 5xx/network. */
+  /** Retry attempts on 5xx/429/network. */
   max_retries?: number;
 };
 
 const DEFAULT_RETRIES = 4;
+
+/** Longest a `Retry-After` is honored for; a larger ask fails the request instead. */
+const MAX_RETRY_AFTER_MS = 60_000;
 
 export class RateLimitedHttp implements HttpClient {
   private readonly minSpacingMs: number;
@@ -73,6 +79,18 @@ export class RateLimitedHttp implements HttpClient {
         await this.backoff(attempt);
         continue;
       }
+      if (res.status === 429) {
+        // HuggingFace's datasets-server rate-limits a 50-page LEDGAR pull, and
+        // treating that as a config error threw away every page already read:
+        // the 2026-09-27 and 2026-10-04 rebuilds lost the whole source to it.
+        attempt++;
+        lastError = new Error(`HTTP 429 ${res.statusText} for ${url}`);
+        if (attempt > this.maxRetries) break;
+        const ask = retryAfterMs(res.headers.get("Retry-After"));
+        if (ask !== undefined && ask > MAX_RETRY_AFTER_MS) break;
+        await this.sleep(ask ?? 5000 * 2 ** (attempt - 1));
+        continue;
+      }
       if (!res.ok) {
         // 4xx — bad URL / auth / etc. Don't retry.
         throw new Error(`HTTP ${res.status} ${res.statusText} for ${url}`);
@@ -107,6 +125,21 @@ export class RateLimitedHttp implements HttpClient {
     const delay = 250 * 2 ** (attempt - 1);
     await this.sleep(delay);
   }
+}
+
+/**
+ * A `Retry-After` header as milliseconds: either delta-seconds or an HTTP
+ * date (RFC 9110 §10.2.3). Undefined when absent or unreadable.
+ */
+export function retryAfterMs(
+  header: string | null,
+  nowMs: number = Date.now(),
+): number | undefined {
+  if (header === null) return undefined;
+  const value = header.trim();
+  if (/^\d+$/.test(value)) return Number(value) * 1000;
+  const at = Date.parse(value);
+  return Number.isNaN(at) ? undefined : Math.max(0, at - nowMs);
 }
 
 function defaultSleep(ms: number): Promise<void> {
