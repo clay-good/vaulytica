@@ -50,3 +50,45 @@ describe("STRUCT-016 — incorporation by reference to external / unattached doc
     expect(STRUCT_016.check(ctx)).toBeNull();
   });
 });
+
+describe("STRUCT-016 — an empty attachment given as a cover-line paragraph", () => {
+  it("reports Schedule C present but empty", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "Each Party will comply with the data processing terms set forth in Schedule C.",
+      "SCHEDULE C - DATA PROCESSING ADDENDUM",
+      "Attached.",
+    ]);
+    expect(STRUCT_016.check(ctx)?.title).toMatch(/Schedule C referenced but empty/);
+  });
+
+  it("is silent when the attachment has substance beneath its cover line", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "Each Party will comply with the data processing terms set forth in Schedule C.",
+      "SCHEDULE C - DATA PROCESSING ADDENDUM",
+      "Processor shall process Personal Data only on the documented instructions of the Controller.",
+    ]);
+    expect(STRUCT_016.check(ctx)).toBeNull();
+  });
+
+  it("does not count page furniture as the attachment's substance", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "Each Party will comply with the data processing terms set forth in Schedule C.",
+      "SCHEDULE C - DATA PROCESSING ADDENDUM",
+      "[REMAINDER OF PAGE INTENTIONALLY LEFT BLANK]",
+      "Page 7 of 7",
+    ]);
+    expect(STRUCT_016.check(ctx)?.title).toMatch(/Schedule C referenced but empty/);
+  });
+
+  it("reads a run of cover lines reflowed into one paragraph", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "The statement of income is attached as Schedule B.",
+      "Schedule A — Assets and Liabilities Schedule B — Income",
+    ]);
+    expect(STRUCT_016.check(ctx)?.title).toMatch(/Schedule B referenced but empty/);
+  });
+});

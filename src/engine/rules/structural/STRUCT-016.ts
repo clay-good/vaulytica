@@ -1,6 +1,8 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { allMatches, emit, enclosingSentence, matchedSentence } from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
+import { flattenText } from "../../../ingest/types.js";
+import { PAGE_FURNITURE } from "../../../ingest/page-furniture.js";
 
 // A reference the document itself carves out ("not part of this Agreement",
 // "for convenience only", "for informational purposes") is not an operative
@@ -41,6 +43,18 @@ const INCORP_DISCLAIMER =
  *       exhibit either does not exist as a section heading or is
  *       present but empty.
  */
+/**
+ * "EXHIBIT A — STATEMENT OF WORK", "SCHEDULE C - DATA PROCESSING ADDENDUM": a
+ * cover line, by its dash. Ingest may reflow a run of cover lines into one
+ * paragraph, so a cover may also follow whitespace, and its title stops at the
+ * next designator.
+ */
+const DESIGNATOR = String.raw`(Exhibit|Schedule|Attachment|Appendix|Annexure|Annex)[ \t]+([A-Z](?:-\d{1,2})?|\d{1,2})[ \t]*(?:—|–|[ \t]-[ \t])`;
+const COVER_LINE = new RegExp(
+  String.raw`(?<=^|\s)${DESIGNATOR}[ \t]*[A-Z0-9](?:(?!\s${DESIGNATOR})[^\n]){0,90}`,
+  "gi",
+);
+
 export const rule: Rule = {
   id: "STRUCT-016",
   version: "1.3.0",
@@ -120,6 +134,30 @@ export const rule: Rule = {
         ).length;
         anchorParaCounts.set(key, count);
       }
+    });
+
+    // The same anchor as a COVER LINE in the text, which is how pasted text
+    // (and an unstyled DOCX) gives it: "SCHEDULE C - DATA PROCESSING ADDENDUM"
+    // over "Attached." was empty, and only a heading could say so — the
+    // paragraph form read as not attached, which is STRUCT-018's to judge, and
+    // STRUCT-018 (rightly) saw it attached. Read on the document's TEXT, not
+    // its paragraphs, so stripped blank lines, double spacing and page breaks
+    // cannot change the answer: the body runs to the next cover line, and page
+    // furniture and bracketed placeholders are not substance.
+    const text = flattenText(ctx.tree);
+    const covers = [...text.matchAll(COVER_LINE)];
+    covers.forEach((c, k) => {
+      const ck = `${c[1]!.toLowerCase()}:${c[2]!.toLowerCase()}`;
+      if (anchors.has(ck)) return;
+      const body = text
+        .slice(c.index! + c[0].length, covers[k + 1]?.index ?? text.length)
+        .split("\n")
+        .filter((l) => !PAGE_FURNITURE.test(l.trim()) && !/^\s*\[[^\]]*\]\s*$/.test(l))
+        .join(" ")
+        .replace(/\b(?:attached|to\s+be\s+attached|intentionally\s+omitted|reserved)\b\.?/gi, " ");
+      const words = body.match(/\b[a-z][a-z'’-]+\b/g) ?? [];
+      anchors.add(ck);
+      anchorParaCounts.set(ck, words.length >= 6 ? 1 : 0);
     });
 
     for (const r of exhibitRefs) {

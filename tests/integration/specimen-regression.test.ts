@@ -73,7 +73,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // proceeds, risk factors, manager compensation, transfer restrictions,
   // suitability standards, and the Rule 502(b) investor-access undertaking.
   // REG-040 is the standing scope disclosure, not a defect in the document.
-  "ppm-narrative.txt": { playbook: "ppm-narrative", findings: ["OBLI-005", "REG-040"] },
+  // STRUCT-016 added in 9.820.0: the balance sheet is "attached as Exhibit A",
+  // and Exhibit A is a cover line with nothing under it.
+  "ppm-narrative.txt": {
+    playbook: "ppm-narrative",
+    findings: ["STRUCT-016", "OBLI-005", "REG-040"],
+  },
   // An omnibus equity incentive plan. Clean: the whole EQT-101..114 plan pack
   // is silent on a plan that covers every column — share reserve, evergreen,
   // capitalization adjustment, the no-repricing covenant, § 409A, the § 422(d)
@@ -1296,9 +1301,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // OBLI-005 left this row in 9.737.0: the document's only "shall not" is a
   // liability cap ("… shall not exceed …"), which is not a covenant, and the
   // pinned expectation had been carrying the false finding.
+  // STRUCT-017 left in 9.820.0: Vantage Grocery is the counterparty to the
+  // contract being assigned, named in recital A "under that certain
+  // Transportation Services Agreement … between Assignor and Vantage", and
+  // signs nothing here.
   "assignment-assumption.txt": {
     playbook: "assignment-and-assumption-agreement",
-    findings: ["STRUCT-017", "STRUCT-018", "RISK-011"],
+    findings: ["STRUCT-018", "RISK-011"],
   },
   // An AI addendum to a master services agreement. Three false positives, all
   // vocabulary: "Vendor shall not PERMIT any subprocessor ... to use Customer
@@ -1924,7 +1933,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // two tied at 0.9.
   "consulting-agreement.txt": {
     playbook: "consulting-agreement",
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
     findings: [
+      "STRUCT-016",
       "OBLI-002",
       "OBLI-005",
       "PERS-002",
@@ -1993,7 +2004,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // and was told so at CRITICAL, plus four findings about SCC clauses.
   "dpa-defined-term.txt": {
     playbook: "dpa-controller-processor",
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
     findings: [
+      "STRUCT-016",
       "DPA-006",
       "DPA-019",
       "DPA-020",
@@ -2041,7 +2054,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // services agreement does all four.
   "baa-subcontractor.txt": {
     playbook: "baa-subcontractor",
-    findings: ["OBLI-005", "OBLI-008", "TEMP-006", "TEMP-008", "TERM-007"],
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
+    findings: ["STRUCT-016", "OBLI-005", "OBLI-008", "TEMP-006", "TEMP-008", "TERM-007"],
   },
 
   // A model CCPA service-provider addendum, the 241st specimen and the first
@@ -2064,7 +2078,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // Sell or Share", which is the prohibition the Act's own verb states.
   "ccpa-service-provider.txt": {
     playbook: "dpa-ccpa-service-provider",
-    findings: ["OBLI-002", "OBLI-005", "TERM-007"],
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
+    findings: ["STRUCT-016", "OBLI-002", "OBLI-005", "TERM-007"],
   },
 
   // A well-drafted SBA 7(a) loan agreement, the 240th specimen and the first
@@ -2109,7 +2124,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // sale-of-business non-solicit.
   "stock-purchase-agreement.txt": {
     playbook: "stock-purchase-agreement",
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
     findings: [
+      "STRUCT-016",
       "OBLI-002",
       "OBLI-005",
       "PERS-002",
@@ -2166,7 +2183,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // so a one-sided duty here is the instrument, not an asymmetry.
   "work-for-hire.txt": {
     playbook: "work-for-hire-agreement",
-    findings: ["OBLI-005", "TERM-003"],
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
+    findings: ["STRUCT-016", "OBLI-005", "TERM-003"],
   },
 
   // A founder restricted stock purchase agreement, the 236th specimen and the
@@ -2188,7 +2206,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // parenthetical after the spelled number.
   "restricted-stock-purchase.txt": {
     playbook: "rspa",
-    findings: ["OBLI-005"],
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
+    findings: ["STRUCT-016", "OBLI-005"],
   },
 
   // A model automatic-renewal page, the 235th specimen and the first for
@@ -2442,7 +2461,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // opens on ("pursuant to ... the Bylaws of the Corporation").
   "written-consent.txt": {
     playbook: "written-consent",
-    findings: ["STRUCT-006"],
+    // STRUCT-016 added in 9.820.0: the Plan is adopted "in substantially the
+    // form attached as Exhibit A", and Exhibit A is a cover line only.
+    findings: ["STRUCT-006", "STRUCT-016"],
   },
 
   // A Series B financing term sheet, titled "Summary of Terms" — the standard
@@ -2509,7 +2530,8 @@ export const EXPECTED: Record<string, Expectation> = {
   // Those are provisions of the Plan.
   "option-grant.txt": {
     playbook: "stock-option-grant",
-    findings: ["OBLI-005"],
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
+    findings: ["STRUCT-016", "OBLI-005"],
   },
 
   // A recreational-use hold harmless and indemnity agreement. TEMP-012
@@ -3416,7 +3438,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // stated no date of separation. Nobody is separating.
   "prenup.txt": {
     playbook: "prenuptial-agreement",
-    findings: ["EST-060"],
+    // STRUCT-016 added in 9.820.0: the financial disclosure is "attached as
+    // Schedule A", and Schedules A and B are cover lines only — the disclosure
+    // an enforceable prenup rests on is not in the document.
+    findings: ["STRUCT-016", "EST-060"],
   },
 
   // An employment offer letter, titled in its "Re:" line as an "Offer of
@@ -4971,7 +4996,9 @@ export const EXPECTED: Record<string, Expectation> = {
     // TEMP-007 ("missing governing law") became TEMP-006 in 9.814.0: the
     // survival list names Section 12, and the governing-law sentence is in its
     // body, below the bare heading line "12. GENERAL".
+    // STRUCT-016 added in 9.820.0: the attachment's cover line is present with nothing beneath it; read as a paragraph, the cover line was invisible to this rule.
     findings: [
+      "STRUCT-016",
       "OBLI-005",
       "OBLI-008",
       "RISK-006",

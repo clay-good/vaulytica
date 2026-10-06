@@ -217,9 +217,15 @@ function isDeclaredParty(p: Party): boolean {
  * agreement it is a party to. Only the FIRST position is tested, so the
  * sublandlord — named in the preamble and again in that same recital — keeps
  * its place.
+ *
+ * "that certain <Instrument>" names another instrument however the sentence is
+ * built: "Assignor is the 'Carrier' under that certain Transportation Services
+ * Agreement … between Assignor and Vantage Grocery Distribution, Inc.
+ * ('Counterparty')" — the counterparty to the contract being ASSIGNED, which
+ * an assignment and assumption agreement was told has no signature line.
  */
 const PARTY_TO_ANOTHER_INSTRUMENT =
-  /\bpart(?:y|ies)\s+to\s+(?:that\s+certain\s+|the\s+)?(?:[A-Z][\w&.'’-]*\s+){0,4}(?:Lease|Agreement|Contract|Note|Indenture|Mortgage|Plan|Policy)\b|\bentered\s+into\s+that\s+certain\b/;
+  /\bpart(?:y|ies)\s+to\s+(?:that\s+certain\s+|the\s+)?(?:[A-Z][\w&.'’-]*\s+){0,4}(?:Lease|Agreement|Contract|Note|Indenture|Mortgage|Plan|Policy)\b|\bentered\s+into\s+that\s+certain\b|\bthat\s+certain\s+(?:[A-Z][\w&.'’-]*\s+){0,5}(?:Lease|Agreement|Contract|Note|Indenture|Mortgage|Plan|Policy)\b/;
 
 function isPartyToAnotherInstrument(p: Party, ctx: RuleContext): boolean {
   const at = p.positions?.[0]?.start;

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.820.0] — 2026-10-06
+
+Two findings where the DOCX rendering was right and the pasted text was not.
+
+### Fixed
+- **STRUCT-016 never saw an empty attachment given as a cover-line
+  paragraph.** "SCHEDULE C - DATA PROCESSING ADDENDUM" over "Attached." is an
+  empty schedule, but only a section heading counted as the attachment, so in
+  pasted text it read as not attached (STRUCT-018's to judge, and STRUCT-018
+  saw it attached) and nobody said it was empty. A cover line now opens the
+  attachment, and the words beneath it, up to the next cover line, decide.
+  It is read on the document's text, not its paragraphs: the first draft
+  counted paragraphs and changed its answer when blank lines were stripped,
+  when the text was double-spaced, and when "[REMAINDER OF PAGE INTENTIONALLY
+  LEFT BLANK]" stood under the cover — page furniture is not substance, and a
+  run of cover lines reflowed into one paragraph is still a run of covers.
+  Twelve specimens gain the true finding — each has an attachment that is a
+  cover line and nothing else ("EXHIBIT A — STATEMENT OF WORK", "ANNEX 2 —
+  TECHNICAL AND ORGANISATIONAL MEASURES", a prenup's "Schedule A — Rosalie's
+  Assets, Liabilities, and Income", the disclosure it rests on).
+- **STRUCT-017 counted the counterparty to an assigned contract as a party.**
+  "Assignor is the 'Carrier' under that certain Transportation Services
+  Agreement … between Assignor and Vantage Grocery Distribution, Inc.
+  ('Counterparty')" names a party to another instrument; "that certain
+  <Instrument>" now marks it as one, like "party to that certain Lease".
+
 ## [9.819.0] — 2026-10-06
 
 ### Added

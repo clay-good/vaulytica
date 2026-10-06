@@ -173,3 +173,21 @@ describe("STRUCT-017 v1.1.0 — reconciling a real signature block", () => {
     expect(STRUCT_017.check(ctx)).toBeNull();
   });
 });
+
+describe("STRUCT-017 — the counterparty to an assigned contract", () => {
+  it("is not a declared party of the assignment", () => {
+    const ctx = buildContext(
+      [
+        "Assignment",
+        'This Assignment is made between Larkspur Freight Systems, LLC ("Assignor") and Pinehurst Logistics Holdings, Inc. ("Assignee").',
+        'A. Assignor is the "Carrier" under that certain Transportation Services Agreement dated May 8, 2023 between Assignor and Vantage Grocery Distribution, Inc. ("Counterparty").',
+      ],
+      [
+        "Signatures",
+        "LARKSPUR FREIGHT SYSTEMS, LLC By: /s/ Teodora Nakamura Name: Teodora Nakamura Title: Manager",
+        "PINEHURST LOGISTICS HOLDINGS, INC. By: /s/ Curtis Vandermeer Name: Curtis Vandermeer Title: Executive Vice President",
+      ],
+    );
+    expect(STRUCT_017.check(ctx)).toBeNull();
+  });
+});
