@@ -1184,7 +1184,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // so a one-sided duty here is the instrument, not an asymmetry.
   "revolving-credit-agreement.txt": {
     playbook: "revolving-credit-agreement",
+    // RISK-011 added in 9.823.0: §9.1's indemnity states defense control and
+    // settlement consent but no claims notice. Pasted as one section, it had
+    // passed on §8.2's "prior written notice" of a voluntary termination.
     findings: [
+      "RISK-011",
       "OBLI-007",
       "STRUCT-006",
       "STRUCT-018",

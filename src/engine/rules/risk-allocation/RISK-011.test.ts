@@ -183,3 +183,37 @@ describe("RISK-011 — the procedure in a clause of its own", () => {
     expect(RISK_011.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-011 — the indemnity clause, not the whole pasted document", () => {
+  // Pasted text is often a single section; another clause's "written notice"
+  // is not the indemnity's claims notice.
+  const INDEMNITY =
+    "9.1 Indemnification. The Borrower shall indemnify each Lender against all losses and claims arising from the Loan Documents. The Administrative Agent shall control the defense of any third-party claim, and no indemnified party shall settle any such claim without the Borrower's prior written consent.";
+
+  it("does not borrow another clause's notice", () => {
+    const ctx = buildContext([
+      "",
+      "8.2 Voluntary Termination. The Borrower may terminate the Commitments on three Business Days' prior written notice.",
+      INDEMNITY,
+      "9.2 Amendments. No amendment is effective without the written consent of each affected Lender.",
+    ]);
+    expect(RISK_011.check(ctx)?.title).toMatch(/missing: notice$/);
+  });
+
+  it("reads a procedure clause titled as one", () => {
+    const ctx = buildContext([
+      "",
+      INDEMNITY,
+      "9.2 Notice of Claims. A Lender shall give the Borrower written notice of a claim within thirty (30) days.",
+    ]);
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+
+  it("reads 'notify … promptly' and 'participate at its own expense'", () => {
+    const ctx = buildContext([
+      "",
+      "8.4 Indemnity. Each Party shall indemnify the other against third-party claims. The indemnified Party shall notify the indemnifying Party promptly, may participate at its own expense, and shall not settle without consent.",
+    ]);
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+});

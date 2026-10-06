@@ -22,7 +22,7 @@ const PROCEDURE = [
     "notice",
     // The claim word can come first: "… any third-party claim that the Work
     // infringes …, provided that Client promptly notifies Contractor".
-    /prompt(?:ly)?\s+notice|written\s+notice|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b|\b(?:claim|demand|action|proceeding|suit)\b[^.]{0,160}?\bprompt(?:ly)?\s+notif(?:y|ies|ied)\b/i,
+    /prompt(?:ly)?\s+notice|written\s+notice|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b|\b(?:claim|demand|action|proceeding|suit)\b[^.]{0,160}?\bprompt(?:ly)?\s+notif(?:y|ies|ied)\b|\b(?:indemnified|indemnitee)\b[^.]{0,60}?\bnotif(?:y|ies)\b[^.;,]{0,60}?\bprompt(?:ly)?\b/i,
   ],
   // "defense control" must be tied to the defense/claim — a bare "sole control"
   // matched an unrelated clause ("sole control over its own systems") and
@@ -40,7 +40,9 @@ const PROCEDURE = [
     // The determiner varies: "allow the indemnifying party to control ITS
     // defense" is the same element, and a venue rental agreement that said so
     // was told its indemnity named no one to control the defense.
-    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+(?:the|its|their|such|any\s+such)\s+(?:defen[cs]e|claim|litigation|proceeding|action)|control\s+(?:the|its|their|such)\s+defen[cs]e|(?:assume|conduct)\s+(?:the\s+)?defen[cs]e|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b/i,
+    // The indemnitee's right to "participate at its own expense" is the
+    // other half of the same term: the indemnitor conducts the defense.
+    /(?:sole\s+|exclusive\s+)?control\s+(?:of|over)\s+(?:the|its|their|such|any\s+such)\s+(?:defen[cs]e|claim|litigation|proceeding|action)|control\s+(?:the|its|their|such)\s+defen[cs]e|(?:assume|conduct)\s+(?:the\s+)?defen[cs]e|duty\s+to\s+defend|defend[^.]{0,50}\bcounsel\b|\bparticipate\b[^.;]{0,40}?\bat\s+(?:its|their)\s+own\s+(?:cost|expense)/i,
   ],
   // "shall not settle any claim in a manner that imposes liability on the
   // indemnified party without the indemnified party's prior written consent"
@@ -71,6 +73,38 @@ const OPERATIVE_INDEMNITY = new RegExp(
   `\\b(?:${OBLIGATION_MODAL}|hereby)${MODAL_QUALIFIER}(?:(?:further|also|fully|jointly\\s+and\\s+severally|at\\s+all\\s+times)\\s+)?(?:defend,?\\s+)?indemnif|\\bindemnifies\\b|\\bindemnification\\s+by\\b`,
   "i",
 );
+
+const CLAUSE_NUMBER = /^\s*(?:(?:article|section|clause)\s+)?(\d+(?:\.\d+)*)\.?\s+\S/i;
+// "Notice" only as "Notice and …" / "Notice of …": a general "Notices;
+// Counterparts" clause is not the claims procedure.
+const PROCEDURE_TITLE =
+  /\b(?:defen[cs]e|defend|procedur\w*|claims?|indemni\w*|third[- ]party|settle\w*|cooperat\w*|notice\s+(?:and|of)\b)/i;
+/**
+ * The clause's title: the run-in "9.2 Indemnification Procedure." →
+ * "Indemnification Procedure", or a heading line's own text.
+ */
+const clauseTitle = (p: string): string =>
+  /^\s*(?:(?:article|section|clause)\s+)?[\d.]*\s*([^.]{0,80})(?:\.|$)/i.exec(p)?.[1] ?? "";
+
+/**
+ * The indemnity paragraph and the paragraphs that belong to it: its own
+ * sub-clauses ("9.1" → "9.1.1"), unnumbered continuation paragraphs, and any
+ * clause whose title names the procedure ("9.2 Indemnification Procedure",
+ * "4. DEFENSE AND COOPERATION") with its own continuation. Any other clause
+ * ("9.2 Amendments", "ARTICLE 10") closes the run until such a title reopens it.
+ */
+function clauseRun(paras: string[], start: number): string[] {
+  const own = CLAUSE_NUMBER.exec(paras[start]!)?.[1];
+  const out = [paras[start]!];
+  let open = true;
+  for (let i = start + 1; i < paras.length; i++) {
+    const p = paras[i]!;
+    const n = CLAUSE_NUMBER.exec(p)?.[1];
+    if (n && !(own && n.startsWith(`${own}.`))) open = PROCEDURE_TITLE.test(clauseTitle(p));
+    if (open) out.push(p);
+  }
+  return out;
+}
 
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
@@ -123,10 +157,20 @@ export const rule: Rule = {
       )
         procedureSections.push(s.heading ?? "", ...s.paragraphs.map(paraText));
     });
+    // The CLAUSE, not the whole section, when the section is not itself the
+    // indemnity: pasted text is often one section for the whole document, and
+    // a revolving credit agreement's §9.1 indemnity — defense control and
+    // settlement consent, no claims notice — passed on "three Business Days'
+    // prior written notice" in §8.2 Voluntary Termination. The DOCX reading,
+    // where §9 was the section, said so.
+    const paras = section?.paragraphs.map(paraText) ?? [];
+    const start = paras.indexOf(indem.text);
+    const clause =
+      section && start >= 0 && !/\bindemni/i.test(section.heading ?? "")
+        ? clauseRun(paras, start)
+        : paras;
     const sectionText = section
-      ? [section.heading ?? "", ...section.paragraphs.map(paraText), ...procedureSections].join(
-          "\n",
-        )
+      ? [section.heading ?? "", ...clause, ...procedureSections].join("\n")
       : indem.text;
     // No operative promise anywhere in the containing section means the match
     // was a passing reference (an incorporation of a parent agreement's
@@ -158,9 +202,7 @@ export const rule: Rule = {
     }
     const missing = PROCEDURE.filter(([, re]) => !re.test(sectionText)).map(([n]) => n);
     if (missing.length === 0) return null;
-    const substantive = section?.paragraphs
-      .map(paraText)
-      .find((t) => /\bindemnif/i.test(t) && t.length > 60);
+    const substantive = clause.find((t) => /\bindemnif/i.test(t) && t.length > 60);
     return emit(ctx, rule, {
       title: `Indemnity procedural elements missing: ${missing.join(", ")}`,
       description: `Indemnity clause appears to be missing: ${missing.join(", ")}.`,

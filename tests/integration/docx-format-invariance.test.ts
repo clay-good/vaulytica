@@ -55,6 +55,8 @@ const SAMPLE = [
   "distribution.txt",
   "msa-complete.txt",
   "po-terms.txt",
+  "revolving-credit-agreement.txt",
+  "joint-development-complete.txt",
 ];
 
 /**

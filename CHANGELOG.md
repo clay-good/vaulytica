@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.823.0] — 2026-10-06
+
+### Fixed
+- **RISK-011 audited the whole pasted document as the indemnity clause.**
+  Pasted text is often one section, so any "written notice" anywhere counted
+  as the claims-notice term: a revolving credit agreement's §9.1 indemnity —
+  defense control and settlement consent, no claims notice — passed on §8.2's
+  "three Business Days' prior written notice" of a voluntary termination. The
+  same agreement as a DOCX said so. When the containing section is not itself
+  the indemnity, the rule now reads the clause run: the indemnity paragraph,
+  its own sub-clauses and continuation paragraphs, and any clause titled as
+  procedure ("Notice of Claims", "Duty to Defend", "Settlement", "Defense and
+  Cooperation" — not a general "Notices; Counterparts"). The excerpt now
+  quotes §9.1, not the §2.8 breakage clause that first says "indemnify".
+- **Two ways of writing the procedure were not read.** "The indemnified Party
+  shall notify the indemnifying Party promptly" (the adverb after the verb)
+  is the notice term, and the indemnitee's right to "participate at its own
+  expense" is the defense-control term — the indemnitor conducts the defense.
+  A joint development agreement and a franchise agreement had passed only on
+  language elsewhere in the flat document.
+
+### Tests
+- `docx-format-invariance` covers the credit agreement and the joint
+  development agreement.
+
 ## [9.822.0] — 2026-10-06
 
 Five rules that read a clause's heading line and not the clause. Pasted text
