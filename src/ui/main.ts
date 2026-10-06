@@ -714,7 +714,7 @@ async function renderBundleComplete(
   result: Awaited<ReturnType<typeof import("./pipeline.js").runBundleReport>>,
   crossDocActive: boolean,
 ): Promise<void> {
-  const { countsBySeverity } = await import("./pipeline.js");
+  const { countsBySeverity, roundCoherenceArtifact } = await import("./pipeline.js");
 
   // Aggregate per-doc severity counts across the whole bundle.
   const counts = { critical: 0, warning: 0, info: 0 };
@@ -831,6 +831,12 @@ async function renderBundleComplete(
     // Picking the revised round's files re-analyzes them against the *same*
     // playbook, diffs the two coherences, and transitions to the
     // bundle-comparison-complete state.
+    coherence_json_blob: result.posture_coherence
+      ? new Blob([await roundCoherenceArtifact(result.posture_coherence, activeCustomPlaybook)], {
+          type: "application/json",
+        })
+      : undefined,
+    coherence_json_filename: "vaulytica-round.coherence.json",
     on_compare_round: result.posture_coherence
       ? (files) => {
           void runBundleComparison(dz, result.posture_coherence!, result.documents.length, files);

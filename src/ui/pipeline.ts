@@ -118,6 +118,21 @@ import {
   type CoherenceInput,
 } from "../report/posture-coherence.js";
 import type { CoherenceMovement } from "../report/coherence-movement.js";
+import { buildPostureCoherenceJson } from "../report/posture-coherence.js";
+import { ladderHash } from "../playbooks/custom-interpreter.js";
+
+/**
+ * This round's coherence as the artifact `analyze --emit-coherence` writes,
+ * pinned to the playbook's ladder (spec-v14/v15), so a round analyzed in the
+ * browser feeds `compare-coherence` / `coherence-trend` exactly as a CI round
+ * does.
+ */
+export async function roundCoherenceArtifact(
+  coherence: PostureCoherence,
+  playbook: CustomPlaybook | null,
+): Promise<string> {
+  return buildPostureCoherenceJson(coherence, playbook ? await ladderHash(playbook) : null);
+}
 // spec-v13 Thrust B — re-exported so the two-round comparison flow in `main.ts`
 // can diff two coherences and serialize the movement without importing the
 // report layer directly (it already dynamic-imports `./pipeline.js`).

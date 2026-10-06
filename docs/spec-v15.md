@@ -89,7 +89,7 @@ Total work shipped this spec: **2 build steps (194–195).** Every step is addit
 
 # Part XVI — Principled deferrals
 
-- **A browser/DOCX surface for the artifact.** ⬜ Still deferred (v14 Part XVI). The artifact remains a CI/headless concern; the browser does an in-session two-round comparison where the ladder is shared by construction, so it has no cross-ladder foot-gun to guard.
+- **A browser/DOCX surface for the artifact.** ✅ Browser save shipped in 9.851.0: the bundle result offers "Save this round's coherence (.coherence.json)", the same ladder-pinned artifact `--emit-coherence` writes (verified: identical `ladder_hash` and `coherence_hash` for the same two documents and playbook). The Word deliverable already carries the coherence section (spec-v12 Thrust C). As first written: Deferred. The artifact remains a CI/headless concern; the browser does an in-session two-round comparison where the ladder is shared by construction, so it has no cross-ladder foot-gun to guard.
 - **Emit the movement as an artifact too** (v14 Open Question #2). ⬜ Still deferred. A movement is derived; a consumer can recompute it from two coherence artifacts, which is the more auditable input — and now both inputs carry their ladder pin.
 - **A version field beyond the ladder** (e.g. engine/catalog version in the pin). ⬜ Not built. The ladder is what `compareCoherence` reads; the engine version already rides each document's `result_hash` and the bundle fingerprint. Pinning more than the ladder would reject comparable baselines (a patch engine release that does not touch posture classification), trading a real guard for false alarms. Noted, not built.
 

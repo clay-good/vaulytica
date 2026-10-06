@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.851.0] — 2026-10-06
+
+### Added
+- **Save a browser round's coherence.** A bundle analyzed in the browser with a
+  positions-bearing playbook now offers "Save this round's coherence
+  (.coherence.json)": the ladder-pinned artifact `analyze --emit-coherence`
+  writes. The same two documents and playbook give the same `ladder_hash` and
+  `coherence_hash` from either surface (checked in the built app against the
+  CLI), so a round reviewed in a browser joins the CI archive that
+  `compare-coherence` and `coherence-trend` read. The browser surface spec-v14
+  and spec-v15 deferred.
+
 ## [9.850.0] — 2026-10-06
 
 ### Added

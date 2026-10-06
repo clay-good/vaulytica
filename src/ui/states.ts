@@ -580,6 +580,14 @@ export type DropzoneState =
        * movement could not be computed for.
        */
       on_compare_round?: (files: File[]) => void;
+      /**
+       * spec-v14 browser surface — this round's coherence as the ladder-pinned
+       * artifact `analyze --emit-coherence` writes. Present only when a
+       * coherence was computed; when set, a "Save this round's coherence"
+       * button saves it, for a later `compare-coherence` / `coherence-trend`.
+       */
+      coherence_json_blob?: Blob;
+      coherence_json_filename?: string;
     }
   | {
       /**
@@ -748,6 +756,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
     <button class="btn-link" type="button" data-role="bundle-zip-download" hidden>Download everything (.zip)</button>
+    <button class="btn-link" type="button" data-role="bundle-coherence-download" hidden>Save this round's coherence (.coherence.json)</button>
     <div class="compare-row" data-role="bundle-compare-row" hidden>
       <button class="btn-link" type="button" data-role="bundle-compare-button">Compare a revised round…</button>
       <input type="file" accept=".pdf,.docx,.zip" multiple data-role="bundle-compare-input" hidden aria-hidden="true" tabindex="-1" />
@@ -1048,6 +1057,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       zipBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         void saveBlob(zipBlob, zipName, status);
+      });
+    }
+    if (state.coherence_json_blob && state.coherence_json_filename) {
+      const blob = state.coherence_json_blob;
+      const name = state.coherence_json_filename;
+      const btn = select<HTMLButtonElement>(dz, "bundle-coherence-download")!;
+      btn.removeAttribute("hidden");
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        void saveBlob(blob, name, status);
       });
     }
     // spec-v13 Thrust B — "Compare a revised round…" affordance. Shown only when

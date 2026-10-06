@@ -98,3 +98,38 @@ describe("expandBundleInputs", () => {
     expect(candidates).toHaveLength(0);
   });
 });
+
+describe("roundCoherenceArtifact — a browser round saved as the CI artifact", () => {
+  it("is the ladder-pinned artifact analyze --emit-coherence writes, and verifies", async () => {
+    const { roundCoherenceArtifact } = await import("./pipeline.js");
+    const { bundlePostureCoherence, buildPostureCoherenceJson, parsePostureCoherenceJson } =
+      await import("../report/posture-coherence.js");
+    const { ladderHash } = await import("../playbooks/custom-interpreter.js");
+    const playbook = {
+      negotiation_positions: [
+        {
+          dimension: "Cap",
+          ideal: { kind: "clause_present", clause: "liability_cap" },
+          acceptable: { kind: "clause_present", clause: "liability_cap" },
+        },
+      ],
+    } as never;
+    const coherence = await bundlePostureCoherence(
+      ["msa.docx", "order.docx"].map((document) => ({
+        document,
+        posture: {
+          positions: [{ dimension: "Cap", tier: "acceptable" as const }],
+          counts: { ideal: 0, acceptable: 1, below_acceptable: 0, unevaluable: 0 },
+          posture_hash: "t",
+        },
+      })),
+    );
+    const saved = await roundCoherenceArtifact(coherence, playbook);
+    expect(saved).toBe(buildPostureCoherenceJson(coherence, await ladderHash(playbook)));
+    const parsed = await parsePostureCoherenceJson(saved);
+    expect(parsed.ok && parsed.ladderHash).toMatch(/^[0-9a-f]{64}$/);
+    // No playbook, no ladder to pin: an unpinned artifact, as the CLI writes one.
+    const unpinned = await parsePostureCoherenceJson(await roundCoherenceArtifact(coherence, null));
+    expect(unpinned.ok && unpinned.ladderHash).toBeNull();
+  });
+});

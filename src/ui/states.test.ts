@@ -1102,6 +1102,31 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("bundle-complete offers to save this round's coherence only when one was computed (spec-v14)", () => {
+    const base = {
+      kind: "bundle-complete" as const,
+      document_count: 2,
+      counts: { critical: 0, warning: 0, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: new Blob(["docx"]),
+      bundle_json_blob: new Blob(["{}"]),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+    };
+    const without = document.createElement("div");
+    renderState(without, base);
+    expect(select(without, "bundle-coherence-download")!.hasAttribute("hidden")).toBe(true);
+    const dz = document.createElement("div");
+    renderState(dz, {
+      ...base,
+      coherence_json_blob: new Blob(["{}"], { type: "application/json" }),
+      coherence_json_filename: "vaulytica-round.coherence.json",
+    });
+    const btn = select(dz, "bundle-coherence-download")!;
+    expect(btn.hasAttribute("hidden")).toBe(false);
+    expect(btn.textContent).toMatch(/Save this round's coherence/);
+  });
+
   it("bundle-complete hides the compare-round row unless on_compare_round is supplied (spec-v13 Thrust B)", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);
