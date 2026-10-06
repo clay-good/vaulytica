@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.825.0] — 2026-10-06
+
+The last of the pasted-text-vs-DOCX divergences on the specimen corpus that
+were the engine's, not the test renderer's.
+
+### Fixed
+- **A roman-numbered SECTION heading declared no section.** "SECTION VI —
+  NOTICE" as a DOCX heading registered nothing in the outline, which reads
+  "Section 4.2" but not "Section VI", so a cyber policy's "reported … in
+  accordance with SECTION VI" was a broken cross-reference (STRUCT-007). The
+  paragraph form had been registered already.
+- **A clause's heading counted as a use of the term it defines.** "5. Release
+  Date." heads the clause that defines "Release Date", and nothing else in an
+  escrow agreement says it; a factoring agreement's "3.1 Advance." is the
+  same. Pasted, the heading counted as the term's use; as a DOCX it did not.
+  A clause heading — a heading line or a numbered clause's run-in title — is
+  no longer a use, so both documents gain the true STRUCT-005 finding. A
+  numbered sentence that uses the term ("6. On the Release Date …") still
+  counts.
+- **A shouted plural term's singular was not a use.** "ASSUMED LIABILITIES"
+  singularized to "ASSUMED LIABILITy", so "ANY ASSUMED LIABILITY" did not
+  match; the clause's own heading had been masking it. Plurals and singulars
+  now keep the word's case, and two entries leave the shouted-clause debt
+  list (STRUCT-005 on a shouted asset and stock purchase agreement).
+- **The DOCX ingest promoted two more shapes to headings.**
+  - A street address below 100: "88 Foundry Row" and "88 Elm Court" became
+    section 88, which "skipped 1..87". A street name ending an undotted
+    numbered line now marks an address ("4. Close of Escrow" is still a
+    heading).
+  - A run-in bylaw clause, heading and sentence together: "Section 3.1.
+    General Powers. The affairs of the corporation are managed by its Board
+    of Directors." The sentence opens on a capital, which the sentence test
+    did not catch; six sections became headings and the outline reported
+    Article III's sections 2 and 4–8 missing.
+
+### Tests
+- `docx-format-invariance` covers 26 specimens, adding the cyber policy, the
+  escrow agreement, two engagement letters, the nonprofit bylaws and the
+  enterprise SaaS agreement.
+
 ## [9.824.0] — 2026-10-06
 
 A brief filed as a DOCX had its table of authorities reconciled against the

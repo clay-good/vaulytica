@@ -12,6 +12,8 @@ describe("detectNumberedHeading", () => {
     ["4. Compliance with Laws, Rules, and Regulations", 2],
     ["3.2 Invoicing and Payment", 3],
     ["12 Definitions", 2],
+    ["4. Close of Escrow", 2],
+    ["7 Place of Performance", 2],
   ])("promotes %s", (text, level) => {
     expect(detectNumberedHeading(text)).toEqual({ level });
   });
@@ -21,8 +23,11 @@ describe("detectNumberedHeading", () => {
     "440 North Wells Street, Suite 720",
     "77 Mill Brook Road",
     "2210 West Fulton Street",
+    "88 Foundry Row",
+    "88 Elm Court",
     "Chicago, Illinois 60654",
     "1. The Buyer shall pay. the balance",
+    "Section 3.1. General Powers. The affairs of the corporation are managed by its Board.",
   ])("leaves %s as body text", (text) => {
     expect(detectNumberedHeading(text)).toBeNull();
   });

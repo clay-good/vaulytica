@@ -277,9 +277,27 @@ function makeTextRun(text: string): Run {
 const ADDRESS_LINE =
   /\b\d{5}(?:-\d{4})?\b|\b(?:Street|St\.|Avenue|Ave\.|Road|Rd\.|Drive|Dr\.|Boulevard|Blvd\.?|Suite|Ste\.|Floor|Parkway|Pkwy|Lane|Ln\.|Highway|Hwy|P\.?\s?O\.?\s+Box)\b/i;
 
+/**
+ * A street name that ENDS an address line: "88 Foundry Row", "88 Elm Court".
+ * Kept to the line's end and to an undotted number, because "Close", "Way"
+ * and "Place" open real headings ("4. Close of Escrow").
+ */
+const STREET_TAIL =
+  /^\d+\s+[A-Z][\w'’ -]{0,60}\b(?:Row|Court|Ct\.?|Place|Pl\.?|Way|Square|Circle|Terrace|Plaza|Trail|Alley|Crescent|Mews|Wharf|Quay)\s*$/;
+
 export function detectNumberedHeading(text: string): { level: number } | null {
   if (!text || text.length > 120) return null;
   if (/\.\s+[a-z]/.test(text)) return null; // sentence-shaped
+  // A run-in clause is a heading AND its sentence: "Section 3.1. General
+  // Powers. The affairs of the corporation are managed by its Board of
+  // Directors." The sentence opens on a capital, so the test above passed it,
+  // and six bylaw sections became headings that swallowed their own text —
+  // the outline then reported Article III's sections 2 and 4–8 missing.
+  const afterNumber = text.replace(
+    /^\s*(?:(?:article|section|clause)\s+)?(?:\d+(?:\.\d+)*|[IVXLCDM]+)\.?\s*/i,
+    "",
+  );
+  if (/[.;:]\s+[A-Z][a-z'’]*\s+[a-z]/.test(afterNumber)) return null;
   // Dotted-decimal: 1, 1.2, 1.2.3, optional trailing dot or em-dash.
   // Commas belong in a heading: "1. INVENTORY, PLACEMENTS, AND IMPRESSIONS".
   // Without them every comma-bearing numbered heading stayed body text, and
@@ -287,8 +305,15 @@ export function detectNumberedHeading(text: string): { level: number } | null {
   const dotted = /^(\d+(?:\.\d+){0,3})\.?\s+[—–-]?\s*[A-Z][A-Za-z0-9'’&/ (),-]{1,100}$/.exec(text);
   // An ADDRESS line is number-and-capitalized-words too: "1400 Preston Road,
   // Suite 620", "440 North Wells Street" were promoted to sections 1400 and
-  // 440, and the outline reported 1,399 sections missing.
-  if (dotted && (ADDRESS_LINE.test(text) || (!/^\d+\./.test(text) && Number(dotted[1]) >= 100))) {
+  // 440, and the outline reported 1,399 sections missing. Below 100 the
+  // street name decides: "88 Foundry Row" became section 88 of an engagement
+  // letter, which "skipped 1..87".
+  if (
+    dotted &&
+    (ADDRESS_LINE.test(text) ||
+      STREET_TAIL.test(text) ||
+      (!/^\d+\./.test(text) && Number(dotted[1]) >= 100))
+  ) {
     return null;
   }
   if (dotted) {

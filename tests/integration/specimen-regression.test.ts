@@ -2929,7 +2929,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // indemnifies its agent one way and always has.
   "escrow-agreement.txt": {
     playbook: "escrow-agreement",
-    findings: ["OBLI-005", "TEMP-007"],
+    // STRUCT-005 added in 9.825.0: "Release Date" is defined in §5 and
+    // appears nowhere else but that clause's own heading.
+    findings: ["STRUCT-005", "OBLI-005", "TEMP-007"],
   },
 
   // A second M&A escrow, drafted the way a bank's own form is: a "Tax
@@ -4850,7 +4852,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // so a one-sided duty here is the instrument, not an asymmetry.
   "factoring.txt": {
     playbook: "factoring-agreement",
+    // STRUCT-005 added in 9.825.0: "Advance" is defined in 3.1 and appears
+    // nowhere else but that clause's run-in heading.
     findings: [
+      "STRUCT-005",
       "BNK-126",
       "CHOICE-008",
       "OBLI-005",

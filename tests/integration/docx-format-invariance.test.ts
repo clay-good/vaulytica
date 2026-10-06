@@ -57,6 +57,12 @@ const SAMPLE = [
   "po-terms.txt",
   "revolving-credit-agreement.txt",
   "joint-development-complete.txt",
+  "cyber-policy.txt",
+  "escrow-agreement.txt",
+  "engagement-letter.txt",
+  "limited-scope-representation.txt",
+  "nonprofit-bylaws.txt",
+  "enterprise-saas-subscription.txt",
 ];
 
 /**

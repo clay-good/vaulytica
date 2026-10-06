@@ -1489,3 +1489,16 @@ describe("extractCrossRefs — a Canadian statute's acronym", () => {
     expect(refs.map((r) => r.raw_text)).not.toContain("section 67.2");
   });
 });
+
+describe("extractCrossRefs — a roman SECTION given as a heading", () => {
+  // An insurance policy as a DOCX: "SECTION VI — NOTICE" is a heading, not a
+  // paragraph, and only the outline can register it.
+  it("resolves 'SECTION VI' against the heading", () => {
+    const tree = buildTree(
+      ["DECLARATIONS", "Claims must be reported in accordance with SECTION VI."],
+      ["SECTION VI — NOTICE", "The Insured shall give the Insurer written notice of a Claim."],
+    );
+    const refs = extractCrossRefs(tree, extractSections(tree));
+    expect(refs.filter((r) => /VI/.test(r.raw_text)).map((r) => r.unresolved)).toEqual([false]);
+  });
+});

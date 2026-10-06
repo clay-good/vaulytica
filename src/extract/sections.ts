@@ -13,7 +13,7 @@ import type { SectionOutline, SectionOutlineNode } from "./types.js";
  */
 
 const NUMBER_PREFIX =
-  /^\s*(?:(\d+(?:\.\d+)*)\.?|(?:Article\s+([IVXLCDM]+|\d+))|(?:(?:Section|Clause)\s+(\d+(?:\.\d+)*))|§\s*(\d+(?:\.\d+)*))\b/i;
+  /^\s*(?:(\d+(?:\.\d+)*)\.?|(?:Article\s+([IVXLCDM]+|\d+))|(?:(?:Section|Clause)\s+(\d+(?:\.\d+)*|[IVXLCDM]+(?=\s*(?:[—–:.-]|$))))|§\s*(\d+(?:\.\d+)*))\b/i;
 
 export function extractSections(tree: DocumentTree): SectionOutline {
   const by_id: Record<string, SectionOutlineNode> = {};
@@ -41,7 +41,11 @@ function extractNumberedLabel(heading: string): string | undefined {
   if (!m) return undefined;
   if (m[1]) return m[1];
   if (m[2]) return `Article ${m[2].toUpperCase()}`;
-  if (m[3]) return m[3];
+  // "SECTION VI — NOTICE": an insurance policy numbers its sections in roman.
+  // The paragraph form was registered already; as a DOCX heading the policy
+  // declared no section at all, and its own "in accordance with SECTION VI"
+  // was reported as a broken reference.
+  if (m[3]) return /^[IVXLCDM]+$/i.test(m[3]) ? `Section ${m[3].toUpperCase()}` : m[3];
   if (m[4]) return m[4];
   return undefined;
 }

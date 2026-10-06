@@ -921,6 +921,21 @@ const TITLE_CASE_LEADING_STOPWORDS = new Set([
   "The Party",
 ]);
 
+/**
+ * Where a paragraph's clause heading ends, or -1: the whole of a numbered
+ * heading line ("5. Release Date."), or the run-in title of a numbered clause
+ * ("5. Release Date. On the date …"). Title-cased, so a numbered SENTENCE
+ * ("1. The Release Date is …") has none.
+ */
+function clauseHeadingEnd(text: string): number {
+  const m =
+    /^\s*(?:(?:article|section|clause)\s+)?\d+(?:\.\d+)*\.?\s+([^.;:]{1,60})(?:[.:](?=\s|$)|$)/i.exec(
+      text,
+    );
+  if (!m || /\b[a-z][a-z]{3,}\b/.test(m[1]!)) return -1;
+  return m[0].length;
+}
+
 export function extractDefinitions(tree: DocumentTree): DefinitionMap {
   const definitions = new Map<string, DefinitionEntry>();
 
@@ -1167,6 +1182,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
           nameOnlyUses.push(pos);
           continue;
         }
+        // A CLAUSE'S HEADING IS NOT A USE. "5. Release Date." heads the clause
+        // that defines "Release Date", and nothing else in an escrow agreement
+        // says it. Pasted, that heading is a paragraph and counted as the
+        // term's use; as a DOCX it is a heading, and the term was (rightly)
+        // reported as defined and never used.
+        if (m.index + m[0].length <= clauseHeadingEnd(ctx.text)) continue;
         entry.used_at.push(pos);
       }
     });
@@ -2624,15 +2645,20 @@ function escapeRegExp(s: string): string {
  * body uses in the plural as a genuine use, so STRUCT-005 does not report it as
  * an unused template leftover.
  */
+const isShouted = (word: string): boolean => /[A-Z]/.test(word) && word === word.toUpperCase();
+
 function regularPlural(term: string): string | null {
   const m = /^(.*?)(\S+)$/.exec(term);
   if (!m) return null;
   const [, head, last] = m as unknown as [string, string, string];
   if (/s$/i.test(last)) return null;
+  // In the case of the word: a shouted "ASSUMED LIABILITY" pluralizes to
+  // "ASSUMED LIABILITIES", not "ASSUMED LIABILITies".
+  const cased = (suffix: string): string => (isShouted(last) ? suffix.toUpperCase() : suffix);
   let plural: string;
-  if (/[^aeiou]y$/i.test(last)) plural = last.replace(/y$/i, "ies");
-  else if (/(x|z|ch|sh)$/i.test(last)) plural = last + "es";
-  else plural = last + "s";
+  if (/[^aeiou]y$/i.test(last)) plural = last.replace(/y$/i, cased("ies"));
+  else if (/(x|z|ch|sh)$/i.test(last)) plural = last + cased("es");
+  else plural = last + cased("s");
   return head + plural;
 }
 
@@ -2650,7 +2676,7 @@ function regularSingular(term: string): string | null {
   if (!m) return null;
   const [, head, last] = m as unknown as [string, string, string];
   let singularLast: string | null = null;
-  if (/[^aeiou]ies$/i.test(last)) singularLast = last.replace(/ies$/i, "y");
+  if (/[^aeiou]ies$/i.test(last)) singularLast = last.replace(/ies$/i, isShouted(last) ? "Y" : "y");
   else if (/(ses|xes|zes|ches|shes)$/i.test(last)) singularLast = last.replace(/es$/i, "");
   else if (/[^s]s$/i.test(last)) singularLast = last.replace(/s$/i, "");
   if (!singularLast) return null;

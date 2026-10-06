@@ -67,16 +67,13 @@ const shout =
  * that has thrown them away.
  */
 const DISCLAIMER_DEBT: readonly string[] = [
-  // The APA added in 9.634.0, in the same two shapes the list already records:
-  // shouting the disclaimer paragraph makes STRUCT-005 read a shouted clause
-  // (as it does for `stock-purchase-agreement.txt`), and shouting the liability
-  // paragraph erases the capitalisation RISK-002's sentence-start anchor and
-  // OBLI-002's subject reading both depend on.
-  "asset-purchase-complete.txt: lost - gained STRUCT-005",
+  // 9.825.0 — `asset-purchase-complete.txt` and `stock-purchase-agreement.txt`
+  // LEFT this list: their STRUCT-005 was a shouted plural term ("ASSUMED
+  // LIABILITIES") whose singular use ("ANY ASSUMED LIABILITY") did not match,
+  // because the singular was built as "LIABILITy". Plurals now keep the case.
   "assignment-and-assumption-agreement.txt: lost STRUCT-018 gained -",
   "franchise.txt: lost STRUCT-006 gained -",
   "net-lease.txt: lost STRUCT-018 gained -",
-  "stock-purchase-agreement.txt: lost - gained STRUCT-005",
   "warrant.txt: lost STRUCT-006 gained CHOICE-004",
 ];
 

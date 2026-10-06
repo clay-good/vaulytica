@@ -2862,3 +2862,38 @@ describe("a definition introduced with 'your' or 'our'", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Start Date");
   });
 });
+
+describe("extractDefinitions — a clause's heading is not a use", () => {
+  const DEF =
+    'On the date eighteen (18) months after the Closing (the "Release Date"), the Escrow Agent shall release the balance.';
+
+  it("reports a term used only in its clause's heading line", () => {
+    const map = extractDefinitions(buildTree(["Body", "5. Release Date.", DEF]));
+    expect(map.unused_terms).toContain("Release Date");
+  });
+
+  it("reports a term used only in its clause's run-in heading", () => {
+    const map = extractDefinitions(buildTree(["Body", `5. Release Date. ${DEF}`]));
+    expect(map.unused_terms).toContain("Release Date");
+  });
+
+  it("still counts a numbered sentence that uses the term", () => {
+    const map = extractDefinitions(
+      buildTree(["Body", DEF, "6. On the Release Date the Escrow Agent shall close the account."]),
+    );
+    expect(map.unused_terms).not.toContain("Release Date");
+  });
+});
+
+describe("extractDefinitions — a shouted plural term", () => {
+  it("counts its shouted singular as a use", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Body",
+        'BUYER SHALL ASSUME THE OBLIGATIONS LISTED ON SCHEDULE 1.3 (THE "ASSUMED LIABILITIES").',
+        "SELLER SHALL INDEMNIFY BUYER AGAINST ANY LOSS ARISING FROM ANY ASSUMED LIABILITY.",
+      ]),
+    );
+    expect(map.unused_terms).not.toContain("ASSUMED LIABILITIES");
+  });
+});
