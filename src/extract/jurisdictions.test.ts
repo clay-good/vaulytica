@@ -1081,3 +1081,26 @@ describe("extractJurisdictions — England, English, England and Wales", () => {
     expect(new Set(raws(t))).toEqual(new Set(["England and Wales"]));
   });
 });
+
+describe("a courts-first clause with a bare 'in'", () => {
+  const venue = (t: string) =>
+    extractJurisdictions(buildTree(["Governing Law; Venue", t])).find(
+      (r) => r.clause_kind === "venue",
+    );
+
+  it("reads 'the state and federal courts in Denver, Colorado have exclusive jurisdiction'", () => {
+    // The same sentence with "located in" was read; with a bare "in" an
+    // influencer agreement was told it states no venue.
+    expect(
+      venue(
+        "The state and federal courts in Denver, Colorado have exclusive jurisdiction over any dispute arising out of this Agreement.",
+      ),
+    ).toBeDefined();
+  });
+
+  it("does not read a bare 'courts in' that confers no jurisdiction", () => {
+    expect(
+      venue("Filings with the courts in Denver, Colorado are public records."),
+    ).toBeUndefined();
+  });
+});

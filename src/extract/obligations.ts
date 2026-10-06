@@ -1,5 +1,6 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { Obligation, Party } from "./types.js";
+import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "./amounts.js";
 import {
   ABBREV_BEFORE_NUMBER,
   forEachParagraph,
@@ -183,11 +184,19 @@ const TRIGGER_RE = new RegExp(
  * as "$22,500, and $22,500 on or before July 15, 2026". After a colon, with
  * the list running on past it, the deadline stays in the action it belongs to.
  */
+const NEXT_INSTALLMENT = new RegExp(
+  String.raw`\s(?:and|,)\s+(?:(?:${CURRENCY_TOKEN})\s?\d[\d,.]*|${AMOUNT_IN_WORDS})\s+(?:within|on\s+or\s+before|no\s+later\s+than|by)\b`,
+);
+
 function listItemFree(predicate: string, m: RegExpExecArray | null): string | undefined {
   if (!m) return undefined;
   const after = predicate.slice(m.index + m[0].length);
   if (predicate.slice(0, m.index).includes(":") && /^\s*(?:,\s*(?:and|or)\s|;)/.test(after))
     return undefined;
+  // The same schedule without a colon: "payable $6,000 within ten (10) days
+  // after the Effective Date and $6,000 within fifteen (15) days after
+  // Influencer publishes the last item" ran both installments into one trigger.
+  if (NEXT_INSTALLMENT.test(m[0])) return undefined;
   return m[0].trim();
 }
 

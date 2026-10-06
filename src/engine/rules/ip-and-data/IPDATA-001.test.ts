@@ -333,3 +333,21 @@ describe("IPDATA-001 — household employment produces nothing to own", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — a creator's agreement allocates its content", () => {
+  it("reads 'Influencer owns the Content'", () => {
+    const ctx = buildContext([
+      "Usage Rights",
+      "Influencer owns the Content. Influencer grants Brand a non-exclusive license to repost the Content for twelve (12) months.",
+    ]);
+    expect(IPDATA_001.check(ctx)).toBeNull();
+  });
+
+  it("still fires when nothing allocates ownership", () => {
+    const ctx = buildContext([
+      "Usage Rights",
+      "Influencer grants Brand a non-exclusive license to repost the Content for twelve (12) months.",
+    ]);
+    expect(IPDATA_001.check(ctx)).not.toBeNull();
+  });
+});

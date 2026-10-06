@@ -414,8 +414,17 @@ function isBareNameSignature(text: string, partyNames: string[]): boolean {
  * it — which is the same construct `isLabeledFormFieldRow` reads when the two
  * arrive on one line.
  */
+const FILLED_FIELD_TAIL = /\s(?:Dated?|E-?mail|Phone|Tel(?:ephone)?|Address)\s*:\s*\S[\s\S]*$/i;
+
 function isRuledWritingSpace(text: string, previous: string | undefined): boolean {
-  if (!/^[\s_]+$/.test(text) || !/_{6,}/.test(text)) return false;
+  // FILLED field lines under the rule belong to it, not to a sentence: an
+  // individual signs under her own name as caption — "MAYA OKONKWO-REYES" over
+  // "______ / Date: May 4, 2026 / Email: maya@…" — and with no blank line
+  // between them the date and email arrive in the rule's paragraph, so a clean
+  // influencer agreement reported its influencer's signature line at
+  // `critical`. Requires the colon of a field label.
+  const rule = text.replace(FILLED_FIELD_TAIL, "");
+  if (!/^[\s_]+$/.test(rule) || !/_{6,}/.test(rule)) return false;
   const heading = (previous ?? "").trim();
   return heading.length > 0 && heading.length <= 60 && !/[.;:!?]\s/.test(heading);
 }

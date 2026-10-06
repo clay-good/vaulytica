@@ -503,3 +503,23 @@ describe("STRUCT-003 / STRUCT-013 — a signatory whose name is not ASCII", () =
     expect(STRUCT_003.check(ctx)).toBeNull();
   });
 });
+
+describe("STRUCT-013 — an individual's signature line under her own name", () => {
+  it("does not report the rule when filled date and email lines share its paragraph", () => {
+    const f = STRUCT_013.check(
+      buildContext([
+        "Signatures",
+        "MAYA OKONKWO-REYES",
+        "______________________ Date: May 4, 2026 Email: maya@okonkworeyes.example",
+      ]),
+    );
+    expect(f).toBeNull();
+  });
+
+  it("still reports a rule inside a sentence", () => {
+    const f = STRUCT_013.check(
+      buildContext(["Fees", "Client shall pay a fee of ______________ Date: on signing."]),
+    );
+    expect(f).not.toBeNull();
+  });
+});

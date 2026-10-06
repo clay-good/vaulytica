@@ -323,9 +323,14 @@ const VENUE = new RegExp(
  * named court system was reported as stating no venue at all. The bare "of"
  * cannot swallow "courts of competent jurisdiction" — the capture needs a
  * capital letter and "competent" has none.
+ *
+ * The connector may be a bare "in": "The state and federal courts in Denver,
+ * Colorado have exclusive jurisdiction" was read as no venue clause, where the
+ * same sentence with "located in" was not. The trailing "have … jurisdiction"
+ * requirement is what keeps a bare "courts in" from matching anything else.
  */
 const VENUE_COURTS_FIRST = new RegExp(
-  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|of\s+(?:the\s+(?:State|Commonwealth|Province|Republic)\s+of\s+)?)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will|must)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will|must)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
+  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|in\s+|within\s+|of\s+(?:the\s+(?:State|Commonwealth|Province|Republic)\s+of\s+)?)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will|must)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will|must)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
   "gi",
 );
 // "shall lie" is as common as "shall be" for a venue clause — "venue for any

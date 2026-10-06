@@ -1637,3 +1637,36 @@ describe("a list marker inside the subject", () => {
     expect(obligors).toContain("Loading dock access");
   });
 });
+
+describe("an installment schedule written without a colon", () => {
+  it("does not run two installments' deadlines into one trigger", () => {
+    const tree = buildTree([
+      "Fee",
+      "Brand shall pay Influencer a fee of $12,000, payable $6,000 within ten (10) days after the Effective Date and $6,000 within fifteen (15) days after Influencer publishes the last item of Content.",
+    ]);
+    const [row] = extractObligations(tree, extractParties(tree));
+    expect(row?.trigger ?? "").toBe("");
+    expect(row?.action).toContain("$6,000 within fifteen (15) days");
+  });
+});
+
+describe("an installment schedule in another currency or in words", () => {
+  const triggerOf = (text: string) => {
+    const tree = buildTree(["Fee", text]);
+    return extractObligations(tree, extractParties(tree))[0]?.trigger ?? "";
+  };
+  it("reads a euro schedule", () => {
+    expect(
+      triggerOf(
+        "Brand shall pay a fee of €12,000, payable €6,000 within ten (10) days after the Effective Date and €6,000 within fifteen (15) days after publication.",
+      ),
+    ).toBe("");
+  });
+  it("reads a schedule spelled in words", () => {
+    expect(
+      triggerOf(
+        "Brand shall pay a fee, payable six thousand dollars within ten (10) days after the Effective Date and six thousand dollars within fifteen (15) days after publication.",
+      ),
+    ).toBe("");
+  });
+});

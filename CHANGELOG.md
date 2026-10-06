@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.801.0] — 2026-10-05
+
+Found by reading every artifact of a clean influencer agreement.
+
+### Fixed
+- **STRUCT-013 (critical) on an individual's own signature line.** An
+  individual signs under her name as caption — "MAYA OKONKWO-REYES" over
+  "______ / Date: May 4, 2026 / Email: …" — and with no blank line between
+  them the filled date and email shared the rule's paragraph, so the
+  "ruled line under a short caption" exemption missed it. Filled
+  Date/Email/Phone/Address lines under the rule now belong to it.
+- **IPDATA-001 missed "Influencer owns the Content".** The owns-object
+  branch named patents, copyrights, deliverables and works of authorship but
+  not content, photographs, images, footage or recordings — the objects a
+  creator agreement allocates.
+- **CHOICE-003 missed "the state and federal courts in Denver, Colorado have
+  exclusive jurisdiction".** The courts-first venue reader accepted "courts
+  located in" but not a bare "courts in"; the trailing "have … jurisdiction"
+  still gates it.
+- **Two installments ran into one trigger.** "payable $6,000 within ten (10)
+  days after the Effective Date and $6,000 within fifteen (15) days after …"
+  put both deadlines in the ledger's trigger column; like the colon-led
+  schedule in 9.799.0, it now stays in the action.
+
 ## [9.800.0] — 2026-10-05
 
 Found by reading every artifact of a clean venue rental agreement.
