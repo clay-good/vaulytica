@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.845.0] — 2026-10-06
+
+### Fixed
+- **A labelled party took the tail of its label for its role.** "Media
+  Company: Brightwater Media Group LLC" registered the party with the role
+  "Company" — a label the reader knows, at the end of one it does not — and
+  the obligations ledger named every duty's obligor "company". At the start
+  of a line, a one-word qualifier now joins the role ("Media Company"); a
+  possessive or determiner does not ("Our Client:" is the Client). In a Word
+  table, "Data Exporter | Meridiaan Zorgtechnologie B.V." is read like the
+  colon form. Found by comparing the obligations ledger of every specimen
+  whose field blocks were rendered as Word tables against its pasted text.
+
 ## [9.844.0] — 2026-10-06
 
 Every run of "Label: value" lines in the corpus — letter headers, order forms,

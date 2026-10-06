@@ -1528,3 +1528,29 @@ describe("extractParties — a letterhead set as the first heading", () => {
     ).toMatch(/BRIGHTWATER & OSEI/);
   });
 });
+
+describe("extractParties — a labelled party line", () => {
+  const parties = (lines: string[]) =>
+    extractParties(buildTree(["Order", ...lines])).map((p) => [p.name, p.role ?? null]);
+
+  it("takes the whole label for the role, not a known label's tail", () => {
+    // "Company" is a known label; the line's label is "Media Company".
+    expect(parties(["Media Company: Brightwater Media Group LLC"])).toContainEqual([
+      "Brightwater Media Group LLC",
+      "Media Company",
+    ]);
+  });
+
+  it("reads a possessive before the label as the label", () => {
+    expect(parties(["Our Client: Larkspur Timber Supply LLC"])).toContainEqual([
+      "Larkspur Timber Supply LLC",
+      "Client",
+    ]);
+  });
+
+  it("reads a table's cell separator as the colon", () => {
+    expect(parties(["Data Exporter | Meridiaan Zorgtechnologie B.V."]).map(([n]) => n)).toContain(
+      "Meridiaan Zorgtechnologie B.V",
+    );
+  });
+});

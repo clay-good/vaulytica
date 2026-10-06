@@ -533,7 +533,15 @@ const LABELED_PARTY = new RegExp(
   // ("Lender: J.P. Morgan Chase Bank") failed the `{2,80}` minimum at the first
   // period and was dropped entirely, so a labeled-only document (SCC annex,
   // IDTA table) reported STRUCT-001 "could not identify the parties".
-  String.raw`(?:^|(?<=[\s\n]))(${PARTY_ROLE_LABEL})\s*:\s*(?!\s)([A-Z](?:[^\n,;.]|\.(?!\s|$)|\.(?=\s+[A-Z])){2,80})`,
+  // A label is the WHOLE label: "Media Company: Brightwater Media Group LLC"
+  // registered the party with the role "Company", the tail of a label this
+  // list does not know, and the ledger named its obligor "company". A known
+  // label that is the tail of a line's first words is someone else's label
+  // (mid-line, in flattened text, it may follow any word), so at a line's
+  // start the qualifier joins the role — "Media Company" — while "Our
+  // Client:" is the Client. "|"
+  // is a table's colon ("Data Exporter | Meridiaan Zorgtechnologie B.V.").
+  String.raw`(?:^|(?<=[\s\n]))(?<!(?:^|\n)[ \t]*(?!(?:Our|Your|Their|The|This|Each|Such)\b)[A-Z][a-z]+[ \t])((?:(?<=(?:^|\n)[ \t]*)(?!(?:Our|Your|Their|The|This|Each|Such)\b)[A-Z][a-z]+[ \t])?(?:${PARTY_ROLE_LABEL}))\s*[:|]\s*(?!\s)([A-Z](?:[^\n,;.|]|\.(?!\s|$)|\.(?=\s+[A-Z])){2,80})`,
   "g",
 );
 
