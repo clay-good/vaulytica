@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.810.0] — 2026-10-06
+
+Found by reading a clean UCC Article 9 security agreement.
+
+### Fixed
+- **A security agreement drew five generic warnings that cannot apply to
+  it.** "No IP-ownership clause" (IPDATA-001), "No indemnification" (RISK-001),
+  "No limitation of liability" (RISK-005), "No termination for cause"
+  (TERM-002) and "No effect-of-termination clause" (TERM-005, on a document
+  whose §8 is exactly that). Its promissory-note and guaranty siblings
+  already skipped all five, and loan-agreement skips three; security-agreement
+  now does too. The complete-credit-agreement specimen, which routes to this
+  family, had pinned two of them.
+
 ## [9.809.0] — 2026-10-06
 
 Found by reading a clean California offer letter.

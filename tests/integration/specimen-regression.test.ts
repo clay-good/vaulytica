@@ -5272,10 +5272,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // immediately due and payable". THE LOAN WORLD'S WORD FOR
   // TERMINATION-FOR-CAUSE IS ACCELERATION.
   //
-  // What remains is true of the draft, and two of them are the call the office
-  // lease and the subcontract got: a credit agreement allocates risk through
-  // collateral, covenants and the default rate rather than a liability cap
-  // (RISK-005), and it owns no IP to allocate (IPDATA-001). The rest is on the
+  // What remains is true of the draft. (RISK-005 and IPDATA-001 were kept here
+  // as "a credit agreement allocates risk through collateral, not a cap, and
+  // owns no IP"; since 9.810.0 the family skips both, as its loan-agreement,
+  // promissory-note and guaranty siblings already did.) The rest is on the
   // page — a Material Adverse Effect condition (OBLI-007, correctly surfaced for
   // a borrower to negotiate), three Exhibits and Schedules referenced and not
   // attached, a one-way confidentiality obligation (only the Lender owes one),
@@ -5289,15 +5289,17 @@ export const EXPECTED: Record<string, Expectation> = {
   // is a measured, deliberately unfixed extractor decision.
   // OBLI-002 left this row in 9.792.0: its family runs one way by nature,
   // so a one-sided duty here is the instrument, not an asymmetry.
+  // IPDATA-001 and RISK-005 left this row in 9.810.0: security-agreement now
+  // skips the generic IP-ownership, indemnity, liability-cap and termination
+  // checks its promissory-note, guaranty and loan-agreement siblings already
+  // skipped — a credit or security instrument carries none of those clauses.
   "credit-agreement-complete.txt": {
     playbook: "security-agreement",
     findings: [
       "CHOICE-008",
       "FIN-009",
-      "IPDATA-001",
       "OBLI-005",
       "OBLI-007",
-      "RISK-005",
       "RISK-011",
       "STRUCT-018",
       "TEMP-007",

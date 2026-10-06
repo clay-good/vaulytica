@@ -13392,7 +13392,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 108,
    "companions": [
     "loan-agreement",
     "ucc-1-financing-statement"
