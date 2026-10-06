@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.818.0] — 2026-10-06
+
+Found by routing 80 everyday contract titles over the same thin body.
+
+### Fixed
+- **"Personal Loan Agreement" fell to generic-fallback.** `loan-agreement`
+  matched only "loan agreement" inside the title, without the opening-position
+  credit that "Loan Agreement Between Friends" earns. "Personal loan agreement"
+  and "family loan agreement" are now title keywords.
+- **Any letter of intent leaned toward the lease-LOI family.** That family
+  listed "this letter of intent" as a distinguishing phrase — words every LOI
+  contains — so a business LOI that names itself scored 0.2 higher there than
+  in `loi-term-sheet`. The phrase is removed; the family keeps its lease
+  vocabulary (rentable square feet, tenant improvement allowance, free rent,
+  "subject to a mutually acceptable lease").
+
+The rest of the sweep fell to generic-fallback where the catalog has no family
+for the document (catering, tutoring, pet sitting, storage units, design and
+production work, music licensing, gym memberships …) — by design, a title
+alone does not route.
+
 ## [9.817.0] — 2026-10-06
 
 ### Fixed
