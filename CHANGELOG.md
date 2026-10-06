@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.836.0] — 2026-10-06
+
+### Fixed
+- **STRUCT-012 counted signature and notary blocks as duplicate sections.** A
+  brief's firm name ("HOLLOWAY & NANDAKUMAR LLP") heads its caption and its
+  signature block; a SAFE's company name heads both signature blocks; a deed's
+  "STATE OF TEXAS, COUNTY OF TRAVIS" heads each acknowledgment. Set in heading
+  type — a PDF's larger font, a DOCX's bold heading — each repeat was a
+  "duplicate heading", and the rule's reason (an ambiguous cross-reference)
+  cannot apply: nothing refers to a signature block by a party's name. A
+  heading that is an entity's name, a party's name, or a notary venue is no
+  longer counted. Twelve specimens rendered as PDFs drew it; none does now.
+
+### Tests
+- `pdf-format-invariance` covers 29 specimens; STRUCT-012 gains a unit test.
+
 ## [9.835.0] — 2026-10-06
 
 ### Fixed

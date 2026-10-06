@@ -53,6 +53,12 @@ const SAMPLE = [
   "change-order.txt",
   "annual-incentive-plan.txt",
   "marital-settlement-agreement.txt",
+  "cease-and-desist.txt",
+  "closing-of-representation.txt",
+  "demand-letter.txt",
+  "expert-retention.txt",
+  "limited-scope-representation.txt",
+  "safe.txt",
 ];
 
 /** WinAnsi codes for the non-ASCII characters the specimens use. */
