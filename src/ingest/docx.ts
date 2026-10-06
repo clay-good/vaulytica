@@ -237,11 +237,23 @@ function makeTextRun(text: string): Run {
  *   - The numeric prefix is followed by at least one Title-Case
  *     word, OR is wrapped in ALL CAPS (`ARTICLE III. SERVICES`)
  */
+const ADDRESS_LINE =
+  /\b\d{5}(?:-\d{4})?\b|\b(?:Street|St\.|Avenue|Ave\.|Road|Rd\.|Drive|Dr\.|Boulevard|Blvd\.?|Suite|Ste\.|Floor|Parkway|Pkwy|Lane|Ln\.|Highway|Hwy|P\.?\s?O\.?\s+Box)\b/i;
+
 export function detectNumberedHeading(text: string): { level: number } | null {
   if (!text || text.length > 120) return null;
   if (/\.\s+[a-z]/.test(text)) return null; // sentence-shaped
   // Dotted-decimal: 1, 1.2, 1.2.3, optional trailing dot or em-dash.
-  const dotted = /^(\d+(?:\.\d+){0,3})\.?\s+[—–-]?\s*[A-Z][A-Za-z0-9'’&/ ()-]{1,100}$/.exec(text);
+  // Commas belong in a heading: "1. INVENTORY, PLACEMENTS, AND IMPRESSIONS".
+  // Without them every comma-bearing numbered heading stayed body text, and
+  // the outline reported sections 1, 2 and 5 of an insertion order missing.
+  const dotted = /^(\d+(?:\.\d+){0,3})\.?\s+[—–-]?\s*[A-Z][A-Za-z0-9'’&/ (),-]{1,100}$/.exec(text);
+  // An ADDRESS line is number-and-capitalized-words too: "1400 Preston Road,
+  // Suite 620", "440 North Wells Street" were promoted to sections 1400 and
+  // 440, and the outline reported 1,399 sections missing.
+  if (dotted && (ADDRESS_LINE.test(text) || (!/^\d+\./.test(text) && Number(dotted[1]) >= 100))) {
+    return null;
+  }
   if (dotted) {
     const dots = (dotted[1]!.match(/\./g) ?? []).length;
     return { level: Math.min(2 + dots, 6) };

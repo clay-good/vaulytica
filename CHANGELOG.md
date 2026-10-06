@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.813.0] — 2026-10-06
+
+Continuing the DOCX sweep: documents rendered as DOCX now diverge from their
+pasted text in 25 specimens, down from 62.
+
+### Fixed
+- **A DOCX's comma-bearing headings were body text, and its addresses were
+  sections.** The ingest promotes numbered heading-shaped paragraphs (headings
+  typed as plain bold text are common). Its shape test had no comma, so "1.
+  INVENTORY, PLACEMENTS, AND IMPRESSIONS" stayed a paragraph and the outline
+  reported sections 1, 2 and 5 missing (STRUCT-008 / STRUCT-015 on 33
+  specimens). It now allows commas, and refuses address lines ("1400 Preston
+  Road, Suite 620", "440 North Wells Street"), which it had promoted to
+  sections 1400 and 440. STRUCT-008 on the DOCX renderings: 30 specimens → 3;
+  STRUCT-015: 33 → 7.
+
 ## [9.812.0] — 2026-10-06
 
 Found by rendering every specimen that has headings (312 checked) as a DOCX
