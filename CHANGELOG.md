@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.821.0] — 2026-10-06
+
+Three of four open dependency advisories closed.
+
+### Security
+- **`npm audit fix` (semver-compatible) closes three advisories in the
+  toolchain:** brace-expansion 5.0.12 (high: CPU and stack-exhaustion DoS on
+  crafted brace patterns), source-map-js 1.2.2 (high: event-loop DoS through
+  indexed source-map offsets) and fast-uri 3.1.8 (moderate: inconsistent host
+  case normalization). Lockfile only; no direct dependency moves.
+- **One moderate advisory stays open, unreachable:** sprintf-js (unbounded
+  precision specifiers) arrives through `mammoth` → `argparse@1`, which only
+  mammoth's own command-line wrapper (`bin/mammoth`) loads. The engine imports
+  mammoth's library and never runs that wrapper, so no document input reaches
+  sprintf-js. No patched sprintf-js exists, and npm's "fix" is a downgrade of
+  mammoth to 0.3.29, which is not taken.
+
 ## [9.820.0] — 2026-10-06
 
 Two findings where the DOCX rendering was right and the pasted text was not.
