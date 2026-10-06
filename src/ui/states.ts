@@ -296,6 +296,8 @@ export type DropzoneState =
           detail?: string;
           reason?: string;
           section_id?: string;
+          /** What the document calls the section; shown instead of the id. */
+          section_label?: string;
           /** add-negotiation-ladder-playbooks — v3 ladder detail. */
           met_rung?: string;
           size_band?: string;
@@ -1730,8 +1732,8 @@ function renderNegotiationPosture(
       const guide = p.guidance
         ? `<div class="np-guide">Guidance: ${escapeHtml(p.guidance)}</div>`
         : "";
-      const where = p.section_id
-        ? ` <span class="cd-kind">§${escapeHtml(p.section_id)}</span>`
+      const where = p.section_label
+        ? ` <span class="cd-kind">${escapeHtml(p.section_label)}</span>`
         : "";
       // add-negotiation-ladder-playbooks — v3 ladder detail: the deal-size band
       // applied, the highest met rung above the floor, and the team's approved

@@ -37,6 +37,7 @@ import type { DateReference, ExtractedData, Obligation } from "../extract/types.
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import { forEachParagraph } from "../extract/walk.js";
+import { sectionLabels } from "../extract/sections.js";
 import {
   computeCourtDays,
   computeDeadline,
@@ -710,6 +711,8 @@ export async function buildCriticalDates(
 ): Promise<CriticalDatesRegister> {
   const anchors = resolveAnchors(extracted, tree);
   const sectionText = tree ? buildSectionText(tree) : new Map<string, string>();
+  // What the document calls the section, never the ingest's internal id.
+  const labelOf = tree ? sectionLabels(tree) : () => undefined;
   const paragraphSpans = tree
     ? buildParagraphSpans(tree)
     : new Map<string, { text: string; start: number }>();
@@ -740,7 +743,7 @@ export async function buildCriticalDates(
       trigger: ref.raw_text,
       anchor: ref.anchor ?? "",
       responsible,
-      ...(ref.position.section_id ? { section: ref.position.section_id } : {}),
+      ...(labelOf(ref.position.section_id) ? { section: labelOf(ref.position.section_id)! } : {}),
       ...(derived.reason ? { reason: derived.reason } : {}),
     };
     // add-deadline-computation — opt-in resolution. Only touches "business-days"

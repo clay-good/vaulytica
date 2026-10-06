@@ -16,6 +16,7 @@
  */
 
 import { csvField } from "./exports.js";
+import { sectionLabels } from "../extract/sections.js";
 import type { DocPosition, ExtractedData } from "../extract/types.js";
 import { flattenText, type DocumentTree } from "../ingest/types.js";
 import { undefinedTermCandidates } from "../engine/rules/structural/STRUCT-006.js";
@@ -26,6 +27,13 @@ export const DEFINITIONS_REPORT_SCHEMA = "vaulytica.definitions-report.v1";
 
 export type DefinitionsReport = {
   schema: typeof DEFINITIONS_REPORT_SCHEMA;
+  /**
+   * Section id → what the document calls that section (its heading). The
+   * renderers printed the ingest's id ("§s4") as the location. Absent when no
+   * located section has a heading (a pasted document is often one untitled
+   * section); a location is then given by its character offset.
+   */
+  section_labels?: Record<string, string>;
   /** Used in the document but never defined — the top review risk. */
   undefined_used: Array<{ term: string; use_count: number; positions: DocPosition[] }>;
   /** Defined more than once; every definition location listed. */
@@ -157,8 +165,23 @@ export async function buildDefinitionsReport(
   const byTermName = <T extends { term: string }>(arr: T[]): T[] =>
     [...arr].sort((a, b) => (a.term < b.term ? -1 : a.term > b.term ? 1 : 0));
 
+  const labelOf = sectionLabels(tree);
+  const section_labels: Record<string, string> = {};
+  const positions = [
+    ...undefined_used.flatMap((u) => u.positions),
+    ...duplicates.flatMap((d) => d.defined_at),
+    ...used_before_defined.flatMap((u) => [u.defined_at, u.first_use_at]),
+    ...unused.map((u) => u.defined_at),
+    ...defined.map((d) => d.defined_at),
+  ];
+  for (const p of positions) {
+    const label = labelOf(p.section_id);
+    if (label && p.section_id) section_labels[p.section_id] = label;
+  }
+
   const body: Omit<DefinitionsReport, "definitions_hash"> = {
     schema: DEFINITIONS_REPORT_SCHEMA,
+    ...(Object.keys(section_labels).length > 0 ? { section_labels } : {}),
     undefined_used: byTermName(undefined_used),
     duplicates: byTermName(duplicates),
     used_before_defined: byTermName(used_before_defined),
@@ -190,7 +213,11 @@ export async function verifyDefinitionsHash(report: DefinitionsReport): Promise<
 // ---------------------------------------------------------------------------
 // Renderers
 
-const loc = (p: DocPosition): string => `§${p.section_id}`;
+/** A location as the document names it: its section's heading, else the offset. */
+const locator =
+  (report: DefinitionsReport) =>
+  (p: DocPosition): string =>
+    report.section_labels?.[p.section_id ?? ""] ?? `character ${p.start.toLocaleString("en-US")}`;
 
 /** Risk-ordered CSV: bucket,term,detail,locations. */
 export function buildDefinitionsCsv(report: DefinitionsReport): string {
@@ -199,6 +226,7 @@ export function buildDefinitionsCsv(report: DefinitionsReport): string {
   // guard (CWE-1236), and defined terms are verbatim document text, so a term
   // beginning `=`, `+`, `-`, or `@` became a live formula on open.
   const esc = csvField;
+  const loc = locator(report);
   const rows: string[] = ["bucket,term,detail,locations"];
   for (const u of report.undefined_used) {
     rows.push(
@@ -249,6 +277,7 @@ export function buildDefinitionsCsv(report: DefinitionsReport): string {
 
 /** Markdown section for the CLI summary / fix-list style consumers. */
 export function buildDefinitionsMarkdown(report: DefinitionsReport): string {
+  const loc = locator(report);
   const lines: string[] = ["## Definitions report", ""];
   const c = report.counts;
   lines.push(
@@ -258,14 +287,14 @@ export function buildDefinitionsMarkdown(report: DefinitionsReport): string {
   if (report.undefined_used.length > 0) {
     lines.push("### Used but never defined");
     for (const u of report.undefined_used) {
-      lines.push(`- **${u.term}** — ${u.use_count} use(s) at ${u.positions.map(loc).join(", ")}`);
+      lines.push(`- **${u.term}** — ${u.use_count} use(s) at ${u.positions.map(loc).join("; ")}`);
     }
     lines.push("");
   }
   if (report.duplicates.length > 0) {
     lines.push("### Defined more than once");
     for (const d of report.duplicates) {
-      lines.push(`- **${d.term}** — definitions at ${d.defined_at.map(loc).join(", ")}`);
+      lines.push(`- **${d.term}** — definitions at ${d.defined_at.map(loc).join("; ")}`);
     }
     lines.push("");
   }

@@ -863,6 +863,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -898,6 +899,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -916,6 +918,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -934,6 +937,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -952,6 +956,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -978,6 +983,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no indemnification language)"
       },
@@ -994,11 +1000,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "0a10305ddddef63c0f3d632fd8e848e36134713723b1122fc4cb44ddad89e06b",
+  "result_hash": "ac2dae259752b1210fa7266f8be7277d2442ce904bc93deb65efcb3a2caa256b",
   "source_file": {
     "name": "mutual-nda.docx",
     "sha256": "ef50f0dcb7abba00b9213ddb4a8a77a2ab5f0bc1f3ee2394f809706622bf8151",
     "size_bytes": 9274
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

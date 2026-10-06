@@ -868,6 +868,7 @@
       "excerpt": {
         "end_offset": 477,
         "section_id": "s3",
+        "section_label": "2. Obligations",
         "start_offset": 436,
         "text": "n for an indefinite period and shall be liable for all damages without limitation."
       },
@@ -886,6 +887,7 @@
       "excerpt": {
         "end_offset": 151,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 128,
         "text": "[insert recipient name]"
       },
@@ -904,6 +906,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -939,6 +942,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no indemnification language)"
       },
@@ -957,6 +961,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -975,6 +980,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -993,6 +999,7 @@
       "excerpt": {
         "end_offset": 557,
         "section_id": "s4",
+        "section_label": "3. Survival",
         "start_offset": 491,
         "text": "The notice provisions of this Agreement shall survive termination."
       },
@@ -1011,6 +1018,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -1029,6 +1037,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1055,6 +1064,7 @@
       "excerpt": {
         "end_offset": 478,
         "section_id": "s3",
+        "section_label": "2. Obligations",
         "start_offset": 334,
         "text": "The Receiving Party shall not disclose Confidential Information for an indefinite period and shall be liable for all damages without limitation."
       },
@@ -1072,6 +1082,7 @@
       "excerpt": {
         "end_offset": 556,
         "section_id": "s4",
+        "section_label": "3. Survival",
         "start_offset": 537,
         "text": "The notice provisions of this Agreement shall survive termination."
       },
@@ -1087,11 +1098,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "eebbb9c308a90216877b128627c3134829158fed205527b57f73c5c9a102e609",
+  "result_hash": "0b78161262d24b917143b56704661282e8ebbe9048e6243f6bd9c1eaca657f5c",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

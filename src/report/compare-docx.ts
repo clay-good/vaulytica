@@ -376,7 +376,7 @@ function renderFinding(f: Finding): Paragraph[] {
       bold: true,
     }),
     para({
-      text: `Clause (${f.excerpt.section_id ?? "doc"}): "${truncate(f.excerpt.text, 360)}"`,
+      text: `Clause${f.excerpt.section_label ? ` (${f.excerpt.section_label})` : ""}: "${truncate(f.excerpt.text, 360)}"`,
       italics: true,
     }),
     para({ text: f.explanation }),

@@ -416,7 +416,7 @@ function hasSpan(f: Finding): boolean {
 function findingLocator(f: Finding): string {
   if (!hasSpan(f)) return "absent — nothing to quote";
   const span = `characters ${f.excerpt.start_offset.toLocaleString("en-US")}–${f.excerpt.end_offset.toLocaleString("en-US")}`;
-  return f.excerpt.section_id ? `${f.excerpt.section_id}, ${span}` : span;
+  return f.excerpt.section_label ? `${f.excerpt.section_label}, ${span}` : span;
 }
 
 /**
@@ -609,7 +609,7 @@ function renderObligationsLedger(run: EngineRun, extracted?: ExtractedData): (Pa
       headerRow(["Source", "Severity", "Obligation"]),
       ...rows[0]!.map((f) =>
         bodyRow([
-          f.excerpt.section_id ?? "doc",
+          f.excerpt.section_label ?? "—",
           f.severity.toUpperCase(),
           truncate(f.description, 200),
         ]),
@@ -669,7 +669,7 @@ function renderSecondaryFamiliesSection(
               f.severity.toUpperCase(),
               f.rule_id,
               truncate(f.description, 200),
-              f.excerpt.section_id ?? "doc",
+              f.excerpt.section_label ?? "—",
             ]),
           ),
         ],

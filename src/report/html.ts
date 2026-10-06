@@ -260,7 +260,7 @@ function hasSpan(f: Finding): boolean {
 function findingLocator(f: Finding): string {
   if (!hasSpan(f)) return "absent — nothing to quote";
   const span = `characters ${f.excerpt.start_offset.toLocaleString("en-US")}–${f.excerpt.end_offset.toLocaleString("en-US")}`;
-  return f.excerpt.section_id ? `${f.excerpt.section_id}, ${span}` : span;
+  return f.excerpt.section_label ? `${f.excerpt.section_label}, ${span}` : span;
 }
 
 /**
@@ -307,7 +307,7 @@ function renderFinding(
   // playbooks shipped; this file rendered the rule id alone.
   parts.push(
     `<div class="ruleid">${esc(f.rule_id)} v${esc(f.rule_version)}${
-      f.excerpt.section_id ? ` · §${esc(f.excerpt.section_id)}` : ""
+      f.excerpt.section_label ? ` · ${esc(f.excerpt.section_label)}` : ""
     }${f.source === "custom-playbook" ? " · your playbook" : ""}</div>`,
   );
   // What is wrong, in the finding's own words. The DOCX renders `description`
@@ -500,7 +500,7 @@ function renderSecondaryFamiliesSection(
       out.push(
         `<tr><td>${esc(f.severity.toUpperCase())}</td><td>${esc(f.rule_id)}</td>` +
           `<td>${esc(truncate(f.description, 200))}</td>` +
-          `<td>${esc(f.excerpt.section_id ?? "doc")}</td></tr>`,
+          `<td>${esc(f.excerpt.section_label ?? "—")}</td></tr>`,
       );
     }
     out.push("</tbody></table>");
@@ -559,7 +559,7 @@ function renderClosingChecklistSection(checklist: ClosingChecklist): string[] {
     out.push(`<h3>${esc(CHECKLIST_CAT_LABEL[cat])} (${group.length})</h3>`);
     out.push('<ul class="v9-list">');
     for (const i of group) {
-      const where = i.section ? ` <span class="ruleid">§${esc(i.section)}</span>` : "";
+      const where = i.section ? ` <span class="ruleid">${esc(i.section)}</span>` : "";
       // A reconciliation item's label is a count; the detail names what was
       // counted, and without it the reader cannot act on the row.
       const detail = i.detail ? `<div class="v9-evi">${esc(i.detail)}</div>` : "";
@@ -598,7 +598,7 @@ function renderCriticalDatesSection(register: CriticalDatesRegister): string[] {
     const meta: string[] = [];
     if (r.anchor) meta.push(`anchor: ${esc(r.anchor)}`);
     if (r.responsible) meta.push(`responsible: ${esc(r.responsible)}`);
-    if (r.section) meta.push(`§${esc(r.section)}`);
+    if (r.section) meta.push(esc(r.section));
     const reason = !r.resolved && r.reason ? `<div class="v9-evi">${esc(r.reason)}</div>` : "";
     out.push(
       `<li class="${r.resolved ? "ok" : "warn"}"><div class="v9-head"><span class="v9-date">${date}</span> · <span class="ruleid">${esc(r.rule_id)}</span> ${esc(label)}</div><div class="v9-sub">${esc(r.trigger)}</div>${meta.length ? `<div class="v9-sub">${meta.join(" · ")}</div>` : ""}${reason}</li>`,
@@ -628,7 +628,7 @@ function renderNegotiationPostureSection(posture: NegotiationPosture): string[] 
     const tier = NEGOTIATION_TIER[p.tier];
     const detail = p.detail ?? p.reason ?? "";
     const guide = p.guidance ? `<div class="v9-evi">Guidance: ${esc(p.guidance)}</div>` : "";
-    const where = p.section_id ? ` <span class="ruleid">§${esc(p.section_id)}</span>` : "";
+    const where = p.section_label ? ` <span class="ruleid">${esc(p.section_label)}</span>` : "";
     out.push(
       `<li class="${tier.cls}"><div class="v9-head">${esc(p.dimension)} — <strong>${esc(tier.label)}</strong>${where}</div>${detail ? `<div class="v9-sub">${esc(detail)}</div>` : ""}${guide}</li>`,
     );

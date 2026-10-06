@@ -863,6 +863,7 @@
       "excerpt": {
         "end_offset": 918,
         "section_id": "s4",
+        "section_label": "3. Governing Law and Venue",
         "start_offset": 840,
         "text": "Delaware"
       },
@@ -890,6 +891,7 @@
       "excerpt": {
         "end_offset": 744,
         "section_id": "s3",
+        "section_label": "2. Non-Competition",
         "start_offset": 704,
         "text": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
@@ -917,6 +919,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Employment Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -935,6 +938,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Employment Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -953,6 +957,7 @@
       "excerpt": {
         "end_offset": 788,
         "section_id": "s3",
+        "section_label": "2. Non-Competition",
         "start_offset": 637,
         "text": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
@@ -970,6 +975,7 @@
       "excerpt": {
         "end_offset": 744,
         "section_id": "s3",
+        "section_label": "2. Non-Competition",
         "start_offset": 704,
         "text": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
@@ -1002,11 +1008,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "b1384608e92f2456998ee41acebe60938e8c5c23ddbe0b41e9f49827898bb576",
+  "result_hash": "9ef5e014a7d16c0cfbfd6d9d2067a20c015ee35469cbfdf25e11861ac9636095",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

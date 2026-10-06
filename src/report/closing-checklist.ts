@@ -94,7 +94,7 @@ export function buildClosingChecklist(
       rule_id: f.rule_id,
       label: labelFor(f),
       ...(detailFor(f) ? { detail: detailFor(f)! } : {}),
-      ...(f.excerpt.section_id ? { section: f.excerpt.section_id } : {}),
+      ...(f.excerpt.section_label ? { section: f.excerpt.section_label } : {}),
       _order: spec.order,
       _pos: f.document_position,
     });

@@ -49,7 +49,7 @@ describe("negotiation posture export (spec-v10 Step 171)", () => {
     };
     const csv = buildNegotiationPostureCsv(evil);
     expect(csv.split("\r\n")[0]).toBe(
-      "dimension,tier,deal_size_band,met_rung,finding,guidance,approved_language,section",
+      "dimension,tier,deal_size_band,met_rung,finding,guidance,approved_language,section,section_label",
     );
     // Leading formula triggers are neutralized with a single quote.
     expect(csv).toContain("'=cmd");
@@ -64,7 +64,7 @@ describe("negotiation posture export (spec-v10 Step 171)", () => {
     };
     expect(buildNegotiationPostureMarkdown(empty)).toContain("No negotiation positions");
     expect(buildNegotiationPostureCsv(empty).trim()).toBe(
-      "dimension,tier,deal_size_band,met_rung,finding,guidance,approved_language,section",
+      "dimension,tier,deal_size_band,met_rung,finding,guidance,approved_language,section,section_label",
     );
   });
 
@@ -178,5 +178,22 @@ describe("buildNegotiationSheet — the honesty caveats", () => {
     expect(buildNegotiationSheet(empty, "Acme MSA")).toBe(
       buildNegotiationSheet(empty, "Acme MSA", { warnings: [] }),
     );
+  });
+
+  it("names a section as the document does, never by its internal id", () => {
+    const labelled: NegotiationPosture = {
+      ...posture,
+      positions: [
+        {
+          dimension: "Liability cap",
+          tier: "below-acceptable",
+          section_id: "s9",
+          section_label: "9. LIMITATION OF LIABILITY",
+        },
+      ],
+    };
+    const md = buildNegotiationPostureMarkdown(labelled);
+    expect(md).toContain("9. LIMITATION OF LIABILITY");
+    expect(md).not.toContain("| s9 |");
   });
 });

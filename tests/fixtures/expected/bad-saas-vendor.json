@@ -875,6 +875,7 @@
       "excerpt": {
         "end_offset": 345,
         "section_id": "s2",
+        "section_label": "1. The Service",
         "start_offset": 342,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
@@ -893,6 +894,7 @@
       "excerpt": {
         "end_offset": 358,
         "section_id": "s2",
+        "section_label": "1. The Service",
         "start_offset": 341,
         "text": "[TBD methodology]"
       },
@@ -911,6 +913,7 @@
       "excerpt": {
         "end_offset": 583,
         "section_id": "s3",
+        "section_label": "2. Fees and Subscription Term",
         "start_offset": 559,
         "text": "Late fee: 2.5% per month."
       },
@@ -938,6 +941,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Master Subscription Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -973,6 +977,7 @@
       "excerpt": {
         "end_offset": 373,
         "section_id": "s2",
+        "section_label": "1. The Service",
         "start_offset": 360,
         "text": "Customer Data"
       },
@@ -991,6 +996,7 @@
       "excerpt": {
         "end_offset": 756,
         "section_id": "s4",
+        "section_label": "3. IP Indemnity",
         "start_offset": 601,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
@@ -1009,6 +1015,7 @@
       "excerpt": {
         "end_offset": 902,
         "section_id": "s5",
+        "section_label": "4. Limitation of Liability",
         "start_offset": 784,
         "text": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations."
       },
@@ -1027,6 +1034,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Master Subscription Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -1045,6 +1053,7 @@
       "excerpt": {
         "end_offset": 978,
         "section_id": "s6",
+        "section_label": "5. Term and Renewal",
         "start_offset": 956,
         "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless either party provides 20 days written notice of non-renewal."
       },
@@ -1088,6 +1097,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Master Subscription Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -1106,6 +1116,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Master Subscription Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -1124,6 +1135,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Master Subscription Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1150,6 +1162,7 @@
       "excerpt": {
         "end_offset": 373,
         "section_id": "s2",
+        "section_label": "1. The Service",
         "start_offset": 360,
         "text": "Customer Data uploaded to the Service is processed under the DPA. The Service is provided AS-IS."
       },
@@ -1167,6 +1180,7 @@
       "excerpt": {
         "end_offset": 756,
         "section_id": "s4",
+        "section_label": "3. IP Indemnity",
         "start_offset": 601,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
@@ -1184,6 +1198,7 @@
       "excerpt": {
         "end_offset": 265,
         "section_id": "s2",
+        "section_label": "1. The Service",
         "start_offset": 253,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
@@ -1201,6 +1216,7 @@
       "excerpt": {
         "end_offset": 265,
         "section_id": "s2",
+        "section_label": "1. The Service",
         "start_offset": 253,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
@@ -1219,6 +1235,7 @@
       "excerpt": {
         "end_offset": 902,
         "section_id": "s5",
+        "section_label": "4. Limitation of Liability",
         "start_offset": 784,
         "text": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations."
       },
@@ -1236,6 +1253,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s4",
+        "section_label": "3. IP Indemnity",
         "start_offset": 0,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
@@ -1251,11 +1269,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "b9236a5cf7a188d1da6ff576388fb22b6e96b7ccef1750d567325a874fa900cd",
+  "result_hash": "5da3171e20da9a4a0c87a200965fb39eaf9dec8b86ea92edbb84c515b2f9f436",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

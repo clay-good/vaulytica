@@ -872,6 +872,7 @@
       "excerpt": {
         "end_offset": 1258,
         "section_id": "s7",
+        "section_label": "6. Dispute Resolution",
         "start_offset": 1231,
         "text": "All disputes shall be resolved on an individual basis only and not as part of any class action."
       },
@@ -899,6 +900,7 @@
       "excerpt": {
         "end_offset": 779,
         "section_id": "s4",
+        "section_label": "3. Exclusivity / Non-Compete",
         "start_offset": 739,
         "text": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California."
       },
@@ -933,6 +935,7 @@
       "excerpt": {
         "end_offset": 147,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 123,
         "text": "[insert contractor name]"
       },
@@ -951,6 +954,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -986,6 +990,7 @@
       "excerpt": {
         "end_offset": 779,
         "section_id": "s4",
+        "section_label": "3. Exclusivity / Non-Compete",
         "start_offset": 739,
         "text": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California."
       },
@@ -1013,6 +1018,7 @@
       "excerpt": {
         "end_offset": 903,
         "section_id": "s5",
+        "section_label": "4. Non-Disparagement",
         "start_offset": 890,
         "text": "Contractor shall not disparage Company, its officers, or its products at any time."
       },
@@ -1031,6 +1037,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "fixed-hours, on-site-required, company-equipment, daily-reporting, salary-like-fee"
       },
@@ -1049,6 +1056,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no indemnification language)"
       },
@@ -1067,6 +1075,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -1085,6 +1094,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -1103,6 +1113,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -1121,6 +1132,7 @@
       "excerpt": {
         "end_offset": 1019,
         "section_id": "s6",
+        "section_label": "5. Termination",
         "start_offset": 971,
         "text": "Company may terminate this Agreement at any time in its sole discretion."
       },
@@ -1139,6 +1151,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1165,6 +1178,7 @@
       "excerpt": {
         "end_offset": 851,
         "section_id": "s4",
+        "section_label": "3. Exclusivity / Non-Compete",
         "start_offset": 673,
         "text": "During the Term and for twelve (12) months thereafter, Contractor shall not directly or indirectly compete with Company or perform services for any other party within California."
       },
@@ -1182,6 +1196,7 @@
       "excerpt": {
         "end_offset": 1042,
         "section_id": "s6",
+        "section_label": "5. Termination",
         "start_offset": 1020,
         "text": "Company may terminate this Agreement at any time in its sole discretion."
       },
@@ -1206,11 +1221,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "b2b3ed332cf7fc2f931a1e750032d99212bcce8bc3e17a76d30720abb0469049",
+  "result_hash": "aaa1202bbd54f4bc393f3b96cbdcee5217c48d598c175ae55d7bd3f84654d7f4",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

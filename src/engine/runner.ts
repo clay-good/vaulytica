@@ -10,6 +10,7 @@ import type {
 } from "./finding.js";
 import { GENERIC_FALLBACK_ID } from "../playbooks/types.js";
 import { sortFindings, sortRules } from "./ordering.js";
+import { sectionLabels } from "../extract/sections.js";
 import { sha256Hex } from "../ingest/hash.js";
 import type { ConsistencyDocument, ConsistencyRule, ConsistencyRun } from "./consistency/types.js";
 import { runConsistency } from "./consistency/runner.js";
@@ -171,6 +172,11 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
   }
 
   const sortedFindings = sortFindings(findings);
+  const labelOf = sectionLabels(input.ctx.tree);
+  for (const f of sortedFindings) {
+    const label = labelOf(f.excerpt.section_id);
+    if (label) f.excerpt.section_label = label;
+  }
 
   const run: EngineRun = {
     version: ENGINE_VERSION,

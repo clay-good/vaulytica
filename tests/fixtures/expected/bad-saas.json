@@ -875,6 +875,7 @@
       "excerpt": {
         "end_offset": 895,
         "section_id": "s4",
+        "section_label": "13. Miscellaneous",
         "start_offset": 838,
         "text": "(d) Modifications. Vendor may modify the terms of this Agreement at any time by posting a revised version on its website; continued use of the Service constitutes acceptance."
       },
@@ -902,6 +903,7 @@
       "excerpt": {
         "end_offset": 653,
         "section_id": "s4",
+        "section_label": "13. Miscellaneous",
         "start_offset": 634,
         "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current…"
       },
@@ -945,6 +947,7 @@
       "excerpt": {
         "end_offset": 992,
         "section_id": "s4",
+        "section_label": "13. Miscellaneous",
         "start_offset": 941,
         "text": "continued use of the Service constitutes acceptance."
       },
@@ -972,6 +975,7 @@
       "excerpt": {
         "end_offset": 939,
         "section_id": "s4",
+        "section_label": "13. Miscellaneous",
         "start_offset": 838,
         "text": "Vendor may modify the terms of this Agreement at any time by posting a revised version on its website;"
       },
@@ -999,6 +1003,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no payment-term clause)"
       },
@@ -1017,6 +1022,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -1052,6 +1058,7 @@
       "excerpt": {
         "end_offset": 285,
         "section_id": "s2",
+        "section_label": "1. The Service and Subscription Term",
         "start_offset": 272,
         "text": "Customer Data"
       },
@@ -1070,6 +1077,7 @@
       "excerpt": {
         "end_offset": 270,
         "section_id": "s2",
+        "section_label": "1. The Service and Subscription Term",
         "start_offset": 253,
         "text": "Subscription Term"
       },
@@ -1088,6 +1096,7 @@
       "excerpt": {
         "end_offset": 653,
         "section_id": "s4",
+        "section_label": "13. Miscellaneous",
         "start_offset": 634,
         "text": "This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current Subscription Term."
       },
@@ -1131,6 +1140,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -1149,6 +1159,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -1167,6 +1178,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1193,6 +1205,7 @@
       "excerpt": {
         "end_offset": 285,
         "section_id": "s2",
+        "section_label": "1. The Service and Subscription Term",
         "start_offset": 272,
         "text": "Vendor will provide the Service to Customer for the Subscription Term. Customer Data uploaded to the Service is processed under the DPA."
       },
@@ -1210,6 +1223,7 @@
       "excerpt": {
         "end_offset": 1143,
         "section_id": "s5",
+        "section_label": "14. Indemnification",
         "start_offset": 1014,
         "text": "Customer shall indemnify, defend, and hold Vendor harmless from any third-party claim arising from Customer's use of the Service."
       },
@@ -1227,6 +1241,7 @@
       "excerpt": {
         "end_offset": 1208,
         "section_id": "s5",
+        "section_label": "14. Indemnification",
         "start_offset": 1143,
         "text": "Vendor shall not have any reciprocal indemnification obligation."
       },
@@ -1244,6 +1259,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s5",
+        "section_label": "14. Indemnification",
         "start_offset": 0,
         "text": "Customer shall indemnify, defend, and hold Vendor harmless from any third-party claim arising from Customer's use of the Service. Vendor shall not have any reciprocal indemnification obligation."
       },
@@ -1261,6 +1277,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s4",
+        "section_label": "13. Miscellaneous",
         "start_offset": 0,
         "text": "13"
       },
@@ -1279,6 +1296,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s2",
+        "section_label": "1. The Service and Subscription Term",
         "start_offset": 0,
         "text": "(document root)"
       },
@@ -1295,11 +1313,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "ac3d934e3702ec6daf761931c4c79809e2a35504edebdcf3c463c5b1adac0003",
+  "result_hash": "f21824de0b7b621cf00964ea05c69b15914d80ce7be15f8f921d13e62af3130c",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

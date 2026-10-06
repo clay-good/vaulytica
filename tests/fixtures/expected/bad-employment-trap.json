@@ -868,6 +868,7 @@
       "excerpt": {
         "end_offset": 1299,
         "section_id": "s5",
+        "section_label": "4. Arbitration",
         "start_offset": 1208,
         "text": "Employee waives any right to bring or participate in any class, collective, or representative action."
       },
@@ -895,6 +896,7 @@
       "excerpt": {
         "end_offset": 538,
         "section_id": "s3",
+        "section_label": "2. Training Repayment",
         "start_offset": 280,
         "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost…"
       },
@@ -913,6 +915,7 @@
       "excerpt": {
         "end_offset": 1352,
         "section_id": "s5",
+        "section_label": "4. Arbitration",
         "start_offset": 1301,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
@@ -931,6 +934,7 @@
       "excerpt": {
         "end_offset": 1299,
         "section_id": "s5",
+        "section_label": "4. Arbitration",
         "start_offset": 1208,
         "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Rules then in effect. Employee waives any …"
       },
@@ -966,6 +970,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Employment Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -1001,6 +1006,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Employment Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -1019,6 +1025,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Employment Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -1037,6 +1044,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Employment Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1063,6 +1071,7 @@
       "excerpt": {
         "end_offset": 1089,
         "section_id": "s5",
+        "section_label": "4. Arbitration",
         "start_offset": 1078,
         "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Ru…"
       },
@@ -1089,6 +1098,7 @@
       "excerpt": {
         "end_offset": 1352,
         "section_id": "s5",
+        "section_label": "4. Arbitration",
         "start_offset": 1317,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
@@ -1106,6 +1116,7 @@
       "excerpt": {
         "end_offset": 924,
         "section_id": "s4",
+        "section_label": "3. Non-Solicitation",
         "start_offset": 632,
         "text": "For a period of twelve (12) months following the termination of Employee's employment with the Company for any reason, Employee shall not, directly or indirectly, solicit, recruit, induce, or otherwise encourage any employee of the Company to terminate his or her employment with the Company."
       },
@@ -1121,11 +1132,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "4daa88078a4c6eac502a1c402f1b7cd380e1f23109e92b268785e2e2919301c7",
+  "result_hash": "2524305af7f81f6f7189f8557a40ad1e05471c3e025a587c39a1537284aaae57",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

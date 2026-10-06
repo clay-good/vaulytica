@@ -864,6 +864,7 @@
       "excerpt": {
         "end_offset": 585,
         "section_id": "s4",
+        "section_label": "3. Condition of Premises",
         "start_offset": 550,
         "text": "Tenant accepts the Premises in \"AS-IS, WHERE-IS\" condition and waives any warranty of habitability, fitness for a particular purpose, or compliance with any housing code."
       },
@@ -891,6 +892,7 @@
       "excerpt": {
         "end_offset": 452,
         "section_id": "s3",
+        "section_label": "2. Security Deposit",
         "start_offset": 426,
         "text": "Tenant shall deposit with Landlord two months' rent ($5,000) as a security deposit, plus an additional non-refundable cleaning fee of $500 and a non-refundable pet deposit of $750."
       },
@@ -918,6 +920,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Residential Lease",
         "start_offset": 0,
         "text": "(no payment-term clause)"
       },
@@ -936,6 +939,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Residential Lease",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -954,6 +958,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Residential Lease",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -972,6 +977,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Residential Lease",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -990,6 +996,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Residential Lease",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1014,11 +1021,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-residential-us (score 1). Title matched: \"residential lease\". Distinguishing phrases: \"security deposit\", \"residential\".",
-  "result_hash": "2c773d95aa7fbe9c1e625d4f71fe7802653df4a52a97ccbbbe2193225f0f1099",
+  "result_hash": "7f8a2546241e8d86aa43ca37e2876902ae1bc82d16e6d1c26c33fce4cb7ef404",
   "source_file": {
     "name": "bad-residential-lease-deposit.docx",
     "sha256": "a3aaac8da5682c5a7ff4d3cd79191c3344d5f3bc6ec7abe5d833f6234acf6973",
     "size_bytes": 9410
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.827.0] — 2026-10-06
+
+### Fixed
+- **Reports named sections by the ingest's internal id.** The sample report
+  printed "FIN-001 v1.2.0 · §s2" beside its findings; the DOCX evidence line
+  read "Evidence — s1, characters 0–12"; the definitions report said a term
+  was "first used at §s4, defined at §s1"; the negotiation sheet and the app's
+  posture view did the same. "s2" is not a name the document gives anything.
+  Each finding now carries `excerpt.section_label` — the section's heading as
+  written, resolved once when the run finishes — and every human-facing
+  location uses it: the HTML and DOCX reports, the compare report, the fix
+  list, the closing checklist, the critical-dates register, the negotiation
+  posture (sheet, export and app) and the definitions report (which now
+  carries its own `section_labels`). An untitled section — a pasted document
+  is often one — gets no label, so a report omits the location or gives the
+  character offset instead of an id no reader can find.
+- **Machine formats keep the id.** JSON, SARIF and the CSV `section` columns
+  still carry `section_id`, the stable key; the fix-list and posture CSVs
+  gain an APPENDED `section_label` column, so a consumer reading by column
+  index keeps working.
+
 ## [9.826.0] — 2026-10-06
 
 ### Fixed

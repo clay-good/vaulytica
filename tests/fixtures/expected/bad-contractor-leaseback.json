@@ -866,6 +866,7 @@
       "excerpt": {
         "end_offset": 941,
         "section_id": "s4",
+        "section_label": "3. Intellectual Property",
         "start_offset": 855,
         "text": "Contractor hereby irrevocably assigns to Company all right, title, and interest, including all intellectual property rights, in and to any and all works, inventions, methods, processes, software, and materials created, conceived, developed, or used by Contractor in connection wi…"
       },
@@ -884,6 +885,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -902,6 +904,7 @@
       "excerpt": {
         "end_offset": 1245,
         "section_id": "s5",
+        "section_label": "4. Indemnification",
         "start_offset": 1222,
         "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in a…"
       },
@@ -920,6 +923,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -938,6 +942,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -956,6 +961,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Independent Contractor Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -982,6 +988,7 @@
       "excerpt": {
         "end_offset": 1644,
         "section_id": "s5",
+        "section_label": "4. Indemnification",
         "start_offset": 1211,
         "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in any way to the Services or this Agreement, regardless of the cause thereof, including claims caused in whole or in part by Company's own acts or omissions."
       },
@@ -999,6 +1006,7 @@
       "excerpt": {
         "end_offset": 491,
         "section_id": "s2",
+        "section_label": "1. Equipment Leaseback",
         "start_offset": 402,
         "text": "Contractor may not use any vehicle or device not leased from or pre-approved by Company."
       },
@@ -1016,6 +1024,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s5",
+        "section_label": "4. Indemnification",
         "start_offset": 0,
         "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in a…"
       },
@@ -1031,11 +1040,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "8df0daaa410b47b9c7936c8a445e7c89a78d6e82bf29a31ec3b3befe26a879a4",
+  "result_hash": "fce7fb39bf86d21bc33b245eb7e6243c11a4d138f1c3892458ef95f7ebbdd459",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

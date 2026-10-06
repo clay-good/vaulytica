@@ -304,3 +304,23 @@ describe("used-before-defined — occurrences that are not uses", () => {
     expect(r.used_before_defined.map((u) => u.term)).toContain("Closing");
   });
 });
+
+describe("definitions report — where a term is, in the document's words", () => {
+  const DEF =
+    'On the Closing Date (the "Release Date"), the Escrow Agent shall release the balance.';
+
+  it("names a titled section by its heading, never by its internal id", async () => {
+    const tree = buildTree(["Preamble", "Agreement."], ["5. RELEASE", DEF]);
+    const report = await buildDefinitionsReport(extractAll(tree), tree);
+    const md = buildDefinitionsMarkdown(report);
+    expect(md).toContain("**Release Date** (5. RELEASE)");
+    expect(md).not.toMatch(/§s\d/);
+  });
+
+  it("gives an untitled section's location as a character offset", async () => {
+    const tree = buildTree(["", DEF]);
+    const report = await buildDefinitionsReport(extractAll(tree), tree);
+    expect(report).not.toHaveProperty("section_labels");
+    expect(buildDefinitionsMarkdown(report)).toMatch(/\*\*Release Date\*\* \(character \d/);
+  });
+});

@@ -868,6 +868,7 @@
       "excerpt": {
         "end_offset": 876,
         "section_id": "s3",
+        "section_label": "2. AI / Model Training Rights",
         "start_offset": 662,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…"
       },
@@ -886,6 +887,7 @@
       "excerpt": {
         "end_offset": 1268,
         "section_id": "s5",
+        "section_label": "4. Fees",
         "start_offset": 1246,
         "text": "Late fee: 2% per month on past-due amounts."
       },
@@ -913,6 +915,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -948,6 +951,7 @@
       "excerpt": {
         "end_offset": 604,
         "section_id": "s3",
+        "section_label": "2. AI / Model Training Rights",
         "start_offset": 598,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…"
       },
@@ -966,6 +970,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -984,6 +989,7 @@
       "excerpt": {
         "end_offset": 413,
         "section_id": "s2",
+        "section_label": "1. Customer Data and Termination",
         "start_offset": 400,
         "text": "Customer Data"
       },
@@ -1002,6 +1008,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -1020,6 +1027,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Cloud Service Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1046,6 +1054,7 @@
       "excerpt": {
         "end_offset": 413,
         "section_id": "s2",
+        "section_label": "1. Customer Data and Termination",
         "start_offset": 400,
         "text": "Upon termination, Vendor may, at its discretion and upon Customer's payment of all amounts then due (including amounts subject to good-faith dispute), provide Customer with an export of Customer Data in a format selected by Vendor. Vendor'…"
       },
@@ -1063,6 +1072,7 @@
       "excerpt": {
         "end_offset": 764,
         "section_id": "s3",
+        "section_label": "2. AI / Model Training Rights",
         "start_offset": 751,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, an…"
       },
@@ -1105,6 +1115,7 @@
       "excerpt": {
         "end_offset": 1182,
         "section_id": "s4",
+        "section_label": "3. IP Indemnity",
         "start_offset": 923,
         "text": "Vendor shall have no obligation to indemnify Customer to the extent a claim arises from (i) use of the Services in combination with any software, hardware, data, or services not furnished by Vendor; or (ii) any modification of the Services not made by Vendor."
       },
@@ -1120,11 +1131,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "2df1c19743bdadec42195c7ba6f0403a2c1ba180d47a3066d64e429187fec5d5",
+  "result_hash": "4b39283ed97cbaf760538f764f6c93199adc38391cc4c8d7899743f62d673a46",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

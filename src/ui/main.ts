@@ -464,6 +464,7 @@ function renderCompleteState(
             detail: p.detail,
             reason: p.reason,
             section_id: p.section_id,
+            section_label: p.section_label,
             // add-negotiation-ladder-playbooks — v3 ladder detail.
             met_rung: p.met_rung,
             size_band: p.size_band,

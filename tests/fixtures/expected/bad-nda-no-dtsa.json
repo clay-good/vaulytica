@@ -865,6 +865,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -900,6 +901,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no indemnification language)"
       },
@@ -918,6 +920,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -936,6 +939,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -954,6 +958,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -972,6 +977,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -990,6 +996,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "One-Way Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1016,6 +1023,7 @@
       "excerpt": {
         "end_offset": 650,
         "section_id": "s3",
+        "section_label": "2. Obligations",
         "start_offset": 385,
         "text": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such information to any third party, including any governmental agency or regulatory body, without the prior written consent of the Disclosing Party."
       },
@@ -1031,11 +1039,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way nda\", \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "c89d818615530a413cc25212b3945019023157974b8916e4ab7a809ed38e8b7b",
+  "result_hash": "f34ae57bc568922197c370c0bba80c09fe807f0759c5ff293b245d1bd4c280ac",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 9006
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

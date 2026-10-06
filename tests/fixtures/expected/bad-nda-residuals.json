@@ -865,6 +865,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -900,6 +901,7 @@
       "excerpt": {
         "end_offset": 706,
         "section_id": "s3",
+        "section_label": "2. Residuals",
         "start_offset": 697,
         "text": "Notwithstanding anything herein to the contrary, Recipient and its Representatives shall be free to use for any purpose the Residuals resulting from access to or work with Confidential Information, where \"Residuals\" means information in non-tangible form which may be retained in…"
       },
@@ -918,6 +920,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -936,6 +939,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -954,6 +958,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -972,6 +977,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -990,6 +996,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1016,6 +1023,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Mutual Non-Disclosure Agreement",
         "start_offset": 0,
         "text": "(no indemnification language)"
       },
@@ -1032,11 +1040,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "81eb9d450f6bd30e3e4edc7bf6d30fe374b774570ce9d0c5ea4a9067e803a07e",
+  "result_hash": "1a784f558894e39f42b5b854f1abb893823cb6570e18dce681ebaa075a9b811d",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

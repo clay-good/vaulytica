@@ -865,6 +865,7 @@
       "excerpt": {
         "end_offset": 84,
         "section_id": "s1",
+        "section_label": "Statement of Work #1",
         "start_offset": 79,
         "text": "This SOW is entered into under the Master Agreement dated [TBD] between Provider and Customer."
       },
@@ -883,6 +884,7 @@
       "excerpt": {
         "end_offset": 84,
         "section_id": "s1",
+        "section_label": "Statement of Work #1",
         "start_offset": 79,
         "text": "[TBD]"
       },
@@ -901,6 +903,7 @@
       "excerpt": {
         "end_offset": 429,
         "section_id": "s4",
+        "section_label": "3. Fees",
         "start_offset": 407,
         "text": "Late fee: 2% per month on past-due amounts."
       },
@@ -928,6 +931,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Statement of Work #1",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -946,6 +950,7 @@
       "excerpt": {
         "end_offset": 159,
         "section_id": "s2",
+        "section_label": "1. Services",
         "start_offset": 147,
         "text": "Provider shall use best efforts to deliver the Deliverables described below."
       },
@@ -963,6 +968,7 @@
       "excerpt": {
         "end_offset": 329,
         "section_id": "s3",
+        "section_label": "2. Deliverables and Milestones",
         "start_offset": 300,
         "text": "Deliverables: as further detailed by Customer from time to time at Customer's sole discretion."
       },
@@ -989,6 +995,7 @@
       "excerpt": {
         "end_offset": 159,
         "section_id": "s2",
+        "section_label": "1. Services",
         "start_offset": 147,
         "text": "Provider shall use best efforts to deliver the Deliverables described below."
       },
@@ -1007,6 +1014,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Statement of Work #1",
         "start_offset": 0,
         "text": "(no definitions located)"
       },
@@ -1022,11 +1030,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected sow (score 1). Title matched: \"statement of work\", \"sow\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "e06fe8611a20bb90b91a964530c77d671b1bba5ca8d27a6092a83bcd2af9964a",
+  "result_hash": "049ed8f0e29dfc15d50b94b1f3f5e422517c0c75145e84d6d1b35eef659a2711",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Rule, RuleContext, Finding } from "./finding.js";
+import { makeFinding } from "./finding.js";
 import { runEngine, computeResultHash, ENGINE_VERSION } from "./runner.js";
 import { LAUNCH_RULES } from "./rules/index.js";
 import { buildContext } from "./_test-fixtures.js";
@@ -219,5 +220,46 @@ describe("runEngine — a rule that throws is distinguishable from one that is s
     const crashed = await runEngine({ rules: [throwingRule("R-001")], ctx, source_file: src });
     const clean = await runEngine({ rules: [fakeRule("R-001", false)], ctx, source_file: src });
     expect(crashed.result_hash).not.toBe(clean.result_hash);
+  });
+});
+
+describe("runEngine — where a finding is, in the document's words", () => {
+  const RULE: Rule = {
+    id: "TEST-LABEL",
+    version: "1.0.0",
+    name: "test",
+    category: "structural",
+    default_severity: "info",
+    description: "test",
+    dkb_citations: [],
+    check: (ctx) =>
+      makeFinding({
+        rule: RULE,
+        title: "t",
+        description: "d",
+        position: {
+          section_id: ctx.tree.sections[ctx.tree.sections.length - 1]!.id,
+          start: 0,
+          end: 1,
+        },
+        excerptText: "x",
+        explanation: "e",
+        source_citations: [],
+      }),
+  };
+  const source_file = { name: "x", sha256: "0".repeat(64), size_bytes: 1 };
+
+  it("labels a finding with its section's heading", async () => {
+    const run = await runEngine({
+      rules: [RULE],
+      ctx: buildContext(["Preamble", "Body."], ["4. TERM AND TERMINATION", "Body."]),
+      source_file,
+    });
+    expect(run.findings[0]!.excerpt.section_label).toBe("4. TERM AND TERMINATION");
+  });
+
+  it("gives an untitled section no label", async () => {
+    const run = await runEngine({ rules: [RULE], ctx: buildContext(["", "Body."]), source_file });
+    expect(run.findings[0]!.excerpt).not.toHaveProperty("section_label");
   });
 });

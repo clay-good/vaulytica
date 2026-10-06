@@ -65,3 +65,21 @@ export function flattenOutline(outline: SectionOutline): SectionOutlineNode[] {
   walk(outline.nodes);
   return out;
 }
+
+/**
+ * A section id → what the document calls that section: its heading as
+ * written, trimmed to a readable length. Undefined for an untitled section.
+ */
+export function sectionLabels(tree: DocumentTree): (id: string | undefined) => string | undefined {
+  const labels = new Map<string, string>();
+  const walk = (sections: DocumentTree["sections"]): void => {
+    for (const s of sections) {
+      const heading = s.heading.replace(/\s+/g, " ").trim();
+      if (heading)
+        labels.set(s.id, heading.length > 60 ? `${heading.slice(0, 57).trimEnd()}…` : heading);
+      walk(s.children);
+    }
+  };
+  walk(tree.sections);
+  return (id) => (id ? labels.get(id) : undefined);
+}

@@ -34,6 +34,14 @@ export type RuleTier = "established" | "prevailing-practice" | "opinion";
 export type Excerpt = {
   text: string;
   section_id?: string;
+  /**
+   * What the document calls the section — its heading as written ("4. TERM
+   * AND TERMINATION"). `section_id` is the ingest's internal id ("s4"), and
+   * reports printed it to readers as "§s4". Omitted for an untitled section
+   * (a pasted document is often one), so the report says nothing rather than
+   * something no one can find.
+   */
+  section_label?: string;
   start_offset: number;
   end_offset: number;
 };

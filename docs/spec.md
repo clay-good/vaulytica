@@ -1239,7 +1239,13 @@ type Finding = {
   severity: Severity;
   title: string;
   description: string;
-  excerpt: { text: string; section_id?: string; start_offset: number; end_offset: number };
+  excerpt: {
+    text: string;
+    section_id?: string; // the ingest's internal id ("s4") — for machines
+    section_label?: string; // the section's heading as written — what reports show
+    start_offset: number;
+    end_offset: number;
+  };
   explanation: string;           // plain language
   recommendation?: string;
   source_citations: SourceCitation[];

@@ -971,11 +971,22 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
   });
 
   it("shows the excerpt as evidence, under a label carrying the exact locator", async () => {
+    const run = makeRun();
+    run.findings[0]!.excerpt.section_label = "1. Definitions";
+    const xml = await docXmlOf(
+      await buildDocxReport(run, ingest, loadStarterDkbSync(), loadMutualNda()),
+    );
+    expect(xml).toContain("Evidence — 1. Definitions, characters 0–12");
+    expect(xml).toContain("excerpt text");
+  });
+
+  it("never shows the ingest's internal section id", async () => {
+    // "s1" is not a name the document gives anything.
     const xml = await docXmlOf(
       await buildDocxReport(makeRun(), ingest, loadStarterDkbSync(), loadMutualNda()),
     );
-    expect(xml).toContain("Evidence — s1, characters 0–12");
-    expect(xml).toContain("excerpt text");
+    expect(xml).toContain("Evidence — characters 0–12");
+    expect(xml).not.toContain("Evidence — s1");
   });
 
   it("groups character offsets so long spans stay readable", async () => {
@@ -985,7 +996,8 @@ describe("report-structure validation (spec-v7 Step 122)", () => {
         ...finding("c1", "critical"),
         excerpt: {
           text: "the auto-renewal clause",
-          section_id: "§ 7.2",
+          section_id: "s7.2",
+          section_label: "§ 7.2",
           start_offset: 12433,
           end_offset: 12590,
         },

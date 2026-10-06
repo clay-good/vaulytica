@@ -173,7 +173,7 @@ describe("buildFixListCsv", () => {
     const csv = buildFixListCsv(run);
     const rows = csv.trimEnd().split("\r\n");
     expect(rows[0]).toBe(
-      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url,clause",
+      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url,clause,section_label",
     );
     expect(rows).toHaveLength(3);
     expect(rows[1]).toContain("critical,MSA-006,s10,");
@@ -582,7 +582,7 @@ describe("the fix list names the clause to edit", () => {
     // Appended so a consumer reading by column index keeps working.
     const csv = buildFixListCsv(makeRun([withSpan(), absence()]));
     const rows = csv.trimEnd().split("\r\n");
-    expect(rows[0]!.split(",").pop()).toBe("clause");
+    expect(rows[0]!.split(",").slice(-2)).toEqual(["clause", "section_label"]);
     expect(rows[1]).toContain("Liability is unlimited.");
     // Empty for the absence row, and never the marker string.
     expect(rows[2]!.endsWith(",")).toBe(true);

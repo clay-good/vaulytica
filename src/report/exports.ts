@@ -240,7 +240,7 @@ export function buildFixListMarkdown(
     for (const f of group) {
       lines.push("");
       lines.push(`- [ ] **${f.rule_id}** — ${f.title}`);
-      const section = f.excerpt.section_id;
+      const section = f.excerpt.section_label;
       if (section) lines.push(`  - Section: ${section}`);
       // WHICH WORDS. A fix list is worked from, not read — and it gave a
       // section id and no clause, so the one question it exists to answer
@@ -327,6 +327,8 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
       // Appended, never inserted: a consumer reading by column index keeps
       // working. Empty for a finding about an absence — see the Markdown note.
       "clause",
+      // What the document calls the section; `section` is the internal id.
+      "section_label",
     ]),
   );
   for (const f of run.findings) {
@@ -341,6 +343,7 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
         citationLine(f, currency),
         citationUrls(f), // spec-v8 §14 — verifiable URL alongside the name
         f.excerpt.end_offset > f.excerpt.start_offset ? truncateExcerpt(f.excerpt.text) : "",
+        f.excerpt.section_label ?? "",
       ]),
     );
   }
@@ -1148,7 +1151,7 @@ export function buildNegotiationPostureMarkdown(
   lines.push("|---|---|---|---|---|---|---|---|");
   for (const p of posture.positions) {
     lines.push(
-      `| ${mdCell(p.dimension)} | ${NEGOTIATION_TIER_LABEL[p.tier]} | ${mdCell(p.size_band ?? "—")} | ${mdCell(p.met_rung ?? "—")} | ${mdCell(postureFinding(p) || "—")} | ${mdCell(p.guidance ?? "—")} | ${mdCell(p.approved_language ?? "—")} | ${mdCell(p.section_id ?? "—")} |`,
+      `| ${mdCell(p.dimension)} | ${NEGOTIATION_TIER_LABEL[p.tier]} | ${mdCell(p.size_band ?? "—")} | ${mdCell(p.met_rung ?? "—")} | ${mdCell(postureFinding(p) || "—")} | ${mdCell(p.guidance ?? "—")} | ${mdCell(p.approved_language ?? "—")} | ${mdCell(p.section_label ?? "—")} |`,
     );
   }
   lines.push("");
@@ -1174,6 +1177,8 @@ export function buildNegotiationPostureCsv(posture: NegotiationPosture): string 
       "guidance",
       "approved_language",
       "section",
+      // Appended: what the document calls the section; `section` is the id.
+      "section_label",
     ]),
   );
   for (const p of posture.positions) {
@@ -1187,6 +1192,7 @@ export function buildNegotiationPostureCsv(posture: NegotiationPosture): string 
         p.guidance ?? "",
         p.approved_language ?? "",
         p.section_id ?? "",
+        p.section_label ?? "",
       ]),
     );
   }

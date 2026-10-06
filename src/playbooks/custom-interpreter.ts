@@ -25,6 +25,7 @@
  */
 
 import type { DocumentTree, Section } from "../ingest/types.js";
+import { sectionLabels } from "../extract/sections.js";
 import { flattenText } from "../ingest/types.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { Finding, Severity } from "../engine/finding.js";
@@ -242,6 +243,11 @@ export type NegotiationPositionResult = {
   /** A short excerpt of the clause that set the tier, when known. */
   excerpt?: string;
   section_id?: string;
+  /**
+   * What the document calls that section — its heading as written. Display
+   * only, outside `posture_hash`; the views printed `section_id` ("§s4").
+   */
+  section_label?: string;
   /** Why unevaluable, when the metric/clause is not stated in the document. */
   reason?: string;
   /**
@@ -359,8 +365,11 @@ export async function evaluateNegotiationPosture(
   input: { tree: DocumentTree; extracted: ExtractedData },
 ): Promise<NegotiationPosture> {
   const facts = buildDocFacts(input.tree, input.extracted);
+  const labelOf = sectionLabels(input.tree);
   const results = positions.map((pos) => {
-    const r = classifyPosition(pos, facts);
+    const classified = classifyPosition(pos, facts);
+    const label = labelOf(classified.section_id);
+    const r = label ? { ...classified, section_label: label } : classified;
     // Attach the resolver's deal-size-band note as detail (outside posture_hash).
     return pos._resolved_band ? compact({ ...r, size_band: pos._resolved_band }) : r;
   });

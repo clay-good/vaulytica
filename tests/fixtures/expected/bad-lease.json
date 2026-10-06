@@ -874,6 +874,7 @@
       "excerpt": {
         "end_offset": 265,
         "section_id": "s2",
+        "section_label": "1. Premises and Term",
         "start_offset": 247,
         "text": "[Premises Address]"
       },
@@ -892,6 +893,7 @@
       "excerpt": {
         "end_offset": 1215,
         "section_id": "s6",
+        "section_label": "5. Dispute Resolution",
         "start_offset": 1168,
         "text": "Tenant hereby waives any right to trial by jury in any action arising from this Lease."
       },
@@ -910,6 +912,7 @@
       "excerpt": {
         "end_offset": 1166,
         "section_id": "s6",
+        "section_label": "5. Dispute Resolution",
         "start_offset": 1069,
         "text": "Tenant shall provide Landlord at least 60 days written notice of any claim before initiating suit."
       },
@@ -937,6 +940,7 @@
       "excerpt": {
         "end_offset": 780,
         "section_id": "s3",
+        "section_label": "2. Rent",
         "start_offset": 756,
         "text": "Late Payment: A late fee of 3% per month shall apply to amounts not paid when due."
       },
@@ -964,6 +968,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Office Lease",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -982,6 +987,7 @@
       "excerpt": {
         "end_offset": 955,
         "section_id": "s5",
+        "section_label": "4. Indemnification",
         "start_offset": 940,
         "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
       },
@@ -1000,6 +1006,7 @@
       "excerpt": {
         "end_offset": 896,
         "section_id": "s4",
+        "section_label": "3. Insurance",
         "start_offset": 843,
         "text": "Tenant shall maintain commercial general liability insurance during the Term."
       },
@@ -1018,6 +1025,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Office Lease",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -1036,6 +1044,7 @@
       "excerpt": {
         "end_offset": 380,
         "section_id": "s2",
+        "section_label": "1. Premises and Term",
         "start_offset": 365,
         "text": "The initial Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
       },
@@ -1079,6 +1088,7 @@
       "excerpt": {
         "end_offset": 488,
         "section_id": "s2",
+        "section_label": "1. Premises and Term",
         "start_offset": 365,
         "text": "automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days"
       },
@@ -1122,6 +1132,7 @@
       "excerpt": {
         "end_offset": 382,
         "section_id": "s2",
+        "section_label": "1. Premises and Term",
         "start_offset": 365,
         "text": "The initial Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
       },
@@ -1165,6 +1176,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Office Lease",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -1183,6 +1195,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Office Lease",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -1201,6 +1214,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Office Lease",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1227,6 +1241,7 @@
       "excerpt": {
         "end_offset": 1215,
         "section_id": "s6",
+        "section_label": "5. Dispute Resolution",
         "start_offset": 1182,
         "text": "Tenant hereby waives any right to trial by jury in any action arising from this Lease."
       },
@@ -1244,6 +1259,7 @@
       "excerpt": {
         "end_offset": 1046,
         "section_id": "s5",
+        "section_label": "4. Indemnification",
         "start_offset": 933,
         "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
       },
@@ -1261,6 +1277,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s5",
+        "section_label": "4. Indemnification",
         "start_offset": 0,
         "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
       },
@@ -1276,11 +1293,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "986db16513e0537bca32cd15fadc1384425dfabad5867972b36bfb1e4ae4e78c",
+  "result_hash": "fc9a9b16811035041b1708f17d5396dadcf89ae7a46ed8f0e1da245d7f5f2ff3",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }

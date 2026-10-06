@@ -84,7 +84,7 @@ const ACTION_HEADING: Record<Action, string> = {
 function renderPosition(p: NegotiationPositionResult, action: Action): string {
   const found = (p.detail ?? p.reason ?? "").trim();
   const guide = p.guidance?.trim();
-  const sec = p.section_id ? ` <span class="sec">§${esc(p.section_id)}</span>` : "";
+  const sec = p.section_label ? ` <span class="sec">${esc(p.section_label)}</span>` : "";
   // The team's own pre-approved fallback language, quoted verbatim and clearly
   // attributed to the playbook (never generated). Carried only on below-floor
   // rows (add-negotiation-ladder-playbooks).

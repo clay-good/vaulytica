@@ -869,6 +869,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no indemnification language)"
       },
@@ -887,6 +888,7 @@
       "excerpt": {
         "end_offset": 1197,
         "section_id": "s5",
+        "section_label": "4. Term and Renewal",
         "start_offset": 1175,
         "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer tha…"
       },
@@ -930,6 +932,7 @@
       "excerpt": {
         "end_offset": 293,
         "section_id": "s2",
+        "section_label": "1. Suspension Rights",
         "start_offset": 144,
         "text": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion that Customer has breached this Agreement or that continued access poses a risk to Vendor or its other customers."
       },
@@ -957,6 +960,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no payment-term clause)"
       },
@@ -975,6 +979,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no IP-ownership clause)"
       },
@@ -1010,6 +1015,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no LoL clause)"
       },
@@ -1028,6 +1034,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no Effective Date reference matched)"
       },
@@ -1046,6 +1053,7 @@
       "excerpt": {
         "end_offset": 1197,
         "section_id": "s5",
+        "section_label": "4. Term and Renewal",
         "start_offset": 1175,
         "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer than ninety (90) days prior to the renewal date."
       },
@@ -1089,6 +1097,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no for-cause termination)"
       },
@@ -1107,6 +1116,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no effect-of-termination clause)"
       },
@@ -1125,6 +1135,7 @@
       "excerpt": {
         "end_offset": 0,
         "section_id": "s1",
+        "section_label": "Subscription Agreement",
         "start_offset": 0,
         "text": "(no venue clause)"
       },
@@ -1151,6 +1162,7 @@
       "excerpt": {
         "end_offset": 293,
         "section_id": "s2",
+        "section_label": "1. Suspension Rights",
         "start_offset": 271,
         "text": "Vendor may suspend Customer's access to the Services, in whole or in part, immediately and without notice if Vendor determines in its sole discretion that Customer has breached this Agreement or that continued access poses a risk to Vendor or its other customers."
       },
@@ -1175,11 +1187,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "1b17f489b80a6cf0ce8fc723bf49943c393349b02676196713ed928b1076b923",
+  "result_hash": "e6271b8fb8c3163c995a20f092fe01e23043d10bded4a415e1c51a589f0e45d8",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.826.0"
+  "version": "9.827.0"
 }
