@@ -1357,3 +1357,40 @@ export function distributeListModal(text: string): string {
       `${modal} ${rest.replace(/\((?:[a-z]|[ivx]{1,4}|\d{1,2})\)\s*/gi, `${modal} `)}`,
   );
 }
+
+/** A party described by its formation: "a Colorado corporation", "a Delaware limited liability company". */
+const ENTITY_FORMATION = String.raw`\ban?\s+(?:[A-Z][a-z]+\s+){1,2}(?:corporation|limited\s+liability\s+company|limited\s+partnership|general\s+partnership|professional\s+corporation|nonprofit\s+corporation|business\s+trust)\b`;
+
+/**
+ * The claims that make a dispute an INDIVIDUAL's: employment, wages, personal
+ * injury, emotional distress, discrimination. "employees" alone is not one —
+ * every release lists "officers, directors, employees and agents".
+ */
+export const INDIVIDUAL_CLAIM: readonly RegExp[] = [
+  /\bemployment\b/i,
+  /\b(?:back\s+pay|front\s+pay|wages?|overtime|severance)\b/i,
+  /\b(?:personal|bodily|physical)\s+injur/i,
+  /\bemotional\s+distress\b|\bpain\s+and\s+suffering\b/i,
+  /\bdiscriminat|\bharassment\b|\bretaliation\b|\bwrongful\s+(?:termination|discharge|death)\b/i,
+  /\b(?:title\s+vii|ADEA|FLSA|ADA|FEHA)\b/i,
+];
+
+/**
+ * A document an individual is part of — an individual party or an
+ * individual's claim — or one that does not show otherwise. It is NOT one
+ * only on an AFFIRMATIVE showing: two parties described by their formation
+ * ("a Colorado corporation", "a Colorado limited liability company") and no
+ * individual signal, so a bare document still counts. Used as an
+ * `applicable_if` list (any match applies).
+ */
+export const INDIVIDUAL_SETTLEMENT: readonly RegExp[] = [
+  ...INDIVIDUAL_CLAIM,
+  /\ban\s+individual\b/i,
+  /\bresiding\s+(?:in|at)\b/i,
+  new RegExp(String.raw`^(?![\s\S]*${ENTITY_FORMATION}[\s\S]*${ENTITY_FORMATION})`, "i"),
+];
+
+/** True when `text` shows two entity parties and no individual (see {@link INDIVIDUAL_SETTLEMENT}). */
+export function betweenEntitiesOnly(text: string): boolean {
+  return !INDIVIDUAL_SETTLEMENT.some((re) => re.test(text));
+}

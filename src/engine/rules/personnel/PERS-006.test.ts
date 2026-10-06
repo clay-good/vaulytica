@@ -77,3 +77,22 @@ describe("PERS-006 — reads the carve-outs it recommends", () => {
     expect(f?.recommendation).not.toMatch(/NLRA-protected/);
   });
 });
+
+describe("PERS-006 — mutual non-disparagement", () => {
+  it("reads 'neither Party shall make any false and disparaging statement'", () => {
+    const ctx = buildContext([
+      "Non-Disparagement",
+      "Neither Party shall make any false and disparaging statement about the other to any customer.",
+    ]);
+    expect(PERS_006.check(ctx)).not.toBeNull();
+  });
+
+  it("is silent between two companies, where no employee is bound", () => {
+    const ctx = buildContext([
+      "Settlement",
+      "This Agreement is between Granite Peak Fabrication, Inc., a Colorado corporation, and Westvale Construction Group LLC, a Colorado limited liability company.",
+      "Neither Party shall make any false and disparaging statement about the other to any customer.",
+    ]);
+    expect(PERS_006.check(ctx)).toBeNull();
+  });
+});

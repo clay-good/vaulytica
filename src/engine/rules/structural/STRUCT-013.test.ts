@@ -523,3 +523,18 @@ describe("STRUCT-013 — an individual's signature line under her own name", () 
     expect(f).not.toBeNull();
   });
 });
+
+describe("STRUCT-013 — a signatory's caption styled as a heading", () => {
+  it("reads the section heading as the line above the first paragraph", () => {
+    const f = STRUCT_013.check(
+      buildContext(
+        [
+          "General",
+          "This Agreement may be signed electronically. Each counterpart is an original, and together they are one agreement.",
+        ],
+        ["MAYA OKONKWO-REYES", "______________________", "Date: May 4, 2026"],
+      ),
+    );
+    expect(f).toBeNull();
+  });
+});

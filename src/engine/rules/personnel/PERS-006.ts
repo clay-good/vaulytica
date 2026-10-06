@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
+import {
+  betweenEntitiesOnly,
+  emit,
+  firstParagraphMatch,
+  isPresenceDisclaimed,
+  matchedSentence,
+} from "../_helpers.js";
 import { fullText } from "../v4/_helpers.js";
 
 /**
@@ -74,9 +80,16 @@ export const rule: Rule = {
       // cannot span "does not include a non-disparagement obligation" and move
       // the match off the noun — that disclaimed form stays with the noun
       // branch, where the presence-disclaimer guard suppresses it.
-      /\b(?:non|no)[-\s]?disparagement\b|\b(?:not|no|never|refrain\s+from|prohibited\s+from|cease\s+to)\b[^.]{0,24}?\bdisparag(?:e|es|ing)\b/i,
+      // "neither Party shall make any false and disparaging statement" — the
+      // negation in the subject, as in the mutual form.
+      /\b(?:non|no)[-\s]?disparagement\b|\b(?:not|no|never|neither|refrain\s+from|prohibited\s+from|cease\s+to)\b[^.]{0,40}?\bdisparag(?:e|es|ing)\b/i,
     );
     if (!hit) return null;
+    // Its premise is an employee or contractor at separation (McLaren Macomb,
+    // Rule 21F-17). Two companies agreeing not to disparage each other are not
+    // that, and a clean settlement between a steel supplier and a contractor
+    // was told to add protected-activity carve-outs.
+    if (betweenEntitiesOnly(fullText(ctx))) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
     const text = fullText(ctx);
     const present = CARVE_OUTS.filter((c) => c.re.test(text));

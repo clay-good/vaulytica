@@ -108,7 +108,11 @@ export const rule: Rule = {
     // text laid out with a blank line between every line. Reading the
     // underscore rule together with what FOLLOWS it is what lets "______" over
     // "Priya Venkataraman, Secretary" be recognized as the signature it is.
-    const paragraphs: Array<{ text: string; section: { id: string }; start: number }> = [];
+    const paragraphs: Array<{
+      text: string;
+      section: { id: string; heading?: string };
+      start: number;
+    }> = [];
     forEachParagraph(ctx.tree, (p) => {
       paragraphs.push({ text: p.text, section: p.section, start: p.start });
     });
@@ -133,6 +137,16 @@ export const rule: Rule = {
     // labeled blanks and one the drafter forgot is not a form, and the
     // majority alone would call it one.
     const everyBlankIsAField = runTotals.labeled >= 4 && runTotals.labeled * 2 > runTotals.total;
+    // The line above a paragraph — or, for the first paragraph of a section,
+    // the section's HEADING. A DOCX that styles a signatory's caption as a
+    // heading ("MAYA OKONKWO-REYES") puts the ruled line first in a new
+    // section, and the previous section's last paragraph is not its caption.
+    const lineAbove = (i: number): string | undefined => {
+      const here = paragraphs[i]!;
+      const prev = paragraphs[i - 1];
+      if (prev && prev.section.id === here.section.id) return prev.text;
+      return here.section.heading || prev?.text;
+    };
     paragraphs.forEach((p, i) => {
       // The NEXT paragraph, skipping page furniture. A contract read out of a
       // PDF carries a running footer between the signature line and the
@@ -167,7 +181,7 @@ export const rule: Rule = {
               isBareNameSignature(withNext, partyNames) ||
               everyBlankIsAField ||
               isLabeledFormFieldRow(p.text, documentIsForm) ||
-              isRuledWritingSpace(p.text, paragraphs[i - 1]?.text))
+              isRuledWritingSpace(p.text, lineAbove(i)))
           ) {
             continue;
           }

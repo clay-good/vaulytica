@@ -209,3 +209,15 @@ describe("RISK-005 — a waiver without a cap", () => {
     ).toBeNull();
   });
 });
+
+describe("RISK-005 — a cap whose negation is in the subject", () => {
+  it("reads 'neither party's liability shall exceed the fees paid'", () => {
+    // Without its "LIMITATION OF LIABILITY" heading line (a DOCX heading is not
+    // a paragraph), this cap was reported missing.
+    const ctx = buildContext([
+      "Liability",
+      "Except for indemnification obligations, neither party's liability shall exceed the fees paid in the twelve (12) months before the claim.",
+    ]);
+    expect(RISK_005.check(ctx)).toBeNull();
+  });
+});

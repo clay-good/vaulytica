@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.811.0] — 2026-10-06
+
+Found by running fourteen clean documents as both pasted text and DOCX and
+diffing the findings. In a DOCX the clause headings are section headings, not
+paragraphs, which exposed three rules that had been passing on a heading line.
+
+### Fixed
+- **RISK-005 (warning) reported no limitation of liability in a DOCX.** "neither
+  party's liability shall exceed the fees paid …" puts the negation in the
+  subject, and the cap patterns wanted "shall not exceed"; the .txt passed only
+  because its heading line read "LIMITATION OF LIABILITY". Two documents.
+- **PERS-006 matched the heading, not the clause.** "Neither Party shall make
+  any false and disparaging statement" was not read ("neither" was missing
+  from the negations), and its premise — an employee or contractor at
+  separation — is now tested: a non-disparagement between two companies
+  (both parties described by their formation, no individual) is silent. The
+  "between entities only" test is now one shared helper, used by SET-007,
+  SET-008 and PERS-006.
+- **STRUCT-013 (critical) when a signatory's caption is a heading.** The ruled
+  line is then the first paragraph of its section; the line above it is the
+  section heading, not the previous section's last paragraph.
+
 ## [9.810.0] — 2026-10-06
 
 Found by reading a clean UCC Article 9 security agreement.

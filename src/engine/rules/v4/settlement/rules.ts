@@ -43,37 +43,7 @@ import {
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
 import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
-
-/**
- * The claims that make a settlement an INDIVIDUAL's: employment, wages,
- * personal injury, emotional distress, discrimination. "employees" alone is
- * not one — every release lists "officers, directors, employees and agents".
- */
-/** A party described by its formation: "a Colorado corporation", "a Delaware limited liability company". */
-const ENTITY_FORMATION = String.raw`\ban?\s+(?:[A-Z][a-z]+\s+){1,2}(?:corporation|limited\s+liability\s+company|limited\s+partnership|general\s+partnership|professional\s+corporation|nonprofit\s+corporation|business\s+trust)\b`;
-
-const INDIVIDUAL_CLAIM = [
-  /\bemployment\b/i,
-  /\b(?:back\s+pay|front\s+pay|wages?|overtime|severance)\b/i,
-  /\b(?:personal|bodily|physical)\s+injur/i,
-  /\bemotional\s+distress\b|\bpain\s+and\s+suffering\b/i,
-  /\bdiscriminat|\bharassment\b|\bretaliation\b|\bwrongful\s+(?:termination|discharge|death)\b/i,
-  /\b(?:title\s+vii|ADEA|FLSA|ADA|FEHA)\b/i,
-];
-
-/**
- * A settlement an individual is part of — an individual party or an
- * individual's claim — or one that does not show otherwise. Silenced only by
- * an AFFIRMATIVE showing: two parties described by their formation ("a
- * Colorado corporation", "a Colorado limited liability company") and no
- * individual signal. A bare document still gets the check.
- */
-const INDIVIDUAL_SETTLEMENT = [
-  ...INDIVIDUAL_CLAIM,
-  /\ban\s+individual\b/i,
-  /\bresiding\s+(?:in|at)\b/i,
-  new RegExp(String.raw`^(?![\s\S]*${ENTITY_FORMATION}[\s\S]*${ENTITY_FORMATION})`, "i"),
-];
+import { INDIVIDUAL_CLAIM, INDIVIDUAL_SETTLEMENT } from "../../_helpers.js";
 
 const CATEGORY = "settlement";
 
