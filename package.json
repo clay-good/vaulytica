@@ -100,7 +100,7 @@
     "globals": "^17.6.0",
     "js-yaml": "^4.1.1",
     "prettier": "^3.2.5",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.13",
