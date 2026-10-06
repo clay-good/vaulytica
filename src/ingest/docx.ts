@@ -132,6 +132,53 @@ export function parseDocxHtml(html: string): DocumentTree {
 
   const styledLevelByDepth = new Map<number, number>();
 
+  /**
+   * WORD'S AUTOMATIC NUMBERING. A clause numbered by a list style carries no
+   * "1." in its text, and mammoth gives the list as `<ol>` — a NEW `<ol>`
+   * after every paragraph that interrupts it. Numbered by position within
+   * each `<ol>`, a contract whose clauses each have body text below them read
+   * "1. Definitions", "1. Services", "1. Fees", "2. Term", and every
+   * "Section 3" pointed at the wrong clause. Word continues a list across an
+   * interruption unless told to restart, so the top-level count does too,
+   * restarting only at an exhibit or schedule.
+   *
+   * A sub-clause is a list nested in its parent's item, and it was flattened
+   * into the parent with neither a number nor a space: "1. Services.Provider
+   * shall perform … Section 4.Provider shall meet …". Each nested item is its
+   * own paragraph, numbered under its parent ("2.1", "2.2").
+   */
+  //
+  // An interrupted SUB-clause list comes back from mammoth wrapped in an empty
+  // bullet — `<ul><li><ol><li>…</li></ol></li></ul>` — so depth, not the tag
+  // of the outer list, says which level a number belongs to, and the count at
+  // each level carries across the document.
+  let counters: number[] = [];
+  const emitList = (list: Element, depth: number): void => {
+    const ordered = list.tagName.toLowerCase() === "ol";
+    for (const li of Array.from(list.children)) {
+      if (li.tagName.toLowerCase() !== "li") continue;
+      let prefix = "• ";
+      if (ordered) {
+        counters[depth] = (counters[depth] ?? 0) + 1;
+        counters.length = depth + 1;
+        for (let k = 0; k < depth; k++) counters[k] ??= 1;
+        prefix = depth === 0 ? `${counters[0]}. ` : `${counters.join(".")} `;
+      }
+      const own = collectInlineRuns(li, "", true);
+      if (
+        own
+          .map((r) => r.text)
+          .join("")
+          .trim()
+      )
+        appendParagraph(collectInlineRuns(li, prefix, true));
+      for (const nested of Array.from(li.children)) {
+        const t = nested.tagName.toLowerCase();
+        if (t === "ol" || t === "ul") emitList(nested, depth + 1);
+      }
+    }
+  };
+
   const appendParagraph = (runs: Run[]): void => {
     if (runs.length === 0) return;
     const paragraph: Paragraph = { id: "", runs };
@@ -166,15 +213,14 @@ export function parseDocxHtml(html: string): DocumentTree {
       // than nested under its neighbour.
       const depth = /^(\d+(?:\.\d+){0,3})\.?\s/.exec(text)?.[1]?.split(".").length;
       if (depth !== undefined) styledLevelByDepth.set(depth, level);
+      if (/^(?:EXHIBIT|Exhibit|SCHEDULE|Schedule|APPENDIX|Appendix|ANNEX|Annex)\b/.test(text)) {
+        counters = [];
+      }
       pushSection(text, level);
       continue;
     }
     if (tag === "ul" || tag === "ol") {
-      for (const li of Array.from(el.children)) {
-        const prefix = tag === "ul" ? "• " : `${Array.from(el.children).indexOf(li) + 1}. `;
-        const runs = collectInlineRuns(li, prefix);
-        appendParagraph(runs);
-      }
+      emitList(el, 0);
       continue;
     }
     if (tag === "table") {
@@ -225,7 +271,7 @@ export function parseDocxHtml(html: string): DocumentTree {
   return { type: "document", sections };
 }
 
-function collectInlineRuns(el: Element, prefix: string): Run[] {
+function collectInlineRuns(el: Element, prefix: string, skipLists = false): Run[] {
   const runs: Run[] = [];
   if (prefix) runs.push(makeTextRun(prefix));
   const walk = (node: Node, bold: boolean, italic: boolean, underline: boolean): void => {
@@ -244,6 +290,8 @@ function collectInlineRuns(el: Element, prefix: string): Run[] {
     if (node.nodeType !== 1) return;
     const child = node as Element;
     const tag = child.tagName.toLowerCase();
+    // A nested list is emitted as paragraphs of its own (see emitList).
+    if (skipLists && (tag === "ol" || tag === "ul")) return;
     const nextBold = bold || tag === "strong" || tag === "b";
     const nextItalic = italic || tag === "em" || tag === "i";
     const nextUnderline = underline || tag === "u";

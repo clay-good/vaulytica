@@ -47,3 +47,63 @@ describe("parseDocxHtml", () => {
     expect(lines.some((l) => l.includes("1 | 2"))).toBe(true);
   });
 });
+
+describe("parseDocxHtml — Word's automatic numbering", () => {
+  const paragraphsOf = (html: string): string[] => {
+    const out: string[] = [];
+    const walk = (sections: ReturnType<typeof parseDocxHtml>["sections"]): void => {
+      for (const s of sections) {
+        for (const p of s.paragraphs) out.push(p.runs.map((r) => r.text).join(""));
+        walk(s.children);
+      }
+    };
+    walk(parseDocxHtml(html).sections);
+    return out;
+  };
+
+  it("continues the count across body text, and numbers each sub-clause", () => {
+    // mammoth starts a new <ol> after every interrupting paragraph, and nests a
+    // sub-clause list inside its parent's <li>.
+    expect(
+      paragraphsOf(
+        "<ol><li>Definitions.</li></ol><p>Terms have their defined meanings.</p>" +
+          "<ol><li>Services.<ol><li>Provider shall perform the Services.</li><li>Provider shall meet the service levels.</li></ol></li></ol>" +
+          "<ol><li>Fees.</li></ol>",
+      ),
+    ).toEqual([
+      "1. Definitions.",
+      "Terms have their defined meanings.",
+      "2. Services.",
+      "2.1 Provider shall perform the Services.",
+      "2.2 Provider shall meet the service levels.",
+      "3. Fees.",
+    ]);
+  });
+
+  it("continues a sub-clause list that an interruption wrapped in an empty bullet", () => {
+    // mammoth's shape for a level-2 item after a body paragraph.
+    expect(
+      paragraphsOf(
+        "<ol><li>Covered Claims.<ol><li>Each party agrees to arbitrate.</li></ol></li></ol>" +
+          "<p>(a) a claim of sexual harassment</p>" +
+          "<ul><li><ol><li>Employee may also file with an agency.</li></ol></li></ul>" +
+          "<ol><li>Class Actions.<ol><li>Claims are arbitrated individually.</li></ol></li></ol>",
+      ),
+    ).toEqual([
+      "1. Covered Claims.",
+      "1.1 Each party agrees to arbitrate.",
+      "(a) a claim of sexual harassment",
+      "1.2 Employee may also file with an agency.",
+      "2. Class Actions.",
+      "2.1 Claims are arbitrated individually.",
+    ]);
+  });
+
+  it("restarts the count at an exhibit", () => {
+    expect(
+      paragraphsOf(
+        "<ol><li>Services.</li><li>Fees.</li></ol><h1>EXHIBIT A</h1><ol><li>Scope.</li></ol>",
+      ),
+    ).toContain("1. Scope.");
+  });
+});

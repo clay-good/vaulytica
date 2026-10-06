@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.839.0] — 2026-10-06
+
+### Fixed
+- **Word's automatic clause numbering was read wrong.** A clause numbered by
+  a list style carries no "1." in its text; mammoth gives the list as `<ol>`,
+  and starts a NEW `<ol>` after every paragraph that interrupts it. Numbered
+  by position within each `<ol>`, a contract whose clauses each have body text
+  beneath them read "1. Definitions", "1. Services", "1. Fees", "2. Term" —
+  so every "Section 3" resolved to the wrong clause, or to none. Word
+  continues a list across an interruption unless told to restart, and the
+  count now does too, restarting at an exhibit, schedule, appendix or annex.
+- **Sub-clauses were fused into their parent clause.** A nested list was
+  flattened into its parent's item with neither a number nor a space: "1.
+  Services.Provider shall perform the Services described in Section
+  4.Provider shall meet the service levels." — one paragraph, and sentences
+  ("Services.Provider") no reader could split. Each nested item is now its own
+  paragraph, numbered under its parent ("2.1 Provider shall perform …"). A
+  sub-clause list interrupted by a body paragraph comes back wrapped in an
+  empty bullet (`<ul><li><ol>…`) and was counted as a new top-level clause;
+  the count is now kept per depth across the document.
+  Most professionally drafted Word contracts number their clauses this way;
+  the test documents rendered for the format comparisons typed their numbers,
+  which is why it had not shown. Rendered with Word list numbering instead,
+  258 numbered specimens now report what their pasted text reports (one
+  differs: a trust amendment numbers its sub-clauses by the article it
+  amends, which list numbering cannot express).
+
 ## [9.838.0] — 2026-10-06
 
 ### Fixed
