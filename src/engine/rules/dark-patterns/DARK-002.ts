@@ -1,8 +1,40 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { forEachSection } from "../../../extract/walk.js";
 import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
 import { truncate } from "../../text.js";
 import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
+
+/**
+ * The top-level clause number in force at each document offset: a numbered
+ * heading ("7. TERM", "ARTICLE IV") or a numbered paragraph ("7.2 Renewal.")
+ * opens it. The same in pasted text, where clauses are paragraphs, and in a
+ * DOCX, where they are headings.
+ */
+function clauseIndex(ctx: RuleContext): (offset: number) => string | undefined {
+  const marks: { start: number; clause: string }[] = [];
+  const NUMBER =
+    /^\s*(?:(?:ARTICLE|Article|SECTION|Section|CLAUSE|Clause)\s+)?(\d{1,3}|[IVXLC]+\b)(?:\.\d+)*\.?\s+\S/;
+  let current: string | undefined;
+  forEachSection(ctx.tree, (s) => {
+    const h = NUMBER.exec(s.heading ?? "");
+    if (h) current = h[1]!.toUpperCase();
+    for (const p of s.paragraphs) {
+      const text = p.runs.map((r) => r.text).join("");
+      const m = /^\s*(\d{1,3})(?:\.\d+)*\.?\s+[A-Z]/.exec(text);
+      if (m) current = m[1]!;
+      if (current) marks.push({ start: p.runs[0]?.start ?? 0, clause: current });
+    }
+  });
+  return (offset) => {
+    let found: string | undefined;
+    for (const m of marks) {
+      if (m.start > offset) break;
+      found = m.clause;
+    }
+    return found;
+  };
+}
 
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
@@ -63,12 +95,22 @@ export const rule: Rule = {
     const days = notice
       ? countValue(notice.match[1] ?? notice.match[2] ?? notice.match[3] ?? "")
       : 0;
-    const buried =
-      !!notice && (notice.position.section_id !== auto.position.section_id || days >= 90);
+    // "Buried" is a different CLAUSE, read from the document's own numbering.
+    // It was a different section id — and pasted text is one section, so a
+    // window three clauses away was never buried there, while the same
+    // document as a DOCX was; the id also reached the reader as "located in
+    // s4".
+    const clauseAt = clauseIndex(ctx);
+    const autoClause = clauseAt(auto.position.start);
+    const noticeClause = notice ? clauseAt(notice.position.start) : undefined;
+    const far = !!notice && !!noticeClause && !!autoClause && noticeClause !== autoClause;
+    const buried = !!notice && (far || days >= 90);
     if (!buried) return null;
     return emit(ctx, rule, {
       title: "Auto-renewal with notice window buried or long",
-      description: `Notice window: ${days} days, located in ${notice!.position.section_id}.`,
+      description: far
+        ? `Notice window: ${days} days, stated in section ${noticeClause}; the renewal is in section ${autoClause}.`
+        : `Notice window: ${days} days.`,
       excerpt: truncate(auto.text, 200),
       explanation:
         "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. " +

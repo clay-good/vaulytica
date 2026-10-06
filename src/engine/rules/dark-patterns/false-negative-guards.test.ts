@@ -139,3 +139,24 @@ describe("DARK-003 — one-way fee shift in leases and loans (v1.2.0)", () => {
     ).toBeNull();
   });
 });
+
+describe("DARK-002 — a notice window in another clause of a pasted document", () => {
+  // Pasted text is one section; the clauses are numbered paragraphs.
+  const RENEWAL = "4.1 Term. This Agreement renews automatically for successive one-year terms.";
+  const NOTICE =
+    "9.2 Non-Renewal. Either party may give notice of non-renewal at least sixty (60) days before the end of the then-current term.";
+
+  it("reports a window three clauses away, naming both clauses", () => {
+    const f = DARK_002.check(
+      buildContext(["", RENEWAL, "5.1 Fees. Customer shall pay the Fees.", NOTICE]),
+    );
+    expect(f?.description).toBe(
+      "Notice window: 60 days, stated in section 9; the renewal is in section 4.",
+    );
+  });
+
+  it("is silent when the window sits in the renewal clause", () => {
+    const sameClause = NOTICE.replace("9.2 Non-Renewal.", "4.2 Non-Renewal.");
+    expect(DARK_002.check(buildContext(["", RENEWAL, sameClause]))).toBeNull();
+  });
+});

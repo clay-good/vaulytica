@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.826.0] — 2026-10-06
+
+### Fixed
+- **DARK-002 showed the reader an internal section id, and its "buried" test
+  depended on how the file was ingested.** The finding read "Notice window:
+  90 days, located in s4." — an id nobody can find in the document. And
+  "buried" meant the notice and the renewal sat in different SECTIONS, so a
+  pasted agreement (one section) never had a buried window short of 90 days,
+  while the same agreement as a DOCX did. The rule now compares the
+  top-level clause each sits in, read from the document's own numbering —
+  "4.1 Term." and "9.2 Non-Renewal." are clauses 4 and 9 in pasted text and
+  in a DOCX alike — and says so: "Notice window: 60 days, stated in section
+  9; the renewal is in section 4."
+
 ## [9.825.0] — 2026-10-06
 
 The last of the pasted-text-vs-DOCX divergences on the specimen corpus that
