@@ -106,11 +106,11 @@ Total work shipped this spec: **1 build step (219).** Purely additive — a new 
 
 # Part XVI — Principled deferrals
 
-- **A magnitude read (mean below-floor duration / mean lead-time, in rounds).** ⬜ Not built. v39 reads the *rate* of flips (an integer count over an integer denominator); the *length* of each below-floor stretch is the deferred magnitude axis (v37/v38 Part XVI's mean-lead-time), a float read orthogonal to a flip rate.
+- **A magnitude read (mean below-floor duration / mean lead-time, in rounds).** ⬜ Not built. v39 reads the *rate* of flips (an integer count over an integer denominator); the *length* of each below-floor stretch is the deferred magnitude axis (v37/v38 Part XVI's mean-lead-time), a float read orthogonal to a flip rate. Partly built later: spec-v40 (`coherence-duration`) reads the mean below-floor duration; a mean lead-time is still not built.
 - **A direction-resolved cadence (fall rate vs recovery rate).** ⬜ Not built. A front's falls and recoveries differ by at most one (they alternate), so a per-direction rate carries almost no information beyond the total; v39 reads the direction-blind crossing rate, as v24 counts direction-blind crossings.
 - **A configurable "flips at least K times" gate (`--min-crossings K`).** ⬜ Not built. The gate fires on a strict majority of the transitions, already tuning-free. The per-front counts are in the JSON for a consumer wanting a different bar.
 - **A standalone cadence artifact (`--emit-cadence`).** ⬜ Deferred, for the same reason v14–v38 keep the derived thing derived: the report is cheaply recomputable from the N coherence artifacts on demand.
-- **A directory/glob walker that infers round order.** ⬜ Not built. The command takes artifacts in round order on the argv (the caller's contract, mirroring the twenty-two trend/exposure/… commands).
+- **A directory/glob walker that infers round order.** ✅ Shipped in 9.850.0 (`tools/cli/round-archive.ts`): every sequence command takes a directory of `*.coherence.json` artifacts in natural round order (`round2` < `round10`), refusing names that do not determine the order. As first written: Not built. The command takes artifacts in round order on the argv (the caller's contract, mirroring the twenty-two trend/exposure/… commands).
 - **A browser surface for an N-round cadence synthesis.** ⬜ Deferred (v16–v38 Part XVI). The browser does an in-session two-round comparison; an N-artifact per-front churn read is a CI/dashboard concern.
 
 ---

@@ -112,7 +112,7 @@ Total work shipped this spec: **1 build step (209).** Purely additive — a new 
 - **A `--fail-on-concerted-recovery` gate.** ⬜ Not built. A coordinated rebound is good news, not a regression worth failing a build over; `concerted_recovery_count` is in the JSON for a consumer who wants to surface it.
 - **A standalone concurrency artifact (`--emit-concurrency`).** ⬜ Deferred, for the same reason v14–v28 keep the derived thing derived: the concurrency is cheaply recomputable from the N coherence artifacts on demand.
 - **A _net-direction_ per-step verdict (more falls than recoveries this step).** ⬜ Not built. The `falling`/`recovering` counts are in the JSON for a consumer that wants the net; v29 headlines the concerted-fall, the one tuning-free verdict.
-- **A directory/glob walker that infers round order.** ⬜ Not built. The command takes artifacts in round order on the argv (the caller's contract, mirroring the trend/exposure/persistence/breadth/recurrence/volatility/synchrony/settling/onset/latency commands).
+- **A directory/glob walker that infers round order.** ✅ Shipped in 9.850.0 (`tools/cli/round-archive.ts`): every sequence command takes a directory of `*.coherence.json` artifacts in natural round order (`round2` < `round10`), refusing names that do not determine the order. As first written: Not built. The command takes artifacts in round order on the argv (the caller's contract, mirroring the trend/exposure/persistence/breadth/recurrence/volatility/synchrony/settling/onset/latency commands).
 - **A browser surface for an N-round concurrency.** ⬜ Deferred (v16–v28 Part XVI). The browser does an in-session two-round comparison; an N-artifact concurrency is a CI/dashboard concern.
 
 ---
