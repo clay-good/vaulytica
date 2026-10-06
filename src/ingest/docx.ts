@@ -1,5 +1,6 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
 import { countWords, noTextWarning, normalize } from "./normalize.js";
+import { numberingLabels, paragraphKey } from "./docx-numbering.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
 import { countRevisions, docxNotices } from "./docx-notices.js";
@@ -24,12 +25,42 @@ import { languageFields } from "./language.js";
  * - {@link parseDocxHtml} — pure HTML → DocumentTree, exported for testing.
  */
 
+/** The slice of mammoth's document model the numbering transform touches. */
+type MammothNode = {
+  type?: string;
+  value?: string;
+  children?: MammothNode[];
+  numbering?: unknown;
+};
+
 type MammothLike = {
-  convertToHtml: (input: { arrayBuffer: ArrayBuffer; buffer?: Uint8Array }) => Promise<{
+  convertToHtml: (
+    input: { arrayBuffer: ArrayBuffer; buffer?: Uint8Array },
+    options?: { transformDocument?: (doc: unknown) => unknown },
+  ) => Promise<{
     value: string;
     messages: Array<{ type: string; message: string }>;
   }>;
+  transforms?: {
+    paragraph: (fn: (p: MammothNode) => MammothNode) => (doc: unknown) => unknown;
+  };
 };
+
+/** A paragraph's text in mammoth's model. */
+function mammothText(node: MammothNode): string {
+  if (node.type === "text") return node.value ?? "";
+  return (node.children ?? []).map(mammothText).join("");
+}
+
+/** The paragraph's first text node, to carry the label. */
+function firstText(node: MammothNode): MammothNode | undefined {
+  if (node.type === "text") return node;
+  for (const c of node.children ?? []) {
+    const t = firstText(c);
+    if (t) return t;
+  }
+  return undefined;
+}
 
 async function loadMammoth(): Promise<MammothLike> {
   // Dynamic import keeps the dependency out of the main bundle until we
@@ -55,7 +86,21 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
   // the browser build has no `Buffer` and reads `arrayBuffer` as before.
   const input: { arrayBuffer: ArrayBuffer; buffer?: Uint8Array } = { arrayBuffer: buf };
   if (typeof Buffer !== "undefined") input.buffer = Buffer.from(buf);
-  const result = await mammoth.convertToHtml(input);
+  // Word's automatic numbering, written into each numbered paragraph's text
+  // as Word displays it, and the list flag dropped: see docx-numbering.ts.
+  const labels = numberingLabels(buf);
+  const transformDocument =
+    labels.size > 0 && mammoth.transforms
+      ? mammoth.transforms.paragraph((p) => {
+          if (!p.numbering) return p;
+          const label = labels.get(paragraphKey(mammothText(p)))?.shift();
+          const head = label ? firstText(p) : undefined;
+          if (!label || !head) return p;
+          head.value = `${label} ${head.value ?? ""}`;
+          return { ...p, numbering: null };
+        })
+      : undefined;
+  const result = await mammoth.convertToHtml(input, transformDocument ? { transformDocument } : {});
   // mammoth returns the ALL-CHANGES-ACCEPTED text of a redline, and emits
   // Word's hidden text as ordinary text, both silently. Say so.
   warnings.push(...docxNotices(countRevisions(buf)));

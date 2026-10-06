@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.840.0] — 2026-10-06
+
+### Fixed
+- **A numbered heading lost its number.** Word numbers most contracts' articles
+  and sections through a list linked to the Heading styles, and mammoth gives
+  such a heading as a bare `<h1>Definitions</h1>` — the "Article I" or "1." is
+  in the list definition, not the text, and nothing in the HTML says it was
+  there. Every "Section 3.2" in such a document pointed at nothing. The ingest
+  now reads `numbering.xml`, `styles.xml` and `document.xml`, computes each
+  numbered paragraph's label as Word shows it — the level's text ("Article
+  %1", "Section %1.%2", "(%1)") with each number in its level's format
+  (decimal, roman, letter) and Word's legal-style decimal where the level asks
+  for it — and writes it into the paragraph, which then arrives exactly as if
+  the number had been typed. "(a)" and "(b)" sub-items are lettered as the
+  document letters them, not numbered "2.1". Anything not understood falls
+  back to the list reading of 9.839.0.
+
+### Tests
+- `docx-numbering` builds a Word-numbered contract (roman articles,
+  legal-style sections, lettered items) and checks every label;
+  `docx-format-invariance` compares five specimens rendered with Word list
+  numbering against their pasted text.
+
 ## [9.839.0] — 2026-10-06
 
 ### Fixed

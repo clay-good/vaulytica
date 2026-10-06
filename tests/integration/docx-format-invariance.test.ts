@@ -30,7 +30,15 @@
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
+import {
+  AlignmentType,
+  Document,
+  HeadingLevel,
+  LevelFormat,
+  Packer,
+  Paragraph,
+  TextRun,
+} from "docx";
 import { describe, expect, it } from "vitest";
 import { analyzeFile, analyzeText } from "../../tools/cli/api.js";
 import { ingestDocxBuffer } from "../../src/ingest/docx.js";
@@ -186,6 +194,83 @@ describe("a specimen as DOCX lists the duties its pasted text lists", () => {
         [...b].filter((k) => !a.has(k)),
         "only DOCX",
       ).toEqual([]);
+    },
+    120_000,
+  );
+});
+
+/**
+ * The same comparison with the clause numbers produced by WORD'S LIST
+ * NUMBERING rather than typed: the "1." and "2.1" are not in the text, and
+ * mammoth gives them as nested `<ol>` that restart after every interruption
+ * (9.839.0). These specimens cross-refer to sub-clauses ("Section 2.1"), so a
+ * wrong count shows as an unresolved reference.
+ */
+const NUMBERED_SAMPLE = [
+  "employment-arbitration.txt",
+  "asset-purchase-complete.txt",
+  "voting-agreement.txt",
+  "stock-purchase.txt",
+  "source-code-escrow.txt",
+];
+
+async function renderNumberedDocx(text: string, path: string): Promise<void> {
+  const lines = text
+    .split(/\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const paragraphs = lines.map((line, i) => {
+    if (i === 0) return new Paragraph({ text: line, heading: HeadingLevel.TITLE });
+    const top = /^\d+\.\s+(.*)$/.exec(line);
+    if (top)
+      return new Paragraph({
+        children: [new TextRun(top[1]!)],
+        numbering: { reference: "c", level: 0 },
+      });
+    const sub = /^\d+\.\d+\.?\s+(.*)$/.exec(line);
+    if (sub)
+      return new Paragraph({
+        children: [new TextRun(sub[1]!)],
+        numbering: { reference: "c", level: 1 },
+      });
+    return new Paragraph({ children: [new TextRun(line)] });
+  });
+  const doc = new Document({
+    numbering: {
+      config: [
+        {
+          reference: "c",
+          levels: [
+            { level: 0, format: LevelFormat.DECIMAL, text: "%1.", alignment: AlignmentType.START },
+            {
+              level: 1,
+              format: LevelFormat.DECIMAL,
+              text: "%1.%2",
+              alignment: AlignmentType.START,
+            },
+          ],
+        },
+      ],
+    },
+    sections: [{ children: paragraphs }],
+  });
+  writeFileSync(path, await Packer.toBuffer(doc));
+}
+
+describe("a specimen as a Word-numbered DOCX reports what its pasted text reports", () => {
+  it.each(NUMBERED_SAMPLE)(
+    "%s",
+    async (name) => {
+      const text = readFileSync(join(SPECIMENS, name), "utf8");
+      const docxPath = join(dir, name.replace(/\.txt$/, ".numbered.docx"));
+      await renderNumberedDocx(text, docxPath);
+      const pasted = await analyzeText(text, name);
+      const docx = await analyzeFile(docxPath);
+      expect(docx.run.playbook_id).toBe(pasted.run.playbook_id);
+      const key = (f: { rule_id: string; severity: string }) => `${f.rule_id}:${f.severity}`;
+      expect([...new Set(docx.run.findings.map(key))].sort()).toEqual(
+        [...new Set(pasted.run.findings.map(key))].sort(),
+      );
     },
     120_000,
   );
