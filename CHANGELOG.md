@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.806.0] — 2026-10-06
+
+Found by reading a clean lease guaranty.
+
+### Fixed
+- **A guaranty's obligations ledger omitted the guaranty.** "Guarantor
+  unconditionally guarantees to Landlord the full and prompt payment of all
+  Base Rent …" has no modal verb, so the ledger listed the notice, subrogation
+  and financial-statement duties and not the one the instrument exists for.
+  The performative forms ("unconditionally guarantees", "hereby guarantees",
+  "irrevocably and unconditionally guarantees", …) are now read; both corpus
+  guaranties gain their core row. "when due of all obligations of …" is
+  payment timing, not a condition, and no longer becomes the trigger.
+
 ## [9.805.0] — 2026-10-06
 
 Found by reading a clean settlement between two companies; Rule 21F-17's text

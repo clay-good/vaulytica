@@ -69,6 +69,16 @@ const MODALS = [
   "covenants to",
   "covenant to",
   "hereby covenants",
+  // A GUARANTY's operative promise has no modal: "Guarantor unconditionally
+  // guarantees to Landlord the full and prompt payment of all Base Rent" is
+  // the whole of the instrument's duty, and the ledger of a lease guaranty
+  // listed everything except it. Only the performative forms — a bare
+  // "guarantees" is as often "nothing guarantees that …".
+  "irrevocably and unconditionally guarantees",
+  "absolutely and unconditionally guarantees",
+  "unconditionally and irrevocably guarantees",
+  "unconditionally guarantees",
+  "hereby guarantees",
 ];
 
 /** "S <finite verb> … and" — the subject of an elided second verb phrase is S. */
@@ -174,7 +184,7 @@ function endAtSecondDeadline(trigger: string | undefined): string | undefined {
 const INTERRUPTER = String.raw`(?:,\s*(?:after|in|at|for|with|without|despite|by|through|acting|using|on)\s[^,;.]{1,40},(?!\s*(?:and|or|but)\b)${CLAUSE_CHAR}+)?`;
 
 const TRIGGER_RE = new RegExp(
-  String.raw`\b(upon\s${CLAUSE_CHAR}+|if,\s*(?:after|in|at|for|with|within|during|before|on|by)\s[^,;.]{1,60},${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
+  String.raw`\b(upon\s${CLAUSE_CHAR}+|if,\s*(?:after|in|at|for|with|within|during|before|on|by)\s[^,;.]{1,60},${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s(?!due\s+of\b)${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
   "i",
 );
 

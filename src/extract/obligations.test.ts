@@ -1680,3 +1680,26 @@ describe("a cap whose negation is in the subject", () => {
     expect(extractObligations(tree, extractParties(tree))).toHaveLength(0);
   });
 });
+
+describe("a guaranty's operative promise", () => {
+  const rowsOf = (text: string) => {
+    const tree = buildTree(["Guaranty", text]);
+    return extractObligations(tree, extractParties(tree));
+  };
+
+  it("is a duty, though it has no modal", () => {
+    const [row] = rowsOf(
+      "Guarantor unconditionally guarantees to Landlord the full and prompt payment of all Base Rent and other amounts Tenant owes under the Lease.",
+    );
+    expect(row?.obligor).toBe("Guarantor");
+    expect(row?.action).toContain("full and prompt payment of all Base Rent");
+  });
+
+  it("keeps 'when due of' in the action, not as a condition", () => {
+    const [row] = rowsOf(
+      "Guarantor hereby guarantees to Lender the full and prompt payment and performance when due of all obligations of Achterberg Fabrication Inc. under the Financing Agreement.",
+    );
+    expect(row?.trigger ?? "").toBe("");
+    expect(row?.action).toContain("when due of all obligations");
+  });
+});
