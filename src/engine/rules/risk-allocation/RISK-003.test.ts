@@ -69,3 +69,21 @@ describe("RISK-003 — a cap phrase that inverts under negation", () => {
     expect(RISK_003.check(buildContext(["Indemnity Agreement", clause]))).not.toBeNull();
   });
 });
+
+describe("RISK-003 — an indemnity carved out of the cap is not capped", () => {
+  it("is silent when the indemnity is named only as an exception", () => {
+    const ctx = buildContext([
+      "Limitation of Liability",
+      "Except for indemnification obligations and breach of Section 6, each party's total liability under this Agreement is limited to the fees paid and payable under this Agreement.",
+    ]);
+    expect(RISK_003.check(ctx)).toBeNull();
+  });
+
+  it("still reports an indemnity that is itself capped", () => {
+    const ctx = buildContext([
+      "Indemnification",
+      "Seller's indemnification obligations under this Section shall not exceed the Escrow Amount.",
+    ]);
+    expect(RISK_003.check(ctx)).not.toBeNull();
+  });
+});

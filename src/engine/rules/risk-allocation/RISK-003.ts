@@ -1,6 +1,10 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
+import { allMatches, emit, isNonOperative, matchedSentence } from "../_helpers.js";
 import { truncate } from "../../text.js";
+
+/** "except for", "excluding", "other than" … immediately before "indemni…". */
+const EXCEPTED_INDEMNITY =
+  /\b(?:except(?:\s+for)?|excluding|other\s+than|apart\s+from|save\s+for)\s+(?:(?:its|their|the|a|any|each|party['’]s|parties['’])\s+)*$/i;
 
 /** RISK-003 — Indemnity cap present (info). */
 export const rule: Rule = {
@@ -18,20 +22,19 @@ export const rule: Rule = {
     // anchor is `indemni(f|t)` so the "indemnit-" forms — the noun "indemnity"
     // (the usual section title), "Indemnitee", "Indemnitor" — are read too, not
     // only the "indemnif-" verb forms.
-    const hit = firstParagraphMatch(
+    // The indemnity named only to be EXCLUDED from a cap is not capped: "Except
+    // for indemnification obligations …, each party's total liability … is
+    // limited to the fees paid" carves indemnity OUT, and RISK-003 reported an
+    // indemnity cap on the same sentence where RISK-004 reported the carve-out.
+    const hit = allMatches(
       ctx,
-      // "NOT limited to" is the OPPOSITE of a cap, and the branch had no
-      // negation guard. A construction indemnity whose insurance section closes
-      // "the insurance is in addition to and not in satisfaction of the
-      // indemnity, and THE INDEMNITY IS NOT LIMITED TO the amount of
-      // insurance" was reported as stating an indemnity cap — in a document
-      // whose next section is headed NO CAP, so the same run reported both
-      // "Indemnity cap stated" and "Indemnification without aggregate cap".
-      //
-      // Only the phrases that INVERT under negation are guarded. "shall NOT
-      // EXCEED" is a cap and must keep matching, which is why `not exceed`
-      // stays untouched.
       /\bindemni(?:f|t)[\s\S]{0,200}?(?:not\s+(?:permitted\s+to\s+)?exceed|(?<!\bnot\s)(?<!\bnever\s)(?<!\bin\s+no\s+way\s)capped\s+at|(?<!\bnot\s)(?<!\bnever\s)(?<!\bin\s+no\s+way\s)limited\s+to|aggregate\s+(?:liability|cap)\s+(?:of|equal\s+to)|(?:in\s+no\s+event|under\s+no\s+circumstances)[^.]{0,25}?exceed)/i,
+    ).find(
+      (h) =>
+        !isNonOperative(h.text) &&
+        !EXCEPTED_INDEMNITY.test(
+          h.text.slice(Math.max(0, (h.match.index ?? 0) - 40), h.match.index),
+        ),
     );
     if (!hit) return null;
     return emit(ctx, rule, {

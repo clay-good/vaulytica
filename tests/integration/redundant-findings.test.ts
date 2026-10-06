@@ -71,10 +71,10 @@ const OVERLAPS_ON_PURPOSE: ReadonlySet<string> = new Set([
   // A limitation of liability has both a carve-out inventory and a
   // consequential-damages waiver in it. Two facts, one clause.
   "RISK-006 + RISK-007 [info]",
-  // Whether the indemnity is capped and how many carve-outs the cap has are
-  // different questions about the same sentence.
-  "RISK-003 + RISK-006 [info]",
-  "RISK-003 + RISK-007 [info]",
+  // RISK-003 + RISK-006 / RISK-007 came off this list in 9.808.0: every live
+  // instance was RISK-003 reading "except for indemnification obligations" in
+  // the limitation-of-liability sentence as an indemnity cap. It no longer
+  // reads a carve-out as a cap, so it no longer lands on that sentence.
   // One reports that the indemnity runs one way; the other that nothing caps
   // it. Either can be true without the other.
   "RISK-002 + RISK-015 [warning]",

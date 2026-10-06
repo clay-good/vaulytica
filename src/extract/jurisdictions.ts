@@ -330,7 +330,7 @@ const VENUE = new RegExp(
  * requirement is what keeps a bare "courts in" from matching anything else.
  */
 const VENUE_COURTS_FIRST = new RegExp(
-  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|in\s+|within\s+|of\s+(?:the\s+(?:State|Commonwealth|Province|Republic)\s+of\s+)?)([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will|must)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will|must)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
+  String.raw`\b(?:the\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|in\s+|within\s+|of\s+(?:the\s+(?:State|Commonwealth|Province|Republic)\s+of\s+)?)${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+(?:(?:shall|will|must)\s+have|have)\b|$)(?=[^.]{0,60}?\b(?:(?:shall|will|must)\s+have|have)\s+(?:exclusive\s+)?(?:jurisdiction|venue))`,
   "gi",
 );
 // "shall lie" is as common as "shall be" for a venue clause — "venue for any

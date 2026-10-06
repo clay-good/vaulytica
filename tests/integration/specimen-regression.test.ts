@@ -2662,12 +2662,12 @@ export const EXPECTED: Record<string, Expectation> = {
   // carve-out from the liability cap correctly rather than as a missing cap.
   "data-license-agreement.txt": {
     playbook: "data-license-agreement",
+    // RISK-003 removed in 9.808.0: the specimen's only match was "Except for … indemnit…" in the limitation of liability — a carve-out from the cap, not a cap on the indemnity.
     findings: [
       "RISK-015",
       "STRUCT-018",
       "TEMP-004",
       "OBLI-005",
-      "RISK-003",
       "RISK-007",
       "TEMP-006",
       "TERM-007",
@@ -3228,10 +3228,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // the indemnity is carved out of the cap.
   "trademark-license-food.txt": {
     playbook: "trademark-license",
+    // RISK-003 removed in 9.808.0: the specimen's only match was "Except for … indemnit…" in the limitation of liability — a carve-out from the cap, not a cap on the indemnity.
     findings: [
       "CHOICE-003",
       "OBLI-005",
-      "RISK-003",
       "RISK-006",
       "RISK-007",
       "RISK-011",
@@ -4263,11 +4263,11 @@ export const EXPECTED: Record<string, Expectation> = {
   // about a clause the family cannot see.
   "independent-contractor.txt": {
     playbook: "independent-contractor",
+    // RISK-003 removed in 9.808.0: the specimen's only match was "Except for … indemnit…" in the limitation of liability — a carve-out from the cap, not a cap on the indemnity.
     findings: [
       "RISK-015",
       "STRUCT-018",
       "OBLI-005",
-      "RISK-003",
       "RISK-006",
       "RISK-007",
       "RISK-010",
@@ -4293,13 +4293,13 @@ export const EXPECTED: Record<string, Expectation> = {
   // general master services agreement carries.
   "marketing-services-agreement.txt": {
     playbook: "marketing-services-agreement",
+    // RISK-003 removed in 9.808.0: the specimen's only match was "Except for … indemnit…" in the limitation of liability — a carve-out from the cap, not a cap on the indemnity.
     findings: [
       "COMM-035",
       "STRUCT-018",
       "TEMP-004",
       "OBLI-005",
       "PERS-002",
-      "RISK-003",
       "RISK-006",
       "RISK-007",
       "RISK-011",

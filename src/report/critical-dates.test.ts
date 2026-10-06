@@ -931,3 +931,14 @@ describe("'the date of the X' anchors on X", () => {
     );
   });
 });
+
+describe("a deadline is classified by its own sentence", () => {
+  it("does not borrow 'terminate this Agreement' from the next sentence", async () => {
+    const tree = buildTree([
+      "Acceptance",
+      "Developer shall correct the listed nonconformities and redeliver within ten (10) business days after receiving the list. If a deliverable fails acceptance testing three times, Client may terminate this Agreement.",
+    ]);
+    const r = (await buildCriticalDates(extractAll(tree), tree)).register;
+    expect(r.find((x) => x.trigger.includes("receiving the list"))?.kind).toBe("notice-period");
+  });
+});

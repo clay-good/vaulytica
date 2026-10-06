@@ -1104,3 +1104,15 @@ describe("a courts-first clause with a bare 'in'", () => {
     ).toBeUndefined();
   });
 });
+
+describe("a courts-first clause naming 'the City of' its seat", () => {
+  it("reads 'courts located in the City of Norfolk, Virginia have exclusive jurisdiction'", () => {
+    const v = extractJurisdictions(
+      buildTree([
+        "Governing Law",
+        "The state and federal courts located in the City of Norfolk, Virginia have exclusive jurisdiction over any dispute arising out of this Agreement.",
+      ]),
+    ).find((r) => r.clause_kind === "venue");
+    expect(v).toBeDefined();
+  });
+});

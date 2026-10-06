@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.808.0] — 2026-10-06
+
+Found by reading a clean software development agreement.
+
+### Fixed
+- **RISK-003 and RISK-004 contradicted each other.** "Except for
+  indemnification obligations …, each party's total liability … is limited to
+  the fees paid" carves indemnity OUT of the cap; RISK-004 said so, and RISK-003
+  reported an "indemnity cap stated" on the same sentence. An indemnity named
+  only as an exception ("except for", "excluding", "other than") is no longer
+  read as capped. Four specimen pins expected RISK-003, and in all four the
+  only match was "Except for … indemnit…" in the limitation-of-liability
+  clause — the pins recorded the false reading; they are corrected, and the
+  RISK-003 + RISK-006 / RISK-007 overlaps it caused come off the
+  redundant-findings list.
+- **CHOICE-003 missed "courts located in the City of Norfolk".** The
+  courts-first venue reader now accepts a civil-division prefix (the City /
+  County / Commonwealth of) before the seat.
+- **The dates register classified a deadline by its whole paragraph.**
+  Developer's ten-day correction deadline became an "opt-out window" because
+  the next sentence let the Client terminate. Each deadline is now classified
+  by its own sentence. 34 corpus rows change, most visibly cure periods that
+  had been labeled auto-renewal notices (now cure windows). "automatically
+  extended for successive periods" now counts as a renewal term in its own
+  right, which a CC&R term had relied on its heading for.
+
 ## [9.807.0] — 2026-10-06
 
 Found by reading a clean photo release and a clean board written consent.

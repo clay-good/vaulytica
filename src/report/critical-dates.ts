@@ -328,6 +328,23 @@ function lastMatchIndex(text: string, re: RegExp): number {
 }
 
 /**
+ * The sentence of `paragraph` around `offset`. A deadline is classified by its
+ * own sentence, not its paragraph: "Developer shall correct the listed
+ * nonconformities and redeliver within ten (10) business days … If a
+ * deliverable fails acceptance testing three times, Client may terminate this
+ * Agreement" filed the correction deadline as an opt-out window on the next
+ * sentence's "terminate this Agreement".
+ */
+function sentenceAround(paragraph: string, offset: number): string {
+  const at = Math.max(0, Math.min(offset, paragraph.length));
+  const before = paragraph.slice(0, at);
+  const start = Math.max(0, before.search(/[.;]\s+(?=[A-Z0-9(])[^.;]*$/) + 1);
+  const rest = paragraph.slice(at);
+  const endRel = rest.search(/[.;]\s+(?=[A-Z0-9(])/);
+  return paragraph.slice(start, endRel === -1 ? paragraph.length : at + endRel + 1);
+}
+
+/**
  * An anchor's date, reading "the date of the Shoot" as "the Shoot" when only
  * the event is mapped: a media release's three-year use period ran "after the
  * date of the Shoot" and was left "verify manually" while "after the Shoot"
@@ -411,7 +428,7 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
 const KIND_PATTERNS: Array<{ kind: CriticalDateKind; re: RegExp }> = [
   {
     kind: "auto-renewal-notice",
-    re: /\b(?:auto[-\s]?renew\w*|renew\w*|non[-\s]?renewal|anniversary|roll(?:s|ing)?\s+over|evergreen)\b/i,
+    re: /\b(?:auto[-\s]?renew\w*|renew\w*|non[-\s]?renewal|anniversary|roll(?:s|ing)?\s+over|evergreen|automatic(?:ally)?\s+(?:extend\w*|extension))\b/i,
   },
   {
     kind: "cure-window",
@@ -691,7 +708,6 @@ export async function buildCriticalDates(
   const paragraphSpans = tree
     ? buildParagraphSpans(tree)
     : new Map<string, { text: string; start: number }>();
-  const paragraphText = new Map([...paragraphSpans].map(([id, p]) => [id, p.text]));
 
   let rows: CriticalDate[] = [];
   for (const ref of extracted.dates) {
@@ -700,10 +716,10 @@ export async function buildCriticalDates(
     if (ref.offset_count === undefined && ref.offset_days === undefined) continue;
     const anchorIso = ref.anchor ? lookupAnchor(anchors, ref.anchor) : null;
     const derived = deriveDate(ref, anchorIso);
-    const context =
-      paragraphText.get(ref.position.paragraph_id ?? "") ??
-      sectionText.get(ref.position.section_id ?? "") ??
-      "";
+    const span = paragraphSpans.get(ref.position.paragraph_id ?? "");
+    const context = span
+      ? sentenceAround(span.text, ref.position.start - span.start)
+      : (sectionText.get(ref.position.section_id ?? "") ?? "");
     const kind = classifyDeadline(ref, context);
     const responsible = responsibleFor(
       ref,
