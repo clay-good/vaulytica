@@ -293,11 +293,16 @@ function addByUnit(
 // ---------------------------------------------------------------------------
 
 function normalizeAnchor(anchor: string): string {
-  return anchor
-    .trim()
-    .toLowerCase()
-    .replace(/^the\s+/, "")
-    .replace(/\s+/g, " ");
+  return (
+    anchor
+      .trim()
+      .toLowerCase()
+      // A letter-style agreement defines and uses its anchors with a possessive:
+      // "will begin on November 2, 2026 (your 'Start Date')", "within thirty (30)
+      // days after your Start Date".
+      .replace(/^(?:the|your|our|its|their)\s+/, "")
+      .replace(/\s+/g, " ")
+  );
 }
 
 const PERIOD_BEGIN = /\b(?:begin(?:s|ning)?|commenc(?:es|ing)|start(?:s|ing)?|from)\b/gi;
@@ -379,7 +384,7 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
     // Co-location: a paragraph that both states an absolute date and
     // names an anchor (via "(the 'X Date')" or a bare "X Date") binds them.
     const anchorParen =
-      /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”'’]?\s*\)/g;
+      /\(\s*(?:(?:the|your|our|its|their)\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”'’]?\s*\)/g;
     const periodParen = /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Period)["“”'’]?\s*\)/g;
     // Each anchor binds to the date NEAREST BEFORE its parenthetical, not the
     // paragraph's first: "beginning on July 1, 2026 (the 'Commencement Date')

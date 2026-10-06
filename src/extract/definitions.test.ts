@@ -2849,3 +2849,16 @@ describe("a name conferred in quotation marks is not an undefined term", () => {
     expect(map.undefined_capitalized.map((e) => e.term)).toContain("Official Coffee Sponsor");
   });
 });
+
+describe("a definition introduced with 'your' or 'our'", () => {
+  it("defines the term, so later uses are not undefined", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Offer",
+        'Your employment will begin on November 2, 2026 (your "Start Date").',
+        "The bonus is paid within thirty (30) days after your Start Date, and the option vests on the first anniversary of your Start Date.",
+      ]),
+    );
+    expect(map.undefined_capitalized.map((e) => e.term)).not.toContain("Start Date");
+  });
+});

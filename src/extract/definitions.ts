@@ -206,7 +206,7 @@ function namedPhraseBefore(text: string, index: number): string {
 }
 
 const DEFINITION_PARENTHETICAL =
-  /\((?:\s*(?:(?:each|collectively|together|individually)\s+(?:such\s+)?[a-z][a-z\s]{0,30}?,|the|this|these|each|an?|its|his|her|their|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|ITS|HIS|HER|THEIR|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C](?:(?:[Tt]he|[Tt]his|[Aa]n?)\s+)?([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
+  /\((?:\s*(?:(?:each|collectively|together|individually)\s+(?:such\s+)?[a-z][a-z\s]{0,30}?,|the|this|these|each|an?|its|his|her|their|your|our|collectively|together|individually|hereinafter|referred\s+to\s+as|THE|THIS|THESE|EACH|AN?|ITS|HIS|HER|THEIR|YOUR|OUR|COLLECTIVELY|TOGETHER|INDIVIDUALLY|HEREINAFTER|REFERRED\s+TO\s+AS)[,]?\s+)*["\u201C](?:(?:[Tt]he|[Tt]his|[Aa]n?)\s+)?([A-Z][\w\s\-&/'’\u2019.]{1,60}?)["\u201D]\s*\)/g;
 
 /**
  * The paired collective/individual parenthetical \u2014 the party-definition idiom

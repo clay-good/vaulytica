@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.809.0] — 2026-10-06
+
+Found by reading a clean California offer letter.
+
+### Fixed
+- **A term defined as (your "Start Date") was "undefined".** A letter defines
+  its terms in the second person; the definitions reader accepted "its",
+  "his", "her" and "their" before a quoted term but not "your" or "our", so
+  STRUCT-006 warned that the letter never defined its Start Date.
+- **The register could not count from "your Start Date".** The same
+  possessive stopped the dated parenthetical from becoming an anchor, and
+  "your Start Date" from matching it. The letter's signing-bonus date (December
+  2, 2026) and clawback window (November 2, 2027) now compute.
+
 ## [9.808.0] — 2026-10-06
 
 Found by reading a clean software development agreement.

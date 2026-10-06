@@ -942,3 +942,14 @@ describe("a deadline is classified by its own sentence", () => {
     expect(r.find((x) => x.trigger.includes("receiving the list"))?.kind).toBe("notice-period");
   });
 });
+
+describe("a possessive anchor", () => {
+  it("computes 'within thirty (30) days after your Start Date'", async () => {
+    const tree = buildTree([
+      "Offer",
+      'Your employment will begin on November 2, 2026 (your "Start Date"). The Company will pay the bonus within thirty (30) days after your Start Date.',
+    ]);
+    const r = (await buildCriticalDates(extractAll(tree), tree)).register;
+    expect(r.find((x) => x.trigger.includes("your Start Date"))?.computed_date).toBe("2026-12-02");
+  });
+});
