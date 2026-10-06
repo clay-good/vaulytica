@@ -250,7 +250,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-009-s1.2-559",
+      "finding_id": "FIN-009-s3-559",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
@@ -280,7 +280,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-004-s1.1-360",
+      "finding_id": "IPDATA-004-s2-360",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-004",
@@ -302,7 +302,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-007-s1.1-360",
+      "finding_id": "IPDATA-007-s2-360",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-007",
@@ -338,7 +338,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.3-601",
+      "finding_id": "OBLI-002-s4-601",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -353,7 +353,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-004-s1.1-253",
+      "finding_id": "OBLI-004-s2-253",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-004",
@@ -382,7 +382,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-008-s1.1-253",
+      "finding_id": "OBLI-008-s2-253",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-008",
@@ -467,7 +467,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-002-s1.3-601",
+      "finding_id": "RISK-002-s4-601",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-002",
@@ -482,7 +482,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-004-s1.4-784",
+      "finding_id": "RISK-004-s5-784",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-004",
@@ -497,7 +497,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-006-s1.4-784",
+      "finding_id": "RISK-006-s5-784",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-006",
@@ -533,7 +533,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.3-0",
+      "finding_id": "RISK-011-s4-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -654,7 +654,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-011-s1.1-342",
+      "finding_id": "STRUCT-011-s2-342",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-011",
@@ -669,7 +669,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.1-341",
+      "finding_id": "STRUCT-013-s2-341",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-013",
@@ -740,7 +740,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-004-s1.5-956",
+      "finding_id": "TEMP-004-s6-956",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
@@ -874,12 +874,12 @@
       "document_position": 342,
       "excerpt": {
         "end_offset": 345,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 342,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
       "explanation": "Template placeholders such as [insert] or TBD are draft markers that should be filled before signing. Leaving them in is a serious drafting defect.",
-      "id": "STRUCT-011-s1.1-342",
+      "id": "STRUCT-011-s2-342",
       "recommendation": "Replace every placeholder with the intended value, or delete the clause.",
       "rule_id": "STRUCT-011",
       "rule_version": "1.0.0",
@@ -892,12 +892,12 @@
       "document_position": 341,
       "excerpt": {
         "end_offset": 358,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 341,
         "text": "[TBD methodology]"
       },
       "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.1-341",
+      "id": "STRUCT-013-s2-341",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
       "rule_version": "1.19.0",
@@ -910,12 +910,12 @@
       "document_position": 559,
       "excerpt": {
         "end_offset": 583,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 559,
         "text": "Late fee: 2.5% per month."
       },
       "explanation": "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. Confirm against the controlling jurisdiction.",
-      "id": "FIN-009-s1.2-559",
+      "id": "FIN-009-s3-559",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
       "rule_version": "1.9.0",
@@ -972,12 +972,12 @@
       "document_position": 360,
       "excerpt": {
         "end_offset": 373,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 360,
         "text": "Customer Data"
       },
       "explanation": "Under GDPR Article 5(1)(e), CCPA, and most modern data-protection regimes, the duration for which data is retained must be defined or tied to a defined purpose. A contract that handles data but says nothing about retention leaves the data subject without a contractual ceiling on how long their information can be held — and leaves the data controller without a clear obligation to delete.",
-      "id": "IPDATA-007-s1.1-360",
+      "id": "IPDATA-007-s2-360",
       "recommendation": "Add an explicit retention clause: how long data is kept (or the trigger that ends retention), what happens at the end of retention (return / deletion / certification of destruction), and the cooperation timeline.",
       "rule_id": "IPDATA-007",
       "rule_version": "1.1.0",
@@ -990,12 +990,12 @@
       "document_position": 601,
       "excerpt": {
         "end_offset": 756,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 601,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
       "explanation": "One party appears to bear materially more indemnity scope than the other. Confirm the asymmetry is intentional and reciprocated by other consideration (e.g., a fee discount).",
-      "id": "RISK-002-s1.3-601",
+      "id": "RISK-002-s4-601",
       "recommendation": "Confirm the asymmetry is intentional. A one-way indemnity is normal where one party controls the risk (a vendor's IP indemnity, a licensee's use indemnity); where it is not, state what the indemnifying party gets in return, or make it reciprocal for the claims both parties can cause.",
       "rule_id": "RISK-002",
       "rule_version": "1.4.0",
@@ -1008,12 +1008,12 @@
       "document_position": 784,
       "excerpt": {
         "end_offset": 902,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 784,
         "text": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations."
       },
       "explanation": "When indemnity is carved out of the LoL cap, the indemnifying party may face uncapped exposure on third-party claims. Verify a separate indemnity-specific cap exists, or that the carve-out is intended.",
-      "id": "RISK-004-s1.4-784",
+      "id": "RISK-004-s5-784",
       "recommendation": "Confirm the carve-out is what you intend. An indemnity outside the cap is standard for third-party IP claims and is uncapped exposure everywhere else; if it is meant to be bounded, give it its own super-cap rather than leaving it outside the general one.",
       "rule_id": "RISK-004",
       "rule_version": "1.4.0",
@@ -1044,12 +1044,12 @@
       "document_position": 956,
       "excerpt": {
         "end_offset": 978,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 956,
         "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless either party provides 20 days written notice of non-renewal."
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
-      "id": "TEMP-004-s1.5-956",
+      "id": "TEMP-004-s6-956",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
       "rule_version": "1.7.0",
@@ -1149,12 +1149,12 @@
       "document_position": 360,
       "excerpt": {
         "end_offset": 373,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 360,
         "text": "Customer Data uploaded to the Service is processed under the DPA. The Service is provided AS-IS."
       },
       "explanation": "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
-      "id": "IPDATA-004-s1.1-360",
+      "id": "IPDATA-004-s2-360",
       "rule_id": "IPDATA-004",
       "rule_version": "1.4.0",
       "severity": "info",
@@ -1166,12 +1166,12 @@
       "document_position": 601,
       "excerpt": {
         "end_offset": 756,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 601,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.3-601",
+      "id": "OBLI-002-s4-601",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -1183,12 +1183,12 @@
       "document_position": 253,
       "excerpt": {
         "end_offset": 265,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 253,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
-      "id": "OBLI-004-s1.1-253",
+      "id": "OBLI-004-s2-253",
       "rule_id": "OBLI-004",
       "rule_version": "1.2.0",
       "severity": "info",
@@ -1200,12 +1200,12 @@
       "document_position": 253,
       "excerpt": {
         "end_offset": 265,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 253,
         "text": "Provider shall use best efforts to deliver the Service with 99.99% uptime each calendar month, measured by [TBD methodology]."
       },
       "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
-      "id": "OBLI-008-s1.1-253",
+      "id": "OBLI-008-s2-253",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
       "rule_version": "1.3.0",
@@ -1218,12 +1218,12 @@
       "document_position": 784,
       "excerpt": {
         "end_offset": 902,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 784,
         "text": "Provider's aggregate liability shall not exceed three (3) months of fees paid, except for indemnification obligations."
       },
       "explanation": "Typical LoL carve-outs include fraud, willful misconduct, IP indemnity, confidentiality breach, and accrued payment obligations. Missing categories may be deliberate but are worth confirming.",
-      "id": "RISK-006-s1.4-784",
+      "id": "RISK-006-s5-784",
       "rule_id": "RISK-006",
       "rule_version": "1.5.0",
       "severity": "info",
@@ -1235,12 +1235,12 @@
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 0,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.3-0",
+      "id": "RISK-011-s4-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1251,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "26239dedc3b863dd03675c867b7520385e5d46aff3d640e16f8ec2f0783b8e9e",
+  "result_hash": "4631ca3e448512afe56892a0eeda11dc6f663b92dc30ff932dc4610fbaac5a4d",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

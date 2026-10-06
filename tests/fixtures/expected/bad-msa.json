@@ -25,7 +25,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-004-s1.7-1103",
+      "finding_id": "CHOICE-004-s8-1103",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-004",
@@ -335,7 +335,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.5-702",
+      "finding_id": "OBLI-002-s6-702",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -364,7 +364,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-006-s1.6-900",
+      "finding_id": "OBLI-006-s7-900",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-006",
@@ -372,7 +372,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-007-s1.3-531",
+      "finding_id": "OBLI-007-s4-531",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-007",
@@ -380,7 +380,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-008-s1.1-279",
+      "finding_id": "OBLI-008-s2-279",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-008",
@@ -529,7 +529,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.5-0",
+      "finding_id": "RISK-011-s6-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -558,7 +558,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-015-s1.5-711",
+      "finding_id": "RISK-015-s6-711",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
@@ -566,7 +566,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-016-s1.4-612",
+      "finding_id": "RISK-016-s5-612",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-016",
@@ -857,7 +857,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-009-s1.6-850",
+      "finding_id": "TERM-009-s7-850",
       "fired": true,
       "ran": true,
       "rule_id": "TERM-009",
@@ -888,12 +888,12 @@
       "document_position": 1103,
       "excerpt": {
         "end_offset": 1148,
-        "section_id": "s1.7",
+        "section_id": "s8",
         "start_offset": 1103,
         "text": "Delaware → Texas"
       },
       "explanation": "Choosing one jurisdiction's law but another's courts is sometimes deliberate, but courts in the chosen-venue jurisdiction may apply their own procedural rules differently than the governing-law jurisdiction would expect.",
-      "id": "CHOICE-004-s1.7-1103",
+      "id": "CHOICE-004-s8-1103",
       "recommendation": "State why the law and the forum differ, or align them. A court applying another state's substantive law is ordinary, but it costs expert evidence on that law and invites a forum fight; if the split is deliberate (a Delaware-law entity dispute heard where the assets are), say so in the clause.",
       "rule_id": "CHOICE-004",
       "rule_version": "1.1.0",
@@ -941,12 +941,12 @@
       "document_position": 531,
       "excerpt": {
         "end_offset": 554,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 531,
         "text": "Provider's obligation to continue providing the Services is conditioned on the absence of any material adverse change in Customer's financial condition."
       },
       "explanation": "A MAC / MAE clause lets one party terminate or refuse to close based on a qualitative judgment about the other party's business. The Delaware Chancery Court has historically set a very high bar (Akorn v. Fresenius is the first published MAC win in a public M&A deal), but the cost-of-litigation alone is meaningful. Confirm the definition is bounded (specific carve-outs for industry-wide events, market conditions, pandemic-style risks where relevant) and that the trigger threshold is intentional.",
-      "id": "OBLI-007-s1.3-531",
+      "id": "OBLI-007-s4-531",
       "recommendation": "Audit the MAC definition for carve-outs (industry / market / pandemic / pre-signing-known events) and for the disproportionate-effect qualifier that most modern MACs include.",
       "rule_id": "OBLI-007",
       "rule_version": "1.2.0",
@@ -977,12 +977,12 @@
       "document_position": 711,
       "excerpt": {
         "end_offset": 726,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 711,
         "text": "Customer shall indemnify, defend, and hold Provider harmless from any third-party claim arising from Customer's use of the Services."
       },
       "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
-      "id": "RISK-015-s1.5-711",
+      "id": "RISK-015-s6-711",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
       "rule_version": "1.10.0",
@@ -995,12 +995,12 @@
       "document_position": 612,
       "excerpt": {
         "end_offset": 665,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 612,
         "text": "Customer shall maintain commercial general liability insurance during the Term."
       },
       "explanation": "A bare 'shall maintain insurance' clause is essentially unenforceable: the indemnitee has no way to test whether the counterparty's coverage is adequate, and a $1,000 homeowner policy formally satisfies the clause. Standard commercial drafting names a per-occurrence limit (typically $1M), an aggregate limit (typically $2M), and the coverage type (CGL, professional liability, cyber, etc.).",
-      "id": "RISK-016-s1.4-612",
+      "id": "RISK-016-s5-612",
       "recommendation": "Specify (1) the coverage types required (CGL, professional liability, errors & omissions, cyber, workers' comp, auto), (2) the per-occurrence limit, (3) the aggregate limit, and (4) the certificate-of-insurance / additional-insured cooperation obligations.",
       "rule_id": "RISK-016",
       "rule_version": "1.7.0",
@@ -1049,12 +1049,12 @@
       "document_position": 850,
       "excerpt": {
         "end_offset": 899,
-        "section_id": "s1.6",
+        "section_id": "s7",
         "start_offset": 850,
         "text": "Provider may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "The drafting party can walk away with no cause and no notice obligation, while the counterparty has to wait through a cure period or prove a material breach. This shifts the entire walk-away option to one side. Confirm whether the imbalance reflects a deliberate commercial bargain (e.g., a customer paying a premium for the right) or an unintended one-sided drafting move.",
-      "id": "TERM-009-s1.6-850",
+      "id": "TERM-009-s7-850",
       "recommendation": "Either grant both parties the same termination right, mirror the cure-period gate on the drafter, or pair the convenience right with a meaningful termination fee.",
       "rule_id": "TERM-009",
       "rule_version": "1.2.0",
@@ -1067,12 +1067,12 @@
       "document_position": 702,
       "excerpt": {
         "end_offset": 834,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 702,
         "text": "Customer shall indemnify, defend, and hold Provider harmless from any third-party claim arising from Customer's use of the Services."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.5-702",
+      "id": "OBLI-002-s6-702",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -1084,12 +1084,12 @@
       "document_position": 900,
       "excerpt": {
         "end_offset": 922,
-        "section_id": "s1.6",
+        "section_id": "s7",
         "start_offset": 900,
         "text": "Provider may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
-      "id": "OBLI-006-s1.6-900",
+      "id": "OBLI-006-s7-900",
       "rule_id": "OBLI-006",
       "rule_version": "1.1.0",
       "severity": "info",
@@ -1110,12 +1110,12 @@
       "document_position": 279,
       "excerpt": {
         "end_offset": 297,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 279,
         "text": "Provider shall use reasonable efforts to deliver the Services described in each SOW."
       },
       "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
-      "id": "OBLI-008-s1.1-279",
+      "id": "OBLI-008-s2-279",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"reasonable efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
       "rule_version": "1.3.0",
@@ -1128,12 +1128,12 @@
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 0,
         "text": "Customer shall indemnify, defend, and hold Provider harmless from any third-party claim arising from Customer's use of the Services."
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.5-0",
+      "id": "RISK-011-s6-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1144,11 +1144,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Master Agreement\".",
-  "result_hash": "3ed358175fa21d377d2ec0496170ad6feb68cd0fdb2885e607080c460ac55c45",
+  "result_hash": "bd01dafa3775a51cf4d1b76ac5c4ebc7d3fd003ed0eea89db8beb58c79b50734",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
     "size_bytes": 9221
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

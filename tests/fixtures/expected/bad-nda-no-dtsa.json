@@ -356,7 +356,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.2-385",
+      "finding_id": "OBLI-005-s3-385",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -1015,12 +1015,12 @@
       "document_position": 385,
       "excerpt": {
         "end_offset": 650,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 385,
         "text": "The Receiving Party agrees to maintain in strict confidence all Confidential Information and shall not disclose any such information to any third party, including any governmental agency or regulatory body, without the prior written consent of the Disclosing Party."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.2-385",
+      "id": "OBLI-005-s3-385",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1031,11 +1031,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way nda\", \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "22b64da5d313b9bf008dc10b3903b20fe4787419bae3413c422f52486a9106e8",
+  "result_hash": "a565722a0245d2cefaaeeca2cdce3b6e3167cac47a111cac3abea8fab063e11d",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 9006
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

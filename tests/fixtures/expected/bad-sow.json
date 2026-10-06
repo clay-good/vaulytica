@@ -249,7 +249,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-009-s1.3-407",
+      "finding_id": "FIN-009-s4-407",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
@@ -348,7 +348,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-004-s1.1-147",
+      "finding_id": "OBLI-004-s2-147",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-004",
@@ -363,7 +363,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-006-s1.2-300",
+      "finding_id": "OBLI-006-s3-300",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-006",
@@ -378,7 +378,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-008-s1.1-147",
+      "finding_id": "OBLI-008-s2-147",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-008",
@@ -900,12 +900,12 @@
       "document_position": 407,
       "excerpt": {
         "end_offset": 429,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 407,
         "text": "Late fee: 2% per month on past-due amounts."
       },
       "explanation": "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. Confirm against the controlling jurisdiction.",
-      "id": "FIN-009-s1.3-407",
+      "id": "FIN-009-s4-407",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
       "rule_version": "1.9.0",
@@ -945,12 +945,12 @@
       "document_position": 147,
       "excerpt": {
         "end_offset": 159,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 147,
         "text": "Provider shall use best efforts to deliver the Deliverables described below."
       },
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
-      "id": "OBLI-004-s1.1-147",
+      "id": "OBLI-004-s2-147",
       "rule_id": "OBLI-004",
       "rule_version": "1.2.0",
       "severity": "info",
@@ -962,12 +962,12 @@
       "document_position": 300,
       "excerpt": {
         "end_offset": 329,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 300,
         "text": "Deliverables: as further detailed by Customer from time to time at Customer's sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
-      "id": "OBLI-006-s1.2-300",
+      "id": "OBLI-006-s3-300",
       "rule_id": "OBLI-006",
       "rule_version": "1.1.0",
       "severity": "info",
@@ -988,12 +988,12 @@
       "document_position": 147,
       "excerpt": {
         "end_offset": 159,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 147,
         "text": "Provider shall use best efforts to deliver the Deliverables described below."
       },
       "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
-      "id": "OBLI-008-s1.1-147",
+      "id": "OBLI-008-s2-147",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
       "rule_version": "1.3.0",
@@ -1022,11 +1022,11 @@
   "playbook_id": "sow",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected sow (score 1). Title matched: \"statement of work\", \"sow\". Distinguishing phrases: \"this SOW\", \"Master Agreement\", \"Deliverables\", \"milestones\".",
-  "result_hash": "5cf37c7562c5788ca8fc9065bd0f55e418382d8d1288ff554b0ce9ffd11f0af9",
+  "result_hash": "4e403381275ad19455f3501cee7f3bc19a63cf7db4051aeff75834199076b7c7",
   "source_file": {
     "name": "bad-sow.docx",
     "sha256": "cd7208763b891cf8cb8e1c853b54f63fb70fe10004a489fbeb95921a14b84c3c",
     "size_bytes": 8944
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

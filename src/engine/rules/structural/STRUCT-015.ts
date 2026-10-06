@@ -1,6 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
 import type { SectionOutlineNode } from "../../../extract/types.js";
+import { runInClauseNumbers } from "./_run-in-clauses.js";
 
 /**
  * STRUCT-015 — Numbered section gaps (info, structural).
@@ -24,6 +25,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     type Gap = { parent_label: string; missing: number[]; section_id: string };
     const gaps: Gap[] = [];
+    const runIn = runInClauseNumbers(ctx);
 
     const walk = (siblings: readonly SectionOutlineNode[], parentLabel: string): void => {
       const numbered = siblings
@@ -35,6 +37,7 @@ export const rule: Rule = {
         const max = Math.max(...ns);
         const missing: number[] = [];
         const present = new Set(ns);
+        if (parentLabel === "") for (const n of runIn) present.add(n);
         for (let i = min + 1; i < max; i++) {
           if (!present.has(i)) missing.push(i);
         }

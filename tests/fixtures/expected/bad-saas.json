@@ -89,7 +89,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-001-s1.3-838",
+      "finding_id": "DARK-001-s4-838",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-001",
@@ -97,7 +97,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-002-s1.3-634",
+      "finding_id": "DARK-002-s4-634",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-002",
@@ -133,7 +133,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-007-s1.3-941",
+      "finding_id": "DARK-007-s4-941",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-007",
@@ -148,7 +148,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-009-s1.3-838",
+      "finding_id": "DARK-009-s4-838",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-009",
@@ -284,7 +284,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-004-s1.1-272",
+      "finding_id": "IPDATA-004-s2-272",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-004",
@@ -306,7 +306,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-007-s1.1-272",
+      "finding_id": "IPDATA-007-s2-272",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-007",
@@ -342,7 +342,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.4-1014",
+      "finding_id": "OBLI-002-s5-1014",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -364,7 +364,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.4-1143",
+      "finding_id": "OBLI-005-s5-1143",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -533,7 +533,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.4-0",
+      "finding_id": "RISK-011-s5-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -618,7 +618,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1.1-253",
+      "finding_id": "STRUCT-006-s2-253",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-006",
@@ -633,7 +633,8 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "STRUCT-008-s4-0",
+      "fired": true,
       "ran": true,
       "rule_id": "STRUCT-008",
       "rule_version": "1.0.0"
@@ -682,7 +683,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-015-s1.1-0",
+      "finding_id": "STRUCT-015-s2-0",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-015",
@@ -739,7 +740,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-004-s1.3-634",
+      "finding_id": "TEMP-004-s4-634",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
@@ -873,12 +874,12 @@
       "document_position": 838,
       "excerpt": {
         "end_offset": 895,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 838,
         "text": "(d) Modifications. Vendor may modify the terms of this Agreement at any time by posting a revised version on its website; continued use of the Service constitutes acceptance."
       },
       "explanation": "A unilateral modification right without a corresponding customer termination right shifts re-pricing and re-negotiation power to the drafter.",
-      "id": "DARK-001-s1.3-838",
+      "id": "DARK-001-s4-838",
       "recommendation": "Bound the modification right: notice before a change takes effect (30 days is the norm), no retroactive application to a period already paid for, and a right to terminate without penalty if the change is adverse. A bare right to amend at will is what makes the rest of the contract provisional.",
       "rule_id": "DARK-001",
       "rule_version": "1.2.0",
@@ -896,16 +897,16 @@
       "title": "Unilateral right to modify terms"
     },
     {
-      "description": "Notice window: 90 days, located in s1.3.",
+      "description": "Notice window: 90 days, located in s4.",
       "document_position": 634,
       "excerpt": {
         "end_offset": 653,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 634,
         "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current…"
       },
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
-      "id": "DARK-002-s1.3-634",
+      "id": "DARK-002-s4-634",
       "recommendation": "Move the cancellation window and the renewal date into the same paragraph as the renewal itself, make the window no shorter than the notice you are able to give, and send a reminder before it opens. A window that closes months before renewal is the term most often litigated as unfair.",
       "rule_id": "DARK-002",
       "rule_version": "1.7.0",
@@ -943,12 +944,12 @@
       "document_position": 941,
       "excerpt": {
         "end_offset": 992,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 941,
         "text": "continued use of the Service constitutes acceptance."
       },
       "explanation": "Browsewrap acceptance — 'by using the Service you agree', 'continued use constitutes acceptance', 'you are deemed to have agreed' — is widely held unenforceable when the user is not given clear notice and an affirmative manifestation of assent. Specht v. Netscape (2d Cir. 2002), Nguyen v. Barnes & Noble (9th Cir. 2014), and Berkson v. Gogo (E.D.N.Y. 2015) are the modern canon. Assent to online terms is a question of state contract-formation law; the FTC's .com Disclosures guidance addresses clear-and-conspicuous advertising disclosures, not contract assent.",
-      "id": "DARK-007-s1.3-941",
+      "id": "DARK-007-s4-941",
       "recommendation": "Pair the contract with an affirmative manifestation of assent — a click-through checkbox, a typed name, or an e-signature. Confirm reasonable conspicuous notice of the terms prior to the assent step.",
       "rule_id": "DARK-007",
       "rule_version": "1.2.0",
@@ -970,12 +971,12 @@
       "document_position": 838,
       "excerpt": {
         "end_offset": 939,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 838,
         "text": "Vendor may modify the terms of this Agreement at any time by posting a revised version on its website;"
       },
       "explanation": "Allowing one party to change the contract by posting a new version on a website shifts the entire burden of monitoring the agreement to the other party in perpetuity, and renders the originally negotiated terms effectively meaningless. Cal. Bus. & Prof. Code § 17602 requires clear and conspicuous notice of a material change and how to cancel — not affirmative consent. ROSCA regulates negative-option billing, not unilateral amendment; the FTC has challenged retroactive material changes under Section 5. Courts also sometimes refuse to enforce such clauses on illusory-contract grounds.",
-      "id": "DARK-009-s1.3-838",
+      "id": "DARK-009-s4-838",
       "recommendation": "Restrict unilateral amendment to immaterial / non-substantive changes effected by written notice (email + at least 30 days) with a defined objection / opt-out right. Material changes — pricing, scope, liability, data use — must require a signed amendment or affirmative click-through consent.",
       "rule_id": "DARK-009",
       "rule_version": "1.4.0",
@@ -1050,12 +1051,12 @@
       "document_position": 272,
       "excerpt": {
         "end_offset": 285,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 272,
         "text": "Customer Data"
       },
       "explanation": "Under GDPR Article 5(1)(e), CCPA, and most modern data-protection regimes, the duration for which data is retained must be defined or tied to a defined purpose. A contract that handles data but says nothing about retention leaves the data subject without a contractual ceiling on how long their information can be held — and leaves the data controller without a clear obligation to delete.",
-      "id": "IPDATA-007-s1.1-272",
+      "id": "IPDATA-007-s2-272",
       "recommendation": "Add an explicit retention clause: how long data is kept (or the trigger that ends retention), what happens at the end of retention (return / deletion / certification of destruction), and the cooperation timeline.",
       "rule_id": "IPDATA-007",
       "rule_version": "1.1.0",
@@ -1068,12 +1069,12 @@
       "document_position": 253,
       "excerpt": {
         "end_offset": 270,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 253,
         "text": "Subscription Term"
       },
       "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1.1-253",
+      "id": "STRUCT-006-s2-253",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
       "rule_version": "1.12.0",
@@ -1086,12 +1087,12 @@
       "document_position": 634,
       "excerpt": {
         "end_offset": 653,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 634,
         "text": "This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current Subscription Term."
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
-      "id": "TEMP-004-s1.3-634",
+      "id": "TEMP-004-s4-634",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
       "rule_version": "1.7.0",
@@ -1191,12 +1192,12 @@
       "document_position": 272,
       "excerpt": {
         "end_offset": 285,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 272,
         "text": "Vendor will provide the Service to Customer for the Subscription Term. Customer Data uploaded to the Service is processed under the DPA."
       },
       "explanation": "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
-      "id": "IPDATA-004-s1.1-272",
+      "id": "IPDATA-004-s2-272",
       "rule_id": "IPDATA-004",
       "rule_version": "1.4.0",
       "severity": "info",
@@ -1208,12 +1209,12 @@
       "document_position": 1014,
       "excerpt": {
         "end_offset": 1143,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1014,
         "text": "Customer shall indemnify, defend, and hold Vendor harmless from any third-party claim arising from Customer's use of the Service."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.4-1014",
+      "id": "OBLI-002-s5-1014",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -1225,12 +1226,12 @@
       "document_position": 1143,
       "excerpt": {
         "end_offset": 1208,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1143,
         "text": "Vendor shall not have any reciprocal indemnification obligation."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.4-1143",
+      "id": "OBLI-005-s5-1143",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1242,12 +1243,12 @@
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 0,
         "text": "Customer shall indemnify, defend, and hold Vendor harmless from any third-party claim arising from Customer's use of the Service. Vendor shall not have any reciprocal indemnification obligation."
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.4-0",
+      "id": "RISK-011-s5-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1255,16 +1256,34 @@
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
     },
     {
+      "description": "13 (skipped 3..12)",
+      "document_position": 0,
+      "excerpt": {
+        "end_offset": 0,
+        "section_id": "s4",
+        "start_offset": 0,
+        "text": "13"
+      },
+      "explanation": "Skipped, duplicate, or out-of-order section numbers usually mean a section was added or removed without renumbering. Cross-references made by number can silently break.",
+      "id": "STRUCT-008-s4-0",
+      "recommendation": "Renumber sections so they are contiguous and unique.",
+      "rule_id": "STRUCT-008",
+      "rule_version": "1.0.0",
+      "severity": "info",
+      "source_citations": [],
+      "title": "Section numbering issues: 1"
+    },
+    {
       "description": "Section-number gaps detected — (document root): missing 3, 4, 5, 6, 7, 8, 9, 10, 11, 12.",
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 0,
         "text": "(document root)"
       },
       "explanation": "A gap in dotted-decimal section numbering (Section 1, 2, 4 with no 3) almost always means a section was deleted without renumbering the rest. The gap can break cross-references and create reader confusion about whether a section is missing or just renumbered.",
-      "id": "STRUCT-015-s1.1-0",
+      "id": "STRUCT-015-s2-0",
       "recommendation": "Confirm whether the missing number is intentional (some drafters reserve numbers for future use) or a renumbering miss. If the latter, renumber and audit cross-references.",
       "rule_id": "STRUCT-015",
       "rule_version": "1.0.0",
@@ -1276,11 +1295,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "073b2911ea71936338f2403465b26e3edf5c8d92b898ddb26d3e53efff49003a",
+  "result_hash": "063c0ca9a984313bdaaf2ffdf54b9f9ee22ad333159c08ad9ebf4a0416cb73a1",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

@@ -74,7 +74,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-011-s1.3-840",
+      "finding_id": "CHOICE-011-s4-840",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-011",
@@ -355,7 +355,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.2-637",
+      "finding_id": "OBLI-005-s3-637",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -391,7 +391,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-001-s1.2-704",
+      "finding_id": "PERS-001-s3-704",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-001",
@@ -420,7 +420,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-005-s1.2-704",
+      "finding_id": "PERS-005-s3-704",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
@@ -862,12 +862,12 @@
       "document_position": 840,
       "excerpt": {
         "end_offset": 918,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 840,
         "text": "Delaware"
       },
       "explanation": "Cal. Lab. Code § 925 makes an out-of-state choice-of-law or forum provision voidable by the employee (not void) in employment contracts entered into, modified, or extended after Jan. 1, 2017. It applies to employees who primarily reside and work in California and were required to agree as a condition of employment, and not where the employee was individually represented by counsel in negotiating the venue or choice-of-law terms. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., Lyon v. Neustar) routinely refuse to enforce it.",
-      "id": "CHOICE-011-s1.3-840",
+      "id": "CHOICE-011-s4-840",
       "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
       "rule_id": "CHOICE-011",
       "rule_version": "1.4.0",
@@ -889,12 +889,12 @@
       "document_position": 704,
       "excerpt": {
         "end_offset": 744,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 704,
         "text": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
-      "id": "PERS-005-s1.2-704",
+      "id": "PERS-005-s3-704",
       "recommendation": "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
       "rule_version": "1.9.0",
@@ -952,12 +952,12 @@
       "document_position": 637,
       "excerpt": {
         "end_offset": 788,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 637,
         "text": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.2-637",
+      "id": "OBLI-005-s3-637",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -969,12 +969,12 @@
       "document_position": 704,
       "excerpt": {
         "end_offset": 744,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 704,
         "text": "For a period of twelve (12) months following termination, Employee shall not directly or indirectly compete with Company anywhere within North America."
       },
       "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
-      "id": "PERS-001-s1.2-704",
+      "id": "PERS-001-s3-704",
       "rule_id": "PERS-001",
       "rule_version": "1.6.0",
       "severity": "info",
@@ -1002,11 +1002,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "3d8b2fbbd7389feae9d6b5843b165dc1314a18df566fa5dcf4f5a5bf294e8ee5",
+  "result_hash": "413745545547292755f2f79eab211c13568a9a54f08718542aacfe8d275cf3c4",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

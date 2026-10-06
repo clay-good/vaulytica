@@ -194,7 +194,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-001-s1.1-374",
+      "finding_id": "FIN-001-s2-374",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-001",
@@ -513,7 +513,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-009-s1.2-478",
+      "finding_id": "RISK-009-s3-478",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-009",
@@ -620,7 +620,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-007-s1.1-287",
+      "finding_id": "STRUCT-007-s2-287",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-007",
@@ -868,12 +868,12 @@
       "document_position": 374,
       "excerpt": {
         "end_offset": 407,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 374,
         "text": " fifty thousand dollars ($75,000)"
       },
       "explanation": "When a contract states an amount in words followed by a numeral in parentheses, the two forms must match. Courts in most US jurisdictions resolve a conflict in favor of the spelled-out form, but the inconsistency itself is a drafting error worth catching before signature.",
-      "id": "FIN-001-s1.1-374",
+      "id": "FIN-001-s2-374",
       "recommendation": "Verify the intended amount with the drafter and correct whichever form is wrong.",
       "rule_id": "FIN-001",
       "rule_version": "1.2.0",
@@ -975,12 +975,12 @@
       "document_position": 478,
       "excerpt": {
         "end_offset": 576,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 478,
         "text": "Recipient shall be liable for all damages, direct, indirect, consequential, special, and punitive, without limitation, arising from any breach of this Agreement."
       },
       "explanation": "An uncapped or unlimited liability clause exposes a party to an open-ended financial risk. Even mutually agreed-upon caps usually carve out specific categories (fraud, willful misconduct, IP indemnity); a blanket 'no cap' is unusual outside those carve-outs.",
-      "id": "RISK-009-s1.2-478",
+      "id": "RISK-009-s3-478",
       "recommendation": "Confirm the scope is intended. If not, add a per-claim and aggregate cap, and enumerate the carve-outs explicitly.",
       "rule_id": "RISK-009",
       "rule_version": "1.3.0",
@@ -1011,12 +1011,12 @@
       "document_position": 287,
       "excerpt": {
         "end_offset": 298,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 287,
         "text": "Section 9.4"
       },
       "explanation": "A broken cross-reference can mean the referenced section was renumbered or deleted, or that a section reference was made up. Either way the reader has no way to follow the citation.",
-      "id": "STRUCT-007-s1.1-287",
+      "id": "STRUCT-007-s2-287",
       "recommendation": "Update each broken reference to point to the correct section, or delete it if it is no longer applicable.",
       "rule_id": "STRUCT-007",
       "rule_version": "1.4.0",
@@ -1108,11 +1108,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "ecc5699744eacfabbfcfb96f538a932c613d2994da2396952105ae0fb04d21a1",
+  "result_hash": "3a750ed1ed976eeb903d57fe71642295e110829b21f843a4d42f8ac5d77453c1",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

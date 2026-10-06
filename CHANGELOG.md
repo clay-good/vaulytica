@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.819.0] — 2026-10-06
+
+### Added
+- **A DOCX format-invariance guard.** `docx-format-invariance.test.ts` renders
+  the fourteen specimens that exposed this session's DOCX defects as DOCX
+  (Title, Heading 1, body) in-test and asserts the same family and the same
+  finding set as the pasted text. About four seconds.
+
+### Fixed
+- **A DOCX that opens on a heading collapsed into one section.** When the
+  first element is a heading it replaces the ingest's synthetic root, and the
+  heading stack never popped that bottom entry — so every later heading of the
+  same level became its child. Later same-level headings are now siblings.
+- **A plain-typed numbered heading nested under its styled neighbour.** The
+  ingest infers "7. Hours of Work" as a level-2 heading even when "6." and "8."
+  are styled Heading 1; it now takes the level its styled siblings use (with a
+  pre-scan, so the first heading knows it too).
+- **Numbering checks read headings only.** A document that styles one clause
+  as a heading ("2. Definitions.") and runs the others into their paragraphs
+  ("1. Scope. This Addendum …") showed a lone section 2, and STRUCT-008 /
+  STRUCT-015 reported sections missing. Run-in clause numbers now count.
+
+Over every heading-bearing specimen rendered as DOCX, divergence from the
+pasted text is 11 specimens (62 at the start of the sweep).
+
 ## [9.818.0] — 2026-10-06
 
 Found by routing 80 everyday contract titles over the same thin body.

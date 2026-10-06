@@ -102,6 +102,16 @@ export function parseDocxHtml(html: string): DocumentTree {
     while (stack.length > 1 && stack[stack.length - 1]!.level >= level) {
       stack.pop();
     }
+    // Once the first heading has REPLACED the synthetic root, the bottom of the
+    // stack is a real section, and the loop above never pops it: every later
+    // heading of the same level became its child. A DOCX that opens on a
+    // Heading-1 title collapsed into one top-level section.
+    if (promoted && stack.length === 1 && stack[0] !== root && stack[0]!.level >= level) {
+      const section: Section = { id: "", heading, level, paragraphs: [], children: [] };
+      sections.push(section);
+      stack[0] = section;
+      return;
+    }
     const parent = stack[stack.length - 1]!;
     const section: Section = { id: "", heading, level, paragraphs: [], children: [] };
     if (!promoted && parent === root && parent.paragraphs.length === 0) {
@@ -120,6 +130,8 @@ export function parseDocxHtml(html: string): DocumentTree {
     }
   };
 
+  const styledLevelByDepth = new Map<number, number>();
+
   const appendParagraph = (runs: Run[]): void => {
     if (runs.length === 0) return;
     const paragraph: Paragraph = { id: "", runs };
@@ -127,13 +139,34 @@ export function parseDocxHtml(html: string): DocumentTree {
   };
 
   const body = doc.body ?? doc;
+  // Pre-scan, so the first numbered heading — often typed plain, before any
+  // styled sibling — already knows its siblings' level.
+  for (const node of Array.from(body.childNodes)) {
+    if (node.nodeType !== 1) continue;
+    const m = /^h([1-6])$/.exec((node as Element).tagName.toLowerCase());
+    if (!m) continue;
+    const depth = /^(\d+(?:\.\d+){0,3})\.?\s/
+      .exec(((node as Element).textContent ?? "").trim())?.[1]
+      ?.split(".").length;
+    if (depth !== undefined && !styledLevelByDepth.has(depth)) {
+      styledLevelByDepth.set(depth, Number(m[1]));
+    }
+  }
   for (const node of Array.from(body.childNodes)) {
     if (node.nodeType !== 1) continue; // skip text/comment at body level
     const el = node as Element;
     const tag = el.tagName.toLowerCase();
     const headingMatch = /^h([1-6])$/.exec(tag);
     if (headingMatch) {
-      pushSection((el.textContent ?? "").trim(), Number(headingMatch[1]));
+      const text = (el.textContent ?? "").trim();
+      const level = Number(headingMatch[1]);
+      // Remember the level a STYLED numbered heading of each depth uses, so a
+      // sibling typed as a plain paragraph ("7. Hours of Work; Timekeeping."
+      // between Heading-1 "6." and "8.") is inferred at the same level rather
+      // than nested under its neighbour.
+      const depth = /^(\d+(?:\.\d+){0,3})\.?\s/.exec(text)?.[1]?.split(".").length;
+      if (depth !== undefined) styledLevelByDepth.set(depth, level);
+      pushSection(text, level);
       continue;
     }
     if (tag === "ul" || tag === "ol") {
@@ -171,7 +204,11 @@ export function parseDocxHtml(html: string): DocumentTree {
       .trim();
     const numbered = detectNumberedHeading(paragraphText);
     if (numbered) {
-      pushSection(paragraphText, numbered.level);
+      const depth = /^(\d+(?:\.\d+){0,3})\.?\s/.exec(paragraphText)?.[1]?.split(".").length;
+      pushSection(
+        paragraphText,
+        (depth !== undefined && styledLevelByDepth.get(depth)) || numbered.level,
+      );
       continue;
     }
     appendParagraph(runs);

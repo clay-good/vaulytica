@@ -25,7 +25,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-004-s1.10-1635",
+      "finding_id": "CHOICE-004-s11-1635",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-004",
@@ -54,7 +54,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-008-s1.8-1416",
+      "finding_id": "CHOICE-008-s9-1416",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-008",
@@ -69,7 +69,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-010-s1.8-1400",
+      "finding_id": "CHOICE-010-s9-1400",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-010",
@@ -77,7 +77,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-011-s1.10-1635",
+      "finding_id": "CHOICE-011-s11-1635",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-011",
@@ -120,7 +120,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-005-s1.8-1310",
+      "finding_id": "DARK-005-s9-1310",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-005",
@@ -339,7 +339,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.3-416",
+      "finding_id": "OBLI-002-s4-416",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -354,7 +354,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-004-s1.1-278",
+      "finding_id": "OBLI-004-s2-278",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-004",
@@ -362,7 +362,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.5-668",
+      "finding_id": "OBLI-005-s6-668",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -370,7 +370,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-006-s1.7-1101",
+      "finding_id": "OBLI-006-s8-1101",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-006",
@@ -385,7 +385,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-008-s1.1-278",
+      "finding_id": "OBLI-008-s2-278",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-008",
@@ -400,7 +400,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-001-s1.5-764",
+      "finding_id": "PERS-001-s6-764",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-001",
@@ -429,7 +429,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-005-s1.5-764",
+      "finding_id": "PERS-005-s6-764",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
@@ -437,7 +437,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-006-s1.6-939",
+      "finding_id": "PERS-006-s7-939",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-006",
@@ -760,7 +760,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-007-s1.9-1554",
+      "finding_id": "TEMP-007-s10-1554",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-007",
@@ -796,7 +796,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-012-s1.9-1505",
+      "finding_id": "TEMP-012-s10-1505",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-012",
@@ -860,7 +860,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TERM-009-s1.7-1051",
+      "finding_id": "TERM-009-s8-1051",
       "fired": true,
       "ran": true,
       "rule_id": "TERM-009",
@@ -873,12 +873,12 @@
       "document_position": 1310,
       "excerpt": {
         "end_offset": 1337,
-        "section_id": "s1.8",
+        "section_id": "s9",
         "start_offset": 1310,
         "text": "All disputes shall be resolved on an individual basis only and not as part of any class action or representative action."
       },
       "explanation": "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
-      "id": "DARK-005-s1.8-1310",
+      "id": "DARK-005-s9-1310",
       "recommendation": "If you are the party giving up class-action rights: weigh the trade-off against the realistic cost of solo arbitration. If you are the drafter: confirm whether enforceability survives in every jurisdiction the contract reaches (some states' analogous statutes are narrower than the FAA).",
       "rule_id": "DARK-005",
       "rule_version": "1.2.0",
@@ -900,12 +900,12 @@
       "document_position": 1635,
       "excerpt": {
         "end_offset": 1680,
-        "section_id": "s1.10",
+        "section_id": "s11",
         "start_offset": 1635,
         "text": "Delaware → California"
       },
       "explanation": "Choosing one jurisdiction's law but another's courts is sometimes deliberate, but courts in the chosen-venue jurisdiction may apply their own procedural rules differently than the governing-law jurisdiction would expect.",
-      "id": "CHOICE-004-s1.10-1635",
+      "id": "CHOICE-004-s11-1635",
       "recommendation": "State why the law and the forum differ, or align them. A court applying another state's substantive law is ordinary, but it costs expert evidence on that law and invites a forum fight; if the split is deliberate (a Delaware-law entity dispute heard where the assets are), say so in the clause.",
       "rule_id": "CHOICE-004",
       "rule_version": "1.1.0",
@@ -918,12 +918,12 @@
       "document_position": 1400,
       "excerpt": {
         "end_offset": 1449,
-        "section_id": "s1.8",
+        "section_id": "s9",
         "start_offset": 1400,
         "text": "Employee hereby waives any right to trial by jury in any action arising from this Agreement."
       },
       "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
-      "id": "CHOICE-010-s1.8-1400",
+      "id": "CHOICE-010-s9-1400",
       "recommendation": "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       "rule_id": "CHOICE-010",
       "rule_version": "1.2.0",
@@ -936,12 +936,12 @@
       "document_position": 1635,
       "excerpt": {
         "end_offset": 1680,
-        "section_id": "s1.10",
+        "section_id": "s11",
         "start_offset": 1635,
         "text": "Delaware"
       },
       "explanation": "Cal. Lab. Code § 925 makes an out-of-state choice-of-law or forum provision voidable by the employee (not void) in employment contracts entered into, modified, or extended after Jan. 1, 2017. It applies to employees who primarily reside and work in California and were required to agree as a condition of employment, and not where the employee was individually represented by counsel in negotiating the venue or choice-of-law terms. Cal. Bus. & Prof. Code § 16600.5 (2024) extends similar reasoning to non-competes: they are unenforceable regardless of where signed if the worker is in California, and create a private right of action with attorneys' fees. This pattern is commonly used to evade California's strict non-compete prohibitions; courts (e.g., Lyon v. Neustar) routinely refuse to enforce it.",
-      "id": "CHOICE-011-s1.10-1635",
+      "id": "CHOICE-011-s11-1635",
       "recommendation": "Either change governing law to California, or include a §925 counsel-representation acknowledgment. Note that §16600.5 may render any non-compete unenforceable even with §925-compliant choice-of-law language.",
       "rule_id": "CHOICE-011",
       "rule_version": "1.4.0",
@@ -998,12 +998,12 @@
       "document_position": 764,
       "excerpt": {
         "end_offset": 804,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 764,
         "text": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
-      "id": "PERS-005-s1.5-764",
+      "id": "PERS-005-s6-764",
       "recommendation": "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
       "rule_version": "1.9.0",
@@ -1025,12 +1025,12 @@
       "document_position": 939,
       "excerpt": {
         "end_offset": 952,
-        "section_id": "s1.6",
+        "section_id": "s7",
         "start_offset": 939,
         "text": "Employee shall not disparage Employer, its officers, directors, products, or services in any forum at any time."
       },
       "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's McLaren Macomb decision (Feb 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1); it remains Board law, though the General Counsel's 2023 enforcement guidance was rescinded in February 2025 (GC 25-05). SEC Rule 21F-17 separately prohibits any action, including enforcing or threatening to enforce a confidentiality agreement, that impedes communicating with the SEC about a possible securities violation. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible. No protected-activity carve-out was found anywhere in the document.",
-      "id": "PERS-006-s1.6-939",
+      "id": "PERS-006-s7-939",
       "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, (4) statements required by law. Consider also whether the clause should be bilateral.",
       "rule_id": "PERS-006",
       "rule_version": "1.3.0",
@@ -1043,12 +1043,12 @@
       "document_position": 1505,
       "excerpt": {
         "end_offset": 1592,
-        "section_id": "s1.9",
+        "section_id": "s10",
         "start_offset": 1505,
         "text": "The provisions of Section 2 (Compensation) shall survive termination of this Agreement."
       },
       "explanation": "Survival language is what keeps sticky obligations alive after a contract terminates. A survival clause that doesn't expressly enumerate the present-in-document confidentiality / IP / indemnity obligations creates ambiguity at the moment those obligations matter most — post-termination, when the contract has already ended.",
-      "id": "TEMP-012-s1.9-1505",
+      "id": "TEMP-012-s10-1505",
       "recommendation": "Add explicit named references to the missing obligation(s): confidentiality, IP ownership / assignment. Standard drafting names every sticky section by number or category in the survival clause.",
       "rule_id": "TEMP-012",
       "rule_version": "1.5.0",
@@ -1061,12 +1061,12 @@
       "document_position": 1051,
       "excerpt": {
         "end_offset": 1100,
-        "section_id": "s1.7",
+        "section_id": "s8",
         "start_offset": 1051,
         "text": "Employer may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "The drafting party can walk away with no cause and no notice obligation, while the counterparty has to wait through a cure period or prove a material breach. This shifts the entire walk-away option to one side. Confirm whether the imbalance reflects a deliberate commercial bargain (e.g., a customer paying a premium for the right) or an unintended one-sided drafting move.",
-      "id": "TERM-009-s1.7-1051",
+      "id": "TERM-009-s8-1051",
       "recommendation": "Either grant both parties the same termination right, mirror the cure-period gate on the drafter, or pair the convenience right with a meaningful termination fee.",
       "rule_id": "TERM-009",
       "rule_version": "1.2.0",
@@ -1079,12 +1079,12 @@
       "document_position": 1416,
       "excerpt": {
         "end_offset": 1449,
-        "section_id": "s1.8",
+        "section_id": "s9",
         "start_offset": 1416,
         "text": "Employee hereby waives any right to trial by jury in any action arising from this Agreement."
       },
       "explanation": "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",
-      "id": "CHOICE-008-s1.8-1416",
+      "id": "CHOICE-008-s9-1416",
       "rule_id": "CHOICE-008",
       "rule_version": "1.3.0",
       "severity": "info",
@@ -1096,12 +1096,12 @@
       "document_position": 416,
       "excerpt": {
         "end_offset": 507,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 416,
         "text": "Employee agrees to protect Employer's Confidential Information during and after employment."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.3-416",
+      "id": "OBLI-002-s4-416",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -1113,12 +1113,12 @@
       "document_position": 278,
       "excerpt": {
         "end_offset": 290,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 278,
         "text": "Employee shall use best efforts to perform the duties of Senior Engineer."
       },
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
-      "id": "OBLI-004-s1.1-278",
+      "id": "OBLI-004-s2-278",
       "rule_id": "OBLI-004",
       "rule_version": "1.2.0",
       "severity": "info",
@@ -1130,12 +1130,12 @@
       "document_position": 668,
       "excerpt": {
         "end_offset": 902,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 668,
         "text": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.5-668",
+      "id": "OBLI-005-s6-668",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1147,12 +1147,12 @@
       "document_position": 1101,
       "excerpt": {
         "end_offset": 1123,
-        "section_id": "s1.7",
+        "section_id": "s8",
         "start_offset": 1101,
         "text": "Employer may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
-      "id": "OBLI-006-s1.7-1101",
+      "id": "OBLI-006-s8-1101",
       "rule_id": "OBLI-006",
       "rule_version": "1.1.0",
       "severity": "info",
@@ -1173,12 +1173,12 @@
       "document_position": 278,
       "excerpt": {
         "end_offset": 290,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 278,
         "text": "Employee shall use best efforts to perform the duties of Senior Engineer."
       },
       "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
-      "id": "OBLI-008-s1.1-278",
+      "id": "OBLI-008-s2-278",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
       "rule_version": "1.3.0",
@@ -1191,12 +1191,12 @@
       "document_position": 764,
       "excerpt": {
         "end_offset": 804,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 764,
         "text": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business."
       },
       "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
-      "id": "PERS-001-s1.5-764",
+      "id": "PERS-001-s6-764",
       "rule_id": "PERS-001",
       "rule_version": "1.6.0",
       "severity": "info",
@@ -1225,12 +1225,12 @@
       "document_position": 1554,
       "excerpt": {
         "end_offset": 1573,
-        "section_id": "s1.9",
+        "section_id": "s10",
         "start_offset": 1554,
         "text": "The provisions of Section 2 (Compensation) shall survive termination of this Agreement."
       },
       "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
-      "id": "TEMP-007-s1.9-1554",
+      "id": "TEMP-007-s10-1554",
       "rule_id": "TEMP-007",
       "rule_version": "1.6.0",
       "severity": "info",
@@ -1241,11 +1241,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "724bc5a9468eaefb8a71b52fb877ea2d7ec27f94137c4a5a080fa6b14196bf24",
+  "result_hash": "0630c49e5a30818b6cce635e041d2e9becf681976f82fcf46ee71687577c6fbf",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

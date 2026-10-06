@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
+import { runInClauseNumbers } from "./_run-in-clauses.js";
 
 /**
  * STRUCT-008 — Section numbering integrity (info).
@@ -24,6 +25,7 @@ export const rule: Rule = {
       .filter((n) => n.numbered_label && /^\d+(?:\.\d+)*$/.test(n.numbered_label));
     let expected = 1;
     const seen = new Set<string>();
+    const runIn = runInClauseNumbers(ctx);
     for (const node of numericTop) {
       const label = node.numbered_label!;
       const top = parseInt(label.split(".")[0]!, 10);
@@ -31,7 +33,10 @@ export const rule: Rule = {
         issues.push({ numbered_label: label, reason: "duplicate", sectionId: node.id });
       } else if (top < expected) {
         issues.push({ numbered_label: label, reason: "out-of-order", sectionId: node.id });
-      } else if (top > expected) {
+      } else if (
+        top > expected &&
+        !Array.from({ length: top - expected }, (_, i) => expected + i).every((n) => runIn.has(n))
+      ) {
         issues.push({
           numbered_label: label,
           reason: `skipped ${expected}..${top - 1}`,

@@ -237,7 +237,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-007-s1.1-285",
+      "finding_id": "FIN-007-s2-285",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-007",
@@ -358,7 +358,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.3-863",
+      "finding_id": "OBLI-005-s4-863",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -366,7 +366,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-006-s1.2-598",
+      "finding_id": "OBLI-006-s3-598",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-006",
@@ -1017,12 +1017,12 @@
       "document_position": 285,
       "excerpt": {
         "end_offset": 343,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 285,
         "text": "Provider represents and warrants that the fees charged hereunder are, and shall at all times during the Term remain, no less favorable than those offered to any other customer of Provider for substan…"
       },
       "explanation": "MFN clauses guarantee one party terms no worse than the other's best customer. They are operationally expensive to administer, sometimes raise antitrust concerns, and lock the drafting party into prices going forward.",
-      "id": "FIN-007-s1.1-285",
+      "id": "FIN-007-s2-285",
       "rule_id": "FIN-007",
       "rule_version": "1.3.0",
       "severity": "info",
@@ -1034,12 +1034,12 @@
       "document_position": 863,
       "excerpt": {
         "end_offset": 977,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 863,
         "text": "Provider shall not invoice for any Deliverable until Customer has provided written acceptance of such Deliverable."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.3-863",
+      "id": "OBLI-005-s4-863",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1051,12 +1051,12 @@
       "document_position": 598,
       "excerpt": {
         "end_offset": 620,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 598,
         "text": "Customer may, in its sole discretion and upon written notice to Provider, modify the scope, specifications, or deliverables of any SOW."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
-      "id": "OBLI-006-s1.2-598",
+      "id": "OBLI-006-s3-598",
       "rule_id": "OBLI-006",
       "rule_version": "1.1.0",
       "severity": "info",
@@ -1076,11 +1076,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "34dd54ee414d950d64a1440e3a882c3acc30faf19cd601775a6e192585479a32",
+  "result_hash": "441a1e884b140c0e8eb81e2fb3bbbd692c15b30a22a70eff30e197461e1b3320",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

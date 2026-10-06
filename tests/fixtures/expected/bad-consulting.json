@@ -349,7 +349,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-004-s1.3-618",
+      "finding_id": "OBLI-004-s4-618",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-004",
@@ -357,7 +357,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.5-844",
+      "finding_id": "OBLI-005-s6-844",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -365,7 +365,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-006-s1.7-1234",
+      "finding_id": "OBLI-006-s8-1234",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-006",
@@ -380,7 +380,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-008-s1.3-618",
+      "finding_id": "OBLI-008-s4-618",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-008",
@@ -395,7 +395,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-001-s1.5-910",
+      "finding_id": "PERS-001-s6-910",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-001",
@@ -424,7 +424,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-005-s1.5-910",
+      "finding_id": "PERS-005-s6-910",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-005",
@@ -432,7 +432,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-006-s1.6-1075",
+      "finding_id": "PERS-006-s7-1075",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-006",
@@ -905,12 +905,12 @@
       "document_position": 910,
       "excerpt": {
         "end_offset": 950,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 910,
         "text": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer or perform services for any other party within the State of California."
       },
       "explanation": "Non-competes are unenforceable in some jurisdictions (e.g., California, Bus. & Prof. Code § 16600). The FTC's 2024 rule that would have banned most worker non-competes (16 C.F.R. Part 910) was set aside nationwide in Ryan LLC v. FTC (N.D. Tex. Aug. 20, 2024) and never took effect — the FTC dismissed its appeals in September 2025 — so enforceability turns on state law, with the FTC retaining only case-by-case FTC Act § 5 enforcement. Verify against the governing-law jurisdiction.",
-      "id": "PERS-001-s1.5-910",
+      "id": "PERS-001-s6-910",
       "rule_id": "PERS-001",
       "rule_version": "1.6.0",
       "severity": "warning",
@@ -939,12 +939,12 @@
       "document_position": 910,
       "excerpt": {
         "end_offset": 950,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 910,
         "text": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer or perform services for any other party within the State of California."
       },
       "explanation": "Non-compete clauses have sharply divergent enforceability by jurisdiction. California voids employee non-competes (Bus. & Prof. Code § 16600), with narrow exceptions for the sale of a business or dissolution of a partnership or LLC (§§ 16601–16602.5); Washington imposes income thresholds; Texas requires consideration and a reasonable geographic / temporal scope under Bus. & Com. Code § 15.50; the FTC's nationwide ban was vacated in 2024 but the regulatory environment remains active. A non-compete that's standard in one state may be void in another.",
-      "id": "PERS-005-s1.5-910",
+      "id": "PERS-005-s6-910",
       "recommendation": "Check how the governing state treats non-competes: several void them outright or below a salary threshold, and several require advance notice or written advice to consult counsel before signing. If the state voids the covenant, delete it or narrow it to a non-solicitation; if it is enforceable, audit the duration, geographic scope, and consideration provided.",
       "rule_id": "PERS-005",
       "rule_version": "1.9.0",
@@ -966,12 +966,12 @@
       "document_position": 1075,
       "excerpt": {
         "end_offset": 1088,
-        "section_id": "s1.6",
+        "section_id": "s7",
         "start_offset": 1075,
         "text": "Consultant shall not disparage Customer, its officers, or its products in any public or private communication."
       },
       "explanation": "A non-disparagement clause that binds an employee or contractor at separation is enforceable in most US jurisdictions, but the NLRB's McLaren Macomb decision (Feb 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1); it remains Board law, though the General Counsel's 2023 enforcement guidance was rescinded in February 2025 (GC 25-05). SEC Rule 21F-17 separately prohibits any action, including enforcing or threatening to enforce a confidentiality agreement, that impedes communicating with the SEC about a possible securities violation. A non-disparagement provision without carve-outs for protected speech / agency reports / truthful testimony is increasingly indefensible. No protected-activity carve-out was found anywhere in the document.",
-      "id": "PERS-006-s1.6-1075",
+      "id": "PERS-006-s7-1075",
       "recommendation": "Add explicit carve-outs for: (1) NLRA-protected concerted activity, (2) SEC, DOL, EEOC, or other agency whistleblower reports, (3) truthful testimony in legal proceedings, (4) statements required by law. Consider also whether the clause should be bilateral.",
       "rule_id": "PERS-006",
       "rule_version": "1.3.0",
@@ -1100,12 +1100,12 @@
       "document_position": 618,
       "excerpt": {
         "end_offset": 630,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 618,
         "text": "Consultant shall use best efforts to produce the Deliverables described in each Statement of Work."
       },
       "explanation": "Courts in different US jurisdictions interpret 'best efforts' differently — some treat it as an extraordinary standard, others as a synonym for reasonable efforts. 'Commercially reasonable efforts' is generally clearer.",
-      "id": "OBLI-004-s1.3-618",
+      "id": "OBLI-004-s4-618",
       "rule_id": "OBLI-004",
       "rule_version": "1.2.0",
       "severity": "info",
@@ -1117,12 +1117,12 @@
       "document_position": 844,
       "excerpt": {
         "end_offset": 1036,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 844,
         "text": "During the Term and for twelve (12) months thereafter, Consultant shall not directly or indirectly compete with Customer or perform services for any other party within the State of California."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.5-844",
+      "id": "OBLI-005-s6-844",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1134,12 +1134,12 @@
       "document_position": 1234,
       "excerpt": {
         "end_offset": 1256,
-        "section_id": "s1.7",
+        "section_id": "s8",
         "start_offset": 1234,
         "text": "Customer may terminate this Agreement at any time in its sole discretion."
       },
       "explanation": "Sole-discretion clauses give one party unilateral power. They are bounded by the implied duty of good faith and fair dealing (Restatement (Second) of Contracts § 205), but the language is asymmetric and worth a deliberate review.",
-      "id": "OBLI-006-s1.7-1234",
+      "id": "OBLI-006-s8-1234",
       "rule_id": "OBLI-006",
       "rule_version": "1.1.0",
       "severity": "info",
@@ -1160,12 +1160,12 @@
       "document_position": 618,
       "excerpt": {
         "end_offset": 630,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 618,
         "text": "Consultant shall use best efforts to produce the Deliverables described in each Statement of Work."
       },
       "explanation": "Bloor v. Falstaff (2d Cir. 1979) construed one 'best efforts' clause and set no hierarchy; courts have often treated efforts standards as largely interchangeable (e.g., Williams Cos. v. Energy Transfer Equity (Del. 2017)). Without a definition, the standard a court applies is uncertain.",
-      "id": "OBLI-008-s1.3-618",
+      "id": "OBLI-008-s4-618",
       "recommendation": "Either delete the qualifier (let the obligation be absolute) or add an explicit definition of \"best efforts\" — typically a list of required actions (\"including obtaining all consents, devoting professional staff, and absorbing reasonable costs\") plus carve-outs (\"but not requiring litigation, financial harm, etc.\").",
       "rule_id": "OBLI-008",
       "rule_version": "1.3.0",
@@ -1177,11 +1177,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected consulting-agreement (score 1). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\", \"consulting services\", \"consultant\".",
-  "result_hash": "2d9c68b54db85661b6e99b25b78786788fb742f5be016844a66c556a737e7d9b",
+  "result_hash": "0e4c430745407648619ba482caeb50220cd1d60805360032ae37d47dd3098677",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

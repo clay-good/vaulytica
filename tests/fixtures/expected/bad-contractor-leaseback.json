@@ -264,7 +264,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-002-s1.3-855",
+      "finding_id": "IPDATA-002-s4-855",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-002",
@@ -335,7 +335,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.4-1211",
+      "finding_id": "OBLI-002-s5-1211",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -357,7 +357,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.1-402",
+      "finding_id": "OBLI-005-s2-402",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -527,7 +527,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.4-0",
+      "finding_id": "RISK-011-s5-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -556,7 +556,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-015-s1.4-1222",
+      "finding_id": "RISK-015-s5-1222",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
@@ -865,12 +865,12 @@
       "document_position": 855,
       "excerpt": {
         "end_offset": 941,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 855,
         "text": "Contractor hereby irrevocably assigns to Company all right, title, and interest, including all intellectual property rights, in and to any and all works, inventions, methods, processes, software, and materials created, conceived, developed, or used by Contractor in connection wi…"
       },
       "explanation": "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
-      "id": "IPDATA-002-s1.3-855",
+      "id": "IPDATA-002-s4-855",
       "recommendation": "Add a pre-existing-IP carve-out: list or describe what each party brings, state that it stays with its owner, and grant the other party only the licence it needs to use the deliverable. A bare assignment of everything created can sweep in tools the assignor uses on every engagement.",
       "rule_id": "IPDATA-002",
       "rule_version": "1.4.0",
@@ -901,12 +901,12 @@
       "document_position": 1222,
       "excerpt": {
         "end_offset": 1245,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1222,
         "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in a…"
       },
       "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
-      "id": "RISK-015-s1.4-1222",
+      "id": "RISK-015-s5-1222",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
       "rule_version": "1.10.0",
@@ -981,12 +981,12 @@
       "document_position": 1211,
       "excerpt": {
         "end_offset": 1644,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1211,
         "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in any way to the Services or this Agreement, regardless of the cause thereof, including claims caused in whole or in part by Company's own acts or omissions."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.4-1211",
+      "id": "OBLI-002-s5-1211",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -998,12 +998,12 @@
       "document_position": 402,
       "excerpt": {
         "end_offset": 491,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 402,
         "text": "Contractor may not use any vehicle or device not leased from or pre-approved by Company."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.1-402",
+      "id": "OBLI-005-s2-402",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1015,12 +1015,12 @@
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 0,
         "text": "Contractor shall defend, indemnify, and hold harmless Company, its officers, directors, employees, agents, and affiliates from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating in a…"
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.4-0",
+      "id": "RISK-011-s5-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1031,11 +1031,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "787daed13406b2f437dbc97a15f69aadcb72124f5fe782ecc9f55f91fc3946bc",
+  "result_hash": "f4757ac4d1ce990222ead6ddd619846786e8965927f652a1d0f1017c059b4e55",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

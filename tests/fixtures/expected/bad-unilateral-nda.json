@@ -356,7 +356,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.2-334",
+      "finding_id": "OBLI-005-s3-334",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -513,7 +513,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-009-s1.2-436",
+      "finding_id": "RISK-009-s3-436",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-009",
@@ -754,7 +754,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-007-s1.3-537",
+      "finding_id": "TEMP-007-s4-537",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-007",
@@ -790,7 +790,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-012-s1.3-491",
+      "finding_id": "TEMP-012-s4-491",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-012",
@@ -867,12 +867,12 @@
       "document_position": 436,
       "excerpt": {
         "end_offset": 477,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 436,
         "text": "n for an indefinite period and shall be liable for all damages without limitation."
       },
       "explanation": "An uncapped or unlimited liability clause exposes a party to an open-ended financial risk. Even mutually agreed-upon caps usually carve out specific categories (fraud, willful misconduct, IP indemnity); a blanket 'no cap' is unusual outside those carve-outs.",
-      "id": "RISK-009-s1.2-436",
+      "id": "RISK-009-s3-436",
       "recommendation": "Confirm the scope is intended. If not, add a per-claim and aggregate cap, and enumerate the carve-outs explicitly.",
       "rule_id": "RISK-009",
       "rule_version": "1.3.0",
@@ -992,12 +992,12 @@
       "document_position": 491,
       "excerpt": {
         "end_offset": 557,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 491,
         "text": "The notice provisions of this Agreement shall survive termination."
       },
       "explanation": "Survival language is what keeps sticky obligations alive after a contract terminates. A survival clause that doesn't expressly enumerate the present-in-document confidentiality / IP / indemnity obligations creates ambiguity at the moment those obligations matter most — post-termination, when the contract has already ended.",
-      "id": "TEMP-012-s1.3-491",
+      "id": "TEMP-012-s4-491",
       "recommendation": "Add explicit named references to the missing obligation(s): confidentiality. Standard drafting names every sticky section by number or category in the survival clause.",
       "rule_id": "TEMP-012",
       "rule_version": "1.5.0",
@@ -1054,12 +1054,12 @@
       "document_position": 334,
       "excerpt": {
         "end_offset": 478,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 334,
         "text": "The Receiving Party shall not disclose Confidential Information for an indefinite period and shall be liable for all damages without limitation."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.2-334",
+      "id": "OBLI-005-s3-334",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1071,12 +1071,12 @@
       "document_position": 537,
       "excerpt": {
         "end_offset": 556,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 537,
         "text": "The notice provisions of this Agreement shall survive termination."
       },
       "explanation": "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
-      "id": "TEMP-007-s1.3-537",
+      "id": "TEMP-007-s4-537",
       "rule_id": "TEMP-007",
       "rule_version": "1.6.0",
       "severity": "info",
@@ -1087,11 +1087,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "76aff0f0bee57cc73330dc79be958d3e0eea3547e4ce00c88e9f9406d6785790",
+  "result_hash": "b7758ea266a421b43b4eac5b5dcd174ff4e8155fb4519eff418202b5795c9829",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

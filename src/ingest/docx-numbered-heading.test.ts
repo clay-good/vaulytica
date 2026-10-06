@@ -27,3 +27,40 @@ describe("detectNumberedHeading", () => {
     expect(detectNumberedHeading(text)).toBeNull();
   });
 });
+
+describe("a plain-typed numbered heading among styled siblings", () => {
+  it("takes its siblings' level instead of nesting under a neighbour", async () => {
+    const { Document, HeadingLevel, Packer, Paragraph } = await import("docx");
+    const { ingestDocxBuffer } = await import("./docx.js");
+    const doc = new Document({
+      sections: [
+        {
+          children: [
+            new Paragraph({ text: "WELCOME", heading: HeadingLevel.HEADING_1 }),
+            new Paragraph({ text: "1. Purpose and Scope" }),
+            new Paragraph({ text: "This handbook is not a contract." }),
+            new Paragraph({
+              text: "2. Changes to This Handbook.",
+              heading: HeadingLevel.HEADING_1,
+            }),
+            new Paragraph({ text: "The Company may change this handbook." }),
+            new Paragraph({ text: "3. Hours of Work" }),
+            new Paragraph({ text: "Employees record their time." }),
+          ],
+        },
+      ],
+    });
+    const buf = await Packer.toBuffer(doc);
+    const { tree } = await ingestDocxBuffer(
+      buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer,
+    );
+    const top = tree.sections.map((s) => s.heading);
+    expect(top).toEqual(
+      expect.arrayContaining([
+        "1. Purpose and Scope",
+        "2. Changes to This Handbook.",
+        "3. Hours of Work",
+      ]),
+    );
+  });
+});

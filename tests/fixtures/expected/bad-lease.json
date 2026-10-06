@@ -54,7 +54,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-008-s1.5-1182",
+      "finding_id": "CHOICE-008-s6-1182",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-008",
@@ -69,7 +69,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-010-s1.5-1168",
+      "finding_id": "CHOICE-010-s6-1168",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-010",
@@ -126,7 +126,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-006-s1.5-1069",
+      "finding_id": "DARK-006-s6-1069",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-006",
@@ -253,7 +253,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-009-s1.2-756",
+      "finding_id": "FIN-009-s3-756",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
@@ -338,7 +338,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.4-933",
+      "finding_id": "OBLI-002-s5-933",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -529,7 +529,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.4-0",
+      "finding_id": "RISK-011-s5-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -558,7 +558,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-015-s1.4-940",
+      "finding_id": "RISK-015-s5-940",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
@@ -566,7 +566,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-016-s1.3-843",
+      "finding_id": "RISK-016-s4-843",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-016",
@@ -666,7 +666,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-013-s1.1-247",
+      "finding_id": "STRUCT-013-s2-247",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-013",
@@ -737,7 +737,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-004-s1.1-365",
+      "finding_id": "TEMP-004-s2-365",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-004",
@@ -745,7 +745,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-005-s1.1-365",
+      "finding_id": "TEMP-005-s2-365",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-005",
@@ -788,7 +788,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "TEMP-011-s1.1-365",
+      "finding_id": "TEMP-011-s2-365",
       "fired": true,
       "ran": true,
       "rule_id": "TEMP-011",
@@ -873,12 +873,12 @@
       "document_position": 247,
       "excerpt": {
         "end_offset": 265,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 247,
         "text": "[Premises Address]"
       },
       "explanation": "A bracketed placeholder, mustache token, or XXX run that survived into the final document is almost always a drafting accident — the contract is meant to be filled in. A placeholder where a counterparty name belongs makes the agreement legally questionable; a placeholder elsewhere makes the agreement embarrassing.",
-      "id": "STRUCT-013-s1.1-247",
+      "id": "STRUCT-013-s2-247",
       "recommendation": "Replace every flagged placeholder with the intended content, or remove the bracket if the content is no longer needed.",
       "rule_id": "STRUCT-013",
       "rule_version": "1.19.0",
@@ -891,12 +891,12 @@
       "document_position": 1168,
       "excerpt": {
         "end_offset": 1215,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 1168,
         "text": "Tenant hereby waives any right to trial by jury in any action arising from this Lease."
       },
       "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
-      "id": "CHOICE-010-s1.5-1168",
+      "id": "CHOICE-010-s6-1168",
       "recommendation": "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       "rule_id": "CHOICE-010",
       "rule_version": "1.2.0",
@@ -909,12 +909,12 @@
       "document_position": 1069,
       "excerpt": {
         "end_offset": 1166,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 1069,
         "text": "Tenant shall provide Landlord at least 60 days written notice of any claim before initiating suit."
       },
       "explanation": "A pre-suit notice or cure window imposed on one party (typically the consumer / customer / employee) but not on the drafter compresses the affected party's ability to act quickly — by the time the notice period expires, evidence has aged and pressure to settle has built. The drafter, meanwhile, can initiate proceedings without warning. Confirm whether the asymmetry is a legitimate dispute-resolution structure (e.g., an MSA's 'cure for material breach' provision) or a one-sided friction gate.",
-      "id": "DARK-006-s1.5-1069",
+      "id": "DARK-006-s6-1069",
       "recommendation": "If the gate is meant as a dispute-cooling mechanism, make it bilateral ('each party shall provide…'). If it is a one-sided cure window for the drafter's benefit, weigh whether the trade is intended.",
       "rule_id": "DARK-006",
       "rule_version": "1.1.0",
@@ -936,12 +936,12 @@
       "document_position": 756,
       "excerpt": {
         "end_offset": 780,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 756,
         "text": "Late Payment: A late fee of 3% per month shall apply to amounts not paid when due."
       },
       "explanation": "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. Confirm against the controlling jurisdiction.",
-      "id": "FIN-009-s1.2-756",
+      "id": "FIN-009-s3-756",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
       "rule_version": "1.9.0",
@@ -981,12 +981,12 @@
       "document_position": 940,
       "excerpt": {
         "end_offset": 955,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 940,
         "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
       },
       "explanation": "An indemnity carved out of (or simply not subject to) the liability cap can be the largest single financial risk a contract carries. A third-party IP infringement claim, a data-breach notification cost, or a regulatory fine can dwarf the contract value many times over. Confirm the carve-out is deliberate and proportionate to the indemnifying party's solvency.",
-      "id": "RISK-015-s1.4-940",
+      "id": "RISK-015-s5-940",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
       "rule_version": "1.10.0",
@@ -999,12 +999,12 @@
       "document_position": 843,
       "excerpt": {
         "end_offset": 896,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 843,
         "text": "Tenant shall maintain commercial general liability insurance during the Term."
       },
       "explanation": "A bare 'shall maintain insurance' clause is essentially unenforceable: the indemnitee has no way to test whether the counterparty's coverage is adequate, and a $1,000 homeowner policy formally satisfies the clause. Standard commercial drafting names a per-occurrence limit (typically $1M), an aggregate limit (typically $2M), and the coverage type (CGL, professional liability, cyber, etc.).",
-      "id": "RISK-016-s1.3-843",
+      "id": "RISK-016-s4-843",
       "recommendation": "Specify (1) the coverage types required (CGL, professional liability, errors & omissions, cyber, workers' comp, auto), (2) the per-occurrence limit, (3) the aggregate limit, and (4) the certificate-of-insurance / additional-insured cooperation obligations.",
       "rule_id": "RISK-016",
       "rule_version": "1.7.0",
@@ -1035,12 +1035,12 @@
       "document_position": 365,
       "excerpt": {
         "end_offset": 380,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 365,
         "text": "The initial Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
       },
       "explanation": "Auto-renewal commits the customer to another term unless they actively opt out. The notice window is the critical detail; verify it is reasonable and well-located. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
-      "id": "TEMP-004-s1.1-365",
+      "id": "TEMP-004-s2-365",
       "recommendation": "Confirm the renewal is what the parties intend, and check it against the auto-renewal statute of the customer's state: several require a separate, conspicuous disclosure and an easy cancellation path for a consumer or small-business renewal.",
       "rule_id": "TEMP-004",
       "rule_version": "1.7.0",
@@ -1078,12 +1078,12 @@
       "document_position": 365,
       "excerpt": {
         "end_offset": 488,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 365,
         "text": "automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days"
       },
       "explanation": "Typical auto-renewal notice windows are 30 to 90 days. Anything outside that band — too long and the customer is likely to forget, too short and they are likely to miss it — warrants review. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
-      "id": "TEMP-005-s1.1-365",
+      "id": "TEMP-005-s2-365",
       "recommendation": "Bring the notice window to something a diarised reviewer can meet — 30 to 60 days before renewal is the norm. A longer window is enforceable in most places and is still the term most likely to catch a counterparty out.",
       "rule_id": "TEMP-005",
       "rule_version": "1.4.0",
@@ -1121,12 +1121,12 @@
       "document_position": 365,
       "excerpt": {
         "end_offset": 382,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 365,
         "text": "The initial Term is three (3) years, with automatic renewal for successive one-year terms unless either party provides written notice of non-renewal at least 10 days before the end of the then-current Term."
       },
       "explanation": "An under-30-day non-renewal window compresses the customer's decision time. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline. New York's consumer automatic-renewal law (Gen. Bus. Law § 527-a) and similar statutes in other states apply to consumer contracts.",
-      "id": "TEMP-011-s1.1-365",
+      "id": "TEMP-011-s2-365",
       "recommendation": "Negotiate a 30- or 60-day non-renewal notice window.",
       "rule_id": "TEMP-011",
       "rule_version": "1.5.0",
@@ -1226,12 +1226,12 @@
       "document_position": 1182,
       "excerpt": {
         "end_offset": 1215,
-        "section_id": "s1.5",
+        "section_id": "s6",
         "start_offset": 1182,
         "text": "Tenant hereby waives any right to trial by jury in any action arising from this Lease."
       },
       "explanation": "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",
-      "id": "CHOICE-008-s1.5-1182",
+      "id": "CHOICE-008-s6-1182",
       "rule_id": "CHOICE-008",
       "rule_version": "1.3.0",
       "severity": "info",
@@ -1243,12 +1243,12 @@
       "document_position": 933,
       "excerpt": {
         "end_offset": 1046,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 933,
         "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.4-933",
+      "id": "OBLI-002-s5-933",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -1260,12 +1260,12 @@
       "document_position": 0,
       "excerpt": {
         "end_offset": 0,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 0,
         "text": "Tenant shall indemnify and hold Landlord harmless from any claim arising from Tenant's occupancy of the Premises."
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.4-0",
+      "id": "RISK-011-s5-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1276,11 +1276,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "6cde4faceee4b1d0aadabad7af8f40484bb53f491044cccef9f6c804152fa4e9",
+  "result_hash": "79dcca3c65bad1a74dcf5057529249d8e0db48d04bf216f470a5693e3cb2eb39",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

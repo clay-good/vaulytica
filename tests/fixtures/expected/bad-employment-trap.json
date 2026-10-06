@@ -40,7 +40,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-006-s1.4-1078",
+      "finding_id": "CHOICE-006-s5-1078",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-006",
@@ -55,7 +55,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-008-s1.4-1317",
+      "finding_id": "CHOICE-008-s5-1317",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-008",
@@ -70,7 +70,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "CHOICE-010-s1.4-1301",
+      "finding_id": "CHOICE-010-s5-1301",
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-010",
@@ -113,7 +113,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-004-s1.4-1208",
+      "finding_id": "DARK-004-s5-1208",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-004",
@@ -121,7 +121,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "DARK-005-s1.4-1208",
+      "finding_id": "DARK-005-s5-1208",
       "fired": true,
       "ran": true,
       "rule_id": "DARK-005",
@@ -361,7 +361,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-005-s1.3-632",
+      "finding_id": "OBLI-005-s4-632",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-005",
@@ -446,7 +446,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "PERS-008-s1.2-280",
+      "finding_id": "PERS-008-s3-280",
       "fired": true,
       "ran": true,
       "rule_id": "PERS-008",
@@ -867,12 +867,12 @@
       "document_position": 1208,
       "excerpt": {
         "end_offset": 1299,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1208,
         "text": "Employee waives any right to bring or participate in any class, collective, or representative action."
       },
       "explanation": "A class-action waiver — typically paired with mandatory arbitration — prevents the affected party from joining other similarly-situated claimants. It is enforceable under the Federal Arbitration Act in most US contexts but materially limits practical recourse: small individual claims that would not be cost-effective to litigate solo often only see remedy through collective action. Confirm this waiver is intended and that the affected party (consumer, employee, contractor) understood the trade-off.",
-      "id": "DARK-005-s1.4-1208",
+      "id": "DARK-005-s5-1208",
       "recommendation": "If you are the party giving up class-action rights: weigh the trade-off against the realistic cost of solo arbitration. If you are the drafter: confirm whether enforceability survives in every jurisdiction the contract reaches (some states' analogous statutes are narrower than the FAA).",
       "rule_id": "DARK-005",
       "rule_version": "1.2.0",
@@ -894,12 +894,12 @@
       "document_position": 280,
       "excerpt": {
         "end_offset": 538,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 280,
         "text": "In consideration of the specialized training provided by Company (valued at $15,000), Employee agrees that if Employee voluntarily terminates employment or is terminated for cause within twenty-four (24) months of completion of training, Employee shall repay the full training cost…"
       },
       "explanation": "NLRB General Counsel Memorandum 25-01 (Oct. 7, 2024), which had treated 'stay-or-pay' provisions as presumptively unlawful, was rescinded by GC 25-05 on February 14, 2025 (and a General Counsel memo is not Board law). The CFPB's July 2023 report flagged TRAPs as employer-driven debt; state AGs (CA, CO, NV) have investigated. New York's Trapped at Work Act (signed December 2025, amended February 2026) prohibits requiring an employment promissory note once it takes effect — confirm its effective date. California's AB 692 (Bus. & Prof. Code § 16608) restricts stay-or-pay terms in employment contracts entered on or after January 1, 2026. TRAPs may also fail FLSA 'free and clear' wage requirements when repayment dips an employee below minimum wage on the final paycheck.",
-      "id": "PERS-008-s1.2-280",
+      "id": "PERS-008-s3-280",
       "recommendation": "Strike the clause. If retention is the goal, use vesting equity, deferred compensation, or a discretionary retention bonus — none of which transfer to the employer's exit-cost-shifting goal but also none of which trigger the same enforcement risk.",
       "rule_id": "PERS-008",
       "rule_version": "1.2.0",
@@ -912,12 +912,12 @@
       "document_position": 1301,
       "excerpt": {
         "end_offset": 1352,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1301,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
       "explanation": "A one-sided jury-trial waiver binds the counterparty to a bench-only or arbitration-only forum while leaving the drafter free to demand a jury. Courts generally enforce a jury waiver that is knowing and voluntary — the FAA is not the source of that rule — subject to states such as California and Georgia that refuse pre-dispute waivers. Even where enforceable, the asymmetry is a recognized dark-pattern signal — particularly in consumer- and employee-facing contracts. Leasing Service Corp. v. Crane (4th Cir. 1986) requires the waiver to be 'knowing and voluntary', which courts apply more strictly to one-sided waivers.",
-      "id": "CHOICE-010-s1.4-1301",
+      "id": "CHOICE-010-s5-1301",
       "recommendation": "Make the waiver bilateral ('each party hereby waives any right to trial by jury'). If the asymmetry is intentional, document the consideration that supports the affected party's 'knowing and voluntary' waiver.",
       "rule_id": "CHOICE-010",
       "rule_version": "1.2.0",
@@ -930,12 +930,12 @@
       "document_position": 1208,
       "excerpt": {
         "end_offset": 1299,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1208,
         "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Rules then in effect. Employee waives any …"
       },
       "explanation": "Mandatory arbitration combined with a class-action waiver effectively immunizes widespread small-dollar harms from collective redress. Enforceable in many jurisdictions, but worth surfacing prominently when the agreement is consumer-facing.",
-      "id": "DARK-004-s1.4-1208",
+      "id": "DARK-004-s5-1208",
       "recommendation": "Confirm the pairing is enforceable for this consumer population, that the individual mechanism is genuinely usable (venue, cost-sharing, small-claims carve-out), and that a public-injunctive claim survives where state law preserves one.",
       "rule_id": "DARK-004",
       "rule_version": "1.3.0",
@@ -1062,12 +1062,12 @@
       "document_position": 1078,
       "excerpt": {
         "end_offset": 1089,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1078,
         "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Ru…"
       },
       "explanation": "Arbitration is binding under the Federal Arbitration Act (9 U.S.C. § 2). The seat, governing rules (AAA, JAMS, ICC), and language are the key parameters.",
-      "id": "CHOICE-006-s1.4-1078",
+      "id": "CHOICE-006-s5-1078",
       "rule_id": "CHOICE-006",
       "rule_version": "1.4.0",
       "severity": "info",
@@ -1088,12 +1088,12 @@
       "document_position": 1317,
       "excerpt": {
         "end_offset": 1352,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1317,
         "text": "Employee hereby waives any right to a trial by jury in any action arising from this Agreement."
       },
       "explanation": "Jury waivers are enforceable in most US jurisdictions, but some states refuse them: California holds all pre-dispute contractual jury-trial waivers unenforceable (Grafton Partners v. Superior Court, 36 Cal. 4th 944 (2005)), not only in employment, and Georgia likewise (Bank South v. Howard, 264 Ga. 339 (1994)). Confirm enforceability against the governing-law and forum jurisdictions.",
-      "id": "CHOICE-008-s1.4-1317",
+      "id": "CHOICE-008-s5-1317",
       "rule_id": "CHOICE-008",
       "rule_version": "1.3.0",
       "severity": "info",
@@ -1105,12 +1105,12 @@
       "document_position": 632,
       "excerpt": {
         "end_offset": 924,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 632,
         "text": "For a period of twelve (12) months following the termination of Employee's employment with the Company for any reason, Employee shall not, directly or indirectly, solicit, recruit, induce, or otherwise encourage any employee of the Company to terminate his or her employment with the Company."
       },
       "explanation": "Negative covenants restrict what a party may do. Surfacing them collectively makes it easier to check they are intended and consistent with the overall deal.",
-      "id": "OBLI-005-s1.3-632",
+      "id": "OBLI-005-s4-632",
       "rule_id": "OBLI-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1121,11 +1121,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "401c18a7e723318648f07de43cfb125e5435f72f76ea4c95ae406fd656af2e2b",
+  "result_hash": "e38883d9542d6c832cef65dd07651c7290a08dbb7467b965bcf5142bed9dee4c",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }

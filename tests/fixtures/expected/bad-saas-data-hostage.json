@@ -250,7 +250,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-009-s1.4-1246",
+      "finding_id": "FIN-009-s5-1246",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-009",
@@ -280,7 +280,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-004-s1.1-400",
+      "finding_id": "IPDATA-004-s2-400",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-004",
@@ -288,7 +288,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-005-s1.2-751",
+      "finding_id": "IPDATA-005-s3-751",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-005",
@@ -317,7 +317,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-009-s1.2-662",
+      "finding_id": "IPDATA-009-s3-662",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-009",
@@ -325,7 +325,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-010-s1.2-598",
+      "finding_id": "IPDATA-010-s3-598",
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-010",
@@ -340,7 +340,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "OBLI-002-s1.3-923",
+      "finding_id": "OBLI-002-s4-923",
       "fired": true,
       "ran": true,
       "rule_id": "OBLI-002",
@@ -615,7 +615,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "STRUCT-006-s1.1-400",
+      "finding_id": "STRUCT-006-s2-400",
       "fired": true,
       "ran": true,
       "rule_id": "STRUCT-006",
@@ -867,12 +867,12 @@
       "document_position": 662,
       "excerpt": {
         "end_offset": 876,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 662,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…"
       },
       "explanation": "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (Andersen v. Stability AI, Getty Images) flows back via indemnity.",
-      "id": "IPDATA-009-s1.2-662",
+      "id": "IPDATA-009-s3-662",
       "recommendation": "Strike the training license entirely, or narrow it dramatically: (a) only de-identified / aggregated data, (b) only for operating the Service for that customer (not 'developing' the vendor's other services), (c) explicit opt-in rather than buried-in-TOS license, (d) carve-out for regulated data categories (PII, PHI, financial data, education records).",
       "rule_id": "IPDATA-009",
       "rule_version": "1.2.0",
@@ -885,12 +885,12 @@
       "document_position": 1246,
       "excerpt": {
         "end_offset": 1268,
-        "section_id": "s1.4",
+        "section_id": "s5",
         "start_offset": 1246,
         "text": "Late fee: 2% per month on past-due amounts."
       },
       "explanation": "Most US states cap consumer interest in the 18–24%/year range; commercial transactions allow higher contractual rates in many states. New York's 16% civil usury cap (GOL § 5-501) does not protect corporations (GOL § 5-521) and does not apply to loans of $250,000 or more; only the 25% criminal cap reaches most commercial borrowers. A late-payment charge on an ordinary commercial invoice is usually tested as a penalty, not usury. Confirm against the controlling jurisdiction.",
-      "id": "FIN-009-s1.4-1246",
+      "id": "FIN-009-s5-1246",
       "recommendation": "Confirm the rate is enforceable under the controlling state's usury rules. For consumer-facing contracts, consider capping at 18% annualized. For commercial contracts, document the parties' acknowledgement of the rate.",
       "rule_id": "FIN-009",
       "rule_version": "1.9.0",
@@ -947,12 +947,12 @@
       "document_position": 598,
       "excerpt": {
         "end_offset": 604,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 598,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…"
       },
       "explanation": "License grants that pile up perpetual / irrevocable / royalty-free / worldwide / sublicensable / transferable / fully paid-up modifiers over Feedback, Customer Data, User Content, or likeness surrender every lever a customer would ordinarily retain. The scope is often broader than the vendor needs and broader than the customer realizes. Especially for Feedback, the broadly-scoped grant means anything the customer ever says to support — even suggestions for entirely separate products — becomes free fodder for the vendor's roadmap, transferable to acquirers, and unrecoverable.",
-      "id": "IPDATA-010-s1.2-598",
+      "id": "IPDATA-010-s3-598",
       "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, terminating on termination of the Agreement, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
       "rule_id": "IPDATA-010",
       "rule_version": "1.2.0",
@@ -983,12 +983,12 @@
       "document_position": 400,
       "excerpt": {
         "end_offset": 413,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 400,
         "text": "Customer Data"
       },
       "explanation": "Title-Case phrases in a contract usually signal a defined term. When they aren't defined, readers must guess at the intended meaning. Either define them or use lowercase if the term is intended in its ordinary sense.",
-      "id": "STRUCT-006-s1.1-400",
+      "id": "STRUCT-006-s2-400",
       "recommendation": "Add a definition for each genuinely defined term, or change the casing if the phrase is being used in its ordinary sense.",
       "rule_id": "STRUCT-006",
       "rule_version": "1.12.0",
@@ -1045,12 +1045,12 @@
       "document_position": 400,
       "excerpt": {
         "end_offset": 413,
-        "section_id": "s1.1",
+        "section_id": "s2",
         "start_offset": 400,
         "text": "Upon termination, Vendor may, at its discretion and upon Customer's payment of all amounts then due (including amounts subject to good-faith dispute), provide Customer with an export of Customer Data in a format selected by Vendor. Vendor'…"
       },
       "explanation": "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
-      "id": "IPDATA-004-s1.1-400",
+      "id": "IPDATA-004-s2-400",
       "rule_id": "IPDATA-004",
       "rule_version": "1.4.0",
       "severity": "info",
@@ -1062,12 +1062,12 @@
       "document_position": 751,
       "excerpt": {
         "end_offset": 764,
-        "section_id": "s1.2",
+        "section_id": "s3",
         "start_offset": 751,
         "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, an…"
       },
       "explanation": "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
-      "id": "IPDATA-005-s1.2-751",
+      "id": "IPDATA-005-s3-751",
       "rule_id": "IPDATA-005",
       "rule_version": "1.8.0",
       "severity": "info",
@@ -1104,12 +1104,12 @@
       "document_position": 923,
       "excerpt": {
         "end_offset": 1182,
-        "section_id": "s1.3",
+        "section_id": "s4",
         "start_offset": 923,
         "text": "Vendor shall have no obligation to indemnify Customer to the extent a claim arises from (i) use of the Services in combination with any software, hardware, data, or services not furnished by Vendor; or (ii) any modification of the Services not made by Vendor."
       },
       "explanation": "Obligations like confidentiality, indemnity, and representations are usually mutual. A one-sided version is sometimes intentional but worth confirming.",
-      "id": "OBLI-002-s1.3-923",
+      "id": "OBLI-002-s4-923",
       "rule_id": "OBLI-002",
       "rule_version": "1.9.0",
       "severity": "info",
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "9c0b43e3e45b897fd198142f2a6090b185a954f94fb9cc58da03a4cf2a9cb987",
+  "result_hash": "4958cf37e6491313111976b215530ffd68761971ae5f7658cd7db254bffb6be4",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.818.0"
+  "version": "9.819.0"
 }
