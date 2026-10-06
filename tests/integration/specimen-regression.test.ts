@@ -2491,7 +2491,10 @@ export const EXPECTED: Record<string, Expectation> = {
   // "Office of Economic Development" and copied to the "Director of Human
   // Resources", and the Title-Case run breaks at the lower-case "of", so both
   // tails arrived as terms the notice had supposedly forgotten to define.
-  "warn-notice.txt": { playbook: "warn-notice", findings: ["TERM-006"] },
+  // TERM-006 left in 9.822.0: "8. Reemployment and transition assistance." is
+  // the job-placement help a WARN notice describes for the employees it lays
+  // off, not a commercial wind-down to price; it matched only the heading.
+  "warn-notice.txt": { playbook: "warn-notice", findings: [] },
 
   // An Oregon revocable living trust. The family shipped with an EMPTY
   // `rule_overrides` while its two nearest siblings — the will and the
@@ -3346,7 +3349,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // landed.
   "litigation-hold-notice.txt": {
     playbook: "litigation-hold",
-    findings: ["SET-030", "OBLI-005"],
+    // OBLI-005 left in 9.822.0: its one "negative covenant" was the run-in
+    // heading "3. What you must not do."
+    findings: ["SET-030"],
   },
 
   // A tolling agreement suspending a limitations period pending settlement
@@ -3512,11 +3517,15 @@ export const EXPECTED: Record<string, Expectation> = {
   // parties execute, accepted by the supplier's performance.
   "po-terms.txt": {
     playbook: "purchase-order-terms",
+    // RISK-005 added in 9.822.0: section 13, "Limitation of Liability.", is a
+    // consequential-damages waiver and nothing else — no cap. Pasted text
+    // passed on the heading line; the DOCX reading was right.
     findings: [
       "FIN-007",
       "OBLI-005",
       "OBLI-008",
       "RISK-004",
+      "RISK-005",
       "RISK-006",
       "RISK-007",
       "RISK-010",
@@ -3727,7 +3736,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // it has been released").
   "litigation-hold.txt": {
     playbook: "litigation-hold",
-    findings: ["OBLI-005"],
+    // OBLI-005 left in 9.822.0: its one "negative covenant" was the heading
+    // "4. What you must not do."
+    findings: [],
   },
 
   // A California preliminary notice, carrying the statutory NOTICE TO PROPERTY

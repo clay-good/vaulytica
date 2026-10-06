@@ -402,6 +402,13 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // is that swallowed trigger, and it survives.
         if (!action && !trigger && !qualifier) continue;
 
+        // A PRO-VERB WITH NOTHING TO STAND FOR. "4. What you must not do." is
+        // a litigation hold's section heading, and the ledger counted it as
+        // the document's one negative covenant while the "Do not delete …"
+        // instructions beneath it went uncounted. A bare "do" names no act;
+        // "shall do so within ten days" carries its referent and stays.
+        if (/^(?:not\s+)?do[.!?]?$/i.test(action.trim()) && !trigger && !qualifier) continue;
+
         // A CAP IS NOT A DUTY. "Each party's total liability … shall not exceed
         // the amounts paid" limits a remedy; nobody promises to refrain from
         // anything. Judged on the RAW subject: the mutual-subject resolution

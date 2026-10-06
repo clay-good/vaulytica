@@ -221,3 +221,31 @@ describe("RISK-005 — a cap whose negation is in the subject", () => {
     expect(RISK_005.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-005 — a Limitation of Liability heading over a waiver only", () => {
+  const WAIVER =
+    "Neither party is liable to the other for any indirect, incidental, consequential, special, or punitive damages arising out of an Order.";
+
+  it("reports the missing cap when the label is only a heading line", () => {
+    const ctx = buildContext(["Terms", "13. Limitation of Liability.", WAIVER]);
+    expect(RISK_005.check(ctx)?.title).toMatch(/waiver only; no cap/);
+  });
+
+  it("reads the heading as a heading when blank lines were stripped", () => {
+    const ctx = buildContext(["Terms", `13. Limitation of Liability. ${WAIVER}`]);
+    expect(RISK_005.check(ctx)?.title).toMatch(/waiver only; no cap/);
+  });
+
+  it("accepts a short running sentence that names the limitation", () => {
+    const ctx = buildContext(["Terms", "The limitation of liability in Section 9 does not apply."]);
+    expect(RISK_005.check(ctx)).toBeNull();
+  });
+
+  it("still accepts the label in running text", () => {
+    const ctx = buildContext([
+      "Terms",
+      "The limitation of liability in Section 9 does not apply to a party's indemnification obligations.",
+    ]);
+    expect(RISK_005.check(ctx)).toBeNull();
+  });
+});

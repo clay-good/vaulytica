@@ -15,6 +15,9 @@
  *     second recorder's block for a title;
  *   - the DOCX ingest's heading inference rejecting commas and promoting
  *     street addresses to sections;
+ *   - recognizers that matched only a clause's heading LINE and not the
+ *     clause beneath it (PERS-005/001, FIN-008, MSA-001), and one that took
+ *     the heading line "Limitation of Liability." for a cap (RISK-005);
  *   - helpers that ordered all headings before all paragraphs, incorporated
  *     survival-list sections only through numbered paragraphs, or looked up a
  *     section at the top level only.
@@ -48,6 +51,10 @@ const SAMPLE = [
   "teaming-agreement.txt",
   "data-license-agreement.txt",
   "piia.txt",
+  "franchise.txt",
+  "distribution.txt",
+  "msa-complete.txt",
+  "po-terms.txt",
 ];
 
 /**
@@ -59,6 +66,7 @@ const KNOWN_DIVERGENCE = new Map<string, string>([]);
 const isHeading = (line: string): boolean =>
   line.length < 70 &&
   (/^(?:ARTICLE|Article|Section|SECTION)\s+[\dIVX]+\b/.test(line) ||
+    /^\d+\.\s+[A-Z][^.;:]{2,60}\.$/.test(line) ||
     /^\d+\.\s+[A-Z][A-Za-z &,'’()/-]+\.?$/.test(line) ||
     /^[A-Z][A-Z &,'’()/-]{3,}$/.test(line)) &&
   !/[.;:]\s+\S/.test(line.replace(/^\d+\.\s+/, ""));

@@ -55,3 +55,17 @@ describe("FIN-008 — a denial of a minimum commitment is not one", () => {
     expect(fires("Shipper shall tender a minimum volume of 4,000 loads per year.")).toBe(true);
   });
 });
+
+describe("FIN-008 — a purchase commitment stated as a value, under a heading", () => {
+  it("reports the commitment", () => {
+    const clause =
+      "Distributor shall purchase Products with an aggregate invoice value of at least €1,400,000 in the first contract year.";
+    expect(FIN_008.check(buildContext(["4. Minimum Purchase Commitment.", clause]))).not.toBeNull();
+  });
+
+  it("is silent on an ordering lead time", () => {
+    const clause =
+      "Customer shall order replacement parts no less than thirty (30) days before delivery.";
+    expect(FIN_008.check(buildContext(["Ordering", clause]))).toBeNull();
+  });
+});

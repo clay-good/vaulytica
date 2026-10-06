@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.822.0] — 2026-10-06
+
+Five rules that read a clause's heading line and not the clause. Pasted text
+gives a heading as a paragraph, so the line "14. Covenant Not to Compete."
+satisfied the rule; a DOCX gives it as a heading, and the covenant beneath it
+matched nothing. Found by rendering every heading-bearing specimen as a DOCX
+and diffing the findings.
+
+### Fixed
+- **PERS-005 / PERS-001 missed a franchise radius restraint.** "Franchisee …
+  shall not have any interest in a restaurant … located within five (5) miles
+  of the Approved Location" names no "compete". An interest bar with a stated
+  radius is now a non-compete; one without a radius (a trustee's
+  conflict-of-interest rule) is not. The pattern is shared between the two
+  rules, so they cannot disagree.
+- **FIN-008 missed a purchase commitment stated as a value.** "Distributor
+  shall purchase Products with an aggregate invoice value of at least
+  €1,400,000" — the quota form required a bare number straight after
+  "purchase at least". An amount in any currency or in words now counts; an
+  ordering lead time ("no less than thirty (30) days") does not.
+- **MSA-001 missed an IP indemnity that states the claim first.** "Provider
+  shall defend Customer … against any third-party claim alleging that a
+  deliverable infringes … and shall indemnify Customer" put "indemnify" after
+  "infringes", and the rule read only the other order.
+- **RISK-005 took the heading "Limitation of Liability." for a cap.** po-terms'
+  section 13 under that heading is a consequential-damages waiver and nothing
+  else. The bare label now counts only in running text ("the limitation of
+  liability in Section 9 does not apply to …"), and po-terms gains the true
+  finding: liability limited by waiver only, no cap stated. The label's own
+  sentence is what is tested, so a heading that shares a paragraph with its
+  clause (blank lines stripped) is still a heading; a table of contents or a
+  recital that names the clause still does not count.
+- **OBLI-005 counted "What you must not do." as a negative covenant.** Two
+  litigation-hold notices carry that section heading, and it was each
+  document's one listed covenant, while the "Do not delete …" instructions
+  beneath it went uncounted. An obligation whose whole action is a bare "do"
+  is no longer extracted; "shall do so within ten days" still is.
+- **TERM-006 on a WARN notice.** "Reemployment and transition assistance" is
+  the job-placement help offered to laid-off employees, not a commercial
+  wind-down whose "duration, scope, and pricing" need checking. The rule is
+  skipped for the warn-notice family.
+
+### Tests
+- `docx-format-invariance` covers four more specimens (franchise,
+  distribution, msa-complete, po-terms), and its renderer now treats a short
+  numbered line ending in a period ("4. Minimum Purchase Commitment.") as a
+  heading, as Word documents do.
+
 ## [9.821.0] — 2026-10-06
 
 Three of four open dependency advisories closed.

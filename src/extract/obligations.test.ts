@@ -1703,3 +1703,19 @@ describe("a guaranty's operative promise", () => {
     expect(row?.action).toContain("when due of all obligations");
   });
 });
+
+describe("extractObligations — a bare pro-verb", () => {
+  const rowsOf = (text: string) => {
+    const tree = buildTree(["Body", text]);
+    return extractObligations(tree, extractParties(tree));
+  };
+
+  it("drops a heading whose whole action is 'do'", () => {
+    expect(rowsOf("What you must not do.")).toEqual([]);
+  });
+
+  it("keeps 'do so', which carries its referent", () => {
+    const [row] = rowsOf("Tenant shall do so within ten (10) days after notice.");
+    expect(row?.action).toMatch(/^do so/);
+  });
+});

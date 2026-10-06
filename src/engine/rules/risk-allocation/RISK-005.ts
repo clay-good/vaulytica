@@ -1,6 +1,13 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
-import { amendsParentAgreement, emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import {
+  allMatches,
+  amendsParentAgreement,
+  emit,
+  firstParagraphMatch,
+  isNonOperative,
+  topPosition,
+} from "../_helpers.js";
 import { CONSEQ_WAIVER } from "./RISK-007.js";
 import { truncate } from "../../text.js";
 
@@ -45,9 +52,41 @@ import { truncate } from "../../text.js";
 // of liability does not apply to …"), and "the limitation of liability set
 // forth herein" all lack the negator and still match.
 const LIMITATION_OF_LIABILITY = new RegExp(
-  String.raw`\b(?:neither|no)\s+(?:party|of\s+the\s+parties)(?:['’]s)?\s+(?:[\w-]+\s+){0,3}?liabilit(?:y|ies)\b[^.]{0,160}?\b(?:shall|will|must|may)\s+exceed\b|(?<!\b(?:no|without)\s(?:any\s)?)\blimitation\s+of\s+liability\b|(?<!\b(?:no|without)\s(?:any\s)?)\baggregate\s+liability\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,160}?\b(?<!\bnot\s)(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b(?:[^.]|\.(?=\d)){0,60}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will|must)\s+be|(?:shall|will|must)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,120}?\bliable\b(?:[^.]|\.(?=\d)){0,80}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:maximum|total|cumulative|aggregate)\s+liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,120}?\b(?:is|are|shall\s+be|will\s+be)\s+(?<!\bnot\s)(?:limited\s+to|capped\s+at|no\s+(?:more|greater)\s+than|[$€£¥₹₩₽]|${AMOUNT_IN_WORDS}|the\s+(?:purchase\s+price|fees?|premium|amounts?|total|greater|lesser|aggregate))\b`,
+  String.raw`\b(?:neither|no)\s+(?:party|of\s+the\s+parties)(?:['’]s)?\s+(?:[\w-]+\s+){0,3}?liabilit(?:y|ies)\b[^.]{0,160}?\b(?:shall|will|must|may)\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,160}?\b(?<!\bnot\s)(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b(?:[^.]|\.(?=\d)){0,60}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will|must)\s+be|(?:shall|will|must)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,120}?\bliable\b(?:[^.]|\.(?=\d)){0,80}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:maximum|total|cumulative|aggregate)\s+liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,120}?\b(?:is|are|shall\s+be|will\s+be)\s+(?<!\bnot\s)(?:limited\s+to|capped\s+at|no\s+(?:more|greater)\s+than|[$€£¥₹₩₽]|${AMOUNT_IN_WORDS}|the\s+(?:purchase\s+price|fees?|premium|amounts?|total|greater|lesser|aggregate))\b`,
   "i",
 );
+
+// The bare LABELS, kept apart because a label on its own line is a HEADING,
+// and a heading is not a cap: po-terms' "13. Limitation of Liability." sits
+// over a consequential-damages waiver and nothing else. Pasted text passed on
+// that line; the same document as a DOCX, where the line is a heading, was
+// told (rightly) that it states no cap. A label counts only in running text
+// ("the limitation of liability in Section 9 does not apply to …").
+const LIABILITY_LABEL =
+  /(?<!\b(?:no|without)\s(?:any\s)?)\blimitation\s+of\s+liability\b|(?<!\b(?:no|without)\s(?:any\s)?)\baggregate\s+liability\b/i;
+/** A heading: short, and every word of four or more letters capitalized. */
+const isHeadingLine = (line: string): boolean => {
+  const words = line
+    .replace(/^\s*(?:(?:article|section|clause)\s+)?[\dIVX]*(?:\.\d+)*\.?\s*/i, "")
+    .replace(/[.:]\s*$/, "");
+  return words.length <= 60 && !/[.;:]/.test(words) && !/\b[a-z][a-z]{3,}\b/.test(words);
+};
+
+/**
+ * The label's own line, cut at a sentence end before and after it. Blank
+ * lines can be stripped (pasted from email), and the heading then shares a
+ * paragraph with the clause beneath it: "13. Limitation of Liability. Neither
+ * party is liable …" must still read its label as the heading.
+ */
+const labelLine = (text: string, index: number): string => {
+  const before = text.slice(0, index);
+  const start = Math.max(
+    before.lastIndexOf("\n") + 1,
+    /^.*[A-Za-z)][.;:]\s+/s.exec(before)?.[0].length ?? 0,
+  );
+  const end = /[.;:](?=\s|$)|\n/.exec(text.slice(index));
+  return text.slice(start, end ? index + end.index + 1 : text.length);
+};
 
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
@@ -67,6 +106,12 @@ export const rule: Rule = {
     // inside its own amendment.
     if (amendsParentAgreement(ctx)) return null;
     if (firstParagraphMatch(ctx, LIMITATION_OF_LIABILITY)) return null;
+    if (
+      allMatches(ctx, LIABILITY_LABEL).some(
+        (m) => !isNonOperative(m.text) && !isHeadingLine(labelLine(m.text, m.match.index)),
+      )
+    )
+      return null;
     // A consequential-damages WAIVER is a limitation of liability, and this
     // rule's own recommendation says so: it asks for "a cap …, A
     // CONSEQUENTIAL-DAMAGES WAIVER, and the carve-outs". A master purchase

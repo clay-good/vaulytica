@@ -78,6 +78,10 @@ const OVERLAPS_ON_PURPOSE: ReadonlySet<string> = new Set([
   // One reports that the indemnity runs one way; the other that nothing caps
   // it. Either can be true without the other.
   "RISK-002 + RISK-015 [warning]",
+  // 9.822.0: a limitation clause that is a consequential-damages waiver and
+  // nothing else. One says the waiver excepts the indemnity; the other that
+  // no cap bounds direct damages at all. Both true of the same sentence.
+  "RISK-004 + RISK-005 [warning]",
   // A covenant count and a clause the other rule also reports. OBLI-003 came
   // off this list in 9.699.0: OBLI-005 stopped counting an obligation whose
   // negation belongs to a SIBLING clause of the same sentence, so the two no

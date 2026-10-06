@@ -193,3 +193,25 @@ describe("PERS-005 / PERS-001 — an offer letter that says it is asking for non
     expect(PERS_001.check(buildContext(["9. Non-Solicitation", CLAUSE]))).toBeNull();
   });
 });
+
+describe("PERS-005 — a franchise radius restraint under a heading", () => {
+  // In a DOCX the "Covenant Not to Compete" line is a section heading, not a
+  // paragraph, so only the covenant itself can satisfy the rule.
+  const CLAUSE =
+    "During the term and for twelve (12) months after termination or expiration, Franchisee and each owner of Franchisee shall not have any interest in a restaurant deriving more than twenty percent (20%) of its revenue from bowl-style prepared meals, located within five (5) miles of the Approved Location.";
+
+  it("reports the covenant", () => {
+    expect(PERS_005.check(buildContext(["14. Covenant Not to Compete.", CLAUSE]))).not.toBeNull();
+  });
+
+  it("reports the covenant in PERS-001 too", () => {
+    expect(PERS_001.check(buildContext(["14. Covenant Not to Compete.", CLAUSE]))).not.toBeNull();
+  });
+
+  it("is silent on an interest bar with no radius", () => {
+    const coi =
+      "The Trustee shall not have any interest in any transaction with the Trust unless the beneficiaries consent in writing.";
+    expect(PERS_005.check(buildContext(["Conflicts", coi]))).toBeNull();
+    expect(PERS_001.check(buildContext(["Conflicts", coi]))).toBeNull();
+  });
+});

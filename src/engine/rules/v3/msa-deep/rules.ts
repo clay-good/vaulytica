@@ -217,6 +217,12 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Add a third-party IP infringement indemnity (defense, settlement, damages) with the usual customer-cooperation conditions.",
     present_patterns: [
       /(?:indemnif\w+).{0,200}(?:intellectual\s+property|infring\w+|IP\s+claim)/is,
+      // The claim first, the promise after: "Provider shall defend Customer …
+      // against any third-party claim alleging that a deliverable infringes …
+      // and shall indemnify Customer". Pasted text was saved by the
+      // "Indemnification." heading line above it; a DOCX gives that line as
+      // a heading, and the clause itself did not match.
+      /\bdefend\b[^.]{0,200}\bclaim[^.]{0,120}\b(?:infring\w+|misappropriat\w+)[^.]{0,200}\bindemnif\w+/i,
     ],
     default_severity: "warning",
     denied_if: expressDenial(

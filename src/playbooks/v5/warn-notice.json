@@ -68,6 +68,9 @@
     },
     "TERM-005": {
       "skip": true
+    },
+    "TERM-006": {
+      "skip": true
     }
   },
   "balanced_defaults": [],
