@@ -222,6 +222,15 @@ export function shiftTrajectoryFractured(trajectory: CoherenceShiftTrajectory): 
 }
 
 /**
+ * The weaker, net-only gate (spec-v18 Part XVI): some front's coherence ENDED
+ * split where round 1 had it agreed. A front that fractured and reconciled
+ * passes it.
+ */
+export function shiftTrajectoryNetFractured(trajectory: CoherenceShiftTrajectory): boolean {
+  return trajectory.net_shift_counts.fractured > 0;
+}
+
+/**
  * Serialize a {@link CoherenceShiftTrajectory} to a stable, pretty-printed JSON
  * string. The key order is fixed and the front order is already pinned by
  * {@link compareCoherenceShiftTrajectory}, so the same trajectory always yields

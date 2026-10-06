@@ -2,7 +2,7 @@
  * Document-free combined posture **arc** across N rounds (spec-v19, Step 199).
  *
  *   tsx tools/cli/run.ts coherence-arc <r1.coherence.json> <r2.coherence.json> [<r3…> …] \
- *       [--format markdown|json] [--fail-on-regression-or-fracture]
+ *       [--format markdown|json] [--fail-on-regression-or-fracture] [--fail-on-net-regression-or-fracture]
  *
  * v17's `coherence-trend` walks N saved coherence artifacts and reports the
  * per-front binding-*floor* trajectory; v18's `coherence-shift-trend` reports the
@@ -28,6 +28,7 @@ import { verifyCoherenceSequence } from "./coherence-sequence.js";
 import {
   compareCoherenceArc,
   arcRegressedOrFractured,
+  arcNetRegressedOrFractured,
   renderCoherenceArcSummary,
   buildCoherenceArcJson,
 } from "../../src/report/coherence-arc.js";
@@ -41,6 +42,8 @@ export type CoherenceArcOutcome =
       output: string;
       /** Did the floor regress OR the package fracture at any step? (the combined gate). */
       regressedOrFractured: boolean;
+      /** Net-only: a floor ended lower, or a coherence ended split, than round 1. */
+      netRegressedOrFractured: boolean;
       /** A non-fatal advisory when cross-ladder verification could not run (an unpinned round). */
       ladderNote: string | null;
     };
@@ -66,6 +69,7 @@ export async function compareCoherenceArcArtifacts(
     ok: true,
     output,
     regressedOrFractured: arcRegressedOrFractured(arc),
+    netRegressedOrFractured: arcNetRegressedOrFractured(arc),
     ladderNote: seq.ladderNote,
   };
 }
@@ -74,11 +78,17 @@ type CoherenceArcArgs = {
   files: string[];
   format: CoherenceArcFormat;
   failOnRegressionOrFracture: boolean;
+  failOnNetRegressionOrFracture: boolean;
 };
 
 function parseCoherenceArcArgs(argv: string[]): CoherenceArcArgs {
   const files: string[] = [];
-  const args: CoherenceArcArgs = { files, format: "markdown", failOnRegressionOrFracture: false };
+  const args: CoherenceArcArgs = {
+    files,
+    format: "markdown",
+    failOnRegressionOrFracture: false,
+    failOnNetRegressionOrFracture: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === "--format") {
@@ -89,6 +99,8 @@ function parseCoherenceArcArgs(argv: string[]): CoherenceArcArgs {
       args.format = val;
     } else if (flag === "--fail-on-regression-or-fracture") {
       args.failOnRegressionOrFracture = true;
+    } else if (flag === "--fail-on-net-regression-or-fracture") {
+      args.failOnNetRegressionOrFracture = true;
     } else if (flag!.startsWith("--")) {
       throw new Error(`unknown flag "${flag}"`);
     } else {
@@ -97,7 +109,7 @@ function parseCoherenceArcArgs(argv: string[]): CoherenceArcArgs {
   }
   if (files.length < 2) {
     throw new Error(
-      "usage: coherence-arc <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-regression-or-fracture]",
+      "usage: coherence-arc <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-regression-or-fracture] [--fail-on-net-regression-or-fracture]",
     );
   }
   return args;
@@ -118,6 +130,13 @@ export async function runCoherenceArc(argv: string[]): Promise<void> {
   if (args.failOnRegressionOrFracture && outcome.regressedOrFractured) {
     process.stderr.write(
       "\n✗ the bundle's binding floor regressed or its coherence fractured at some round in the sequence (--fail-on-regression-or-fracture)\n",
+    );
+    process.exitCode = 2;
+  }
+  // The weaker gate: only an arc that ENDED worse than it began, on either axis.
+  if (args.failOnNetRegressionOrFracture && outcome.netRegressedOrFractured) {
+    process.stderr.write(
+      "\n✗ the bundle ended with a lower floor or a split coherence than round 1 (--fail-on-net-regression-or-fracture)\n",
     );
     process.exitCode = 2;
   }

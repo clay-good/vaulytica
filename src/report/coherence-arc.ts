@@ -191,6 +191,15 @@ export function arcRegressedOrFractured(arc: CoherenceArc): boolean {
 }
 
 /**
+ * The weaker, net-only combined gate (spec-v19 Part XVI): some front's floor
+ * ended lower than it began, or its coherence ended split where round 1 had it
+ * agreed. A whipsaw or a fracture that reconciled passes it.
+ */
+export function arcNetRegressedOrFractured(arc: CoherenceArc): boolean {
+  return arc.net_counts.regressed > 0 || arc.net_shift_counts.fractured > 0;
+}
+
+/**
  * Serialize a {@link CoherenceArc} to a stable, pretty-printed JSON string. The
  * key order is fixed and the front order is already pinned by
  * {@link compareCoherenceArc}, so the same arc always yields identical bytes —

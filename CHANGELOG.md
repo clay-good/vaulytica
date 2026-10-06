@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.853.0] — 2026-10-06
+
+### Added
+- **Net-only gates for the shift trend and the arc.**
+  `coherence-shift-trend --fail-on-net-fracture` exits 2 only when some front
+  ended split where round 1 had it agreed (a fracture that reconciled passes);
+  `coherence-arc --fail-on-net-regression-or-fracture` is the same weaker bar
+  on both axes. The deferrals spec-v18 and spec-v19 named, mirroring 9.849.0's
+  `--fail-on-net-regression`.
+
+### Fixed
+- **`--help` named every gate but the newest.** 9.849.0's
+  `coherence-trend --fail-on-net-regression` was parsed, tested and in the
+  reference, but missing from the usage text `--help` prints. A new guard
+  (`sequence-help-drift.test.ts`) reads each round-archive command's parser and
+  requires every flag it accepts in that command's usage entry; it fails on the
+  9.849.0 omission.
+
 ## [9.852.0] — 2026-10-06
 
 ### Added

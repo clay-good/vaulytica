@@ -138,3 +138,35 @@ describe("compareCoherenceArcArtifacts (spec-v19 — document-free combined post
     );
   });
 });
+
+describe("the net-only combined gate (--fail-on-net-regression-or-fracture)", () => {
+  const run = async (...rounds: Array<Awaited<ReturnType<typeof round>>>) => {
+    const outcome = await compareCoherenceArcArtifacts(
+      rounds.map((c) => buildPostureCoherenceJson(c, LADDER_A)),
+    );
+    if (!outcome.ok) throw new Error(outcome.errors.join("; "));
+    return outcome;
+  };
+
+  it("a floor whipsaw and a reconciled fracture trip only the any-step gate", async () => {
+    const o = await run(
+      await round("ideal", "ideal"),
+      await round("ideal", "below-acceptable"),
+      await round("ideal", "ideal"),
+    );
+    expect([o.regressedOrFractured, o.netRegressedOrFractured]).toEqual([true, false]);
+  });
+
+  it("a floor that ended lower trips the net gate", async () => {
+    const o = await run(await round("ideal", "ideal"), await round("acceptable", "acceptable"));
+    expect([o.regressedOrFractured, o.netRegressedOrFractured]).toEqual([true, true]);
+  });
+
+  it("a coherence that ended split trips the net gate even when no floor regressed", async () => {
+    const o = await run(
+      await round("acceptable", "acceptable"),
+      await round("ideal", "acceptable"),
+    );
+    expect(o.netRegressedOrFractured).toBe(true);
+  });
+});

@@ -141,3 +141,28 @@ describe("compareCoherenceShiftTrendArtifacts (spec-v18 — document-free cohere
     );
   });
 });
+
+describe("the net-only gate (--fail-on-net-fracture)", () => {
+  const run = async (...rounds: Array<Awaited<ReturnType<typeof aligned>>>) => {
+    const outcome = await compareCoherenceShiftTrendArtifacts(
+      rounds.map((c) => buildPostureCoherenceJson(c, LADDER_A)),
+    );
+    if (!outcome.ok) throw new Error(outcome.errors.join("; "));
+    return outcome;
+  };
+
+  it("a fracture that reconciled trips the any-step gate, not the net one", async () => {
+    const o = await run(await aligned(), await divergent(), await aligned());
+    expect([o.fractured, o.netFractured]).toEqual([true, false]);
+  });
+
+  it("a package that ended split where round 1 agreed trips both", async () => {
+    const o = await run(await aligned(), await aligned(), await divergent());
+    expect([o.fractured, o.netFractured]).toEqual([true, true]);
+  });
+
+  it("a package that only reconciled trips neither", async () => {
+    const o = await run(await divergent(), await aligned());
+    expect([o.fractured, o.netFractured]).toEqual([false, false]);
+  });
+});

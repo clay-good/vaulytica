@@ -2,7 +2,7 @@
  * Document-free coherence-*shift* trajectory across N rounds (spec-v18, Step 198).
  *
  *   tsx tools/cli/run.ts coherence-shift-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] \
- *       [--format markdown|json] [--fail-on-fracture]
+ *       [--format markdown|json] [--fail-on-fracture] [--fail-on-net-fracture]
  *
  * v17's `coherence-trend` walks N saved coherence artifacts and reports the
  * per-front binding-*floor* trajectory. This sibling reports the second signal
@@ -28,6 +28,7 @@ import { verifyCoherenceSequence } from "./coherence-sequence.js";
 import {
   compareCoherenceShiftTrajectory,
   shiftTrajectoryFractured,
+  shiftTrajectoryNetFractured,
   renderCoherenceShiftTrajectorySummary,
   buildCoherenceShiftTrajectoryJson,
 } from "../../src/report/coherence-shift-trajectory.js";
@@ -41,6 +42,8 @@ export type CoherenceShiftTrendOutcome =
       output: string;
       /** Did the package fracture at any step of the sequence? (steady-fracture or oscillating). */
       fractured: boolean;
+      /** Net-only: some front ended split where round 1 had it agreed. */
+      netFractured: boolean;
       /** A non-fatal advisory when cross-ladder verification could not run (an unpinned round). */
       ladderNote: string | null;
     };
@@ -69,6 +72,7 @@ export async function compareCoherenceShiftTrendArtifacts(
     ok: true,
     output,
     fractured: shiftTrajectoryFractured(trajectory),
+    netFractured: shiftTrajectoryNetFractured(trajectory),
     ladderNote: seq.ladderNote,
   };
 }
@@ -77,11 +81,17 @@ type CoherenceShiftTrendArgs = {
   files: string[];
   format: CoherenceShiftTrendFormat;
   failOnFracture: boolean;
+  failOnNetFracture: boolean;
 };
 
 function parseCoherenceShiftTrendArgs(argv: string[]): CoherenceShiftTrendArgs {
   const files: string[] = [];
-  const args: CoherenceShiftTrendArgs = { files, format: "markdown", failOnFracture: false };
+  const args: CoherenceShiftTrendArgs = {
+    files,
+    format: "markdown",
+    failOnFracture: false,
+    failOnNetFracture: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === "--format") {
@@ -92,6 +102,8 @@ function parseCoherenceShiftTrendArgs(argv: string[]): CoherenceShiftTrendArgs {
       args.format = val;
     } else if (flag === "--fail-on-fracture") {
       args.failOnFracture = true;
+    } else if (flag === "--fail-on-net-fracture") {
+      args.failOnNetFracture = true;
     } else if (flag!.startsWith("--")) {
       throw new Error(`unknown flag "${flag}"`);
     } else {
@@ -100,7 +112,7 @@ function parseCoherenceShiftTrendArgs(argv: string[]): CoherenceShiftTrendArgs {
   }
   if (files.length < 2) {
     throw new Error(
-      "usage: coherence-shift-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-fracture]",
+      "usage: coherence-shift-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-fracture] [--fail-on-net-fracture]",
     );
   }
   return args;
@@ -121,6 +133,14 @@ export async function runCoherenceShiftTrend(argv: string[]): Promise<void> {
   if (args.failOnFracture && outcome.fractured) {
     process.stderr.write(
       "\n✗ the package's coherence fractured at some round in the sequence (--fail-on-fracture)\n",
+    );
+    process.exitCode = 2;
+  }
+  // The weaker gate: only a front that ENDED split. A fracture that reconciled
+  // passes it, by design (spec-v18 Part XVI).
+  if (args.failOnNetFracture && outcome.netFractured) {
+    process.stderr.write(
+      "\n✗ the package's coherence ended split where round 1 agreed (--fail-on-net-fracture)\n",
     );
     process.exitCode = 2;
   }
