@@ -3973,7 +3973,9 @@ export const EXPECTED: Record<string, Expectation> = {
     // "indemnify, defend and hold harmless Customer … against any third-party
     // claim that the Services infringe" — and the rule's 80-character window
     // between the two words was eleven characters too narrow to read it.
+    // RISK-004 added in 9.816.0: "The limitations in Sections X.1 and X.2 do not apply to a Party's indemnification obligations" is an indemnity carve-out from the cap; as pasted text it sat two paragraphs below its heading line and was not read.
     findings: [
+      "RISK-004",
       "MSA-003",
       "MSA-011",
       "MSA-014",
@@ -5087,7 +5089,9 @@ export const EXPECTED: Record<string, Expectation> = {
   // confirm it is ancillary and narrow rather than calling it a defect.
   "msa-complete.txt": {
     playbook: "msa-customer-deep",
+    // RISK-004 added in 9.816.0: "The limitations in Sections X.1 and X.2 do not apply to a Party's indemnification obligations" is an indemnity carve-out from the cap; as pasted text it sat two paragraphs below its heading line and was not read.
     findings: [
+      "RISK-004",
       "MSA-003",
       "MSA-020",
       "MSA-028",
@@ -5602,7 +5606,9 @@ export const EXPECTED: Record<string, Expectation> = {
   },
   "enterprise-saas-subscription.txt": {
     playbook: "saas-customer",
+    // RISK-004 added in 9.816.0: "The limitations in Sections X.1 and X.2 do not apply to a Party's indemnification obligations" is an indemnity carve-out from the cap; as pasted text it sat two paragraphs below its heading line and was not read.
     findings: [
+      "RISK-004",
       "OBLI-005",
       "RISK-006",
       "RISK-007",

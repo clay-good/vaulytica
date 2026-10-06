@@ -37,8 +37,14 @@ export function capExceptsIndemnity(ctx: RuleContext): {
     // the heading the clause is read under, which is the same loss by another
     // route.
     if (PAGE_FURNITURE.test(p.text.trim())) return;
-    const lead = p.section.heading.trim() || heading;
-    heading = isHeadingLine(p.text) ? p.text.trim() : "";
+    const lead = [p.section.heading.trim(), heading].filter(Boolean).join(" ");
+    // The heading line governs its whole clause, not just the next paragraph:
+    // "12. LIMITATION OF LIABILITY" over 12.1, 12.2 and "12.3 Clause 12.1 and
+    // clause 12.2 do not apply to a Party's indemnification obligations" — the
+    // carve-out names the cap by clause number, and as pasted text it was two
+    // paragraphs too far from its heading to be read (a DOCX, where the heading
+    // is the section's, read it).
+    if (isHeadingLine(p.text)) heading = p.text.trim();
     if (hits.length > 0) return;
     if (!CARVE_OUT.test(lead ? `${lead} ${p.text}` : p.text)) return;
     hits.push({ text: p.text, position: positionOf(p) });
@@ -90,7 +96,15 @@ function isHeadingLine(text: string): boolean {
   // The section number is part of the heading, and its own period is not a
   // sentence break: "13. Limitation of Liability." is one line, not two.
   const t = text.trim().replace(/^\d+(?:\.\d+)*\.?\s+/, "");
-  return t.length > 0 && t.length <= 80 && !/[.;:!?]\s/.test(t);
+  // A short SENTENCE is not a heading: "12.1 Neither Party is liable for
+  // indirect or consequential damages." passed the length test and displaced
+  // the clause's real heading. A heading that ends in a period is a few words.
+  return (
+    t.length > 0 &&
+    t.length <= 80 &&
+    !/[.;:!?]\s/.test(t) &&
+    (!/\.$/.test(t) || t.split(/\s+/).length <= 6)
+  );
 }
 
 /** The whole paragraph's position, which is what the finding points at. */

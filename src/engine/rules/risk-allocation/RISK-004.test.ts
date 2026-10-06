@@ -62,3 +62,16 @@ describe("RISK-004 — indemnity carved out of the liability cap", () => {
     expect(RISK_004.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-004 — a carve-out two paragraphs below its heading line", () => {
+  it("reads the clause heading for the whole clause", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "12. LIMITATION OF LIABILITY",
+      "12.1 Neither Party is liable for indirect or consequential damages.",
+      "12.2 Each Party's total liability is limited to the fees paid in the prior twelve months.",
+      "12.3 Clause 12.1 and clause 12.2 do not apply to a Party's indemnification obligations under clause 9.",
+    ]);
+    expect(RISK_004.check(ctx)).not.toBeNull();
+  });
+});

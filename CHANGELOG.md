@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.816.0] — 2026-10-06
+
+### Fixed
+- **RISK-004 missed an indemnity carve-out two paragraphs below its heading.**
+  "12.3 Clause 12.1 and clause 12.2 do not apply to a Party's indemnification
+  obligations" names the cap by clause number, so it needs its heading
+  ("LIMITATION OF LIABILITY") for context. As pasted text the heading line was
+  carried only to the very next paragraph; as a DOCX the heading belongs to the
+  section and the carve-out was read. The heading line now governs its clause
+  until the next one, combined with any section heading, and a short sentence
+  ("12.1 Neither Party is liable for indirect or consequential damages.") is
+  no longer mistaken for a heading line. Three specimens gain the (true) warning — the customer
+  MSA, the clean MSA and the clean enterprise SaaS agreement all except
+  indemnities from the cap.
+
 ## [9.815.0] — 2026-10-06
 
 Continuing the DOCX sweep (divergence 16 specimens, from 62).
