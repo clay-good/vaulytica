@@ -43,6 +43,8 @@ export type ConsistencyExcerpt = {
   source_file_name: string;
   text: string;
   section_id?: string;
+  /** The section's heading in that document, as written; see Excerpt.section_label. */
+  section_label?: string;
   start_offset: number;
   end_offset: number;
 };

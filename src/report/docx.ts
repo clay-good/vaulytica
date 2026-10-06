@@ -975,7 +975,7 @@ function renderNegotiationPostureSection(
             p.dimension,
             tierText,
             truncate(detail.length > 0 ? detail.join(" · ") : "—", 400),
-            p.section_id ?? "—",
+            p.section_label ?? "—",
           ]);
         }),
       ],

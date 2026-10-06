@@ -11,6 +11,7 @@
  *   `executed_at`, and per-entry `elapsed_ms` blanked.
  */
 
+import { sectionLabels } from "../../extract/sections.js";
 import type {
   ConsistencyContext,
   ConsistencyDocument,
@@ -100,6 +101,13 @@ export async function runConsistency(input: RunConsistencyInput): Promise<Consis
   }
 
   const sortedFindings = sortConsistencyFindings(findings);
+  // Each excerpt's section named as its own document names it.
+  const labelers = new Map(input.documents.map((d) => [d.doc_id, sectionLabels(d.tree)]));
+  for (const f of sortedFindings)
+    for (const e of f.excerpts) {
+      const label = labelers.get(e.doc_id)?.(e.section_id);
+      if (label) e.section_label = label;
+    }
 
   const run: ConsistencyRun = {
     version: CONSISTENCY_ENGINE_VERSION,

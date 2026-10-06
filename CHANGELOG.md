@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.828.0] — 2026-10-06
+
+### Fixed
+- **The last two places a report named a section by its internal id.** The
+  bundle report's cross-document appendix quoted each excerpt as "msa.docx
+  (s4 @ 1200–1380)", and the DOCX negotiation table's location column printed
+  the posture's section id. Consistency excerpts now carry `section_label`
+  from their own document's headings, resolved when the cross-document run
+  finishes, and the appendix reads "msa.docx (12. GOVERNING LAW, characters
+  1,200–1,380)"; the posture table shows the label or "—".
+
 ## [9.827.0] — 2026-10-06
 
 ### Fixed

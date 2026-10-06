@@ -1503,7 +1503,7 @@ function renderCrossDocAppendix(consistency: ConsistencyRun): (Paragraph | Table
     for (const e of f.excerpts) {
       out.push(
         para({
-          text: `  ${e.source_file_name} (${e.section_id ?? "doc"} @ ${e.start_offset}–${e.end_offset}): "${truncate(e.text, 320)}"`,
+          text: `  ${e.source_file_name} (${e.section_label ? `${e.section_label}, ` : ""}characters ${e.start_offset.toLocaleString("en-US")}–${e.end_offset.toLocaleString("en-US")}): "${truncate(e.text, 320)}"`,
           italics: true,
         }),
       );

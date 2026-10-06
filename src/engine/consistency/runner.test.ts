@@ -825,3 +825,53 @@ describe("CC-009 privacy notice denies the transfer the DPA provides for", () =>
     expect(run.findings).toHaveLength(0);
   });
 });
+
+describe("runConsistency — each excerpt's section in its own document's words", () => {
+  it("labels an excerpt with the heading of the section it came from", async () => {
+    const a = makeDoc("a", "msa-vendor-deep", ["12. GOVERNING LAW", "x"]);
+    const b = makeDoc("b", "baa", ["", "y"]);
+    const rule: ConsistencyRule = {
+      id: "CC-999",
+      version: "1.0.0",
+      name: "test",
+      category: "consistency",
+      default_severity: "info",
+      description: "test",
+      requires: [],
+      check: () => [
+        {
+          id: "CC-999-a-0",
+          rule_id: "CC-999",
+          rule_version: "1.0.0",
+          severity: "info",
+          title: "t",
+          description: "d",
+          explanation: "e",
+          source_citations: [],
+          excerpts: [
+            {
+              doc_id: "a",
+              source_file_name: "a.docx",
+              text: "x",
+              section_id: a.tree.sections[0]!.id,
+              start_offset: 0,
+              end_offset: 1,
+            },
+            {
+              doc_id: "b",
+              source_file_name: "b.docx",
+              text: "y",
+              section_id: b.tree.sections[0]!.id,
+              start_offset: 0,
+              end_offset: 1,
+            },
+          ],
+        } as ConsistencyFinding,
+      ],
+    };
+    const run = await runConsistency({ rules: [rule], documents: [a, b], dkb: STARTER_DKB });
+    const [ea, eb] = run.findings[0]!.excerpts;
+    expect(ea!.section_label).toBe("12. GOVERNING LAW");
+    expect(eb).not.toHaveProperty("section_label");
+  });
+});
