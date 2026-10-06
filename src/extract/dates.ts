@@ -99,7 +99,7 @@ function isBareOfDuration(raw: string, anchor: string): boolean {
 }
 
 const RANGE_RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b)`,
+  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b|working\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b|working\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|working\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b)`,
   "gi",
 );
 
@@ -130,8 +130,12 @@ const RANGE_RELATIVE = new RegExp(
 // deliberately case-FREE: this pattern carries the `i` flag, under which
 // `[A-Z]` matches lowercase too, so a sentence-boundary test written on case
 // would be inert here (the same trap the `isBareOfDuration` comment records).
+/** Where a relative date's count — or its "within" / "between" — begins. */
+const COUNT_START =
+  /\b(?:within|between|an?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b|\(?\d/i;
+
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b|\s+and\s+(?:a|an|the)\s|\s+\((?:the\s+)?["“])`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b|working\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|working\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b|\s+and\s+(?:a|an|the)\s|\s+\((?:the\s+)?["“])`,
   "gi",
 );
 
@@ -408,7 +412,13 @@ export function extractDates(tree: DocumentTree): DateReference[] {
         );
       const cutComparative =
         /^(?:than|later\s+than|earlier\s+than|sooner\s+than|least|most)\s/i.test(m[0]);
-      const labelStart = lead && cutComparative ? start - lead[0].length : start;
+      // The count slot takes two words, so the word BEFORE a count rides
+      // along too: "com within 24 hours" (the tail of an e-mail address),
+      // "Data within 30 days", "Entity thirty (30) days' notice" — a quarter
+      // of the corpus's relative dates opened on a stray word, and the
+      // calendar printed it. The label starts at the count, or at "within".
+      const countAt = cutComparative ? 0 : (COUNT_START.exec(m[0])?.index ?? 0);
+      const labelStart = lead && cutComparative ? start - lead[0].length : start + countAt;
       out.push({
         id: nextId(),
         type: "relative",
@@ -561,7 +571,7 @@ function parseWordNumber(raw: string): number | null {
 }
 
 function unitToDays(unit: string): number {
-  if (unit.startsWith("business day")) return 1;
+  if (unit.startsWith("business day") || unit.startsWith("working day")) return 1;
   if (unit.startsWith("calendar day")) return 1;
   if (unit.startsWith("day")) return 1;
   if (unit.startsWith("week")) return 7;
@@ -579,7 +589,10 @@ function unitToDays(unit: string): number {
 function unitToCalendar(
   unit: string,
 ): "days" | "weeks" | "months" | "years" | "business-days" | "hours" {
-  if (unit.startsWith("business day")) return "business-days";
+  // A WORKING day is a business day: "within five (5) working days after
+  // notice" — the grievance steps of a collective bargaining agreement — read
+  // "working" as the count and computed nothing.
+  if (unit.startsWith("business day") || unit.startsWith("working day")) return "business-days";
   if (unit.startsWith("hour")) return "hours";
   // "calendar day(s)" is an ordinary day for arithmetic — the "calendar"
   // qualifier only distinguishes it from "business day"; falls through to "days".

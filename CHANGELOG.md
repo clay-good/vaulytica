@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.834.0] — 2026-10-06
+
+### Fixed
+- **A quarter of relative dates opened on a stray word.** The count slot takes
+  two words so it can read "thirty-one" and "twenty one", and the word BEFORE
+  a count rode along: "com within 24 hours" (the tail of an e-mail address),
+  "Data within 30 days", "Entity thirty (30) days' notice", "Seller within 90
+  days after the Closing Date". 170 of the corpus's 700 relative dates, and
+  the register and the calendar printed them as the deadline's label. The
+  label now starts at the count, or at "within" / "between"; the comparative
+  lead ("no later than thirty (30) days") is kept as before. 13 remain, none
+  a count (an interest accrual "per month from …", "of the year following …").
+- **A working day was not a unit.** "within five (5) working days after
+  notice" — a collective bargaining agreement's grievance steps — read
+  "working" as the count and computed nothing. A working day is a business
+  day.
+
 ## [9.833.0] — 2026-10-06
 
 The PDF comparison, continued past routing to the findings: 42 specimens

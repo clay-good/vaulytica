@@ -616,3 +616,20 @@ describe("extractDates — a deadline's label keeps its comparative", () => {
     expect(d?.raw_text).toBe(label);
   });
 });
+
+describe("extractDates — a relative date's own words", () => {
+  const rel = (text: string) =>
+    extractDates(buildTree(["Body", text])).filter((d) => d.type === "relative");
+
+  it("starts the label at the count, not the word before it", () => {
+    const [d] = rel(
+      "Report the exposure to security@halcyon.com within 24 hours after you learn of it.",
+    );
+    expect(d?.raw_text).toMatch(/^within 24 hours after/);
+  });
+
+  it("reads a working day as a business day", () => {
+    const [d] = rel("The Employer shall answer within five (5) working days after notice.");
+    expect(d).toMatchObject({ offset_unit: "business-days", offset_count: 5 });
+  });
+});
