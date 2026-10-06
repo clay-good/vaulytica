@@ -104,3 +104,17 @@ describe("GOV-044 — the statutory citation is the recital", () => {
     ).not.toBeNull();
   });
 });
+
+describe("GOV-043 — a title split between a paragraph and a heading", () => {
+  it("reads the consenting body across the two (document order)", () => {
+    const GOV043 = V4_RULES.find((r) => r.id === "GOV-043") as Rule;
+    const ctx = buildContext(
+      ["", "ACTION BY UNANIMOUS WRITTEN CONSENT"],
+      [
+        "OF THE BOARD OF DIRECTORS OF HALCYON INSTRUMENTS, INC.",
+        "The undersigned adopt the following resolutions.",
+      ],
+    );
+    expect(GOV043.check(ctx)).toBeNull();
+  });
+});

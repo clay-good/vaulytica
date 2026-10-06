@@ -529,7 +529,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.5-717",
+      "finding_id": "RISK-011-s1.5-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -1125,15 +1125,15 @@
     },
     {
       "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
-      "document_position": 717,
+      "document_position": 0,
       "excerpt": {
-        "end_offset": 725,
+        "end_offset": 0,
         "section_id": "s1.5",
-        "start_offset": 717,
+        "start_offset": 0,
         "text": "Customer shall indemnify, defend, and hold Provider harmless from any third-party claim arising from Customer's use of the Services."
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.5-717",
+      "id": "RISK-011-s1.5-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1144,11 +1144,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Master Agreement\".",
-  "result_hash": "e5ccc6b465888694322b22c3213b67bdc98044bd0ad96c89ef5a561297d14fb7",
+  "result_hash": "669474bb2ca5f96b1cdcaefc3e306bce10f5bc5d7354e860ae12515182e35724",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
     "size_bytes": 9221
   },
-  "version": "9.813.0"
+  "version": "9.814.0"
 }

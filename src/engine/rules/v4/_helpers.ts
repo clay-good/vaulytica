@@ -19,9 +19,10 @@
 import type { Finding, Rule, RuleContext, Severity } from "../../finding.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { makeFinding } from "../../finding.js";
-import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
+import { forEachParagraph } from "../../../extract/walk.js";
 import { distributeListModal, findDenial, isNonOperative, isTableOfContents } from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
+import type { Section } from "../../../ingest/types.js";
 import { isLegendLine } from "../../../extract/legends.js";
 import { truncate } from "../../text.js";
 
@@ -57,24 +58,33 @@ import { truncate } from "../../text.js";
  * default. See {@link V4PresenceSpec.include_recitals}.
  */
 export function fullTextWithRecitals(ctx: RuleContext): string {
-  const parts: string[] = [];
-  forEachSection(ctx.tree, (s) => {
-    if (s.heading) parts.push(s.heading);
-  });
-  forEachParagraph(ctx.tree, (p) => {
-    if (!isTableOfContents(p.text) && !isLegendLine(p.text)) parts.push(p.text);
-  });
-  return parts.join("\n");
+  return documentText(ctx, (t) => !isTableOfContents(t) && !isLegendLine(t));
 }
 
 export function fullText(ctx: RuleContext): string {
+  return documentText(ctx, (t) => !isNonOperative(t) && !isLegendLine(t));
+}
+
+/**
+ * Headings and paragraphs in DOCUMENT order — each heading followed by its own
+ * paragraphs. This listed every heading first and every paragraph after, which
+ * is invisible for pasted text (it has no headings) and wrong for a DOCX: a
+ * written consent titled "ACTION BY UNANIMOUS WRITTEN CONSENT" (a Title
+ * paragraph) over "OF THE BOARD OF DIRECTORS OF" (a heading) no longer read as
+ * one phrase, and GOV-043 reported at CRITICAL that it never names the board.
+ */
+function documentText(ctx: RuleContext, keep: (text: string) => boolean): string {
   const parts: string[] = [];
-  forEachSection(ctx.tree, (s) => {
+  const stack: Section[] = [...ctx.tree.sections].reverse();
+  while (stack.length > 0) {
+    const s = stack.pop()!;
     if (s.heading) parts.push(s.heading);
-  });
-  forEachParagraph(ctx.tree, (p) => {
-    if (!isNonOperative(p.text) && !isLegendLine(p.text)) parts.push(p.text);
-  });
+    for (const p of s.paragraphs) {
+      const text = p.runs.map((r) => r.text).join("");
+      if (keep(text)) parts.push(text);
+    }
+    for (let i = s.children.length - 1; i >= 0; i -= 1) stack.push(s.children[i]!);
+  }
   return parts.join("\n");
 }
 

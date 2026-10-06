@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, MODAL_QUALIFIER, OBLIGATION_MODAL } from "../_helpers.js";
+import { forEachSection } from "../../../extract/walk.js";
 import { isStatutoryDandOIndemnity } from "./RISK-015.js";
 import { truncate } from "../../text.js";
 
@@ -81,7 +82,14 @@ export const rule: Rule = {
     // element missing while they sat one paragraph below — with the excerpt
     // anchored to the heading (audit). Evaluate the whole containing
     // section, and anchor to its first substantive indemnity paragraph.
-    const section = ctx.tree.sections.find((s) => s.id === indem.position.section_id);
+    // Searched at every depth: a DOCX nests its numbered headings, and a
+    // top-level lookup found nothing, so the rule audited one paragraph and
+    // reported the "6.3 Procedure" paragraph's notice, defense control and
+    // settlement consent all missing.
+    let section: (typeof ctx.tree.sections)[number] | undefined;
+    forEachSection(ctx.tree, (s) => {
+      if (!section && s.id === indem.position.section_id) section = s;
+    });
     const paraText = (p: { runs: { text: string }[] }): string =>
       p.runs.map((r) => r.text).join("");
     const sectionText = section

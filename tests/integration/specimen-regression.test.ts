@@ -4928,16 +4928,19 @@ export const EXPECTED: Record<string, Expectation> = {
   // list omits one sticky obligation (TEMP-012).
   "teaming-agreement.txt": {
     playbook: "teaming-agreement",
+    // TEMP-012 / TEMP-007 became TEMP-006 in 9.814.0: "Sections 2, 5, 6, 10, 11
+    // … survive" names Section 10, whose body (under the bare heading line "10.
+    // LIMITATION OF LIABILITY") is where the only indemnity mention is; only
+    // the heading line used to be incorporated. The agreement has no indemnity.
     findings: [
       "RISK-004",
       "STRUCT-018",
-      "TEMP-012",
+      "TEMP-006",
       "CHOICE-006",
       "OBLI-005",
       "OBLI-008",
       "RISK-006",
       "RISK-007",
-      "TEMP-007",
     ],
   },
   // A corporate acceptable-use policy. STRUCT-003 already knows a policy is
@@ -4963,13 +4966,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // exactly what the document already had.
   "transition-services-agreement.txt": {
     playbook: "transition-services-agreement",
+    // TEMP-007 ("missing governing law") became TEMP-006 in 9.814.0: the
+    // survival list names Section 12, and the governing-law sentence is in its
+    // body, below the bare heading line "12. GENERAL".
     findings: [
       "OBLI-005",
       "OBLI-008",
       "RISK-006",
       "RISK-007",
       "STRUCT-009",
-      "TEMP-007",
+      "TEMP-006",
       "TEMP-008",
       "TERM-006",
     ],

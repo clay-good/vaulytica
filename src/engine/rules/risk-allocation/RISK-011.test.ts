@@ -116,3 +116,29 @@ describe("RISK-011 — defense control with a possessive determiner", () => {
     expect(RISK_011.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-011 — an indemnity in a nested section", () => {
+  it("reads the whole section, wherever it sits in the tree", async () => {
+    const { buildTree } = await import("../../../extract/_fixtures.js");
+    const base = buildContext(["Top", "x"]);
+    const tree = buildTree(
+      ["AGREEMENT", "The parties agree as follows."],
+      [
+        "6. INDEMNIFICATION",
+        "6.1 Each party shall indemnify, defend and hold harmless the other from third-party claims.",
+        "6.3 Procedure. The indemnified party shall give prompt written notice, allow the indemnifying party to control the defense, and not settle without its consent.",
+      ],
+    );
+    // Nest section 2 under section 1, as a DOCX ingest does for a numbered heading.
+    const [first, second] = tree.sections;
+    first!.children.push(second!);
+    tree.sections.splice(1, 1);
+    const { extractAll } = await import("../../../extract/index.js");
+    const ctx = {
+      ...base,
+      tree,
+      extracted: extractAll(tree, { classifier: { vocab: { vocab: {} }, patterns: [] } }),
+    };
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+});

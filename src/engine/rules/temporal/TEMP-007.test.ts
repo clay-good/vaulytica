@@ -40,3 +40,30 @@ describe("an incorporation-by-reference survival is not a survival list (v1.2.0)
     expect(TEMP_007.check(ctx)).toBeNull();
   });
 });
+
+describe("TEMP-007 — a survival list naming sections by their headings", () => {
+  it("incorporates a section whose number is in its HEADING (DOCX layout)", () => {
+    const ctx = buildContext(
+      [
+        "8. CONFIDENTIALITY",
+        "Each party shall keep the other's confidential information confidential.",
+      ],
+      ["9. TERM", "Sections 8 and 10 survive termination."],
+      ["10. INDEMNIFICATION", "Each party shall indemnify the other against third-party claims."],
+    );
+    expect(TEMP_007.check(ctx)).toBeNull();
+  });
+
+  it("incorporates the body under a bare numbered heading line (pasted layout)", () => {
+    const ctx = buildContext([
+      "Agreement",
+      "8. RESTRICTIONS",
+      "Each party shall keep the other's confidential information confidential.",
+      "9. TERM",
+      "Sections 8 and 10 survive termination.",
+      "10. RISK",
+      "Each party shall indemnify the other against third-party claims.",
+    ]);
+    expect(TEMP_007.check(ctx)).toBeNull();
+  });
+});

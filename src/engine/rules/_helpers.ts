@@ -3,7 +3,7 @@ import { PAGE_FURNITURE } from "../../ingest/page-furniture.js";
 import type { RuleContext, Severity } from "../finding.js";
 import { findSource, findStatuteCitation, makeFinding } from "../finding.js";
 import { SELF_NAMED_NOUN_ALT } from "../../extract/instrument-nouns.js";
-import { forEachParagraph, SENTENCE_END } from "../../extract/walk.js";
+import { forEachParagraph, forEachSection, SENTENCE_END } from "../../extract/walk.js";
 import type { ClassifiedParagraph } from "../../extract/types.js";
 import type { SourceCitation } from "../../dkb/types.js";
 
@@ -564,7 +564,16 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   }
   if (nums.size === 0) return survivalText;
   const named: string[] = [];
+  // A BARE numbered heading line ("10. LIMITATION OF LIABILITY", its body in
+  // the paragraphs below) incorporates those paragraphs too, up to the next
+  // numbered paragraph — the paste-path twin of the heading case below.
+  let capturing = false;
   forEachParagraph(ctx.tree, (p) => {
+    if (capturing && !/^\s*\d+(?:\.\d+){0,3}[.)]?\s/.test(p.text)) {
+      named.push(p.text);
+      return;
+    }
+    capturing = false;
     // The delimiter after the clause number is OPTIONAL. "6.3 Confidentiality."
     // — number, space, heading — is the dominant modern form, and requiring a
     // "." or ")" right after the digits meant no paragraph in such a document
@@ -575,8 +584,22 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
     const label = /^\s*(\d+(?:\.\d+){0,3})[.)]?\s+(?=[A-Z"\u201C(])/.exec(p.text)?.[1];
     // A reference to Section 6 incorporates 6.1, 6.2 and 6.3 — the survival
     // clause names the SECTION, and the obligations live in its subsections.
-    if (label && (nums.has(label) || [...nums].some((n) => label.startsWith(`${n}.`))))
+    if (label && (nums.has(label) || [...nums].some((n) => label.startsWith(`${n}.`)))) {
       named.push(p.text);
+      capturing = p.text.length <= 80 && !/[.;:]\s+\S/.test(p.text.replace(/^\s*[\d.]+\s*/, ""));
+    }
+  });
+  // In a DOCX the number is in the section's HEADING ("9. CONFIDENTIALITY")
+  // and the paragraphs under it carry none, so a survival list naming Section
+  // 9 incorporated nothing and TEMP-007 / TEMP-012 reported confidentiality
+  // missing from a list that names it. A matching heading brings its section.
+  forEachSection(ctx.tree, (s) => {
+    const label =
+      /^\s*(?:(?:Section|Article|Clause)\s+)?(\d+(?:\.\d+){0,3})[.)]?\s+(?=[A-Z"\u201C(])/i.exec(
+        s.heading ?? "",
+      )?.[1];
+    if (!label || !(nums.has(label) || [...nums].some((n) => label.startsWith(`${n}.`)))) return;
+    named.push(s.heading!, ...s.paragraphs.map((p) => p.runs.map((r) => r.text).join("")));
   });
   return named.length > 0 ? `${survivalText}\n${named.join("\n")}` : survivalText;
 }

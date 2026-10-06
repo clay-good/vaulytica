@@ -533,7 +533,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "RISK-011-s1.3-616",
+      "finding_id": "RISK-011-s1.3-0",
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
@@ -1232,15 +1232,15 @@
     },
     {
       "description": "Indemnity clause appears to be missing: notice, defense control, settlement consent.",
-      "document_position": 616,
+      "document_position": 0,
       "excerpt": {
-        "end_offset": 624,
+        "end_offset": 0,
         "section_id": "s1.3",
-        "start_offset": 616,
+        "start_offset": 0,
         "text": "Provider shall indemnify, defend, and hold Customer harmless from any third-party claim that the Service infringes a US patent, copyright, or trade secret."
       },
       "explanation": "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
-      "id": "RISK-011-s1.3-616",
+      "id": "RISK-011-s1.3-0",
       "rule_id": "RISK-011",
       "rule_version": "1.7.0",
       "severity": "info",
@@ -1251,11 +1251,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "755459426c17c7f9841906b7cdc1d9e5b99b1ffdea1aa01a02a14072f60e0abe",
+  "result_hash": "21a603bd39b54fec6dbe6c1de8e1d3331f6b7afa424cc5e8da94872f159ec692",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.813.0"
+  "version": "9.814.0"
 }

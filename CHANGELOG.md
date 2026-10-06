@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.814.0] — 2026-10-06
+
+Continuing the DOCX sweep (divergence now 20 specimens, from 62): three
+helpers that assumed the flat shape of pasted text.
+
+### Fixed
+- **The v4 rules' document text listed every heading before every paragraph.**
+  `fullText` is what most v4 presence rules search, and its order broke a
+  title split between a Title paragraph and a heading: a DOCX written consent
+  ("ACTION BY UNANIMOUS WRITTEN CONSENT" / "OF THE BOARD OF DIRECTORS OF") was
+  told at CRITICAL (GOV-043) that it never names the consenting body. It now
+  emits each heading followed by its own paragraphs.
+- **A survival list incorporated a section only through a numbered
+  paragraph.** In a DOCX the number is in the section heading ("9.
+  CONFIDENTIALITY") and the body is unnumbered, so "Sections 8, 9 and 10
+  survive" incorporated nothing and TEMP-007 / TEMP-012 reported categories
+  missing. A matching heading now brings its section; and in pasted text a bare
+  numbered heading line brings the paragraphs beneath it. That corrected two
+  specimen pins, both false: a teaming agreement with no indemnity told its
+  survival list omits one, and a TSA whose survival list names the section
+  holding its governing-law sentence told it omits governing law.
+- **RISK-011 looked up the indemnity's section at the top level only.** A DOCX
+  nests numbered headings, so the rule audited one paragraph and reported the
+  procedure paragraph's notice, defense control and settlement consent all
+  missing.
+
 ## [9.813.0] — 2026-10-06
 
 Continuing the DOCX sweep: documents rendered as DOCX now diverge from their
