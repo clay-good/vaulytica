@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.850.0] — 2026-10-06
+
+### Added
+- **A round archive by directory.** Every sequence command (`coherence-trend`,
+  `posture-review`, each `coherence-*` walker) now takes a directory in place
+  of its files: `coherence-trend rounds/` reads the `*.coherence.json`
+  artifacts in natural order — `round2` before `round10`, the order a lexical
+  sort reverses, turning a recovered dip into an ending regression — and
+  prints the inferred order to stderr. A name with no number, or two names
+  with the same number, refuses the directory rather than guess. Closes the
+  walker spec-v16 and spec-v17 deferred.
+
 ## [9.849.0] — 2026-10-06
 
 ### Added

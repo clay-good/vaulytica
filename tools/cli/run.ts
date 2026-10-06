@@ -225,6 +225,7 @@ import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
 import { runCoherenceTrend } from "./coherence-trend.js";
+import { expandRoundArchives, isSequenceCommand } from "./round-archive.js";
 import { runPostureReview } from "./posture-review.js";
 import { runCoherenceShiftTrend } from "./coherence-shift-trend.js";
 import { runCoherenceArc } from "./coherence-arc.js";
@@ -2506,6 +2507,11 @@ Output delivery: one input × one format streams the artifact to stdout;
 any multi-format or multi-input run requires --out <dir> — rendered
 output is never silently dropped.
 
+Round archives: every sequence command (posture-review, coherence-*) also
+takes a directory in place of its files — its *.coherence.json artifacts in
+natural order (round2 before round10), the inferred order printed to stderr.
+A name with no number, or two with the same number, is refused.
+
 Input types: a directly named file must carry a supported extension
 (.txt, .md, .markdown, .text, .docx, .pdf) — an unknown extension is a
 hard error, never a silent UTF-8 decode. \`--as-text\` explicitly opts a
@@ -2519,7 +2525,17 @@ Human formats (md, default summaries) keep stdout. Exit codes are unchanged.
 `;
 
 async function main(): Promise<void> {
-  const [command, ...rest] = process.argv.slice(2);
+  const [command, ...given] = process.argv.slice(2);
+  // A sequence command may name its round archive by directory (spec-v16/v17
+  // Part XVI): the directory expands to its artifacts in round order, which is
+  // reported so a reader can check it.
+  const rest = isSequenceCommand(command)
+    ? await expandRoundArchives(given, (dir, files) =>
+        process.stderr.write(
+          `rounds from ${dir}, in order: ${files.map((f) => basename(f)).join(", ")}\n`,
+        ),
+      )
+    : given;
   switch (command) {
     case "analyze":
       return runAnalyze(rest);

@@ -80,7 +80,7 @@ Total work shipped this spec: **1 build step (196).** Purely additive — a new 
 
 - **A browser surface for diffing two uploaded coherence files.** ⬜ Deferred. The browser already does an in-session two-round comparison (v13 Thrust B) where both coherences are computed live; uploading two saved artifacts to a tab is a larger UI surface with no demonstrated need. The artifact-diff is a CI/dashboard concern, which is what this command serves.
 - **A standalone movement artifact (`--emit-movement`).** ⬜ Still deferred (v14 OQ#2), and now doubly so: v16 makes the movement cheaply recomputable from the two coherence artifacts on demand, which keeps the auditable inputs (the coherences, each ladder-pinned and hash-verified) as the source of truth rather than a derived, separately-stored number.
-- **Accept a directory/glob of coherence artifacts and diff a sequence.** ⬜ Not built. A multi-round trend (`round1 → round2 → round3`) is a dashboard concern that can call `compare-coherence` pairwise; a built-in sequence walker is more surface than the one-pair primitive needs. Noted, not built.
+- **Accept a directory/glob of coherence artifacts and diff a sequence.** ✅ Shipped in 9.850.0 (`tools/cli/round-archive.ts`): a directory on any sequence command's argv expands to its `*.coherence.json` files in natural order (`round2` < `round10`), the order printed to stderr; a name with no number or two names with the same number refuse the directory rather than guess. As first written: Not built. A multi-round trend (`round1 → round2 → round3`) is a dashboard concern that can call `compare-coherence` pairwise; a built-in sequence walker is more surface than the one-pair primitive needs. Noted, not built.
 
 ---
 
