@@ -142,3 +142,44 @@ describe("RISK-011 — an indemnity in a nested section", () => {
     expect(RISK_011.check(ctx)).toBeNull();
   });
 });
+
+describe("RISK-011 — claim before the notice verb, and the indemnity's own section", () => {
+  it("reads '… any third-party claim …, provided that Client promptly notifies Contractor'", () => {
+    const ctx = buildContext([
+      "6. Indemnity",
+      "6.2 Contractor shall indemnify Client against any third-party claim that the Work infringes a copyright, provided that Client promptly notifies Contractor, gives Contractor control of the defence, and cooperates. Contractor shall not settle a claim without Client's prior written consent.",
+    ]);
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+
+  it("audits the clause titled Indemnification, not an earlier passing mention", () => {
+    const ctx = buildContext(
+      [
+        "2. Loans",
+        "2.8 Breakage. The Borrower shall compensate and indemnify each Lender for breakage costs on a prepayment.",
+      ],
+      [
+        "9. General",
+        "9.1 Indemnification. The Borrower shall indemnify each Lender against third-party claims. The Lender shall give prompt notice of any claim, the Borrower shall control the defense, and no claim shall be settled without the Borrower's consent.",
+      ],
+    );
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+});
+
+describe("RISK-011 — the procedure in a clause of its own", () => {
+  it("reads a sibling section headed 'Defense and Cooperation'", () => {
+    const ctx = buildContext(
+      [
+        "2. Indemnity",
+        "Indemnitor shall indemnify, defend, and hold harmless Indemnitee from all third-party claims.",
+      ],
+      ["3. Insurance", "Indemnitor shall maintain liability insurance."],
+      [
+        "4. Defense and Cooperation",
+        "Indemnitee shall give Indemnitor written notice of any claim, Indemnitor shall control the defense, and Indemnitor shall not settle any claim without Indemnitee's consent.",
+      ],
+    );
+    expect(RISK_011.check(ctx)).toBeNull();
+  });
+});

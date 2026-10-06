@@ -71,3 +71,19 @@ describe("IPDATA-002 — a coordinated carve-out", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-002 — a carve-out titled in a section heading", () => {
+  it("reads the heading of the carve-out section", () => {
+    const ctx = buildContext(
+      [
+        "4. ASSIGNMENT",
+        "I hereby assign to the Company all intellectual property I create during my employment.",
+      ],
+      [
+        "6. PRIOR INVENTIONS",
+        "Attached as Exhibit A is a list of inventions I made before my employment that I wish to exclude from section 4.",
+      ],
+    );
+    expect(IPDATA_002.check(ctx)).toBeNull();
+  });
+});

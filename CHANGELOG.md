@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.815.0] — 2026-10-06
+
+Continuing the DOCX sweep (divergence 16 specimens, from 62).
+
+### Fixed
+- **IPDATA-001 missed "all right, title, and interest in and to any work
+  product … vests in Client".** The vesting branch allowed only "any and all"
+  or "the" before the object; a staffing agreement passed as pasted text only
+  because its heading line read "INTELLECTUAL PROPERTY".
+- **IPDATA-002 never read section headings.** Its own comment says the
+  carve-out is usually a section of its own ("Prior Inventions"); in a DOCX
+  that title is a heading, and a PIIA was told it carves out nothing.
+- **RISK-011 audited the wrong clause, and missed a notice step stated after
+  the claim.** It took the first paragraph mentioning "indemnif…" — a credit
+  agreement's breakage-costs clause — rather than the clause titled
+  "Indemnification" / "Supplier Indemnity"; it wanted the claim word *after*
+  "notifies" ("… any third-party claim …, provided that Client promptly
+  notifies Contractor"); and in a DOCX it did not see a procedure stated in a
+  clause of its own ("4. Defense and Cooperation"). Pasted text hid all three
+  because a flat document is often one section, where any "written notice"
+  anywhere satisfied the check.
+
 ## [9.814.0] — 2026-10-06
 
 Continuing the DOCX sweep (divergence now 20 specimens, from 62): three

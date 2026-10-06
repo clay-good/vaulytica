@@ -7,6 +7,10 @@ function documentText(ctx: RuleContext): string {
   const parts: string[] = [];
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
     for (const section of sections) {
+      // The HEADING too: the carve-out is usually its own section, and a DOCX
+      // titles it in a heading ("6. PRIOR INVENTIONS") that this walk skipped,
+      // so a PIIA was told it carves out no prior inventions.
+      if (section.heading) parts.push(section.heading);
       for (const p of section.paragraphs) for (const r of p.runs) parts.push(r.text);
       walk(section.children);
     }

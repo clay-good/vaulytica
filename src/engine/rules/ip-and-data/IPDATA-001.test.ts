@@ -351,3 +351,15 @@ describe("IPDATA-001 — a creator's agreement allocates its content", () => {
     expect(IPDATA_001.check(ctx)).not.toBeNull();
   });
 });
+
+describe("IPDATA-001 — vesting stated over 'any' work product", () => {
+  it("reads 'all right, title, and interest in and to any work product … vests in Client'", () => {
+    // Without its "INTELLECTUAL PROPERTY" heading line (a DOCX heading is not a
+    // paragraph), a staffing agreement was told it allocates no IP.
+    const ctx = buildContext([
+      "Work Product",
+      "All right, title, and interest in and to any work product, invention, or work of authorship created by an Assigned Person in the course of an assignment vests in Client.",
+    ]);
+    expect(IPDATA_001.check(ctx)).toBeNull();
+  });
+});

@@ -1,5 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, MODAL_QUALIFIER, OBLIGATION_MODAL } from "../_helpers.js";
+import {
+  allMatches,
+  emit,
+  firstParagraphMatch,
+  MODAL_QUALIFIER,
+  OBLIGATION_MODAL,
+} from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
 import { isStatutoryDandOIndemnity } from "./RISK-015.js";
 import { truncate } from "../../text.js";
@@ -14,7 +20,9 @@ const PROCEDURE = [
   // section is not read as the claims-notice term.
   [
     "notice",
-    /prompt(?:ly)?\s+notice|written\s+notice|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b/i,
+    // The claim word can come first: "… any third-party claim that the Work
+    // infringes …, provided that Client promptly notifies Contractor".
+    /prompt(?:ly)?\s+notice|written\s+notice|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b|\b(?:claim|demand|action|proceeding|suit)\b[^.]{0,160}?\bprompt(?:ly)?\s+notif(?:y|ies|ied)\b/i,
   ],
   // "defense control" must be tied to the defense/claim — a bare "sole control"
   // matched an unrelated clause ("sole control over its own systems") and
@@ -75,7 +83,18 @@ export const rule: Rule = {
     "Verifies the indemnity includes notice, defense-control, and settlement-consent procedural elements.",
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
-    const indem = firstParagraphMatch(ctx, /\bindemnif/i);
+    // The indemnity's OWN clause, not its first mention: a credit agreement
+    // says "indemnify" in its breakage-costs clause (§2.8) long before §9.1
+    // "Indemnification". A pasted document is often one section, which hid
+    // this; the same agreement as a DOCX audited §2 and reported the §9
+    // procedure missing. A paragraph titled "Indemnification" / "Supplier
+    // Indemnity" leads, else the first
+    // mention as before.
+    const indem =
+      allMatches(
+        ctx,
+        /^\s*(?:\d+(?:\.\d+)*\.?\s+)?(?:[A-Z][\w'’-]*\s+){0,2}Indemni(?:ty|fication|ties)\b/,
+      )[0] ?? firstParagraphMatch(ctx, /\bindemnif/i);
     if (!indem) return null;
     // The first match is often the SECTION HEADING ("7. INDEMNIFICATION"),
     // and testing the procedure regexes against a heading declared every
@@ -92,8 +111,22 @@ export const rule: Rule = {
     });
     const paraText = (p: { runs: { text: string }[] }): string =>
       p.runs.map((r) => r.text).join("");
+    // Plus any section whose HEADING names the procedure: a hold-harmless
+    // agreement puts notice and defense in "4. Defense and Cooperation", a
+    // clause of its own. Pasted text is often one section and saw it anyway;
+    // a DOCX, where it is a sibling section, did not.
+    const procedureSections: string[] = [];
+    forEachSection(ctx.tree, (s) => {
+      if (
+        s !== section &&
+        /\b(?:defen[cs]e|procedur\w*|claims?|notices?|indemni\w*)\b/i.test(s.heading ?? "")
+      )
+        procedureSections.push(s.heading ?? "", ...s.paragraphs.map(paraText));
+    });
     const sectionText = section
-      ? [section.heading ?? "", ...section.paragraphs.map(paraText)].join("\n")
+      ? [section.heading ?? "", ...section.paragraphs.map(paraText), ...procedureSections].join(
+          "\n",
+        )
       : indem.text;
     // No operative promise anywhere in the containing section means the match
     // was a passing reference (an incorporation of a parent agreement's
