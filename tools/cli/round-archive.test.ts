@@ -126,3 +126,72 @@ describe("isSequenceCommand — every command that walks a round archive", () =>
     expect(isSequenceCommand("compare-coherence")).toBe(false);
   });
 });
+
+describe("runRoundTrend — the browser reads a round archive as the CLI does", () => {
+  const LADDER_B = "b".repeat(64);
+
+  it("orders by file name and returns the JSON coherence-trend prints", async () => {
+    const { runRoundTrend } = await import("../../src/ui/pipeline.js");
+    const texts = {
+      "round1.coherence.json": await round("acceptable"),
+      "round2.coherence.json": await round("below-acceptable"),
+      "round10.coherence.json": await round("ideal"),
+    };
+    // Dropped in any order — a browser hands files over as the user picked them.
+    const trend = await runRoundTrend(
+      ["round10.coherence.json", "round1.coherence.json", "round2.coherence.json"].map((name) => ({
+        name,
+        text: texts[name as keyof typeof texts],
+      })),
+    );
+    const cli = await compareCoherenceTrendArtifacts(Object.values(texts), "json");
+    expect(trend.ok && cli.ok).toBe(true);
+    if (!trend.ok || !cli.ok) return;
+    expect(trend.names).toEqual(Object.keys(texts));
+    expect(trend.json).toBe(cli.output);
+    expect(trend.trajectory.fronts[0]!.trajectory).toBe("whipsaw");
+    expect(trend.ladderNote).toBeNull();
+  });
+
+  it("refuses rounds scored against different playbooks, naming both files", async () => {
+    const { runRoundTrend } = await import("../../src/ui/pipeline.js");
+    const other = buildPostureCoherenceJson(
+      await bundlePostureCoherence([
+        {
+          document: "order.docx",
+          posture: {
+            positions: [{ dimension: "Cap", tier: "ideal" }],
+            counts: { ideal: 1, acceptable: 0, below_acceptable: 0, unevaluable: 0 },
+            posture_hash: "t",
+          },
+        },
+      ]),
+      LADDER_B,
+    );
+    const trend = await runRoundTrend([
+      { name: "r1.coherence.json", text: await round("acceptable") },
+      { name: "r2.coherence.json", text: other },
+    ]);
+    expect(!trend.ok && trend.errors.join(" ")).toMatch(
+      /r1\.coherence\.json and r2\.coherence\.json were scored against different playbooks/,
+    );
+  });
+
+  it("refuses a tampered round, an unordered archive, and a single round", async () => {
+    const { runRoundTrend } = await import("../../src/ui/pipeline.js");
+    const good = await round("acceptable");
+    const tampered = good.replace('"acceptable"', '"ideal"');
+    const t = await runRoundTrend([
+      { name: "r1.coherence.json", text: good },
+      { name: "r2.coherence.json", text: tampered },
+    ]);
+    expect(!t.ok && t.errors[0]).toMatch(/^r2\.coherence\.json: /);
+    const u = await runRoundTrend([
+      { name: "r1.coherence.json", text: good },
+      { name: "final.coherence.json", text: good },
+    ]);
+    expect(!u.ok && u.errors[0]).toMatch(/final\.coherence\.json carries no round number/);
+    const one = await runRoundTrend([{ name: "r1.coherence.json", text: good }]);
+    expect(one.ok).toBe(false);
+  });
+});

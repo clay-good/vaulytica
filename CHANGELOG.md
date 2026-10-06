@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.852.0] — 2026-10-06
+
+### Added
+- **Read a round archive in the browser.** Drop two or more saved rounds
+  (`*.coherence.json`), or pick their folder, onto the page: a trajectory card
+  shows each front's binding floor at every round — climbed, slid, held, or
+  dipped and recovered (marked for review even when first-to-last reads fine).
+  Rounds are ordered by the numbers in their file names under the same policy
+  as the CLI's directory walker, now shared (`src/report/round-order.ts`);
+  each round is hash-verified and rounds scored against different playbooks
+  are refused. The downloadable trajectory JSON is byte-identical to
+  `coherence-trend --format json` (tested). Closes the browser surfaces
+  spec-v16 and spec-v17 deferred.
+
 ## [9.851.0] — 2026-10-06
 
 ### Added

@@ -118,8 +118,78 @@ import {
   type CoherenceInput,
 } from "../report/posture-coherence.js";
 import type { CoherenceMovement } from "../report/coherence-movement.js";
-import { buildPostureCoherenceJson } from "../report/posture-coherence.js";
+import {
+  buildPostureCoherenceJson,
+  parsePostureCoherenceJson,
+} from "../report/posture-coherence.js";
+import {
+  compareCoherenceTrajectory,
+  buildCoherenceTrajectoryJson,
+  type CoherenceTrajectory,
+} from "../report/coherence-trajectory.js";
+import { orderRounds } from "../report/round-order.js";
 import { ladderHash } from "../playbooks/custom-interpreter.js";
+
+export type RoundTrend =
+  | { ok: false; errors: string[] }
+  | {
+      ok: true;
+      /** The rounds' file names, in the order the trajectory reads them. */
+      names: string[];
+      trajectory: CoherenceTrajectory;
+      /** The trajectory as `coherence-trend --format json` prints it. */
+      json: string;
+      /** Set when a round is unpinned, so the ladders could not be compared. */
+      ladderNote: string | null;
+    };
+
+/**
+ * spec-v16/v17 browser surface — the trajectory across saved rounds dropped
+ * into the tab, as `coherence-trend` reports it from a CI archive. The rounds
+ * are ordered by their file names (the CLI directory walker's policy), each is
+ * hash-verified, and rounds scored against different ladders are refused.
+ */
+export async function runRoundTrend(
+  files: ReadonlyArray<{ name: string; text: string }>,
+): Promise<RoundTrend> {
+  if (files.length < 2) return { ok: false, errors: ["a trend needs two or more saved rounds"] };
+  const order = orderRounds([...files], (f) => f.name);
+  if (!order.ok) {
+    return { ok: false, errors: [`${order.reason}. Name each file with its round number.`] };
+  }
+  const parsed = await Promise.all(order.items.map((f) => parsePostureCoherenceJson(f.text)));
+  const errors = parsed.flatMap((p, i) =>
+    p.ok ? [] : p.errors.map((e) => `${order.items[i]!.name}: ${e}`),
+  );
+  if (errors.length > 0) return { ok: false, errors };
+  const ok = parsed as Extract<(typeof parsed)[number], { ok: true }>[];
+  const names = order.items.map((f) => f.name);
+  const pins = ok.map((p) => p.ladderHash);
+  let ladderNote: string | null = null;
+  if (pins.some((h) => h === null)) {
+    ladderNote =
+      "A round was saved without its playbook ladder, so these rounds could not be checked for being scored against the same positions.";
+  } else {
+    const k = pins.findIndex((h) => h !== pins[0]);
+    if (k > 0) {
+      return {
+        ok: false,
+        errors: [
+          `${names[0]} and ${names[k]} were scored against different playbooks. ` +
+            "A binding floor only compares across rounds scored against the same positions.",
+        ],
+      };
+    }
+  }
+  const trajectory = await compareCoherenceTrajectory(ok.map((p) => p.coherence));
+  return {
+    ok: true,
+    names,
+    trajectory,
+    json: buildCoherenceTrajectoryJson(trajectory),
+    ladderNote,
+  };
+}
 
 /**
  * This round's coherence as the artifact `analyze --emit-coherence` writes,

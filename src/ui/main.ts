@@ -120,12 +120,50 @@ export async function bootUi(opts: {
     onFiles: (files) => {
       void runBundle(opts.dropzone, files);
     },
+    onRounds: (files) => {
+      void runRounds(opts.dropzone, files);
+    },
     onDragState: (active) => {
       opts.dropzone.classList.toggle("is-dragging", active);
       if (active) preloadPipeline();
     },
     folderPickContainer: opts.folderPickContainer,
   });
+}
+
+/**
+ * spec-v16/v17 browser surface — saved rounds (`*.coherence.json`) dropped
+ * into the tab: the trajectory `coherence-trend` reports from a CI archive.
+ */
+async function runRounds(dz: HTMLElement, files: File[]): Promise<void> {
+  try {
+    setState(dz, { kind: "analyzing", filename: `${files.length} saved rounds` });
+    const { runRoundTrend } = await import("./pipeline.js");
+    const texts = await Promise.all(
+      files.map(async (f) => ({ name: f.name, text: await f.text() })),
+    );
+    const trend = await runRoundTrend(texts);
+    if (!trend.ok) {
+      setState(dz, { kind: "error", message: trend.errors.join(" ") });
+      return;
+    }
+    setState(dz, {
+      kind: "coherence-trend-complete",
+      round_names: trend.names,
+      fronts: trend.trajectory.fronts.map((f) => ({
+        dimension: f.dimension,
+        floors: f.floors,
+        trajectory: f.trajectory,
+        net_floor_movement: f.net_floor_movement,
+      })),
+      trajectory_counts: trend.trajectory.trajectory_counts,
+      ladder_note: trend.ladderNote,
+      json_blob: new Blob([trend.json], { type: "application/json" }),
+      json_filename: "vaulytica-trajectory.json",
+    });
+  } catch (err) {
+    setState(dz, { kind: "error", message: err instanceof Error ? err.message : String(err) });
+  }
 }
 
 function setState(dz: HTMLElement, state: DropzoneState): void {

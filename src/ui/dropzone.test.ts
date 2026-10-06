@@ -289,6 +289,47 @@ describe("folder picker (webkitdirectory)", () => {
     document.body.removeChild(dz);
   });
 
+  it("routes saved rounds (*.coherence.json) to onRounds, not the bundle", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const rounds: File[][] = [];
+    const bundles: File[][] = [];
+    bindDropzone(dz, {
+      onFile: () => {},
+      onFiles: (fs) => bundles.push(fs),
+      onRounds: (fs) => rounds.push(fs),
+    });
+    const input = dz.querySelector<HTMLInputElement>("input[type=file]")!;
+    const r1 = fakeFile("round1.coherence.json", "application/json");
+    const r2 = fakeFile("round2.coherence.json", "application/json");
+    Object.defineProperty(input, "files", { configurable: true, get: () => [r1, r2] });
+    input.dispatchEvent(new Event("change"));
+    expect(rounds.map((fs) => fs.map((f) => f.name))).toEqual([
+      ["round1.coherence.json", "round2.coherence.json"],
+    ]);
+    expect(bundles).toHaveLength(0);
+    document.body.removeChild(dz);
+  });
+
+  it("a picked folder of nothing but saved rounds routes to onRounds", () => {
+    const dz = document.createElement("div");
+    document.body.appendChild(dz);
+    const rounds: File[][] = [];
+    bindDropzone(dz, { onFile: () => {}, onFiles: () => {}, onRounds: (fs) => rounds.push(fs) });
+    const dirInput = dz.querySelector<HTMLInputElement>('input[type="file"][webkitdirectory]')!;
+    const files = [
+      fakeFile("round1.coherence.json", "application/json"),
+      fakeFile(".DS_Store", "application/octet-stream"),
+      fakeFile("round2.coherence.json", "application/json"),
+    ];
+    Object.defineProperty(dirInput, "files", { configurable: true, get: () => files });
+    dirInput.dispatchEvent(new Event("change"));
+    expect(rounds.map((fs) => fs.map((f) => f.name))).toEqual([
+      ["round1.coherence.json", "round2.coherence.json"],
+    ]);
+    document.body.removeChild(dz);
+  });
+
   it("still rejects a lone .csv — a privilege log is not a document to analyze alone", () => {
     const dz = document.createElement("div");
     document.body.appendChild(dz);

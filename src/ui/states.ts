@@ -637,6 +637,34 @@ export type DropzoneState =
       on_reset?: () => void;
     }
   | {
+      /**
+       * spec-v16/v17 browser surface — the trajectory across saved rounds
+       * dropped into the tab (`*.coherence.json`, ordered by their file
+       * names), as `coherence-trend` reports it from a CI archive: per front,
+       * the binding floor at each round and whether it climbed, slid, or
+       * whipsawed. Advisory, like every posture surface.
+       */
+      kind: "coherence-trend-complete";
+      /** The rounds' file names, in the order the trajectory reads them. */
+      round_names: ReadonlyArray<string>;
+      fronts: ReadonlyArray<{
+        dimension: string;
+        floors: ReadonlyArray<string | null>;
+        trajectory: "steady-improvement" | "steady-regression" | "whipsaw" | "flat";
+        net_floor_movement: string;
+      }>;
+      trajectory_counts: {
+        "steady-improvement": number;
+        "steady-regression": number;
+        whipsaw: number;
+        flat: number;
+      };
+      /** Set when a round carried no ladder pin, so the ladders could not be compared. */
+      ladder_note: string | null;
+      json_blob: Blob;
+      json_filename: string;
+    }
+  | {
       kind: "error";
       message: string;
       /**
@@ -770,6 +798,14 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <button class="btn btn-primary" type="button" data-role="bundle-comparison-docx-download">Download two-round report (Word)</button>
     <button class="btn-link" type="button" data-role="bundle-comparison-json-download">Download movement data (JSON)</button>
     <button class="btn-link" type="button" data-role="bundle-comparison-reset">Analyze another bundle</button>
+    <div class="download-status" data-role="download-status" aria-live="polite"></div>
+  `,
+  "coherence-trend-complete": `
+    <div class="dropzone-title" data-role="trend-title"></div>
+    <div class="dropzone-sub" data-role="trend-rounds"></div>
+    <div class="dropzone-sub" data-role="trend-ladder-note" hidden></div>
+    <div class="negotiation-section" data-role="trend-fronts"></div>
+    <button class="btn-link" type="button" data-role="trend-json-download">Download trajectory data (JSON)</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   error: `
@@ -1118,6 +1154,20 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     } else {
       resetBtn.hidden = true;
     }
+  }
+  if (state.kind === "coherence-trend-complete") {
+    select(dz, "trend-title")!.textContent =
+      `Position trajectory across ${state.round_names.length} rounds`;
+    select(dz, "trend-rounds")!.textContent = `In order: ${state.round_names.join(" → ")}`;
+    const note = select<HTMLElement>(dz, "trend-ladder-note")!;
+    note.hidden = state.ladder_note === null;
+    note.textContent = state.ladder_note ?? "";
+    renderTrajectory(dz, state);
+    const status = select<HTMLElement>(dz, "download-status")!;
+    select<HTMLButtonElement>(dz, "trend-json-download")!.addEventListener("click", (e) => {
+      e.stopPropagation();
+      void saveBlob(state.json_blob, state.json_filename, status);
+    });
   }
   if (state.kind === "error") {
     // Spec-v3 §63: when an error code is provided, look up the
@@ -2052,6 +2102,45 @@ function renderCoherenceMovement(
     </div>
     <ul class="np-list">${cards}</ul>
     <div class="np-note">Did the package's position slip between rounds? How the binding floor that governs your exposure moved across the whole package, deterministically — both rounds were scored against the same positions; it reports where the floor moved on your own ladder and whether the package fractured or reconciled, not a legal conclusion about either round.</div>
+  `;
+}
+
+// A trajectory reads as the movement it amounts to: a whipsaw dipped below its
+// floor mid-deal even if it recovered, so it is marked like a regression.
+const TRAJECTORY_LABEL: Record<string, { label: string; cls: string }> = {
+  "steady-improvement": { label: "Climbed", cls: "pm-improved" },
+  "steady-regression": { label: "Slid — review", cls: "pm-regressed" },
+  whipsaw: { label: "Dipped and recovered — review", cls: "pm-regressed" },
+  flat: { label: "Held", cls: "pm-unchanged" },
+};
+
+/** The per-front trajectory card for saved rounds (spec-v16/v17 browser surface). */
+function renderTrajectory(
+  dz: HTMLElement,
+  state: Extract<DropzoneState, { kind: "coherence-trend-complete" }>,
+): void {
+  const el = select<HTMLElement>(dz, "trend-fronts");
+  if (!el) return;
+  const tc = state.trajectory_counts;
+  const cards = state.fronts
+    .map((f) => {
+      const t = TRAJECTORY_LABEL[f.trajectory] ?? { label: f.trajectory, cls: "pm-unchanged" };
+      const path = f.floors.map((x) => coherenceTierShort(x ?? "—")).join(" → ");
+      const net = FLOOR_MOVEMENT_LABEL[f.net_floor_movement]?.label ?? f.net_floor_movement;
+      return `<li class="np-card ${t.cls}">
+        <div class="np-head"><span class="np-dim">${escapeHtml(f.dimension)}</span> <span class="np-tier">${escapeHtml(t.label)}</span></div>
+        <div class="np-detail">Binding floor: ${escapeHtml(path)}</div>
+        <div class="np-detail">First to last round: ${escapeHtml(net)}</div>
+      </li>`;
+    })
+    .join("");
+  el.innerHTML = `
+    <div class="np-heading">
+      <span class="np-badge">Trajectory</span>
+      <span class="np-summary">${tc["steady-improvement"]} climbed · ${tc["steady-regression"]} slid · ${tc.whipsaw} dipped and recovered · ${tc.flat} held</span>
+    </div>
+    <ul class="np-list">${cards}</ul>
+    <div class="np-note">Where each front's binding floor sat at every round, read from the saved rounds alone. A front that fell below its floor mid-deal and came back is marked even though first-to-last reads fine. It reports movement on your own ladder, not a legal conclusion about any round.</div>
   `;
 }
 

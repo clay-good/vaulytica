@@ -40,6 +40,8 @@
  * events so the browser doesn't navigate.
  */
 
+import { ROUND_ARTIFACT } from "../report/round-order.js";
+
 export type AcceptedKind = "pdf" | "docx";
 
 export type DropResult =
@@ -78,6 +80,20 @@ export function isBundleMemberName(name: string): boolean {
   return n.endsWith(".pdf") || n.endsWith(".docx") || n.endsWith(".csv");
 }
 
+/** A saved coherence artifact (`*.coherence.json`) — one round of a negotiation. */
+export function isRoundArtifactName(name: string): boolean {
+  return ROUND_ARTIFACT.test(name);
+}
+
+/**
+ * A folder's files worth dispatching: its bundle members, or — a folder of
+ * nothing but saved rounds — its round artifacts.
+ */
+function fromFolder(files: File[]): File[] {
+  const members = files.filter((f) => isBundleMemberName(f.name));
+  return members.length > 0 ? members : files.filter((f) => isRoundArtifactName(f.name));
+}
+
 export type DropzoneOptions = {
   /** Called with the validated single file. */
   onFile: (result: DropResult) => void;
@@ -88,6 +104,11 @@ export type DropzoneOptions = {
    * the first entry (preserves v1/v3 single-doc behavior).
    */
   onFiles?: (files: File[]) => void;
+  /**
+   * Called when every file that arrives is a saved coherence artifact
+   * (`*.coherence.json`): the rounds of a negotiation, for a trend.
+   */
+  onRounds?: (files: File[]) => void;
   /** Called when a drag-over begins/ends so CSS can pulse the border. */
   onDragState?: (active: boolean) => void;
   /**
@@ -109,7 +130,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // The pipeline still distinguishes ≥ 2 files vs a single `.zip` and
   // rejects unsupported extensions upstream via `validateFile` /
   // `planBundle`.
-  input.accept = ".pdf,.docx,.csv,.zip";
+  input.accept = ".pdf,.docx,.csv,.zip,.json";
   input.multiple = true;
   // Visually hidden but keyboard-focusable. The dropzone wrapper has
   // no role/tabindex of its own; this input is the page's keyboard
@@ -128,7 +149,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // so the bundle pipeline can de-duplicate by basename if needed.
   const inputDir = document.createElement("input");
   inputDir.type = "file";
-  inputDir.accept = ".pdf,.docx,.csv";
+  inputDir.accept = ".pdf,.docx,.csv,.json";
   inputDir.multiple = true;
   // Set both the property and the attribute so the e2e probe selector
   // `#dropzone input[type="file"][webkitdirectory]` matches.
@@ -155,6 +176,10 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     // visibly names the file being worked on, so refusing here leaves the user
     // looking at an accurate in-progress state rather than a wrong result.
     if (dz.getAttribute("data-state") === "analyzing") return;
+    if (opts.onRounds && files.every((f) => isRoundArtifactName(f.name))) {
+      opts.onRounds(files);
+      return;
+    }
     const isBundle = files.length >= 2 || (files.length === 1 && isZipFile(files[0]!));
     if (isBundle && opts.onFiles) {
       opts.onFiles(files);
@@ -187,9 +212,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     // `planBundle` would reject the rest anyway, but rejecting here
     // also keeps the file-count cap (50) measured against the
     // accepted set rather than the raw tree.
-    const all = filesFromList(inputDir.files);
-    const accepted = all.filter((f) => isBundleMemberName(f.name));
-    dispatch(accepted);
+    dispatch(fromFolder(filesFromList(inputDir.files)));
   };
   const onClick = (e: Event): void => {
     if (e.target === input || e.target === inputDir) return;
@@ -248,8 +271,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
       }
       if (anyDir && entries.length > 0) {
         void collectFilesFromEntries(entries).then((files) => {
-          const accepted = files.filter((f) => isBundleMemberName(f.name));
-          dispatch(accepted);
+          dispatch(fromFolder(files));
         });
         return;
       }

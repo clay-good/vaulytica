@@ -19,38 +19,18 @@
 
 import { readdir, stat } from "node:fs/promises";
 import { join } from "node:path";
-
-const ARTIFACT = /\.coherence\.json$/i;
-
-/** The numbers in a file name, leading zeros dropped: the key round order is read from. */
-function roundKey(name: string): string {
-  return (name.match(/\d+/g) ?? []).map((d) => String(Number(d))).join(".");
-}
+import { ROUND_ARTIFACT, orderRounds } from "../../src/report/round-order.js";
 
 /**
  * The `*.coherence.json` files of a directory, in round order. Throws when the
  * directory holds none, or when the names do not determine the order.
  */
 export async function roundFiles(dir: string): Promise<string[]> {
-  const names = (await readdir(dir)).filter((n) => ARTIFACT.test(n));
+  const names = (await readdir(dir)).filter((n) => ROUND_ARTIFACT.test(n));
   if (names.length === 0) throw new Error(`${dir}: no *.coherence.json files to read`);
-  const unnumbered = names.filter((n) => roundKey(n) === "");
-  if (unnumbered.length > 0) {
-    throw new Error(
-      `${dir}: cannot infer round order — ${unnumbered.join(", ")} carries no round number; list the files in order instead`,
-    );
-  }
-  const seen = new Map<string, string>();
-  for (const n of names) {
-    const twin = seen.get(roundKey(n));
-    if (twin) {
-      throw new Error(
-        `${dir}: cannot infer round order — ${twin} and ${n} carry the same round number; list the files in order instead`,
-      );
-    }
-    seen.set(roundKey(n), n);
-  }
-  return names.sort((a, b) => a.localeCompare(b, "en", { numeric: true })).map((n) => join(dir, n));
+  const order = orderRounds(names, (n) => n);
+  if (!order.ok) throw new Error(`${dir}: ${order.reason}; list the files in order instead`);
+  return order.items.map((n) => join(dir, n));
 }
 
 /**

@@ -1102,6 +1102,43 @@ describe("renderState", () => {
     document.body.removeChild(dz);
   });
 
+  it("coherence-trend-complete shows the rounds in order and marks a whipsaw for review (spec-v16/v17)", () => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "coherence-trend-complete",
+      round_names: ["round1.coherence.json", "round2.coherence.json", "round10.coherence.json"],
+      fronts: [
+        {
+          dimension: "Liability cap",
+          floors: ["acceptable", "below-acceptable", "ideal"],
+          trajectory: "whipsaw",
+          net_floor_movement: "improved",
+        },
+        {
+          dimension: "Governing law",
+          floors: ["ideal", "ideal", "ideal"],
+          trajectory: "flat",
+          net_floor_movement: "unchanged",
+        },
+      ],
+      trajectory_counts: { "steady-improvement": 0, "steady-regression": 0, whipsaw: 1, flat: 1 },
+      ladder_note: null,
+      json_blob: new Blob(["{}"]),
+      json_filename: "vaulytica-trajectory.json",
+    });
+    expect(select(dz, "trend-title")!.textContent).toBe("Position trajectory across 3 rounds");
+    expect(select(dz, "trend-rounds")!.textContent).toBe(
+      "In order: round1.coherence.json → round2.coherence.json → round10.coherence.json",
+    );
+    expect(select(dz, "trend-ladder-note")!.hidden).toBe(true);
+    const cards = [...dz.querySelectorAll("[data-role=trend-fronts] .np-card")];
+    expect(cards).toHaveLength(2);
+    expect(cards[0]!.className).toContain("pm-regressed");
+    expect(cards[0]!.textContent).toContain("Dipped and recovered — review");
+    expect(cards[0]!.textContent).toContain("First to last round: Floor improved");
+    expect(cards[1]!.className).toContain("pm-unchanged");
+  });
+
   it("bundle-complete offers to save this round's coherence only when one was computed (spec-v14)", () => {
     const base = {
       kind: "bundle-complete" as const,
