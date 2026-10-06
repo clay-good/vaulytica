@@ -768,7 +768,9 @@ const NEGATED_PREAMBLE =
  * "May 14, 2026" — which also masked the true finding that the form names
  * no parties the extractor can read.
  */
-const SIGNATURE_NAME_LINE = /^(?:By|Name)\s*:?\s*/i;
+// "|" is a signature TABLE's colon: "Name | Aurelie Vandenbroucke" is the
+// "Name:" cell beside its value.
+const SIGNATURE_NAME_LINE = /^(?:By|Name)\s*[:|]?\s*/i;
 
 /**
  * Every "By:" / "Name:" segment in a signature paragraph, not just the
@@ -783,7 +785,7 @@ const SIGNATURE_NAME_LINE = /^(?:By|Name)\s*:?\s*/i;
 // Achterberg Chief Executive Officer"), which left no terminator within five
 // words; the repetition itself now ends the name.
 const SIGNATURE_FIELD =
-  /(?<![\p{L}\p{N}_])(?:By|Name)\s*:\s*(?:\/s\/\s*)?(\p{Lu}[\p{L}\p{N}_.'’-]*(?:\s+\p{Lu}[\p{L}\p{N}_.'’-]*){0,4}?)(?=\s+(?:By|Name|Title|Date|its)(?![\p{L}\p{N}_])|[,;]|\t|\s{2,}|$|\s+\1(?![\p{L}\p{N}_]))/gu;
+  /(?<![\p{L}\p{N}_])(?:By|Name)\s*[:|]\s*(?:\/s\/\s*)?(\p{Lu}[\p{L}\p{N}_.'’-]*(?:\s+\p{Lu}[\p{L}\p{N}_.'’-]*){0,4}?)(?=\s+(?:By|Name|Title|Date|its)(?![\p{L}\p{N}_])|[,;]|\t|\s{2,}|$|\s+\1(?![\p{L}\p{N}_]))/gu;
 
 /**
  * "doing business as" / "d/b/a" operating name following a legal name.

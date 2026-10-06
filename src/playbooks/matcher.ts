@@ -94,7 +94,9 @@ export const TITLE_SUBJECT_SCAN_CHARS = 1200;
  * The test is anchored to the start of the paragraph so a mid-sentence
  * "with respect to" or a defined term ending in "re" cannot trigger it.
  */
-const SUBJECT_LINE = /^\s*(?:re|subject|in\s+re)\s*:\s*(\S.*)$/is;
+// "|" is a TABLE's colon: a letter whose header block is a Word table
+// flattens "Re:" in one cell and the subject in the next to "Re | …".
+const SUBJECT_LINE = /^\s*(?:re|subject|in\s+re)\s*[:|]\s*(\S.*)$/is;
 
 /**
  * The same subject line, inside a MEMO HEADER BLOCK.
@@ -118,7 +120,8 @@ const SUBJECT_LINE = /^\s*(?:re|subject|in\s+re)\s*:\s*(\S.*)$/is;
  * Anchored on a preceding memo field label, so a mid-sentence "with respect
  * to" or a defined term ending in "re" still cannot trigger it.
  */
-const MEMO_HEADER_SUBJECT = /^\s*(?:to|from|date|cc|bcc)\s*:[\s\S]{0,400}?\bre\s*:\s*(\S[^\n]*)/i;
+const MEMO_HEADER_SUBJECT =
+  /^\s*(?:to|from|date|cc|bcc)\s*[:|][\s\S]{0,400}?\bre\s*[:|]\s*(\S[^\n]*)/i;
 
 /**
  * The document's first lines, in order, bounded and trimmed.
@@ -181,7 +184,7 @@ function leadingLines(sections: readonly LeadingSection[]): string[] {
  * The capture stops at the salutation or the first sentence break, so it takes
  * the subject and not the letter.
  */
-const SUBJECT_ANYWHERE = /(?:^|[\s\n])Re\s*:\s*([^\n]{1,120}?)(?=\s+Dear\b|\s*[.;]|$)/;
+const SUBJECT_ANYWHERE = /(?:^|[\s\n])Re\s*[:|]\s*([^\n]{1,120}?)(?=\s+Dear\b|\s*[.;]|$)/;
 
 function subjectLine(
   sections: readonly {

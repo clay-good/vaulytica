@@ -37,6 +37,9 @@ import {
   LevelFormat,
   Packer,
   Paragraph,
+  Table,
+  TableCell,
+  TableRow,
   TextRun,
 } from "docx";
 import { describe, expect, it } from "vitest";
@@ -264,6 +267,75 @@ describe("a specimen as a Word-numbered DOCX reports what its pasted text report
       const text = readFileSync(join(SPECIMENS, name), "utf8");
       const docxPath = join(dir, name.replace(/\.txt$/, ".numbered.docx"));
       await renderNumberedDocx(text, docxPath);
+      const pasted = await analyzeText(text, name);
+      const docx = await analyzeFile(docxPath);
+      expect(docx.run.playbook_id).toBe(pasted.run.playbook_id);
+      const key = (f: { rule_id: string; severity: string }) => `${f.rule_id}:${f.severity}`;
+      expect([...new Set(docx.run.findings.map(key))].sort()).toEqual(
+        [...new Set(pasted.run.findings.map(key))].sort(),
+      );
+    },
+    120_000,
+  );
+});
+
+/**
+ * Field blocks — a letter's "Re:" header, an order form, a signature block's
+ * "By:" / "Name:" lines, an SCC annex — laid out as a two-column Word TABLE,
+ * which flattens each row to "cell | cell". The cell separator stood where
+ * every reader expected a colon: two signature blocks went undetected (both
+ * critical), a letter lost its subject and its family, and an SCC its parties.
+ */
+const TABLE_SAMPLE = [
+  "cloud-services-agreement.txt",
+  "baa-subcontractor.txt",
+  "ror-letter.txt",
+  "scc-module-2.txt",
+  "saas-order-form-fields.txt",
+];
+
+const FIELD = /^([A-Z][A-Za-z0-9 .&/'’()#-]{0,40}):\s+(\S.*)$/;
+
+async function renderTableDocx(text: string, path: string): Promise<void> {
+  const lines = text
+    .split(/\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+  const children: (Paragraph | Table)[] = [];
+  const cell = (t: string) =>
+    new TableCell({ children: [new Paragraph({ children: [new TextRun(t)] })] });
+  for (let i = 0; i < lines.length; ) {
+    let j = i;
+    while (j < lines.length && FIELD.test(lines[j]!)) j++;
+    if (j - i >= 2) {
+      children.push(
+        new Table({
+          rows: lines.slice(i, j).map((l) => {
+            const m = FIELD.exec(l)!;
+            return new TableRow({ children: [cell(m[1]!), cell(m[2]!)] });
+          }),
+        }),
+      );
+      i = j;
+      continue;
+    }
+    children.push(
+      i === 0
+        ? new Paragraph({ text: lines[i]!, heading: HeadingLevel.TITLE })
+        : new Paragraph({ children: [new TextRun(lines[i]!)] }),
+    );
+    i++;
+  }
+  writeFileSync(path, await Packer.toBuffer(new Document({ sections: [{ children }] })));
+}
+
+describe("a specimen whose field blocks are Word tables reports what its pasted text reports", () => {
+  it.each(TABLE_SAMPLE)(
+    "%s",
+    async (name) => {
+      const text = readFileSync(join(SPECIMENS, name), "utf8");
+      const docxPath = join(dir, name.replace(/\.txt$/, ".table.docx"));
+      await renderTableDocx(text, docxPath);
       const pasted = await analyzeText(text, name);
       const docx = await analyzeFile(docxPath);
       expect(docx.run.playbook_id).toBe(pasted.run.playbook_id);

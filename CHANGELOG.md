@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.844.0] — 2026-10-06
+
+Every run of "Label: value" lines in the corpus — letter headers, order forms,
+signature blocks, an SCC's annex — laid out as a two-column Word table, which
+flattens each row to "cell | cell". The cell separator stood where every
+reader expected a colon; four documents of 236 read differently, two of them
+at critical.
+
+### Fixed
+- **A signature block in a table was no signature block.** "By | ______"
+  beside "By: ______" counted one signer, not two, and STRUCT-003 reported a
+  cloud services agreement unsigned (critical); BAA-036 and the GDPR DPA's
+  signature check missed "By |" the same way.
+- **A letter's subject line in a table was not its subject.** "Re |
+  Reservation of Rights — Claim No. …" was not read as "Re:", and a
+  reservation-of-rights letter fell to generic-fallback.
+- **A signatory's name in a table named no party.** "Name | Aurelie
+  Vandenbroucke" was not read as "Name:", and an SCC whose parties are found
+  through its signatories was told it names none (STRUCT-001).
+  In each, "|" now reads as a table's colon. All 236 table renderings report
+  what their pasted text reports.
+
+### Tests
+- `docx-format-invariance` renders five specimens with their field blocks as
+  Word tables.
+
 ## [9.843.0] — 2026-10-06
 
 ### Fixed

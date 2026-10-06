@@ -543,7 +543,9 @@ export const rule: Rule = {
         // Each anchored rule is one signer's line, so where there are more
         // rules than distinct labels the rules are the better count. A
         // document with two of these has a signature block, whatever it omits.
-        const signatureRules = counted.match(/\b(?:By|Signature|Signed)\b\s*:?\s*_{4,}/gi);
+        // "|" is the colon of a signature TABLE: a Word table flattens "By:" in
+        // one cell and the rule in the next to "By | ______".
+        const signatureRules = counted.match(/\b(?:By|Signature|Signed)\b\s*[:|]?\s*_{4,}/gi);
         if (SIG_LINE.test(counted) || SIG_TOKEN.test(counted)) {
           signals += Math.max(distinct.size, signatureRules?.length ?? 0);
         }

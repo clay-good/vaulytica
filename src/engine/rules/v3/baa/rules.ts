@@ -839,7 +839,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add signature blocks for both parties with name, title, and date of authorized representatives.",
     present_patterns: [
-      /By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by/i,
+      /By\s*[:|]\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by/i,
     ],
   }),
 

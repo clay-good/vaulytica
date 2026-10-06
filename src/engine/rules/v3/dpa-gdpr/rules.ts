@@ -1188,7 +1188,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // "FOR THE DATA EXPORTER / /s/ Rosalind Achebe Kwan / Name: … / Title: …
       // / Date: …" and carries no "By:" at all, so this rule lagged its
       // sibling and reported an executed form as unsigned.
-      /By:\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by|(?:^|[^\w/])\/s\/\s*\S|\bName:\s*\S[^\n]{0,80}?\bTitle:|\bfor\s+the\s+data\s+(?:exporter|importer)\b/i,
+      /By\s*[:|]\s*[_\-\s]+|signature\s+block|authori[sz]ed\s+(signatory|representative)|sign(ed)?\s+by|(?:^|[^\w/])\/s\/\s*\S|\bName:\s*\S[^\n]{0,80}?\bTitle:|\bfor\s+the\s+data\s+(?:exporter|importer)\b/i,
     ],
     default_severity: "warning",
   }),
