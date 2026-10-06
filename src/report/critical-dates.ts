@@ -506,7 +506,7 @@ const EXCEPTED_BREACH =
 const TERM_END_RAW =
   /\b(?:months?|years?)\s+(?:from|after|following)\s+(?:the\s+)?(?:[\w-]+\s+){0,2}(?:start|effective|commencement|execution|go[-\s]live)\s+date\b/i;
 const TERM_CONTEXT =
-  /\b(?:(?:initial|order|subscription|lease|license|licence|service|renewal)\s+)?term\b\s*(?::|is\b|of\b|shall\b|will\b|means\b|ends\b|expires\b|begins\b|commences\b)|\bexpir(?:es|e|ation)\b/i;
+  /\b(?:(?:initial|order|subscription|lease|license|licence|service|renewal)\s+)?term\b\s*(?::|\||is\b|of\b|shall\b|will\b|means\b|ends\b|expires\b|begins\b|commences\b)|\bexpir(?:es|e|ation)\b/i;
 
 function classifyDeadline(ref: DateReference, contextText: string): CriticalDateKind {
   if (TERM_END_RAW.test(ref.raw_text) && TERM_CONTEXT.test(`${ref.raw_text} ${contextText}`))

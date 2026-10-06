@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.842.0] — 2026-10-06
+
+### Fixed
+- **A term stated in a table was not the term's end.** An order form laid out
+  as a Word table flattens each row to "Order Term | 24 months from the
+  Subscription Start Date", and DATE-006 looked for the colon of "Order
+  Term:"; the date was computed (2028-05-01) but filed as a notice deadline.
+  A table cell's separator now marks the term like a colon.
+
 ## [9.841.0] — 2026-10-06
 
 ### Tests

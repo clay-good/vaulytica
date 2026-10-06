@@ -107,3 +107,18 @@ describe("a labeled field's date", () => {
     expect(row?.computed_date ?? null).toBeNull();
   });
 });
+
+describe("the date the term ends, in a form laid out as a table", () => {
+  it("reads 'Order Term | 24 months …' as the term", async () => {
+    // A Word table flattens each row to "cell | cell".
+    const tree = buildTree([
+      "Order Form",
+      "Order Term | 24 months from the Subscription Start Date",
+      "Subscription Start Date | May 1, 2026",
+    ]);
+    const row = (await buildCriticalDates(extractAll(tree), tree)).register.find((r) =>
+      r.trigger.includes("24 months"),
+    );
+    expect(row).toMatchObject({ kind: "term-end", computed_date: "2028-05-01" });
+  });
+});
