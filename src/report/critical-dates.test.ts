@@ -895,3 +895,25 @@ describe("a defined period anchors deadlines at both ends", () => {
     expect(r.find((x) => x.trigger.includes("was to begin"))?.kind).toBe("notice-period");
   });
 });
+
+describe("a merger's surviving entity is not a survival window", () => {
+  it("does not file a pre-closing notice as a survival end", async () => {
+    const tree = buildTree([
+      "Conversion",
+      "If a Corporate Transaction occurs, the Holder may elect, by written notice given at least five (5) days before the closing, to receive twice the principal. A Corporate Transaction includes a merger in which the stockholders hold less than a majority of the voting power of the surviving entity.",
+    ]);
+    const r = (await buildCriticalDates(extractAll(tree), tree)).register;
+    expect(r.find((x) => x.trigger.includes("before the closing"))?.kind).not.toBe("survival-end");
+  });
+});
+
+describe("a post-closing or post-termination duration is a survival period", () => {
+  it("files 'for three (3) years after termination' as a survival end", async () => {
+    const tree = buildTree([
+      "Confidentiality",
+      "Each party's obligations under this Section continue for three (3) years after termination.",
+    ]);
+    const r = (await buildCriticalDates(extractAll(tree), tree)).register;
+    expect(r.find((x) => x.trigger.includes("after termination"))?.kind).toBe("survival-end");
+  });
+});

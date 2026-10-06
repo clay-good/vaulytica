@@ -364,7 +364,16 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
       "Practice baseline: investor's choice of (a) repayment plus premium (1.5–2x) or (b) conversion immediately prior to the change of control at the cap.",
     recommendation:
       "Add a 'Change of Control' clause with both repayment-with-premium and pre-closing-conversion alternatives at investor option.",
-    present_patterns: [/change\s+of\s+control/i, /sale\s+of\s+the\s+(company|business)/i],
+    // The event has several standard names. A note whose §2.2 gives the
+    // holder 2x repayment or conversion at the cap on a "Corporate
+    // Transaction" (an asset sale or a merger) was told at CRITICAL that it
+    // has no change-of-control clause.
+    present_patterns: [
+      /change\s+(?:of|in)\s+control/i,
+      /sale\s+of\s+the\s+(company|business)/i,
+      /\b(?:corporate\s+transaction|liquidity\s+event|deemed\s+liquidation\s+event)\b/i,
+      /sale\s+of\s+all\s+or\s+substantially\s+all\s+of\s+the\s+company['’]s\s+assets/i,
+    ],
   }),
   presence({
     id: "EQT-016",

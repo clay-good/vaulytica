@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.804.0] — 2026-10-06
+
+Found by reading a clean convertible promissory note.
+
+### Fixed
+- **EQT-015 (critical) missed a change-of-control clause named something
+  else.** The note's §2.2 gives the holder twice the principal or conversion
+  at the cap on a "Corporate Transaction" (an asset sale or a merger); the
+  rule knew only "change of control" and "sale of the company". It now also
+  reads "change in control", a defined Corporate Transaction / Liquidity
+  Event / Deemed Liquidation Event, and "sale of all or substantially all of
+  the Company's assets".
+- **A merger's "surviving entity" made a deadline a survival window.** The
+  holder's pre-closing election notice was filed as "Survival end" because
+  its paragraph defined the transaction by the surviving entity's vote. A
+  post-event duration is now recognized for what it is instead: "for three
+  (3) years after termination", "for five (5) years after the Closing" are
+  survival periods (24 corpus rows move from the generic notice family; a
+  merger's six-year D&O tail keeps its label, now on principle rather than by
+  the word "Surviving Corporation").
+
 ## [9.803.0] — 2026-10-05
 
 Found by reading a clean North Carolina general partnership agreement; the

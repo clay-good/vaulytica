@@ -417,7 +417,10 @@ const KIND_PATTERNS: Array<{ kind: CriticalDateKind; re: RegExp }> = [
   },
   {
     kind: "survival-end",
-    re: /\b(?:surviv\w+|continue\s+in\s+(?:full\s+)?(?:force|effect)\s+for|remain\s+in\s+effect\s+for)\b/i,
+    // Not the merger's "surviving entity / corporation": a convertible note's
+    // pre-closing election notice was filed as a survival window because its
+    // paragraph defined a Corporate Transaction by the surviving entity's vote.
+    re: /\b(?:surviv\w+(?!\s+(?:entity|entities|corporation|company|companies|parent|person))|continue\s+in\s+(?:full\s+)?(?:force|effect)\s+for|remain\s+in\s+effect\s+for|\bfor\s+\S+\s+(?:\(\d+\)\s+)?(?:years?|months?)\s+after\s+(?:the\s+)?(?:Closing(?:\s+Date)?|Effective\s+Time|termination|expiration))\b/i,
   },
 ];
 

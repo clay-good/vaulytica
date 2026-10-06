@@ -550,3 +550,29 @@ describe("EQT-041 v1.2.0 — a lock-up is a covenant, not a heading", () => {
     ).not.toBeNull();
   });
 });
+
+describe("EQT-015 — the change-of-control event under its other names", () => {
+  const EQT015 = EQUITY_RULES.find((r) => r.id === "EQT-015")!;
+  const check = (text: string) =>
+    EQT015.check(withPb(buildContext(["Conversion", text]), CONV_NOTE_PB));
+
+  it("reads a defined 'Corporate Transaction'", () => {
+    expect(
+      check(
+        'If a Corporate Transaction occurs before conversion, the Holder may elect to receive twice the outstanding principal or to convert at the Valuation Cap. "Corporate Transaction" means a sale of all or substantially all of the Company\'s assets or a merger.',
+      ),
+    ).toBeNull();
+  });
+
+  it("reads 'change in control'", () => {
+    expect(
+      check("On a change in control the Holder may elect repayment or conversion."),
+    ).toBeNull();
+  });
+
+  it("still fires when the note says nothing about a sale or merger", () => {
+    expect(
+      check("The Note converts in a Qualified Financing at the Valuation Cap."),
+    ).not.toBeNull();
+  });
+});
