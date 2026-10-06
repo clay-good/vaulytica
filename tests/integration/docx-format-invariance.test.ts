@@ -66,6 +66,9 @@ const SAMPLE = [
   "limited-scope-representation.txt",
   "nonprofit-bylaws.txt",
   "enterprise-saas-subscription.txt",
+  "tx-general-warranty-deed.txt",
+  "appellate-brief.txt",
+  "safe.txt",
 ];
 
 /**

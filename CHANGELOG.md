@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.837.0] — 2026-10-06
+
+### Fixed
+- **A notary venue split over two heading lines was still a duplicate.** A
+  deed's acknowledgment sets "STATE OF TEXAS" and "COUNTY OF TRAVIS" on two
+  lines, and as a DOCX each is a heading; "COUNTY OF TRAVIS" repeated across
+  the acknowledgments drew STRUCT-012. A county or parish line on its own is
+  a venue too. With it, every heading-bearing specimen rendered as a DOCX
+  reports what its pasted text reports except the petition, whose table of
+  authorities only a structured document lets CITE-004 reconcile.
+
+### Tests
+- `docx-format-invariance` covers 29 specimens.
+
 ## [9.836.0] — 2026-10-06
 
 ### Fixed

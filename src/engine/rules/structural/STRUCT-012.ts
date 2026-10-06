@@ -14,7 +14,7 @@ import { emit, topPosition } from "../_helpers.js";
 const ENTITY_NAME =
   /\b(?:LLC|L\.L\.C\.|LLP|L\.L\.P\.|L\.?P\.|PLLC|INC\.?|INCORPORATED|CORP\.?|CORPORATION|COMPANY|CO\.|LTD\.?|LIMITED|P\.C\.|N\.A\.)\s*,?$/i;
 const NOTARY_VENUE =
-  /^(?:STATE|State|COMMONWEALTH|Commonwealth)\s+(?:OF|of)\s+[A-Z][A-Za-z ]+(?:,?\s*(?:COUNTY|County)\s+(?:OF|of)\s+[A-Z][A-Za-z ]+)?\s*\)?$/;
+  /^(?:(?:STATE|State|COMMONWEALTH|Commonwealth)\s+(?:OF|of)\s+[A-Z][A-Za-z ]+(?:,?\s*(?:COUNTY|County)\s+(?:OF|of)\s+[A-Z][A-Za-z ]+)?|(?:COUNTY|County|PARISH|Parish)\s+(?:OF|of)\s+[A-Z][A-Za-z ]+)\s*\)?$/;
 
 function isBlockLabel(heading: string, parties: ReadonlySet<string>): boolean {
   return (

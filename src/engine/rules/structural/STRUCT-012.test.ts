@@ -20,6 +20,8 @@ describe("STRUCT-012 — duplicate headings", () => {
       ["HOLLOWAY & NANDAKUMAR LLP", "/s/ Devarshi Nandakumar"],
       ["STATE OF TEXAS, COUNTY OF TRAVIS", "Acknowledged before me."],
       ["STATE OF TEXAS, COUNTY OF TRAVIS", "Acknowledged before me."],
+      ["COUNTY OF TRAVIS", "Acknowledged before me."],
+      ["COUNTY OF TRAVIS", "Acknowledged before me."],
     );
     expect(STRUCT_012.check(ctx)).toBeNull();
   });
