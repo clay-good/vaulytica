@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.832.0] — 2026-10-06
+
+PDF, the third format, compared the same way: every specimen rendered as a
+text-layer PDF and its findings diffed against the pasted text. Thirteen
+documents routed to a different family. All thirteen now route alike.
+
+### Fixed
+- **A PDF's every line was a paragraph.** The PDF ingest grouped nothing —
+  "Trivial grouping for now: each non-empty line is its own paragraph" — so a
+  clause wrapped across three lines was three half-clauses to every
+  paragraph-scoped rule, and a warrant's four-line securities legend pushed
+  its title past the title reader (generic-fallback). Lines now join into a
+  paragraph unless the page separates them: a gap wider than the page's
+  ordinary line spacing, a change of type size, a line opening a numbered
+  clause, or a step back up the page.
+- **The title reader, given a heading, read the wrong things beside it.**
+  - An EMPTY first heading — "EXHIBIT C", "EXECUTION VERSION" — was the whole
+    title; the name in the heading after it ("FEDERAL ACQUISITION REGULATION
+    FLOWDOWN CLAUSES", "CREDIT AGREEMENT") was not read. A flow-down routed
+    to a BAA and a credit agreement to a convertible note.
+  - A first section of title lines only ("HALCYON INSTRUMENTS, INC." over
+    "2026 EQUITY INCENTIVE PLAN") hid the grant's own name in the next
+    heading, and two grant notices routed to the Plan.
+  - A legend set as the first heading ("CONFIDENTIAL — FOR DISCUSSION
+    PURPOSES ONLY") hid a term sheet's "SUMMARY OF TERMS".
+  - The first body paragraph under a title heading entered the corpus whole:
+    a statement of work's "… under and subject to the Master Services
+    Agreement" routed three SOWs to msa-general, and a conflict-of-interest
+    policy's "A Colorado nonprofit corporation" routed it to nonprofit
+    bylaws. The paragraph now counts only when it names the document ("This
+    …"), or is itself a title line, and a reference to a parent instrument
+    ("under", "subject to", "pursuant to", "governed by") is cut from it.
+  - A 10-K's sub-heading ("Risks Related to Our Business") was read as the
+    title's subtitle under an "ITEM 1A. RISK FACTORS" heading.
+  Pasted text reads each of these documents as it did before; the title
+  reader now reads a heading-structured document the same way.
+- **"Terms and Conditions of Sale" was not title-shaped.** A title keeps
+  "and", "the", "for", "with", "from", "under", "into" and "upon" in lower
+  case.
+
+### Tests
+- `pdf-format-invariance` renders 13 specimens as PDFs in-test and asserts
+  the same family and the same findings as their pasted text.
+
 ## [9.831.0] — 2026-10-06
 
 The definitions report, compared pasted text against DOCX: 37 specimens

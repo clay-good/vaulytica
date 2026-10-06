@@ -747,3 +747,76 @@ describe("a DOCX whose name is a heading below an untitled first section", () =>
     expect(corpus.startsWith("DECLARATION OF COVENANTS")).toBe(true);
   });
 });
+
+describe("titleCorpus — a PDF's or DOCX's title block, read as pasted text reads it", () => {
+  it("does not take the parent agreement a preamble names as a title", () => {
+    const t = tree([
+      {
+        heading: "STATEMENT OF WORK NO. 4",
+        paragraphs: [
+          'This Statement of Work No. 4 ("SOW") is entered into as of June 1, 2026 under and subject to the Master Services Agreement dated January 5, 2026.',
+        ],
+      },
+    ]);
+    const corpus = titleCorpus(t, "sow.pdf");
+    expect(corpus).toContain("Statement of Work");
+    expect(corpus).not.toContain("Master Services Agreement");
+  });
+
+  it("reads past an empty first heading to the document's name", () => {
+    const t = tree([
+      { heading: "EXHIBIT C", paragraphs: [] },
+      {
+        heading: "FEDERAL ACQUISITION REGULATION FLOWDOWN CLAUSES",
+        paragraphs: ["Subcontract No. 7"],
+      },
+    ]);
+    expect(titleCorpus(t, "far.pdf")).toContain("FLOWDOWN CLAUSES");
+  });
+
+  it("reads past a first section of title lines only", () => {
+    const t = tree([
+      { heading: "HALCYON INSTRUMENTS, INC.", paragraphs: ["2026 EQUITY INCENTIVE PLAN"] },
+      {
+        heading: "NOTICE OF STOCK OPTION GRANT",
+        paragraphs: ["The Company hereby grants an option."],
+      },
+    ]);
+    expect(titleCorpus(t, "grant.pdf")).toContain("NOTICE OF STOCK OPTION GRANT");
+  });
+
+  it("does not read the block under a title heading as a title", () => {
+    const t = tree([
+      {
+        heading: "CONFLICT OF INTEREST POLICY",
+        paragraphs: [
+          "Pemberton Ridge Land Conservancy A Colorado nonprofit corporation Adopted by the Board of Directors on February 5, 2026",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "coi.pdf")).not.toContain("nonprofit corporation");
+  });
+
+  it("reads past a legend set as the first heading", () => {
+    const t = tree([
+      {
+        heading: "CONFIDENTIAL — FOR DISCUSSION PURPOSES ONLY",
+        paragraphs: ["SUMMARY OF TERMS FOR THE PROPOSED SERIES B PREFERRED STOCK FINANCING"],
+      },
+    ]);
+    expect(titleCorpus(t, "ts.pdf")).toContain("SUMMARY OF TERMS");
+  });
+
+  it("takes no sub-heading as a subtitle when body text follows the title heading", () => {
+    const t = tree([
+      {
+        heading: "ITEM 1A. RISK FACTORS",
+        paragraphs: [
+          "Investing in our common stock involves a high degree of risk.",
+          "Risks Related to Our Business and Industry",
+        ],
+      },
+    ]);
+    expect(titleCorpus(t, "10k.pdf")).not.toContain("Risks Related");
+  });
+});

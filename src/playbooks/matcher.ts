@@ -488,9 +488,18 @@ function titleShaped(line: string | undefined): boolean {
   if (words.length < 2) return false;
   if (!/[A-Za-z]/.test(t)) return false;
   if (t === t.toUpperCase()) return true;
-  // Title Case: every word of three or more letters starts capitalized.
-  return words.every((w) => w.length < 3 || !/^[a-z]/.test(w));
+  // Title Case: every word of three or more letters starts capitalized, but
+  // for the function words a title keeps in lower case — "Terms and
+  // Conditions of Sale", "Agreement for the Sale of Goods".
+  return words.every(
+    (w) =>
+      w.length < 3 || !/^[a-z]/.test(w) || /^(?:and|the|for|with|from|under|into|upon)$/.test(w),
+  );
 }
+
+/** From the first reference to another instrument onward. */
+const PARENT_REFERENCE =
+  /\b(?:under\s+(?:and\s+subject\s+to\s+)?(?:the|that|this|a|an)\b|subject\s+to\s+the|pursuant\s+to|governed\s+by|issued\s+under|in\s+connection\s+with)\b[\s\S]*$/i;
 
 export function titleCorpus(
   tree: {
@@ -511,12 +520,35 @@ export function titleCorpus(
   // four fell to generic-fallback (the warrant's corpus became its filename)
   // and four routed to a neighbouring family. Read such a document the way
   // the paste path does, its leading headings and paragraphs as one run.
+  //
+  // An EMPTY first section is the same shape: "EXHIBIT C" or "EXECUTION
+  // VERSION" set as a heading with nothing under it, and the document's name —
+  // "FEDERAL ACQUISITION REGULATION FLOWDOWN CLAUSES", "CREDIT AGREEMENT" — as
+  // the heading after it. Read alone, the corpus was "EXHIBIT C", and a PDF
+  // flow-down routed to a BAA.
   const firstSection = tree.sections[0];
-  if (
-    !flattened &&
+  const untitledFirst =
     (firstSection?.heading ?? "").trim().length === 0 &&
-    tree.sections.slice(1).some((s) => (s.heading ?? "").trim().length > 0)
-  ) {
+    tree.sections.slice(1).some((s) => (s.heading ?? "").trim().length > 0);
+  // …and so is one that holds only TITLE lines: "HALCYON INSTRUMENTS, INC."
+  // as the heading over "2026 EQUITY INCENTIVE PLAN", with the grant's own
+  // name — "NOTICE OF STOCK OPTION GRANT" — as the next heading. Read alone,
+  // the grant routed to the Plan.
+  const laterHeading =
+    tree.sections.length > 1 ||
+    ((firstSection as { children?: readonly unknown[] } | undefined)?.children?.length ?? 0) > 0;
+  // A legend set as the first heading — "CONFIDENTIAL — FOR DISCUSSION
+  // PURPOSES ONLY" over a term sheet's "SUMMARY OF TERMS …" — is no title.
+  const legendFirst =
+    (firstSection?.heading ?? "").trim().length > 0 &&
+    dropLegends([(firstSection?.heading ?? "").trim()]).length === 0;
+  const emptyFirst =
+    legendFirst ||
+    (!!firstSection &&
+      (firstSection.paragraphs.length === 0 ||
+        (laterHeading &&
+          firstSection.paragraphs.every((p) => titleShaped(p.runs.map((r) => r.text).join(""))))));
+  if (!flattened && (untitledFirst || emptyFirst)) {
     const lines = leadingLines(tree.sections);
     return titleCorpus(
       { sections: [{ heading: "", paragraphs: lines.map((text) => ({ runs: [{ text }] })) }] },
@@ -533,7 +565,14 @@ export function titleCorpus(
       .trim(),
   );
   const stripped = dropLegends(paragraphs);
-  const preamble = (stripped[0] ?? "").slice(0, TITLE_PREAMBLE_CHARS);
+  // The preamble names the document — and then, as often as not, the
+  // instrument it hangs from: "This Statement of Work No. 4 is entered into
+  // … under and subject to the Master Services Agreement". The second name
+  // is a reference, not an identity. Under a title HEADING (a PDF or DOCX)
+  // the preamble is the first body paragraph, so a statement of work read
+  // "master services agreement" as a title and routed to msa-general; pasted,
+  // its first paragraph was the title line and the reference never entered.
+  const preamble = (stripped[0] ?? "").slice(0, TITLE_PREAMBLE_CHARS).replace(PARENT_REFERENCE, "");
   // A document's identity is sometimes TWO lines: a header naming the
   // instrument that governs it, and below that the document's own name.
   // Every equity award carries the shape — "HALCYON INSTRUMENTS, INC. 2026
@@ -556,7 +595,12 @@ export function titleCorpus(
   // blank lines does. Reading only the second line lost the grant notice's own
   // name and routed it to the Plan.
   const subtitleLines: string[] = [];
-  for (let i = 1; i <= 2; i += 1) {
+  // Under a HEADING the first paragraph is body text unless it is itself a
+  // title line, and a run of title lines must start there: a 10-K's "ITEM
+  // 1A. RISK FACTORS" heading over "Investing in our common stock …" took
+  // the next sub-heading, "Risks Related to Our Business", as its subtitle.
+  const runOpen = heading.length === 0 || titleShaped(stripped[0]);
+  for (let i = 1; runOpen && i <= 2; i += 1) {
     if (!titleShaped(stripped[i])) break;
     subtitleLines.push(stripped[i]!.slice(0, TITLE_PREAMBLE_CHARS));
   }
@@ -584,9 +628,17 @@ export function titleCorpus(
   // heading is its name, stated in the first position, and a "Re:" line under
   // it is a subject, not a title.
   const recovered = [subject, caption, recorded].filter((p) => p.length > 0);
+  // Under a title HEADING the first paragraph is body text, and it names the
+  // document only when it says so — "This Statement of Work …". Otherwise it
+  // is whatever follows the title: a conflict-of-interest policy's "Pemberton
+  // Ridge Land Conservancy A Colorado nonprofit corporation" read as a title
+  // and routed the policy to nonprofit bylaws. Pasted, that block was never
+  // in the corpus — the title line was the first paragraph.
+  const headingPreamble =
+    /^\s*(?:this|these)\b/i.test(preamble) || titleShaped(preamble) ? preamble : "";
   const parts = (
     heading.length > 0
-      ? [heading, preamble, subtitle, ...recovered]
+      ? [heading, headingPreamble, subtitle, ...recovered]
       : [...recovered, preamble, subtitle]
   ).filter((p) => p.length > 0);
   return parts.length > 0 ? parts.join(" ") : fallback;

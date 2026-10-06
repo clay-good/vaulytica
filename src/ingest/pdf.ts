@@ -408,12 +408,53 @@ function groupItemsIntoLines(items: PdfTextItem[]): PdfTextItem[][] {
   return lines.filter((l) => l.some((it) => it.str.trim().length > 0));
 }
 
+/** A line that opens a numbered clause starts a paragraph however it is spaced. */
+const PDF_CLAUSE_OPENER =
+  /^(?:\d+(?:\.\d+)*\.?\s|\([a-z0-9]{1,4}\)\s|(?:ARTICLE|SECTION|EXHIBIT|SCHEDULE|ANNEX|APPENDIX)\s+[0-9IVXLC])/;
+
+/**
+ * A PDF has lines, not paragraphs: every wrapped line of a clause arrives as a
+ * line of its own. Read as one paragraph each, a sentence split across two
+ * lines was two "paragraphs" — every paragraph-scoped rule saw half a clause,
+ * and a four-line securities legend pushed a warrant's title past the title
+ * reader, so the warrant fell to generic-fallback.
+ *
+ * Lines join into a paragraph unless something on the page separates them: a
+ * vertical gap wider than the page's ordinary line spacing (a blank line), a
+ * change of font size (a heading or a footnote), a line that opens a numbered
+ * clause, or a step back UP the page (a new column).
+ */
 function groupLinesIntoParagraphs(lines: PdfTextItem[][]): PdfTextItem[][][] {
-  // Trivial grouping for now: each non-empty line is its own paragraph. PDF
-  // paragraph detection is genuinely hard without layout analysis, and the
-  // downstream extractors are line-tolerant. A more sophisticated grouping
-  // can land later without changing the public API.
-  return lines.map((l) => [l]);
+  if (lines.length === 0) return [];
+  const y = (l: PdfTextItem[]): number => l[0]?.transform[5] ?? 0;
+  const size = (l: PdfTextItem[]): number =>
+    Math.round(Math.max(...l.map((it) => it.transform[0] ?? 0)));
+  const text = (l: PdfTextItem[]): string =>
+    l
+      .map((it) => it.str)
+      .join(" ")
+      .trim();
+  const steps: number[] = [];
+  for (let i = 1; i < lines.length; i++) {
+    const d = y(lines[i - 1]!) - y(lines[i]!);
+    if (d > 0 && size(lines[i]!) === size(lines[i - 1]!)) steps.push(d);
+  }
+  const spacing = median(steps);
+  const out: PdfTextItem[][][] = [[lines[0]!]];
+  for (let i = 1; i < lines.length; i++) {
+    const prev = lines[i - 1]!;
+    const cur = lines[i]!;
+    const d = y(prev) - y(cur);
+    const separate =
+      spacing === 0 ||
+      d <= 0 ||
+      d > spacing * 1.35 ||
+      size(cur) !== size(prev) ||
+      PDF_CLAUSE_OPENER.test(text(cur));
+    if (separate) out.push([cur]);
+    else out[out.length - 1]!.push(cur);
+  }
+  return out;
 }
 
 function buildTreeFromOcrText(text: string): DocumentTree {

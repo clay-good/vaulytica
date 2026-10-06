@@ -236,6 +236,28 @@ describe("a PDF's heading tree comes from type size", () => {
     expect(sub[0]!.paragraphs.length).toBeGreaterThan(0);
   });
 
+  it("joins a clause's wrapped lines into one paragraph", async () => {
+    // Every PDF line arrived as a paragraph of its own, so a sentence wrapped
+    // across two lines was two half-clauses to every paragraph-scoped rule.
+    const result = await ingestPdfBuffer(
+      pdfWithLines([
+        { size: 11, y: 700, text: "Provider shall indemnify Client against any third-party" },
+        { size: 11, y: 686, text: "claim arising from the Services." },
+        { size: 11, y: 660, text: "Client shall pay each invoice within thirty days." },
+        { size: 11, y: 646, text: "2. Each party bears its own costs." },
+      ]),
+      { allowOcr: false },
+    );
+    const paras = result.tree.sections[0]!.paragraphs.map((p) =>
+      p.runs.map((r) => r.text).join(""),
+    );
+    expect(paras).toEqual([
+      "Provider shall indemnify Client against any third-party claim arising from the Services.",
+      "Client shall pay each invoice within thirty days.",
+      "2. Each party bears its own costs.",
+    ]);
+  });
+
   it("gives a single-size PDF one flat, unheaded section", async () => {
     // The case that makes heading-dependent rules go quiet — worth pinning so
     // the difference between the two shapes is a fact of record, not a guess.
