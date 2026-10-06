@@ -275,6 +275,83 @@ describe("a PDF's heading tree comes from type size", () => {
     ]);
   });
 
+  function pdfWithPages(
+    pages: Array<Array<{ size: number; y: number; text: string }>>,
+  ): ArrayBuffer {
+    const streams = pages.map((lines) =>
+      lines.map((l) => `BT /F1 ${l.size} Tf 72 ${l.y} Td (${l.text}) Tj ET`).join("\n"),
+    );
+    const fontId = 3 + pages.length * 2;
+    const objects = ["<</Type/Catalog/Pages 2 0 R>>", ""];
+    const kids: number[] = [];
+    for (const stream of streams) {
+      kids.push(objects.length + 1);
+      objects.push(
+        `<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents ${objects.length + 2} 0 R/Resources<</Font<</F1 ${fontId} 0 R>>>>>>`,
+      );
+      objects.push(`<</Length ${stream.length}>>\nstream\n${stream}\nendstream`);
+    }
+    objects.push("<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>");
+    objects[1] = `<</Type/Pages/Kids[${kids.map((k) => `${k} 0 R`).join(" ")}]/Count ${kids.length}>>`;
+    let pdf = "%PDF-1.4\n";
+    const offsets: number[] = [];
+    objects.forEach((body, i) => {
+      offsets.push(pdf.length);
+      pdf += `${i + 1} 0 obj\n${body}\nendobj\n`;
+    });
+    const xrefPos = pdf.length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    for (const off of offsets) pdf += `${String(off).padStart(10, "0")} 00000 n \n`;
+    pdf += `trailer\n<</Size ${objects.length + 1}/Root 1 0 R>>\nstartxref\n${xrefPos}\n%%EOF`;
+    const bytes = new Uint8Array(pdf.length);
+    for (let i = 0; i < pdf.length; i += 1) bytes[i] = pdf.charCodeAt(i) & 0xff;
+    return bytes.buffer;
+  }
+
+  it("continues a sentence a page break cut, and not a heading", async () => {
+    const result = await ingestPdfBuffer(
+      pdfWithPages([
+        [
+          {
+            size: 11,
+            y: 700,
+            text: "The Licensor grants the Licensee a license to use the Licensed",
+          },
+          { size: 11, y: 686, text: "Software in its business for the Term, on the terms of this" },
+          {
+            size: 11,
+            y: 672,
+            text: "Agreement. This Agreement is governed by the laws of the State of",
+          },
+        ],
+        [
+          { size: 11, y: 740, text: "Delaware. Licensee shall deliver each royalty report within" },
+          { size: 11, y: 726, text: "forty-five (45)" },
+        ],
+        [
+          { size: 11, y: 740, text: "days after the end of each calendar quarter." },
+          { size: 11, y: 700, text: "ARTICLE IV. OFFICERS" },
+        ],
+        [
+          {
+            size: 11,
+            y: 740,
+            text: "Section 4.1 Officers. The officers are a President and a Secretary.",
+          },
+        ],
+      ]),
+      { allowOcr: false },
+    );
+    const paras = result.tree.sections[0]!.paragraphs.map((p) =>
+      p.runs.map((r) => r.text).join(""),
+    );
+    expect(paras).toEqual([
+      "The Licensor grants the Licensee a license to use the Licensed Software in its business for the Term, on the terms of this Agreement. This Agreement is governed by the laws of the State of Delaware. Licensee shall deliver each royalty report within forty-five (45) days after the end of each calendar quarter.",
+      "ARTICLE IV. OFFICERS",
+      "Section 4.1 Officers. The officers are a President and a Secretary.",
+    ]);
+  });
+
   it("gives a single-size PDF one flat, unheaded section", async () => {
     // The case that makes heading-dependent rules go quiet — worth pinning so
     // the difference between the two shapes is a fact of record, not a guess.

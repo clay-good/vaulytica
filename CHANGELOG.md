@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.838.0] — 2026-10-06
+
+### Fixed
+- **A PDF's line spacing was read page by page.** A page holding two lines
+  has one step between them, and a gap measured against itself is never a
+  gap — so on a short page, a paragraph break was invisible and two
+  paragraphs ran together. The ordinary step is now read across the whole
+  document.
+- **A closing parenthesis ended a sentence at a page foot.** "… shall deliver
+  each royalty report within forty-five (45)" at the bottom of a page was
+  left unfinished, because ")" counted as a sentence end, and the obligation
+  lost its deadline ("within forty-five (45)" stayed in the action). Only
+  punctuation ends a sentence, with a closing quote or parenthesis after it.
+  With these, every specimen rendered as a text-layer PDF — with a running
+  header and "Page N of M" footers — reports what its pasted text reports,
+  except the petition (see 9.837.0).
+
 ## [9.837.0] — 2026-10-06
 
 ### Fixed

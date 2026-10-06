@@ -356,9 +356,10 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
   // yet: a paragraph the page break cut mid-sentence continues on the next
   // page's first line.
   let lastParagraph: Paragraph | null = null;
-  for (const page of pages) {
-    const lines = groupItemsIntoLines(page.items);
-    const paragraphLines = groupLinesIntoParagraphs(lines);
+  const pageLines = pages.map((page) => groupItemsIntoLines(page.items));
+  const spacing = ordinaryLineStep(pageLines);
+  for (const [k, page] of pages.entries()) {
+    const paragraphLines = groupLinesIntoParagraphs(pageLines[k]!, spacing);
     let firstOnPage = true;
     for (const paraLines of paragraphLines) {
       // Each grouped LINE is joined into a word-sequence first, so an
@@ -394,11 +395,13 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
       const continues =
         firstOnPage &&
         lastParagraph !== null &&
-        !/[.!?:;)"”]\s*$/.test(lastParagraph.runs[0]!.text) &&
+        // A closing parenthesis or quote ends a sentence only after its
+        // punctuation: "within forty-five (45)" at a page foot is mid-sentence.
+        !/[.!?:;]["”’')]?\s*$/.test(lastParagraph.runs[0]!.text) &&
         // …and ends the way a broken sentence does, not the way a heading line
         // does: "ARTICLE IV. OFFICERS" at the foot of a page carries no period
         // either, and joined its first section on the next.
-        (/[a-z,\-–—]\s*$/.test(lastParagraph.runs[0]!.text) ||
+        (/(?:[a-z,\-–—]|\(\d+\))\s*$/.test(lastParagraph.runs[0]!.text) ||
           lastParagraph.runs[0]!.text.length > 80) &&
         !(PDF_CLAUSE_OPENER.test(allText) && ENDS_CLAUSE.test(lastParagraph.runs[0]!.text));
       firstOnPage = false;
@@ -464,27 +467,38 @@ const PDF_CLAUSE_OPENER =
  * change of font size (a heading or a footnote), a line that opens a numbered
  * clause, or a step back UP the page (a new column).
  */
-function groupLinesIntoParagraphs(lines: PdfTextItem[][]): PdfTextItem[][][] {
+const lineY = (l: PdfTextItem[]): number => l[0]?.transform[5] ?? 0;
+const lineSize = (l: PdfTextItem[]): number =>
+  Math.round(Math.max(...l.map((it) => it.transform[0] ?? 0)));
+
+/**
+ * The ordinary step from one line to the next, read across the whole
+ * document: a page that holds two lines has one step, and a gap measured
+ * against itself is never a gap. Taken from the low end of the distribution:
+ * on a page of short paragraphs the gaps between them outnumber the steps
+ * within them, and the median was the gap itself — a bylaws' "ARTICLE IV.
+ * OFFICERS" ran into its first section.
+ */
+function ordinaryLineStep(pages: PdfTextItem[][][]): number {
+  const steps: number[] = [];
+  for (const lines of pages)
+    for (let i = 1; i < lines.length; i++) {
+      const d = lineY(lines[i - 1]!) - lineY(lines[i]!);
+      if (d > 0 && lineSize(lines[i]!) === lineSize(lines[i - 1]!)) steps.push(d);
+    }
+  const sorted = steps.sort((a, b) => a - b);
+  return sorted.length > 0 ? sorted[Math.floor(sorted.length * 0.2)]! : 0;
+}
+
+function groupLinesIntoParagraphs(lines: PdfTextItem[][], spacing: number): PdfTextItem[][][] {
   if (lines.length === 0) return [];
-  const y = (l: PdfTextItem[]): number => l[0]?.transform[5] ?? 0;
-  const size = (l: PdfTextItem[]): number =>
-    Math.round(Math.max(...l.map((it) => it.transform[0] ?? 0)));
+  const y = lineY;
+  const size = lineSize;
   const text = (l: PdfTextItem[]): string =>
     l
       .map((it) => it.str)
       .join(" ")
       .trim();
-  const steps: number[] = [];
-  for (let i = 1; i < lines.length; i++) {
-    const d = y(lines[i - 1]!) - y(lines[i]!);
-    if (d > 0 && size(lines[i]!) === size(lines[i - 1]!)) steps.push(d);
-  }
-  // The ORDINARY line step, from the low end of the distribution: on a page
-  // of short paragraphs the gaps between them outnumber the steps within
-  // them, the median was the gap itself, and no paragraph break was seen — a
-  // bylaws' "ARTICLE IV. OFFICERS" ran into its first section.
-  const sorted = [...steps].sort((a, b) => a - b);
-  const spacing = sorted.length > 0 ? sorted[Math.floor(sorted.length * 0.2)]! : 0;
   const out: PdfTextItem[][][] = [[lines[0]!]];
   for (let i = 1; i < lines.length; i++) {
     const prev = lines[i - 1]!;
