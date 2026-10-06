@@ -197,7 +197,6 @@ const SURFACES: Record<string, (d: ExtractedData) => string[]> = {
 };
 
 const PARTY_DEBT: readonly string[] = [
-  "83b-election.txt [double-spaced] lost:- gained:Elena Marie Vasquez|||",
   "answer.txt [blank lines stripped] lost:- gained:WHEREFORE, Defendant Halloran Precision Castings||LLC|",
   "assignment-of-claim.txt [double-spaced] lost:Wexley DO GP II||| gained:Wexley DO GP II, LLC|||",
   "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|Delaware",
@@ -211,8 +210,6 @@ const PARTY_DEBT: readonly string[] = [
   "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|Virginia",
   "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|Virginia",
   "flat-fee-agreement.txt [double-spaced] lost:Ravi Chandrasekaran-Boyd Chandrasekaran Robotics||LLC| gained:-",
-  "healthcare-poa.txt [double-spaced] lost:- gained:Tobias Osgood-Reyes|||",
-  "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Ridgeline Constructors LLC|Named Insured|LLC| gained:Ridgeline Constructors||LLC|",
   "joint-representation-waiver-founders.txt [double-spaced] lost:Raghunathan Mr. Daniel Ostrowski Kestrel Grove Bakery||LLC| gained:-",
   "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
   "nonprofit-bylaws.txt [double-spaced] lost:HARBORLIGHT LITERACY ALLIANCE||INC| gained:HARBORLIGHT LITERACY ALLIANCE||INC|North Carolina",
@@ -229,9 +226,8 @@ const PARTY_DEBT: readonly string[] = [
   "uk-idta-addendum.txt [blank lines stripped] lost:- gained:Sable Notification Services||GmbH|",
 ];
 
-const JURISDICTION_DEBT: readonly string[] = [
-  "form-d-narrative.txt [double-spaced] lost:- gained:venue|",
-];
+// 9.831.0 — `form-d-narrative.txt` left this list with the form-field fix.
+const JURISDICTION_DEBT: readonly string[] = [];
 
 /** The amount surface owes nothing. A new divergence here is a regression. */
 const AMOUNT_DEBT: readonly string[] = [];

@@ -1025,11 +1025,17 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     }
     FIELD_LABEL.lastIndex = 0;
     const labels: { term: string; start: number; valueStart: number }[] = [];
+    // A TWO-COLUMN ROW repeats its label: "Name: Marisol Trent    Name: Marcus
+    // Ellery Doyle" is the signature row of two parties side by side, and the
+    // second "Name:" read the first party's name as part of its label —
+    // "Marisol Trent Name" entered the definitions report.
+    const rowLabel = /^\s*([A-Z][A-Za-z]*)\s*:/.exec(ctx.text)?.[1];
     {
       let f: RegExpExecArray | null;
       while ((f = FIELD_LABEL.exec(ctx.text)) !== null) {
         const term = f[1]!.trim();
         if (SIGNATURE_FORM_LABEL.test(term)) continue;
+        if (rowLabel && term.endsWith(` ${rowLabel}`)) continue;
         if (isShoutedLabel(term) && FORM_INSTRUCTION_LABEL.test(term)) continue;
         labels.push({ term, start: f.index, valueStart: f.index + f[0].length });
       }

@@ -2897,3 +2897,17 @@ describe("extractDefinitions — a shouted plural term", () => {
     expect(map.unused_terms).not.toContain("ASSUMED LIABILITIES");
   });
 });
+
+describe("extractDefinitions — a two-column signature row", () => {
+  it("does not read the first column's value into the second column's label", () => {
+    const map = extractDefinitions(
+      buildTree([
+        "Signatures",
+        "Name: Marisol Trent Name: Marcus Ellery Doyle",
+        "Title: Chief Revenue Officer Title: Managing Member",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Marisol Trent Name");
+    expect(map.entries.map((e) => e.term)).not.toContain("Chief Revenue Officer Title");
+  });
+});

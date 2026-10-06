@@ -107,3 +107,31 @@ describe("ingestPaste — a file with no readable text", () => {
     expect(w).toContain("scanned image");
   });
 });
+
+describe("ingestPaste — a form's fields", () => {
+  const paragraphs = async (text: string) => {
+    const r = await ingestPaste(text);
+    const out: string[] = [];
+    forEachParagraph(r.tree, (p) => out.push(p.text));
+    return out;
+  };
+
+  it("keeps each 'Label: value' line its own paragraph", async () => {
+    expect(
+      await paragraphs(
+        "Order Term:              24 months from the Subscription Start Date\nSubscription Start Date: May 1, 2026",
+      ),
+    ).toEqual([
+      "Order Term: 24 months from the Subscription Start Date",
+      "Subscription Start Date: May 1, 2026",
+    ]);
+  });
+
+  it("still joins a long value's wrapped continuation", async () => {
+    expect(
+      await paragraphs(
+        "Renewal: Auto-renews for successive 12-month terms unless either party\ngives written notice at least 60 days before the end of the term.",
+      ),
+    ).toHaveLength(1);
+  });
+});

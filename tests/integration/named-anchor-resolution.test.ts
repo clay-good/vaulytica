@@ -39,7 +39,9 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  * Measured 2026-09-10; **0 before 9.694.0**, when every one was published as
  * "no concrete date attached".
  */
-const RESOLVED_NAMED_ANCHORS = 154;
+// 155 in 9.831.0: an order form's "Subscription Start Date", once its field
+// line stopped joining the next one.
+const RESOLVED_NAMED_ANCHORS = 155;
 
 /**
  * References whose anchor resolves but whose own text is NOT the defined term

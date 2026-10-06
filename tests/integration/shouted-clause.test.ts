@@ -88,6 +88,10 @@ const LIABILITY_DEBT: readonly string[] = [
   "cohabitation-agreement.txt: lost STRUCT-018 gained -",
   "commercial-indemnity-agreement.txt: lost - gained RISK-002",
   "distribution.txt: lost - gained OBLI-002",
+  // 9.831.0 — the same erasure: shouting clause 12 removes one of "Project
+  // Director"'s Title-Case uses, and the signature row that held another is
+  // now its own paragraph, so the rule no longer sees enough uses.
+  "fiscal-sponsorship.txt: lost STRUCT-006 gained -",
   "insurance-endorsement-additional-insured.txt: lost - gained STRUCT-007",
   "insurance-endorsement.txt: lost - gained STRUCT-007",
   "joint-venture.txt: lost STRUCT-017 gained -",
@@ -100,6 +104,7 @@ const LIABILITY_DEBT: readonly string[] = [
 
 const INDEMNITY_DEBT: readonly string[] = [
   "commercial-indemnity-agreement.txt: lost - gained RISK-002",
+  "fiscal-sponsorship.txt: lost STRUCT-006 gained -",
   "indemnification-agreement.txt: lost STRUCT-009 gained -",
   "investor-rights.txt: lost - gained OBLI-002",
   "net-lease.txt: lost STRUCT-006 gained -",

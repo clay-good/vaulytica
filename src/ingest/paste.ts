@@ -107,6 +107,9 @@ function buildTreeFromText(text: string): DocumentTree {
     line === line.toUpperCase() &&
     !/[.;:,]$/.test(line);
 
+  /** "Label: value" — a short capitalized label, a colon, and a value. */
+  const FIELD_LINE = /^[A-Z][A-Za-z0-9 .&/'’()#-]{0,40}:\s+\S/;
+
   let currentParaLines: string[] = [];
   const flushParagraph = (): void => {
     if (currentParaLines.length === 0) return;
@@ -191,6 +194,16 @@ function buildTreeFromText(text: string): DocumentTree {
       currentParaLines.push(trimmed);
       flushParagraph();
       continue;
+    }
+    // A FORM FIELD stands alone: "Order Term:  24 months from the
+    // Subscription Start Date" over "Subscription Start Date: May 1, 2026".
+    // Joined into one paragraph, each label read the previous field's value as
+    // part of its name — the definitions report listed "USD Payment Terms",
+    // and a relative date ran its anchor into the next field. Only between
+    // two field lines: a wrapped continuation of a long value still joins it.
+    const prev = currentParaLines[currentParaLines.length - 1];
+    if (prev !== undefined && FIELD_LINE.test(prev) && FIELD_LINE.test(trimmed)) {
+      flushParagraph();
     }
     if (!hasBlankLine && CLAUSE_OPENER.test(trimmed)) {
       // A numbered clause opens a paragraph and the rest of the clause joins

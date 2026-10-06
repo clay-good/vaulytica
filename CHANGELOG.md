@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.831.0] — 2026-10-06
+
+The definitions report, compared pasted text against DOCX: 37 specimens
+differed, nearly all for one reason.
+
+### Fixed
+- **Pasted text joined a form's fields into one paragraph.** "Order Term:
+  24 months from the Subscription Start Date" over "Subscription Start Date:
+  May 1, 2026" — consecutive lines with no blank line between are one
+  paragraph, and joined, each field's label read the previous field's value
+  as part of its name: the definitions report listed "USD Payment Terms",
+  "Start Date Subscription Start Date", "Stock Exercise Price Per Share" and
+  "Named Insured Retroactive Date". A DOCX gives each line its own paragraph.
+  A "Label: value" line now starts its own paragraph when the line before it
+  is a field too; a long value's wrapped continuation still joins it.
+- **A two-column signature row read one party's name into the other's
+  label.** "Name: Marisol Trent    Name: Marcus Ellery Doyle" — two parties
+  side by side — defined the term "Marisol Trent Name". A label that ends in
+  the word the row opens with is the second column, not a term.
+
+### Tests
+- The defined-term format debt falls from 57 entries to 47; one jurisdiction
+  debt is repaid; one more named anchor resolves (155). One entry joins the
+  shouted-clause debt, in the class it already records.
+
 ## [9.830.0] — 2026-10-06
 
 The critical-dates register, compared pasted text against DOCX like the
