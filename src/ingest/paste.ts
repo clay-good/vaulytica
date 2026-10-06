@@ -45,7 +45,12 @@ export async function ingestPaste(text: string): Promise<IngestResult> {
   };
 }
 
-function buildTreeFromText(text: string): DocumentTree {
+/**
+ * Plain text's structure: paragraphs, headings, hyphenated line breaks
+ * rejoined, form fields kept apart. Exported for OCR, whose output is plain
+ * text and was read by a cruder builder of its own.
+ */
+export function buildTreeFromText(text: string): DocumentTree {
   // Split on lone line breaks but keep them so we can detect blank-line breaks.
   // Normalize the line endings ONCE and read every line-shape test off the
   // same string. The blank-line test below looked at the raw text, where a

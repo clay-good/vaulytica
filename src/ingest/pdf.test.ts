@@ -449,6 +449,21 @@ describe("a scanned PDF is told it was OCR'd, and how confident that was", () =>
     ).not.toContain("low-confidence");
   });
 
+  it("reads the recognized text as pasted text is read", async () => {
+    // A scan keeps the page's line breaks: a word hyphenated at a line end,
+    // and numbered clauses with no blank line between them.
+    ocrText.value =
+      "1. The Recipient shall hold all Confiden-\ntial Information in confidence.\n2. The Recipient shall return all Confidential Information on request.";
+    const result = await ingestPdfBuffer(imageOnlyPdf(), { allowOcr: true });
+    const paras = result.tree.sections.flatMap((s) =>
+      s.paragraphs.map((p) => p.runs.map((r) => r.text).join("")),
+    );
+    expect(paras).toEqual([
+      "1. The Recipient shall hold all Confidential Information in confidence.",
+      "2. The Recipient shall return all Confidential Information on request.",
+    ]);
+  });
+
   it("explains itself instead of OCR-ing when OCR is not available", async () => {
     const result = await ingestPdfBuffer(imageOnlyPdf(), { allowOcr: false });
     const joined = result.warnings.join(" | ");

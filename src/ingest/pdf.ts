@@ -1,5 +1,6 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
 import { countWords, noTextWarning, normalize } from "./normalize.js";
+import { buildTreeFromText } from "./paste.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes, MAX_OCR_PAGES } from "./limits.js";
 import { languageFields } from "./language.js";
@@ -148,7 +149,13 @@ export async function ingestPdfBuffer(
         pdfDoc as unknown as Parameters<typeof runOcr>[0],
         options.onProgress,
       );
-      const tree = buildTreeFromOcrText(ocrText);
+      // OCR's output is plain text, and it is read as pasted text is: the
+      // builder of its own split on blank lines and joined with spaces —
+      // no hyphenated line break rejoined ("confi- dential"), no numbered
+      // clause split from a scan that lost its blank lines, no form field
+      // kept apart — so a perfect OCR of a document read differently from
+      // the same document pasted.
+      const tree = buildTreeFromText(ocrText);
       const normalized = normalize(tree);
       warnings.push(`${layer.reason}; OCR fallback was used. Some structure may be lost.`);
       if (pdfDoc.numPages > MAX_OCR_PAGES) {
@@ -523,22 +530,4 @@ function groupLinesIntoParagraphs(lines: PdfTextItem[][], spacing: number): PdfT
     else out[out.length - 1]!.push(cur);
   }
   return out;
-}
-
-function buildTreeFromOcrText(text: string): DocumentTree {
-  const paragraphs = text
-    .split(/\n{2,}/)
-    .map((p) => p.replace(/\s+/g, " ").trim())
-    .filter(Boolean);
-  const root: Section = {
-    id: "",
-    heading: "",
-    level: 1,
-    paragraphs: paragraphs.map<Paragraph>((t) => ({
-      id: "",
-      runs: [{ id: "", text: t, start: 0, end: 0 }],
-    })),
-    children: [],
-  };
-  return { type: "document", sections: [root] };
 }

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.848.0] — 2026-10-06
+
+### Fixed
+- **A scanned PDF's recognized text was read by a cruder builder than pasted
+  text.** OCR returns plain text with the page's line breaks, and the OCR
+  branch built its tree by splitting on blank lines and joining with spaces:
+  a word hyphenated at a line end stayed broken ("Confiden- tial
+  Information", which no recognizer spells), numbered clauses from a scan
+  with no blank lines ran together into one paragraph, and a form's fields
+  absorbed each other's values. The recognized text is now read by the paste
+  path's builder, so a perfect OCR of a document reads exactly as the same
+  document pasted.
+
 ## [9.847.0] — 2026-10-06
 
 ### Fixed
