@@ -208,6 +208,62 @@ describe("format is not load-bearing", () => {
     expect(broken).toEqual([]);
   }, 300_000);
 
+  it("Markdown headings move no finding", async () => {
+    // The paste path reads `#` lines as headings, so a Markdown copy of a
+    // contract is STRUCTURED where its plain text is flat — the same shift a
+    // DOCX or a PDF makes, and the same defects showed: a title block read
+    // past, a numbered heading lost (9.832–9.840). A short first line is the
+    // `#` title; a short numbered or all-caps line is a `##` heading.
+    //
+    // The petition is declared, not a defect: given sections, CITE-004 can
+    // reconcile its table of authorities against its argument, and the table
+    // really does omit the opinion below and list two cases the petition
+    // never cites. Flat, the rule refuses to reconcile.
+    const DECLARED = new Map([["petition.txt", "lost - gained CITE-004"]]);
+    const isHeading = (l: string): boolean =>
+      l.length < 70 &&
+      !/,$/.test(l) &&
+      (/^(?:ARTICLE|Article|Section|SECTION)\s+[\dIVX]+\b/.test(l) ||
+        (/^\d+\.\s+[A-Z][^.;:]{2,60}\.?$/.test(l) && !/\b[a-z]{4,}\b/.test(l)) ||
+        /^[A-Z][A-Z &,'’()/-]{3,}$/.test(l)) &&
+      !/[.;:]\s+\S/.test(l);
+    const markdown = (text: string): string => {
+      let first = true;
+      return text
+        .split("\n")
+        .map((line) => {
+          const t = line.trim();
+          if (!t) return line;
+          if (first) {
+            first = false;
+            return t.length < 70 ? `# ${t}` : line;
+          }
+          return isHeading(t) ? `## ${t}` : line;
+        })
+        .join("\n");
+    };
+    const broken: string[] = [];
+    let probed = 0;
+    for (const name of SPECIMENS) {
+      const text = readFileSync(join(DIR, name), "utf8");
+      const mutated = markdown(text);
+      if (mutated === text) continue;
+      probed++;
+      const normal = await clean(name, text);
+      const after = await analyzeText(mutated, name.replace(/\.txt$/, ".md"));
+      expect(after.run.playbook_id, `${name} re-routed as Markdown`).toBe(normal.run.playbook_id);
+      const ids = (r: typeof normal): string[] =>
+        [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+      const lost = ids(normal).filter((id) => !ids(after).includes(id));
+      const gained = ids(after).filter((id) => !ids(normal).includes(id));
+      const moved = `lost ${lost.join(",") || "-"} gained ${gained.join(",") || "-"}`;
+      if ((lost.length || gained.length) && DECLARED.get(name) !== moved)
+        broken.push(`${name}: ${moved}`);
+    }
+    expect(probed).toBeGreaterThanOrEqual(250);
+    expect(broken).toEqual([]);
+  }, 600_000);
+
   it("the corpus is present", () => {
     expect(SPECIMENS.length).toBeGreaterThan(50);
   });

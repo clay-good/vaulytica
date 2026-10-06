@@ -1008,11 +1008,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "c5e80f345620dd4394abcceb57e027eb5f4e1b000c74a7c8621c4879e6e9e456",
+  "result_hash": "d785da014ed93ee4a891c78f478dd49e3e25b76a0372c840b9bcd7b4ab2cb9d5",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.840.0"
+  "version": "9.841.0"
 }

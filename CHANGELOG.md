@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.841.0] — 2026-10-06
+
+### Tests
+- **Markdown is a format, and it is compared now.** The paste path reads `#`
+  lines as headings, so a Markdown copy of a contract is structured where its
+  plain text is flat — the shift a DOCX or a PDF makes. `format-invariance`
+  rewrites the whole corpus with a `#` title and `##` clause headings and
+  requires the same family and the same rules on every specimen; the petition
+  is declared (with sections, CITE-004 can reconcile its table of
+  authorities, and the table really is incomplete). Run against the title
+  reader of 9.831.0, it fails: a conflict-of-interest policy routes to
+  nonprofit bylaws.
+- Signature blocks laid out as a two-column table (73 specimens) and Word
+  list numbering (258 specimens) were swept the same way; both report what
+  the pasted text reports.
+
 ## [9.840.0] — 2026-10-06
 
 ### Fixed
