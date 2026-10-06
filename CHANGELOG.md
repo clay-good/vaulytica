@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.812.0] — 2026-10-06
+
+Found by rendering every specimen that has headings (312 checked) as a DOCX
+with heading styles and diffing it against the same text pasted.
+
+### Fixed
+- **Eight documents routed to a different family as DOCX.** A DOCX often opens
+  with an untitled first section — a letterhead, a company name, a securities
+  legend — and styles the document's name as the next heading. The title
+  reader looked at the first section only: a warrant's title corpus fell back
+  to its filename and the warrant went to generic-fallback; a privacy notice
+  went to cookie-notice, a handbook to employment-at-will, an RSU grant to the
+  restricted-stock purchase family. An untitled first section is now read the
+  way the paste path reads it, leading headings and paragraphs as one run.
+- **The title reader skipped subsections.** The DOCX ingest can infer a short
+  line (a letter's "2210 West Fulton Street") as a sub-heading and nest what
+  follows under it; the walk of leading lines never descended, and a demand
+  letter lost its "Re: Demand for Payment" line.
+- **A second recorder's block was read as the title.** CC&Rs carry both
+  "Recording requested by:" and "When recorded return to:"; after the first
+  block the return-to firm's name was taken as the declaration's name. A
+  recording header now starts a new block.
+
+After the fixes, no specimen routes differently as DOCX.
+
 ## [9.811.0] — 2026-10-06
 
 Found by running fourteen clean documents as both pasted text and DOCX and

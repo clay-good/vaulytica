@@ -674,3 +674,76 @@ describe("titleCorpus — a caption that arrived as one paragraph", () => {
     expect(titleCorpus(t, "d.txt")).toContain("JOINT INITIAL STATUS REPORT");
   });
 });
+
+describe("a DOCX whose name is a heading below an untitled first section", () => {
+  const sec = (heading: string, paras: string[], children: unknown[] = []) => ({
+    heading,
+    paragraphs: paras.map((text) => ({ runs: [{ text }] })),
+    children,
+  });
+
+  it("reads the heading below a legend-only first section", () => {
+    const corpus = titleCorpus(
+      {
+        sections: [
+          sec("", [
+            "THIS WARRANT AND THE SHARES ISSUABLE UPON EXERCISE HEREOF HAVE NOT BEEN REGISTERED UNDER THE SECURITIES ACT OF 1933.",
+          ]),
+          sec("WARRANT TO PURCHASE SHARES OF SERIES A PREFERRED STOCK", ["Warrant No. W-14"]),
+        ],
+      },
+      "warrant",
+    );
+    expect(corpus).toContain("WARRANT TO PURCHASE SHARES");
+  });
+
+  it("reads a company-name line followed by the document's heading", () => {
+    const corpus = titleCorpus(
+      {
+        sections: [
+          sec("", ["VANTERRA ANALYTICS, INC."]),
+          sec("PRIVACY NOTICE", ["Last updated: February 2, 2026"]),
+        ],
+      },
+      "x",
+    );
+    expect(corpus).toContain("PRIVACY NOTICE");
+  });
+
+  it("reaches a subject line nested under an inferred sub-heading", () => {
+    const corpus = titleCorpus(
+      {
+        sections: [
+          sec("", ["HALLORAN & TSUKAMOTO PLLC", "August 14, 2026"]),
+          sec(
+            "AND ELECTRONIC MAIL",
+            ["Ms. Priyamvada Raghavan"],
+            [sec("2210 West Fulton Street", ["Re: Demand for Payment — Unpaid Invoices"])],
+          ),
+        ],
+      },
+      "x",
+    );
+    expect(corpus).toContain("Demand for Payment");
+  });
+
+  it("starts a new recorder's block at a second recording header", () => {
+    const corpus = titleCorpus(
+      {
+        sections: [
+          sec("", [
+            "Recording requested by:",
+            "Willow Bend Development Company LLC",
+            "1400 Preston Road, Suite 620",
+            "When recorded return to:",
+            "Rathbone & Fields LLP",
+            "300 Main Street, Dallas, Texas 75202",
+            "DECLARATION OF COVENANTS, CONDITIONS, AND RESTRICTIONS",
+          ]),
+        ],
+      },
+      "x",
+    );
+    expect(corpus.startsWith("DECLARATION OF COVENANTS")).toBe(true);
+  });
+});

@@ -129,12 +129,13 @@ const MEMO_HEADER_SUBJECT = /^\s*(?:to|from|date|cc|bcc)\s*:[\s\S]{0,400}?\bre\s
  * heading. Both are the document's first line, and the caption walk has to
  * see it in both shapes.
  */
-function leadingLines(
-  sections: readonly {
-    heading?: string;
-    paragraphs: readonly { runs: readonly { text: string }[] }[];
-  }[],
-): string[] {
+type LeadingSection = {
+  heading?: string;
+  paragraphs: readonly { runs: readonly { text: string }[] }[];
+  children?: readonly LeadingSection[];
+};
+
+function leadingLines(sections: readonly LeadingSection[]): string[] {
   const out: string[] = [];
   let chars = 0;
   const push = (text: string): boolean => {
@@ -146,13 +147,22 @@ function leadingLines(
     chars += trimmed.length;
     return true;
   };
-  for (const section of sections) {
-    const heading = (section.heading ?? "").trim();
-    if (heading.length > 0 && !push(heading)) return out;
-    for (const paragraph of section.paragraphs) {
-      if (!push(paragraph.runs.map((r) => r.text).join(""))) return out;
+  // In document order, SUBSECTIONS included. A DOCX ingest can infer a short
+  // line as a sub-heading — a letter's "2210 West Fulton Street" — and nest
+  // what follows under it, and a walk of the top level alone skipped the
+  // "Re: Demand for Payment" line that names the letter.
+  const walk = (list: readonly LeadingSection[]): boolean => {
+    for (const section of list) {
+      const heading = (section.heading ?? "").trim();
+      if (heading.length > 0 && !push(heading)) return false;
+      for (const paragraph of section.paragraphs) {
+        if (!push(paragraph.runs.map((r) => r.text).join(""))) return false;
+      }
+      if (section.children && !walk(section.children)) return false;
     }
-  }
+    return true;
+  };
+  walk(sections);
   return out;
 }
 
@@ -435,7 +445,13 @@ function recordedInstrumentTitle(paragraphs: readonly string[]): string {
   let passedBlock = false;
   for (const text of paragraphs.slice(1)) {
     if (text.length === 0) continue;
-    if (RECORDING_HEADER.test(text)) continue;
+    // A second header opens a second block: CC&Rs carry both "Recording
+    // requested by:" and "When recorded return to:", and the return-to firm's
+    // name was taken as the declaration's own.
+    if (RECORDING_HEADER.test(text)) {
+      passedBlock = false;
+      continue;
+    }
     if (
       RECORDER_RESERVED_SPACE.test(text) ||
       ADDRESS_SHAPED.test(text) ||
@@ -484,7 +500,30 @@ export function titleCorpus(
     }[];
   },
   fallback: string,
+  flattened = false,
 ): string {
+  // An UNTITLED first section followed by headings is how a DOCX lays out
+  // what a pasted document gives as lines: a letterhead, a company name or a
+  // securities legend as paragraphs, and the document's own name — "PRIVACY
+  // NOTICE", "EMPLOYEE HANDBOOK", "WARRANT TO PURCHASE SHARES OF SERIES A
+  // PREFERRED STOCK" — styled as the next HEADING. Everything below reads the
+  // first section only, so eight specimens rendered as DOCX lost their title:
+  // four fell to generic-fallback (the warrant's corpus became its filename)
+  // and four routed to a neighbouring family. Read such a document the way
+  // the paste path does, its leading headings and paragraphs as one run.
+  const firstSection = tree.sections[0];
+  if (
+    !flattened &&
+    (firstSection?.heading ?? "").trim().length === 0 &&
+    tree.sections.slice(1).some((s) => (s.heading ?? "").trim().length > 0)
+  ) {
+    const lines = leadingLines(tree.sections);
+    return titleCorpus(
+      { sections: [{ heading: "", paragraphs: lines.map((text) => ({ runs: [{ text }] })) }] },
+      fallback,
+      true,
+    );
+  }
   const first = tree.sections[0];
   const heading = (first?.heading ?? "").trim();
   const paragraphs = (first?.paragraphs ?? []).slice(0, TITLE_SUBJECT_SCAN_PARAGRAPHS).map((p) =>
