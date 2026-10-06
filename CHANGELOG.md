@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.847.0] — 2026-10-06
+
+### Fixed
+- **A PDF ran a form's fields together.** Consecutive "Label: value" lines
+  with ordinary spacing grouped into one paragraph — the shape the paste path
+  stopped producing in 9.831.0 — so "Media Company: Brightwater Media Group
+  LLC" no longer started a line, the labelled-party reader of 9.845.0 could
+  not see the whole label, and the register named a deadline's responsible
+  party "company". A field line after a field line now starts its own
+  paragraph in a PDF too.
+
 ## [9.846.0] — 2026-10-06
 
 ### Fixed

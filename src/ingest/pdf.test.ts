@@ -352,6 +352,24 @@ describe("a PDF's heading tree comes from type size", () => {
     ]);
   });
 
+  it("keeps a form's field lines apart", async () => {
+    const result = await ingestPdfBuffer(
+      pdfWithLines([
+        { size: 11, y: 700, text: "Media Company: Brightwater Media Group LLC" },
+        { size: 11, y: 686, text: "Agency: Kessington & Vale Media" },
+        { size: 11, y: 672, text: "Advertiser: Spring Trail Series" },
+      ]),
+      { allowOcr: false },
+    );
+    expect(
+      result.tree.sections[0]!.paragraphs.map((p) => p.runs.map((r) => r.text).join("")),
+    ).toEqual([
+      "Media Company: Brightwater Media Group LLC",
+      "Agency: Kessington & Vale Media",
+      "Advertiser: Spring Trail Series",
+    ]);
+  });
+
   it("gives a single-size PDF one flat, unheaded section", async () => {
     // The case that makes heading-dependent rules go quiet — worth pinning so
     // the difference between the two shapes is a fact of record, not a guess.

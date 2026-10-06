@@ -449,6 +449,14 @@ function groupItemsIntoLines(items: PdfTextItem[]): PdfTextItem[][] {
  */
 const ENDS_CLAUSE = /(?:[.!?:;]["”')]?|\b(?:and|or))\s*$/;
 
+/**
+ * A FORM FIELD stands alone, as the paste path keeps it (9.831.0): "Media
+ * Company: Brightwater Media Group LLC" over "Agency: Kessington & Vale" ran
+ * together as one paragraph, and each label read the previous field's value
+ * as part of its name.
+ */
+const PDF_FIELD_LINE = /^[A-Z][A-Za-z0-9 .&/'’()#-]{0,40}:\s+\S/;
+
 /** A line that opens a numbered clause starts a paragraph however it is spaced. */
 // "15." / "15)" / "6.3" — a bare "15 " is a number in a sentence ("Sections
 // 13, 14, and / 15 survive"), not a clause.
@@ -509,7 +517,8 @@ function groupLinesIntoParagraphs(lines: PdfTextItem[][], spacing: number): PdfT
       d <= 0 ||
       d > spacing * 1.35 ||
       size(cur) !== size(prev) ||
-      (PDF_CLAUSE_OPENER.test(text(cur)) && ENDS_CLAUSE.test(text(prev)));
+      (PDF_CLAUSE_OPENER.test(text(cur)) && ENDS_CLAUSE.test(text(prev))) ||
+      (PDF_FIELD_LINE.test(text(cur)) && PDF_FIELD_LINE.test(text(prev)));
     if (separate) out.push([cur]);
     else out[out.length - 1]!.push(cur);
   }
