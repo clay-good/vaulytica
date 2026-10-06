@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.805.0] — 2026-10-06
+
+Found by reading a clean settlement between two companies; Rule 21F-17's text
+was checked on LII.
+
+### Fixed
+- **SET-008 (critical) asked two companies for a whistleblower carve-out.**
+  SEC Rule 21F-17 forbids impeding "an individual" from communicating with
+  the Commission staff, and the EEOC / NLRB / DOL rights are employees'. A
+  steel supplier and a contractor settling invoices have no individual to
+  protect. **SET-007** (overbroad confidentiality under *McLaren Macomb*, an
+  NLRA employee-rights decision) had the same premise. Both are now silenced
+  only by an affirmative showing — two parties described by their formation
+  ("a Colorado corporation", "a Colorado limited liability company") and no
+  individual party or individual's claim; a bare document still gets both
+  checks. v4 language rules can now carry an `applicable_if` premise.
+- **The register named "neither Party" as responsible.** A negated generic
+  obligor is filtered like "each party".
+
 ## [9.804.0] — 2026-10-06
 
 Found by reading a clean convertible promissory note.

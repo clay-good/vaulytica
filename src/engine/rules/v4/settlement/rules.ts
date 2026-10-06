@@ -44,6 +44,37 @@ import {
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
 import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
 
+/**
+ * The claims that make a settlement an INDIVIDUAL's: employment, wages,
+ * personal injury, emotional distress, discrimination. "employees" alone is
+ * not one — every release lists "officers, directors, employees and agents".
+ */
+/** A party described by its formation: "a Colorado corporation", "a Delaware limited liability company". */
+const ENTITY_FORMATION = String.raw`\ban?\s+(?:[A-Z][a-z]+\s+){1,2}(?:corporation|limited\s+liability\s+company|limited\s+partnership|general\s+partnership|professional\s+corporation|nonprofit\s+corporation|business\s+trust)\b`;
+
+const INDIVIDUAL_CLAIM = [
+  /\bemployment\b/i,
+  /\b(?:back\s+pay|front\s+pay|wages?|overtime|severance)\b/i,
+  /\b(?:personal|bodily|physical)\s+injur/i,
+  /\bemotional\s+distress\b|\bpain\s+and\s+suffering\b/i,
+  /\bdiscriminat|\bharassment\b|\bretaliation\b|\bwrongful\s+(?:termination|discharge|death)\b/i,
+  /\b(?:title\s+vii|ADEA|FLSA|ADA|FEHA)\b/i,
+];
+
+/**
+ * A settlement an individual is part of — an individual party or an
+ * individual's claim — or one that does not show otherwise. Silenced only by
+ * an AFFIRMATIVE showing: two parties described by their formation ("a
+ * Colorado corporation", "a Colorado limited liability company") and no
+ * individual signal. A bare document still gets the check.
+ */
+const INDIVIDUAL_SETTLEMENT = [
+  ...INDIVIDUAL_CLAIM,
+  /\ban\s+individual\b/i,
+  /\bresiding\s+(?:in|at)\b/i,
+  new RegExp(String.raw`^(?![\s\S]*${ENTITY_FORMATION}[\s\S]*${ENTITY_FORMATION})`, "i"),
+];
+
 const CATEGORY = "settlement";
 
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
@@ -271,6 +302,9 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       /(?:does|do|shall|will|must)\s+not\s+(?:restrict|prohibit|prevent|preclude|limit|bar|apply\s+to)\b/i,
       /\bnothing\b[^.]{0,60}(?:restrict|prohibit|prevent|preclude|limit|bar|interfere)/i,
     ],
+    // McLaren Macomb concerns EMPLOYEES' § 7 rights; a settlement between two
+    // companies has no employee to chill. Same gate as SET-008.
+    applicable_if: INDIVIDUAL_SETTLEMENT,
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
     bad_description:
       "Settlement appears to contain confidentiality or non-disparagement language broad enough to chill protected concerted activity (NLRA § 7).",
@@ -324,6 +358,16 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     denied_if: expressDenial(
       String.raw`communicat(?:e|ing|ions?)\s+with\s+(?:the\s+)?(?:sec|eeoc|nlrb|dol|government\s+agenc(?:y|ies))|file\s+a\s+charge|whistleblower\s+(?:rights?|award)`,
     ),
+    // The rights this carve-out preserves are an INDIVIDUAL's: Rule 21F-17
+    // forbids impeding "an individual from communicating directly with the
+    // Commission staff", and the EEOC / NLRB / DOL rights are employees'. Two
+    // companies settling a steel-supply invoice dispute were told at CRITICAL
+    // that their settlement lacked the carve-out. So it is silenced only by an
+    // AFFIRMATIVE showing that no individual is involved: two parties described
+    // by their formation ("a Colorado corporation", "a Colorado limited
+    // liability company") and no individual party or individual's claim (the
+    // claim list SET-009 reads). A bare document still gets the check.
+    applicable_if: INDIVIDUAL_SETTLEMENT,
     denied_title: "Whistleblower / agency-communication right expressly denied",
     denied_description:
       "The settlement bars a party from communicating with the SEC, EEOC, NLRB, or DOL. SEC Rule 21F-17 prohibits impeding such communications regardless of what the release says.",
@@ -356,14 +400,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     // allocate: the payment is ordinary business income to the recipient. The
     // gate is the claim that makes allocation matter; "employees" alone is not
     // one (every release lists "officers, directors, employees and agents").
-    applicable_if: [
-      /\bemployment\b/i,
-      /\b(?:back\s+pay|front\s+pay|wages?|overtime|severance)\b/i,
-      /\b(?:personal|bodily|physical)\s+injur/i,
-      /\bemotional\s+distress\b|\bpain\s+and\s+suffering\b/i,
-      /\bdiscriminat|\bharassment\b|\bretaliation\b|\bwrongful\s+(?:termination|discharge|death)\b/i,
-      /\b(?:title\s+vii|ADEA|FLSA|ADA|FEHA)\b/i,
-    ],
+    applicable_if: INDIVIDUAL_CLAIM,
     default_severity: "warning",
   }),
   presence({

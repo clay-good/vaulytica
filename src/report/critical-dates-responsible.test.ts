@@ -203,3 +203,14 @@ describe("an unattributable deadline names nobody", () => {
     expect(rows.find((r) => r.trigger.includes("ten (10) days"))?.responsible).toBe("");
   });
 });
+
+describe("a negated generic obligor", () => {
+  it("publishes no name for 'neither Party'", async () => {
+    const rows = await register([
+      "Non-Disparagement",
+      "For two (2) years after the Effective Date, neither Party shall make any false and disparaging statement about the other Party.",
+    ]);
+    expect(rows.length).toBeGreaterThan(0);
+    expect(rows.every((r) => r.responsible === "")).toBe(true);
+  });
+});

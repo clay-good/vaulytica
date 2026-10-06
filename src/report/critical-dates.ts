@@ -531,7 +531,9 @@ function responsibleFor(
       ? clauseSubject(paragraph.text, ref.position.start - paragraph.start)
       : "";
   // A bare "each party" / generic obligor is not a named responsible party.
-  if (!obligor || /^(?:each|either|both|the)\s+part/i.test(obligor)) return "";
+  // "neither Party" / "no party" names nobody either: a settlement's
+  // non-disparagement period was published as owed by "neither Party".
+  if (!obligor || /^(?:each|either|both|the|neither|no)\s+part/i.test(obligor)) return "";
   // Beyond that, the register publishes a name only if it LOOKS like one.
   //
   // `resolveObligor` falls back to the last few words of the subject when it

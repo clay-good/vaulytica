@@ -284,6 +284,11 @@ export type V4LanguageSpec = {
    * false accusation. Optional; rules without it are unchanged.
    */
   exclude_if?: readonly RegExp[];
+  /**
+   * Document-level premise, as on a presence rule: when set, the rule runs
+   * only if one of these matches the document's text.
+   */
+  applicable_if?: readonly RegExp[];
   bad_title: string;
   bad_description: string;
   explanation: string;
@@ -292,6 +297,7 @@ export type V4LanguageSpec = {
 };
 
 export function buildV4LanguageRule(spec: V4LanguageSpec): Rule {
+  if (spec.applicable_if) V4_GATED_PRESENCE_RULE_IDS.add(spec.id);
   return {
     id: spec.id,
     version: spec.version ?? "1.0.0",
@@ -302,6 +308,9 @@ export function buildV4LanguageRule(spec: V4LanguageSpec): Rule {
     dkb_citations: [spec.citation.id],
     applies_to_playbooks: [...spec.playbooks],
     check(ctx: RuleContext): Finding | null {
+      if (spec.applicable_if && !spec.applicable_if.some((re) => re.test(fullText(ctx)))) {
+        return null;
+      }
       type Hit = { text: string; position: DocPosition };
       let hit: Hit | null = null;
       forEachParagraph(ctx.tree, (p) => {

@@ -611,3 +611,29 @@ describe("SET-009 — tax allocation applies to an individual's claim", () => {
     ).not.toBeNull();
   });
 });
+
+describe("SET-007 / SET-008 — a settlement between two companies", () => {
+  // Rule 21F-17 protects "an individual"; McLaren Macomb protects employees.
+  // Two parties described by their formation, settling an invoice dispute,
+  // have neither.
+  const ctx = buildContext([
+    "Settlement",
+    "This Agreement is between Granite Peak Fabrication, Inc., a Colorado corporation, and Westvale Construction Group LLC, a Colorado limited liability company, and resolves a dispute over steel invoices.",
+    "Each Party shall keep the amount of the Settlement Payment and the terms of this Agreement confidential, except as required by law.",
+  ]);
+  const rule = (id: string) => SETTLEMENT_RULES.find((r) => r.id === id)!;
+
+  it("asks neither for a whistleblower carve-out nor about NLRA scrutiny", () => {
+    expect(rule("SET-008").check(ctx)).toBeNull();
+    expect(rule("SET-007").check(ctx)).toBeNull();
+  });
+
+  it("still asks when one party is an individual", () => {
+    const withPerson = buildContext([
+      "Settlement",
+      "This Agreement is between Granite Peak Fabrication, Inc., a Colorado corporation, and Dana Ruiz, an individual, and resolves her wage claim.",
+      "Dana Ruiz shall keep the terms of this Agreement confidential.",
+    ]);
+    expect(rule("SET-008").check(withPerson)).not.toBeNull();
+  });
+});
