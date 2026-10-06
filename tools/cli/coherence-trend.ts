@@ -2,7 +2,7 @@
  * Document-free coherence trajectory across N rounds (spec-v17, Step 197).
  *
  *   tsx tools/cli/run.ts coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] \
- *       [--format markdown|json] [--fail-on-coherence-regression]
+ *       [--format markdown|json] [--fail-on-coherence-regression] [--fail-on-net-regression]
  *
  * v16's `compare-coherence` diffs two saved coherence artifacts with no
  * documents on disk. This command generalizes it to a *sequence*: given N ≥ 2
@@ -29,6 +29,7 @@ import { readFile } from "node:fs/promises";
 import { verifyCoherenceSequence } from "./coherence-sequence.js";
 import {
   compareCoherenceTrajectory,
+  trajectoryNetRegressed,
   trajectoryRegressed,
   renderCoherenceTrajectorySummary,
   buildCoherenceTrajectoryJson,
@@ -42,6 +43,8 @@ export type CoherenceTrendOutcome =
       ok: true;
       output: string;
       regressed: boolean;
+      /** Net-only: some front's floor ended lower than it began. */
+      netRegressed: boolean;
       /** A non-fatal advisory when cross-ladder verification could not run (an unpinned round). */
       ladderNote: string | null;
     };
@@ -73,6 +76,7 @@ export async function compareCoherenceTrendArtifacts(
     ok: true,
     output,
     regressed: trajectoryRegressed(trajectory),
+    netRegressed: trajectoryNetRegressed(trajectory),
     ladderNote: seq.ladderNote,
   };
 }
@@ -81,11 +85,17 @@ type CoherenceTrendArgs = {
   files: string[];
   format: CoherenceTrendFormat;
   failOnRegression: boolean;
+  failOnNetRegression: boolean;
 };
 
 function parseCoherenceTrendArgs(argv: string[]): CoherenceTrendArgs {
   const files: string[] = [];
-  const args: CoherenceTrendArgs = { files, format: "markdown", failOnRegression: false };
+  const args: CoherenceTrendArgs = {
+    files,
+    format: "markdown",
+    failOnRegression: false,
+    failOnNetRegression: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     if (flag === "--format") {
@@ -96,6 +106,8 @@ function parseCoherenceTrendArgs(argv: string[]): CoherenceTrendArgs {
       args.format = val;
     } else if (flag === "--fail-on-coherence-regression") {
       args.failOnRegression = true;
+    } else if (flag === "--fail-on-net-regression") {
+      args.failOnNetRegression = true;
     } else if (flag!.startsWith("--")) {
       throw new Error(`unknown flag "${flag}"`);
     } else {
@@ -104,7 +116,7 @@ function parseCoherenceTrendArgs(argv: string[]): CoherenceTrendArgs {
   }
   if (files.length < 2) {
     throw new Error(
-      "usage: coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-coherence-regression]",
+      "usage: coherence-trend <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json] [--fail-on-coherence-regression] [--fail-on-net-regression]",
     );
   }
   return args;
@@ -125,6 +137,14 @@ export async function runCoherenceTrend(argv: string[]): Promise<void> {
   if (args.failOnRegression && outcome.regressed) {
     process.stderr.write(
       "\n✗ the bundle's binding floor regressed at some round in the sequence (--fail-on-coherence-regression)\n",
+    );
+    process.exitCode = 2;
+  }
+  // The weaker gate: only a floor that ENDED lower than it began. A whipsaw
+  // that recovered passes it, by design (spec-v17 Part XVI).
+  if (args.failOnNetRegression && outcome.netRegressed) {
+    process.stderr.write(
+      "\n✗ the bundle's binding floor ended lower than it began (--fail-on-net-regression)\n",
     );
     process.exitCode = 2;
   }

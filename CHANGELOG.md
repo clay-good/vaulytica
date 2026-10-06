@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.849.0] — 2026-10-06
+
+### Added
+- **`coherence-trend --fail-on-net-regression`** — the net-only gate spec-v17
+  deferred. Exit 2 when some front's binding floor ENDED lower than it began
+  (round 1 → round N); a whipsaw that dipped and recovered passes it, where
+  `--fail-on-coherence-regression` (any step) does not. The predicate is
+  `trajectoryNetRegressed`, reading the `net_counts.regressed` the JSON already
+  carried. Both flags may be given; either failing exits 2.
+
 ## [9.848.0] — 2026-10-06
 
 ### Fixed

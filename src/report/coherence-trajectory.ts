@@ -205,6 +205,15 @@ export function trajectoryRegressed(trajectory: CoherenceTrajectory): boolean {
 }
 
 /**
+ * Did any front's binding floor end LOWER than it began? The weaker, net-only
+ * gate (spec-v17 Part XVI): a front that dipped and recovered by the last round
+ * does not trip it, where {@link trajectoryRegressed} does.
+ */
+export function trajectoryNetRegressed(trajectory: CoherenceTrajectory): boolean {
+  return trajectory.net_counts.regressed > 0;
+}
+
+/**
  * Serialize a {@link CoherenceTrajectory} to a stable, pretty-printed JSON string.
  * The key order is fixed and the front order is already pinned by
  * {@link compareCoherenceTrajectory}, so the same trajectory always yields

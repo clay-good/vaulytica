@@ -139,3 +139,35 @@ describe("compareCoherenceTrendArtifacts (spec-v17 — document-free coherence t
     );
   });
 });
+
+describe("the net-only gate (--fail-on-net-regression)", () => {
+  const verdicts = async (...tiers: NegotiationTier[]) => {
+    const rounds = await Promise.all(tiers.map((t) => round(t)));
+    const outcome = await compareCoherenceTrendArtifacts(
+      rounds.map((c) => buildPostureCoherenceJson(c, LADDER_A)),
+    );
+    if (!outcome.ok) throw new Error(outcome.errors.join("; "));
+    return { any: outcome.regressed, net: outcome.netRegressed };
+  };
+
+  it("passes a dip that recovered, which the any-step gate catches", async () => {
+    expect(await verdicts("acceptable", "below-acceptable", "ideal")).toEqual({
+      any: true,
+      net: false,
+    });
+  });
+
+  it("fails a floor that ended lower than it began", async () => {
+    expect(await verdicts("ideal", "acceptable", "below-acceptable")).toEqual({
+      any: true,
+      net: true,
+    });
+  });
+
+  it("passes a floor that only ever improved", async () => {
+    expect(await verdicts("below-acceptable", "acceptable", "ideal")).toEqual({
+      any: false,
+      net: false,
+    });
+  });
+});
