@@ -2911,3 +2911,15 @@ describe("extractDefinitions — a two-column signature row", () => {
     expect(map.entries.map((e) => e.term)).not.toContain("Chief Revenue Officer Title");
   });
 });
+
+describe("extractDefinitions — a definitions table", () => {
+  // A Word table flattens each row to "cell | cell".
+  it.each([
+    ['"Affiliate" | means any entity under common control with a party.', "quoted"],
+    ["Affiliate | means any entity under common control with a party.", "unquoted"],
+  ])("reads %s (%s term)", (row) => {
+    const map = extractDefinitions(buildTree(["Definitions", row, "Each Affiliate shall comply."]));
+    expect(map.entries.map((e) => e.term)).toContain("Affiliate");
+    expect(map.unused_terms).not.toContain("Affiliate");
+  });
+});

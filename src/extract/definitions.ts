@@ -58,8 +58,14 @@ import { forEachParagraph, forEachSection, posInParagraph, SENTENCE_END } from "
 const INSTRUMENT_NAME_TAIL =
   /^\s+(?:[A-Z][A-Za-z]*\s+){0,3}(?=[A-Z])(?:agreement|terms|guaranty|note|policy|addendum|deed|lease|plan|charter|bylaws|certificate|licen[cs]e)\b/i;
 
+// A DEFINITIONS TABLE — the term in one cell, "means …" in the next — reaches
+// the extractor flattened to `"Affiliate" | means …`, or with the term unquoted
+// at the row's start, `Affiliate | means …`. Neither registered: the cell
+// separator stood between the closing quote and the verb, and an unquoted term
+// is no inline definition at all. A facility agreement's definitions schedule
+// set as a table defined nothing.
 const DEFINITION_INLINE =
-  /["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+|will\s+)?means?\b/gi;
+  /(?:["“”']([A-Z][\w\s\-&/'’.]{1,80}?)["“”']\s*(?:\|\s*)?|^\s*([A-Z][\w\s\-&/'’.]{1,60}?)\s*\|\s*)(?:,\s*(?:as|when)\s+used\b[^,.]{0,40},\s*)?(?:shall\s+|will\s+)?means?\b/gi;
 // The other inline defining verbs — `"Effective Date" refers to …`, `"Territory"
 // is defined as …`, `"Deliverables" shall refer to …`. DEFINITION_INLINE knows
 // only "means"/"shall mean", so these terms went unregistered and STRUCT-006
@@ -2169,7 +2175,7 @@ function scanInlineDefinitions(text: string, base: DocPosition): DefinitionEntry
   }
   DEFINITION_INLINE.lastIndex = 0;
   while ((m = DEFINITION_INLINE.exec(text)) !== null) {
-    const term = m[1]!.trim();
+    const term = (m[1] ?? m[2]!).trim();
     // The pattern needs its `i` flag for the case-varying defining verb, which
     // also weakens its leading `[A-Z]` to "any letter" — so a LOWERCASE quoted
     // phrase registered as a defined term. A trust amendment reading `All

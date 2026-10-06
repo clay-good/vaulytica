@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.843.0] — 2026-10-06
+
+### Fixed
+- **A definitions table defined nothing.** A definitions section set as a
+  two-column Word table — the term in one cell, "means …" in the next —
+  reaches the extractor as `"Affiliate" | means …`, or with the term unquoted,
+  `Affiliate | means …`. The cell separator stood between the closing quote
+  and the verb, and an unquoted term at a row's start was no definition at
+  all, so every term in the table read as used-but-undefined (STRUCT-006),
+  and none reached the definitions report. Both shapes are definitions now.
+
 ## [9.842.0] — 2026-10-06
 
 ### Fixed
