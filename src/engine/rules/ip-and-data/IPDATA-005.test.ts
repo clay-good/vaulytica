@@ -164,3 +164,31 @@ describe("IPDATA-005 — national privacy laws outside the US and EU", () => {
     ).not.toBeNull();
   });
 });
+
+describe("IPDATA-005 — personal data the document denies", () => {
+  it("does not ask for a privacy regime when the data contains no personal information", () => {
+    const ctx = buildContext([
+      "Data Security",
+      "Licensee shall protect the Licensed Data using reasonable measures. The Licensed Data contains no personal information.",
+    ]);
+    expect(IPDATA005.check(ctx)).toBeNull();
+  });
+
+  it("still fires when the contract does process personal data", () => {
+    const ctx = buildContext([
+      "Data",
+      "Vendor shall process personal data only on Customer's instructions.",
+    ]);
+    expect(IPDATA005.check(ctx)).not.toBeNull();
+  });
+});
+
+describe("IPDATA-005 — a prohibition on handling personal data is not a denial", () => {
+  it("still fires on 'is not permitted to sell personal data'", () => {
+    const ctx = buildContext([
+      "Data",
+      "Vendor is not permitted to sell personal data received under this Agreement.",
+    ]);
+    expect(IPDATA005.check(ctx)).not.toBeNull();
+  });
+});

@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.802.0] — 2026-10-05
+
+Found by reading a clean trademark license and a clean data license.
+
+### Fixed
+- **A liability cap read backwards in the obligations ledger.** "Neither
+  party's liability shall exceed the royalties paid …" was printed as
+  `neither party's liability | shall | exceed …`. The cap filter knew only
+  "shall not exceed"; with the negation in the subject the action is a bare
+  "exceed". Eight corpus rows of the same shape are gone from the ledger.
+- **IPDATA-005 asked a weather-data license to cite GDPR, CCPA or HIPAA.**
+  The agreement says "The Licensed Data contains no personal information";
+  the rule took that mention as personal data in the contract. A mention the
+  document denies no longer counts.
+
 ## [9.801.0] — 2026-10-05
 
 Found by reading every artifact of a clean influencer agreement.

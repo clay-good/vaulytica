@@ -1670,3 +1670,13 @@ describe("an installment schedule in another currency or in words", () => {
     ).toBe("");
   });
 });
+
+describe("a cap whose negation is in the subject", () => {
+  it("is not a duty, and is not printed as 'liability shall exceed'", () => {
+    const tree = buildTree([
+      "Limitation of Liability",
+      "Neither party's liability shall exceed the royalties paid in the twelve (12) months before the claim.",
+    ]);
+    expect(extractObligations(tree, extractParties(tree))).toHaveLength(0);
+  });
+});

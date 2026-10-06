@@ -1,6 +1,10 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, topPosition } from "../_helpers.js";
+import { allMatches, emit, firstParagraphMatch, isNonOperative, topPosition } from "../_helpers.js";
 import { truncate } from "../../text.js";
+
+/** "contains no", "does not contain any", "will not include" — immediately before the mention. */
+const DENIES_CONTAINING =
+  /\b(?:contains?\s+no|(?:does|do|will|shall|must)\s+not\s+(?:contain|include|involve)(?:\s+any)?)\s+$/i;
 
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
@@ -17,9 +21,22 @@ export const rule: Rule = {
     "Flags data-heavy contracts that lack references to the applicable data-protection regime.",
   dkb_citations: ["stat-gdpr-art-28", "stat-ccpa-1798-140", "stat-45-cfr-164-504"],
   check(ctx: RuleContext): Finding | null {
-    const personalData = firstParagraphMatch(
+    // A mention the document DENIES is not personal data in the contract: a
+    // weather-data license that says "The Licensed Data contains no personal
+    // information" was told it should cite GDPR, CCPA or HIPAA. Only a denial
+    // that the data CONTAINS it — not the general absence test, which reads a
+    // prohibition ("Vendor is not permitted to sell personal data") as a
+    // denial, when a prohibition on handling personal data is the surest sign
+    // that there is some.
+    const personalData = allMatches(
       ctx,
       /\bpersonal\s+(?:data|information)\b|\bprotected\s+health\s+information\b|\bPHI\b/i,
+    ).find(
+      (h) =>
+        !isNonOperative(h.text) &&
+        !DENIES_CONTAINING.test(
+          h.text.slice(Math.max(0, (h.match.index ?? 0) - 60), h.match.index),
+        ),
     );
     if (!personalData) return null;
     if (

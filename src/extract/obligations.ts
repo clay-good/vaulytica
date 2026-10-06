@@ -80,7 +80,10 @@ const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
 
 /** A remedy limit's subject, and its verb — together, a cap rather than a covenant. */
 const CAP_SUBJECT = /\b(?:liabilit(?:y|ies)|damages|recovery)\b/i;
-const CAP_ACTION = /^not\s+exceed\b/i;
+// "not exceed", or bare "exceed" when the negation sits in the subject:
+// "neither party's liability shall exceed the royalties paid" was printed as
+// `neither party's liability | shall | exceed …` — a cap, read backwards.
+const CAP_ACTION = /^(?:not\s+)?exceed\b/i;
 
 /**
  * A word that makes the "will" right after it the testamentary instrument — a
