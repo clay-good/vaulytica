@@ -1719,3 +1719,48 @@ describe("extractObligations — a bare pro-verb", () => {
     expect(row?.action).toMatch(/^do so/);
   });
 });
+
+describe("extractObligations — a recital", () => {
+  const rowsOf = (text: string) => {
+    const tree = buildTree(["Body", text]);
+    return extractObligations(tree, extractParties(tree));
+  };
+
+  it("extracts nothing from a WHEREAS clause", () => {
+    expect(
+      rowsOf(
+        "WHEREAS, the Purchase Agreement contemplates that Provider will continue to supply those services for a transitional period;",
+      ),
+    ).toEqual([]);
+  });
+});
+
+describe("extractObligations — headings that are not duties, and duties after headings", () => {
+  const rowsOf = (text: string) => {
+    const tree = buildTree(["Body", text]);
+    return extractObligations(tree, extractParties(tree));
+  };
+
+  it("keeps a list lead-in that follows a run-in heading", () => {
+    // The items follow in their own paragraphs, as a DOCX gives them.
+    const [row] = rowsOf(
+      "1. INDEMNITY. The Indemnitor will indemnify, defend, and hold harmless the Indemnitee from all Losses arising out of or resulting from:",
+    );
+    expect(row?.obligor).toMatch(/Indemnitor$/);
+    expect(row?.action).toMatch(/^indemnify, defend, and hold harmless/);
+  });
+
+  it.each(["What you must preserve", "Who will do the work", "Whether you must provide the data"])(
+    "reads the question heading %s as no one's duty",
+    (heading) => {
+      expect(rowsOf(heading)).toEqual([]);
+    },
+  );
+
+  it("takes the obligor from after a heading run into its clause", () => {
+    const [row] = rowsOf(
+      "PENSION 6.1 You will be enrolled in the Company's qualifying workplace pension scheme.",
+    );
+    expect(row?.obligor).toBe("You");
+  });
+});

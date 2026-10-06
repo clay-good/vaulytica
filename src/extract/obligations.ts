@@ -264,6 +264,12 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
   forEachParagraph(tree, (ctx) => {
     const sentences = splitSentences(ctx.text, initialedNames);
     for (const { text: sentence, start } of sentences) {
+      // A RECITAL IS NOT A DUTY. "WHEREAS, the Purchase Agreement contemplates
+      // that Provider will continue to supply those services …" reports what
+      // another instrument provides; the agreement that follows the recitals
+      // is where Provider promises anything, and a transition services
+      // agreement's ledger listed the recital beside the promise.
+      if (/^\s*WHEREAS\b/i.test(sentence)) continue;
       // A single sentence can carry more than one obligation when independent
       // clauses are coordinated ("Provider shall deliver …, and Customer shall
       // pay …"). Split into per-modal clauses so the second obligation is not
@@ -408,6 +414,23 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // instructions beneath it went uncounted. A bare "do" names no act;
         // "shall do so within ten days" carries its referent and stays.
         if (/^(?:not\s+)?do[.!?]?$/i.test(action.trim()) && !trigger && !qualifier) continue;
+
+        // A QUESTION NAMES NO ONE. Plain-language documents title their
+        // sections as questions — "What you must preserve", "Who will do the
+        // work", "What will happen", "Whether you must provide the data" —
+        // and pasted, each heading line read as a duty owed by "What you" or
+        // "Who". The subject opens on an interrogative; a party never does.
+        // Only a SHORT, comma-free line: "Where the Customer requests, Provider
+        // shall …" and "Whether or not …, Seller shall …" open on the same
+        // words and are conditions on real duties.
+        if (
+          /^\s*(?:\d+(?:\.\d+)*\.?\s+)?(?:who|what|whether|where|why|how|which)\b(?!ever)/i.test(
+            cl.subject,
+          ) &&
+          !sentence.includes(",") &&
+          sentence.trim().split(/\s+/).length <= 8
+        )
+          continue;
 
         // A CAP IS NOT A DUTY. "Each party's total liability … shall not exceed
         // the amounts paid" limits a remedy; nobody promises to refrain from
@@ -895,7 +918,19 @@ function splitSentences(
     if (i >= n) break;
     const start = i;
     while (i < n && !isTerm(i)) i += 1; // [^.!?]+
-    if (i >= n) break; // no terminator follows → unterminated remainder, dropped
+    if (i >= n) {
+      // An UNTERMINATED REMAINDER after a sentence is still a sentence. A
+      // list lead-in ends on a colon and its items follow in the next
+      // paragraphs: "1. INDEMNITY. The Indemnitor will indemnify … arising out
+      // of or resulting from:" — and "1." and "INDEMNITY." being sentences
+      // made the clause a remainder, so the agreement's one indemnity left the
+      // ledger. Pasted text, where the items share the paragraph, never
+      // showed it; a DOCX gives each item its own paragraph.
+      const rest = text.slice(start);
+      if (out.length > 0 && rest.trim().length >= 20 && /[A-Za-z]/.test(rest))
+        out.push({ text: rest, start });
+      break;
+    }
     while (i < n && isTerm(i)) i += 1; // [.!?]+
     out.push({ text: text.slice(start, i), start });
   }
@@ -1077,7 +1112,11 @@ function resolveObligorInner(
       subject
         .trim()
         .replace(/^(?:\d+(?:\.\d+)+\.?|\d+\.|\([a-z0-9]{1,4}\))\s+(?=[A-Z])/, "")
-        .replace(/^[\s\S]*\s\((?:[a-z]|[ivx]{1,4}|\d{1,2})\)\s+(?=[A-Z])/, ""),
+        .replace(/^[\s\S]*\s\((?:[a-z]|[ivx]{1,4}|\d{1,2})\)\s+(?=[A-Z])/, "")
+        // …and a heading run into its first clause: "PENSION 6.1 You will be
+        // enrolled" — pasted text joins the heading line to the clause below
+        // it, and the obligor read "Pension 6.1 You".
+        .replace(/^[A-Z][A-Za-z ,&'’-]{0,60}\s(?:\d+\.\d+(?:\.\d+)*\.?)\s+(?=[A-Z])/, ""),
     ),
     /[,;.\s]/,
   ).replace(/^(?:and|but|or)\s+(?=\S)/i, "");

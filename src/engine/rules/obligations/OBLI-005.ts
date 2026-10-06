@@ -77,7 +77,11 @@ const INSTRUMENT_SUBJECT = new RegExp(
   // written by hand it listed "agreement" and not "contract", so
   // `instrument-vocabulary.test.ts` rewrote one specimen's Agreement as a
   // Contract and the covenant count moved.
-  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|act\b|statute|law|(?:(?:initial|renewal|sublease|lease|option)\s+)?(?:term|period)\b|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
+  //
+  // "This insurance does not apply to …" is a coverage exclusion, not a
+  // party's covenant; an endorsement's exclusions read as negative covenants
+  // once written "shall not apply".
+  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|insurance|coverage|act\b|statute|law|(?:(?:initial|renewal|sublease|lease|option)\s+)?(?:term|period)\b|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
   "i",
 );
 

@@ -201,3 +201,13 @@ describe("OBLI-005 — a term limit is not a covenant (v1.8.0)", () => {
     ).toBeNull();
   });
 });
+
+describe("OBLI-005 — a coverage exclusion is not a covenant", () => {
+  it("does not count 'This insurance shall not apply to …'", () => {
+    const ctx = buildContext([
+      "Exclusions",
+      'B. Additional exclusions. This insurance shall not apply to "bodily injury" occurring after:',
+    ]);
+    expect(OBLI_005.check(ctx)).toBeNull();
+  });
+});

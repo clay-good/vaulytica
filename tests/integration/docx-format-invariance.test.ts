@@ -33,6 +33,9 @@ import { join } from "node:path";
 import { Document, HeadingLevel, Packer, Paragraph, TextRun } from "docx";
 import { describe, expect, it } from "vitest";
 import { analyzeFile, analyzeText } from "../../tools/cli/api.js";
+import { ingestDocxBuffer } from "../../src/ingest/docx.js";
+import { ingestPaste } from "../../src/ingest/paste.js";
+import { extractAll } from "../../src/extract/index.js";
 
 const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -74,7 +77,7 @@ const KNOWN_DIVERGENCE = new Map<string, string>([]);
 const isHeading = (line: string): boolean =>
   line.length < 70 &&
   (/^(?:ARTICLE|Article|Section|SECTION)\s+[\dIVX]+\b/.test(line) ||
-    /^\d+\.\s+[A-Z][^.;:]{2,60}\.$/.test(line) ||
+    (/^\d+\.\s+[A-Z][^.;:]{2,60}\.$/.test(line) && !/\b[a-z]{4,}\b/.test(line)) ||
     /^\d+\.\s+[A-Z][A-Za-z &,'’()/-]+\.?$/.test(line) ||
     /^[A-Z][A-Z &,'’()/-]{3,}$/.test(line)) &&
   !/[.;:]\s+\S/.test(line.replace(/^\d+\.\s+/, ""));
@@ -135,4 +138,52 @@ describe("a specimen as DOCX reports what its pasted text reports", () => {
   it("lists no divergence that is not in the sample", () => {
     for (const name of KNOWN_DIVERGENCE.keys()) expect(SAMPLE).toContain(name);
   });
+});
+
+/**
+ * The obligations ledger, too — an artifact a reader opens on its own. These
+ * specimens lost duties as a DOCX (a list lead-in after a run-in heading was
+ * dropped as an unterminated remainder) or gained junk as pasted text (a
+ * question heading, "What you must preserve", read as a duty; a heading run
+ * into its clause read as the obligor, "Pension 6.1 You").
+ */
+const LEDGER_SAMPLE = [
+  "commercial-indemnity-agreement.txt",
+  "litigation-hold.txt",
+  "informed-consent.txt",
+  "engagement-letter.txt",
+  "gdpr-notice.txt",
+  "telehealth-consent.txt",
+  "uk-contract-of-employment.txt",
+];
+
+describe("a specimen as DOCX lists the duties its pasted text lists", () => {
+  it.each(LEDGER_SAMPLE)(
+    "%s",
+    async (name) => {
+      const text = readFileSync(join(SPECIMENS, name), "utf8");
+      const docxPath = join(dir, name.replace(/\.txt$/, ".ledger.docx"));
+      await renderDocx(text, docxPath);
+      // analyzeFile installs the DOM the DOCX ingest parses with.
+      await analyzeFile(docxPath);
+      const buf = readFileSync(docxPath);
+      const docx = await ingestDocxBuffer(
+        buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer,
+      );
+      const pasted = await ingestPaste(text);
+      const key = (o: { obligor: string; modal: string; action: string }) =>
+        `${o.obligor}|${o.modal}|${o.action}`.toLowerCase().replace(/\s+/g, " ").slice(0, 80);
+      const a = new Set(extractAll(pasted.tree).obligations.map(key));
+      const b = new Set(extractAll(docx.tree).obligations.map(key));
+      expect(
+        [...a].filter((k) => !b.has(k)),
+        "only pasted",
+      ).toEqual([]);
+      expect(
+        [...b].filter((k) => !a.has(k)),
+        "only DOCX",
+      ).toEqual([]);
+    },
+    120_000,
+  );
 });

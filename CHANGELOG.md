@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.829.0] — 2026-10-06
+
+The obligations ledger, compared the same way the findings were: every
+heading-bearing specimen as pasted text and as a DOCX. Twelve ledgers
+differed; the four defects below account for the substance of them.
+
+### Fixed
+- **A list lead-in after a run-in heading left the ledger.** "1. INDEMNITY.
+  The Indemnitor will indemnify, defend, and hold harmless the Indemnitee …
+  arising out of or resulting from:" — with "1." and "INDEMNITY." read as
+  sentences, the clause was an unterminated remainder, and the sentence
+  splitter dropped it. As a DOCX, where the "(a)" items are paragraphs of
+  their own, an indemnity agreement's one indemnity was not in its ledger. A
+  substantive remainder after a sentence is now a sentence.
+- **A question heading was a duty.** Plain-language documents title sections
+  as questions: "What you must preserve", "Who will do the work", "What will
+  happen", "Whether you must provide the data". Pasted, each read as a duty
+  owed by "What you" or "Who". A subject that opens on an interrogative names
+  no one. Only a short, comma-free line: "Where the Customer requests,
+  Provider shall …" opens on the same word and is a condition on a real duty.
+- **A heading run into its clause was the obligor.** "PENSION 6.1 You will be
+  enrolled …" printed the obligor "Pension 6.1 You"; it is "You".
+- **A recital was a duty.** "WHEREAS, the Purchase Agreement contemplates
+  that Provider will continue to supply those services …" reports another
+  instrument; a WHEREAS sentence no longer reaches the ledger.
+- **OBLI-005 counted a coverage exclusion as a covenant.** Keeping the list
+  lead-in exposed "This insurance shall not apply to 'bodily injury' …
+  occurring after:" — the subject is the insurance, not a party. Insurance
+  and coverage join the provisions and instruments that cannot owe a
+  covenant.
+
+### Tests
+- `docx-format-invariance` compares the obligations ledger on seven
+  specimens, not only the findings, and its renderer no longer styles a
+  numbered SENTENCE ("2. Each party shall bear its own attorney's fees and
+  costs.") as a heading.
+
 ## [9.828.0] — 2026-10-06
 
 ### Fixed
