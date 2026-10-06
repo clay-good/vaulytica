@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { extractSections, flattenOutline } from "./sections.js";
 import { normalize } from "../ingest/normalize.js";
+import { buildTree } from "./_fixtures.js";
 import type { DocumentTree } from "../ingest/types.js";
 
 const tree: DocumentTree = normalize({
@@ -120,5 +121,14 @@ describe("extractSections — the Section/Clause and § prefixes", () => {
     // of Section 4" becoming section 4 of the document.
     expect(labelFor("Obligations of Section 4")).toBeUndefined();
     expect(labelFor("The parties agree in Article II")).toBeUndefined();
+  });
+});
+
+describe("extractSections — a year that opens a title", () => {
+  it("is not a section number", () => {
+    const outline = extractSections(
+      buildTree(["2026 ANNUAL INCENTIVE PLAN", "The Plan pays bonuses."]),
+    );
+    expect(Object.values(outline.by_id).map((n) => n.numbered_label)).not.toContain("2026");
   });
 });

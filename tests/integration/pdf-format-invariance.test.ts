@@ -43,6 +43,16 @@ const SAMPLE = [
   "interrogatories.txt",
   "stipulation-of-dismissal.txt",
   "rule-26f-report.txt",
+  "website-terms.txt",
+  "stockholders-agreement.txt",
+  "executive-employment-complete.txt",
+  "sponsorship-agreement.txt",
+  "cba.txt",
+  "bylaws-corporation.txt",
+  "articles-org.txt",
+  "change-order.txt",
+  "annual-incentive-plan.txt",
+  "marital-settlement-agreement.txt",
 ];
 
 /** WinAnsi codes for the non-ASCII characters the specimens use. */

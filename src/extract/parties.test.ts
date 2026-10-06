@@ -1513,3 +1513,18 @@ describe("extractParties — a letter's address block", () => {
     expect(got.some((n) => /Officer/.test(n))).toBe(false);
   });
 });
+
+describe("extractParties — a letterhead set as the first heading", () => {
+  it("finds the firm a PDF gives as its first heading", () => {
+    const tree = buildTree([
+      "BRIGHTWATER & OSEI LLP",
+      "77 Commerce Street, Suite 1400 Nashville, Tennessee 37201",
+      "Dear Mr. Doyle: Thank you for asking us to help with your lease.",
+    ]);
+    expect(
+      extractParties(tree)
+        .map((p) => p.name)
+        .join(" | "),
+    ).toMatch(/BRIGHTWATER & OSEI/);
+  });
+});

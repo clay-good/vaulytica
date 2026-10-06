@@ -825,6 +825,19 @@ export function extractParties(tree: DocumentTree): Party[] {
   const partyMap = new Map<string, Party>();
   const allText: { text: string; pos: (start: number, end: number) => DocPosition }[] = [];
 
+  // The FIRST HEADING is read as a line, the way pasted text gives it. A
+  // letter's letterhead — "BRIGHTWATER & OSEI LLP" — set in larger type is a
+  // PDF's first heading, and with paragraphs alone the engagement letter
+  // reported "No parties identified" for the firm that wrote it.
+  const firstSection = tree.sections[0];
+  const firstHeading = (firstSection?.heading ?? "").trim();
+  if (firstSection && firstHeading) {
+    allText.push({
+      text: firstHeading,
+      pos: (start, end) => ({ section_id: firstSection.id, start, end }),
+    });
+  }
+
   forEachParagraph(tree, (ctx) => {
     allText.push({
       // A company's REGISTRATION NUMBER sits between its name and the rest of

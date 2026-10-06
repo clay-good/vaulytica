@@ -122,3 +122,37 @@ describe("STRUCT-002 — the formal execution line", () => {
     expect(STRUCT_002.check(bond(closing))).not.toBeNull();
   });
 });
+
+describe("STRUCT-002 — a document whose clauses nest under its title", () => {
+  // A PDF or DOCX nests its articles under the title heading; the first
+  // quarter is measured over the whole document, not the title block.
+  it("finds the effective date near the top of a nested document", () => {
+    const ctx = buildContext([
+      "COLLECTIVE BARGAINING AGREEMENT",
+      "between the Employer and the Union",
+      "Effective March 1, 2026 through February 28, 2029",
+    ]);
+    const title = ctx.tree.sections[0]!;
+    for (let i = 0; i < 6; i++)
+      title.children.push({
+        id: `s1.${i + 1}`,
+        heading: `ARTICLE ${i + 1}`,
+        level: 2,
+        paragraphs: [
+          {
+            id: `s1.${i + 1}.p1`,
+            runs: [
+              {
+                id: `s1.${i + 1}.p1.r1`,
+                text: "The Employer shall comply with this Article in every respect. ".repeat(4),
+                start: 1000 + i * 400,
+                end: 1250 + i * 400,
+              },
+            ],
+          },
+        ],
+        children: [],
+      });
+    expect(STRUCT_002.check(ctx)).toBeNull();
+  });
+});

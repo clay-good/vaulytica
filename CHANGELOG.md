@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.833.0] — 2026-10-06
+
+The PDF comparison, continued past routing to the findings: 42 specimens
+differed after 9.832.0; 17 do now, and twelve of those are the test renderer
+setting signature-block names in heading type.
+
+### Fixed
+- **A page break split a sentence into two paragraphs.** "… governed by the
+  laws of the State of" at the foot of a page and "Delaware" at the head of
+  the next were read apart, and a stockholders agreement's governing law was
+  "State of" (CHOICE-004: law and venue differ). A page's first paragraph now
+  continues the last page's when that one broke off mid-sentence — ending in
+  a lowercase word, a comma or a dash — and the new one opens no clause. A
+  heading line at a page foot ("ARTICLE IV. OFFICERS") is not continued.
+- **A numeral at the start of a wrapped line was a list marker.** "… within
+  thirty" / "(30) days of receipt" split the payment term, and FIN-005
+  reported no payment term; "Sections 13, 14, and" / "15 survive any
+  termination" split the survival list, and TEMP-012 reported the indemnity
+  unnamed. A list marker now opens a paragraph only after a line that ends a
+  clause (a sentence end, a colon, a semicolon, "and", "or"), and a bare
+  number is no clause number — "15." or "15)" or "6.3" is.
+- **A page of short paragraphs had no paragraph breaks.** The ordinary line
+  step was the page's median step, and where gaps between paragraphs
+  outnumber steps within them the median WAS the gap. It is now read from the
+  low end of the distribution.
+- **STRUCT-002 measured a nested document by its title block.** Its
+  "first quarter of the document" walked the top-level sections only, and in
+  a PDF or DOCX the articles nest under the title: a collective bargaining
+  agreement 7,361 characters long measured 222, and its "Effective March 1,
+  2026" line fell outside the first quarter. Seven specimens as PDFs were told
+  they name no Effective Date.
+- **A letterhead set as the first heading named no party.** Party extraction
+  read paragraphs only; pasted, the first line is a paragraph. The first
+  heading is now read as the first line, and an engagement letter's firm is
+  found again.
+- **A year opening a title was a section number.** "2026 ANNUAL INCENTIVE
+  PLAN" as a heading was section 2026, and STRUCT-008 reported sections
+  1–2025 skipped.
+
+### Tests
+- `pdf-format-invariance` covers 23 specimens.
+
 ## [9.832.0] — 2026-10-06
 
 PDF, the third format, compared the same way: every specimen rendered as a

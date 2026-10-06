@@ -39,6 +39,10 @@ export function extractSections(tree: DocumentTree): SectionOutline {
 function extractNumberedLabel(heading: string): string | undefined {
   const m = NUMBER_PREFIX.exec(heading);
   if (!m) return undefined;
+  // A YEAR is not a clause number: "2026 ANNUAL INCENTIVE PLAN" as a title
+  // heading was section 2026, and the outline said sections 1–2025 were
+  // missing.
+  if (m[1] && /^(?:19|20)\d{2}$/.test(m[1]) && !/^\s*\d{4}\./.test(heading)) return undefined;
   if (m[1]) return m[1];
   if (m[2]) return `Article ${m[2].toUpperCase()}`;
   // "SECTION VI — NOTICE": an insurance policy numbers its sections in roman.

@@ -352,9 +352,14 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
     }
   };
 
+  // The last body paragraph placed, and whether the page has placed anything
+  // yet: a paragraph the page break cut mid-sentence continues on the next
+  // page's first line.
+  let lastParagraph: Paragraph | null = null;
   for (const page of pages) {
     const lines = groupItemsIntoLines(page.items);
     const paragraphLines = groupLinesIntoParagraphs(lines);
+    let firstOnPage = true;
     for (const paraLines of paragraphLines) {
       // Each grouped LINE is joined into a word-sequence first, so an
       // end-of-line hyphen is still visible when the lines are joined. The old
@@ -377,10 +382,34 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
       if (isLikelyHeading) {
         const level = Math.max(1, Math.min(6, page.medianFontSize + 6 - maxSize + 1));
         pushSection(allText, level);
+        firstOnPage = false;
+        lastParagraph = null;
+        continue;
+      }
+      // A PAGE BREAK IS NOT A PARAGRAPH BREAK when it falls mid-sentence:
+      // "… governed by the laws of the State of" at the foot of one page and
+      // "Delaware" at the head of the next read as two paragraphs, and the
+      // governing law was "State of". Joined when the page's first paragraph
+      // continues a sentence the last page left open and opens no clause.
+      const continues =
+        firstOnPage &&
+        lastParagraph !== null &&
+        !/[.!?:;)"”]\s*$/.test(lastParagraph.runs[0]!.text) &&
+        // …and ends the way a broken sentence does, not the way a heading line
+        // does: "ARTICLE IV. OFFICERS" at the foot of a page carries no period
+        // either, and joined its first section on the next.
+        (/[a-z,\-–—]\s*$/.test(lastParagraph.runs[0]!.text) ||
+          lastParagraph.runs[0]!.text.length > 80) &&
+        !(PDF_CLAUSE_OPENER.test(allText) && ENDS_CLAUSE.test(lastParagraph.runs[0]!.text));
+      firstOnPage = false;
+      if (continues) {
+        const run = lastParagraph!.runs[0]!;
+        run.text = joinWrappedLines([run.text, allText], vocabulary);
         continue;
       }
       const runs: Run[] = [{ id: "", text: allText, start: 0, end: 0 }];
-      stack[stack.length - 1]!.paragraphs.push({ id: "", runs });
+      lastParagraph = { id: "", runs };
+      stack[stack.length - 1]!.paragraphs.push(lastParagraph);
     }
   }
 
@@ -408,9 +437,20 @@ function groupItemsIntoLines(items: PdfTextItem[]): PdfTextItem[][] {
   return lines.filter((l) => l.some((it) => it.str.trim().length > 0));
 }
 
+/**
+ * Where a clause can end, so the next line may open one. A wrapped line that
+ * begins "(30) days of receipt" continues "within thirty" — the numeral is the
+ * drafter's, not a list marker — and splitting there cut a payment term in
+ * half. A list item follows a sentence end, a lead-in colon, a semicolon, or
+ * the "and" / "or" before a list's last item.
+ */
+const ENDS_CLAUSE = /(?:[.!?:;]["”')]?|\b(?:and|or))\s*$/;
+
 /** A line that opens a numbered clause starts a paragraph however it is spaced. */
+// "15." / "15)" / "6.3" — a bare "15 " is a number in a sentence ("Sections
+// 13, 14, and / 15 survive"), not a clause.
 const PDF_CLAUSE_OPENER =
-  /^(?:\d+(?:\.\d+)*\.?\s|\([a-z0-9]{1,4}\)\s|(?:ARTICLE|SECTION|EXHIBIT|SCHEDULE|ANNEX|APPENDIX)\s+[0-9IVXLC])/;
+  /^(?:\d+(?:\.\d+)+\.?\s|\d+[.)]\s|\([a-z0-9]{1,4}\)\s|(?:ARTICLE|SECTION|EXHIBIT|SCHEDULE|ANNEX|APPENDIX)\s+[0-9IVXLC])/;
 
 /**
  * A PDF has lines, not paragraphs: every wrapped line of a clause arrives as a
@@ -439,7 +479,12 @@ function groupLinesIntoParagraphs(lines: PdfTextItem[][]): PdfTextItem[][][] {
     const d = y(lines[i - 1]!) - y(lines[i]!);
     if (d > 0 && size(lines[i]!) === size(lines[i - 1]!)) steps.push(d);
   }
-  const spacing = median(steps);
+  // The ORDINARY line step, from the low end of the distribution: on a page
+  // of short paragraphs the gaps between them outnumber the steps within
+  // them, the median was the gap itself, and no paragraph break was seen — a
+  // bylaws' "ARTICLE IV. OFFICERS" ran into its first section.
+  const sorted = [...steps].sort((a, b) => a - b);
+  const spacing = sorted.length > 0 ? sorted[Math.floor(sorted.length * 0.2)]! : 0;
   const out: PdfTextItem[][][] = [[lines[0]!]];
   for (let i = 1; i < lines.length; i++) {
     const prev = lines[i - 1]!;
@@ -450,7 +495,7 @@ function groupLinesIntoParagraphs(lines: PdfTextItem[][]): PdfTextItem[][][] {
       d <= 0 ||
       d > spacing * 1.35 ||
       size(cur) !== size(prev) ||
-      PDF_CLAUSE_OPENER.test(text(cur));
+      (PDF_CLAUSE_OPENER.test(text(cur)) && ENDS_CLAUSE.test(text(prev)));
     if (separate) out.push([cur]);
     else out[out.length - 1]!.push(cur);
   }

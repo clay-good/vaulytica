@@ -122,13 +122,17 @@ export const rule: Rule = {
   },
 };
 
+/**
+ * Every paragraph, at every depth. Walking the top-level sections only
+ * measured a PDF or DOCX — whose articles nest under the title — as its title
+ * block alone: a collective bargaining agreement 7,361 characters long was
+ * 222, its "Effective March 1, 2026" line at 183 fell outside the first
+ * quarter, and it was told it names no Effective Date.
+ */
 function documentLength(ctx: RuleContext): number {
   let max = 0;
-  for (const s of ctx.tree.sections) {
-    for (const p of s.paragraphs) {
-      const last = p.runs[p.runs.length - 1];
-      if (last && last.end > max) max = last.end;
-    }
-  }
+  forEachParagraph(ctx.tree, (p) => {
+    if (p.end > max) max = p.end;
+  });
   return max || 1;
 }

@@ -258,6 +258,23 @@ describe("a PDF's heading tree comes from type size", () => {
     ]);
   });
 
+  it("does not split a sentence at a numeral that opens a wrapped line", async () => {
+    const result = await ingestPdfBuffer(
+      pdfWithLines([
+        { size: 11, y: 700, text: "Counsel shall pay each invoice within thirty" },
+        { size: 11, y: 686, text: "(30) days of receipt. Sections 4, 5, 13, 14, and" },
+        { size: 11, y: 672, text: "15 survive any termination." },
+      ]),
+      { allowOcr: false },
+    );
+    const paras = result.tree.sections[0]!.paragraphs.map((p) =>
+      p.runs.map((r) => r.text).join(""),
+    );
+    expect(paras).toEqual([
+      "Counsel shall pay each invoice within thirty (30) days of receipt. Sections 4, 5, 13, 14, and 15 survive any termination.",
+    ]);
+  });
+
   it("gives a single-size PDF one flat, unheaded section", async () => {
     // The case that makes heading-dependent rules go quiet — worth pinning so
     // the difference between the two shapes is a fact of record, not a guess.
