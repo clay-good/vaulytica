@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.835.0] — 2026-10-06
+
+### Fixed
+- **A ZIP code opened a deadline's label.** "Minneapolis, MN 55402 within 60
+  days after the error appeared" — a credit-card agreement's billing-error
+  address — began "55402 within", because 9.834.0 started the label at the
+  first number. "within" / "between" now leads where there is one.
+- **A relative date's anchor ran into its exception.** "ninety (90) days
+  after Closing except for real estate taxes" anchored to "Closing except for
+  real estate taxes", which no date resolves. An anchor now ends before
+  "except", "unless", "provided" or "if".
+
 ## [9.834.0] — 2026-10-06
 
 ### Fixed

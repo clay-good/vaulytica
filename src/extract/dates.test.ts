@@ -633,3 +633,22 @@ describe("extractDates — a relative date's own words", () => {
     expect(d).toMatchObject({ offset_unit: "business-days", offset_count: 5 });
   });
 });
+
+describe("extractDates — the edges of a relative date", () => {
+  const rel = (text: string) =>
+    extractDates(buildTree(["Body", text])).filter((d) => d.type === "relative");
+
+  it("does not start at a ZIP code before 'within'", () => {
+    const [d] = rel(
+      "Write to us at 80 South 8th Street, Minneapolis, MN 55402 within 60 days after the error appeared.",
+    );
+    expect(d?.raw_text).toMatch(/^within 60 days/);
+  });
+
+  it("ends the anchor before an exception", () => {
+    const [d] = rel(
+      "All prorations are final ninety (90) days after Closing except for real estate taxes.",
+    );
+    expect(d?.anchor).toBe("Closing");
+  });
+});

@@ -135,7 +135,7 @@ const COUNT_START =
   /\b(?:within|between|an?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)\b|\(?\d/i;
 
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b|working\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|working\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b|\s+and\s+(?:a|an|the)\s|\s+\((?:the\s+)?["“])`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b|working\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|working\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b|\s+and\s+(?:a|an|the)\s|\s+(?:except|unless|provided|if)\b|\s+\((?:the\s+)?["“])`,
   "gi",
 );
 
@@ -417,7 +417,11 @@ export function extractDates(tree: DocumentTree): DateReference[] {
       // "Data within 30 days", "Entity thirty (30) days' notice" — a quarter
       // of the corpus's relative dates opened on a stray word, and the
       // calendar printed it. The label starts at the count, or at "within".
-      const countAt = cutComparative ? 0 : (COUNT_START.exec(m[0])?.index ?? 0);
+      // "within" leads where there is one: a number before it is not the
+      // count — "Minneapolis, MN 55402 within 60 days" began with the ZIP.
+      const countAt = cutComparative
+        ? 0
+        : (/\b(?:within|between)\b/i.exec(m[0])?.index ?? COUNT_START.exec(m[0])?.index ?? 0);
       const labelStart = lead && cutComparative ? start - lead[0].length : start + countAt;
       out.push({
         id: nextId(),
