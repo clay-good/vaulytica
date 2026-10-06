@@ -57,7 +57,8 @@ export type CriticalDateKind =
   | "cure-window"
   | "opt-out-window"
   | "survival-end"
-  | "notice-period";
+  | "notice-period"
+  | "term-end";
 
 /** Stable rule id per kind (DATE-001…005). */
 const KIND_RULE_ID: Record<CriticalDateKind, string> = {
@@ -66,6 +67,7 @@ const KIND_RULE_ID: Record<CriticalDateKind, string> = {
   "opt-out-window": "DATE-003",
   "survival-end": "DATE-004",
   "notice-period": "DATE-005",
+  "term-end": "DATE-006",
 };
 
 /** The pure output of {@link deriveDate}. */
@@ -387,6 +389,9 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
     const anchorParen =
       /\(\s*(?:(?:the|your|our|its|their)\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Date|Date\s+Hereof)["“”'’]?\s*\)/g;
     const periodParen = /\(\s*(?:the\s+)?["“”'’]?([A-Z][\w\s-]{2,40}?\s+Period)["“”'’]?\s*\)/g;
+    // No "Date" before the last word, so "… Start Date Subscription Start
+    // Date:" cannot be read as one long label that swallows the real one.
+    const fieldLabel = /\b((?!Date\b)[A-Z][\w-]*(?:\s+(?!Date\b)[A-Z][\w-]*){0,3}\s+Date)\s*:\s*/g;
     // Each anchor binds to the date NEAREST BEFORE its parenthetical, not the
     // paragraph's first: "beginning on July 1, 2026 (the 'Commencement Date')
     // and ending on June 30, 2033 (the 'Expiration Date')" put both on July 1.
@@ -421,6 +426,22 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
         const period = normalizeAnchor(m[1]!);
         for (const k of PERIOD_START_FORMS(period)) if (!map.has(k)) map.set(k, start);
         for (const k of PERIOD_END_FORMS(period)) if (!map.has(k)) map.set(k, end);
+      }
+      // A LABELED FIELD states its date directly after the colon:
+      // "Subscription Start Date: May 1, 2026". On its own line it is a
+      // field-label definition; pasted, an order form's fields reflow into one
+      // paragraph and the label sits mid-paragraph, so the term's end ("24
+      // months from the Subscription Start Date") could not be computed.
+      fieldLabel.lastIndex = 0;
+      while ((m = fieldLabel.exec(ctx.text)) !== null) {
+        const key = normalizeAnchor(m[1]!);
+        // The value opens the slice: "May 1, 2026", or the formal "the 1st day
+        // of May, 2026" — and ends at the next field's label, so a label whose
+        // value is not a date ("Payment Date: upon invoice") cannot borrow the
+        // next field's.
+        const value = ctx.text.slice(m.index + m[0].length).slice(0, 48);
+        const iso = firstAbsoluteIso(value.split(/\s(?=[A-Z][A-Za-z ]{0,30}:\s)/)[0]!);
+        if (iso && !map.has(key)) map.set(key, iso);
       }
     });
   }
@@ -472,7 +493,24 @@ const EXCEPTED_BREACH =
  * around it. The classification is render/grouping metadata; it never
  * changes the computed date. Defaults to the general notice-period family.
  */
+/**
+ * When the TERM ends: "Order Term: 24 months from the Subscription Start
+ * Date", "The Initial Term is thirty-six (36) months from the Commencement
+ * Date", "This Agreement expires three (3) years after the Effective Date".
+ * A duration in months or years, measured from the date the term STARTS, in a
+ * clause that states the term or its expiry. The register had no place for
+ * the one date most contracts are tracked by, and filed it as a notice
+ * deadline — or, when a renewal clause shared its paragraph, as an
+ * auto-renewal notice.
+ */
+const TERM_END_RAW =
+  /\b(?:months?|years?)\s+(?:from|after|following)\s+(?:the\s+)?(?:[\w-]+\s+){0,2}(?:start|effective|commencement|execution|go[-\s]live)\s+date\b/i;
+const TERM_CONTEXT =
+  /\b(?:(?:initial|order|subscription|lease|license|licence|service|renewal)\s+)?term\b\s*(?::|is\b|of\b|shall\b|will\b|means\b|ends\b|expires\b|begins\b|commences\b)|\bexpir(?:es|e|ation)\b/i;
+
 function classifyDeadline(ref: DateReference, contextText: string): CriticalDateKind {
+  if (TERM_END_RAW.test(ref.raw_text) && TERM_CONTEXT.test(`${ref.raw_text} ${contextText}`))
+    return "term-end";
   // An exception that NAMES a breach is not a cure provision: "If the Event is
   // cancelled for any reason other than Sponsor's breach, Property shall
   // refund … within thirty (30) days" is a refund deadline, and was filed as a

@@ -11,13 +11,13 @@
  *
  * Eight folds hold on every specimen. The ninth is recorded rather than fixed.
  *
- * DOUBLE-SPACING moves two, and the reason is structural: a blank line between
+ * DOUBLE-SPACING moves one (two until 9.830.0, when a reflowed order form's
+ * term-end row began to read the same either way), and the reason is structural: a blank line between
  * every line is a paragraph break, and `classifyDeadline` reads the PARAGRAPH
  * around a reference to choose the deadline's family. Split the paragraph and
  * the word that named the family — "cure", "renewal", "terminate" — is no
  * longer beside the date, so `security-incident-response-plan.txt`'s
- * cure-window becomes the default notice-period, and
- * `saas-order-form-fields.txt` resolves an anchor it could not reach before.
+ * cure-window becomes the default notice-period.
  *
  * Not repaired, and no longer on the strength of an argument. The obvious fix
  * — classify from the SECTION when the paragraph yields nothing — was built
@@ -53,7 +53,6 @@ const LOSSLESS: Array<[string, (t: string) => string]> = [
 
 /** What double-spacing still moves, and only that. */
 const DOUBLE_SPACED_DEBT: readonly string[] = [
-  "saas-order-form-fields.txt: lost - gained notice-period|2028-05-01",
   "security-incident-response-plan.txt: lost cure-window|unresolved gained notice-period|unresolved",
 ];
 

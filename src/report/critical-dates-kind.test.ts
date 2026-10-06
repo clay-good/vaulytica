@@ -56,3 +56,54 @@ describe("the register's deadline family", () => {
     expect(rows.map((r) => r.kind)).toContain("auto-renewal-notice");
   });
 });
+
+describe("the date the term ends", () => {
+  it("files the initial term's end as term-end, dated from its start", async () => {
+    const tree = buildTree([
+      "Agreement",
+      'This Agreement is made as of October 1, 2026 (the "Effective Date").',
+      "6.1 Term. The initial term is three (3) years from the Effective Date and renews automatically for successive one-year terms.",
+    ]);
+    const row = (await buildCriticalDates(extractAll(tree), tree)).register.find(
+      (r) => r.kind === "term-end",
+    );
+    expect(row?.computed_date).toBe("2029-10-01");
+  });
+
+  it("reads an order form's fields when they reflow into one paragraph", async () => {
+    // Pasted, a form's label/value lines join with spaces.
+    const tree = buildTree([
+      "Order Form",
+      "Invoicing Frequency: Annually in advance Order Term: 24 months from the Subscription Start Date Subscription Start Date: May 1, 2026 Subscription End Date: April 30, 2028",
+    ]);
+    const row = (await buildCriticalDates(extractAll(tree), tree)).register.find((r) =>
+      r.trigger.includes("24 months"),
+    );
+    expect(row).toMatchObject({ kind: "term-end", computed_date: "2028-05-01" });
+  });
+
+  it("keeps a notice window measured from the term's end out of it", async () => {
+    expect(
+      await kindOf(
+        [
+          "Agreement",
+          "The Term ends on the Expiration Date. Either party may give notice of non-renewal at least sixty (60) days before the Expiration Date.",
+        ],
+        "sixty (60) days",
+      ),
+    ).not.toBe("term-end");
+  });
+});
+
+describe("a labeled field's date", () => {
+  it("does not borrow the next field's date", async () => {
+    const tree = buildTree([
+      "Order Form",
+      "Payment Date: upon invoice Effective Date: April 14, 2026 Order Term: 12 months from the Payment Date",
+    ]);
+    const row = (await buildCriticalDates(extractAll(tree), tree)).register.find((r) =>
+      r.trigger.includes("12 months"),
+    );
+    expect(row?.computed_date ?? null).toBeNull();
+  });
+});

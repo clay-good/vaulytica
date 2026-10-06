@@ -99,7 +99,7 @@ function isBareOfDuration(raw: string, anchor: string): boolean {
 }
 
 const RANGE_RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$)`,
+  String.raw`\b(?:within\s+|between\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(?:to|-|–|—|and|or)\s+(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years)\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z][\w\s]{2,40}?)(?=[.,;)]|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b)`,
   "gi",
 );
 
@@ -131,7 +131,7 @@ const RANGE_RELATIVE = new RegExp(
 // `[A-Z]` matches lowercase too, so a sentence-boundary test written on case
 // would be inert here (the same trap the `isBareOfDuration` comment records).
 const RELATIVE = new RegExp(
-  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+and\s+(?:a|an|the)\s|\s+\((?:the\s+)?["“])`,
+  String.raw`\b(?:within\s+)?(\w{1,40}(?:[-\s](?!business\b|calendar\b|court\b)\w{1,40})?)\s{0,8}\(?\s{0,8}(\d+)?\s{0,8}\)?\s{0,8}(calendar\s+days?|business\s+days?|day|days|week|weeks|month|months|year|years|hours?)['’]?(?:\s+(?:prior\s+)?(?:written\s+)?notice)?\s+(?:after|before|of|from|following|prior\s+to)\s+(?:the\s+)?([A-Z](?:[\w\s]|\.(?=[A-Za-z])){2,40}?)(?=[,;)]|\.(?![A-Za-z])|$|\s+(?!(?:Date|Day|Period|Term)\b)[A-Z][\w ]{0,30}:\s|\s+(?:and|or)\s+(?:renews?|continues?|expires?|ends?|terminates?|is|are|shall|will|may|must|automatically)\b|\s+and\s+(?:a|an|the)\s|\s+\((?:the\s+)?["“])`,
   "gi",
 );
 

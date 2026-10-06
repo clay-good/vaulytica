@@ -798,6 +798,7 @@ const KIND_LABEL: Record<CriticalDate["kind"], string> = {
   "opt-out-window": "Opt-out / termination window",
   "survival-end": "Survival end",
   "notice-period": "Notice deadline",
+  "term-end": "Term ends",
 };
 
 /**

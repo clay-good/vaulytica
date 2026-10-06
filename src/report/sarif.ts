@@ -78,6 +78,7 @@ const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
   "opt-out-window": "Opt-out / termination window",
   "survival-end": "Survival-end date",
   "notice-period": "Notice-period deadline",
+  "term-end": "Term-end date",
 };
 
 const SARIF_SCHEMA =

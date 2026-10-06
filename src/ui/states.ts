@@ -2042,6 +2042,7 @@ const CRITICAL_DATE_KIND_LABEL: Record<string, string> = {
   "opt-out-window": "Opt-out / termination",
   "survival-end": "Survival end",
   "notice-period": "Notice deadline",
+  "term-end": "Term ends",
 };
 
 /**

@@ -236,9 +236,9 @@ const JURISDICTION_DEBT: readonly string[] = [
 /** The amount surface owes nothing. A new divergence here is a regression. */
 const AMOUNT_DEBT: readonly string[] = [];
 
-const DATE_DEBT: readonly string[] = [
-  "saas-order-form-fields.txt [double-spaced] lost:- gained:relative||Subscription Start Date|720|",
-];
+// 9.830.0 — `saas-order-form-fields.txt` left this list: its "24 months from
+// the Subscription Start Date" is read whether or not the form's lines reflow.
+const DATE_DEBT: readonly string[] = [];
 
 const DEBT: Record<string, readonly string[]> = {
   parties: PARTY_DEBT,

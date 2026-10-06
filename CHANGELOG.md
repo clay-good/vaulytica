@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.830.0] — 2026-10-06
+
+The critical-dates register, compared pasted text against DOCX like the
+findings and the ledger. It led to a date the register had no place for.
+
+### Added
+- **`DATE-006` — the date the term ends.** "The initial term is three (3)
+  years from the Effective Date", "Order Term: 24 months from the
+  Subscription Start Date": the one date most contracts are tracked by was
+  filed as a notice deadline, or — when a renewal clause shared its
+  paragraph — as an auto-renewal notice. A duration in months or years,
+  measured from the date the term STARTS (start, effective, commencement,
+  execution, go-live), in a clause that states the term or its expiry, is now
+  a `term-end` row ("Term ends"), and it reaches the calendar export. Three
+  specimens gain one, each dated correctly (a physician employment agreement
+  effective October 1, 2026 with a three-year term: 2029-10-01).
+
+### Fixed
+- **A relative date's anchor ran into the next clause or field.** "three (3)
+  years from the Effective Date and renews automatically …" was not read as a
+  date at all — the anchor runs until a terminator, and "and renews" was not
+  one; it is now (and/or followed by a verb: renews, continues, expires,
+  ends, terminates, is, shall, will, may, must). A pasted order form reflows
+  its label/value lines into one paragraph, and "24 months from the
+  Subscription Start Date Subscription Start Date: May 1, 2026 …" ran the
+  anchor into the next field; a following "Label:" now ends it.
+- **A labeled field's date bound only on its own line.** "Subscription Start
+  Date: May 1, 2026" is a field-label definition when it stands alone, as in
+  a DOCX; reflowed mid-paragraph it bound nothing, and the term's end was
+  undated. A "<Name> Date:" label followed by a date now binds the anchor
+  wherever it sits.
+
 ## [9.829.0] — 2026-10-06
 
 The obligations ledger, compared the same way the findings were: every
