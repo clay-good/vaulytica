@@ -10188,7 +10188,7 @@
      "id": "GOV-069",
      "name": "Tax matters / partnership representative",
      "description": "BBA partnership-audit rules require designation of a Partnership Representative (IRC § 6223).",
-     "severity": "critical"
+     "severity": "warning"
     },
     {
      "id": "GOV-070",

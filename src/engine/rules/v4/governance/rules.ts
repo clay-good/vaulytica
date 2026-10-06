@@ -43,6 +43,20 @@ import {
   govPractice,
 } from "./_helpers.js";
 
+/**
+ * A LIMITED partnership document: one with limited partners, one formed under
+ * DRULPA / a Uniform Limited Partnership Act, or one that names a "General
+ * Partner" as a role (case-sensitive; "General Partnership" does not match). Rules whose premise is a
+ * limited partnership — a general partner distinct from limited partners —
+ * apply only here.
+ */
+const LIMITED_PARTNERSHIP_DOCUMENT = [
+  /\blimited\s+partner(?:s|ship)?\b/i,
+  /\bDRULPA\b/i,
+  /Uniform\s+Limited\s+Partnership\s+Act/i,
+  /\bGeneral\s+Partner\b/,
+];
+
 const CATEGORY = "governance";
 
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
@@ -1453,11 +1467,7 @@ const PARTNERSHIP_RULES: Rule[] = [
     // DRULPA § 17-303 concerns LIMITED partners. A GENERAL partnership has none —
     // every partner has unlimited liability — so it has no LP acknowledgment to
     // be "missing". Apply the rule only to a limited-partnership document.
-    applicable_if: [
-      /\blimited\s+partner(?:s|ship)?\b/i,
-      /\bDRULPA\b/i,
-      /Uniform\s+Limited\s+Partnership\s+Act/i,
-    ],
+    applicable_if: LIMITED_PARTNERSHIP_DOCUMENT,
   }),
   presence({
     id: "GOV-066",
@@ -1506,6 +1516,11 @@ const PARTNERSHIP_RULES: Rule[] = [
     // as providing it — that is the very risk this rule flags.
     present_patterns: [/(?<!\bno\s)(?<!\bnot\s)indemnif/i],
     default_severity: "warning",
+    // A GP in DRULPA's sense exists only in a LIMITED partnership. A North
+    // Carolina general partnership of two individuals was told its "GP
+    // indemnification clause" was missing, citing the Delaware limited
+    // partnership act — the same premise GOV-065 already tests.
+    applicable_if: LIMITED_PARTNERSHIP_DOCUMENT,
   }),
   presence({
     id: "GOV-069",
@@ -1519,7 +1534,7 @@ const PARTNERSHIP_RULES: Rule[] = [
     missing_description:
       "No clause was found designating a Partnership Representative under IRC § 6223.",
     explanation:
-      "Under the BBA centralized partnership audit regime (effective 2018+), each partnership must designate a Partnership Representative or one will be designated by the IRS.",
+      "Under the BBA centralized partnership audit regime (effective 2018+), each partnership must designate a Partnership Representative, and if none is in effect the IRS may select one (IRC § 6223(a)). The designation itself is made on the partnership return, separately for each taxable year (Treas. Reg. § 301.6223-1(c)), so the agreement's clause decides who the partners will designate and what that person may do without them. A partnership with 100 or fewer partners, each an individual, C corporation, S corporation or deceased partner's estate, may elect out of the regime for the year (IRC § 6221(b)).",
     recommendation:
       "Add a 'Partnership Representative' clause designating a PR with binding authority for IRS proceedings under IRC § 6223.",
     present_patterns: [
@@ -1528,6 +1543,10 @@ const PARTNERSHIP_RULES: Rule[] = [
       /section\s+6223/i,
     ],
     denied_if: expressDenial(String.raw`partnership\s+representative|tax\s+matters\s+partner`),
+    // A WARNING, not critical: the omission is not a defect in the agreement —
+    // the designation is made on each year's return, and a small partnership
+    // of eligible partners can elect out of the regime altogether.
+    default_severity: "warning",
     denied_title: "Partnership Representative designation expressly denied",
     denied_description:
       "The agreement states that no Partnership Representative is designated. Under the BBA centralized audit regime the IRS will appoint one the partners cannot control.",

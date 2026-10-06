@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.803.0] — 2026-10-05
+
+Found by reading a clean North Carolina general partnership agreement; the
+statute text was checked on LII before shipping.
+
+### Fixed
+- **GOV-068 asked a general partnership for "GP indemnification" under
+  Delaware's limited partnership act.** DRULPA § 17-108 concerns the general
+  partner of a *limited* partnership. GOV-065 already tested that premise;
+  both now share one gate (limited partners, DRULPA, a Uniform Limited
+  Partnership Act, or a capitalized "General Partner" role).
+- **GOV-069 was critical.** A missing Partnership Representative clause is not
+  a defect in the agreement: the designation is made on the partnership
+  return, separately for each taxable year (Treas. Reg. § 301.6223-1(c)); if
+  none is in effect the IRS may select one (IRC § 6223(a)); and a partnership
+  of 100 or fewer eligible partners may elect out of the regime (IRC
+  § 6221(b)). It is now a warning, and its explanation says all three.
+
+### CI
+- **Mutation testing completed for the first time since 2026-09-07.** The
+  sharded run scored **59.90%** over all twelve modules (floor 57); the
+  slowest shard took 142 of its 180 minutes. `sensitive.ts` and `mask.ts`
+  decayed to 75.74% and 77.11% as they roughly doubled in size.
+  `docs/v7/mutation-baseline.md` records the new table.
+
 ## [9.802.0] — 2026-10-05
 
 Found by reading a clean trademark license and a clean data license.

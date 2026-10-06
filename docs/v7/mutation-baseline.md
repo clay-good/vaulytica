@@ -47,27 +47,28 @@ be finding it by hand.
 Cost: 195 mutants on top of 2,696, about 7%, against a job that runs weekly in
 seven minutes with a 120-minute timeout.
 
-## Baseline (2026-09-08, ten modules — re-measured on a full run)
+## Baseline (2026-10-05, twelve modules — the first sharded run)
+
+The first complete run over the full twelve-module scope, after four weeks of runs that hit the job limit (see the sharding note below). Measured on 9.798.0. Two modules decayed as they grew: `sensitive.ts` 88.68% → 75.74% (145 → 339 lines) and `mask.ts` 88.24% → 77.11% (83 → 200 lines); the new code arrived with fewer killing tests than the old. The previous table (2026-09-08, ten modules, 59.66%) is in git history.
 
 | File                | Mutation score | Killed | Survived | Timeout | No coverage |
 | ------------------- | -------------: | -----: | -------: | ------: | ----------: |
-| **All (scoped)**    |     **59.66%** |  3,249 |    2,153 |     106 |         116 |
-| `sensitive.ts`      |         88.68% |    188 |       23 |       0 |           1 |
-| `privilege-log.ts`  |         60.53% |    193 |      106 |      11 |          27 |
-| `mask.ts`           |         88.24% |     89 |       10 |       1 |           2 |
+| **All (scoped)**    |     **59.90%** |  4,559 |    2,996 |     141 |         151 |
 | `sections.ts`       |         84.62% |     44 |        8 |       0 |           0 |
-| `jurisdictions.ts`  |         67.58% |    239 |      124 |      32 |           6 |
-| `amounts.ts`        |         62.55% |    286 |      169 |       8 |           7 |
-| `dates.ts`          |         61.61% |    312 |      182 |       9 |          18 |
-| `parties.ts`        |         61.36% |    571 |      353 |      23 |          21 |
-| `exports.ts`        |         58.53% |    462 |      299 |       8 |          34 |
-| `obligations.ts`    |         57.95% |    276 |      215 |      23 |           2 |
-| `critical-dates.ts` |         57.57% |    289 |      195 |       0 |          18 |
-| `crossrefs.ts`      |         45.96% |    493 |      575 |       2 |           7 |
+| `mask.ts`           |         77.11% |    191 |       42 |       1 |          15 |
+| `sensitive.ts`      |         75.74% |    331 |      105 |       0 |           1 |
+| `dates.ts`          |         64.86% |    340 |      170 |       7 |          18 |
+| `amounts.ts`        |         63.56% |    307 |      173 |       7 |           7 |
+| `exports.ts`        |         63.44% |    549 |      295 |       8 |          26 |
+| `jurisdictions.ts`  |         60.92% |    246 |      173 |      33 |           6 |
+| `parties.ts`        |         60.69% |    748 |      472 |      21 |          26 |
+| `privilege-log.ts`  |         60.53% |    193 |      106 |      11 |          27 |
+| `critical-dates.ts` |         58.15% |    296 |      199 |       0 |          14 |
+| `obligations.ts`    |         55.56% |    798 |      675 |      51 |           4 |
+| `crossrefs.ts`      |         46.96% |    516 |      578 |       2 |           7 |
 
-> **`privilege-log.ts` joined on 2026-09-09 (9.613.0)** and its row above is
-> its own scoped measurement, not part of the 59.66% aggregate — that number
-> has not been re-measured since. It was probed at **56.42%**, below the
+> **`privilege-log.ts` joined on 2026-09-09 (9.613.0)**, measured on its own
+> at first; the 2026-10-05 run above is the first aggregate that includes it. It was probed at **56.42%**, below the
 > aggregate and therefore ineligible; its 39 NoCoverage mutants were
 > concentrated in `splitBatesRange`'s dash branches, reading them found a real
 > defect (an em-dash range never split, so `parseBates` rejected the whole cell
@@ -75,14 +76,14 @@ seven minutes with a 120-minute timeout.
 > shapes took it to **60.53%** — above the aggregate, which is what made
 > widening eligible.
 
-**This is the first aggregate measured on the current scope, and it replaces a
-floor that had drifted.** The previous table said 56.92% and its own footnotes
+**History — the 2026-09-08 run.** That was the first aggregate on the
+ten-module scope, and it replaced a floor that had drifted. The previous table said 56.92% and its own footnotes
 said so — it was taken before `sections.ts`, `sensitive.ts` and `mask.ts` were
 raised, and before `critical-dates.ts` and `exports.ts` joined at all. Measured
 2026-09-08 over the full ten-module set: **59.66%**, so `break` moves 54 → 57,
 the usual couple of points under a measured number rather than an aspiration.
 
-⚠️ **Per-file numbers here are NOT comparable to the previous table.** Both the
+⚠️ **Per-file numbers were NOT comparable to the table before that one.** Both the
 `mutate` set and the include list changed, and several files' mutant counts moved
 with them — `crossrefs.ts` is the same 45.96% against a different denominator.
 Read a row against the run that produced it.

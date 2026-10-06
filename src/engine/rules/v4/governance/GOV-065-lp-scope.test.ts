@@ -42,3 +42,39 @@ describe("GOV-065 limited-partnership scope", () => {
     ).toBeNull();
   });
 });
+
+// GOV-068 (DRULPA § 17-108, indemnification of the GENERAL partner) has the same
+// premise: a general partner distinct from limited partners exists only in a
+// limited partnership.
+describe("GOV-068 limited-partnership scope", () => {
+  const GOV068 = V4_RULES.find((r) => r.id === "GOV-068") as Rule;
+
+  it("does not fire on a general partnership", () => {
+    expect(
+      GOV068.check(
+        buildContext([
+          "Partnership",
+          "The Partners form a general partnership under the North Carolina Uniform Partnership Act. Each Partner has equal rights in management.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires on a limited partnership with no indemnification of its general partner", () => {
+    expect(
+      GOV068.check(
+        buildContext([
+          "Partnership",
+          "This limited partnership has one general partner and several limited partners who contribute capital under the agreement.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});
+
+describe("GOV-069 severity", () => {
+  it("is a warning: the designation is made on each year's return", () => {
+    const GOV069 = V4_RULES.find((r) => r.id === "GOV-069") as Rule;
+    expect(GOV069.default_severity).toBe("warning");
+  });
+});
