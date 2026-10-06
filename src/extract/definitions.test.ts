@@ -2923,3 +2923,12 @@ describe("extractDefinitions — a definitions table", () => {
     expect(map.unused_terms).not.toContain("Affiliate");
   });
 });
+
+describe("extractDefinitions — a two-column signature row with different labels", () => {
+  it("does not read 'Chief Executive Officer Date' as a term", () => {
+    const map = extractDefinitions(
+      buildTree(["Signatures", "Title: Chief Executive Officer Date: April 14, 2026"]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Chief Executive Officer Date");
+  });
+});

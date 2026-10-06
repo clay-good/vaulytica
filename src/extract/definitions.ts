@@ -1042,6 +1042,15 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
         const term = f[1]!.trim();
         if (SIGNATURE_FORM_LABEL.test(term)) continue;
         if (rowLabel && term.endsWith(` ${rowLabel}`)) continue;
+        // …and in a SIGNATURE row any signature label ends the previous
+        // column's value: "Title: Chief Executive Officer    Date: April 14,
+        // 2026" is not a term "Chief Executive Officer Date".
+        if (
+          rowLabel &&
+          /^(?:By|Name|Title|Date|Its|Signature)$/i.test(rowLabel) &&
+          / (?:By|Name|Title|Date|Its|Signature)$/i.test(term)
+        )
+          continue;
         if (isShoutedLabel(term) && FORM_INSTRUCTION_LABEL.test(term)) continue;
         labels.push({ term, start: f.index, valueStart: f.index + f[0].length });
       }

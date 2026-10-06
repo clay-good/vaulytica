@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.846.0] — 2026-10-06
+
+### Fixed
+- **A two-column signature row defined "Chief Executive Officer Date".**
+  "Title: Chief Executive Officer    Date: April 14, 2026" is two parties'
+  fields side by side, and the second column's label read the first column's
+  value as part of its name — a term the definitions report listed and
+  STRUCT-005 could report unused. 9.831.0 covered a row whose columns repeat
+  one label ("Name … Name"); in a signature row, any signature label (By,
+  Name, Title, Date, Its, Signature) now ends the previous column. Three
+  entries in the defined-term format debt each lose a junk term.
+
 ## [9.845.0] — 2026-10-06
 
 ### Fixed
