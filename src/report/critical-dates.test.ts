@@ -917,3 +917,17 @@ describe("a post-closing or post-termination duration is a survival period", () 
     expect(r.find((x) => x.trigger.includes("after termination"))?.kind).toBe("survival-end");
   });
 });
+
+describe("'the date of the X' anchors on X", () => {
+  it("computes 'three (3) years after the date of the Shoot' when the Shoot is dated", async () => {
+    const tree = buildTree([
+      "Release",
+      'Participant grants Company the right to photograph Participant at the shoot on September 14, 2026 (the "Shoot").',
+      "Company shall pay Participant within fifteen (15) days after the Shoot, and may use the photographs for a period of three (3) years after the date of the Shoot.",
+    ]);
+    const r = (await buildCriticalDates(extractAll(tree), tree)).register;
+    expect(r.find((x) => x.trigger.includes("date of the Shoot"))?.computed_date).toBe(
+      "2029-09-14",
+    );
+  });
+});

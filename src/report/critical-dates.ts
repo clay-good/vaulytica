@@ -328,6 +328,17 @@ function lastMatchIndex(text: string, re: RegExp): number {
 }
 
 /**
+ * An anchor's date, reading "the date of the Shoot" as "the Shoot" when only
+ * the event is mapped: a media release's three-year use period ran "after the
+ * date of the Shoot" and was left "verify manually" while "after the Shoot"
+ * in the next clause computed.
+ */
+function lookupAnchor(anchors: Map<string, string>, anchor: string): string | null {
+  const key = normalizeAnchor(anchor);
+  return anchors.get(key) ?? anchors.get(key.replace(/^date\s+of\s+(?:the\s+)?/, "")) ?? null;
+}
+
+/**
  * Build the anchor → ISO map. Three sources, all deterministic:
  *   1. A definition whose text pins a single absolute date
  *      ("'Effective Date' means January 1, 2025").
@@ -687,7 +698,7 @@ export async function buildCriticalDates(
     if (ref.type !== "relative") continue;
     // Need an offset to derive a deadline at all.
     if (ref.offset_count === undefined && ref.offset_days === undefined) continue;
-    const anchorIso = ref.anchor ? (anchors.get(normalizeAnchor(ref.anchor)) ?? null) : null;
+    const anchorIso = ref.anchor ? lookupAnchor(anchors, ref.anchor) : null;
     const derived = deriveDate(ref, anchorIso);
     const context =
       paragraphText.get(ref.position.paragraph_id ?? "") ??

@@ -78,3 +78,29 @@ describe("GOV-069 severity", () => {
     expect(GOV069.default_severity).toBe("warning");
   });
 });
+
+describe("GOV-044 — the statutory citation is the recital", () => {
+  const GOV044 = V4_RULES.find((r) => r.id === "GOV-044") as Rule;
+
+  it("reads 'pursuant to Section 141(f) of the Delaware General Corporation Law'", () => {
+    expect(
+      GOV044.check(
+        buildContext([
+          "Consent",
+          "The undersigned directors, acting pursuant to Section 141(f) of the Delaware General Corporation Law, adopt the following resolutions by unanimous written consent.",
+        ]),
+      ),
+    ).toBeNull();
+  });
+
+  it("is not satisfied by a bylaw section that happens to be numbered 228", () => {
+    expect(
+      GOV044.check(
+        buildContext([
+          "Consent",
+          "The undersigned directors, acting under Section 228 of the Bylaws, adopt the following resolutions.",
+        ]),
+      ),
+    ).not.toBeNull();
+  });
+});

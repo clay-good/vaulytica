@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.807.0] — 2026-10-06
+
+Found by reading a clean photo release and a clean board written consent.
+
+### Fixed
+- **GOV-044 (critical) on a consent that cites its authority.** "Acting
+  pursuant to Section 141(f) of the Delaware General Corporation Law … by
+  unanimous written consent" was told it never recites its authority to act
+  without a meeting. The rule's own explanation asks for exactly that anchor;
+  a citation of DGCL § 141(f) or § 228 now satisfies it (tied to the statute's
+  name, so a bylaw numbered 228 does not).
+- **"the date of the Shoot" was not "the Shoot".** A release paid "within
+  fifteen (15) days after the Shoot" computed; its use period "of three (3)
+  years after the date of the Shoot" was left "verify manually". The register
+  now reads "the date of X" as X when only X is dated.
+
 ## [9.806.0] — 2026-10-06
 
 Found by reading a clean lease guaranty.

@@ -1049,6 +1049,12 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
       // same thing.
       /(?:consent|action|taken)\b[^.]{0,60}?\bwithout\s+a\s+meeting/i,
       /\bwithout\s+a\s+meeting\b[^.]{0,60}?\b(?:consent|written|vote)/i,
+      // Citing the statute IS the anchor the explanation asks for: "acting
+      // pursuant to Section 141(f) of the Delaware General Corporation Law …
+      // by unanimous written consent" was told at CRITICAL that it never
+      // recites its authority to act without a meeting. Tied to a DGCL mention
+      // so a bylaw's own section numbering cannot satisfy it.
+      /(?:\bsection|§)\s*(?:141\s*\(\s*f\s*\)|228)\s+of\s+the\s+(?:Delaware\s+)?General\s+Corporation\s+Law\b|\b(?:DGCL|Delaware\s+General\s+Corporation\s+Law)\s+(?:section|§)\s*(?:141\s*\(\s*f\s*\)|228)\b/i,
     ],
   }),
   presence({
