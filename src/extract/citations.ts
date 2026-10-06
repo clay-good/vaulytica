@@ -53,7 +53,10 @@ const CASE_RE =
  * malformed case citations, "28 U.S.C. 1254" being volume 28 of a reporter
  * called "U.S.C." that no reporter table knows.
  */
-const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+(?:§+\s*)?([\d.]+[a-z0-9()]*)/g;
+// The section is "1291" or "1.1031(a)", never "1291." — a sentence that ends
+// on its citation left the period in the key, and a brief's table of
+// authorities (no period) no longer matched its own body.
+const STATUTE_USC_RE = /\b(\d+)\s+(U\.S\.C\.|C\.F\.R\.)\s+(?:§+\s*)?(\d+(?:\.\d+)*[a-z0-9()]*)/g;
 
 /**
  * State statute, section-sign form. A run of jurisdiction/subject abbreviation
@@ -91,9 +94,14 @@ const STATUTE_ILCS_RE = /\b(\d{1,4})\s+(ILCS|Ill\.\s+Comp\.\s+Stat\.)\s+(\d+\/[\
  * now its own branch, and Bankruptcy Procedure plus the FRE / FRBP shorthands
  * are recognized. Each alternative still requires an immediately-following rule
  * number, so a bare acronym in prose ("the FRE report") is not a citation.
+ *
+ * The subdivisions are whole parentheticals, capitals included: "4(a)(1)(A)"
+ * was read as "4(a)(1)(", and a brief's table of authorities no longer
+ * matched the same rule cited in its body. The long form a brief's prose uses
+ * — "Federal Rule of Appellate Procedure 4(a)(1)(A)" — is the same citation.
  */
 const RULE_RE =
-  /\b(?:Fed\.\s*R\.\s*(?:Civ|App|Crim|Bankr)\.\s*P\.|Fed\.\s*R\.\s*Evid\.|FRAP|FRCP|FRBP|FRE)\s*§?\s*(\d+[a-z()0-9]*)/g;
+  /\b(?:Fed\.\s*R\.\s*(?:Civ|App|Crim|Bankr)\.\s*P\.|Fed\.\s*R\.\s*Evid\.|FRAP|FRCP|FRBP|FRE|Federal\s+Rules?\s+of\s+(?:(?:Civil|Appellate|Criminal|Bankruptcy)\s+Procedure|Evidence))\s*§?\s*(\d+[a-z]?(?:\([A-Za-z0-9]{1,4}\))*)/g;
 
 /** "Id." at a token start. */
 const ID_RE = /\bId\./gi;

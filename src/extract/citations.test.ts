@@ -270,3 +270,26 @@ describe("extractCitations — the section sign is optional (v9.243.0)", () => {
     expect(cites.some((c) => c.kind === "case" && c.reporter === "F.3d")).toBe(true);
   });
 });
+
+describe("extractCitations — the citation's own end", () => {
+  it("keeps a rule's capital-letter subdivision", () => {
+    expect(extractCitations("Fed. R. App. P. 4(a)(1)(A)")[0]?.raw).toBe(
+      "Fed. R. App. P. 4(a)(1)(A)",
+    );
+  });
+
+  it("leaves a sentence's period out of a statute", () => {
+    expect(extractCitations("jurisdiction under 28 U.S.C. § 1291.")[0]?.raw).toBe(
+      "28 U.S.C. § 1291",
+    );
+  });
+
+  it("reads a rule written out in full", () => {
+    expect(
+      extractCitations("timely under Federal Rule of Appellate Procedure 4(a)(1)(A).")[0],
+    ).toMatchObject({
+      kind: "rule",
+      section: "4(a)(1)(A)",
+    });
+  });
+});

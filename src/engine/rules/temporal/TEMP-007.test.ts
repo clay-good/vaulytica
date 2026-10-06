@@ -67,3 +67,18 @@ describe("TEMP-007 — a survival list naming sections by their headings", () =>
     expect(TEMP_007.check(ctx)).toBeNull();
   });
 });
+
+describe("TEMP-007 — a category named only in a heading", () => {
+  // In a DOCX "3. Fees and Payment." is a section heading, not a paragraph.
+  it("audits the payment terms the heading names", () => {
+    const ctx = buildContext(
+      ["3. Fees and Payment.", "Customer shall pay the Fees within thirty (30) days of invoice."],
+      [
+        "4. Term and Termination.",
+        "Either party may terminate on notice. Sections 7 and 9 survive termination.",
+      ],
+      ["7. Confidentiality.", "Each party shall keep Confidential Information confidential."],
+    );
+    expect(TEMP_007.check(ctx)?.title).toMatch(/payment/);
+  });
+});

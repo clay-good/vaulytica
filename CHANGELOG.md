@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.824.0] — 2026-10-06
+
+A brief filed as a DOCX had its table of authorities reconciled against the
+wrong section, and a SaaS agreement as a DOCX lost a survival-list gap.
+
+### Fixed
+- **CITE-004 reconciled the table of contents as the table of authorities.**
+  A brief's TOC lists "Table of Authorities" as an entry, and the block
+  detector took the first section mentioning a block as that block — so a
+  DOCX brief, where the TOC and the table are separate sections, reconciled
+  an empty table and reported all 16 body authorities "absent from the
+  table". A section whose HEADING names the block now wins over a line that
+  mentions it. Pasted text puts the whole brief in one section, where the
+  rule refuses to reconcile, so it never showed.
+- **The reconciliation then found what was left, and four of its five
+  discrepancies were keying artifacts:**
+  - "28 U.S.C. § 1291." kept the sentence's period, and no table lists it
+    with one; a statute's section no longer swallows the period.
+  - "Fed. R. App. P. 4(a)(1)(A)" was read as "4(a)(1)(", since the subdivision
+    pattern stopped at a capital; subdivisions are now whole parentheticals.
+  - "Federal Rule of Appellate Procedure 4(a)(1)(A)", the long form a brief's
+    prose uses, was not read as a citation at all.
+  - A table lists "28 U.S.C. 1254"; the body pins "§ 1254(1)". Statutes and
+    rules now reconcile on family and section, not subsection pins.
+  - A case listed as "Dawson v. Entek International, 630 F.3d 928" counted
+    twice — the name as a short form, and the full citation.
+  The certificates of compliance and service, the disclosure statement and
+  the TOC are no longer read as the brief's body: "complies with Federal Rule
+  of Appellate Procedure 32(a)(7)(B)" is not an authority a table lists. The
+  sample brief now reconciles; the sample petition reports its real gaps (two
+  cases in the table it never cites, and the opinion below, not tabled).
+- **TEMP-007 lost a category named only in a heading.** "3. Fees and
+  Payment." is the only place an enterprise SaaS agreement writes the word,
+  and the presence scan read paragraphs only — pasted text counted the
+  payment terms, a DOCX did not, and the survival list's omission of §3 went
+  unreported. Section headings now count toward what the document has.
+
 ## [9.823.0] — 2026-10-06
 
 ### Fixed

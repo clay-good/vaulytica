@@ -97,6 +97,30 @@ const topPos = (ctx: RuleContext): DocPosition => ({
 });
 
 /** First name token of a "X v. Y" or supra reference, lowercased. */
+/**
+ * A statute or rule as the table and the body both name it. The table lists
+ * the section ("28 U.S.C. 1254", "Fed. R. App. P. 4"); the body pins the
+ * subsection ("28 U.S.C. 1254(1)") and may spell the rule out ("Federal Rule
+ * of Appellate Procedure 4(a)(1)(A)"). Reconciled on the family and the
+ * section, those are one authority, not two discrepancies.
+ */
+function authorityKey(c: ParsedCitation): string {
+  const raw = c.raw.toLowerCase();
+  if (c.kind === "rule") {
+    const family = /evid|\bfre\b/.test(raw)
+      ? "evid"
+      : /bankr|frbp/.test(raw)
+        ? "bankr"
+        : /crim/.test(raw)
+          ? "crim"
+          : /\bapp|frap/.test(raw)
+            ? "app"
+            : "civ";
+    return `rule ${family} ${(c.section ?? "").replace(/\(.*$/, "")}`;
+  }
+  return raw.replace(/§/g, "").replace(/\(.*$/, "").replace(/\s+/g, " ").trim();
+}
+
 function firstParty(refersTo: string | undefined): string | undefined {
   if (!refersTo) return undefined;
   const first = refersTo.split(/\s+v\.\s+|,|\s/)[0];
@@ -240,17 +264,46 @@ export const CITE_004: Rule = {
       if (c.kind === "case" && c.reporter && c.volume && c.page)
         return `${c.volume} ${c.reporter} ${c.page}`.toLowerCase();
       if (c.kind === "short-case") return firstParty(c.refers_to);
-      if (c.kind === "statute" || c.kind === "rule") return c.raw.trim().toLowerCase();
+      if (c.kind === "statute" || c.kind === "rule") return authorityKey(c);
       return undefined;
     };
+    // The certificates, the disclosure statement and the table of contents are
+    // not the brief's argument: "complies
+    // with … Federal Rule of Appellate Procedure 32(a)(7)(B)" is a certificate
+    // of compliance, and no table of authorities lists it. Only a document
+    // ingested with those blocks as sections of their own can tell.
+    const outside = new Set(
+      detectFilingBlocks(ctx.tree)
+        .filter((b) =>
+          [
+            "certificate-of-compliance",
+            "certificate-of-service",
+            "table-of-contents",
+            "disclosure-statement",
+          ].includes(b.block),
+        )
+        .map((b) => b.section_id)
+        .filter((id) => id !== toaSectionId),
+    );
     const toaKeys = new Set<string>();
     const bodyKeys = new Set<string>();
-    for (const l of located) {
+    located.forEach((l, i) => {
+      // "Dawson v. Entek International, 630 F.3d 928" is ONE authority: the
+      // case name before its full citation is not a second, short-form one.
+      const next = located[i + 1];
+      if (
+        l.c.kind === "short-case" &&
+        next?.c.kind === "case" &&
+        next.sectionId === l.sectionId &&
+        next.c.start >= l.c.end &&
+        next.c.start - l.c.end <= 40
+      )
+        return;
       const k = keyOf(l.c);
-      if (!k) continue;
+      if (!k || outside.has(l.sectionId)) return;
       if (l.sectionId === toaSectionId) toaKeys.add(k);
       else bodyKeys.add(k);
-    }
+    });
     // Single-section ingest (plain text / paste) puts the TOA and the body
     // in ONE section, so every citation lands in the TOA bucket and the
     // rule could never pass — a structural 100% false accusation (audit).

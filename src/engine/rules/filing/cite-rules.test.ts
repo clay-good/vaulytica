@@ -74,6 +74,41 @@ describe("CITE-004 TOA reconciliation", () => {
   });
 });
 
+describe("CITE-004 on a brief whose blocks are sections of their own", () => {
+  // A brief as a DOCX: the TOC lists "Table of Authorities", and the
+  // certificates cite the rules on length and service.
+  const BRIEF: [string, ...string[]][] = [
+    ["TABLE OF CONTENTS", "Table of Authorities", "Argument"],
+    [
+      "TABLE OF AUTHORITIES",
+      "Dawson v. Entek International, 630 F.3d 928 (9th Cir. 2011)",
+      "28 U.S.C. 1254",
+      "Fed. R. App. P. 4(a)(1)(A)",
+    ],
+    [
+      "ARGUMENT",
+      "Dawson v. Entek International, 630 F.3d 928 (9th Cir. 2011), controls. This Court has jurisdiction under 28 U.S.C. § 1254(1). The notice was timely under Federal Rule of Appellate Procedure 4(a)(1)(A).",
+    ],
+    [
+      "CERTIFICATE OF COMPLIANCE",
+      "This brief complies with Federal Rule of Appellate Procedure 32(a)(7)(B).",
+    ],
+  ];
+
+  it("reconciles the table, not the TOC line that names it", () => {
+    expect(CITE_004.check(briefCtx(BRIEF))).toBeNull();
+  });
+
+  it("counts a listed-but-uncited case once", () => {
+    const ctx = briefCtx([
+      ...BRIEF.slice(0, 1),
+      [...BRIEF[1]!, "Center v. Nassar, 570 U.S. 338 (2013)"],
+      ...BRIEF.slice(2),
+    ]);
+    expect(CITE_004.check(ctx)?.description).toMatch(/^1 listed in the table but not found/);
+  });
+});
+
 describe("CITE-005 inconsistent short forms", () => {
   it("flags an authority short-cited by both party names", () => {
     const ctx = briefCtx([

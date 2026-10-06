@@ -89,6 +89,16 @@ export function detectFilingBlocks(tree: DocumentTree): DetectedBlock[] {
     });
   };
 
+  // A HEADING names its block; a line inside the table of contents only
+  // mentions it. A brief as a DOCX lists "Table of Authorities" in its TOC,
+  // and the first-match-in-document-order rule placed the table in the TOC's
+  // section — so CITE-004 reconciled an empty table and reported all 16 body
+  // authorities "absent from the table". Pasted text, one section for the
+  // whole brief, could not tell the two apart and never showed it.
+  for (const s of sections)
+    for (const { block, re } of PATTERNS)
+      if (s.heading && re.test(s.heading)) record(block, s, s.heading);
+
   sections.forEach((s, i) => {
     const text = sectionText(s);
     for (const { block, re } of PATTERNS) {

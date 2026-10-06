@@ -1,7 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { allMatches, emit, expandSurvivalSectionRefs } from "../_helpers.js";
 import type { ParagraphHit } from "../_helpers.js";
-import { forEachParagraph } from "../../../extract/walk.js";
+import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { isLegendLine } from "../../../extract/legends.js";
 import { truncate } from "../../text.js";
 
@@ -64,6 +64,14 @@ export function survivalListGaps(
     // stamp a great many executed agreements carry.
     if (isLegendLine(p.text)) return;
     for (const [name, re] of EXPECTED) if (re.test(p.text)) present.add(name);
+  });
+  // A HEADING says what the document has as plainly as a paragraph does.
+  // "3. Fees and Payment." is the only place an enterprise SaaS agreement
+  // writes the word; pasted, that line is a paragraph and the payment terms
+  // counted, but as a DOCX it is a heading, the category vanished, and the
+  // survival list's omission of §3 went unreported.
+  forEachSection(ctx.tree, (s) => {
+    for (const [name, re] of EXPECTED) if (re.test(s.heading ?? "")) present.add(name);
   });
   const missing = EXPECTED.filter(([name, re]) => present.has(name) && !re.test(combined)).map(
     ([name]) => name,
