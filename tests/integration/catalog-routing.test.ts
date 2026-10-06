@@ -34,6 +34,18 @@ const dkb = loadStarterDkbSync();
 
 /** A short, realistic instance of the family — a title and a few real clauses. */
 const CASES: Array<{ id: string; title: string; body: string[] }> = [
+  // A residential remodel titles itself a "Home Improvement Contract"; it fell
+  // to generic-fallback, where none of the construction checks (concealed
+  // site conditions, lien waivers, change orders) ran (9.817.0).
+  {
+    id: "construction-contract",
+    title: "Home Improvement Contract",
+    body: [
+      "Contractor shall remodel the kitchen at Owner's residence as described in the plans and specifications, shall obtain all building permits, and shall deliver lien waivers with each payment request.",
+      "No change to the Work or the Contract Price is effective unless stated in a written change order signed by Owner and Contractor.",
+      "Contractor shall achieve substantial completion by July 2, 2027 and shall perform the Work in a good and workmanlike manner.",
+    ],
+  },
   {
     id: "purchase-order-terms",
     title: "Purchase Order Terms and Conditions",

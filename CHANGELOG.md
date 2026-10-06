@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.817.0] — 2026-10-06
+
+### Fixed
+- **A home improvement contract fell to generic-fallback.** A clean Illinois
+  kitchen-remodel contract — permits, change orders, lien waivers, a
+  workmanship warranty — matched no title keyword and ran none of the
+  construction checks (for instance CON-005, which asks for a concealed /
+  differing-site-conditions clause, exactly what a remodel behind walls
+  needs). "Home improvement", "remodeling", "renovation" and "home repair"
+  contract titles now route to `construction-contract`.
+
 ## [9.816.0] — 2026-10-06
 
 ### Fixed
