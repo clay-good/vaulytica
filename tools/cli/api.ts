@@ -74,7 +74,24 @@ import {
   renderReviewedDocx,
   type Format,
 } from "./artifacts.js";
-import { resolveInputs, shownPath, unpackZip, type ZipView } from "./inputs.js";
+import {
+  FolderTooLargeError,
+  documentLabel,
+  resolveInputs,
+  shownPath,
+  unpackZip,
+  type WalkLimits,
+  type ZipView,
+} from "./inputs.js";
+import { runConsistency } from "../../src/engine/consistency/runner.js";
+import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
+import type { ConsistencyRun } from "../../src/engine/consistency/types.js";
+import { nonAdviceStatement } from "../../src/report/disclaimers.js";
+
+export { FolderTooLargeError };
+export type { ConsistencyRun };
+/** The not-legal-advice line for a result about several documents. */
+export const NOT_LEGAL_ADVICE_BUNDLE = nonAdviceStatement("bundle");
 
 export type AnalyzeResult = {
   run: EngineRun;
@@ -591,9 +608,11 @@ export async function analyzeFolder(
   target: string | readonly string[],
   opts: AnalyzeFileOptions & {
     onDocument?: (done: number, total: number) => boolean | void | Promise<boolean | void>;
+    /** Bounds on a directory walk; with them, a folder past `maxFiles` is an error. */
+    limits?: WalkLimits;
   } = {},
 ): Promise<FolderAnalysis> {
-  const { onDocument, ...analyzeOpts } = opts;
+  const { onDocument, limits, ...analyzeOpts } = opts;
   const skipped: FolderAnalysis["skipped"] = [];
   let zip: ZipView | undefined;
   let files: string[];
@@ -603,9 +622,9 @@ export async function analyzeFolder(
     const unpacked = await unpackZip(target);
     zip = unpacked.view;
     skipped.push(...unpacked.skipped);
-    files = await resolveInputs(zip.root, {}, skipped);
+    files = await resolveInputs(zip.root, { limits }, skipped);
   } else {
-    files = await resolveInputs(target, { asText: opts.asText }, skipped);
+    files = await resolveInputs(target, { asText: opts.asText, limits }, skipped);
   }
   const out: FolderAnalysis = { documents: [], unreadable: [], skipped };
   try {
@@ -623,6 +642,31 @@ export async function analyzeFolder(
     if (zip) await rm(zip.root, { recursive: true, force: true });
   }
   return out;
+}
+
+/**
+ * The cross-document rules over documents the CALLER says are one deal.
+ * A directory is not a bundle: over unrelated files these rules report true,
+ * meaningless conflicts, so nothing runs this without being asked. `null`
+ * with fewer than two documents — there is nothing to be consistent with.
+ */
+export async function checkConsistency(
+  documents: FolderAnalysis["documents"],
+  deps: AccuracyDeps,
+): Promise<ConsistencyRun | null> {
+  if (documents.length < 2) return null;
+  const labels = documents.map((d) => d.label);
+  return runConsistency({
+    rules: ALL_CONSISTENCY_RULES,
+    documents: documents.map((d) => ({
+      doc_id: documentLabel(d.label, labels),
+      source_file_name: basename(d.file),
+      playbook_id: d.result.playbook_id,
+      tree: d.result.ingest.tree,
+      extracted: extractAll(d.result.ingest.tree),
+    })),
+    dkb: deps.dkb,
+  });
 }
 
 export type FileComparison = {

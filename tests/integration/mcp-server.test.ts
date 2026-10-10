@@ -84,7 +84,7 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
   it.each([
     ["initialize (2025-11-25)", "legacy" as const],
     ["server/discover (2026-07-28)", { pin: "2026-07-28" }],
-  ])("answers the %s handshake and serves both tools", async (_name, mode) => {
+  ])("answers the %s handshake and serves the tools", async (_name, mode) => {
     const client = new Client(
       { name: "vaulytica-test", version: "0.0.0" },
       { versionNegotiation: { mode } },
@@ -101,9 +101,22 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
       expect(client.getServerVersion()?.name).toBe("vaulytica");
       expect(client.getInstructions()).toMatch(/deterministic rule engine/);
       const { tools } = await client.listTools();
-      expect(tools.map((t) => t.name).sort()).toEqual(["analyze_document", "list_document_types"]);
+      expect(tools.map((t) => t.name).sort()).toEqual([
+        "analyze_document",
+        "analyze_folder",
+        "compare_documents",
+        "describe_document_type",
+        "explain_rule",
+        "export_report",
+        "list_document_types",
+      ]);
       for (const t of tools) {
-        expect(t.annotations).toMatchObject({ readOnlyHint: true, openWorldHint: false });
+        // Every tool but the one that writes files is read-only; none is open-world.
+        expect(t.annotations).toMatchObject({
+          readOnlyHint: t.name !== "export_report",
+          destructiveHint: false,
+          openWorldHint: false,
+        });
         expect(t.description!.length).toBeLessThanOrEqual(2048);
         // Flat schemas: hosts do not reliably enforce a root-level oneOf.
         expect(JSON.stringify(t.inputSchema)).not.toMatch(/oneOf|anyOf/);

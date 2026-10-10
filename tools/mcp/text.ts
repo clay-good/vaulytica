@@ -28,3 +28,36 @@ export const LIST_DOCUMENT_TYPES = [
   "Lists the document types the rule catalog names, as `id` and `name`, 50 per page. A document of a type not listed gets only a small generic rule set.",
   "With `query`, returns the types whose id, name, group or summary contain every word, and adds each summary. Use an `id` as `document_type` in analyze_document.",
 ].join(" ");
+
+export const ANALYZE_FOLDER = [
+  "Not legal advice, and not a ranking: one row per file in path order, from a deterministic rule engine with no measured accuracy on real contracts. A row is a pointer, not a verdict.",
+  "Checks every .docx, .pdf, .txt and .md file under `dir` (a folder or a .zip, at most 200 files, 8 levels deep) or in `paths`, and returns one short row per file: path, detected type, critical / warning / info counts, and flags.",
+  "A row with `not_analyzed` was not checked at all (unreadable, empty, or a scanned PDF — no OCR here). `unmatched` means no document type matched and only a small generic rule set ran, so a short row means little. `skipped` lists files of types this tool does not read. A partial run is never reported as complete: read `unreadable` and `skipped`.",
+  "Open the documents that matter with analyze_document; the rows carry no findings and quote no document text.",
+  "`related: true` says these files are ONE deal and adds cross-document conflicts (governing law, parties, defined terms that disagree between documents). Do not pass it for an arbitrary folder: unrelated files produce true, meaningless conflicts.",
+  "More than 50 rows come back in pages with `next_cursor`.",
+].join(" ");
+
+export const COMPARE_DOCUMENTS = [
+  "Not legal advice: a comparison of which named checks fire, not a judgment that a revision is better.",
+  "Analyzes two versions of one document and reports which findings the revision resolved, which it introduced, and which are unchanged, with clause counts (rewritten, added, removed) and the hashes that let a person reproduce the round.",
+  "Pass each side as a path (`base_path`, `revised_path`) or as text (`base_text`, `revised_text`).",
+  "A check also stops firing when the clause it read is deleted — read `clauses.removed` beside `resolved`. A clean comparison means the named checks no longer fire; it does not mean the document is complete, balanced, or enforceable.",
+  "Two versions that match different document types are refused; pass `document_type` to hold both to one type.",
+].join(" ");
+
+export const DESCRIBE_DOCUMENT_TYPE = [
+  "Returns what one document type is checked for: its own checks in plain words with severity and any authority the rule cites, how many general checks run on every document, companion types, and sources.",
+  "Use it before drafting, to write to the checklist instead of iterating against it. It describes what a clause must do; it does not give the patterns the rules match, and it is not a statement of what the law requires.",
+].join(" ");
+
+export const EXPLAIN_RULE = [
+  "Returns what a rule carries: name, version, category, default severity, description, the document types it applies to, and the citations it declares.",
+  "Many rules attach their citation to the finding when they fire, so an empty `citations` list here does not mean uncited — the finding carries it. A rule has no 'what satisfies it' field, so none is returned.",
+].join(" ");
+
+export const EXPORT_REPORT = [
+  "WRITES FILES. Analyzes one document and writes the requested report artifacts into `out_dir` (under an allowed folder), returning the paths. It never overwrites an existing file unless `overwrite` is true.",
+  "Formats: json (the full report `verify` reads), brief-json, sarif, html, md and csv (the fix list), docx (the full report), docx-comments (the original .docx with review comments), checklist-md, checklist-csv, dates-md, dates-ics, obligations-csv, deadlines-ics, definitions-csv.",
+  "A format the document has nothing to say on is listed under `skipped`, never written as an empty file. The artifacts are byte-identical to what `vaulytica analyze --out` writes. They are not legal advice.",
+].join(" ");

@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.859.0] — 2026-10-10
+
+### Added
+- **Five more MCP tools.** `analyze_folder` (a folder, a `.zip` or a list of
+  paths → one row per file of at most 300 bytes, with `unreadable[]` and
+  `skipped[]`; `related: true` adds cross-document conflicts),
+  `compare_documents` (two versions as paths or text → resolved, introduced,
+  unchanged, clause counts, hashes), `describe_document_type`, `explain_rule`,
+  and `export_report` (writes the artifacts `analyze --out` writes; refuses to
+  overwrite without `overwrite: true`).
+  - Held to the CLI: the same `result_hash` for a `.txt`, a `.docx` and a
+    `.pdf`; the same comparison hash as `compare --format json`; exported
+    bytes equal to `--out`.
+  - A folder call reads at most 200 files, 8 levels deep; more is an error
+    naming the limit, raised before the rest of the tree is read. It yields
+    between documents, honors cancellation, and reports progress when asked.
+
+### Changed
+- **Over MCP, a scanned PDF is `not_analyzed: no text layer`.** The full report
+  for a file with no words still exists on the CLI, with a warning string; the
+  agent surface does not hand an agent a short report about an empty document.
+
+(spec-v48 Step 305)
+
 ## [9.858.0] — 2026-10-10
 
 ### Added

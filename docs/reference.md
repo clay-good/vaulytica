@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.858.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.859.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1209,13 +1209,22 @@ node bin/vaulytica.mjs mcp --root /path/to/contracts
 | --------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | `analyze_document`    | `path` or `text` (+ `filename`); `document_type`, `min_severity`, `include`, `excerpts`, `cursor` | the compact report; past 40,000 characters, a page and a `next_cursor`  |
 | `list_document_types` | `query`, `limit`, `cursor`                                                                        | `id` and name, 50 per page; summaries when `query` is given             |
+| `analyze_folder`      | `dir` (a folder or `.zip`) or `paths[]`; `related`, `cursor`                                      | one row per file (≤ 300 bytes), plus `unreadable[]` and `skipped[]`      |
+| `compare_documents`   | `base_path` or `base_text`; `revised_path` or `revised_text`; `document_type`                     | resolved / introduced / unchanged, clause counts, and the hashes        |
+| `describe_document_type` | `id`                                                                                           | the checks that type runs, in plain words, with authorities             |
+| `explain_rule`        | `rule_id`                                                                                         | what the rule carries: name, version, severity, types, citations        |
+| `export_report`       | `path`, `formats[]`, `out_dir`, `overwrite`                                                       | writes the artifacts `analyze --out` writes; returns the paths          |
 
 - **Both protocol eras.** It answers `initialize` (2025-11-25) and `server/discover` (2026-07-28).
 - **Allowed folders.** It reads only under `--root <dir>` (repeatable), else `VAULYTICA_MCP_ROOTS`, else the folder it was started in. Paths are resolved with `realpath`, so a symlink cannot reach outside.
 - **What the model sees.** The process opens no network connection, and a `path` is read locally. But a result reaches the agent and its model provider, including quoted excerpts; `excerpts: false` returns findings with offsets and no quoted text.
 - **Not a clean bill.** Every result carries the caveats the full report carries. A file that could not be read comes back as `not_analyzed`, never as a short report.
 
-More tools (folders, comparison, export, rule lookup) and the install page are in progress — see [`spec-v48.md`](spec-v48.md).
+- **A scanned PDF is not a short report.** A file with no text layer comes back as `not_analyzed: no text layer`; the headless path runs no OCR.
+- **A folder is not a deal.** `analyze_folder` reads at most 200 files, 8 levels deep, and runs the cross-document rules only when `related: true` says the files belong together.
+- **`export_report` is the one tool that writes.** It writes only under an allowed folder and never replaces a file without `overwrite: true`.
+
+The install page and `.mcp.json` are in progress — see [`spec-v48.md`](spec-v48.md).
 
 ### Drop it into CI — GitHub Action
 

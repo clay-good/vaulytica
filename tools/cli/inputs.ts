@@ -40,8 +40,35 @@ export const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".doc
  */
 export const SKIPPED_UNSUPPORTED = "unsupported file type";
 
-/** Recursively collect supported files under a directory, and what it skipped. */
-export async function walkDir(dir: string, skipped: Array<{ file: string; reason: string }> = []) {
+/** Thrown when a walk passes its file limit; `count` is how many it had found. */
+export class FolderTooLargeError extends Error {
+  constructor(
+    readonly limit: number,
+    readonly dir: string,
+  ) {
+    super(`${dir} holds more than ${limit} readable files`);
+    this.name = "FolderTooLargeError";
+  }
+}
+
+/** Bounds on a directory walk. Absent: unbounded, as the CLI has always walked. */
+export type WalkLimits = { maxFiles: number; maxDepth: number };
+
+/** Said of a directory the walk did not enter because it sat below `maxDepth`. */
+export const SKIPPED_TOO_DEEP = "below the folder depth limit";
+
+/**
+ * Recursively collect supported files under a directory, and what it skipped.
+ * With `limits`, the walk stops with {@link FolderTooLargeError} as soon as it
+ * passes `maxFiles` — before reading the rest of a large tree — and reports a
+ * directory below `maxDepth` as skipped instead of entering it.
+ */
+export async function walkDir(
+  dir: string,
+  skipped: Array<{ file: string; reason: string }> = [],
+  limits?: WalkLimits,
+  state: { files: number; depth: number; root: string } = { files: 0, depth: 1, root: dir },
+) {
   const out: string[] = [];
   // Code-unit ordering (not `localeCompare`, which depends on the host
   // locale/ICU and would make a directory analysis non-reproducible across
@@ -52,9 +79,20 @@ export async function walkDir(dir: string, skipped: Array<{ file: string; reason
   )) {
     if (entry.name.startsWith(".")) continue;
     const full = join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...(await walkDir(full, skipped)).files);
-    else if (SUPPORTED_EXT.has(extname(entry.name).toLowerCase())) out.push(full);
-    else skipped.push({ file: full, reason: SKIPPED_UNSUPPORTED });
+    if (entry.isDirectory()) {
+      if (limits && state.depth >= limits.maxDepth) {
+        skipped.push({ file: full, reason: SKIPPED_TOO_DEEP });
+        continue;
+      }
+      state.depth++;
+      out.push(...(await walkDir(full, skipped, limits, state)).files);
+      state.depth--;
+    } else if (SUPPORTED_EXT.has(extname(entry.name).toLowerCase())) {
+      if (limits && ++state.files > limits.maxFiles) {
+        throw new FolderTooLargeError(limits.maxFiles, state.root);
+      }
+      out.push(full);
+    } else skipped.push({ file: full, reason: SKIPPED_UNSUPPORTED });
   }
   return { files: out, skipped };
 }
@@ -81,7 +119,7 @@ export function globToRegExp(pattern: string): RegExp {
 /** Resolve the target into a deterministic, sorted list of input files. */
 export async function resolveInputs(
   target: string,
-  opts: { asText?: boolean } = {},
+  opts: { asText?: boolean; limits?: WalkLimits } = {},
   /**
    * Filled with the entries a DIRECTORY walk skipped for an unsupported
    * extension. An out-parameter rather than a wider return type, so the many
@@ -92,7 +130,7 @@ export async function resolveInputs(
 ): Promise<string[]> {
   const st = await stat(target).catch(() => null);
   if (st?.isDirectory()) {
-    const walked = await walkDir(target);
+    const walked = await walkDir(target, [], opts.limits);
     if (skipped) skipped.push(...walked.skipped);
     return walked.files;
   }
