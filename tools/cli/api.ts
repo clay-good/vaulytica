@@ -439,6 +439,7 @@ export type { AccuracyDeps };
 // The compact projection is part of this surface: the MCP server imports
 // only this module.
 export { buildBrief, BRIEF_SCHEMA, type Brief, type BriefFinding } from "./brief.js";
+export { isActionable } from "../../src/engine/finding.js";
 
 /* ─────────────────────────────────────────────────────────────────────────
  * Production QA (add-production-qa-pack) — a bundle-level pass over a

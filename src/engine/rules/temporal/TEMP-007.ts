@@ -82,7 +82,7 @@ export function survivalListGaps(
 /** TEMP-007 — Survival list completeness (info). */
 export const rule: Rule = {
   id: "TEMP-007",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Survival list completeness",
   category: "temporal",
   default_severity: "info",
@@ -99,6 +99,8 @@ export const rule: Rule = {
       excerpt: truncate(survival.text, 240),
       explanation:
         "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
+      recommendation:
+        "Confirm whether each category named above is meant to survive termination, and add the ones that are to the survival clause.",
       position: survival.position,
     });
   },

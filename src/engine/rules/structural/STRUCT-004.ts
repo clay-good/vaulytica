@@ -12,7 +12,7 @@ const DEF_HEADING = /\b(definitions?|defined\s+terms|glossary)\b/i;
  */
 export const rule: Rule = {
   id: "STRUCT-004",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Defined terms section identifiable",
   category: "structural",
   default_severity: "info",
@@ -45,6 +45,8 @@ export const rule: Rule = {
       excerptText: "(no definitions located)",
       explanation:
         'Most non-trivial contracts capitalize defined terms and either set them out in a Definitions section or define them inline ("X" means …). Their absence is not by itself a problem, but downstream rules that check for use of specific defined terms will be skipped.',
+      recommendation:
+        "If the document uses a term repeatedly with a particular meaning, define it — in a Definitions section or inline — and capitalize each use.",
       position: { section_id: firstSectionId, start: 0, end: 0 },
       source_citations: [],
     });

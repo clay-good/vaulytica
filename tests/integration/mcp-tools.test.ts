@@ -40,7 +40,10 @@ const SPECIMENS = join(ROOT, "tests", "fixtures", "specimens");
 const NDA = join(SPECIMENS, "mutual-nda-complete.txt");
 const DOCX = join(ROOT, "tests", "fixtures", "contracts", "bad-nda.docx");
 
-const tmp = realpathSync(mkdtempSync(join(tmpdir(), "vaul-mcp-tools-")));
+// `.native`: on Windows the temp directory is an 8.3 short name
+// (`RUNNER~1`), which only the native call expands — and the server resolves
+// every path natively, so an unexpanded root contains nothing.
+const tmp = realpathSync.native(mkdtempSync(join(tmpdir(), "vaul-mcp-tools-")));
 afterAll(() => rmSync(tmp, { recursive: true, force: true }));
 
 let ctx: { roots: string[]; deps: Awaited<ReturnType<typeof loadAccuracyDeps>> };

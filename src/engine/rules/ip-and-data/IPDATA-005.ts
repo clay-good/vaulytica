@@ -9,7 +9,7 @@ const DENIES_CONTAINING =
 /** IPDATA-005 — GDPR / CCPA / HIPAA reference (info). */
 export const rule: Rule = {
   id: "IPDATA-005",
-  version: "1.8.0",
+  version: "1.9.0",
   // The regime is as often cited by its NUMBER as by its acronym — a European
   // distribution agreement writes "shall comply with EU Regulation 2016/679"
   // and never says "GDPR" — so a contract that names the governing regime
@@ -87,6 +87,8 @@ export const rule: Rule = {
       excerpt: truncate(personalData.text, 240),
       explanation:
         "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
+      recommendation:
+        "Name the data-protection regime that governs the personal data (for example the GDPR, the CCPA, or HIPAA), or attach the data-processing terms that do.",
       position: personalData.position ?? topPosition(ctx),
     });
   },

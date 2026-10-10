@@ -22,7 +22,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -282,14 +282,14 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -345,7 +345,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-003",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -529,7 +529,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -599,7 +599,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -634,7 +634,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-009",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -718,7 +718,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -753,7 +753,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -767,7 +767,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-009",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -962,8 +962,9 @@
       },
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
+      "recommendation": "Add a clause naming the courts, or the arbitral forum, where disputes must be brought, and say whether that forum is exclusive.",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1000,11 +1001,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\", \"Permitted Purpose\".",
-  "result_hash": "2a97135c88ae7db2b180602274e6590da929d609b47593ed7a925020f8fa4a40",
+  "result_hash": "01f647b120098144522c4c3ec4231cd17d9efcf5e7e4ace16b558984ec6b2917",
   "source_file": {
     "name": "mutual-nda.docx",
     "sha256": "ef50f0dcb7abba00b9213ddb4a8a77a2ab5f0bc1f3ee2394f809706622bf8151",
     "size_bytes": 9274
   },
-  "version": "9.860.0"
+  "version": "9.861.0"
 }

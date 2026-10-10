@@ -173,7 +173,7 @@ describe("buildFixListCsv", () => {
     const csv = buildFixListCsv(run);
     const rows = csv.trimEnd().split("\r\n");
     expect(rows[0]).toBe(
-      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url,clause,section_label",
+      "severity,rule_id,section,title,explanation,recommendation,authority,authority_url,clause,section_label,actionable",
     );
     expect(rows).toHaveLength(3);
     expect(rows[1]).toContain("critical,MSA-006,s10,");
@@ -582,10 +582,11 @@ describe("the fix list names the clause to edit", () => {
     // Appended so a consumer reading by column index keeps working.
     const csv = buildFixListCsv(makeRun([withSpan(), absence()]));
     const rows = csv.trimEnd().split("\r\n");
-    expect(rows[0]!.split(",").slice(-2)).toEqual(["clause", "section_label"]);
+    expect(rows[0]!.split(",").slice(-3)).toEqual(["clause", "section_label", "actionable"]);
     expect(rows[1]).toContain("Liability is unlimited.");
     // Empty for the absence row, and never the marker string.
-    expect(rows[2]!.endsWith(",")).toBe(true);
+    // (`clause` and `section_label` are both empty; `actionable` follows them.)
+    expect(rows[2]).toMatch(/,,,(?:yes|no)$/);
     expect(csv).not.toContain("RULE-MARKER-STRING");
   });
 });

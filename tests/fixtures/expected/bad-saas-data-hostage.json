@@ -22,7 +22,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -284,7 +284,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -292,7 +292,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -351,7 +351,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-003",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -534,7 +534,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -604,7 +604,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -640,7 +640,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-009",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -724,7 +724,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -759,7 +759,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -773,7 +773,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-009",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1033,8 +1033,9 @@
       },
       "explanation": "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
       "id": "CHOICE-003-s1-0",
+      "recommendation": "Add a clause naming the courts, or the arbitral forum, where disputes must be brought, and say whether that forum is exclusive.",
       "rule_id": "CHOICE-003",
-      "rule_version": "1.3.0",
+      "rule_version": "1.4.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1060,8 +1061,9 @@
       },
       "explanation": "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
       "id": "IPDATA-004-s2-400",
+      "recommendation": "Add a provision, separate from the intellectual-property clause, stating who owns the data each party provides and any data derived from it.",
       "rule_id": "IPDATA-004",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "info",
       "source_citations": [],
       "title": "Data ownership not separately addressed"
@@ -1078,8 +1080,9 @@
       },
       "explanation": "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
       "id": "IPDATA-005-s3-751",
+      "recommendation": "Name the data-protection regime that governs the personal data (for example the GDPR, the CCPA, or HIPAA), or attach the data-processing terms that do.",
       "rule_id": "IPDATA-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [
         {
@@ -1131,11 +1134,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "9b75d73d7ee6c6c1b4898b86ff44d0ee94ed15e1fd37987d2700c259eabdebb7",
+  "result_hash": "baf71f81e8a361012ac91c6b2fb70ce2192d03199e861824105328ba0bbc39b1",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.860.0"
+  "version": "9.861.0"
 }

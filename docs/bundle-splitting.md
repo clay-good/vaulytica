@@ -12,7 +12,8 @@ The moment the user drops a file, the entry calls `import("./pipeline.js")`. Tha
 first paint    main-*.js (22 KB gz)  ──────────────  hero + dropzone
                                                        │ user drops a file
 file drop      pipeline-*.js          49 KB gz         engine core + orchestration
-               rules-core-*.js       139 KB gz         launch + v3 compliance rules
+               rules-core-*.js       117 KB gz         launch rules
+               v3-rules-*.js          57 KB gz         v3 compliance packs (NDA/MSA/DPA/BAA)
                v4-rules-corp-*.js     91 KB gz         v4: m&a, governance, equity,
                                                         trust-estate, banking, ip-licensing
                v4-rules-reg-*.js     100 KB gz         v4: every other sector family

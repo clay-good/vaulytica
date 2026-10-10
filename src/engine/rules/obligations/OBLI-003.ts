@@ -23,7 +23,7 @@ const AMBIGUOUS =
 /** OBLI-003 — Trigger condition ambiguity (info). */
 export const rule: Rule = {
   id: "OBLI-003",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Trigger condition ambiguity",
   category: "obligations",
   default_severity: "info",
@@ -38,6 +38,8 @@ export const rule: Rule = {
       excerpt: found.raw_text,
       explanation:
         "Triggers like 'from time to time' or 'as needed' put discretion in the hands of one party. Specify a measurable trigger when material.",
+      recommendation:
+        "Where the obligation matters, replace the open-ended trigger with a measurable one: a date, a period, a named event, or a written request.",
       position: found.position,
     });
   },

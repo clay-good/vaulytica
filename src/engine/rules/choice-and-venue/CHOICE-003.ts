@@ -16,7 +16,7 @@ const RETAINED_JURISDICTION =
 /** CHOICE-003 — Venue clause present (info). */
 export const rule: Rule = {
   id: "CHOICE-003",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Venue clause present",
   category: "choice-and-venue",
   default_severity: "info",
@@ -46,6 +46,8 @@ export const rule: Rule = {
       excerpt: "(no venue clause)",
       explanation:
         "Without a venue clause, default venue rules apply (in federal court, 28 U.S.C. § 1391). A clear forum-selection clause avoids ambiguity.",
+      recommendation:
+        "Add a clause naming the courts, or the arbitral forum, where disputes must be brought, and say whether that forum is exclusive.",
       position: topPosition(ctx),
     });
   },

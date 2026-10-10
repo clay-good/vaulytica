@@ -20,6 +20,7 @@ import {
   describeDocumentType,
   explainRule,
   exportArtifacts,
+  isActionable,
   isDocumentType,
   listDocumentTypes,
   type AccuracyDeps,
@@ -265,6 +266,8 @@ export type FolderRow = {
   c?: number;
   w?: number;
   i?: number;
+  /** Findings that carry a recommendation — what there is to work through. */
+  act?: number;
   sha?: string;
   /** No family matched: only the generic rule set ran, so a short row means little. */
   unmatched?: true;
@@ -361,6 +364,7 @@ export async function analyzeFolderTool(
       c: b.counts.critical,
       w: b.counts.warning,
       i: b.counts.info,
+      act: b.actionable,
       sha: b.document.sha256.slice(0, 12),
       ...(b.caveats.classification_notice ? { unmatched: true as const } : {}),
       ...(b.secondary_families ? { secondary: b.secondary_families.length } : {}),
@@ -454,9 +458,15 @@ async function side(
   return { text: text!, filename: `${which}.txt` };
 }
 
-const delta = (f: { rule_id: string; severity: string; title: string }) => ({
+const delta = (f: {
+  rule_id: string;
+  severity: string;
+  title: string;
+  recommendation?: string;
+}) => ({
   rule_id: f.rule_id,
   severity: f.severity,
+  actionable: isActionable(f),
   title: f.title,
 });
 

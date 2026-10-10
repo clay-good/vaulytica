@@ -5,7 +5,7 @@ import { truncate } from "../../text.js";
 /** IPDATA-004 — Data ownership distinction from IP (info). */
 export const rule: Rule = {
   id: "IPDATA-004",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Data ownership distinguished from IP",
   category: "ip-and-data",
   default_severity: "info",
@@ -58,6 +58,8 @@ export const rule: Rule = {
       excerpt: truncate(dataMention.text, 240),
       explanation:
         "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
+      recommendation:
+        "Add a provision, separate from the intellectual-property clause, stating who owns the data each party provides and any data derived from it.",
       position: dataMention.position ?? topPosition(ctx),
     });
   },

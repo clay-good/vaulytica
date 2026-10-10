@@ -21,7 +21,7 @@
  * machines produce identical calendars.
  */
 
-import type { EngineRun, Finding, Severity } from "../engine/finding.js";
+import { isActionable, type EngineRun, type Finding, type Severity } from "../engine/finding.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
@@ -130,6 +130,10 @@ export type ArtifactCaveats = {
   readonly classification_notice?: { readonly message: string } | undefined;
 };
 
+/** Said once above the findings that carry no recommendation. */
+export const OBSERVATION_NOTE =
+  "Present in the document. No change needed; do not remove the clause to clear this.";
+
 /** The caveat block, blank-line-terminated, or nothing at all. */
 function caveatLines(caveats: ArtifactCaveats | undefined): string[] {
   if (!caveats) return [];
@@ -192,7 +196,7 @@ export function buildFixListMarkdown(
     }),
   );
   lines.push(
-    "Each item below is a finding to resolve, ordered by severity. This list is a deterministic projection of the run — it adds no judgment beyond what the report contains.",
+    "Each checkbox below is a finding that carries a recommendation, ordered by severity. Findings that only record what the document contains are listed after them, under Observations. This list is a deterministic projection of the run — it adds no judgment beyond what the report contains.",
   );
   const scope = scopeForPlaybook(run.playbook_id);
   if (scope) {
@@ -228,8 +232,35 @@ export function buildFixListMarkdown(
     }
   }
 
+  // What to do, then what was merely seen (spec-v51 §4). A finding with a
+  // recommendation is a task and gets a checkbox under its severity. One
+  // without is an observation — "Force majeure clause present" — and a
+  // checkbox beside it reads as an instruction to make it go away, which a
+  // drafter can only do by deleting the clause.
+  const detail = (f: Finding): string[] => {
+    const out: string[] = [];
+    const section = f.excerpt.section_label;
+    if (section) out.push(`  - Section: ${section}`);
+    // WHICH WORDS. A fix list is worked from, not read — and it gave a
+    // section id and no clause, so the one question it exists to answer
+    // ("what do I edit?") sent the reviewer back to the document to find the
+    // sentence themselves. The two honest shapes are kept apart exactly as
+    // the reports keep them: a finding about an ABSENCE has no clause to
+    // quote, and says so rather than printing the rule's marker string.
+    if (f.excerpt.end_offset > f.excerpt.start_offset) {
+      out.push(`  - Clause: "${truncateExcerpt(f.excerpt.text)}"`);
+    } else {
+      out.push("  - About an absence — there is no clause to edit.");
+    }
+    if (f.explanation) out.push(`  - ${f.explanation}`);
+    if (f.recommendation) out.push(`  - Recommendation: ${f.recommendation}`);
+    const cites = citationLineMarkdown(f, currency);
+    if (cites) out.push(`  - Authority: ${cites}`);
+    return out;
+  };
+
   for (const sev of SEVERITY_ORDER) {
-    const group = run.findings.filter((f) => f.severity === sev);
+    const group = run.findings.filter((f) => f.severity === sev && isActionable(f));
     lines.push("");
     lines.push(`## ${SEVERITY_LABEL[sev]} (${group.length})`);
     if (group.length === 0) {
@@ -240,23 +271,20 @@ export function buildFixListMarkdown(
     for (const f of group) {
       lines.push("");
       lines.push(`- [ ] **${f.rule_id}** — ${f.title}`);
-      const section = f.excerpt.section_label;
-      if (section) lines.push(`  - Section: ${section}`);
-      // WHICH WORDS. A fix list is worked from, not read — and it gave a
-      // section id and no clause, so the one question it exists to answer
-      // ("what do I edit?") sent the reviewer back to the document to find the
-      // sentence themselves. The two honest shapes are kept apart exactly as
-      // the reports keep them: a finding about an ABSENCE has no clause to
-      // quote, and says so rather than printing the rule's marker string.
-      if (f.excerpt.end_offset > f.excerpt.start_offset) {
-        lines.push(`  - Clause: "${truncateExcerpt(f.excerpt.text)}"`);
-      } else {
-        lines.push("  - About an absence — there is no clause to edit.");
-      }
-      if (f.explanation) lines.push(`  - ${f.explanation}`);
-      if (f.recommendation) lines.push(`  - Recommendation: ${f.recommendation}`);
-      const cites = citationLineMarkdown(f, currency);
-      if (cites) lines.push(`  - Authority: ${cites}`);
+      lines.push(...detail(f));
+    }
+  }
+
+  const observations = run.findings.filter((f) => !isActionable(f));
+  if (observations.length > 0) {
+    lines.push("");
+    lines.push(`## Observations (${observations.length})`);
+    lines.push("");
+    lines.push(OBSERVATION_NOTE);
+    for (const f of observations) {
+      lines.push("");
+      lines.push(`- **${f.rule_id}** — ${f.title} _(${SEVERITY_LABEL[f.severity].toLowerCase()})_`);
+      lines.push(...detail(f));
     }
   }
 
@@ -329,6 +357,8 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
       "clause",
       // What the document calls the section; `section` is the internal id.
       "section_label",
+      // `yes` when the row carries a recommendation; `no` is an observation.
+      "actionable",
     ]),
   );
   for (const f of run.findings) {
@@ -344,6 +374,7 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
         citationUrls(f), // spec-v8 §14 — verifiable URL alongside the name
         f.excerpt.end_offset > f.excerpt.start_offset ? truncateExcerpt(f.excerpt.text) : "",
         f.excerpt.section_label ?? "",
+        isActionable(f) ? "yes" : "no",
       ]),
     );
   }

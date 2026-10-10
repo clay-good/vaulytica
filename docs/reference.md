@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.860.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.861.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1099,6 +1099,8 @@ cat contract.txt | npm run cli -- analyze - --format brief-json
 
 # brief-json: the same findings, caveats and result_hash in a few KB (no execution log) —
 # for a script or an agent; `verify` and the certificate still take the full `json`
+# each finding says whether it is `actionable` (it carries a recommendation) or an observation
+# about what the document contains; the fix list (md, csv) makes the same split
 npm run cli -- analyze contract.docx --format brief-json
 
 # every command prints its own usage

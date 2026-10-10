@@ -109,7 +109,7 @@ function clauseRun(paras: string[], start: number): string[] {
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",
@@ -209,6 +209,8 @@ export const rule: Rule = {
       excerpt: truncate(substantive ?? indem.text, 280),
       explanation:
         "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
+      recommendation:
+        "Add the missing element to the indemnity clause: how and when the indemnified party must give notice of a claim, which party controls the defense, and whether a settlement needs the other party's consent.",
       position: substantive
         ? { section_id: indem.position.section_id, start: 0, end: 0 }
         : indem.position,

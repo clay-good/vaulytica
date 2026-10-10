@@ -62,6 +62,14 @@ export const EXCLUDED_COVERING_SUITES: Record<string, string> = {
   // floor. It runs on every push as part of the normal suite.
   "tests/integration/currency-glyph.test.ts":
     "whole-corpus relation: ~14s per run over 310 specimens x2, ~100x the per-mutant cost of a unit suite",
+  // A whole-CORPUS check that the fix list, the compact report and the
+  // comparison agree on which findings are actionable. It imports the mutated
+  // `src/report/exports.ts` to render the fix list for all 327 specimens:
+  // ~15s per run, against the 386ms of `exports.test.ts`, which pins the same
+  // split on hand-built runs. Same call and same caveat as the corpus relation
+  // above — its kills go uncounted, so the published number is a floor.
+  "tests/integration/actionable.test.ts":
+    "whole-corpus agreement check: ~15s per run over 327 specimens, ~40x a unit suite",
   // Both cover `src/report/exports.ts` — deliberately, since each renders every
   // artifact — and both run the FULL analyze pipeline to do it. Measured
   // 2026-09-08: 2.17s and 2.80s against the 386ms of `exports.test.ts`, which

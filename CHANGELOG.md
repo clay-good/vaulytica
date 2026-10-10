@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.861.0] — 2026-10-10
+
+### Added
+- **`actionable`, with one definition: a finding that carries a
+  recommendation.** Everything else is an observation — "Force majeure clause
+  present" — and an agent or a drafter told to reach zero findings could only
+  clear one by deleting the clause. The field is computed in one place
+  (`isActionable`) and appears in the compact report (`brief-json`, MCP
+  results, with a per-document count), the fix-list CSV (a trailing
+  `actionable` column), and the comparison JSON. Severity is unchanged:
+  `--fail-on` gates exactly as before.
+
+### Changed
+- **The fix list separates tasks from observations.** Every finding used to
+  render as a checkbox. Findings with a recommendation keep theirs, under
+  their severity; the rest move to an **Observations** section with no
+  checkbox and the line "Present in the document. No change needed; do not
+  remove the clause to clear this."
+- **Ten rules that report a gap now say what to do.** `RISK-011`,
+  `CHOICE-003`, `TEMP-007`, `STRUCT-009`, `OBLI-003`, `IPDATA-005`,
+  `STRUCT-004`, `IPDATA-004`, `TEMP-009` and `TEMP-002` reported something
+  missing or unusual with no recommendation ("No venue / forum clause
+  detected"), so the definition above would have filed them as observations.
+  Each gains one sentence of advice and a version bump; no rule fires on a
+  document it did not fire on before.
+
+- **The v3 rule packs are their own bundle chunk.** The ten sentences took the
+  shared `rules-core` chunk to 602 KB raw, past the 600 KB per-chunk limit. It
+  is split as v4 and v5 were: `rules-core` is 374 KB (117 KB gzipped) and the
+  new `v3-rules` 226 KB (57 KB gzipped). A code split only — the same modules
+  load behind the same file drop.
+
+Over the 327 specimens, 777 of 1,389 findings are actionable; the one
+warning-or-critical finding that is not is "Non-solicit clause present"
+(spec-v51 Step 318).
+
 ## [9.860.0] — 2026-10-10
 
 ### Added

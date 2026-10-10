@@ -178,7 +178,7 @@ const groupedDays = (n: number): string => String(n).replace(/\B(?=(\d{3})+(?!\d
 /** TEMP-002 — Past-dated effective date in a forward-looking contract (info). */
 export const rule: Rule = {
   id: "TEMP-002",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Past-dated effective date",
   category: "temporal",
   default_severity: "info",
@@ -225,6 +225,8 @@ export const rule: Rule = {
       excerpt: sorted[0]!.raw_text,
       explanation:
         'A document whose own date sits well before every other date in it may be back-dated — a date chosen to predate the signatures. That can be legitimate (a written record of terms the parties already followed, stated "as of" that date) or it can mislead, so confirm which before signing.',
+      recommendation:
+        'Confirm the date is intended. If the document records terms already in effect, state an "effective as of" date and date the signatures separately.',
       position: sorted[0]!.position ?? topPosition(ctx),
     });
   },

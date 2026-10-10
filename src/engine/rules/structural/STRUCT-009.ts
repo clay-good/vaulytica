@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -61,6 +61,8 @@ export const rule: Rule = {
       excerpt: offenders[0]!,
       explanation:
         "Defined terms should be capitalized identically wherever they appear. A lowercase use of a defined term reads as ordinary usage and can change the meaning.",
+      recommendation:
+        "Capitalize each listed term wherever its defined meaning is intended, and reword any lowercase use that is meant to say something else.",
       position: topPosition(ctx),
     });
   },

@@ -25,7 +25,7 @@
  */
 
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
-import { SEVERITY_RANK } from "../engine/finding.js";
+import { SEVERITY_RANK, isActionable } from "../engine/finding.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { stableStringify } from "../engine/runner.js";
 import type { ClauseDiff, WordDiffSegment } from "./clause-diff.js";
@@ -408,6 +408,8 @@ type ComparisonJsonFinding = {
   title: string;
   section_id: string;
   explanation: string;
+  /** Carries a recommendation (spec-v51 §4). Outside the comparison hash. */
+  actionable: boolean;
 };
 
 type ComparisonJsonUnchanged = ComparisonJsonFinding & {
@@ -421,6 +423,7 @@ function jsonFinding(f: Finding): ComparisonJsonFinding {
     title: f.title,
     section_id: f.excerpt.section_id ?? "",
     explanation: f.explanation,
+    actionable: isActionable(f),
   };
 }
 

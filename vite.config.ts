@@ -644,6 +644,11 @@ export default defineConfig({
           // they change together, and they are the only rules in the catalog
           // that read a document the lawyer signs (spec-v46.md).
           if (id.includes("/engine/rules/v6/")) return "v6-rules";
+          // The v3 compliance packs (NDA / MSA / DPA / BAA deep rules) leave
+          // `rules-core` for the same reason v4 and v5 did: with them it reached
+          // 602 KB raw in 9.861.0, when ten launch rules gained a sentence of
+          // advice each. What stays in `rules-core` is the launch catalog.
+          if (id.includes("/engine/rules/v3/")) return "v3-rules";
           if (id.includes("/engine/rules/")) return "rules-core";
           return undefined;
         },

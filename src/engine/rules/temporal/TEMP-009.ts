@@ -5,7 +5,7 @@ import { CURE_PERIOD, curePeriodDays, curePeriodUnit, isUnusualCurePeriod } from
 /** TEMP-009 — Cure period length unusual (info). */
 export const rule: Rule = {
   id: "TEMP-009",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Cure period length unusual",
   category: "temporal",
   default_severity: "info",
@@ -23,6 +23,7 @@ export const rule: Rule = {
       excerpt: hit.match[0],
       explanation:
         "Standard cure periods are 10–60 days; outside that range, confirm the intent. Very short windows may be impossible to use; very long windows can frustrate termination.",
+      recommendation: "Confirm the cure period is the one intended, and restate it if it is not.",
       position: hit.position,
     });
   },

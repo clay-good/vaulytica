@@ -81,6 +81,19 @@ export type Finding = {
   tier?: RuleTier;
 };
 
+/**
+ * A finding is ACTIONABLE when it carries a recommendation (spec-v51 §4).
+ * Everything else is an observation: a fact about the document that needs no
+ * change — "Force majeure clause present". Severity is not the line: most
+ * `info` findings are observations, and some are gaps a drafter should close.
+ *
+ * The one definition. The compact report, the fix list and the comparison all
+ * ask this, so "what is left to do" means the same thing on each.
+ */
+export function isActionable(finding: Pick<Finding, "recommendation">): boolean {
+  return Boolean(finding.recommendation?.trim());
+}
+
 export type PlaybookOverride = {
   severity?: Severity;
   skip?: boolean;

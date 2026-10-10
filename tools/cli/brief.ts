@@ -18,7 +18,7 @@
  * surface, and a short report with no caveat reads as a clean bill.
  */
 
-import type { Finding, Severity } from "../../src/engine/finding.js";
+import { isActionable, type Finding, type Severity } from "../../src/engine/finding.js";
 import { truncate } from "../../src/engine/text.js";
 import { nonAdviceStatement } from "../../src/report/disclaimers.js";
 import { erroredRuleNotice } from "../../src/report/execution-log.js";
@@ -40,6 +40,11 @@ export type BriefFinding = {
   rule_id: string;
   rule_version: string;
   severity: Severity;
+  /**
+   * Carries a recommendation, so there is something to change. `false` is an
+   * observation — a fact about the document; do not delete a clause to clear it.
+   */
+  actionable: boolean;
   title: string;
   explanation: string;
   recommendation?: string;
@@ -62,6 +67,8 @@ export type Brief = {
     match_reasoning?: string;
   };
   counts: Counts;
+  /** How many findings carry a recommendation — what a drafter works through. */
+  actionable: number;
   findings: BriefFinding[];
   secondary_families?: Array<{ id: string; counts: Counts; findings?: BriefFinding[] }>;
   /** Families clearly present that the cap left unscanned. */
@@ -104,6 +111,7 @@ function briefFinding(f: Finding, excerpts: boolean): BriefFinding {
     rule_id: f.rule_id,
     rule_version: f.rule_version,
     severity: f.severity,
+    actionable: isActionable(f),
     title: truncate(printable(f.title), BRIEF_EXCERPT_CHARS),
     explanation: f.explanation,
     ...(f.recommendation ? { recommendation: f.recommendation } : {}),
@@ -145,6 +153,7 @@ export function buildBrief(
         : {}),
     },
     counts: countsOf(run.findings),
+    actionable: run.findings.filter(isActionable).length,
     findings: run.findings.map((f) => briefFinding(f, excerpts)),
     ...(r.secondary_families.length > 0
       ? {

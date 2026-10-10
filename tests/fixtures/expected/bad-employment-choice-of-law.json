@@ -21,7 +21,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "CHOICE-003",
-      "rule_version": "1.3.0"
+      "rule_version": "1.4.0"
     },
     {
       "elapsed_ms": 0,
@@ -281,14 +281,14 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -344,7 +344,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-003",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -529,7 +529,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -600,7 +600,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-004",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -635,7 +635,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-009",
-      "rule_version": "1.11.0"
+      "rule_version": "1.12.0"
     },
     {
       "elapsed_ms": 0,
@@ -719,7 +719,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-002",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -754,7 +754,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-007",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -768,7 +768,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-009",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1008,11 +1008,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "53997c33ff2117232f85609df07380e51087f392a15a341ce7df44f8bcc4178f",
+  "result_hash": "337e0ca4a1dfab0d55ddcb660a1e082aa11cae3805b31fcf83035dec81fc9907",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.860.0"
+  "version": "9.861.0"
 }
