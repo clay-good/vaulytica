@@ -11,6 +11,7 @@
 import { spawn, spawnSync, type ChildProcess } from "node:child_process";
 import { createRequire } from "node:module";
 import { readFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { Client } from "@modelcontextprotocol/client";
@@ -129,7 +130,8 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
 
       const refused = await client.callTool({
         name: "analyze_document",
-        arguments: { path: "/etc/hosts" },
+        // A real place outside the root on every OS.
+        arguments: { path: tmpdir() },
       });
       expect(refused.isError).toBe(true);
       expect((refused.content as Array<{ text: string }>)[0]!.text).toMatch(/outside the folders/);

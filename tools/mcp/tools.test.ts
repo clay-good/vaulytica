@@ -2,7 +2,15 @@
  * The tools as functions: what each accepts, refuses, and returns (spec-v48
  * §5–§9). The protocol around them is `tests/integration/mcp-server.test.ts`.
  */
-import { mkdir, mkdtemp, readFile, realpath, rm, symlink, writeFile } from "node:fs/promises";
+import {
+  mkdir,
+  mkdtemp,
+  readFile,
+  realpath,
+  rm,
+  symlink as fsSymlink,
+  writeFile,
+} from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -24,6 +32,14 @@ import {
 
 const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
 const NDA = join(SPECIMENS, "mutual-nda-complete.txt");
+
+/** Windows needs a privilege to create a symlink; there the link checks are skipped. */
+async function symlink(target: string, path: string): Promise<boolean> {
+  return fsSymlink(target, path).then(
+    () => true,
+    () => false,
+  );
+}
 
 let tmp: string;
 let ctx: { roots: string[]; deps: Awaited<ReturnType<typeof loadAccuracyDeps>> };
@@ -212,13 +228,15 @@ describe("allowed roots", () => {
     await mkdir(sibling, { recursive: true });
     await writeFile(join(sibling, "x.txt"), "secret");
     await writeFile(join(root, "in.txt"), "fine");
-    await symlink(join(sibling, "x.txt"), join(root, "link.txt"));
+    const linked = await symlink(join(sibling, "x.txt"), join(root, "link.txt"));
     expect(await resolveInRoots("in.txt", [root])).toBe(join(root, "in.txt"));
     await expect(resolveInRoots(join(sibling, "x.txt"), [root])).rejects.toThrow(
       /outside the folders/,
     );
     await expect(resolveInRoots("../room-secret/x.txt", [root])).rejects.toThrow(ToolError);
-    await expect(resolveInRoots("link.txt", [root])).rejects.toThrow(/outside the folders/);
+    if (linked) {
+      await expect(resolveInRoots("link.txt", [root])).rejects.toThrow(/outside the folders/);
+    }
     await expect(resolveInRoots("nope.txt", [root])).rejects.toThrow(/No such file/);
   });
 
@@ -226,10 +244,11 @@ describe("allowed roots", () => {
     const root = join(tmp, "room");
     expect(await resolveNewInRoots("out/reports", [root])).toBe(join(root, "out", "reports"));
     await expect(resolveNewInRoots("../elsewhere/out", [root])).rejects.toThrow(ToolError);
-    await symlink(tmpdir(), join(root, "escape"));
-    await expect(resolveNewInRoots("escape/new-dir", [root])).rejects.toThrow(
-      /outside the folders/,
-    );
+    if (await symlink(tmpdir(), join(root, "escape"))) {
+      await expect(resolveNewInRoots("escape/new-dir", [root])).rejects.toThrow(
+        /outside the folders/,
+      );
+    }
   });
 
   it("is what analyze_document reads through", async () => {
