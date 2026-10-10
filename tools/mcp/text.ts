@@ -39,16 +39,18 @@ export const ANALYZE_FOLDER = [
 ].join(" ");
 
 export const COMPARE_DOCUMENTS = [
-  "Not legal advice: a comparison of which named checks fire, not a judgment that a revision is better.",
-  "Analyzes two versions of one document and reports which findings the revision resolved, which it introduced, and which are unchanged, with clause counts (rewritten, added, removed) and the hashes that let a person reproduce the round.",
-  "Pass each side as a path (`base_path`, `revised_path`) or as text (`base_text`, `revised_text`).",
-  "A check also stops firing when the clause it read is deleted — read `clauses.removed` beside `resolved`. A clean comparison means the named checks no longer fire; it does not mean the document is complete, balanced, or enforceable.",
-  "Two versions that match different document types are refused; pass `document_type` to hold both to one type.",
+  "Not legal advice, and never a statement that a draft is good: it says which named checks fire, from a deterministic rule engine.",
+  "One round of a drafting loop. Analyzes two versions of one document (each a path or text) and returns `fixed` (actionable findings that no longer fire), `introduced` (findings the revision caused), `remaining` (actionable findings still firing, located in the revision), and `no_longer_present` (observations that disappeared).",
+  "A check also stops firing when its clause is DELETED. `removed` gives the clauses removed and the net word change, and says so when a round's progress came from removal. Do not delete a clause to clear a finding; an observation needs no change.",
+  "The revision is analyzed under the base draft's document type, so a heavy rewrite cannot make every type-specific check look fixed.",
+  "When to stop revising: `remaining` is empty; or a round fixed nothing; or the revised `result_hash` equals one from an earlier round (the draft is oscillating); or after five rounds. Then give the person the draft, this result, and the hashes — they reproduce the round.",
+  "`clean` appears when nothing actionable is left. It means the named checks no longer fire. It does not mean the document is complete, balanced, or enforceable.",
 ].join(" ");
 
 export const DESCRIBE_DOCUMENT_TYPE = [
   "Returns what one document type is checked for: its own checks in plain words with severity and any authority the rule cites, how many general checks run on every document, companion types, and sources.",
-  "Use it before drafting, to write to the checklist instead of iterating against it. It describes what a clause must do; it does not give the patterns the rules match, and it is not a statement of what the law requires.",
+  "Most findings come from the GENERAL checks. Call again with `general: true` for those: each with its description, and the recommendation the rule gives when the thing is missing.",
+  "Use it before drafting, to write to the checklist once and lint to confirm, instead of iterating against the linter. It describes what a clause must do; it does not give the patterns the rules match, and it is not a statement of what the law requires.",
 ].join(" ");
 
 export const EXPLAIN_RULE = [

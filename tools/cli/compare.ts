@@ -31,6 +31,7 @@
 
 import { readFile, writeFile } from "node:fs/promises";
 import { compareFiles } from "./api.js";
+import { buildComparisonBrief, comparisonBriefMarkdown } from "./comparison-brief.js";
 import {
   buildComparisonJsonObject,
   type Comparison,
@@ -242,6 +243,8 @@ export function formatCompareMarkdown(
   cmp: Comparison,
   clauseDiff: ClauseDiff,
   postureMovement?: PostureMovement,
+  /** The round's sections (fixed / introduced / remaining …), already rendered. */
+  round?: string,
 ): string {
   const { resolved, introduced, unchanged } = cmp.delta.counts;
   const lines: string[] = [];
@@ -270,6 +273,9 @@ export function formatCompareMarkdown(
     }
     lines.push("");
   }
+  // What this round fixed, caused and left — named, where the table above only
+  // counts. The Markdown used to name the introduced findings and nothing else.
+  if (round) lines.push(round);
   lines.push("## Document redline");
   lines.push("");
   lines.push(
@@ -330,11 +336,7 @@ export async function runCompare(argv: string[]): Promise<void> {
     }
   }
 
-  const {
-    comparison: cmp,
-    clause_diff: clauseDiff,
-    posture_movement: postureMovement,
-  } = await compareFiles(
+  const fileComparison = await compareFiles(
     { path: args.base },
     { path: args.revised },
     {
@@ -345,6 +347,11 @@ export async function runCompare(argv: string[]): Promise<void> {
       dkbDir: args.dkb,
     },
   );
+  const {
+    comparison: cmp,
+    clause_diff: clauseDiff,
+    posture_movement: postureMovement,
+  } = fileComparison;
 
   if (args.format === "docx") {
     // The comparison as the artifact a reviewer circulates, not a terminal
@@ -358,7 +365,14 @@ export async function runCompare(argv: string[]): Promise<void> {
       JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff, postureMovement), null, 2) + "\n",
     );
   } else {
-    process.stdout.write(formatCompareMarkdown(cmp, clauseDiff, postureMovement));
+    process.stdout.write(
+      formatCompareMarkdown(
+        cmp,
+        clauseDiff,
+        postureMovement,
+        comparisonBriefMarkdown(buildComparisonBrief(fileComparison)),
+      ),
+    );
   }
 
   if (args.failOn && introducedBreaches(cmp.delta.counts.introduced, args.failOn)) {

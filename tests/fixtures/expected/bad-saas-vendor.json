@@ -1272,11 +1272,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"subscription agreement\", \"master subscription\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"uptime\", \"subscription fee\".",
-  "result_hash": "688bc650e6a1e4c24be0b785eb31b7d50ce8812e0e19c64d4371ca872b1aefbe",
+  "result_hash": "7a1ffeeea69e41b66d75eafa4c584d18b11f47eed9ee5b21a3acc05bc88eb187",
   "source_file": {
     "name": "bad-saas-vendor.docx",
     "sha256": "34a996e89ddad53a381c934fb11d68b6d968e1435046fdfbb2bc6e0c6ded38cc",
     "size_bytes": 9236
   },
-  "version": "9.864.0"
+  "version": "9.865.0"
 }

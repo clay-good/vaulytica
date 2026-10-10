@@ -21,6 +21,15 @@
  */
 
 /** What the report is about, for the one clause that differs. */
+/**
+ * What a clean round of the drafting loop means (spec-v51 §7). An agent can
+ * write text that satisfies a pattern and says nothing; the engine cannot
+ * detect that and does not claim to. Said wherever a comparison reports that
+ * nothing actionable is left.
+ */
+export const LOOP_CLEAN_STATEMENT =
+  "No actionable findings remain. This means the named checks no longer fire. It does not mean the document is complete, balanced, or enforceable.";
+
 export type PrivacySubject = "document" | "bundle" | "comparison" | "review" | "folder";
 
 const SUBJECT: Record<PrivacySubject, string> = {

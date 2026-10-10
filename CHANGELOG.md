@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.865.0] — 2026-10-10
+
+### Added
+- **One round of a drafting loop, in one call.** `compare_documents` over MCP
+  returns `fixed` (actionable findings that no longer fire), `introduced`,
+  `remaining` (actionable findings still firing, located in the revision),
+  `no_longer_present` (observations that disappeared), and `removed` (clauses
+  removed and the net word change), with the hashes that reproduce the round.
+  An observation that disappears is not counted as fixed: that is what
+  deleting a clause does, and a round that cleared checks while clauses went
+  missing says so. When nothing actionable is left, the result carries one
+  fixed line: the named checks no longer fire; that does not mean the document
+  is complete, balanced, or enforceable.
+- **`compare --format markdown` names the round.** It listed only the
+  introduced findings; the fixed, remaining and no-longer-present ones are now
+  named too, under "This round".
+- **The revision is read as the base draft's document type** over MCP. The
+  command line refuses a pair that matches two types; in a loop the two drafts
+  are one document, and a heavy rewrite must not make every type-specific
+  check look fixed. The result says when it did this (`pinned_type`).
+- **`describe_document_type` returns the general checks** (`general: true`):
+  every general rule that runs on a type, with its description and the advice
+  it gives when the thing is missing. 87% of findings on the specimens come
+  from general rules, and the catalog gave them as a number. It returns a
+  rule's description, never its pattern.
+
+The comparison hash is unchanged (spec-v51 Step 321; v51 is complete).
+
 ## [9.864.0] — 2026-10-10
 
 ### Fixed

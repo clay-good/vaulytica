@@ -16,12 +16,13 @@ import {
   analyzeDocument,
   analyzeFolder,
   buildBrief,
+  buildComparisonBrief,
   checkConsistency,
   compareFiles,
   describeDocumentType,
   explainRule,
+  generalChecksFor,
   exportArtifacts,
-  isActionable,
   isDocumentType,
   listDocumentTypes,
   triageFolder,
@@ -491,18 +492,6 @@ async function side(
   return { text: text!, filename: `${which}.txt` };
 }
 
-const delta = (f: {
-  rule_id: string;
-  severity: string;
-  title: string;
-  recommendation?: string;
-}) => ({
-  rule_id: f.rule_id,
-  severity: f.severity,
-  actionable: isActionable(f),
-  title: f.title,
-});
-
 export async function compareDocumentsTool(args: CompareDocumentsArgs, ctx: Context) {
   const base = await side("base", args.base_path, args.base_text, ctx);
   const revised = await side("revised", args.revised_path, args.revised_text, ctx);
@@ -511,65 +500,44 @@ export async function compareDocumentsTool(args: CompareDocumentsArgs, ctx: Cont
       `"${args.document_type}" is not a document type id. Find one with list_document_types.`,
     );
   }
-  let r: Awaited<ReturnType<typeof compareFiles>>;
   try {
-    r = await compareFiles(base, revised, { deps: ctx.deps, playbookId: args.document_type });
+    // The two drafts are one document by construction, so the revision is held
+    // to the base draft's type: a heavy rewrite must not turn every
+    // type-specific check into "fixed".
+    return buildComparisonBrief(
+      await compareFiles(base, revised, {
+        deps: ctx.deps,
+        playbookId: args.document_type,
+        pinType: true,
+      }),
+    );
   } catch (e) {
-    // A cross-family pair, or a side that could not be read: both are the
-    // caller's to fix, and both arrive as a sentence.
+    // A side that could not be read is the caller's to fix, and arrives as a sentence.
     throw new ToolError(e instanceof Error ? e.message : String(e));
   }
-  const { comparison: cmp, clause_diff: diff } = r;
-  return {
-    comparison_hash: cmp.result_hash,
-    base: { name: cmp.base.name, type: cmp.base.playbook_id, result_hash: cmp.base.result_hash },
-    revised: {
-      name: cmp.revised.name,
-      type: cmp.revised.playbook_id,
-      result_hash: cmp.revised.result_hash,
-      sha256: r.revised.run.source_file.sha256,
-    },
-    counts: {
-      resolved: cmp.delta.counts.resolved.total,
-      introduced: cmp.delta.counts.introduced.total,
-      unchanged: cmp.delta.counts.unchanged.total,
-    },
-    resolved: cmp.delta.resolved.map(delta),
-    introduced: cmp.delta.introduced.map(delta),
-    unchanged: cmp.delta.unchanged.map((u) => ({
-      ...delta(u.finding),
-      clause_changed: u.clause_changed,
-    })),
-    clauses: {
-      rewritten: diff.changed.length,
-      added: diff.added.length,
-      removed: diff.removed.length,
-      // Same words, a different clause number: not an edit.
-      renumbered: diff.renumbered.length,
-      unchanged: diff.unchanged_count,
-    },
-    caveats: {
-      ...(cmp.dkb_mismatch
-        ? { dkb_mismatch: "The two sides were analyzed against different knowledge-base versions." }
-        : {}),
-      comparison:
-        "Findings are matched by rule. `resolved` means a named check no longer fires — which also " +
-        "happens when the clause it read was deleted, so read `clauses.removed` beside it. It does " +
-        "not mean the document is complete, balanced, or enforceable.",
-      not_legal_advice: NOT_LEGAL_ADVICE_BUNDLE,
-    },
-  };
 }
 
 /* ---------------- describe_document_type, explain_rule ---------------- */
 
-export async function describeDocumentTypeTool(args: { id: string }, ctx: Context) {
-  const type = await describeDocumentType(args.id, { deps: ctx.deps });
-  if (!type) {
-    throw new ToolError(
-      `"${args.id}" is not a document type id. Find one with list_document_types.`,
-    );
+export async function describeDocumentTypeTool(
+  args: { id: string; general?: boolean },
+  ctx: Context,
+) {
+  const unknown = (): ToolError =>
+    new ToolError(`"${args.id}" is not a document type id. Find one with list_document_types.`);
+  if (args.general) {
+    // The general checks are a result of their own: with the type's own checks
+    // they would not fit in one.
+    const general = await generalChecksFor(args.id, { deps: ctx.deps });
+    if (!general) throw unknown();
+    return {
+      id: args.id,
+      general,
+      note: "These run on every document of this type. `recommendation` is what the rule asks for when the thing is missing; a check without one flags a clause that is present.",
+    };
   }
+  const type = await describeDocumentType(args.id, { deps: ctx.deps });
+  if (!type) throw unknown();
   return type;
 }
 

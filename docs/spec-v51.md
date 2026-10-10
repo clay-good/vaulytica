@@ -1,6 +1,6 @@
 # Vaulytica v51 — The Drafting Loop (Lint, Revise, Re-Lint, and Know When to Stop)
 
-> **Status:** **In progress.** Steps 318–320 shipped in 9.861.0, 9.863.0 and 9.864.0; Step 321 is not built. Continues after [`spec-v50.md`](spec-v50.md), beginning at **Step 318**.
+> **Status:** **Built (9.861.0–9.865.0).** Steps 318–321 shipped. Continues after [`spec-v50.md`](spec-v50.md), beginning at **Step 318**.
 > **Scope:** one idea — an agent or a person revising a draft should be able to ask "what did my change fix, what did it cause, and what did it remove?" and get a deterministic answer. Most of the machinery exists; v51 fixes what running the loop exposed and defines where it ends.
 > **Posture (unchanged):** deterministic, presence-only, no AI in the engine. **A clean lint is a floor, not a review.** The tool never says a draft is good; it says which named checks no longer fire.
 > **Cousin docs:** [`spec-v8.md`](spec-v8.md) Part XVIII (where the clause redline is recorded as built), [`spec-v48.md`](spec-v48.md) (the MCP tools that carry this), [`posture-for-attorneys.md`](posture-for-attorneys.md).

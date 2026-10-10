@@ -239,42 +239,89 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
 });
 
 describe("compare_documents", { timeout: 300_000 }, () => {
-  it("gives the comparison hash `compare --format json` gives", async () => {
+  it("gives the comparison hash `compare --format json` gives, in the loop's words", async () => {
     const revised = join(tmp, "revised.txt");
     // Cut the second half: clauses go missing, so checks start to fire.
     const whole = readFileSync(NDA, "utf8");
     writeFileSync(revised, whole.slice(0, Math.floor(whole.length / 2)));
     const fromCli = JSON.parse(cli("compare", NDA, revised, "--format", "json").stdout) as {
       result_hash: string;
-      summary: { resolved: { total: number }; introduced: { total: number } };
+      summary: {
+        resolved: { total: number };
+        introduced: { total: number };
+        unchanged: { total: number };
+      };
     };
     const r = await compareDocumentsTool({ base_path: NDA, revised_path: revised }, ctx);
     expect(r.comparison_hash).toBe(fromCli.result_hash);
-    expect(r.counts.resolved).toBe(fromCli.summary.resolved.total);
-    expect(r.counts.introduced).toBe(fromCli.summary.introduced.total);
+    // The same delta, split by what there is to do about it.
+    expect(r.fixed.length + r.no_longer_present.length).toBe(fromCli.summary.resolved.total);
+    expect(r.introduced).toHaveLength(fromCli.summary.introduced.total);
+    expect(r.remaining.length + r.observations_unchanged).toBe(fromCli.summary.unchanged.total);
     expect(r.introduced.length).toBeGreaterThan(0);
     expect(r.clauses.removed).toBeGreaterThan(0);
-    expect(r.caveats.comparison).toMatch(/does not mean the document is complete/);
+    expect(r.removed.words_net).toBeLessThan(0);
+    // Something actionable was introduced, so nothing says the round is clean.
+    expect(r.clean).toBeUndefined();
+    expect(r.revised.sha256).toMatch(/^[0-9a-f]{64}$/);
     expect(JSON.stringify(r).length).toBeLessThan(12_000);
   });
 
-  it("takes text on either side and refuses a cross-family pair with the reason", async () => {
+  it("reports a deletion as a removal, not as a fix", async () => {
+    const base = readFileSync(NDA, "utf8");
+    const first = await analyzeDocumentTool({ text: base, include: [] }, ctx);
+    if ("not_analyzed" in first) throw new Error(first.not_analyzed);
+    // An observation that quotes a clause — "X clause present". Delete the
+    // paragraph it quotes. (Not every observation clears that way: a count of
+    // negative covenants survives the loss of one. The first that does is used.)
+    const paragraphs = base.split("\n\n");
+    const observations = first.findings.filter(
+      (f) => !f.actionable && f.end_offset > f.start_offset,
+    );
+    expect(observations.length).toBeGreaterThan(0);
+    let shown = false;
+    for (const observation of observations) {
+      const kept = paragraphs.filter((p) => !p.includes(observation.excerpt!.slice(0, 40)));
+      if (kept.length !== paragraphs.length - 1) continue;
+      const r = await compareDocumentsTool(
+        { base_text: base, revised_text: kept.join("\n\n") },
+        ctx,
+      );
+      if (!r.no_longer_present.some((f) => f.rule_id === observation.rule_id)) continue;
+      shown = true;
+      // It disappeared because its clause did — so it is not counted as fixed.
+      expect(r.fixed.map((f) => f.rule_id)).not.toContain(observation.rule_id);
+      expect(r.removed.clauses).toBeGreaterThanOrEqual(1);
+      expect(r.removed.words_net).toBeLessThan(0);
+      expect(r.removed.note).toMatch(/not a fix/);
+      break;
+    }
+    expect(shown, "no observation cleared when its clause was deleted").toBe(true);
+  });
+
+  it("takes text on either side, and holds a rewrite to the base draft's type", async () => {
     const text = readFileSync(NDA, "utf8");
     const same = await compareDocumentsTool({ base_text: text, revised_text: text }, ctx);
-    expect(same.counts).toMatchObject({ resolved: 0, introduced: 0 });
+    expect(same.fixed).toEqual([]);
+    expect(same.introduced).toEqual([]);
+    expect(same.pinned_type).toBeUndefined();
+    expect(same.removed.note).toBeUndefined();
     await expect(compareDocumentsTool({ base_path: NDA }, ctx)).rejects.toThrow(/revised_path/);
-    await expect(
-      compareDocumentsTool(
-        { base_path: NDA, revised_path: join(SPECIMENS, "physician-employment.txt") },
-        ctx,
-      ),
-    ).rejects.toThrow(/family/);
+    // The command line refuses a pair that matches two types. In a drafting
+    // loop the two drafts are one document, so the revision is read as the
+    // base's type instead — and the result says so.
+    const other = join(SPECIMENS, "physician-employment.txt");
+    expect(cli("compare", NDA, other, "--format", "json").stderr).toMatch(/family/);
+    const pinned = await compareDocumentsTool({ base_path: NDA, revised_path: other }, ctx);
+    expect(pinned.pinned_type).toBe("mutual-nda-deep");
+    expect(pinned.revised.type).toBe(pinned.base.type);
   });
 });
 
 describe("describe_document_type and explain_rule", () => {
   it("answer from the catalog and refuse an unknown id with where to look", async () => {
     const t = await describeDocumentTypeTool({ id: "mutual-nda-deep" }, ctx);
+    if (!("checks" in t)) throw new Error("expected the type's own checks");
     expect(t.checks.length).toBeGreaterThan(5);
     expect(JSON.stringify(t)).not.toMatch(/present_patterns|RegExp|\\\\b/);
     await expect(describeDocumentTypeTool({ id: "nope" }, ctx)).rejects.toThrow(
@@ -299,6 +346,27 @@ describe("describe_document_type and explain_rule", () => {
     }
     expect(largest).toBeLessThanOrEqual(40_000);
     expect(largest).toBeGreaterThan(2_000);
+  });
+
+  it("returns the general checks a type runs, with the advice each gives on an empty page", async () => {
+    const r = await describeDocumentTypeTool({ id: "mutual-nda-deep", general: true }, ctx);
+    if (!("general" in r)) throw new Error("expected the general checks");
+    // None of them is one of the type's own checks.
+    const own = await describeDocumentTypeTool({ id: "mutual-nda-deep" }, ctx);
+    if (!("checks" in own)) throw new Error("expected the type's own checks");
+    const ownIds = new Set(own.checks.map((c) => c.id));
+    expect(r.general.some((c) => ownIds.has(c.id))).toBe(false);
+    // The count is the number the catalog has always given for this type.
+    expect(r.general).toHaveLength(own.general_checks);
+    // A check that asks for something missing brings its advice; none gives a pattern.
+    const withAdvice = r.general.filter((c) => c.recommendation);
+    expect(withAdvice.length).toBeGreaterThan(3);
+    expect(r.general.find((c) => c.id === "STRUCT-003")?.recommendation).toBeTruthy();
+    expect(JSON.stringify(r)).not.toMatch(/present_patterns|\\\\[bsd]/);
+    expect(JSON.stringify(r).length).toBeLessThanOrEqual(40_000);
+    await expect(describeDocumentTypeTool({ id: "nope", general: true }, ctx)).rejects.toThrow(
+      /list_document_types/,
+    );
   });
 });
 

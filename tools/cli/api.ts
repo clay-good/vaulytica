@@ -450,6 +450,11 @@ export type { AccuracyDeps };
 export { buildBrief, BRIEF_SCHEMA, type Brief, type BriefFinding } from "./brief.js";
 export { isActionable } from "../../src/engine/finding.js";
 export {
+  buildComparisonBrief,
+  comparisonBriefMarkdown,
+  type ComparisonBrief,
+} from "./comparison-brief.js";
+export {
   buildTriage,
   buildTriageJson,
   buildTriageMarkdown,
@@ -723,6 +728,8 @@ export async function checkConsistency(
 export type FileComparison = {
   comparison: Comparison;
   clause_diff: ClauseDiff;
+  /** Set when `pinType` held the revision to the base draft's document type. */
+  pinned_type?: string;
   posture_movement?: PostureMovement;
   base: AnalyzeResult;
   revised: AnalyzeResult;
@@ -741,6 +748,13 @@ export async function compareFiles(
     customPlaybook?: CustomPlaybook;
     posture?: boolean;
     confirmPairing?: boolean;
+    /**
+     * Analyze the revision under the BASE draft's document type. A heavy
+     * rewrite can flip which type a draft matches, and then every type-specific
+     * rule looks resolved or introduced — or the pair is refused outright. In a
+     * drafting loop the two drafts are one document by construction.
+     */
+    pinType?: boolean;
     deps?: AccuracyDeps;
     dkbDir?: string;
   } = {},
@@ -753,7 +767,12 @@ export async function compareFiles(
     posture: opts.posture,
   };
   const baseR = await analyzeDocument(base, analyzeOpts);
-  const revisedR = await analyzeDocument(revised, analyzeOpts);
+  const pin = opts.pinType && !opts.playbookId ? baseR.playbook_id : undefined;
+  let revisedR = await analyzeDocument(revised, analyzeOpts);
+  // Only when the match actually moved: a revision that still matches the
+  // base's type is the same run either way, and so is its hash.
+  const pinned = pin !== undefined && revisedR.playbook_id !== pin;
+  if (pinned) revisedR = await analyzeDocument(revised, { ...analyzeOpts, playbookId: pin });
   const comparison = await compareRuns(baseR.run, revisedR.run, {
     confirmPairing: opts.confirmPairing,
     warnings: { base: baseR.ingest.warnings, revised: revisedR.ingest.warnings },
@@ -765,6 +784,7 @@ export async function compareFiles(
   return {
     comparison,
     clause_diff: buildClauseDiff(baseR.ingest.tree, revisedR.ingest.tree),
+    ...(pinned ? { pinned_type: pin } : {}),
     ...(posture_movement ? { posture_movement } : {}),
     base: baseR,
     revised: revisedR,
@@ -1038,6 +1058,60 @@ export async function describeDocumentType(
     })),
     ...(resolved !== id ? { superseded_from: id } : {}),
   };
+}
+
+/** A document with no legal content: what fires on it is what a rule wants ADDED. */
+const BARE_DOCUMENT = "The parties met on a Tuesday and discussed the weather.";
+
+export type GeneralCheck = {
+  id: string;
+  name: string;
+  /** What the check looks for — never the pattern it matches. */
+  description: string;
+  severity: Severity;
+  /**
+   * What the rule tells a drafter to do when the thing is missing. Absent for
+   * a check that flags a clause that is present (it has nothing to ask of an
+   * empty page).
+   */
+  recommendation?: string;
+};
+
+/**
+ * The GENERAL checks that run on a document of this type (spec-v51 §6).
+ *
+ * The catalog lists each type's own checks and gives the general ones as a
+ * number — and on the specimens 87% of findings come from general rules. A
+ * drafter working to the checklist needs them. They are read off a run: the
+ * type's rule set is applied to a document with no legal content, every
+ * general rule that RAN is listed with its description, and one that fired
+ * brings the advice it gave. `null` for an unknown type.
+ */
+export async function generalChecksFor(
+  id: string,
+  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
+): Promise<GeneralCheck[] | null> {
+  const data = await docTypes();
+  const resolved = data.superseded[id] ?? id;
+  if (!data.types.some((t) => t.id === resolved)) return null;
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  const { run } = await analyzeText(BARE_DOCUMENT, "blank.txt", { deps, playbookId: resolved });
+  const byId = new Map(ALL_RULES.map((r) => [r.id, r]));
+  const advice = new Map(run.findings.map((f) => [f.rule_id, f.recommendation]));
+  const out: GeneralCheck[] = [];
+  for (const entry of run.execution_log) {
+    const rule = byId.get(entry.rule_id);
+    if (!entry.ran || !rule || (rule.applies_to_playbooks?.length ?? 0) > 0) continue;
+    const recommendation = advice.get(rule.id);
+    out.push({
+      id: rule.id,
+      name: rule.name,
+      description: rule.description,
+      severity: rule.default_severity,
+      ...(recommendation ? { recommendation } : {}),
+    });
+  }
+  return out;
 }
 
 /**

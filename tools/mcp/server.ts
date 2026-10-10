@@ -200,7 +200,13 @@ async function main(): Promise<void> {
       {
         title: "What a document type is checked for",
         description: DESCRIBE_DOCUMENT_TYPE,
-        inputSchema: z.object({ id: z.string().describe("A type id from list_document_types.") }),
+        inputSchema: z.object({
+          id: z.string().describe("A type id from list_document_types."),
+          general: z
+            .boolean()
+            .optional()
+            .describe("true: the general checks that run on this type, instead of its own."),
+        }),
         annotations: READ_ONLY,
       },
       (args) => answer(async () => describeDocumentTypeTool(args, { roots, deps: await deps })),

@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `23 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.864.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `23 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.865.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1237,8 +1237,8 @@ node bin/vaulytica.mjs mcp --root /path/to/contracts
 | `analyze_document`    | `path` or `text` (+ `filename`); `document_type`, `min_severity`, `include`, `excerpts`, `cursor` | the compact report; past 40,000 characters, a page and a `next_cursor`  |
 | `list_document_types` | `query`, `limit`, `cursor`                                                                        | `id` and name, 50 per page; summaries when `query` is given             |
 | `analyze_folder`      | `dir` (a folder or `.zip`) or `paths[]`; `related`, `cursor`                                      | the triage page: every file in a tier, systemic rules, and a spot check |
-| `compare_documents`   | `base_path` or `base_text`; `revised_path` or `revised_text`; `document_type`                     | resolved / introduced / unchanged, clause counts, and the hashes        |
-| `describe_document_type` | `id`                                                                                           | the checks that type runs, in plain words, with authorities             |
+| `compare_documents`   | `base_path` or `base_text`; `revised_path` or `revised_text`; `document_type`                     | one round of a drafting loop: `fixed`, `introduced`, `remaining`, `no_longer_present`, `removed`, and the hashes |
+| `describe_document_type` | `id`, `general`                                                                                | the checks that type runs, in plain words, with authorities; `general: true` returns the general checks and the advice each gives |
 | `explain_rule`        | `rule_id`                                                                                         | what the rule carries: name, version, severity, types, citations        |
 | `export_report`       | `path`, `formats[]`, `out_dir`, `overwrite`                                                       | writes the artifacts `analyze --out` writes; returns the paths          |
 
@@ -1251,6 +1251,7 @@ node bin/vaulytica.mjs mcp --root /path/to/contracts
 - **Size limits, set from a measurement.** Analysis is synchronous at about 4 ms per KB, so one call takes at most 500,000 characters of text (about two seconds) or a 10 MB `.docx` / `.pdf`. Larger files go through the CLI, which has no such limit.
 - **Document text is data.** A contract can say "ignore your instructions." Quoted text travels only in `excerpt`, `section_label`, `title` and `name`, each capped at 300 characters with control characters removed; `excerpts: false` drops the quotes.
 - **A folder is not a deal.** `analyze_folder` reads at most 200 files, 8 levels deep, and runs the cross-document rules only when `related: true` says the files belong together.
+- **The drafting loop.** `compare_documents` says what a revision fixed, caused and left, in terms of `actionable`: an observation that disappears is listed apart from `fixed`, because that is what deleting a clause does, and `removed` gives the clauses removed and the net word change. The revision is read as the base draft's document type, so a heavy rewrite cannot make every type-specific check look fixed. Stop when `remaining` is empty, when a round fixes nothing, when a revised `result_hash` repeats, or after five rounds. When nothing actionable is left the result says what that means: the named checks no longer fire — not that the document is complete, balanced, or enforceable.
 - **`export_report` is the one tool that writes.** It writes only under an allowed folder and never replaces a file without `overwrite: true`.
 
 **Install.** Clone, `npm ci`, then register the launcher with your agent host. For Claude Code, from the folder that holds the contracts:
