@@ -1,6 +1,6 @@
 # Vaulytica v49 — The Documents People Actually Bring (Families the Catalog Returns Nothing For)
 
-> **Status:** **Proposed (2026-10-10).** Not built. Continues after [`spec-v48.md`](spec-v48.md), beginning at **Step 308**.
+> **Status:** **In progress.** Step 309 shipped in 9.854.0; the rest is not built. Continues after [`spec-v48.md`](spec-v48.md), beginning at **Step 308**.
 > **Scope:** one idea — pick new families by **what a visitor drops and gets an empty report for**, not by what a law firm's practice list contains. Ten measured families now, a second tranche chosen by the same test.
 > **Posture (unchanged):** deterministic, presence-only, citable. Every check names its authority and says plainly when that authority is customary practice rather than a rule that compels the clause.
 > **Cousin docs:** [`spec-v45.md`](spec-v45.md) (the column-first discipline this reuses), [`adding-a-playbook.md`](adding-a-playbook.md), [`spec-v47.md`](spec-v47.md) (the currency guard every new citation joins), [`verticals.md`](verticals.md).

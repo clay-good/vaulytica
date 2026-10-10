@@ -76,4 +76,36 @@ describe("PERS-008 — training-repayment / stay-or-pay", () => {
     ]);
     expect(PERS_008.check(ctx)).toBeNull();
   });
+
+  it("fires when the payee sits between verb and object (v1.3.0, spec-v49 §1)", () => {
+    const ctx = buildContext([
+      "Training",
+      "If the Employee resigns within 24 months, the Employee shall repay the Employer the full cost of the training.",
+    ]);
+    expect(PERS_008.check(ctx)).not.toBeNull();
+  });
+
+  it("fires on `repay the cost of such training` (v1.3.0)", () => {
+    const ctx = buildContext([
+      "Training",
+      "Employee shall repay the cost of such training if Employee leaves within one (1) year.",
+    ]);
+    expect(PERS_008.check(ctx)).not.toBeNull();
+  });
+
+  it("does not read a vendor repaying an unrelated cost as a TRAP (v1.3.0)", () => {
+    const ctx = buildContext([
+      "Refunds",
+      "Vendor shall repay the Company the full cost of the defective units. Training is provided separately.",
+    ]);
+    expect(PERS_008.check(ctx)).toBeNull();
+  });
+
+  it("states the dates read at the official sources on 2026-10-10 (v1.3.0)", () => {
+    const ctx = buildContext(["Training", "Employee shall repay the training costs."]);
+    const f = PERS_008.check(ctx);
+    expect(f?.explanation).toContain("on or after January 1, 2027");
+    expect(f?.explanation).toContain("effective December 19, 2026");
+    expect(f?.explanation).not.toContain("January 1, 2026");
+  });
 });

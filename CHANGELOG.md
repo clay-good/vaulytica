@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.854.0] — 2026-10-10
+
+### Fixed
+- **`PERS-008` stated a superseded California date.** The finding said Bus. &
+  Prof. Code § 16608 reaches contracts entered on or after January 1, 2026.
+  The section was amended (AB 1697, Stats. 2026, ch. 889, effective
+  September 30, 2026): it now applies to contracts entered into **on or after
+  January 1, 2027**, and the text as first enacted is inoperative for 2026.
+  The New York sentence said "confirm its effective date"; Labor Law art. 37
+  (§§ 1050–1055) is **effective December 19, 2026**. Both read at the official
+  sources on 2026-10-10 (leginfo.legislature.ca.gov, nysenate.gov). Rule
+  version 1.2.0 → 1.3.0 (spec-v49 Step 309).
+- **`PERS-008` missed a payee between the verb and the object.** "shall repay
+  the Employer the full cost of the training" drew nothing, and neither did
+  "repay the cost of such training"; both fire now. A vendor repaying the cost
+  of defective units still does not.
+- **The site claimed completeness it cannot measure.** Six sentences on the
+  homepage and the AI-alternative page ("exhaustive", "catches that failure
+  mode every time", "Prove you didn't", "never skip a check", "nothing on the
+  checklist was missed") are rewritten to the determinism claim: the same
+  checks run every time, and the report lists them. A new guard
+  (`site-overclaim.test.ts`) bans the phrases from the site sources
+  (spec-v53 Step 329; its `/known-limits` links wait for Step 328).
+
 ## [9.853.0] — 2026-10-06
 
 ### Added

@@ -433,7 +433,7 @@ export const SEO_PAGES: ReadonlyArray<SeoPage> = [
         "Most AI tools send your document to a hosted model. Vaulytica has no server to send it to.",
       ],
       [
-        "Exhaustive by design",
+        "Every check, listed",
         "Every applicable rule runs on every document, and the audit trail lists the rules that found nothing as well as the ones that fired.",
       ],
       [
@@ -447,7 +447,7 @@ export const SEO_PAGES: ReadonlyArray<SeoPage> = [
     ],
     extra: {
       heading: "Use both",
-      html: "<p>The two approaches answer different questions. An AI assistant helps you understand a document; a deterministic checker makes sure nothing on the checklist was missed and gives you a record you can show someone else. Many reviewers run Vaulytica first, then spend their judgment — or an AI tool — on the findings it surfaces.</p>",
+      html: "<p>The two approaches answer different questions. An AI assistant helps you understand a document; a deterministic checker runs the whole checklist the same way every time and gives you a record you can show someone else. Many reviewers run Vaulytica first, then spend their judgment — or an AI tool — on the findings it surfaces.</p>",
     },
     faq: [
       [
@@ -456,7 +456,7 @@ export const SEO_PAGES: ReadonlyArray<SeoPage> = [
       ],
       [
         "Is deterministic review less capable than AI review?",
-        "It is narrower. It cannot interpret or draft, but it will never skip a check or invent a clause that is not there, and each result can be traced to its source.",
+        "It is narrower. It cannot interpret or draft, but it runs the same checks on every document, quotes only text that is in the document, and each result can be traced to its source.",
       ],
       [
         "Why would a lawyer prefer a deterministic tool?",
