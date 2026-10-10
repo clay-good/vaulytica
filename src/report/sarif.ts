@@ -43,6 +43,7 @@ import type { CriticalDate, CriticalDateKind } from "./critical-dates.js";
 import { selectStateOverlays } from "../dkb/state-overlays.js";
 import type { ExtractedData } from "../extract/types.js";
 import type { ConsistencyFinding, ConsistencyRun } from "../engine/consistency/types.js";
+import { KNOWN_LIMITS_URL } from "./disclaimers.js";
 
 /**
  * Thrust B (the closing checklist) in SARIF, WITHOUT duplicating a single
@@ -83,7 +84,9 @@ const CRITICAL_DATE_KIND_LABEL: Record<CriticalDateKind, string> = {
 
 const SARIF_SCHEMA =
   "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json";
-const INFORMATION_URI = "https://github.com/clay-good/vaulytica";
+// Where a reader of a code-scanning alert learns how far to trust it: what
+// the tool has not measured, and where it is known to be wrong (spec-v53 §3).
+const INFORMATION_URI = KNOWN_LIMITS_URL;
 
 /** Synthetic rule id for the unmatched-document banner in SARIF output. */
 const CLASSIFICATION_NOTICE_RULE_ID = "VAULYTICA-CLASSIFICATION-NOTICE";

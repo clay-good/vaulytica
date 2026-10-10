@@ -1,0 +1,87 @@
+{
+ "reads": {
+  "max_document_mb": 50,
+  "max_ocr_pages": 500,
+  "max_secondary_families": 4,
+  "match_threshold": 0.5
+ },
+ "self_measured": {
+  "specimens": 327,
+  "document_types": 265,
+  "rules": 1825,
+  "attorney_signed_rules": 0
+ },
+ "open": [
+  {
+   "id": "defined-terms-layout",
+   "count": 47,
+   "sentence": "On 47 specimen-and-layout pairs, rewriting a document's line structure (blank lines stripped, hard-wrapped, double-spaced) makes the defined-terms table gain or lose a term."
+  },
+  {
+   "id": "expected-defined-terms",
+   "count": 27,
+   "sentence": "On 27 specimens, a correct document does not use every defined term its document type expects, so enforcing that list as a rule would accuse it of a drafting defect. The list is not enforced for that reason."
+  },
+  {
+   "id": "party-names-layout",
+   "count": 27,
+   "sentence": "On 27 specimen-and-layout pairs, a party's name is read differently when the layout changes — most often a corporate suffix drifting in or out of the name."
+  },
+  {
+   "id": "hyphenated-line-breaks",
+   "count": 25,
+   "sentence": "On 25 specimens, when a long word is split across lines with a hyphen (as a PDF does), a finding appears or disappears because the broken word hides a phrase a rule looks for."
+  },
+  {
+   "id": "capitals-limitation-of-liability",
+   "count": 15,
+   "sentence": "On 15 specimens, setting the limitation of liability in capital letters moves a finding, usually because a party name or a heading can no longer be told from the words around it."
+  },
+  {
+   "id": "agreement-renamed-contract",
+   "count": 10,
+   "sentence": "On 10 specimens, calling the document a Contract instead of an Agreement moves a finding — most often because the document's title no longer contains the word it defines."
+  },
+  {
+   "id": "late-fee-rate-in-words",
+   "count": 9,
+   "sentence": "On 9 specimens, a late-fee rate written in words (\"five percent\") is not read, so the usury check stays silent."
+  },
+  {
+   "id": "capitals-indemnity",
+   "count": 6,
+   "sentence": "On 6 specimens, setting the indemnity clause in capital letters moves a finding; with no lowercase letters, where a sentence starts — and so who indemnifies whom — can be misread."
+  },
+  {
+   "id": "capitals-warranty-disclaimer",
+   "count": 4,
+   "sentence": "On 4 specimens, setting the warranty disclaimer in capital letters (as drafters do) moves a finding."
+  },
+  {
+   "id": "section-renamed-article",
+   "count": 3,
+   "sentence": "On 3 specimens that already have Articles, renaming every Section to an Article makes two numbering schemes collide, and a cross-reference finding appears that the original does not draw."
+  },
+  {
+   "id": "critical-dates-double-spacing",
+   "count": 1,
+   "sentence": "On 1 specimen, double-spacing the document changes which deadline the critical-dates register derives."
+  },
+  {
+   "id": "passive-voice-indemnity",
+   "count": 1,
+   "sentence": "On 1 specimen, rewriting an indemnity in the passive voice (\"shall be indemnified by\") draws a one-sided-indemnity finding the original does not."
+  },
+  {
+   "id": "section-renamed-clause",
+   "count": 1,
+   "sentence": "On 1 specimen, renaming every Section to a Clause moves a finding."
+  }
+ ],
+ "held_at_zero": [
+  "amounts-layout",
+  "dates-layout",
+  "jurisdictions-layout",
+  "shall-written-as-must"
+ ]
+}

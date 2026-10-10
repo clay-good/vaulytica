@@ -59,6 +59,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR)
@@ -134,55 +135,7 @@ async function terms(text: string): Promise<string[]> {
 // Share" — and most of the old entries were exactly that glue. What remains
 // is the inverse: a rewrite that breaks the line structure (blank lines
 // stripped, hard-wrapped) still glues.
-const TERM_FORMAT_DEBT: readonly string[] = [
-  "advertising-insertion-order.txt [blank lines stripped] lost:Flight Dates gained:-",
-  "coi.txt [blank lines stripped] lost:INSURERS AFFORDING COVERAGE Insurer A gained:Insurer A",
-  "coi.txt [double-spaced] lost:INSURERS AFFORDING COVERAGE Insurer A gained:Insurer A",
-  "construction-lien-waiver.txt [blank lines stripped] lost:Through Date gained:-",
-  "credit-card.txt [blank lines stripped] lost:Minimum Interest Charge gained:-",
-  "cta.txt [blank lines stripped] lost:- gained:Chief Executive Officer ACKNOWLEDGED",
-  "cyber-policy.txt [blank lines stripped] lost:Continuity Date gained:-",
-  "cyber-policy.txt [hard-wrapped] lost:Retroactive Date gained:Named Insured Retroactive Date",
-  "demand-for-inspection.txt [blank lines stripped] lost:PROPOUNDING PARTY gained:-",
-  "demand-letter.txt [blank lines stripped] lost:Our Client gained:-",
-  "demand-letter.txt [hard-wrapped] lost:Our Client gained:-",
-  "do-liability-policy.txt [hard-wrapped] lost:Policy Period gained:-",
-  "earnout.txt [smart quotes] lost:Sellers' Representative gained:Sellers’ Representative",
-  "employment-arbitration.txt [blank lines stripped] lost:- gained:Chief People Officer EMPLOYEE",
-  "equipment-finance-lease.txt [blank lines stripped] lost:LLC LESSEE gained:-",
-  "escrow-agreement-indemnity.txt [smart quotes] lost:Sellers' Representative gained:Sellers’ Representative",
-  "fdd.txt [double-spaced] lost:- gained:TOTAL ESTIMATED INITIAL INVESTMENT",
-  "information-security-policy.txt [double-spaced] lost:Thornapple Instruments Corporation Policy Owner gained:Policy Owner",
-  "insurance-endorsement-additional-insured.txt [blank lines stripped] lost:Authorized Representative gained:-",
-  "insurance-endorsement-additional-insured.txt [hard-wrapped] lost:Named Insured gained:-",
-  "lease-loi.txt [blank lines stripped] lost:- gained:Managing Member ACKNOWLEDGED AND AGREED",
-  "litigation-funding.txt [smart quotes] lost:Claimant's Counsel gained:Claimant’s Counsel",
-  "option-grant.txt [blank lines stripped] lost:Expiration Date gained:-",
-  "option-grant.txt [hard-wrapped] lost:Exercise Price Per Share,Expiration Date gained:-",
-  "order-form.txt [blank lines stripped] lost:Effective Date gained:-",
-  "partnership-agreement.txt [blank lines stripped] lost:- gained:Manager LIMITED PARTNERS",
-  "payment-performance-bond.txt [blank lines stripped] lost:Penal Sum gained:-",
-  "performance-bond.txt [blank lines stripped] lost:Penal Sum gained:-",
-  "ppm-narrative.txt [double-spaced] lost:- gained:Minimum Investment",
-  "privacy-notice-multistate.txt [blank lines stripped] lost:Last Updated gained:-",
-  "quitclaim-deed.txt [blank lines stripped] lost:Parcel Number gained:-",
-  "remote-work.txt [blank lines stripped] lost:- gained:Chief People Officer EMPLOYEE",
-  "requests-for-admission.txt [blank lines stripped] lost:PROPOUNDING PARTY gained:-",
-  "rofr-co-sale.txt [blank lines stripped] lost:- gained:Chief Executive Officer KEY HOLDER",
-  "ropa-art-30.txt [hard-wrapped] lost:Data Protection Officer,EU Representative gained:-",
-  "saas-order-form-fields.txt [hard-wrapped] lost:Subscription Start Date gained:Start Date Subscription Start Date",
-  "secondary-stock-transfer.txt [double-spaced] lost:- gained:Priya Venkataraman Name",
-  "security-incident-response-plan.txt [double-spaced] lost:Thornapple Instruments Corporation Plan Owner gained:Plan Owner",
-  "side-letter.txt [blank lines stripped] lost:- gained:Managing Member ACKNOWLEDGED AND AGREED",
-  "sow-numbered.txt [blank lines stripped] lost:SOW Number gained:-",
-  "stockholders-agreement.txt [blank lines stripped] lost:- gained:General Partner KEY HOLDER",
-  "trademark-assignment.txt [blank lines stripped] lost:- gained:Managing Member ACCEPTED",
-  "tx-conditional-lien-waiver.txt [blank lines stripped] lost:Through Date gained:-",
-  "ucc-1.txt [blank lines stripped] lost:IL POSTAL CODE gained:-",
-  "uk-facility-agreement.txt [blank lines stripped] lost:Facility Amount,Governing Law gained:-",
-  "vc-side-letter.txt [blank lines stripped] lost:- gained:Executive Officer ACKNOWLEDGED AND AGREED",
-  "warrant.txt [blank lines stripped] lost:Issue Date gained:-",
-];
+const TERM_FORMAT_DEBT = KNOWN_DEBT["defined-terms-layout"].entries;
 
 describe("a defined term is not a function of the layout", () => {
   it("moves a term on only the specimens still owed", async () => {

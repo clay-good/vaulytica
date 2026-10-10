@@ -235,6 +235,7 @@ import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
 import { TIER_RANK } from "../../src/report/posture-movement.js";
 import { ENGINE_VERSION } from "../../src/engine/runner.js";
+import { KNOWN_LIMITS_STATEMENT } from "../../src/report/disclaimers.js";
 import {
   FORMAT_EXT,
   MACHINE_FORMATS,
@@ -1104,6 +1105,9 @@ async function analyzeTarget(
   }
   const labels = inputs.map(label);
   const triageDocs: Array<{ file: string; label: string; result: AnalyzeResult }> = [];
+  // Whether any caveat was printed; if so the run ends by saying where the
+  // tool's limits are published (spec-v53 §3). Once per run, not per file.
+  let caveatsPrinted = false;
   // A folder's (or an archive's) reports mirror its layout under --out, so two
   // files with one name in different subfolders cannot write one report.
   const walked =
@@ -1329,6 +1333,7 @@ async function analyzeTarget(
     // pasted without its structure. `IngestResult.warnings` had never been read
     // by ANY consumer in ANY surface, so every one of these was composed and
     // thrown away — the same trap the block below exists to close.
+    if (r.ingest.warnings.length > 0 || r.run.classification_notice) caveatsPrinted = true;
     for (const w of r.ingest.warnings) {
       process.stderr.write(`vaulytica: warning: ${label(file)}: ${w}\n`);
     }
@@ -1543,6 +1548,7 @@ async function analyzeTarget(
   // per-file line above scrolls away behind the analysis of the ones that
   // could. A reader has to be able to answer "what is NOT in this report?"
   // without re-reading the whole log.
+  if (caveatsPrinted) process.stderr.write(`vaulytica: ${KNOWN_LIMITS_STATEMENT}\n`);
   if (unreadable.length > 0) {
     process.stderr.write(
       `vaulytica: ${unreadable.length} of ${inputs.length} input(s) could not be read and are ` +

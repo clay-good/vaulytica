@@ -32,6 +32,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -67,18 +68,7 @@ const rename =
  * finding is correct in the mutant and was correct in the original for a
  * different term. A transform artifact, not a routing defect.
  */
-const INSTRUMENT_DEBT: readonly string[] = [
-  "arbitration-demand.txt: lost - gained SET-123",
-  "il-secured-promissory-note.txt: lost - gained STRUCT-006",
-  "ma-restrictive-covenant.txt: lost - gained STRUCT-006",
-  "ppm-narrative.txt: lost - gained STRUCT-006",
-  "promissory-note-secured.txt: lost - gained STRUCT-006",
-  "promissory-note.txt: lost - gained STRUCT-006",
-  "stock-purchase.txt: lost - gained EQT-135",
-  "tolling-agreement-standstill.txt: lost - gained STRUCT-006",
-  "ucc-1.txt: lost - gained BNK-050",
-  "uk-master-services-agreement.txt: lost - gained MSA-026",
-];
+const INSTRUMENT_DEBT = KNOWN_DEBT["agreement-renamed-contract"].entries;
 
 async function moved(mutate: (t: string) => string): Promise<{ moved: string[]; probed: number }> {
   const deps = await loadAccuracyDeps({});

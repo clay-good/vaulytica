@@ -29,6 +29,7 @@ import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { flattenText } from "../../src/ingest/types.js";
 import { excerptNeedle } from "./_excerpt.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -773,55 +774,7 @@ describe("a finding's quote is really in the document", () => {
  * lifts, and the info finding appears. What moved is the engine's reading of
  * the arbitration clause, not its opinion about venue.
  */
-const HYPHEN_WRAP_DEBT: readonly string[] = [
-  // Same class again, with the APA added in 9.634.0: a broken word hides the
-  // phrase a suppression keys on, the suppression lifts, and the INFO venue
-  // finding appears.
-  "asset-purchase-complete.txt: lost - gained CHOICE-003",
-  "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
-  "construction-contract.txt: lost - gained CHOICE-006",
-  "cookie-notice-uk.txt: lost - gained IPDATA-008",
-  // 9.640.0 — the eighth clean document, and the THIRD instance of the one
-  // shape the resolver cannot decide: a long word the document uses EXACTLY
-  // ONCE. "Commonwealth" appears in this agreement's governing-law clause and
-  // nowhere else, so neither of the resolver's two tests can fire — the
-  // document never writes the compound unbroken, and the joined halves are not
-  // a word it uses elsewhere — and "Common-wealth of Massachusetts" is what the
-  // jurisdiction extractor records. Three CHOICE rules then report a
-  // governing-law/venue mismatch between "Common-wealth of Massachusetts" and
-  // "Massachusetts" that the document does not have.
-  //
-  // 🚨 Do NOT reach for a fourth resolver rule here: TAIL, HEAD and WRAP
-  // GEOMETRY have all been tried and rejected, and the reasons are in
-  // `hyphenation.ts`. A dictionary is what this case wants and the resolver
-  // deliberately has none.
-  // Added with the specimen in 9.632.0, and the same shape as the entries
-  // around it: a long word broken across a line hides the phrase a suppression
-  // was keying on, the suppression lifts, and an INFO finding about venue
-  // appears. The document's governing-law and venue clauses are unchanged; what
-  // moved is what the engine could read of them.
-  "enterprise-saas-subscription.txt: lost - gained CHOICE-003",
-  "executive-employment-complete.txt: lost - gained CHOICE-004",
-  "hold-harmless.txt: lost RISK-010 gained -",
-  "indemnification-agreement.txt: lost - gained GOV-145",
-  "independent-contractor.txt: lost RISK-007 gained -",
-  "internship-agreement.txt: lost - gained CHOICE-004",
-  "joint-venture.txt: lost - gained CHOICE-003",
-  "lease-assignment-retail.txt: lost - gained CHOICE-004",
-  "ma-restrictive-covenant.txt: lost OBLI-002 gained -",
-  "msa-customer-side.txt: lost TERM-001,TERM-003 gained -",
-  "patent-licence-complete.txt: lost - gained CHOICE-004",
-  "physician-employment.txt: lost - gained CHOICE-003",
-  "saas-tos.txt: lost - gained CHOICE-003",
-  "separation-agreement.txt: lost - gained RISK-001",
-  "staffing-services.txt: lost TERM-001 gained -",
-  "stock-purchase.txt: lost TEMP-012 gained -",
-  "subcontract.txt: lost FIN-006 gained -",
-  "subordination-agreement.txt: lost - gained CHOICE-003",
-  "uk-contract-of-employment.txt: lost IPDATA-001,OBLI-004,OBLI-005,PERS-002,TERM-005 gained - routed employment-at-will-us->generic-fallback",
-  "uk-mutual-nda.txt: lost - gained IPDATA-001",
-  "unilateral-nda.txt: lost - gained CHOICE-003",
-];
+const HYPHEN_WRAP_DEBT = KNOWN_DEBT["hyphenated-line-breaks"].entries;
 
 /** Hard-wrap at 72 columns, hyphenating a long word the way a justified column does. */
 function hyphenWrap(text: string, width = 72): string {

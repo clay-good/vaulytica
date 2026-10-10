@@ -20,7 +20,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { SEO_PAGES } from "../tools/site/seo-pages.js";
+import { KNOWN_LIMITS_SLUG, SEO_PAGES } from "../tools/site/seo-pages.js";
 
 const SITE = join(process.cwd(), "site");
 const html = readFileSync(join(SITE, "index.html"), "utf8");
@@ -49,6 +49,8 @@ function referencedAssetPaths(): string[] {
     if (url === "/") continue;
     if (SEO_PAGES.some((p) => url === `/${p.slug}`)) continue;
     if (url === "/reviews" || url.startsWith("/review/") || url === "/sample-report") continue;
+    // A generated page, like the ones above — not a file in `site/`.
+    if (url === `/${KNOWN_LIMITS_SLUG}`) continue;
     paths.add(url.replace(/[?#].*$/, ""));
   }
   return [...paths].sort();

@@ -688,6 +688,7 @@ section{padding:44px 0;border-top:1px solid var(--line)}
 ol.steps{padding-left:22px}ol.steps li{margin-bottom:10px}
 pre{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;white-space:pre-wrap;font-size:14.5px;color:var(--heading)}
 .sev{margin-top:10px!important;font-size:14px!important;color:var(--muted)}.faq h3{margin-top:24px}.links{columns:2 240px;padding-left:20px}
+table{width:100%;border-collapse:collapse;margin:8px 0 20px;font-size:16.5px}th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}th{color:var(--heading);font-size:15px}td:first-child{color:var(--heading);font-variant-numeric:tabular-nums;white-space:nowrap}.plain{list-style:disc;padding-left:22px}.plain li{margin-bottom:10px}
 footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:15px;color:var(--muted)}footer a{color:var(--muted)}
 `.trim();
 
@@ -746,7 +747,7 @@ function footer(): string {
   const links = SEO_PAGES.map((p) => `<a href="/${p.slug}">${escapeHtml(p.label)}</a>`).join(" · ");
   return `<footer>
       <div class="wrap">
-        <p><a href="/">Vaulytica</a> · ${links} · <a href="/reviews">All document types</a></p>
+        <p><a href="/">Vaulytica</a> · ${links} · <a href="/reviews">All document types</a> · <a href="/${KNOWN_LIMITS_SLUG}">Known limits</a></p>
         <p>Free and open source under the MIT license · <a href="https://github.com/clay-good/vaulytica">Source on GitHub</a> · Made by <a href="https://claygood.com">Clay Good</a></p>
         <p>Vaulytica is a software tool, not a law firm. It does not give legal advice, and using it does not create an attorney-client relationship.</p>
       </div>
@@ -866,6 +867,116 @@ export function renderSeoPage(page: SeoPage, counts: HeadlineCounts): string {
 `;
 }
 
+/**
+ * The data `/known-limits` is rendered from: `tools/site/known-limits.json`,
+ * written by `npm run site:known-limits` from the test suite's debt ledger and
+ * the engine's own constants. Numbers only; the sentences around them are here.
+ */
+export interface KnownLimitsData {
+  readonly reads: {
+    readonly max_document_mb: number;
+    readonly max_ocr_pages: number;
+    readonly max_secondary_families: number;
+    readonly match_threshold: number;
+  };
+  readonly self_measured: {
+    readonly specimens: number;
+    readonly document_types: number;
+    readonly rules: number;
+    readonly attorney_signed_rules: number;
+  };
+  /** A measured defect held open on purpose: how many cases, and one sentence. */
+  readonly open: ReadonlyArray<{
+    readonly id: string;
+    readonly count: number;
+    readonly sentence: string;
+  }>;
+  /** Relations the suite holds at zero: listed so a paid debt is visible too. */
+  readonly held_at_zero: ReadonlyArray<string>;
+}
+
+export const KNOWN_LIMITS_SLUG = "known-limits";
+
+/**
+ * `/known-limits` (spec-v53 §1): where the tool is known to be wrong, and what
+ * has not been measured at all. A tool that asks to be trusted publishes this.
+ */
+export function renderKnownLimitsPage(d: KnownLimitsData): string {
+  const url = pageUrl(KNOWN_LIMITS_SLUG);
+  const title = "Known Limits — What Vaulytica Gets Wrong | Vaulytica";
+  const description =
+    "What this contract checker has not measured, what it cannot read, and the defects its own tests hold open. No accuracy figure is claimed, because there is not one.";
+  const n = (x: number): string => x.toLocaleString("en-US");
+  const open = d.open
+    .map((o) => `<tr><td>${n(o.count)}</td><td>${escapeHtml(o.sentence)}</td></tr>`)
+    .join("\n            ");
+  const signed =
+    d.self_measured.attorney_signed_rules === 0
+      ? "No rule has been signed off by an attorney"
+      : `${n(d.self_measured.attorney_signed_rules)} of ${n(d.self_measured.rules)} rules have been signed off by an attorney`;
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${url}#webpage`,
+      url,
+      name: title,
+      description,
+      inLanguage: "en-US",
+      isPartOf: { "@id": `${ORIGIN}/#website` },
+      about: { "@id": `${ORIGIN}/#webapp` },
+    },
+  ];
+  return `${head({ title, description, canonical: url, robots: "index, follow, max-image-preview:large, max-snippet:-1", jsonLd })}
+  <body>
+    ${HEADER}
+    <main class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Vaulytica</a> › Known limits</nav>
+      <div class="hero">
+        <h1>Where this tool is known to be wrong.</h1>
+        <p class="lead">Vaulytica runs the same checks the same way every time, and its report lists every one it ran. That is a claim about consistency. It is not a claim about accuracy, and this page is what stands behind the difference.</p>
+      </div>
+      <section>
+        <h2>1. Not measured</h2>
+        <p>There is no precision or recall figure for this tool on real contracts. Measuring one needs real documents annotated by attorneys, and that work has not been done. ${signed}.</p>
+        <p>What to conclude: treat every finding as a prompt to read the clause, and every silence as silence. A short report is not a clean bill.</p>
+        <p>Also not measured: how well scanned pages are read; defects no rule exists for; and whether the severities (critical, warning, info) are calibrated to what matters in practice.</p>
+      </section>
+      <section>
+        <h2>2. What it reads</h2>
+        <ul class="plain">
+          <li>English only, and United States law.</li>
+          <li>PDF, Word (.docx) and plain text, up to ${n(d.reads.max_document_mb)} MB. Scanned pages are read by OCR, up to ${n(d.reads.max_ocr_pages)} pages, in the browser only: the command line and the MCP server do not run OCR, and say so.</li>
+          <li>A document is matched to one of ${n(d.self_measured.document_types)} document types when its score reaches ${d.reads.match_threshold}. A document that matches none gets a small generic rule set, and <strong>a short report on an unmatched document is not a clean bill</strong>.</li>
+          <li>Up to ${n(d.reads.max_secondary_families)} more document types are detected from a document's vocabulary and checked as well. They are detected, not confirmed: an absence reported under one may be a clause the document was never supposed to carry.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>3. Measured on documents we wrote</h2>
+        <p>The test suite holds ${n(d.self_measured.specimens)} specimen documents whose findings are pinned exactly, and rewrites each one many ways — different line breaks, spellings, clause numbering, capital letters — to check that the findings do not move. The project's authors wrote those documents. They are synthetic, and the numbers below are self-measurements, not an error rate on real contracts.</p>
+      </section>
+      <section>
+        <h2>4. Known wrong, held open</h2>
+        <p>Each row is a defect the tests have measured and hold open on purpose. A test asserts the count exactly, so a new case fails the build, and so does a fix that is not recorded.</p>
+        <table>
+          <thead><tr><th>Cases</th><th>What goes wrong</th></tr></thead>
+          <tbody>
+            ${open}
+          </tbody>
+        </table>
+        <p>${n(d.held_at_zero.length)} more relations of the same kind are held at zero: they were measured, repaired, and are now asserted not to regress.</p>
+      </section>
+      <section>
+        <h2>5. Reported by users</h2>
+        <p>None recorded. There is not yet a way to report a wrong finding from a report itself; until there is, open an issue on <a href="https://github.com/clay-good/vaulytica/issues">GitHub</a>, describing the clause in your own words rather than pasting contract text.</p>
+      </section>
+    </main>
+    ${footer()}
+  </body>
+</html>
+`;
+}
+
 /** A real 404, so an unknown URL is not indexed as a copy of the home page. */
 export function render404(): string {
   const links = SEO_PAGES.map(
@@ -900,6 +1011,7 @@ export function buildSitemap(docTypes: ReadonlyArray<{ readonly id: string }> = 
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
     url(`${ORIGIN}/`),
     url(`${ORIGIN}/sample-report`),
+    url(pageUrl(KNOWN_LIMITS_SLUG)),
     ...SEO_PAGES.map((p) => url(pageUrl(p.slug))),
     ...(docTypes.length > 0 ? [url(`${ORIGIN}/reviews`)] : []),
     ...docTypes.map((t) => url(docTypeUrl(t.id))),
@@ -930,6 +1042,7 @@ export function buildLlmsTxt(counts: HeadlineCounts): string {
     `- [Use the tool](${ORIGIN}/): the browser app`,
     `- [Every document type](${ORIGIN}/reviews): each of the ${counts.docTypes} document types and the checks it gets`,
     `- [Sample report](${ORIGIN}/sample-report): an unedited report for a sample NDA`,
+    `- [Known limits](${pageUrl(KNOWN_LIMITS_SLUG)}): what has not been measured (there is no accuracy figure on real contracts, and no rule is attorney-signed), what the tool cannot read, and the defects its own tests hold open`,
     "- [Source code](https://github.com/clay-good/vaulytica): MIT-licensed repository",
     "- [CI integration](https://github.com/clay-good/vaulytica/blob/main/docs/ci-integration.md): CLI and GitHub Action",
     "- [MCP server](https://github.com/clay-good/vaulytica/blob/main/docs/reference.md#for-a-coding-agent--the-local-mcp-server): a local, stdio-only Model Context Protocol server for coding agents — run from a clone with `node bin/vaulytica.mjs mcp`; no hosted endpoint, not on npm. It opens no network connection, but results (including quoted excerpts) reach the agent's model provider",

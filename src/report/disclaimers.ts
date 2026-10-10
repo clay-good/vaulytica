@@ -22,6 +22,16 @@
 
 /** What the report is about, for the one clause that differs. */
 /**
+ * Where the tool publishes what it has not measured and where it is known to
+ * be wrong (spec-v53 §1). Every surface that shows findings points here, so a
+ * reader handed a report can find out how far to trust it.
+ */
+export const KNOWN_LIMITS_URL = "https://vaulytica.com/known-limits";
+
+/** The sentence that carries the link, appended to the not-legal-advice statement. */
+export const KNOWN_LIMITS_STATEMENT = `What this tool has not measured, and where it is known to be wrong, is published at ${KNOWN_LIMITS_URL}.`;
+
+/**
  * What a clean round of the drafting loop means (spec-v51 §7). An agent can
  * write text that satisfies a pattern and says nothing; the engine cannot
  * detect that and does not claim to. Said wherever a comparison reports that
@@ -103,7 +113,8 @@ export function nonAdviceStatement(subject: PrivacySubject): string {
     "Vaulytica does not create an attorney-client relationship with anyone. The findings may be " +
     "incorrect, incomplete, or inapplicable to your situation. The decision to act on any " +
     "finding, or not, is yours and your counsel's. If something here matters to a transaction " +
-    "or a dispute, consult a licensed attorney in the relevant jurisdiction."
+    "or a dispute, consult a licensed attorney in the relevant jurisdiction. " +
+    KNOWN_LIMITS_STATEMENT
   );
 }
 

@@ -49,6 +49,7 @@ import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 import type { Playbook } from "../../src/playbooks/types.js";
+import { KNOWN_DEBT, debtCount } from "./_known-debt.js";
 
 const ROOT = process.cwd();
 const PLAYBOOKS: Playbook[] = [
@@ -77,7 +78,7 @@ const SPECIMEN_DIR = join(ROOT, "tests", "fixtures", "specimens");
  * along with everything else it does not restate. Curated out, and both SOW
  * specimens came off with it.
  */
-const FALSE_ACCUSATIONS = 27;
+const FALSE_ACCUSATIONS = debtCount(KNOWN_DEBT["expected-defined-terms"]);
 
 /** A term used fewer times than this is not being used as a defined term. */
 const DEFINED_TERM_USE_FLOOR = 3;
@@ -131,7 +132,7 @@ async function accusationsFor(file: string): Promise<string[] | null> {
 }
 
 describe("expected_defined_terms — the ratchet toward a consumer", () => {
-  it(`false-accuses no more than ${FALSE_ACCUSATIONS} specimens`, async () => {
+  it(`false-accuses exactly ${FALSE_ACCUSATIONS} specimens`, async () => {
     const files = readdirSync(SPECIMEN_DIR).filter((f) => f.endsWith(".txt"));
     const accused: string[] = [];
     for (const f of files) {
@@ -140,7 +141,10 @@ describe("expected_defined_terms — the ratchet toward a consumer", () => {
     }
     // The message names the documents, so a failure is a worklist rather
     // than a number that moved.
-    expect(accused.length, accused.join("\n")).toBeLessThanOrEqual(FALSE_ACCUSATIONS);
+    // Equality, not a ceiling (spec-v53 §2): the number is published, and a
+    // published number has to be what the suite measures — a repair that is not
+    // recorded fails here just as a new accusation does.
+    expect(accused.length, accused.join("\n")).toBe(FALSE_ACCUSATIONS);
   }, 300_000);
 
   it("is still declared by most of the catalog and read by nothing", () => {

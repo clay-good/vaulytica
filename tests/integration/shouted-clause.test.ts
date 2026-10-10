@@ -35,6 +35,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -66,50 +67,11 @@ const shout =
  * repair for it that does not amount to inferring sentence boundaries in text
  * that has thrown them away.
  */
-const DISCLAIMER_DEBT: readonly string[] = [
-  // 9.825.0 — `asset-purchase-complete.txt` and `stock-purchase-agreement.txt`
-  // LEFT this list: their STRUCT-005 was a shouted plural term ("ASSUMED
-  // LIABILITIES") whose singular use ("ANY ASSUMED LIABILITY") did not match,
-  // because the singular was built as "LIABILITy". Plurals now keep the case.
-  "assignment-and-assumption-agreement.txt: lost STRUCT-018 gained -",
-  "franchise.txt: lost STRUCT-006 gained -",
-  "net-lease.txt: lost STRUCT-018 gained -",
-  "warrant.txt: lost STRUCT-006 gained CHOICE-004",
-];
+const DISCLAIMER_DEBT = KNOWN_DEBT["capitals-warranty-disclaimer"].entries;
 
-const LIABILITY_DEBT: readonly string[] = [
-  "articles-org.txt: lost - gained STRUCT-007",
-  "asset-purchase-complete.txt: lost - gained OBLI-002,RISK-002",
-  // 9.634.0 — `msa-customer-side.txt` LEFT this list: it no longer gains
-  // RISK-002, because the indemnity-sentence scan stopped ending at the decimal
-  // point inside an amount. The harness had been measuring a truncation rather
-  // than the shouting.
-  "assignment-of-claim.txt: lost STRUCT-018 gained -",
-  "cohabitation-agreement.txt: lost STRUCT-018 gained -",
-  "commercial-indemnity-agreement.txt: lost - gained RISK-002",
-  "distribution.txt: lost - gained OBLI-002",
-  // 9.831.0 — the same erasure: shouting clause 12 removes one of "Project
-  // Director"'s Title-Case uses, and the signature row that held another is
-  // now its own paragraph, so the rule no longer sees enough uses.
-  "fiscal-sponsorship.txt: lost STRUCT-006 gained -",
-  "insurance-endorsement-additional-insured.txt: lost - gained STRUCT-007",
-  "insurance-endorsement.txt: lost - gained STRUCT-007",
-  "joint-venture.txt: lost STRUCT-017 gained -",
-  "master-purchase-agreement.txt: lost - gained OBLI-002",
-  "net-lease.txt: lost STRUCT-006 gained -",
-  "ny-good-guy-guaranty.txt: lost STRUCT-006 gained -",
-  "partnership-agreement.txt: lost OBLI-002 gained -",
-  "sweepstakes.txt: lost STRUCT-006 gained -",
-];
+const LIABILITY_DEBT = KNOWN_DEBT["capitals-limitation-of-liability"].entries;
 
-const INDEMNITY_DEBT: readonly string[] = [
-  "commercial-indemnity-agreement.txt: lost - gained RISK-002",
-  "fiscal-sponsorship.txt: lost STRUCT-006 gained -",
-  "indemnification-agreement.txt: lost STRUCT-009 gained -",
-  "investor-rights.txt: lost - gained OBLI-002",
-  "net-lease.txt: lost STRUCT-006 gained -",
-  "revolving-credit-agreement.txt: lost - gained RISK-002",
-];
+const INDEMNITY_DEBT = KNOWN_DEBT["capitals-indemnity"].entries;
 
 async function moved(mutate: (t: string) => string): Promise<{ moved: string[]; probed: number }> {
   const deps = await loadAccuracyDeps({});

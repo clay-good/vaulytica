@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.866.0] — 2026-10-10
+
+### Added
+- **`/known-limits`: where the tool is known to be wrong.** A page in five
+  parts: what has not been measured (there is no precision or recall figure on
+  real contracts, and no rule is attorney-signed); what it reads, from the
+  constants that enforce it; what is measured, on documents the project wrote;
+  the defects the tests hold open, one count and one sentence each; and
+  reports from users, of which there are none yet. It claims no accuracy.
+- **The page cannot drift from the tests.** Every debt list the suite asserts
+  by equality now lives in one ledger (`tests/integration/_known-debt.ts`) with
+  a sentence written for a reader. The debt tests import their lists from it;
+  a generator writes `tools/site/known-limits.json` from it and from the
+  engine's constants; the site build reads only that file; and a guard fails
+  when the file is stale (`npm run site:known-limits`). 13 debts are open and
+  4 are held at zero.
+- **Every surface that shows findings links to it**: the not-legal-advice
+  statement (so every Word, HTML and comparison report, the compact report,
+  the triage page and MCP results), SARIF's `informationUri`, one line at the
+  end of a command-line run that printed a caveat, the MCP server's
+  instructions, the homepage, `llms.txt`, and the footer of every site page.
+
+### Changed
+- **A published number is asserted by equality.** The count of specimens a
+  naive defined-terms rule would falsely accuse was a ceiling (≤ 27); it is
+  now exactly 27, so a repair that is not recorded fails like a regression.
+
+(spec-v53 Steps 327–328, and the links of Step 329)
+
 ## [9.865.0] — 2026-10-10
 
 ### Added

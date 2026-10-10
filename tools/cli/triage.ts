@@ -456,7 +456,7 @@ const isAbsence = (f: Finding): boolean => f.excerpt.end_offset <= f.excerpt.sta
 export const SPOT_CHECK_CAPS = { criticals: 6, systemic: 3 } as const;
 
 /** How many systemic rules the page lists before it says how many more there are. */
-export const SYSTEMIC_LISTED = 8;
+export const SYSTEMIC_LISTED = 6;
 
 async function spotCheck(
   rows: readonly TriageRow[],
@@ -635,7 +635,7 @@ async function spotCheck(
       documents_sampled: sampledDocs.size,
       documents: read.size,
     },
-    note: "This checks the tool across the different ways a run can be wrong. It is not a random sample, and not an estimate of an error rate.",
+    note: "A check of the tool: not a random sample, and not an estimate of an error rate.",
   };
 }
 

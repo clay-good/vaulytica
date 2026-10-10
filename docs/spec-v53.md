@@ -1,6 +1,6 @@
 # Vaulytica v53 — The Error Ledger (Publishing What Is Measured, and Saying What Is Not)
 
-> **Status:** **In progress.** Step 329's rewrite and guard shipped in 9.854.0 (its links wait for Step 328); the rest is not built. Continues after [`spec-v52.md`](spec-v52.md), beginning at **Step 327**.
+> **Status:** **In progress.** Steps 327–329 shipped (9.854.0, 9.866.0): the ledger, `/known-limits`, the overclaim rewrite and guard, and the links. Steps 330–332 are not built; Step 331 needs the owner's Cloudflare account. Continues after [`spec-v52.md`](spec-v52.md), beginning at **Step 327**.
 > **Scope:** one idea — a tool that asks to be trusted should publish where it is known to be wrong. v53 does **not** publish an accuracy number, because there is not one. It publishes what exists, removes six sentences the site cannot support, and builds the one channel that could produce more: a single report page.
 > **Posture:** no telemetry, no account, and no part of a document ever leaves the machine. **One thing changes:** the site gains a single endpoint that receives a problem report a person chooses to send (§5), so "there is no server" stops being true and is rewritten (§6).
 > **Relation to [`spec-v5.md`](spec-v5.md):** v5 §22 (the accuracy report) and §24 (honest-limits disclosure) remain the destination and remain blocked on attorney annotation. v53 is the interim form of §24, built from what the test suite already holds, and the routing half of §18 without annotation.

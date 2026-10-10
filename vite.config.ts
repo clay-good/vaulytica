@@ -8,6 +8,8 @@ import {
   linkDocTypeIndex,
   readHeadlineCounts,
   render404,
+  renderKnownLimitsPage,
+  type KnownLimitsData,
   renderDocTypeIndex,
   renderDocTypePage,
   renderSeoPage,
@@ -253,6 +255,17 @@ function deployAssets(): Plugin {
         writeFileSync(resolve(DIST, `${page.slug}.html`), renderSeoPage(page, counts), "utf8");
       }
       writeFileSync(resolve(DIST, "404.html"), render404(), "utf8");
+      // `/known-limits` (spec-v53): rendered from the committed data file. The
+      // build reads the file, never the test ledger it was generated from.
+      writeFileSync(
+        resolve(DIST, "known-limits.html"),
+        renderKnownLimitsPage(
+          JSON.parse(
+            readFileSync(resolve(__dirname, "tools", "site", "known-limits.json"), "utf8"),
+          ) as KnownLimitsData,
+        ),
+        "utf8",
+      );
       const docTypes = loadDocTypes();
       mkdirSync(resolve(DIST, "review"), { recursive: true });
       for (const t of docTypes.types) {

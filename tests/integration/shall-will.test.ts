@@ -26,6 +26,7 @@ import { describe, expect, it } from "vitest";
 import { recognizerSources, sourceFiles, DOCUMENT_READING_ROOTS } from "./_recognizer-sources.js";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
@@ -60,7 +61,7 @@ const asMust = (s: string): string => s.replace(/\bshall\b/g, "must").replace(/\
  * a dedicated pass, and this relation is what will measure it. The list stays
  * because the assertion is what holds it empty.
  */
-const MUST_DEBT: readonly string[] = [];
+const MUST_DEBT = KNOWN_DEBT["shall-written-as-must"].entries;
 
 describe("shall and will are the same obligation", () => {
   it("no recognizer reads 'shall' without also reading 'will'", () => {

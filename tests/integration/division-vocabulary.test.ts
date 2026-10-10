@@ -32,6 +32,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -70,23 +71,7 @@ const rename =
  * and its "Section 5.2" then answer to "Article 5". The transform invents the
  * ambiguity; the engine reports it correctly.
  */
-const ARTICLE_DEBT: readonly string[] = [
-  "bylaws-corporation.txt: lost - gained STRUCT-007",
-  "consent-judgment.txt: lost - gained STRUCT-007",
-  // 9.637.0 — the sixth clean document joins both lists for one reason: its UK
-  // Addendum clause says "neither party able to end the Addendum under Section
-  // 19", a reference to a section of ANOTHER instrument, named in the same
-  // sentence. STRUCT-007 reports it as unresolved (correctly, against this
-  // document's own outline), and the rename makes it stop being seen — so the
-  // finding moves. The external-citation guard above knows STATUTES; a numbered
-  // section of a named CONTRACT instrument is the same shape and is not covered.
-  "dpa-complete.txt: lost STRUCT-007 gained -",
-  // 9.634.0 — FOUR entries left this list when the statutory-citation guard
-  // above was anchored: `equity-incentive-plan`, `executive-employment`,
-  // `merger-agreement` and `option-grant` were never ambiguous documents at
-  // all. The transform had been renaming "Section 409A of the Internal Revenue
-  // Code" and its siblings, and the movement it measured was its own.
-];
+const ARTICLE_DEBT = KNOWN_DEBT["section-renamed-article"].entries;
 
 /**
  * The same collision, plus one of its own: a paragraph that uses a number
@@ -96,16 +81,7 @@ const ARTICLE_DEBT: readonly string[] = [
  * keyed to the word as well as the number, so renaming only the internal use
  * leaves the reference outside it. A real document renames both or neither.
  */
-const CLAUSE_DEBT: readonly string[] = [
-  // 9.634.0 — EMPTY, for the same reason the Article list lost four: every
-  // entry here was a statutory citation the transform had renamed. A relation
-  // whose debt list is empty is the strongest form of the claim it makes.
-  //
-  // 9.637.0 — one entry, and the same one the Article list gained: a numbered
-  // section of a NAMED external instrument ("the Addendum … under Section 19")
-  // is the contract-world twin of the statutory citation the guard above knows.
-  "dpa-complete.txt: lost STRUCT-007 gained -",
-];
+const CLAUSE_DEBT = KNOWN_DEBT["section-renamed-clause"].entries;
 
 async function moved(mutate: (t: string) => string): Promise<{ moved: string[]; probed: number }> {
   const deps = await loadAccuracyDeps({});

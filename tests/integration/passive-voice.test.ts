@@ -53,6 +53,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR).filter((f) => f.endsWith(".txt"));
@@ -81,7 +82,7 @@ export function passiveIndemnity(text: string): string {
  * OBLI-002 reads its obligors through the obligations extractor; see the
  * header. The list may only SHRINK.
  */
-const PASSIVE_DEBT: readonly string[] = ["trademark-license-food.txt: gained OBLI-002"];
+const PASSIVE_DEBT = KNOWN_DEBT["passive-voice-indemnity"].entries;
 
 describe("the passive voice allocates the same risk", () => {
   it("rewrites an active indemnity into the passive", () => {

@@ -105,6 +105,7 @@ import { describe, expect, it } from "vitest";
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
 import type { ExtractedData } from "../../src/extract/types.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR)
@@ -196,45 +197,17 @@ const SURFACES: Record<string, (d: ExtractedData) => string[]> = {
       .sort(),
 };
 
-const PARTY_DEBT: readonly string[] = [
-  "answer.txt [blank lines stripped] lost:- gained:WHEREFORE, Defendant Halloran Precision Castings||LLC|",
-  "assignment-of-claim.txt [double-spaced] lost:Wexley DO GP II||| gained:Wexley DO GP II, LLC|||",
-  "bylaws-corporation.txt [double-spaced] lost:WREXHAM ANALYTICS, INC||corporation|Delaware gained:WREXHAM ANALYTICS||INC|Delaware",
-  "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
-  "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
-  "conflict-of-interest-policy.txt [double-spaced] lost:Pemberton Ridge Land Conservancy||corporation|Colorado gained:-",
-  "convertible-note.txt [blank lines stripped] lost:VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware gained:Delaware FOR VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware",
-  "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
-  "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|Delaware",
-  "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC| gained:-",
-  "fdd.txt [blank lines stripped] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|Virginia",
-  "fdd.txt [double-spaced] lost:TIDEWATER BOWL COMPANY, LLC||company|Virginia gained:TIDEWATER BOWL COMPANY||LLC|Virginia",
-  "flat-fee-agreement.txt [double-spaced] lost:Ravi Chandrasekaran-Boyd Chandrasekaran Robotics||LLC| gained:-",
-  "joint-representation-waiver-founders.txt [double-spaced] lost:Raghunathan Mr. Daniel Ostrowski Kestrel Grove Bakery||LLC| gained:-",
-  "minutes.txt [blank lines stripped] lost:Harborlight Analytics, Inc|Company|corporation|Delaware gained:HARBORLIGHT ANALYTICS, INC|Board|corporation|Delaware",
-  "nonprofit-bylaws.txt [double-spaced] lost:HARBORLIGHT LITERACY ALLIANCE||INC| gained:HARBORLIGHT LITERACY ALLIANCE||INC|North Carolina",
-  "notice-of-furnishing.txt [blank lines stripped] lost:- gained:This is a Notice of Furnishing under Ohio Revised Code § 1311.05. It is given to|Lender||",
-  "operating-agreement.txt [blank lines stripped] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|Delaware",
-  "operating-agreement.txt [double-spaced] lost:HARBOR POINT VENTURES LLC|Company|company|Delaware gained:HARBOR POINT VENTURES|Company|LLC|Delaware",
-  "saas-order-form-fields.txt [blank lines stripped] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",
-  "saas-order-form-fields.txt [double-spaced] lost:ORDER FORM Northbridge Cloud||Inc| gained:Northbridge Cloud||Inc|",
-  "secondary-stock-transfer.txt [double-spaced] lost:Marcus Ellery Doyle Priya Venkataraman||| gained:-",
-  "side-letter.txt [double-spaced] lost:Kestrel Deepwater GP III||LLC| gained:Kestrel Deepwater GP III, LLC||LLC|",
-  'sow.txt [smart quotes] lost:Halewood Data Systems LLC ("Supplier")|MSA|| gained:Halewood Data Systems LLC (“Supplier”)|MSA||',
-  "term-sheet.txt [double-spaced] lost:Kestrel Deepwater GP III||| gained:Kestrel Deepwater GP III, LLC|||",
-  "trial-motion.txt [double-spaced] lost:Dashiell Tsukamoto Dashiell Tsukamoto Halloran & Tsukamoto||PLLC| gained:Dashiell Tsukamoto|||,Halloran & Tsukamoto||PLLC|",
-  "uk-idta-addendum.txt [blank lines stripped] lost:- gained:Sable Notification Services||GmbH|",
-];
+const PARTY_DEBT = KNOWN_DEBT["party-names-layout"].entries;
 
 // 9.831.0 — `form-d-narrative.txt` left this list with the form-field fix.
-const JURISDICTION_DEBT: readonly string[] = [];
+const JURISDICTION_DEBT = KNOWN_DEBT["jurisdictions-layout"].entries;
 
 /** The amount surface owes nothing. A new divergence here is a regression. */
-const AMOUNT_DEBT: readonly string[] = [];
+const AMOUNT_DEBT = KNOWN_DEBT["amounts-layout"].entries;
 
 // 9.830.0 — `saas-order-form-fields.txt` left this list: its "24 months from
 // the Subscription Start Date" is read whether or not the form's lines reflow.
-const DATE_DEBT: readonly string[] = [];
+const DATE_DEBT = KNOWN_DEBT["dates-layout"].entries;
 
 const DEBT: Record<string, readonly string[]> = {
   parties: PARTY_DEBT,

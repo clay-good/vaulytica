@@ -36,6 +36,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText } from "../../tools/cli/api.js";
 import { loadAccuracyDeps } from "../../tools/accuracy/pipeline.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -52,9 +53,7 @@ const LOSSLESS: Array<[string, (t: string) => string]> = [
 ];
 
 /** What double-spacing still moves, and only that. */
-const DOUBLE_SPACED_DEBT: readonly string[] = [
-  "security-incident-response-plan.txt: lost cure-window|unresolved gained notice-period|unresolved",
-];
+const DOUBLE_SPACED_DEBT = KNOWN_DEBT["critical-dates-double-spacing"].entries;
 
 /**
  * The deadline itself — its family and the date computed for it. NOT the

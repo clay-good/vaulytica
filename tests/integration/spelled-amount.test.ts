@@ -40,6 +40,7 @@ import {
   sourceFiles,
   DOCUMENT_READING_ROOTS,
 } from "./_recognizer-sources.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const ONES = [
   "zero",
@@ -111,28 +112,7 @@ const percentInWords = (s: string): string =>
  * FIN-009's nine, and nothing else. Equality, not a subset: a new divergence
  * fails, and so does a repair that is not recorded.
  */
-const PERCENT_DEBT: readonly string[] = [
-  // 9.641.0 — the ninth clean document, and the same shape a ninth time: the
-  // term loan states its late charge as "five percent (5%)", and stripping the
-  // numeral leaves FIN-009 a rate it cannot read. The reason it stays
-  // unrepaired is below.
-  "credit-agreement-complete.txt: lost FIN-009 gained -",
-  "equipment-finance.txt: lost FIN-009 gained -",
-  "equipment-lease.txt: lost FIN-009 gained -",
-  "il-secured-promissory-note.txt: lost FIN-009 gained -",
-  "loan-agreement.txt: lost FIN-009 gained -",
-  "ny-residential-lease.txt: lost FIN-009 gained -",
-  // Added with the specimen in 9.633.0, and the same known shape as the seven
-  // around it: FIN-009 parses the RATE and asserts usury, so a percentage
-  // written in words alone ("five percent") is a rate it cannot read. The lease
-  // states its late charge as "five percent (5%)"; strip the numeral and the
-  // finding goes. Deliberately unrepaired — a word-parser for a rate that is
-  // routinely fractional ("one and one-half percent per month") would risk a
-  // confident false accusation about a legal limit.
-  "office-lease-complete.txt: lost FIN-009 gained -",
-  "promissory-note-secured.txt: lost FIN-009 gained -",
-  "promissory-note.txt: lost FIN-009 gained -",
-];
+const PERCENT_DEBT = KNOWN_DEBT["late-fee-rate-in-words"].entries;
 
 async function respell(
   mutate: (s: string) => string,
