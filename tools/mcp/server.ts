@@ -19,6 +19,7 @@
  * Never imported by `src/`.
  */
 
+import "./stdout-guard.js";
 import "../cli/no-localstorage.js";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
@@ -49,11 +50,6 @@ import {
   INSTRUCTIONS,
   LIST_DOCUMENT_TYPES,
 } from "./text.js";
-
-// Anything a dependency prints must not reach the protocol stream.
-for (const method of ["log", "info", "debug"] as const) {
-  console[method] = (...args: unknown[]) => console.error(...args);
-}
 
 type ToolResult = { content: Array<{ type: "text"; text: string }>; isError?: boolean };
 
