@@ -2,7 +2,7 @@
 
 > **Status:** **Proposed (2026-10-10).** Not built. Continues after [`spec-v49.md`](spec-v49.md), beginning at **Step 313**.
 > **Scope:** one idea — fix what a first-time user and a first-time script hit in the first five minutes. Every item was reproduced on 9.853.0 by running the tool; an adversarial pass then re-ran each one, corrected four, and added the rest of the eleven below.
-> **Posture (unchanged):** deterministic, no AI, no server. Steps 313–315 change no finding on any document. Steps 316–317 change reports, and say which.
+> **Posture (unchanged):** deterministic, no AI, nothing uploaded. Steps 313–315 change no finding on any document. Steps 316–317 change reports, and say which.
 > **Cousin docs:** [`spec-v48.md`](spec-v48.md) (shares the compact projection), [`spec-v49.md`](spec-v49.md) (the catalog half of §11), [`reference.md`](reference.md).
 
 ---

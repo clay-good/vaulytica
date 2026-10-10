@@ -3,7 +3,7 @@
 > **Status:** **Proposed (2026-10-10).** Not built. Continues the global step numbering after Step 301, beginning at **Step 302**.
 > **Scope:** one idea — a coding agent should be able to lint a folder of contracts with the same engine a person uses in the browser, hand back something small enough to read, and leave a person able to spot-check it. No new rule, no engine logic, no hosted service.
 > **Distribution (decided):** the static site, the GitHub repository, and this server run from a clone. **Nothing is published to npm, now or later.**
-> **Posture (unchanged):** deterministic, no AI in the engine, no server, no socket. The agent is a _consumer_ of the report, never a participant in producing it. Vaulytica is the deterministic linter beside the agent.
+> **Posture (unchanged):** deterministic, no AI in the engine, nothing uploaded, no socket. The agent is a _consumer_ of the report, never a participant in producing it. Vaulytica is the deterministic linter beside the agent.
 > **Cousin docs:** [`spec-v8.md`](spec-v8.md) §22 (the Node API this wraps), [`spec-v50.md`](spec-v50.md) (the compact projection), [`spec-v51.md`](spec-v51.md) (the drafting loop), [`spec-v52.md`](spec-v52.md) (folder triage), [`threat-model.md`](threat-model.md).
 
 ---
@@ -178,7 +178,7 @@ Step numbers follow the specs; the order worth building in does not.
 | 2     | v50 Steps 313–314                              | CLI hygiene and `brief-json`. No finding moves; everything after depends on it                                                             |
 | 3     | v48 Steps 302–307                              | The server                                                                                                                                 |
 | 4     | v51 Step 318, then v52, then v51 Steps 319–321 | Triage a folder, revise a draft. `actionable` comes first because the triage page counts it                                                |
-| 5     | v53 Steps 327–328, 330–331                     | The limits page and the report link                                                                                                        |
+| 5     | v53 Steps 327–328, 330–331                     | The limits page and the report page (the endpoint needs the owner's Cloudflare account)                                                    |
 | 6     | v50 Steps 315–317; v49 the rest; v53 Step 332  | Changes to reports and the catalog, one release each                                                                                       |
 
 ---
