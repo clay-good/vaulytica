@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.863.0] — 2026-10-10
+
+### Fixed
+- **Four rules told the reader to add a sentence their own pattern did not
+  match.**
+  - `NDA-D-019` recommends "is not intended to create, and shall not be
+    construed as creating, a precedent" and looked for "not create a
+    precedent" with nothing in between.
+  - `ADDENDA-007` recommends "Customer Data … is classified as Confidential"
+    and read the noun ("data classification") and the active verb, not the
+    passive.
+  - `EMP-044` names the "signature confirms receipt, not agreement" qualifier
+    and did not read it.
+  - `SET-019` recommends "Response Required by [date]" and read "by" only
+    when a digit came next, so "by March 15, 2026" drew the finding.
+
+  Each now reads its own advice; versions bumped.
+- **The guard for exactly this had been looking at 16 rules.**
+  `recommendation-satisfies-check.test.ts` extracted quotes with a
+  double-quote pattern, and the v3 and v4 packs quote drafting in single
+  quotes; it also walked only rules registered in two id sets, which no v3
+  rule is in. It now reads both quote styles across every wave — 116
+  recommendations — and tells drafting from a section title, a counter-example
+  ("not 'the provisions that by their nature survive'") and a template with a
+  blank. It failed on each of the four before its fix, and caught a first
+  attempt at `NDA-D-019` that missed the comma in the advice itself
+  (spec-v51 Step 319).
+
 ## [9.862.0] — 2026-10-10
 
 ### Added

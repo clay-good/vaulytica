@@ -286,8 +286,14 @@ export const ADDENDA_RULES: Rule[] = [
       "Without classification, all Customer Data is implicitly treated at the same (often lower) tier.",
     recommendation:
       "Add: e.g., 'Customer Data containing personal data is classified as Confidential and receives the controls in Schedule X.'",
+    // v1.1.0: the rule's own advice — "Customer Data … is classified as
+    // Confidential" — did not match: the pattern read the noun ("data
+    // classification") and the active verb ("classify data as"), not the
+    // passive every such clause is written in.
+    version: "1.1.0",
     present_patterns: [
       /(data\s+classification|sensitivity\s+(?:label|tier)|confidential\s+tier|classify\s+(?:customer\s+data|data\s+as))/i,
+      /\bdata\b[^.]{0,80}?\b(?:is|are|shall\s+be|will\s+be|must\s+be)\s+classified\s+as\b/i,
     ],
     default_severity: "info",
   }),

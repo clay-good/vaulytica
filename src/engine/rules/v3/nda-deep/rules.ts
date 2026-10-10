@@ -617,8 +617,15 @@ export const NDA_DEEP_RULES: Rule[] = [
       "A no-precedent clause prevents the receiver from arguing that prior NDAs control subsequent commercial-deal drafting. Optional but common.",
     recommendation:
       "Add: 'This Agreement is not intended to create, and shall not be construed as creating, a precedent for any future agreement between the parties.'",
+    // v1.1.0: the rule's own advice — "is not intended to create, and shall
+    // not be construed as creating, a precedent" — did not match: the pattern
+    // wanted "not create a precedent" with nothing between. Any form of the
+    // verb directly before "a/any precedent" is the clause — with the comma
+    // the advice itself writes ("construed as creating, a precedent").
+    version: "1.1.0",
     present_patterns: [
       /(no\s+precedent|not\s+(create|constitute)\s+a\s+precedent|most\s+favored\s+nation)/i,
+      /\b(?:creat|constitut|establish|set)\w*,?\s+(?:a|any)\s+precedent\b/i,
     ],
     default_severity: "info",
   }),

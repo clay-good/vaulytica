@@ -1183,7 +1183,7 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-044",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Acknowledgment and signature",
     description:
       "PIP should include employee acknowledgment with a 'signing does not equal agreement' qualifier.",
@@ -1213,6 +1213,9 @@ const PIP_RULES: Rule[] = [
       // object as often the VERB "agree" as the noun: "It does not indicate
       // that I agree with its contents."
       /(?:does|do)\s+not\s+(?:indicate|imply|constitute|mean|signify)\s+(?:that\s+)?(?:[a-z]+\s+){0,3}?(?:agree|agrees|agreement|concur)\b/is,
+      // The qualifier as this rule's own advice names it: "my signature
+      // confirms receipt, not agreement" (v1.3.0).
+      /signature\s+(?:below\s+)?(?:only\s+)?(?:confirms?|acknowledges?|indicates?|means?)\s+(?:only\s+)?(?:my\s+|your\s+)?receipt/is,
     ],
     default_severity: "warning",
   }),

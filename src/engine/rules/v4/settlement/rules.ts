@@ -641,7 +641,7 @@ const CEASE_DESIST_RULES: Rule[] = [
   }),
   presence({
     id: "SET-019",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Response deadline",
     description: "C&D must state a response deadline.",
     citation: settlePractice(
@@ -661,6 +661,10 @@ const CEASE_DESIST_RULES: Rule[] = [
         "i",
       ),
       /(by|no\s+later\s+than)\s+\d/i,
+      // A date that leads with its month: "Response Required by March 15,
+      // 2026" is the rule's own advice with the date filled in, and "by" was
+      // only read when a digit came next (v1.2.0).
+      /(?:by|no\s+later\s+than|on\s+or\s+before)\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}\b/i,
       // The demand-letter deadline anchor — "within ten (10) days of the date
       // of this letter" — uses a spelled-then-parenthetical count and pins the
       // window to the letter, not to a respond/reply verb.
