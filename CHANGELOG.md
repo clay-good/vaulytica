@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.857.0] — 2026-10-10
+
+### Changed
+- **The commands have a callable API behind them.** Folder runs, comparison
+  and export existed only inside `runAnalyze` and `runCompare`, which parse
+  argv, write to stdout and set the exit code. `tools/cli/api.ts` now exports
+  `analyzeDocument`, `analyzeEach`, `analyzeFolder`, `compareFiles`,
+  `exportArtifacts`, `listDocumentTypes`, `describeDocumentType` and
+  `explainRule`: values in, values out. The format tables and renderers moved
+  to `tools/cli/artifacts.ts` and input resolution to `tools/cli/inputs.ts`;
+  `analyze` and `compare` call them. Proven inert: 1,308 artifacts (JSON,
+  brief, fix list, SARIF over all 327 specimens) are byte-identical to the
+  previous release's, and so is stderr (spec-v48 Step 302).
+
 ## [9.856.0] — 2026-10-10
 
 ### Added

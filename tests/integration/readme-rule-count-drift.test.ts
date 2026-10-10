@@ -325,7 +325,7 @@ describe("README badge line", () => {
     // formats a program parses, ALSO went stale as formats were added, and the
     // result was a CSV whose header row was its third line. A number nobody
     // has to remember is a number that stays true.
-    const src = strip(readFileSync(join(root, "tools", "cli", "run.ts"), "utf8"));
+    const src = strip(readFileSync(join(root, "tools", "cli", "artifacts.ts"), "utf8"));
     const block = /const VALID_FORMATS = \[([\s\S]*?)\] as const;/.exec(src);
     expect(block, "VALID_FORMATS is no longer a literal array — update this guard").toBeTruthy();
     const formats = [...block![1]!.matchAll(/^\s*"([a-z-]+)",/gm)].map((m) => m[1]!);

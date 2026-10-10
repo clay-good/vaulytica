@@ -36,7 +36,8 @@ const ROOT = process.cwd();
 
 /** Every surface that renders a per-document DOCX report. */
 const DOCX_SURFACES: ReadonlyArray<[file: string, what: string]> = [
-  ["tools/cli/run.ts", "the CLI's --format docx"],
+  // The CLI's renderers live in `artifacts.ts`; `run.ts` calls `renderDocxReport`.
+  ["tools/cli/artifacts.ts", "the CLI's --format docx"],
   ["src/ui/pipeline.ts", "the in-tab pipeline"],
 ];
 
@@ -131,6 +132,10 @@ describe("a bundle's conflicts reach BOTH human-readable surfaces", () => {
     expect(cli, "the DOCX is not deferred, so it renders before the run").toMatch(
       /fmt:\s*"sarif"\s*\|\s*"html"\s*\|\s*"docx"/,
     );
-    expect(cli).toMatch(/consistency:\s*consistency \?\? undefined/);
+    // …and the deferred pass hands that run to the renderer, which threads it
+    // into the v3 inputs.
+    expect(cli).toMatch(/renderDocxReport\(d\.result, deps\.dkb, consistency \?\? undefined\)/);
+    const artifacts = readFileSync(join(ROOT, "tools", "cli", "artifacts.ts"), "utf8");
+    expect(artifacts).toMatch(/buildV3ReportInputs\([^;]*?\bconsistency,/s);
   });
 });

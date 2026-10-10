@@ -122,7 +122,9 @@ describe("every prose artifact accepts the caveats", () => {
   });
 
   it("each one takes the caveats and the CLI hands them over", () => {
-    const cli = readFileSync(join(process.cwd(), "tools/cli/run.ts"), "utf8");
+    // The renderers moved out of `run.ts` into `artifacts.ts`; that is where the
+    // CLI's builder calls are.
+    const cli = readFileSync(join(process.cwd(), "tools/cli/artifacts.ts"), "utf8");
     const missing: string[] = [];
     for (const [fn, file] of Object.entries(PROSE_BUILDERS)) {
       const src = readFileSync(join(process.cwd(), file), "utf8");

@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.856.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.857.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1502,7 +1502,7 @@ src/
   ui/          drop zone, pipeline, six-state result machine, theme toggle
 dkb/build/     offline fetchers (EDGAR, US Code, eCFR, Common Paper, …) → DKB
 tools/accuracy/ v5 Ground Truth harness (corpus loader, κ, metrics, scoreboard, legal-basis ledger)
-tools/cli/     v8 headless API (analyzeText/analyzeFile) + `vaulytica analyze | diff | compare | compare-coherence | posture-review | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | coherence-cadence | coherence-duration | coherence-durability | coherence-chain | coherence-recovery-chain | coherence-matrix | verify` CLI dispatcher
+tools/cli/     v8 headless API (`api.ts`: analyzeText/analyzeFile/analyzeDocument, analyzeFolder, compareFiles, exportArtifacts, listDocumentTypes, describeDocumentType, explainRule — values in, values out, no argv and no stdout; `artifacts.ts` renders, `inputs.ts` resolves) + `vaulytica analyze | diff | compare | compare-coherence | posture-review | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | coherence-cadence | coherence-duration | coherence-durability | coherence-chain | coherence-recovery-chain | coherence-matrix | verify` CLI dispatcher
 tools/citation-check/ v8 build-only citation URL well-formedness + scheduled reachability
 corpus/        real-document accuracy corpus (build/CI-only; never in the bundle)
 docs/          architecture, determinism, threat model, legal-basis ledger, specs v1–v18

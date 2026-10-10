@@ -28,6 +28,8 @@ const root = process.cwd();
 const read = (...p: string[]): string => readFileSync(join(root, ...p), "utf8");
 
 const runSource = read("tools", "cli", "run.ts");
+// The format tables live with the renderers (spec-v48 §4).
+const artifactsSource = read("tools", "cli", "artifacts.ts");
 const compareSource = read("tools", "cli", "compare.ts");
 const readme = read("docs", "reference.md");
 const ciDoc = read("docs", "ci-integration.md");
@@ -35,8 +37,8 @@ const actionYml = read("action.yml");
 
 /** The `--format` values `parseArgs` actually accepts. */
 function validFormats(): string[] {
-  const m = /const VALID_FORMATS = \[([^\]]*)\]/.exec(runSource);
-  if (!m) throw new Error("VALID_FORMATS not found in tools/cli/run.ts");
+  const m = /const VALID_FORMATS = \[([^\]]*)\]/.exec(artifactsSource);
+  if (!m) throw new Error("VALID_FORMATS not found in tools/cli/artifacts.ts");
   // Strip line comments first. The array carries explanatory comments, and a
   // quoted phrase inside one used to be read as a format value — so adding a
   // comment to the array made this guard demand that the docs advertise a

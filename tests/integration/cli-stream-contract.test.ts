@@ -214,8 +214,10 @@ describe("CLI stream contract (machine formats own stdout)", () => {
   it("every stdout-capable format owns stdout, with the summary on stderr", async () => {
     const { runAnalyze } = await import("../../tools/cli/run.js");
     const source = readFileSync(RUN_TS, "utf8");
-    const validBlock = /const VALID_FORMATS = \[([\s\S]*?)\] as const;/.exec(source);
-    expect(validBlock, "VALID_FORMATS not found in run.ts").not.toBeNull();
+    const validBlock = /const VALID_FORMATS = \[([\s\S]*?)\] as const;/.exec(
+      readFileSync(join(REPO_ROOT, "tools", "cli", "artifacts.ts"), "utf8"),
+    );
+    expect(validBlock, "VALID_FORMATS not found in artifacts.ts").not.toBeNull();
     const formats = [...validBlock![1]!.matchAll(/^\s*"([a-z-]+)",/gm)].map((m) => m[1]!);
     expect(formats.length).toBeGreaterThanOrEqual(20);
 

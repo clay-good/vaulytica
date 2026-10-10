@@ -203,17 +203,17 @@
  */
 
 import "./no-localstorage.js";
-import { mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, basename, extname, relative, resolve } from "node:path";
-import { unzipSync } from "fflate";
-import {
-  ArchiveTooLargeError,
-  MAX_BUNDLE_BYTES,
-  MAX_COMPRESSION_RATIO,
-} from "../../src/ingest/multi.js";
+import { join, basename, extname, resolve } from "node:path";
 
-import { analyzeFile, loadAccuracyDeps, runProductionQa, type AnalyzeResult } from "./api.js";
+import {
+  analyzeEach,
+  analyzeFile,
+  loadAccuracyDeps,
+  runProductionQa,
+  type AnalyzeResult,
+} from "./api.js";
 import { runConsistency } from "../../src/engine/consistency/runner.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 import type { ConsistencyDocument, ConsistencyRun } from "../../src/engine/consistency/types.js";
@@ -230,7 +230,39 @@ import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 /** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
 import { TIER_RANK } from "../../src/report/posture-movement.js";
-import { buildBriefJson } from "./brief.js";
+import {
+  FORMAT_EXT,
+  MACHINE_FORMATS,
+  VALID_FORMATS,
+  renderDocxReport,
+  renderFormat,
+  renderReviewedDocx,
+  type Format,
+} from "./artifacts.js";
+import {
+  SKIPPED_UNSUPPORTED,
+  SUPPORTED_EXT,
+  documentLabel,
+  globToRegExp,
+  outputStems,
+  resolveInputs,
+  shownPath,
+  splitGlob,
+  unpackZip,
+  type ZipView,
+} from "./inputs.js";
+
+// The input helpers moved to `inputs.ts`; these names are part of this
+// module's surface for the tests and tools that import them from here.
+export {
+  SKIPPED_UNSUPPORTED,
+  documentLabel,
+  globToRegExp,
+  outputStems,
+  resolveInputs,
+  splitGlob,
+  unpackZip,
+};
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -267,26 +299,6 @@ import { runCoherenceMatrix } from "./coherence-matrix.js";
 import { verifyReproducibilityFromFile, explainReproResult, type SavedReport } from "./verify.js";
 import type { Severity } from "../../src/engine/index.js";
 import { extractAll } from "../../src/extract/index.js";
-import { buildJsonReport } from "../../src/report/json.js";
-import { buildSarif, sarifConformanceViolations } from "../../src/report/sarif.js";
-import { buildHtmlReport } from "../../src/report/html.js";
-import {
-  buildFixListMarkdown,
-  buildFixListCsv,
-  buildClosingChecklistMarkdown,
-  buildClosingChecklistCsv,
-  buildCriticalDatesMarkdown,
-  buildCriticalDatesIcs,
-  buildObligationsCsv,
-  buildDeadlinesIcs,
-  buildNegotiationPostureMarkdown,
-  buildNegotiationPostureCsv,
-} from "../../src/report/exports.js";
-import { buildNegotiationSheet } from "../../src/report/negotiation-sheet.js";
-import { dkbCurrency } from "../../src/report/citations.js";
-import { buildReviewedDocx } from "../../src/report/docx-comments.js";
-import { buildDocxReport } from "../../src/report/docx.js";
-import { buildV3ReportInputs, hasV3Sections } from "../../src/report/v3/inputs.js";
 import {
   buildBundleJsonBlob,
   buildBundleDocxReport,
@@ -300,11 +312,7 @@ import {
   CERTIFICATE_SCHEMA,
   type VerificationCertificate,
 } from "../../src/report/certificate.js";
-import {
-  buildDefinitionsReport,
-  buildDefinitionsMarkdown,
-  buildDefinitionsCsv,
-} from "../../src/report/definitions.js";
+import { buildDefinitionsReport } from "../../src/report/definitions.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import { overlayFamilyForPlaybook, selectStateOverlays } from "../../src/dkb/state-overlays.js";
 import {
@@ -327,7 +335,6 @@ import {
 } from "../../src/report/coherence-movement.js";
 import { jsonKindOf, wrongKindOfJson, READ_BY, WRITTEN_BY } from "./json-kind.js";
 
-const SUPPORTED_EXT = new Set([".txt", ".md", ".markdown", ".text", ".docx", ".pdf"]);
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
 
 /**
@@ -340,159 +347,6 @@ const RANKED_TIERS = ["ideal", "acceptable", "below-acceptable"] as const;
 type RankedTier = (typeof RANKED_TIERS)[number];
 /** Accepted `--fail-on` values, in the order the usage error lists them. */
 const VALID_SEVERITIES = Object.keys(SEVERITY_RANK) as Severity[];
-type Format =
-  | "json"
-  | "sarif"
-  | "html"
-  | "md"
-  | "csv"
-  | "docx"
-  | "docx-comments"
-  | "bundle-json"
-  | "bundle-docx"
-  | "bundle-zip"
-  | "checklist-md"
-  | "checklist-csv"
-  | "dates-md"
-  | "dates-ics"
-  | "obligations-csv"
-  | "deadlines-ics"
-  | "posture-md"
-  | "posture-csv"
-  | "posture-sheet"
-  | "definitions-csv"
-  | "brief-json";
-/**
- * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
- * contract (fix-cli-json-purity): when any of these is selected, stdout
- * carries ONLY the serialized artifact — every human summary/progress line
- * goes to stderr, so `analyze x.docx --format json | jq .` just works.
- */
-/**
- * The five formats that never reach stdout: two are binary `.docx`, and the
- * three bundle artifacts write ONE file for the whole run, so there is no
- * single-input case where stdout is a complete delivery target. Each is
- * rejected with its own message when `--out` is missing; this set is what
- * {@link MACHINE_FORMATS} subtracts, so the two lists cannot drift.
- */
-const OUT_ONLY_FORMATS: ReadonlySet<Format> = new Set([
-  "docx",
-  "docx-comments",
-  "bundle-json",
-  "bundle-docx",
-  "bundle-zip",
-]);
-const VALID_FORMATS = [
-  "json",
-  "sarif",
-  "html",
-  "md",
-  "csv",
-  // The full attorney-facing report, the artifact this tool's whole output is
-  // shaped around — and until 9.570.0 the ONE the headless surface could not
-  // produce. `docx-comments` is a different thing: a byte-copy of the caller's
-  // own .docx with anchored Word comments. This is the REPORT.
-  "docx",
-  "docx-comments",
-  // The three CONSOLIDATED artifacts: one report for the whole deal room, not
-  // one per file. The browser has built them on every multi-document drop since
-  // v4; the CLI ran the cross-document rules (9.535.0) and still could not write
-  // the report they belong in. Each needs --consistency, because a directory is
-  // not a bundle.
-  "bundle-json",
-  "bundle-docx",
-  "bundle-zip",
-  // The four artifacts the browser has always offered and the headless surface
-  // could not produce at all: the closing checklist (v9 Ready to Sign) and the
-  // critical-dates register (v9 Tracked to Its Dates), each in the two forms a
-  // person actually uses. Every builder is a pure function that already shipped
-  // and was already tested; only the caller was missing. `md`/`csv` are the FIX
-  // LIST, so these carry their surface name rather than overloading those.
-  "checklist-md",
-  "checklist-csv",
-  "dates-md",
-  "dates-ics",
-  // The v6 findings-to-action exports and the v10 negotiation deliverables. Same
-  // story as the four above: pure builders, shipped and tested, never called by
-  // anything in tools/. `deadlines-ics` is the v6 calendar built from the
-  // document's own obligation deadlines; `dates-ics` is the v9 DERIVED register
-  // (anchor plus-or-minus N). Both are real and they are not the same artifact.
-  "obligations-csv",
-  "deadlines-ics",
-  "posture-md",
-  "posture-csv",
-  "posture-sheet",
-  // The definitions report already reaches JSON and the `md` summary through
-  // `--definitions`; its CSV had no caller.
-  "definitions-csv",
-  // The compact projection (spec-v50 §4): the same analysis in a few KB, for a
-  // script or an agent. A VIEW — `verify` and the certificate need `json`.
-  "brief-json",
-] as const;
-/**
- * Every format a PROGRAM parses — JSON, SARIF, CSV, iCalendar — and therefore
- * every format that must OWN stdout, with human summary and progress lines
- * going to stderr instead.
- *
- * 🚨 This used to be the literal `["json", "sarif", "csv"]`, written when those
- * were the only three. **Six more machine-parsed formats shipped since and none
- * of them joined**, so the stream contract this file's own docstring states was
- * false for all of them: `analyze x.docx --format obligations-csv > o.csv`
- * wrote
- *
- * ```
- * x.docx  [msa-deep]  1C 2W 1I
- *   Critical dates: 0 computed, 1 to verify manually.
- * obligor,modal,action,...
- * ```
- *
- * — a CSV whose header row is the third line, which a spreadsheet reads as
- * data under a two-column header. `--format dates-ics` was worse: two lines
- * before `BEGIN:VCALENDAR` make a file no calendar application will open.
- *
- * Derived from the artifact's own EXTENSION rather than listed, so a format
- * added tomorrow is covered the day it is added. The defect was not a wrong
- * list — it was a list that had to be remembered.
- *
- * Markdown and HTML formats are deliberately NOT here. They are read by a
- * person, the summary line is context rather than corruption, and
- * `--format md`'s stdout summary is pinned by its own test as intended
- * behaviour.
- */
-const MACHINE_EXTENSIONS = [".json", ".csv", ".ics"];
-
-const FORMAT_EXT: Record<Format, string> = {
-  json: ".json",
-  sarif: ".sarif.json",
-  html: ".html",
-  md: ".fixlist.md",
-  csv: ".fixlist.csv",
-  docx: ".report.docx",
-  // These three are named for the BUNDLE, not for a document, so the stem is
-  // supplied by the writer rather than a source filename.
-  "bundle-json": ".json",
-  "bundle-docx": ".docx",
-  "bundle-zip": ".zip",
-  "docx-comments": ".reviewed.docx",
-  "checklist-md": ".checklist.md",
-  "checklist-csv": ".checklist.csv",
-  "dates-md": ".dates.md",
-  "dates-ics": ".dates.ics",
-  "obligations-csv": ".obligations.csv",
-  "deadlines-ics": ".deadlines.ics",
-  "posture-md": ".posture.md",
-  "posture-csv": ".posture.csv",
-  "posture-sheet": ".negotiation-sheet.html",
-  "definitions-csv": ".definitions.csv",
-  // Not `.json`: it would collide with the full report under --out.
-  "brief-json": ".brief.json",
-};
-
-const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
-  VALID_FORMATS.filter(
-    (f) => !OUT_ONLY_FORMATS.has(f) && MACHINE_EXTENSIONS.some((e) => FORMAT_EXT[f].endsWith(e)),
-  ),
-);
 
 /**
  * Formats that render an ASSERTED surface: the flag that computes it must be
@@ -880,373 +734,6 @@ function parseArgs(argv: string[]): Args {
     }
   }
   return args;
-}
-
-/**
- * Files under a directory whose extension is not one this tool reads.
- *
- * 🚨 A directory walk used to drop these SILENTLY, and the asymmetry with the
- * named-file branch below is the defect: naming `notes.rtf` directly is a hard
- * error that says "unsupported input type", while leaving the same file in a
- * folder produced a report that simply pretended it was not there.
- *
- * That is not a cosmetic omission, because the cross-document engine reasons
- * about what the bundle CONTAINS. Put `dpa.doc` — the old Word extension — in a
- * deal room and `CROSS-MISSING-001` reports *"sow.txt references the DPA but no
- * DPA is in the bundle"*, confidently, about a bundle the user believes holds
- * one. The same shape the named-file branch's own comment describes: an unknown
- * extension turning into "a full, confidently wrong findings report".
- *
- * These do NOT fail the run. A deal room legitimately holds a logo, a
- * spreadsheet and a README, and skipping those is correct behaviour — it just
- * has to be SAID.
- */
-export const SKIPPED_UNSUPPORTED = "unsupported file type";
-
-/** Recursively collect supported files under a directory, and what it skipped. */
-async function walkDir(dir: string, skipped: Array<{ file: string; reason: string }> = []) {
-  const out: string[] = [];
-  // Code-unit ordering (not `localeCompare`, which depends on the host
-  // locale/ICU and would make a directory analysis non-reproducible across
-  // machines) — and identical to the glob branch's bare `.sort()`, so
-  // `analyze dir/` and `analyze 'dir/*.ext'` ingest files in the same order.
-  for (const entry of (await readdir(dir, { withFileTypes: true })).sort((a, b) =>
-    a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
-  )) {
-    if (entry.name.startsWith(".")) continue;
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) out.push(...(await walkDir(full, skipped)).files);
-    else if (SUPPORTED_EXT.has(extname(entry.name).toLowerCase())) out.push(full);
-    else skipped.push({ file: full, reason: SKIPPED_UNSUPPORTED });
-  }
-  return { files: out, skipped };
-}
-
-/**
- * Split a `dir/pattern` glob into its directory and basename pattern. A glob
- * with no slash (e.g. `*.docx`) resolves against the current directory — the
- * previous `slice(0, lastIndexOf("/"))` produced a bogus directory (`*.doc`)
- * for that case, so a bare glob silently matched nothing.
- */
-export function splitGlob(target: string): { dir: string; pattern: string } {
-  const slash = target.lastIndexOf("/");
-  return slash >= 0
-    ? { dir: target.slice(0, slash) || "/", pattern: target.slice(slash + 1) }
-    : { dir: ".", pattern: target };
-}
-
-/** Compile a single-segment glob pattern (`*` wildcard) to an anchored RegExp. */
-export function globToRegExp(pattern: string): RegExp {
-  const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*");
-  return new RegExp("^" + escaped + "$");
-}
-
-/** Resolve the target into a deterministic, sorted list of input files. */
-export async function resolveInputs(
-  target: string,
-  opts: { asText?: boolean } = {},
-  /**
-   * Filled with the entries a DIRECTORY walk skipped for an unsupported
-   * extension. An out-parameter rather than a wider return type, so the many
-   * callers that only want the file list are untouched — and optional, so a
-   * caller that does not ask keeps the old behaviour exactly.
-   */
-  skipped?: Array<{ file: string; reason: string }>,
-): Promise<string[]> {
-  const st = await stat(target).catch(() => null);
-  if (st?.isDirectory()) {
-    const walked = await walkDir(target);
-    if (skipped) skipped.push(...walked.skipped);
-    return walked.files;
-  }
-  if (st?.isFile()) {
-    // A directly named file honors the same allowlist directory and glob
-    // resolution apply (fix-cli-input-type-honesty): an unknown extension
-    // used to fall through to a silent UTF-8 decode and a full,
-    // confidently wrong findings report. `--as-text` is the explicit
-    // opt-in for extensionless / unconventionally named text files.
-    if (!opts.asText && !SUPPORTED_EXT.has(extname(target).toLowerCase())) {
-      throw new Error(
-        `unsupported input type: ${target} (supported: ` +
-          `${[...SUPPORTED_EXT].sort().join(", ")}; pass --as-text to ingest as UTF-8 text)`,
-      );
-    }
-    return [target];
-  }
-  // Treat as a simple `dir/*.ext` glob (one wildcard segment).
-  if (target.includes("*")) {
-    const { dir, pattern } = splitGlob(target);
-    const re = globToRegExp(pattern);
-    const names = await readdir(dir).catch(() => [] as string[]);
-    return names
-      .filter((n) => re.test(n))
-      .filter((n) => opts.asText || SUPPORTED_EXT.has(extname(n).toLowerCase()))
-      .sort()
-      .map((n) => join(dir, n));
-  }
-  throw new Error(`no such file or directory: ${target}`);
-}
-
-async function renderFormat(
-  fmt: Exclude<Format, "docx" | "docx-comments" | "bundle-json" | "bundle-docx" | "bundle-zip">,
-  r: AnalyzeResult,
-  dkb: Dkb,
-  definitions?: import("../../src/report/definitions.js").DefinitionsReport,
-  consistency?: ConsistencyRun,
-): Promise<string> {
-  // Deterministic citation-currency reference — the DKB's own build date.
-  const currency = dkbCurrency(dkb.manifest);
-  // The two honesty caveats, for the Markdown artifacts a person receives as a
-  // FILE. They already reach whoever ran the command, on stderr; a colleague
-  // handed `register.md` never saw that terminal. Gated on presence inside the
-  // builders, so a run with neither renders byte-identically.
-  const caveats = {
-    warnings: r.ingest.warnings,
-    classification_notice: r.run.classification_notice,
-  };
-  // The v9 "Last Look" surfaces, populated only when the matching flag ran
-  // (--delivery / --critical-dates / --checklist). Threaded into every format.
-  const v9surfaces = {
-    delivery: r.delivery,
-    criticalDates: r.critical_dates,
-    closingChecklist: r.closing_checklist,
-    // The matched family's normal pairings. Absent here until 9.515.0, so the
-    // headless DOCX/HTML/SARIF carried a section the browser's did.
-    relatedDocuments: r.related_documents.length > 0 ? r.related_documents : undefined,
-    // How many clearly-present families the cap left UNSCANNED. The terminal
-    // has said this since the count existed; the FILES the terminal writes did
-    // not, so a report read by anyone but the person at the keyboard showed a
-    // truncated list as a complete one.
-    secondaryFamiliesOmitted: r.secondary_families_present - r.secondary_families.length,
-  };
-  switch (fmt) {
-    case "json":
-      return buildJsonReport(
-        r.run,
-        r.ingest,
-        undefined,
-        // The OTHER families the document clearly contains
-        // (fix-headless-secondary-families). Until 9.508.0 the headless path
-        // did not RUN these at all, so this argument had nothing to pass —
-        // 238 of 312 specimens produce secondary findings the browser showed
-        // and a CI pipeline never saw. Outside `run`, so `result_hash` and
-        // every `--fail-on` gate are unchanged.
-        r.secondary_families.length > 0 ? r.secondary_families : undefined,
-        // The jurisdiction overlays (spec-v6 Part VI §21) are built from the
-        // governing-law clauses in `extracted`, and this argument was
-        // `undefined` — so `jurisdiction_overlays` could never appear in a CLI
-        // report, for any document. A standalone California non-compete
-        // reported thirteen findings and said nothing about California, where
-        // Bus. & Prof. Code § 16600 voids the covenant outright and § 16600.5
-        // makes attempting to enforce it an independent violation. The overlay
-        // catalog knows this, the selector resolves it, and the DOCX report
-        // prints it; the one surface a script can read did not. Re-extracted
-        // here rather than threaded through `AnalyzeResult`, matching the
-        // `--critical-dates` and `--posture` paths above: the overlay is not
-        // part of `run.result_hash`, so this cannot change what a run verifies
-        // to.
-        extractAll(r.ingest.tree),
-        r.delivery,
-        r.critical_dates,
-        r.closing_checklist,
-        r.negotiation_posture,
-        currency,
-        definitions,
-        r.related_documents.length > 0 ? r.related_documents : undefined,
-        v9surfaces.secondaryFamiliesOmitted,
-      ).text();
-    case "sarif": {
-      // The cross-document run rides in only when the caller asserted a bundle
-      // (--consistency); each conflict lands in the SARIF of the document its
-      // first excerpt names, so it appears exactly once across the set.
-      //
-      // The overlays are re-extracted here for the same reason the JSON and
-      // HTML paths do it, and to close the same gap one surface over: SARIF is
-      // the artifact the Action uploads, and it carried no state-law overlay at
-      // all — a California non-compete annotated its findings and said nothing
-      // about § 16600. Outside `run`, so `result_hash` is unchanged.
-      //
-      // 🥇 `sarifConformanceViolations` says in its own docstring that it is
-      // "exposed (not test-only) so a caller writing SARIF — e.g. the CLI —
-      // can self-check its output before handing it to a downstream tool". It
-      // had no caller anywhere: not the CLI it names, and it had never been run
-      // over the corpus. That matters here more than anywhere, because SARIF is
-      // the artifact the Action uploads by default and a malformed log does not
-      // fail loudly — GitHub Code Scanning drops the results and reports
-      // nothing, which reads as a clean scan.
-      //
-      // A warning, not a gate. The artifact still goes to stdout: a downstream
-      // tool refusing it is a better outcome than this tool deciding on the
-      // user's behalf that they get nothing.
-      const log = buildSarif(
-        r.run,
-        v9surfaces,
-        currency,
-        r.ingest,
-        consistency,
-        extractAll(r.ingest.tree),
-      );
-      const violations = sarifConformanceViolations(log);
-      if (violations.length > 0) {
-        process.stderr.write(
-          `vaulytica: warning: this SARIF log does not conform to the structural rules ` +
-            `GitHub Code Scanning enforces, and an uploader may silently drop its results:\n`,
-        );
-        for (const v of violations.slice(0, 10)) process.stderr.write(`  - ${v}\n`);
-        if (violations.length > 10) {
-          process.stderr.write(`  … and ${violations.length - 10} more\n`);
-        }
-      }
-      return JSON.stringify(log, null, 2);
-    }
-    case "html":
-      return buildHtmlReport(
-        r.run,
-        r.ingest,
-        dkb,
-        undefined,
-        v9surfaces,
-        undefined,
-        r.secondary_families.length > 0 ? r.secondary_families : undefined,
-        consistency,
-        // Same re-extraction the JSON path does, and for the same reason: the
-        // overlays and the obligations ledger are built from `extracted`, which
-        // is not part of `run.result_hash`, so this cannot change what a run
-        // verifies to.
-        extractAll(r.ingest.tree),
-      );
-    case "md": {
-      const md = buildFixListMarkdown(r.run, undefined, currency, r.ingest);
-      return definitions ? `${md}\n${buildDefinitionsMarkdown(definitions)}` : md;
-    }
-    case "csv":
-      return buildFixListCsv(r.run, currency);
-    // The asserted surfaces. `renderFormat` is only reached for these once the
-    // flag has been validated AND the surface came back non-empty (the caller
-    // warns and skips otherwise), so the non-null assertions hold.
-    case "checklist-md":
-      return buildClosingChecklistMarkdown(r.closing_checklist!, caveats);
-    case "checklist-csv":
-      return buildClosingChecklistCsv(r.closing_checklist!);
-    case "dates-md":
-      return buildCriticalDatesMarkdown(r.critical_dates!, caveats);
-    case "dates-ics":
-      return buildCriticalDatesIcs(r.critical_dates!);
-    case "obligations-csv":
-      return buildObligationsCsv(extractAll(r.ingest.tree));
-    case "deadlines-ics":
-      return buildDeadlinesIcs(extractAll(r.ingest.tree));
-    case "posture-md":
-      return buildNegotiationPostureMarkdown(r.negotiation_posture!, caveats);
-    case "posture-csv":
-      return buildNegotiationPostureCsv(r.negotiation_posture!);
-    case "posture-sheet":
-      return buildNegotiationSheet(r.negotiation_posture!, r.playbook_id, caveats);
-    case "definitions-csv":
-      return buildDefinitionsCsv(definitions!);
-    case "brief-json":
-      return buildBriefJson(r);
-  }
-}
-
-type Dkb = Awaited<ReturnType<typeof loadAccuracyDeps>>["dkb"];
-
-/**
- * A `.zip` given to `analyze` is unpacked to a temporary folder and read as
- * that folder (spec-v50 §7). `root` is where it was unpacked; `name` is the
- * archive as the caller typed it, which is what every printed path and every
- * document label shows — a temporary path differs on every run. Stdin is the
- * same arrangement with no archive: an empty `name`.
- */
-type ZipView = { root: string; name: string };
-
-/**
- * Unpack the members this tool reads. An entry name is data from outside: a
- * member under a dot-segment (`..`, a hidden folder) is never written, so
- * nothing lands outside `root`. The size and ratio ceilings are the browser's
- * (`src/ingest/multi.ts`), checked on declared sizes before anything inflates.
- * Unsupported members are returned as skipped, as a directory walk reports them.
- */
-export async function unpackZip(
-  target: string,
-): Promise<{ view: ZipView; skipped: Array<{ file: string; reason: string }> }> {
-  const skipped: Array<{ file: string; reason: string }> = [];
-  let total = 0;
-  const entries = unzipSync(new Uint8Array(await readFile(target)), {
-    filter: (f) => {
-      const segments = f.name.split(/[\\/]/);
-      if (f.name.endsWith("/") || segments.some((s) => s.startsWith(".") || s === "__MACOSX")) {
-        return false;
-      }
-      if (!SUPPORTED_EXT.has(extname(f.name).toLowerCase())) {
-        skipped.push({ file: `${target}/${f.name}`, reason: SKIPPED_UNSUPPORTED });
-        return false;
-      }
-      const ratio = f.size > 0 ? f.originalSize / f.size : f.originalSize;
-      total += f.originalSize;
-      if (ratio > MAX_COMPRESSION_RATIO || total > MAX_BUNDLE_BYTES) {
-        throw new ArchiveTooLargeError(
-          `${target}: "${f.name}" inflates past the archive limits ` +
-            `(${MAX_COMPRESSION_RATIO}× per entry, ${MAX_BUNDLE_BYTES / 1024 / 1024} MB in all).`,
-        );
-      }
-      return true;
-    },
-  });
-  const root = await mkdtemp(join(tmpdir(), "vaulytica-zip-"));
-  for (const [name, bytes] of Object.entries(entries)) {
-    const dest = join(root, ...name.split(/[\\/]/).filter((s) => s !== "" && s !== "."));
-    await mkdir(join(dest, ".."), { recursive: true });
-    await writeFile(dest, bytes);
-  }
-  return { view: { root, name: target }, skipped };
-}
-
-/** The path a reader is shown: the archive's name in place of the temp folder. */
-function shownPath(file: string, zip: ZipView | undefined): string {
-  if (!zip) return file;
-  const inside = relative(zip.root, file).split("\\").join("/");
-  return zip.name ? `${zip.name}/${inside}` : inside;
-}
-
-/**
- * The `--out` file stem for each input (spec-v50 §6). `deal.md` beside
- * `deal.txt` used to write one `deal.json` and report two. A stem no other
- * input shares is used as it always was; a shared one keeps its extension
- * (`deal.md.json`); a shared file name keeps its folders too.
- */
-export function outputStems(inputs: readonly string[]): Map<string, string> {
-  const count = (key: (f: string) => string): Map<string, number> => {
-    const m = new Map<string, number>();
-    for (const f of inputs) m.set(key(f), (m.get(key(f)) ?? 0) + 1);
-    return m;
-  };
-  // Compared case-folded: `Deal.txt` and `deal.md` are one file on macOS and Windows.
-  const stem = (f: string): string => basename(f, extname(f)).toLowerCase();
-  const name = (f: string): string => basename(f).toLowerCase();
-  const stems = count(stem);
-  const names = count(name);
-  const out = new Map<string, string>();
-  for (const f of inputs) {
-    if (stems.get(stem(f)) === 1) out.set(f, basename(f, extname(f)));
-    else if (names.get(name(f)) === 1) out.set(f, basename(f));
-    else out.set(f, f.replace(/^[./\\]+/, "").replace(/[\\/:]+/g, "__"));
-  }
-  return out;
-}
-
-/**
- * Portable document identifier for coherence/posture artifacts
- * (fix-verify-receipt-depth): the basename, so an artifact hashes
- * identically no matter which machine or directory the bundle was
- * verified from — and never leaks the author's local paths. Collision
- * rule: when two inputs in the bundle share a basename, both keep their
- * as-given path (normalized to forward slashes), which must differ.
- */
-export function documentLabel(file: string, all: readonly string[]): string {
-  const base = basename(file);
-  const collides = all.some((f) => f !== file && basename(f) === base);
-  return collides ? file.split("\\").join("/") : base;
 }
 
 function worstSeverity(r: AnalyzeResult): Severity | null {
@@ -1661,36 +1148,35 @@ async function analyzeTarget(
   // and the exit code stays non-zero, so CI cannot pass on a deal room the tool
   // could only half read.
   const unreadable: Array<{ file: string; reason: string }> = [];
-  for (const file of inputs) {
-    let r: Awaited<ReturnType<typeof analyzeFile>>;
-    try {
-      r = await analyzeFile(file, {
-        playbookId: args.playbook,
-        deps,
-        asText: args.asText,
-        delivery: args.delivery,
-        criticalDates: args.criticalDates,
-        checklist: args.checklist,
-        customPlaybook,
-        posture: args.posture,
-        filing,
-        deadline,
-        regimes: args.regimes as RegimeId[] | undefined,
-        estateChecks: args.estateChecks,
-        estateState: args.estateState,
-        // The product surface scans composite documents the way the browser
-        // does. Off by default in the API for cost (see AssertedPackOptions).
-        secondaryFamilies: true,
-      });
-    } catch (e) {
+  for await (const item of analyzeEach(inputs, {
+    playbookId: args.playbook,
+    deps,
+    asText: args.asText,
+    delivery: args.delivery,
+    criticalDates: args.criticalDates,
+    checklist: args.checklist,
+    customPlaybook,
+    posture: args.posture,
+    filing,
+    deadline,
+    regimes: args.regimes as RegimeId[] | undefined,
+    estateChecks: args.estateChecks,
+    estateState: args.estateState,
+    // The product surface scans composite documents the way the browser
+    // does. Off by default in the API for cost (see AssertedPackOptions).
+    secondaryFamilies: true,
+  })) {
+    const file = item.file;
+    if ("error" in item) {
       // A single input has nothing to survive FOR, so it keeps the old
       // behaviour: the error is the answer.
-      if (inputs.length === 1) throw e;
-      const reason = e instanceof Error ? e.message : String(e);
+      if (inputs.length === 1) throw item.error;
+      const reason = item.error instanceof Error ? item.error.message : String(item.error);
       unreadable.push({ file, reason });
       process.stderr.write(`vaulytica: ${label(file)}: could not be read (${reason}) — skipped.\n`);
       continue;
     }
+    const r = item.result;
 
     // `doc_id` must be unique across the bundle (the runner rejects a
     // duplicate) and is what the finding's excerpts name, so it uses the same
@@ -1907,15 +1393,7 @@ async function analyzeTarget(
         // Binary reviewed copy: the uploaded container plus anchored Word
         // comments (add-word-comment-export). Validated above: .docx input
         // and --out are both guaranteed here.
-        const originalBytes = await readFile(file);
-        const reviewed = buildReviewedDocx(
-          originalBytes.buffer.slice(
-            originalBytes.byteOffset,
-            originalBytes.byteOffset + originalBytes.byteLength,
-          ) as ArrayBuffer,
-          r.run,
-          { warnings: r.ingest.warnings, classification_notice: r.run.classification_notice },
-        );
+        const reviewed = renderReviewedDocx(await readFile(file), r);
         await mkdir(args.out!, { recursive: true });
         const outName = stems.get(file)! + FORMAT_EXT[fmt];
         await writeFile(join(args.out!, outName), reviewed.bytes);
@@ -2065,36 +1543,9 @@ async function analyzeTarget(
       // 9.674.0, so they could not be obtained from any surface. Passed only
       // when the document actually carries that language, which keeps every
       // other report byte-identical.
-      const docxExtracted = extractAll(d.result.ingest.tree);
-      const v3Inputs = buildV3ReportInputs(d.result.ingest.tree, {
-        parties: docxExtracted.parties,
-        dkb_build_date: deps.dkb.manifest.built_at,
-        // The same ConsistencyRun this command already hands to
-        // buildHtmlReport — a bundle's conflicts must reach both.
-        consistency: consistency ?? undefined,
-      });
-      const blob = await buildDocxReport(
-        d.result.run,
-        d.result.ingest,
-        deps.dkb,
-        d.result.playbook,
-        hasV3Sections(v3Inputs) ? v3Inputs : undefined,
-        docxExtracted,
-        d.result.secondary_families.length > 0 ? d.result.secondary_families : undefined,
-        {
-          delivery: d.result.delivery,
-          criticalDates: d.result.critical_dates,
-          closingChecklist: d.result.closing_checklist,
-          relatedDocuments:
-            d.result.related_documents.length > 0 ? d.result.related_documents : undefined,
-          secondaryFamiliesOmitted:
-            d.result.secondary_families_present - d.result.secondary_families.length,
-        },
-        d.result.negotiation_posture!,
-      );
+      const bytes = await renderDocxReport(d.result, deps.dkb, consistency ?? undefined);
       await mkdir(args.out!, { recursive: true });
       const outName = stems.get(d.file)! + FORMAT_EXT[d.fmt];
-      const bytes = Buffer.from(await blob.arrayBuffer());
       await writeFile(join(args.out!, outName), bytes);
       countWrite(d.fmt);
       human(`  Report: ${(bytes.byteLength / 1024).toFixed(1)} KB → ${outName}\n`);

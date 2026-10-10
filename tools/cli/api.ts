@@ -15,8 +15,9 @@
  * parity-proven downstream; it re-implements no engine logic.
  */
 
-import { readFile, readdir, stat } from "node:fs/promises";
-import { extname, basename, join } from "node:path";
+import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { dirname, extname, basename, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { unzipSync, strFromU8 } from "fflate";
 
 import { ingestPaste } from "../../src/ingest/paste.js";
@@ -55,6 +56,25 @@ import { loadAccuracyDeps, runIngested, type AccuracyDeps } from "../accuracy/pi
 import type { SecondaryFamilyRun } from "../../src/engine/secondary-families.js";
 import type { RelatedDocument } from "../../src/report/companions.js";
 import type { Playbook } from "../../src/playbooks/types.js";
+import {
+  findSource,
+  findStatuteCitation,
+  type Rule,
+  type Severity,
+} from "../../src/engine/finding.js";
+import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import { compareRuns, type Comparison } from "../../src/report/compare.js";
+import { buildClauseDiff, type ClauseDiff } from "../../src/report/clause-diff.js";
+import { comparePosture, type PostureMovement } from "../../src/report/posture-movement.js";
+import { buildDefinitionsReport } from "../../src/report/definitions.js";
+import {
+  FORMAT_EXT,
+  renderDocxReport,
+  renderFormat,
+  renderReviewedDocx,
+  type Format,
+} from "./artifacts.js";
+import { resolveInputs, shownPath, unpackZip, type ZipView } from "./inputs.js";
 
 export type AnalyzeResult = {
   run: EngineRun;
@@ -503,4 +523,406 @@ export async function runProductionQa(
     logCsv,
     deliveries: deliveries.length > 0 ? deliveries : undefined,
   });
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * The callable surface behind the commands (spec-v48 §4).
+ *
+ * Folder runs, comparison, export and the catalog lookups used to exist only
+ * inside `runAnalyze` / `runCompare`, which parse argv, write to stdout and set
+ * `process.exitCode`. Each is a function here: it takes values, returns
+ * values, and writes only the files it is asked to. The commands call these.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+type AnalyzeFileOptions = NonNullable<Parameters<typeof analyzeFile>[1]>;
+
+/** One document handed to the API: a file on disk, or text already in hand. */
+export type DocumentInput = { path: string } | { text: string; filename?: string };
+
+/** Analyze a {@link DocumentInput}. Text is named `pasted-text.txt` unless told otherwise. */
+export async function analyzeDocument(
+  input: DocumentInput,
+  opts: AnalyzeFileOptions = {},
+): Promise<AnalyzeResult> {
+  return "path" in input
+    ? analyzeFile(input.path, opts)
+    : analyzeText(input.text, input.filename ?? "pasted-text.txt", opts);
+}
+
+/**
+ * Analyze each file in turn. A file that cannot be read is yielded with its
+ * `error` and the walk continues — one corrupt `.docx` does not cost the
+ * caller the rest of the folder. What to do about it (the CLI fails the run;
+ * a single input rethrows) is the caller's decision.
+ */
+export async function* analyzeEach(
+  files: readonly string[],
+  opts: AnalyzeFileOptions = {},
+): AsyncGenerator<{ file: string; result: AnalyzeResult } | { file: string; error: unknown }> {
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  for (const file of files) {
+    try {
+      yield { file, result: await analyzeFile(file, { ...opts, deps }) };
+    } catch (error) {
+      yield { file, error };
+    }
+  }
+}
+
+export type FolderAnalysis = {
+  /** Every document read, in the walk's order, under the label a reader is shown. */
+  documents: Array<{ file: string; label: string; result: AnalyzeResult }>;
+  /** Files of a supported type that could not be read, with the reason. */
+  unreadable: Array<{ file: string; reason: string }>;
+  /** Files passed over for an unsupported type. A partial run says so. */
+  skipped: Array<{ file: string; reason: string }>;
+};
+
+/**
+ * Analyze a directory, a glob, a `.zip`, or an explicit list of paths.
+ * `onDocument` is called after each file — a long folder can report progress
+ * or stop (return `false`) between documents.
+ */
+export async function analyzeFolder(
+  target: string | readonly string[],
+  opts: AnalyzeFileOptions & {
+    onDocument?: (done: number, total: number) => boolean | void | Promise<boolean | void>;
+  } = {},
+): Promise<FolderAnalysis> {
+  const { onDocument, ...analyzeOpts } = opts;
+  const skipped: FolderAnalysis["skipped"] = [];
+  let zip: ZipView | undefined;
+  let files: string[];
+  if (typeof target !== "string") {
+    files = [...target];
+  } else if (target.toLowerCase().endsWith(".zip") && (await stat(target)).isFile()) {
+    const unpacked = await unpackZip(target);
+    zip = unpacked.view;
+    skipped.push(...unpacked.skipped);
+    files = await resolveInputs(zip.root, {}, skipped);
+  } else {
+    files = await resolveInputs(target, { asText: opts.asText }, skipped);
+  }
+  const out: FolderAnalysis = { documents: [], unreadable: [], skipped };
+  try {
+    let done = 0;
+    for await (const item of analyzeEach(files, analyzeOpts)) {
+      const label = shownPath(item.file, zip);
+      if ("result" in item) out.documents.push({ file: item.file, label, result: item.result });
+      else {
+        const reason = item.error instanceof Error ? item.error.message : String(item.error);
+        out.unreadable.push({ file: label, reason });
+      }
+      if ((await onDocument?.(++done, files.length)) === false) break;
+    }
+  } finally {
+    if (zip) await rm(zip.root, { recursive: true, force: true });
+  }
+  return out;
+}
+
+export type FileComparison = {
+  comparison: Comparison;
+  clause_diff: ClauseDiff;
+  posture_movement?: PostureMovement;
+  base: AnalyzeResult;
+  revised: AnalyzeResult;
+};
+
+/**
+ * Compare two versions of a document: the finding delta, the clause redline,
+ * and — with a custom playbook and `posture` — the posture movement. Throws
+ * `ComparisonRefusedError` for a cross-family pair unless `confirmPairing`.
+ */
+export async function compareFiles(
+  base: DocumentInput,
+  revised: DocumentInput,
+  opts: {
+    playbookId?: string;
+    customPlaybook?: CustomPlaybook;
+    posture?: boolean;
+    confirmPairing?: boolean;
+    deps?: AccuracyDeps;
+    dkbDir?: string;
+  } = {},
+): Promise<FileComparison> {
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  const analyzeOpts = {
+    playbookId: opts.playbookId,
+    deps,
+    customPlaybook: opts.customPlaybook,
+    posture: opts.posture,
+  };
+  const baseR = await analyzeDocument(base, analyzeOpts);
+  const revisedR = await analyzeDocument(revised, analyzeOpts);
+  const comparison = await compareRuns(baseR.run, revisedR.run, {
+    confirmPairing: opts.confirmPairing,
+    warnings: { base: baseR.ingest.warnings, revised: revisedR.ingest.warnings },
+  });
+  const posture_movement =
+    opts.posture && baseR.negotiation_posture && revisedR.negotiation_posture
+      ? await comparePosture(baseR.negotiation_posture, revisedR.negotiation_posture)
+      : undefined;
+  return {
+    comparison,
+    clause_diff: buildClauseDiff(baseR.ingest.tree, revisedR.ingest.tree),
+    ...(posture_movement ? { posture_movement } : {}),
+    base: baseR,
+    revised: revisedR,
+  };
+}
+
+/**
+ * The formats {@link exportArtifacts} writes: every per-document artifact that
+ * needs nothing but the document. The posture formats need a custom playbook
+ * and the bundle formats a deal room; both stay with `analyze`.
+ */
+export const EXPORT_FORMATS = [
+  "json",
+  "brief-json",
+  "sarif",
+  "html",
+  "md",
+  "csv",
+  "docx",
+  "docx-comments",
+  "checklist-md",
+  "checklist-csv",
+  "dates-md",
+  "dates-ics",
+  "obligations-csv",
+  "deadlines-ics",
+  "definitions-csv",
+] as const satisfies readonly Format[];
+export type ExportFormat = (typeof EXPORT_FORMATS)[number];
+
+export type ExportResult = {
+  written: Array<{ format: ExportFormat; path: string }>;
+  /** A format the document had nothing to say on — never written as an empty file. */
+  skipped: Array<{ format: ExportFormat; reason: string }>;
+};
+
+/**
+ * Analyze `path` once and write the requested artifacts into `outDir`, named
+ * as `analyze --out` names them and rendered by the same functions, so the
+ * bytes are the CLI's. Refuses to replace an existing file unless `overwrite`.
+ */
+export async function exportArtifacts(
+  path: string,
+  formats: readonly ExportFormat[],
+  outDir: string,
+  opts: { overwrite?: boolean; playbookId?: string; deps?: AccuracyDeps; dkbDir?: string } = {},
+): Promise<ExportResult> {
+  for (const f of formats) {
+    if (!(EXPORT_FORMATS as readonly string[]).includes(f)) {
+      throw new Error(`unsupported export format "${f}" (supported: ${EXPORT_FORMATS.join(", ")})`);
+    }
+  }
+  if (formats.includes("docx-comments") && extname(path).toLowerCase() !== ".docx") {
+    throw new Error("docx-comments writes comments into the original .docx; this file is not one");
+  }
+  const stem = basename(path, extname(path));
+  const target = (f: ExportFormat): string => join(outDir, stem + FORMAT_EXT[f]);
+  if (!opts.overwrite) {
+    const existing: string[] = [];
+    for (const f of formats) if (await stat(target(f)).catch(() => null)) existing.push(target(f));
+    if (existing.length > 0) {
+      throw new Error(
+        `refusing to overwrite ${existing.join(", ")} — pass overwrite: true to replace`,
+      );
+    }
+  }
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  const wants = (prefix: string): boolean => formats.some((f) => f.startsWith(prefix));
+  const r = await analyzeFile(path, {
+    deps,
+    playbookId: opts.playbookId,
+    secondaryFamilies: true,
+    checklist: wants("checklist-"),
+    criticalDates: wants("dates-"),
+  });
+  const definitions = formats.includes("definitions-csv")
+    ? await buildDefinitionsReport(extractAll(r.ingest.tree), r.ingest.tree)
+    : undefined;
+  const nothing: Partial<Record<ExportFormat, string>> = {
+    ...(r.closing_checklist
+      ? {}
+      : { "checklist-md": "no closing checklist", "checklist-csv": "no closing checklist" }),
+    ...(r.critical_dates
+      ? {}
+      : { "dates-md": "no critical-dates register", "dates-ics": "no critical-dates register" }),
+  };
+  const out: ExportResult = { written: [], skipped: [] };
+  await mkdir(outDir, { recursive: true });
+  for (const f of formats) {
+    if (nothing[f]) {
+      out.skipped.push({ format: f, reason: `${nothing[f]} to render for this document` });
+      continue;
+    }
+    const content =
+      f === "docx"
+        ? await renderDocxReport(r, deps.dkb)
+        : f === "docx-comments"
+          ? renderReviewedDocx(await readFile(path), r).bytes
+          : await renderFormat(f, r, deps.dkb, definitions);
+    await writeFile(target(f), content);
+    out.written.push({ format: f, path: target(f) });
+  }
+  return out;
+}
+
+/* ---------------- The catalog: document types and rules ---------------- */
+
+/**
+ * One catalog entry, as `tools/site/doc-types.json` holds it. Declared here
+ * rather than imported from the site generator: this module ships to a clone
+ * that runs the CLI, and must not pull the site's build tools in with it.
+ */
+export type DocType = {
+  id: string;
+  name: string;
+  group: string;
+  summary: string;
+  checks: Array<{ id: string; name: string; description: string; severity: string }>;
+  general_checks: number;
+  companions: string[];
+  sources: Array<{ title: string; url: string }>;
+};
+type DocTypesData = { types: DocType[]; groups: string[]; superseded: Record<string, string> };
+
+let docTypesCache: DocTypesData | undefined;
+
+/**
+ * The committed catalog the site is built from (`tools/site/doc-types.json`,
+ * held equal to its generator by `site-doc-types.test.ts`), resolved beside
+ * this file so it loads from any working directory.
+ */
+async function docTypes(): Promise<DocTypesData> {
+  // A path, not a `URL`: under a DOM test environment the global `URL` is not
+  // Node's, and `readFile` refuses it.
+  const file = join(dirname(fileURLToPath(import.meta.url)), "..", "site", "doc-types.json");
+  docTypesCache ??= JSON.parse(await readFile(file, "utf8")) as DocTypesData;
+  return docTypesCache;
+}
+
+/**
+ * The document types the catalog names. With no `query`: id and name only —
+ * all of them with descriptions is 75 KB. With one: every word must appear in
+ * the id, name, group or summary, and the summary is returned.
+ */
+export async function listDocumentTypes(
+  opts: { query?: string; limit?: number; offset?: number } = {},
+): Promise<{
+  total: number;
+  types: Array<{ id: string; name: string; summary?: string }>;
+  next_offset?: number;
+}> {
+  const words = (opts.query ?? "").toLowerCase().split(/\s+/).filter(Boolean);
+  const matched = (await docTypes()).types.filter((t) => {
+    const hay = `${t.id} ${t.name} ${t.group} ${t.summary}`.toLowerCase();
+    return words.every((w) => hay.includes(w));
+  });
+  const offset = Math.max(0, opts.offset ?? 0);
+  const limit = Math.min(Math.max(1, opts.limit ?? 50), 100);
+  const end = offset + limit;
+  return {
+    total: matched.length,
+    types: matched.slice(offset, end).map((t) => ({
+      id: t.id,
+      name: t.name,
+      ...(words.length > 0 ? { summary: t.summary } : {}),
+    })),
+    ...(end < matched.length ? { next_offset: end } : {}),
+  };
+}
+
+const ALL_RULES: readonly Rule[] = [
+  ...LAUNCH_RULES,
+  ...V3_RULES,
+  ...V4_RULES,
+  ...V5_RULES,
+  ...V6_RULES,
+];
+
+/** A rule's `dkb_citations`, resolved against the shipped DKB. Unknown ids are dropped. */
+function resolveAuthorities(
+  rule: Rule,
+  dkb: AccuracyDeps["dkb"],
+): Array<{ source: string; url: string }> {
+  return rule.dkb_citations
+    .map((id) => findStatuteCitation(dkb, id) ?? findSource(dkb, id))
+    .filter((c) => c !== undefined)
+    .map((c) => ({ source: c.source, url: c.source_url }));
+}
+
+/**
+ * What one document type is checked for: the family's own checks in plain
+ * words, each with the authorities its rule cites, plus how many general
+ * checks run on every document. `null` for an id the catalog does not name;
+ * a retired id answers with the type that superseded it.
+ */
+export async function describeDocumentType(
+  id: string,
+  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
+): Promise<
+  | (Omit<DocType, "checks"> & {
+      checks: Array<
+        DocType["checks"][number] & { authorities: Array<{ source: string; url: string }> }
+      >;
+      superseded_from?: string;
+    })
+  | null
+> {
+  const data = await docTypes();
+  const resolved = data.superseded[id] ?? id;
+  const type = data.types.find((t) => t.id === resolved);
+  if (!type) return null;
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  const byId = new Map(ALL_RULES.map((r) => [r.id, r]));
+  return {
+    ...type,
+    checks: type.checks.map((c) => ({
+      ...c,
+      authorities: byId.has(c.id) ? resolveAuthorities(byId.get(c.id)!, deps.dkb) : [],
+    })),
+    ...(resolved !== id ? { superseded_from: id } : {}),
+  };
+}
+
+/**
+ * What a rule carries: its name, version, category, default severity,
+ * description, the document types it is gated to (absent: every document),
+ * and the citations it declares. Many rules attach their citation to the
+ * finding when they fire instead of declaring it, so an empty list here is
+ * not "uncited" — the finding carries it. A rule has no "what satisfies it"
+ * field, so none is returned. `null` for an unknown id.
+ */
+export async function explainRule(
+  ruleId: string,
+  opts: { deps?: AccuracyDeps; dkbDir?: string } = {},
+): Promise<{
+  rule_id: string;
+  name: string;
+  version: string;
+  category: string;
+  default_severity: Severity;
+  description: string;
+  applies_to_document_types?: string[];
+  citations: Array<{ source: string; url: string }>;
+} | null> {
+  const rule = ALL_RULES.find((r) => r.id.toLowerCase() === ruleId.trim().toLowerCase());
+  if (!rule) return null;
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  return {
+    rule_id: rule.id,
+    name: rule.name,
+    version: rule.version,
+    category: rule.category,
+    default_severity: rule.default_severity,
+    description: rule.description,
+    ...(rule.applies_to_playbooks?.length
+      ? { applies_to_document_types: [...rule.applies_to_playbooks] }
+      : {}),
+    citations: resolveAuthorities(rule, deps.dkb),
+  };
 }

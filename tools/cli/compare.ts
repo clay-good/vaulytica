@@ -30,16 +30,15 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { analyzeFile, loadAccuracyDeps } from "./api.js";
+import { compareFiles } from "./api.js";
 import {
-  compareRuns,
   buildComparisonJsonObject,
   type Comparison,
   type SeverityCounts,
 } from "../../src/report/compare.js";
-import { buildClauseDiff, type ClauseDiff } from "../../src/report/clause-diff.js";
+import { type ClauseDiff } from "../../src/report/clause-diff.js";
 import { buildComparisonDocx } from "../../src/report/compare-docx.js";
-import { comparePosture, type PostureMovement } from "../../src/report/posture-movement.js";
+import { type PostureMovement } from "../../src/report/posture-movement.js";
 import { parseCustomPlaybookJson } from "../../src/playbooks/custom-playbook.js";
 import type { Severity } from "../../src/engine/index.js";
 
@@ -329,22 +328,21 @@ export async function runCompare(argv: string[]): Promise<void> {
     }
   }
 
-  const deps = await loadAccuracyDeps({ dkbDir: args.dkb });
-  const analyzeOpts = { playbookId: args.playbook, deps, customPlaybook, posture: args.posture };
-  const baseR = await analyzeFile(args.base, analyzeOpts);
-  const revisedR = await analyzeFile(args.revised, analyzeOpts);
-
-  const cmp = await compareRuns(baseR.run, revisedR.run, {
-    confirmPairing: args.confirmPairing,
-    warnings: { base: baseR.ingest.warnings, revised: revisedR.ingest.warnings },
-  });
-  const clauseDiff = buildClauseDiff(baseR.ingest.tree, revisedR.ingest.tree);
-  // The posture movement is computed only when both drafts were classified
-  // against the same positions (spec-v11). Outside the comparison result_hash.
-  const postureMovement =
-    args.posture && baseR.negotiation_posture && revisedR.negotiation_posture
-      ? await comparePosture(baseR.negotiation_posture, revisedR.negotiation_posture)
-      : undefined;
+  const {
+    comparison: cmp,
+    clause_diff: clauseDiff,
+    posture_movement: postureMovement,
+  } = await compareFiles(
+    { path: args.base },
+    { path: args.revised },
+    {
+      playbookId: args.playbook,
+      customPlaybook,
+      posture: args.posture,
+      confirmPairing: args.confirmPairing,
+      dkbDir: args.dkb,
+    },
+  );
 
   if (args.format === "docx") {
     // The comparison as the artifact a reviewer circulates, not a terminal
