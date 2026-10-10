@@ -10,7 +10,7 @@
  * the playbook JSON, resolved by `import.meta.url`) lands in the package's own
  * tree. No socket is opened — "nothing leaves your machine" holds here too.
  */
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
@@ -36,12 +36,35 @@ try {
   // Keep the bare specifier.
 }
 
-const result = spawnSync(process.execPath, ["--import", loader, entry, ...process.argv.slice(2)], {
-  stdio: "inherit",
-});
+/**
+ * `vaulytica mcp` is a long-lived server an agent host starts and stops.
+ * `spawnSync` cannot forward a signal — killing this launcher would orphan the
+ * child, still holding the host's pipes — so that path spawns asynchronously,
+ * hands SIGTERM and SIGINT on, and exits as the child exits (spec-v48 §3).
+ */
+if (process.argv[2] === "mcp") {
+  const server = join(here, "..", "tools", "mcp", "server.ts");
+  const child = spawn(process.execPath, ["--import", loader, server, ...process.argv.slice(3)], {
+    stdio: "inherit",
+  });
+  for (const signal of ["SIGTERM", "SIGINT", "SIGHUP"]) {
+    process.on(signal, () => child.kill(signal));
+  }
+  child.on("error", (err) => {
+    process.stderr.write(`vaulytica: failed to launch (${err.message})\n`);
+    process.exit(1);
+  });
+  child.on("exit", (code, signal) => process.exit(code ?? (signal ? 1 : 0)));
+} else {
+  const result = spawnSync(
+    process.execPath,
+    ["--import", loader, entry, ...process.argv.slice(2)],
+    { stdio: "inherit" },
+  );
 
-if (result.error) {
-  process.stderr.write(`vaulytica: failed to launch (${result.error.message})\n`);
-  process.exit(1);
+  if (result.error) {
+    process.stderr.write(`vaulytica: failed to launch (${result.error.message})\n`);
+    process.exit(1);
+  }
+  process.exit(result.status ?? 1);
 }
-process.exit(result.status ?? 1);

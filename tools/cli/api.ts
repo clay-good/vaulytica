@@ -418,6 +418,10 @@ export async function analyzeText(
 }
 
 export { loadAccuracyDeps };
+export type { AccuracyDeps };
+// The compact projection is part of this surface: the MCP server imports
+// only this module.
+export { buildBrief, BRIEF_SCHEMA, type Brief, type BriefFinding } from "./brief.js";
 
 /* ─────────────────────────────────────────────────────────────────────────
  * Production QA (add-production-qa-pack) — a bundle-level pass over a
@@ -834,6 +838,12 @@ export async function listDocumentTypes(
     })),
     ...(end < matched.length ? { next_offset: end } : {}),
   };
+}
+
+/** Whether `id` names a document type an analysis can be forced to. */
+export async function isDocumentType(id: string): Promise<boolean> {
+  const data = await docTypes();
+  return data.types.some((t) => t.id === id) || id in data.superseded;
 }
 
 const ALL_RULES: readonly Rule[] = [

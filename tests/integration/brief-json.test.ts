@@ -34,7 +34,9 @@ function cli(
 ): { status: number | null; stdout: string; stderr: string } {
   const r = spawnSync(process.execPath, [BIN, ...args], {
     encoding: "utf8",
-    timeout: 240_000,
+    // The corpus run is one subprocess over 327 files; on a loaded machine it
+    // has taken minutes, and a timeout says nothing about the code.
+    timeout: 540_000,
     maxBuffer: 64 * 1024 * 1024,
     input,
   });
@@ -59,7 +61,7 @@ type BriefFile = {
   result_hash: string;
 };
 
-describe("--format brief-json", { timeout: 400_000 }, () => {
+describe("--format brief-json", { timeout: 600_000 }, () => {
   const out = join(tmp, "corpus");
   let stems: string[] = [];
 
@@ -69,7 +71,7 @@ describe("--format brief-json", { timeout: 400_000 }, () => {
     stems = readdirSync(out)
       .filter((n) => n.endsWith(".brief.json"))
       .map((n) => n.slice(0, -".brief.json".length));
-  }, 400_000);
+  }, 600_000);
 
   const full = (stem: string): Full => JSON.parse(readFileSync(join(out, `${stem}.json`), "utf8"));
   const briefText = (stem: string): string => readFileSync(join(out, `${stem}.brief.json`), "utf8");

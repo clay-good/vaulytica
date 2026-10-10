@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.858.0] — 2026-10-10
+
+### Added
+- **`vaulytica mcp`: a local MCP server over stdio.** An agent host starts it
+  as a child process on the user's machine; it wraps the same engine and
+  returns the compact report. Two tools so far: `analyze_document` (`path` or
+  `text`, `document_type`, `min_severity`, `include`, `excerpts`, stateless
+  `cursor` paging past 40,000 characters) and `list_document_types`.
+  - Answers both handshakes — `initialize` (2025-11-25) and `server/discover`
+    (2026-07-28) — tested with the SDK's own client over a spawned process.
+  - Reads only under `--root`, `VAULYTICA_MCP_ROOTS`, or the working
+    directory; paths are resolved with `realpath`.
+  - stdout carries protocol frames only; a bad argument or an unreadable file
+    is an `isError` result with a sentence, and a file that could not be read
+    is `not_analyzed`, never a short report.
+  - Opens no network connection across a session (tested by preloading a
+    guard into the server process; the guard is shown to trip).
+  - The launcher forwards SIGTERM and SIGINT, so killing it leaves no child.
+  - `@modelcontextprotocol/server` 2.x is the one new runtime dependency (zod
+    and its own core; no HTTP framework — a test holds that).
+
+  No hosted endpoint, and nothing is published to npm (spec-v48 Step 304).
+
 ## [9.857.0] — 2026-10-10
 
 ### Changed

@@ -2141,6 +2141,9 @@ ${usageFormatLines()}
                           [--format markdown|json] [--fail-on-blackout-round]
   verify  <report.json|certificate.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]
 
+Agent surface: \`vaulytica mcp [--root <dir>]…\` starts a Model Context
+Protocol server over stdio for a coding agent (local only; see docs/reference.md).
+
 Output delivery: one input × one format streams the artifact to stdout;
 any multi-format or multi-input run requires --out <dir> — rendered
 output is never silently dropped.
@@ -2171,7 +2174,8 @@ format, no --out), it carries only that. Exit codes are unchanged.
  * is not a command.
  */
 export function commandUsage(command: string): string | null {
-  const [head, notes = ""] = USAGE.split("\n\nOutput delivery:");
+  const [head, rest = ""] = USAGE.split("\n\nAgent surface:");
+  const notes = rest.split("\n\nOutput delivery:")[1] ?? "";
   const entries: string[] = [];
   let inEntry = false;
   for (const line of head!.split("\n")) {

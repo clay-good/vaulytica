@@ -148,9 +148,13 @@ describe("CLI surface drift", () => {
    * every coherence gate flag and reports two dozen phantom failures.
    */
   it("parses every flag the documentation shows", () => {
-    const cliSources = readdirSync(join(root, "tools", "cli"))
-      .filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))
-      .map((f) => read("tools", "cli", f))
+    // `vaulytica mcp` is a documented command too, parsed by the server.
+    const cliSources = ["cli", "mcp"]
+      .flatMap((dir) =>
+        readdirSync(join(root, "tools", dir))
+          .filter((f) => f.endsWith(".ts") && !f.endsWith(".test.ts"))
+          .map((f) => read("tools", dir, f)),
+      )
       .join("\n");
     const parsed = new Set([
       ...[...cliSources.matchAll(/case "(--[a-z0-9-]+)":/g)].map((m) => m[1]!),
