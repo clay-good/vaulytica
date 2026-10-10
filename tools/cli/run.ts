@@ -230,6 +230,7 @@ import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 /** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
 import { TIER_RANK } from "../../src/report/posture-movement.js";
+import { buildBriefJson } from "./brief.js";
 import { runDiff } from "./diff.js";
 import { runCompare } from "./compare.js";
 import { runCompareCoherence } from "./compare-coherence.js";
@@ -359,7 +360,8 @@ type Format =
   | "posture-md"
   | "posture-csv"
   | "posture-sheet"
-  | "definitions-csv";
+  | "definitions-csv"
+  | "brief-json";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
  * contract (fix-cli-json-purity): when any of these is selected, stdout
@@ -423,6 +425,9 @@ const VALID_FORMATS = [
   // The definitions report already reaches JSON and the `md` summary through
   // `--definitions`; its CSV had no caller.
   "definitions-csv",
+  // The compact projection (spec-v50 §4): the same analysis in a few KB, for a
+  // script or an agent. A VIEW — `verify` and the certificate need `json`.
+  "brief-json",
 ] as const;
 /**
  * Every format a PROGRAM parses — JSON, SARIF, CSV, iCalendar — and therefore
@@ -479,6 +484,8 @@ const FORMAT_EXT: Record<Format, string> = {
   "posture-csv": ".posture.csv",
   "posture-sheet": ".negotiation-sheet.html",
   "definitions-csv": ".definitions.csv",
+  // Not `.json`: it would collide with the full report under --out.
+  "brief-json": ".brief.json",
 };
 
 const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
@@ -1137,6 +1144,8 @@ async function renderFormat(
       return buildNegotiationSheet(r.negotiation_posture!, r.playbook_id, caveats);
     case "definitions-csv":
       return buildDefinitionsCsv(definitions!);
+    case "brief-json":
+      return buildBriefJson(r);
   }
 }
 
@@ -1146,7 +1155,8 @@ type Dkb = Awaited<ReturnType<typeof loadAccuracyDeps>>["dkb"];
  * A `.zip` given to `analyze` is unpacked to a temporary folder and read as
  * that folder (spec-v50 §7). `root` is where it was unpacked; `name` is the
  * archive as the caller typed it, which is what every printed path and every
- * document label shows — a temporary path differs on every run.
+ * document label shows — a temporary path differs on every run. Stdin is the
+ * same arrangement with no archive: an empty `name`.
  */
 type ZipView = { root: string; name: string };
 
@@ -1194,7 +1204,9 @@ export async function unpackZip(
 
 /** The path a reader is shown: the archive's name in place of the temp folder. */
 function shownPath(file: string, zip: ZipView | undefined): string {
-  return zip ? `${zip.name}/${relative(zip.root, file).split("\\").join("/")}` : file;
+  if (!zip) return file;
+  const inside = relative(zip.root, file).split("\\").join("/");
+  return zip.name ? `${zip.name}/${inside}` : inside;
 }
 
 /**
@@ -1251,6 +1263,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     !args.productionQa &&
     args.target.toLowerCase().endsWith(".zip") &&
     ((await stat(args.target).catch(() => null))?.isFile() ?? false);
+  if (args.target === "-") return analyzeStdin(args);
   if (!isZip) return analyzeTarget(args);
   const { view, skipped } = await unpackZip(args.target);
   try {
@@ -1260,16 +1273,44 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   }
 }
 
+/**
+ * `analyze -` (spec-v50 §2): UTF-8 text from stdin, analyzed as a file named
+ * `stdin.txt`. The name is fixed because it is inside `result_hash` — the
+ * output equals `analyze stdin.txt` on the same bytes, exactly.
+ */
+async function analyzeStdin(args: Args): Promise<void> {
+  if (args.delivery || args.formats.includes("docx-comments")) {
+    throw new Error(
+      "stdin is read as plain text, which has no container: --delivery scans a file's " +
+        "tracked changes and metadata, and docx-comments writes into the original .docx. " +
+        "Pass the file's path instead.",
+    );
+  }
+  const chunks: Buffer[] = [];
+  for await (const chunk of process.stdin) chunks.push(chunk as Buffer);
+  const root = await mkdtemp(join(tmpdir(), "vaulytica-stdin-"));
+  try {
+    await writeFile(join(root, "stdin.txt"), Buffer.concat(chunks));
+    await analyzeTarget({ ...args, target: join(root, "stdin.txt") }, { root, name: "" });
+  } finally {
+    await rm(root, { recursive: true, force: true });
+  }
+}
+
 async function analyzeTarget(
   args: Args,
   zip?: ZipView,
   zipSkipped: Array<{ file: string; reason: string }> = [],
 ): Promise<void> {
   const label = (file: string): string => shownPath(file, zip);
-  // Stream contract: with a machine format active, human lines → stderr.
+  // Stream contract: with a machine format active, human lines → stderr. So
+  // too whenever stdout carries a rendered artifact of ANY format (spec-v50
+  // §5): `--format html > report.html` used to open with the summary lines.
+  // Read at call time — `--consistency-only` empties `formats` further down.
   const machine = args.formats.some((f) => MACHINE_FORMATS.has(f));
   const human = (s: string): void => {
-    (machine ? process.stderr : process.stdout).write(s);
+    const artifactOnStdout = !args.out && args.formats.length > 0;
+    (machine || artifactOnStdout ? process.stderr : process.stdout).write(s);
   };
 
   // add-production-qa-pack — a distinct mode over a production SET (a directory
@@ -2473,6 +2514,12 @@ export async function runVerify(argv: string[]): Promise<void> {
   if (parsed.schema !== CERTIFICATE_SCHEMA && !isSavedReportShape(parsed)) {
     const kind = jsonKindOf(JSON.stringify(parsed));
     const wrong = wrongKindOfJson(JSON.stringify(parsed), "report");
+    if (kind === "brief") {
+      throw new Error(
+        `that is a brief (--format brief-json), a compact view without the execution log.\n` +
+          `  verify needs the full report: \`${WRITTEN_BY.report}\`.`,
+      );
+    }
     throw new Error(
       wrong && kind
         ? `that looks like ${wrong}, not an analysis report.\n` +
@@ -2567,6 +2614,7 @@ ${usageFormatLines()}
                           [--fail-on-consistency critical|warning|info]
                           [--fail-on-delivery critical|warning|info]
                           [--fail-on-posture ideal|acceptable|below-acceptable]
+  analyze -               UTF-8 text from stdin, analyzed as a file named stdin.txt.
   analyze <dir|.zip> --production-qa [--fail-on-production-gap]
                           Bates + privilege-log reconciliation over a production set.
   diff    <playbook-a.json> <playbook-b.json> [--format markdown|json] [--exit-code]
@@ -2662,7 +2710,8 @@ Stream contract: with a machine-readable format, stdout carries exactly one
 serialized artifact — summaries, notes, and progress lines go to stderr, so
 \`analyze x.docx --format json | jq .\` just works. The machine formats:
 ${wrapList([...MACHINE_FORMATS], 76, "", ", ")}.
-Human formats (md, default summaries) keep stdout. Exit codes are unchanged.
+Whenever stdout carries a rendered artifact of any format (one input, one
+format, no --out), it carries only that. Exit codes are unchanged.
 `;
 
 /**

@@ -220,19 +220,11 @@ describe("CLI stream contract (machine formats own stdout)", () => {
     expect(formats.length).toBeGreaterThanOrEqual(20);
 
     // The five that never reach stdout: binary .docx, and the three bundle
-    // artifacts that write one file for the whole run. Markdown and HTML are
-    // read by a PERSON — `--format md`'s stdout summary is pinned by its own
-    // test as intended — so the sweep is over the formats a PROGRAM parses.
+    // artifacts that write one file for the whole run. Every other format owns
+    // stdout — Markdown and HTML included since spec-v50 §5: a redirected
+    // `--format html > report.html` opened with the summary lines.
     const outOnly = new Set(["docx", "docx-comments", "bundle-json", "bundle-docx", "bundle-zip"]);
-    const human = new Set([
-      "html",
-      "md",
-      "checklist-md",
-      "dates-md",
-      "posture-md",
-      "posture-sheet",
-    ]);
-    const stdoutFormats = formats.filter((f) => !outOnly.has(f) && !human.has(f));
+    const stdoutFormats = formats.filter((f) => !outOnly.has(f));
     expect(stdoutFormats.length).toBeGreaterThanOrEqual(8);
 
     // The flag each surface needs before it exists at all, taken from run.ts's
@@ -244,7 +236,7 @@ describe("CLI stream contract (machine formats own stdout)", () => {
     expect(Object.keys(FLAGS).length).toBeGreaterThanOrEqual(8);
     // The posture needs a playbook file as well as its flag; its own tests
     // cover that surface.
-    const POSTURE = new Set(["posture-csv"]);
+    const POSTURE = new Set(["posture-csv", "posture-md", "posture-sheet"]);
 
     const impure: string[] = [];
     for (const format of stdoutFormats) {
@@ -296,9 +288,17 @@ describe("CLI stream contract (machine formats own stdout)", () => {
     expect((JSON.parse(c.stdout) as { version?: string }).version).toBeDefined();
   });
 
-  it("analyze --format md (human format): summary stays on stdout", async () => {
+  it("analyze --format md: stdout is the artifact, the summary is on stderr", async () => {
     const { runAnalyze } = await import("../../tools/cli/run.js");
     const c = await capture(() => runAnalyze([TXT_FIXTURE, "--format", "md"]));
+    expect(c.stdout).toMatch(/^# /);
+    expect(c.stdout).not.toContain("[mutual-nda-deep]");
+    expect(c.stderr).toContain("[mutual-nda-deep]");
+  });
+
+  it("with --out, a human format's summary is still the stdout output", async () => {
+    const { runAnalyze } = await import("../../tools/cli/run.js");
+    const c = await capture(() => runAnalyze([TXT_FIXTURE, "--format", "md", "--out", tmp]));
     expect(c.stdout).toContain("[mutual-nda-deep]");
   });
 

@@ -237,6 +237,12 @@ export async function analyzeFile(
     dkbDir?: string;
     /** `--as-text`: ingest as UTF-8 text regardless of extension (never .docx/.pdf). */
     asText?: boolean;
+    /**
+     * The name to record as `source_file.name`, when it is not the path's own.
+     * The name is inside `result_hash`, so `verify` re-derives a renamed copy
+     * under the name the report recorded.
+     */
+    sourceName?: string;
     /** `--delivery`: a CONTAINER scan; file-only, since pasted text has none. */
     delivery?: boolean;
     /**
@@ -269,7 +275,7 @@ export async function analyzeFile(
   const ingest = await ingestByExtension(path, bytes, opts.asText);
   const result = await runIngested(
     ingest,
-    basename(path),
+    opts.sourceName ?? basename(path),
     opts.playbookId,
     deps,
     bytes.byteLength,

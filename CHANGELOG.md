@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.856.0] — 2026-10-10
+
+### Added
+- **`--format brief-json`.** The full JSON for a six-finding NDA is 293,645
+  bytes, 274 KB of it the execution log. The brief is the same findings (by
+  `id`, with offsets and excerpts), every caveat, and the same `result_hash`
+  in 6.0 KB; the largest of the 327 specimens is 17.3 KB. Secondary families
+  are ids and counts. Written as `<stem>.brief.json`. It is a view: `verify`
+  and the certificate still take the full report, and `verify brief.json`
+  says so.
+- **`analyze -` reads text from stdin**, as a file named `stdin.txt`. The
+  output equals `analyze stdin.txt` on the same bytes, exactly. `--delivery`
+  and `docx-comments` are refused with the reason: a pipe has no container.
+
+### Fixed
+- **`verify` failed on a renamed copy and blamed determinism.** The file name
+  is inside `result_hash`, so a byte-identical copy under another name did not
+  reproduce, and with no drift to name the message said "investigate as a
+  possible determinism defect". `verify` now re-derives under the recorded
+  name: "✓ Reproduced (file was renamed from `nda.txt`)". A changed file still
+  fails, naming the input.
+- **A redirected artifact began with the summary.** `analyze x.txt --format
+  html > report.html` wrote the terminal summary before `<!doctype html>`.
+  Whenever stdout carries a rendered artifact of any format, it carries only
+  that; the summary goes to stderr. With `--out`, a human format's summary is
+  still the stdout output.
+
+No finding moves (spec-v50 Step 314; the projection is spec-v48 Step 303).
+
 ## [9.855.0] — 2026-10-10
 
 ### Fixed

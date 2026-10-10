@@ -24,7 +24,7 @@
  * then, and the schema errors ARE the most useful answer — replacing them
  * would be a loss.
  */
-export type JsonKind = "report" | "certificate" | "playbook" | "coherence";
+export type JsonKind = "report" | "certificate" | "playbook" | "coherence" | "brief";
 
 /** How each kind is named in an error a user reads. */
 const NAME: Record<JsonKind, string> = {
@@ -32,6 +32,7 @@ const NAME: Record<JsonKind, string> = {
   certificate: "a verification certificate",
   playbook: "a custom playbook",
   coherence: "a posture-coherence artifact",
+  brief: "a brief (the compact view of an analysis)",
 };
 
 /** The command that writes each kind, for "pass this instead". */
@@ -41,6 +42,7 @@ export const WRITTEN_BY: Record<JsonKind, string> = {
   playbook: "a custom playbook file you author (the JSON you pass to --playbook-file)",
   coherence:
     "vaulytica analyze <docs> --playbook-file <playbook.json> --posture --emit-coherence <path>",
+  brief: "vaulytica analyze <docs> --format brief-json",
 };
 
 /**
@@ -52,6 +54,10 @@ export const READ_BY: Record<JsonKind, string> = {
   certificate: "vaulytica verify <certificate.json> <original>",
   playbook: "vaulytica diff <a.json> <b.json>",
   coherence: "vaulytica coherence-trend <r1.coherence.json> <r2.coherence.json>",
+  // No command reads a brief: it is for a script or an agent. The full report
+  // is what the other commands take.
+  brief:
+    "vaulytica analyze <docs> --format json (no command reads a brief; this writes the full report)",
 };
 
 /** The kind of JSON in `text`, or `null` when it is not one this tool writes. */
@@ -67,6 +73,7 @@ export function jsonKindOf(text: string): JsonKind | null {
   const schema = typeof o.schema === "string" ? o.schema : "";
   if (schema === "vaulytica.verification-certificate.v1") return "certificate";
   if (schema.startsWith("vaulytica.posture-coherence.")) return "coherence";
+  if (schema.startsWith("vaulytica.brief.")) return "brief";
   // A report is the pair of envelopes; `run` alone is not distinctive enough.
   if ("run" in o && "ingest" in o) return "report";
   if ("rules" in o || "catalog_version" in o || "rule_overrides" in o) return "playbook";

@@ -15,6 +15,7 @@
  * only; never imported by `src/`.
  */
 
+import { basename } from "node:path";
 import { readFile } from "node:fs/promises";
 
 import { sha256Hex } from "../../src/ingest/hash.js";
@@ -68,6 +69,12 @@ export type ReproResult = {
   body_tampered?: boolean;
   expected_result_hash: string;
   actual_result_hash: string;
+  /**
+   * The name the report recorded, when the file handed to `verify` carries a
+   * different one and reproduced anyway. The name is inside `result_hash`, so
+   * the run is re-derived under the recorded name; this says that happened.
+   */
+  renamed_from?: string;
   /** Which dimensions diverged, in a stable order. Empty ⇒ reproduced. */
   divergences: Array<{ kind: DivergenceKind; expected: string; actual: string }>;
 };
@@ -166,11 +173,21 @@ export async function verifyReproducibilityFromFile(
     deps,
     playbookId: opts.playbookId ?? saved.run.playbook_id,
     asText: opts.asText,
+    // 🚨 A byte-identical copy under another name used to fail here, and with
+    // no input, engine or DKB drift to blame the message accused the tool of a
+    // determinism defect — the one failure `verify` exists to rule out. The
+    // bytes are what is being verified (the `input` check below still compares
+    // them); the name is taken from the report.
+    sourceName: saved.run.source_file.name,
     ...savedAssertionsOf(saved),
   });
   // The recorded `source_file.sha256` is the ingest hash (binary bytes for
   // DOCX/PDF, the UTF-8 text for paste); `re.ingest.sha256` is its mirror.
-  return assembleReproResult(saved, re, re.ingest.sha256, deps.dkb.manifest.version);
+  const result = assembleReproResult(saved, re, re.ingest.sha256, deps.dkb.manifest.version);
+  if (result.reproduced && basename(path) !== saved.run.source_file.name) {
+    result.renamed_from = saved.run.source_file.name;
+  }
+  return result;
 }
 
 /**
@@ -237,7 +254,8 @@ function assembleReproResult(
 /** A human-readable one-paragraph explanation of a {@link ReproResult}. */
 export function explainReproResult(r: ReproResult): string {
   if (r.reproduced) {
-    return `✓ Reproduced. The re-derived result_hash matches the recorded one (${r.expected_result_hash}).`;
+    const renamed = r.renamed_from ? ` (file was renamed from \`${r.renamed_from}\`)` : "";
+    return `✓ Reproduced${renamed}. The re-derived result_hash matches the recorded one (${r.expected_result_hash}).`;
   }
   if (r.body_tampered) {
     return [
