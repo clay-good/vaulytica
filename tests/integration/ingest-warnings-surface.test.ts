@@ -59,7 +59,7 @@ describe("the ingest's warnings reach the CLI", () => {
     expect(stderr).toContain("vaulytica: warning:");
     expect(stderr).toContain("nda.txt");
     // The paste path's own caveat, which had never been shown to anyone.
-    expect(stderr).toContain("loses document structure");
+    expect(stderr).toContain("Read as plain text.");
   }, 120_000);
 
   it("keeps them off stdout, where the JSON lives", async () => {

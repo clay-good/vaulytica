@@ -83,7 +83,7 @@ describe("analyze --format docx", () => {
     expect(xml.toLowerCase()).toContain("not legal advice");
     // The ingest's own caveat about pasted text — an honesty caveat the
     // terminal prints and the file must carry too.
-    expect(xml).toContain("Pasted text loses document structure");
+    expect(xml).toContain("Read as plain text.");
   });
 
   it("is byte-identical to the builder the browser calls", async () => {

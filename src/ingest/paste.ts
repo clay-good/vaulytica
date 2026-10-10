@@ -25,7 +25,7 @@ export async function ingestPaste(text: string): Promise<IngestResult> {
   assertPasteChars(text.length);
   const warnings: string[] = [];
   warnings.push(
-    "Pasted text loses document structure; rules that depend on heading levels or DOCX styles may be skipped.",
+    "Read as plain text. Headings are taken from the text's own markers; rules that depend on Word styles or page layout may be skipped.",
   );
 
   const tree = buildTreeFromText(text);

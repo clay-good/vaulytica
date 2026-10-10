@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.855.0] — 2026-10-10
+
+### Fixed
+- **Two inputs with one stem overwrote each other.** `deal.md` beside
+  `deal.txt` wrote one `deal.json` and reported "wrote json for 2 file(s)".
+  Inputs that share a stem now keep their extension (`deal.md.json`,
+  `deal.txt.json`); a unique stem is named exactly as before.
+- **`analyze --help` was an error.** It said "missing argument"; `verify
+  --help` and `compare --help` said "unknown flag". Every command now prints
+  its own usage and exits 0.
+- **`--help` omitted four formats.** `docx` and the three bundle formats were
+  missing, and the stream-contract paragraph named three machine formats of
+  nine. Both lists are generated from the parser's own tables, and
+  `cli-surface-drift.test.ts` reads the usage text as a third surface.
+- **A `.zip` was refused with advice to decode it as text.** `analyze
+  bundle.zip` unpacks the archive and reads it as a folder, under the
+  browser's size and ratio limits. Printed paths name the archive, not the
+  temporary folder.
+- **Node 25+ printed an `ExperimentalWarning` on every run** (a browser shim
+  inside the `docx` package reads `localStorage` at import). Gone; the test
+  matrix gains a non-blocking leg on current Node, because Node 22 never
+  showed it.
+- **A `.txt` file was told "Pasted text loses document structure."** The
+  caveat is now true of a file, a paste, and Markdown: "Read as plain text.
+  Headings are taken from the text's own markers; rules that depend on Word
+  styles or page layout may be skipped."
+
+No finding moves on any document (spec-v50 Step 313).
+
 ## [9.854.0] — 2026-10-10
 
 ### Fixed

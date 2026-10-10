@@ -19,6 +19,7 @@ jobs:
     # Windows. Spec §27 row (c): cross-machine determinism.
     name: ${{ matrix.os }} / Node ${{ matrix.node }}
     runs-on: ${{ matrix.os }}
+    continue-on-error: ${{ matrix.experimental == true }}
     # A job that runs OUT OF TIME is reported as `cancelled`, which at a glance
     # is indistinguishable from one superseded by a later push — so this matrix
     # sat "cancelled" on four consecutive commits while CI, Deploy and
@@ -40,6 +41,12 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         node: ["22"]
+        # Current Node, one leg, not yet blocking: a warning that only newer
+        # Node prints (spec-v50 §8) is invisible to a matrix pinned at 22.
+        include:
+          - os: ubuntu-latest
+            node: "current"
+            experimental: true
     env:
       VAULYTICA_SKIP_BUILD_TESTS: "1"
     steps:

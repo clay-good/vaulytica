@@ -95,6 +95,14 @@ describe("CLI surface drift", () => {
     );
   });
 
+  it("lists every format in the CLI's own usage text", async () => {
+    // The third surface. `--help` omitted docx and the three bundle formats
+    // while the docs and the Action named them; the block is generated now.
+    const { USAGE } = await import("../../tools/cli/run.js");
+    const block = /\[--format ([^\]]+)\]/.exec(USAGE)?.[1]?.replace(/\s+/g, "") ?? "";
+    expect(block.split(",")).toEqual(validFormats());
+  });
+
   it("quotes the live command count", () => {
     const count = dispatcherCommands().length;
     // The README spells it, the CI doc uses digits; both must track the source.

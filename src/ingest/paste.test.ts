@@ -8,7 +8,7 @@ describe("ingestPaste", () => {
     expect(r.source).toBe("paste");
     expect(r.tree.sections).toHaveLength(1);
     expect(r.tree.sections[0]!.paragraphs).toHaveLength(2);
-    expect(r.warnings[0]).toMatch(/pasted text loses/i);
+    expect(r.warnings[0]).toMatch(/^Read as plain text\./);
   });
 
   it("detects ATX headings", async () => {

@@ -202,8 +202,16 @@
  * shipped behavior. Build/CI-only; never imported by `src/`.
  */
 
-import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
-import { join, basename, extname, resolve } from "node:path";
+import "./no-localstorage.js";
+import { mkdir, mkdtemp, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, basename, extname, relative, resolve } from "node:path";
+import { unzipSync } from "fflate";
+import {
+  ArchiveTooLargeError,
+  MAX_BUNDLE_BYTES,
+  MAX_COMPRESSION_RATIO,
+} from "../../src/ingest/multi.js";
 
 import { analyzeFile, loadAccuracyDeps, runProductionQa, type AnalyzeResult } from "./api.js";
 import { runConsistency } from "../../src/engine/consistency/runner.js";
@@ -1135,6 +1143,87 @@ async function renderFormat(
 type Dkb = Awaited<ReturnType<typeof loadAccuracyDeps>>["dkb"];
 
 /**
+ * A `.zip` given to `analyze` is unpacked to a temporary folder and read as
+ * that folder (spec-v50 §7). `root` is where it was unpacked; `name` is the
+ * archive as the caller typed it, which is what every printed path and every
+ * document label shows — a temporary path differs on every run.
+ */
+type ZipView = { root: string; name: string };
+
+/**
+ * Unpack the members this tool reads. An entry name is data from outside: a
+ * member under a dot-segment (`..`, a hidden folder) is never written, so
+ * nothing lands outside `root`. The size and ratio ceilings are the browser's
+ * (`src/ingest/multi.ts`), checked on declared sizes before anything inflates.
+ * Unsupported members are returned as skipped, as a directory walk reports them.
+ */
+export async function unpackZip(
+  target: string,
+): Promise<{ view: ZipView; skipped: Array<{ file: string; reason: string }> }> {
+  const skipped: Array<{ file: string; reason: string }> = [];
+  let total = 0;
+  const entries = unzipSync(new Uint8Array(await readFile(target)), {
+    filter: (f) => {
+      const segments = f.name.split(/[\\/]/);
+      if (f.name.endsWith("/") || segments.some((s) => s.startsWith(".") || s === "__MACOSX")) {
+        return false;
+      }
+      if (!SUPPORTED_EXT.has(extname(f.name).toLowerCase())) {
+        skipped.push({ file: `${target}/${f.name}`, reason: SKIPPED_UNSUPPORTED });
+        return false;
+      }
+      const ratio = f.size > 0 ? f.originalSize / f.size : f.originalSize;
+      total += f.originalSize;
+      if (ratio > MAX_COMPRESSION_RATIO || total > MAX_BUNDLE_BYTES) {
+        throw new ArchiveTooLargeError(
+          `${target}: "${f.name}" inflates past the archive limits ` +
+            `(${MAX_COMPRESSION_RATIO}× per entry, ${MAX_BUNDLE_BYTES / 1024 / 1024} MB in all).`,
+        );
+      }
+      return true;
+    },
+  });
+  const root = await mkdtemp(join(tmpdir(), "vaulytica-zip-"));
+  for (const [name, bytes] of Object.entries(entries)) {
+    const dest = join(root, ...name.split(/[\\/]/).filter((s) => s !== "" && s !== "."));
+    await mkdir(join(dest, ".."), { recursive: true });
+    await writeFile(dest, bytes);
+  }
+  return { view: { root, name: target }, skipped };
+}
+
+/** The path a reader is shown: the archive's name in place of the temp folder. */
+function shownPath(file: string, zip: ZipView | undefined): string {
+  return zip ? `${zip.name}/${relative(zip.root, file).split("\\").join("/")}` : file;
+}
+
+/**
+ * The `--out` file stem for each input (spec-v50 §6). `deal.md` beside
+ * `deal.txt` used to write one `deal.json` and report two. A stem no other
+ * input shares is used as it always was; a shared one keeps its extension
+ * (`deal.md.json`); a shared file name keeps its folders too.
+ */
+export function outputStems(inputs: readonly string[]): Map<string, string> {
+  const count = (key: (f: string) => string): Map<string, number> => {
+    const m = new Map<string, number>();
+    for (const f of inputs) m.set(key(f), (m.get(key(f)) ?? 0) + 1);
+    return m;
+  };
+  // Compared case-folded: `Deal.txt` and `deal.md` are one file on macOS and Windows.
+  const stem = (f: string): string => basename(f, extname(f)).toLowerCase();
+  const name = (f: string): string => basename(f).toLowerCase();
+  const stems = count(stem);
+  const names = count(name);
+  const out = new Map<string, string>();
+  for (const f of inputs) {
+    if (stems.get(stem(f)) === 1) out.set(f, basename(f, extname(f)));
+    else if (names.get(name(f)) === 1) out.set(f, basename(f));
+    else out.set(f, f.replace(/^[./\\]+/, "").replace(/[\\/:]+/g, "__"));
+  }
+  return out;
+}
+
+/**
  * Portable document identifier for coherence/posture artifacts
  * (fix-verify-receipt-depth): the basename, so an artifact hashes
  * identically no matter which machine or directory the bundle was
@@ -1158,6 +1247,25 @@ function worstSeverity(r: AnalyzeResult): Severity | null {
 
 export async function runAnalyze(argv: string[]): Promise<void> {
   const args = parseArgs(argv);
+  const isZip =
+    !args.productionQa &&
+    args.target.toLowerCase().endsWith(".zip") &&
+    ((await stat(args.target).catch(() => null))?.isFile() ?? false);
+  if (!isZip) return analyzeTarget(args);
+  const { view, skipped } = await unpackZip(args.target);
+  try {
+    await analyzeTarget({ ...args, target: view.root }, view, skipped);
+  } finally {
+    await rm(view.root, { recursive: true, force: true });
+  }
+}
+
+async function analyzeTarget(
+  args: Args,
+  zip?: ZipView,
+  zipSkipped: Array<{ file: string; reason: string }> = [],
+): Promise<void> {
+  const label = (file: string): string => shownPath(file, zip);
   // Stream contract: with a machine format active, human lines → stderr.
   const machine = args.formats.some((f) => MACHINE_FORMATS.has(f));
   const human = (s: string): void => {
@@ -1314,12 +1422,12 @@ export async function runAnalyze(argv: string[]): Promise<void> {
   // SAID, because the cross-document engine reasons about what the bundle
   // CONTAINS and will otherwise report a document missing that the user
   // supplied under an extension this tool does not read.
-  const skippedInputs: Array<{ file: string; reason: string }> = [];
+  const skippedInputs: Array<{ file: string; reason: string }> = [...zipSkipped];
   const inputs = await resolveInputs(args.target, { asText: args.asText }, skippedInputs);
   if (skippedInputs.length > 0) {
     const shown = skippedInputs.slice(0, 10);
     process.stderr.write(
-      `vaulytica: ${skippedInputs.length} file(s) in ${args.target} were skipped — this tool reads ` +
+      `vaulytica: ${skippedInputs.length} file(s) in ${zip?.name ?? args.target} were skipped — this tool reads ` +
         `${[...SUPPORTED_EXT].sort().join(", ")}, and a document it cannot read is a document it ` +
         `cannot see in the bundle:\n`,
     );
@@ -1415,10 +1523,13 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     return;
   }
   if (inputs.length === 0) {
-    process.stderr.write(`no analyzable files matched: ${args.target}\n`);
+    process.stderr.write(`no analyzable files matched: ${zip?.name ?? args.target}\n`);
     process.exitCode = 1;
     return;
   }
+  const labels = inputs.map(label);
+  const stems = outputStems(labels);
+  for (const [i, file] of inputs.entries()) stems.set(file, stems.get(labels[i]!)!);
 
   let breached = false;
 
@@ -1536,7 +1647,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       if (inputs.length === 1) throw e;
       const reason = e instanceof Error ? e.message : String(e);
       unreadable.push({ file, reason });
-      process.stderr.write(`vaulytica: ${file}: could not be read (${reason}) — skipped.\n`);
+      process.stderr.write(`vaulytica: ${label(file)}: could not be read (${reason}) — skipped.\n`);
       continue;
     }
 
@@ -1548,7 +1659,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     if (wantsConsistency && inputs.length >= 2) {
       const extracted = extractAll(r.ingest.tree);
       consistencyDocs.push({
-        doc_id: documentLabel(file, inputs),
+        doc_id: documentLabel(label(file), labels),
         source_file_name: basename(file),
         playbook_id: r.playbook_id,
         tree: r.ingest.tree,
@@ -1557,7 +1668,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       if (wantsBundle) {
         const omitted = r.secondary_families_present - r.secondary_families.length;
         bundleDocs.push({
-          doc_id: documentLabel(file, inputs),
+          doc_id: documentLabel(label(file), labels),
           source_file_name: basename(file),
           run: r.run,
           extracted,
@@ -1570,7 +1681,9 @@ export async function runAnalyze(argv: string[]): Promise<void> {
 
     const counts = { critical: 0, warning: 0, info: 0 };
     for (const f of r.run.findings) counts[f.severity]++;
-    human(`${file}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`);
+    human(
+      `${label(file)}  [${r.playbook_id}]  ${counts.critical}C ${counts.warning}W ${counts.info}I\n`,
+    );
 
     // A COMPOSITE document — an MSA with a data-processing exhibit, a services
     // agreement with a security addendum — matches one family and contains
@@ -1611,7 +1724,9 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     // was reading. Same trap, and the same stderr treatment, as the asserted
     // packs below.
     if (r.run.classification_notice) {
-      process.stderr.write(`vaulytica: warning: ${file}: ${r.run.classification_notice.message}\n`);
+      process.stderr.write(
+        `vaulytica: warning: ${label(file)}: ${r.run.classification_notice.message}\n`,
+      );
     }
 
     // Analyzed against a LEGACY playbook. The DOCX annotates this on its cover
@@ -1625,7 +1740,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     if (matched?.deprecated === true) {
       const successor = matched.superseded_by ? `; superseded by ${matched.superseded_by}` : "";
       process.stderr.write(
-        `vaulytica: warning: ${file}: playbook "${r.playbook_id}" is deprecated${successor}\n`,
+        `vaulytica: warning: ${label(file)}: playbook "${r.playbook_id}" is deprecated${successor}\n`,
       );
     }
 
@@ -1635,7 +1750,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     // by ANY consumer in ANY surface, so every one of these was composed and
     // thrown away — the same trap the block below exists to close.
     for (const w of r.ingest.warnings) {
-      process.stderr.write(`vaulytica: warning: ${file}: ${w}\n`);
+      process.stderr.write(`vaulytica: warning: ${label(file)}: ${w}\n`);
     }
 
     // Asserted opt-in packs are activation-gated on the matched playbook.
@@ -1645,17 +1760,17 @@ export async function runAnalyze(argv: string[]): Promise<void> {
     // and drop --regime without a word). Say so, loudly, on stderr.
     if (args.regimes && args.regimes.length > 0 && !r.run.asserted_regimes) {
       process.stderr.write(
-        `vaulytica: warning: --regime ${args.regimes.join(",")} was asserted but ${file} classified as "${r.playbook_id}", not a privacy-notice playbook — the regime notice-content checks did NOT run\n`,
+        `vaulytica: warning: --regime ${args.regimes.join(",")} was asserted but ${label(file)} classified as "${r.playbook_id}", not a privacy-notice playbook — the regime notice-content checks did NOT run\n`,
       );
     }
     if ((args.estateChecks || args.estateState) && !r.run.estate_checks_asserted) {
       process.stderr.write(
-        `vaulytica: warning: estate checks were asserted but ${file} classified as "${r.playbook_id}", not a will/trust/codicil playbook — the estate checks did NOT run\n`,
+        `vaulytica: warning: estate checks were asserted but ${label(file)} classified as "${r.playbook_id}", not a will/trust/codicil playbook — the estate checks did NOT run\n`,
       );
     }
     if (filing && !r.run.filing_profile) {
       process.stderr.write(
-        `vaulytica: warning: --court ${filing.profile.id} was asserted but ${file} classified as "${r.playbook_id}", not a filing playbook — the format checks did NOT run\n`,
+        `vaulytica: warning: --court ${filing.profile.id} was asserted but ${label(file)} classified as "${r.playbook_id}", not a filing playbook — the format checks did NOT run\n`,
       );
     }
     if (r.delivery) human(`  ${r.delivery.summary}\n`);
@@ -1687,7 +1802,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       if (uncovered.length > 0) {
         // Same sentence the reports use: silence here reads as a clean pass.
         process.stderr.write(
-          `vaulytica: warning: ${file}: no state-law overlay on file for ${uncovered
+          `vaulytica: warning: ${label(file)}: no state-law overlay on file for ${uncovered
             .map((st) => st.replace(/^us-/, "").toUpperCase())
             .join(", ")} — an honest coverage gap, not a clean pass\n`,
         );
@@ -1698,7 +1813,10 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       human(
         `  Negotiation posture: ${c.ideal} ideal, ${c.acceptable} acceptable, ${c.below_acceptable} below floor, ${c.unevaluable} not stated.\n`,
       );
-      postures.push({ document: documentLabel(file, inputs), posture: r.negotiation_posture });
+      postures.push({
+        document: documentLabel(label(file), labels),
+        posture: r.negotiation_posture,
+      });
       if (args.failOnPosture) {
         const floor = TIER_RANK[args.failOnPosture] as number;
         for (const pos of r.negotiation_posture.positions) {
@@ -1706,7 +1824,9 @@ export async function runAnalyze(argv: string[]): Promise<void> {
           // `unevaluable` ranks null and is skipped: a dimension the draft says
           // nothing about is not a dimension it falls short on.
           if (rank !== null && rank <= floor) {
-            postureBreaches.push(`${documentLabel(file, inputs)}: ${pos.dimension} (${pos.tier})`);
+            postureBreaches.push(
+              `${documentLabel(label(file), labels)}: ${pos.dimension} (${pos.tier})`,
+            );
           }
         }
       }
@@ -1756,7 +1876,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
           { warnings: r.ingest.warnings, classification_notice: r.run.classification_notice },
         );
         await mkdir(args.out!, { recursive: true });
-        const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
+        const outName = stems.get(file)! + FORMAT_EXT[fmt];
         await writeFile(join(args.out!, outName), reviewed.bytes);
         countWrite(fmt);
         human(
@@ -1771,13 +1891,13 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       // do" without ever learning the register came back empty.
       if ((fmt === "checklist-md" || fmt === "checklist-csv") && !r.closing_checklist) {
         process.stderr.write(
-          `vaulytica: warning: ${file}: no closing checklist to render — skipping --format ${fmt}\n`,
+          `vaulytica: warning: ${label(file)}: no closing checklist to render — skipping --format ${fmt}\n`,
         );
         continue;
       }
       if (fmt === "definitions-csv" && !definitions) {
         process.stderr.write(
-          `vaulytica: warning: ${file}: no defined-terms report to render — skipping --format ${fmt}\n`,
+          `vaulytica: warning: ${label(file)}: no defined-terms report to render — skipping --format ${fmt}\n`,
         );
         continue;
       }
@@ -1786,7 +1906,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         !r.negotiation_posture
       ) {
         process.stderr.write(
-          `vaulytica: warning: ${file}: no negotiation posture to render — skipping --format ${fmt}\n`,
+          `vaulytica: warning: ${label(file)}: no negotiation posture to render — skipping --format ${fmt}\n`,
         );
         continue;
       }
@@ -1798,14 +1918,14 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       }
       if ((fmt === "dates-md" || fmt === "dates-ics") && !r.critical_dates) {
         process.stderr.write(
-          `vaulytica: warning: ${file}: no critical-dates register to render — skipping --format ${fmt}\n`,
+          `vaulytica: warning: ${label(file)}: no critical-dates register to render — skipping --format ${fmt}\n`,
         );
         continue;
       }
       const content = await renderFormat(fmt, r, deps.dkb, definitions);
       if (args.out) {
         await mkdir(args.out, { recursive: true });
-        const outName = basename(file, extname(file)) + FORMAT_EXT[fmt];
+        const outName = stems.get(file)! + FORMAT_EXT[fmt];
         await writeFile(join(args.out, outName), content);
         countWrite(fmt);
       } else {
@@ -1819,7 +1939,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       // Verification certificate (add-court-certification-receipt): the
       // one-page compliance artifact + tamper-evident JSON companion.
       await mkdir(args.out!, { recursive: true });
-      const stem = basename(file, extname(file));
+      const stem = stems.get(file)!;
       const certJson = await buildCertificateJson(r.run);
       await writeFile(join(args.out!, `${stem}.certificate.json`), certJson);
       const certDocx = await buildCertificateDocx(r.run);
@@ -1853,7 +1973,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       `vaulytica: ${unreadable.length} of ${inputs.length} input(s) could not be read and are ` +
         `ABSENT from this report — the analysis below covers only the rest:\n`,
     );
-    for (const u of unreadable) process.stderr.write(`  - ${u.file}: ${u.reason}\n`);
+    for (const u of unreadable) process.stderr.write(`  - ${label(u.file)}: ${u.reason}\n`);
     process.exitCode = 1;
   }
 
@@ -1932,7 +2052,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
         d.result.negotiation_posture!,
       );
       await mkdir(args.out!, { recursive: true });
-      const outName = basename(d.file, extname(d.file)) + FORMAT_EXT[d.fmt];
+      const outName = stems.get(d.file)! + FORMAT_EXT[d.fmt];
       const bytes = Buffer.from(await blob.arrayBuffer());
       await writeFile(join(args.out!, outName), bytes);
       countWrite(d.fmt);
@@ -1947,10 +2067,7 @@ export async function runAnalyze(argv: string[]): Promise<void> {
       consistency ?? undefined,
     );
     await mkdir(args.out!, { recursive: true });
-    await writeFile(
-      join(args.out!, basename(d.file, extname(d.file)) + FORMAT_EXT[d.fmt]),
-      content,
-    );
+    await writeFile(join(args.out!, stems.get(d.file)! + FORMAT_EXT[d.fmt]), content);
     countWrite(d.fmt);
   }
 
@@ -2406,15 +2523,34 @@ export async function runVerify(argv: string[]): Promise<void> {
   else if (!result.reproduced) process.exitCode = 3;
 }
 
-const USAGE = `vaulytica — deterministic legal-document linter (headless)
+/** Join `items` with commas, wrapped to `width` columns under `indent`. */
+function wrapList(items: readonly string[], width: number, indent: string, sep = ","): string {
+  const lines: string[] = [];
+  let line = indent;
+  for (const [i, item] of items.entries()) {
+    const piece = item + (i < items.length - 1 ? sep : "");
+    if (line.length + piece.length > width && line.trim() !== "") {
+      lines.push(line.trimEnd());
+      line = indent;
+    }
+    line += piece;
+  }
+  lines.push(line);
+  return lines.join("\n");
+}
+
+/** The `--format` block, built from {@link VALID_FORMATS} so it cannot omit one. */
+function usageFormatLines(): string {
+  const lead = "                          [--format ";
+  const body = wrapList(VALID_FORMATS, 88, " ".repeat(lead.length)).trimStart();
+  return `${lead}${body}]`;
+}
+
+export const USAGE = `vaulytica — deterministic legal-document linter (headless)
 
 Commands:
   analyze <path|glob|dir> [--playbook <id>]
-                          [--format json,sarif,html,md,csv,docx-comments,
-                                    checklist-md,checklist-csv,dates-md,dates-ics,
-                                    obligations-csv,deadlines-ics,
-                                    posture-md,posture-csv,posture-sheet,
-                                    definitions-csv]
+${usageFormatLines()}
                           [--out <dir>] [--fail-on critical|warning|info]
                           [--delivery] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture] [--role <name>] [--deal-value <n>]
@@ -2517,15 +2653,36 @@ A name with no number, or two with the same number, is refused.
 
 Input types: a directly named file must carry a supported extension
 (.txt, .md, .markdown, .text, .docx, .pdf) — an unknown extension is a
-hard error, never a silent UTF-8 decode. \`--as-text\` explicitly opts a
+hard error, never a silent UTF-8 decode. A .zip is unpacked and read
+as a folder. \`--as-text\` explicitly opts a
 text file with an unconventional (or no) extension into UTF-8 ingestion;
 it never applies to .docx/.pdf.
 
-Stream contract: with a machine-readable format (json, sarif, csv), stdout
-carries exactly one serialized artifact — summaries, notes, and progress
-lines go to stderr, so \`analyze x.docx --format json | jq .\` just works.
+Stream contract: with a machine-readable format, stdout carries exactly one
+serialized artifact — summaries, notes, and progress lines go to stderr, so
+\`analyze x.docx --format json | jq .\` just works. The machine formats:
+${wrapList([...MACHINE_FORMATS], 76, "", ", ")}.
 Human formats (md, default summaries) keep stdout. Exit codes are unchanged.
 `;
+
+/**
+ * One command's part of {@link USAGE}: its entry lines, and for `analyze` the
+ * delivery, input and stream notes that are about it. `null` for a word that
+ * is not a command.
+ */
+export function commandUsage(command: string): string | null {
+  const [head, notes = ""] = USAGE.split("\n\nOutput delivery:");
+  const entries: string[] = [];
+  let inEntry = false;
+  for (const line of head!.split("\n")) {
+    const starts = /^ {2}(\S+)/.exec(line);
+    if (starts) inEntry = starts[1] === command;
+    if (inEntry) entries.push(line);
+  }
+  if (entries.length === 0) return null;
+  const about = command === "analyze" ? `\nOutput delivery:${notes}` : "\n";
+  return `usage:\n${entries.join("\n")}\n${about}`;
+}
 
 async function main(): Promise<void> {
   const [command, ...given] = process.argv.slice(2);
@@ -2539,6 +2696,13 @@ async function main(): Promise<void> {
         ),
       )
     : given;
+  if (command && rest.some((a) => a === "--help" || a === "-h")) {
+    const usage = commandUsage(command);
+    if (usage) {
+      process.stdout.write(usage);
+      return;
+    }
+  }
   switch (command) {
     case "analyze":
       return runAnalyze(rest);

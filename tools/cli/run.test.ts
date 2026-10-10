@@ -7,6 +7,9 @@ import {
   globToRegExp,
   resolveInputs,
   documentLabel,
+  outputStems,
+  commandUsage,
+  USAGE,
   renderCoherenceSummary,
   renderCoherenceMovementSummary,
   runAnalyze,
@@ -26,6 +29,44 @@ import type {
   NegotiationPosture,
   NegotiationTier,
 } from "../../src/playbooks/custom-interpreter.js";
+
+describe("outputStems (spec-v50 §6)", () => {
+  it("keeps a unique stem exactly as it was named before", () => {
+    expect([...outputStems(["a/deal.docx", "b/nda.pdf"]).values()]).toEqual(["deal", "nda"]);
+  });
+
+  it("keeps the extension when two inputs share a stem", () => {
+    const stems = outputStems(["d/deal.md", "d/deal.txt", "d/other.txt"]);
+    expect(stems.get("d/deal.md")).toBe("deal.md");
+    expect(stems.get("d/deal.txt")).toBe("deal.txt");
+    expect(stems.get("d/other.txt")).toBe("other");
+  });
+
+  it("treats names differing only in case as shared", () => {
+    expect(new Set(outputStems(["Deal.txt", "deal.md"]).values()).size).toBe(2);
+    expect(outputStems(["Deal.txt", "deal.md"]).get("Deal.txt")).toBe("Deal.txt");
+  });
+
+  it("keeps the folders when two inputs share a whole file name", () => {
+    const stems = outputStems(["./a/deal.txt", "./b/deal.txt"]);
+    expect(stems.get("./a/deal.txt")).toBe("a__deal.txt");
+    expect(stems.get("./b/deal.txt")).toBe("b__deal.txt");
+  });
+});
+
+describe("usage text (spec-v50 §7)", () => {
+  it("has an entry for a command and none for another word", () => {
+    expect(commandUsage("verify")).toMatch(/^usage:\n {2}verify /);
+    expect(commandUsage("analyze")).toContain("--production-qa");
+    expect(commandUsage("analyze")).toContain("Stream contract:");
+    expect(commandUsage("compare")).not.toContain("compare-coherence");
+    expect(commandUsage("nonsense")).toBeNull();
+  });
+
+  it("names the formats added after the stream contract was written", () => {
+    expect(USAGE).toMatch(/machine formats:[^.]*dates-ics/);
+  });
+});
 
 describe("splitGlob (CLI glob resolution)", () => {
   it("resolves a bare glob against the current directory", () => {
