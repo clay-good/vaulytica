@@ -19,7 +19,7 @@
  * Action's default is `sarif`).
  */
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync, rmSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -189,5 +189,29 @@ describe("the Action puts the run on the page a reader looks at", () => {
     // are already in the step log. An empty "Vaulytica" heading on the run page
     // would read as "it found nothing".
     expect(run({}, { out: "" }).summary).toBeNull();
+  });
+
+  it("leads with the folder page when the run wrote one, above the log", () => {
+    const out = join(dir, "triage-out");
+    mkdirSync(out, { recursive: true });
+    writeFileSync(
+      join(out, "TRIAGE.md"),
+      "# Folder triage\n\n| [2023/msa.txt](2023/msa.html) | msa-general |\n",
+    );
+    const r = run({ OUT: out, FORMAT: "triage-md,sarif" }, { out: CAVEAT });
+    expect(r.summary!.startsWith("# Folder triage\n")).toBe(true);
+    expect(r.summary!.indexOf("# Folder triage")).toBeLessThan(r.summary!.indexOf("## Vaulytica"));
+    // A job summary cannot serve the report files, so a link is shown as its path.
+    expect(r.summary).toContain("| 2023/msa.txt | msa-general |");
+    expect(r.summary).not.toContain("](2023/msa.html)");
+    // The log block is still there, below.
+    expect(r.summary).toContain("```");
+  });
+
+  it("adds nothing when there is no folder page", () => {
+    const out = join(dir, "no-triage-out");
+    mkdirSync(out, { recursive: true });
+    const r = run({ OUT: out }, { out: CAVEAT });
+    expect(r.summary!.startsWith("## Vaulytica\n")).toBe(true);
   });
 });

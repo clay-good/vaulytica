@@ -21,13 +21,14 @@
  */
 
 /** What the report is about, for the one clause that differs. */
-export type PrivacySubject = "document" | "bundle" | "comparison" | "review";
+export type PrivacySubject = "document" | "bundle" | "comparison" | "review" | "folder";
 
 const SUBJECT: Record<PrivacySubject, string> = {
   document: "No portion of the input document was transmitted to any server.",
   // The anchored-comments copy: the caller's own file, commented in place.
   review: "No portion of the input document was transmitted to any server.",
   bundle: "No portion of any input document was transmitted to any server.",
+  folder: "No portion of any input document was transmitted to any server.",
   comparison: "Neither file, nor any portion of either, was transmitted to any server.",
 };
 
@@ -81,6 +82,8 @@ export function nonAdviceStatement(subject: PrivacySubject): string {
       "This comparison is a mechanical diff of two rule-engine runs over documents you provided.",
     review:
       "These comments are a checklist of mechanical findings produced by a deterministic rule engine against the document they are attached to.",
+    folder:
+      "This page is a triage of mechanical findings produced by a deterministic rule engine against documents you provided.",
   };
   const what = WHAT[subject];
   // "These comments are … They are not legal advice": the review variant is
@@ -139,6 +142,14 @@ export function determinismStatement(subject: PrivacySubject): string {
         "version, and the same Deterministic Knowledge Base version, this comparison reproduces " +
         "byte-for-byte on any machine, at any time. The comparison hash above is the SHA-256 of " +
         "the two run hashes and the canonical delta." +
+        NO_MODEL
+      );
+    case "folder":
+      return (
+        "This page was produced by a deterministic process. Given the same input files, the " +
+        "same Vaulytica engine version, and the same Deterministic Knowledge Base version, it " +
+        "will be identical on any machine, at any time. The order is a sort on facts the run " +
+        "recorded, never a risk score. The triage hash is recorded above for verification." +
         NO_MODEL
       );
     case "bundle":

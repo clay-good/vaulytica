@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.862.0] — 2026-10-10
+
+### Added
+- **Folder triage: one page for a directory.** `analyze <dir|glob|.zip>
+  --format triage-md` (or `triage-json`) says which documents need a person
+  first and what to open to check the tool's own work. It streams to stdout;
+  with `--out` it is written as `TRIAGE.md` with each row linked to its
+  report. 25 files fit in 10 KB.
+  - **Tiers, not a score.** 1 not read (corrupt, unsupported, empty, a scanned
+    PDF) · 2 read with a caveat (tracked changes, not English, OCR, a crashed
+    rule) · 3 unmatched · 4 matched, by criticals, then warnings, then path.
+    Every file is in exactly one row; byte-identical copies share one.
+  - **Rules that fire across a type** — on at least three documents of a type
+    and at least half of them — are listed once, with what they said.
+  - **A fixed-slot spot check**: type, criticals, systemic rules, absences,
+    quotes, and the cleanest documents, each with what a wrong answer means.
+    Ties are broken by SHA-256(input hash + rule id), so the sample is the
+    same across runs, machines, input order and a version bump. It states its
+    coverage and that it is not an error rate.
+  - The page has its own `triage_hash`, outside every `result_hash`, and never
+    runs the cross-document rules: a folder is not a deal.
+- **`analyze_folder` over MCP returns the triage page** (≤ 20 KB: tiers 1–3 in
+  full, 20 matched rows per call, the systemic rules and the spot check).
+- **The GitHub Action puts `TRIAGE.md` at the top of its job summary** when the
+  run wrote one (`format: triage-md` with `out`).
+- **Ingest warnings have codes** (`no-text-layer`, `empty`, `ocr`,
+  `tracked-changes`, `not-english`, `plain-text`, `other`), beside the
+  sentences in the JSON report and the compact report. The sentences are
+  unchanged and no `result_hash` moves.
+- **An unmatched document names its closest type as a field** (`near_miss`),
+  floored at 0.2: a blank file's "best score … at 0" names an arbitrary one.
+
+### Changed
+- **Reports under `--out` mirror the input folder's layout.** `2023/nda.docx`
+  and `2024/nda.docx` used to write one `nda.json`, and the run said two. A
+  flat folder's report names are unchanged; an input in a subfolder now writes
+  into the same subfolder under `--out`.
+- **Dotfiles and dot-folders are said, not silently dropped**: one line on the
+  terminal, a list on the triage page. They stay out of a bundle's `rejected`
+  list, so a `.DS_Store` cannot change an artifact's bytes.
+- **A relative path over MCP is tried against every allowed root**, so a path
+  a result shows can always be handed back.
+
+(spec-v52 Steps 322–326)
+
 ## [9.861.0] — 2026-10-10
 
 ### Added

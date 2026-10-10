@@ -80,8 +80,10 @@ describe("first five minutes on the command line", { timeout: 300_000 }, () => {
     const before = readdirSync(tmpdir()).filter((n) => n.startsWith("vaulytica-zip-")).length;
     const r = cli("analyze", zip, "--format", "json", "--out", fromZip);
     expect(r.status).toBe(0);
-    expect(readdirSync(fromZip).sort()).toEqual(["copy.json", "nda.json"]);
-    for (const name of ["copy.json", "nda.json"]) {
+    // The reports mirror the archive's layout (spec-v52 §1).
+    expect(readdirSync(fromZip).sort()).toEqual(["nda.json", "sub"]);
+    expect(readdirSync(join(fromZip, "sub"))).toEqual(["copy.json"]);
+    for (const name of [join("sub", "copy.json"), "nda.json"]) {
       expect(hashOf(join(fromZip, name))).toBe(hashOf(join(fromDir, name)));
     }
     // Paths are shown under the archive, never under the temporary folder.

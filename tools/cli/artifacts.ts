@@ -62,7 +62,9 @@ export type Format =
   | "posture-csv"
   | "posture-sheet"
   | "definitions-csv"
-  | "brief-json";
+  | "brief-json"
+  | "triage-md"
+  | "triage-json";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
  * contract (fix-cli-json-purity): when any of these is selected, stdout
@@ -129,6 +131,10 @@ export const VALID_FORMATS = [
   // The compact projection (spec-v50 §4): the same analysis in a few KB, for a
   // script or an agent. A VIEW — `verify` and the certificate need `json`.
   "brief-json",
+  // Folder triage (spec-v52): ONE page for the whole run — which documents
+  // need a person first, and what to open to check the tool's work.
+  "triage-md",
+  "triage-json",
 ] as const;
 /**
  * Every format a PROGRAM parses — JSON, SARIF, CSV, iCalendar — and therefore
@@ -187,7 +193,17 @@ export const FORMAT_EXT: Record<Format, string> = {
   "definitions-csv": ".definitions.csv",
   // Not `.json`: it would collide with the full report under --out.
   "brief-json": ".brief.json",
+  // Named for the run, not for a document: written as TRIAGE.md / TRIAGE.json.
+  "triage-md": ".md",
+  "triage-json": ".json",
 };
+
+/**
+ * Formats that are ONE artifact for the whole run, however many inputs it had.
+ * Unlike the bundle formats they can stream to stdout: a folder page is the
+ * answer a bare `analyze <dir>` never had.
+ */
+export const WHOLE_RUN_FORMATS: ReadonlySet<Format> = new Set(["triage-md", "triage-json"]);
 
 export const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
   VALID_FORMATS.filter(
@@ -196,7 +212,16 @@ export const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
 );
 
 export async function renderFormat(
-  fmt: Exclude<Format, "docx" | "docx-comments" | "bundle-json" | "bundle-docx" | "bundle-zip">,
+  fmt: Exclude<
+    Format,
+    | "docx"
+    | "docx-comments"
+    | "bundle-json"
+    | "bundle-docx"
+    | "bundle-zip"
+    | "triage-md"
+    | "triage-json"
+  >,
   r: AnalyzeResult,
   dkb: Dkb,
   definitions?: import("../../src/report/definitions.js").DefinitionsReport,

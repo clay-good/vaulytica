@@ -20,6 +20,7 @@
 
 import { isActionable, type Finding, type Severity } from "../../src/engine/finding.js";
 import { truncate } from "../../src/engine/text.js";
+import { ingestWarningCodes, type IngestWarningCode } from "../../src/ingest/warning-codes.js";
 import { nonAdviceStatement } from "../../src/report/disclaimers.js";
 import { erroredRuleNotice } from "../../src/report/execution-log.js";
 import type { AnalyzeResult } from "./api.js";
@@ -65,6 +66,8 @@ export type Brief = {
     type: string;
     confidence?: number;
     match_reasoning?: string;
+    /** Unmatched only: the closest family and its score. Not a match. */
+    near_type?: { id: string; score: number };
   };
   counts: Counts;
   /** How many findings carry a recommendation — what a drafter works through. */
@@ -75,6 +78,8 @@ export type Brief = {
   secondary_families_omitted?: number;
   caveats: {
     ingest_warnings?: string[];
+    /** One code per `ingest_warnings` entry, in order: what kind of caveat it is. */
+    ingest_warning_codes?: IngestWarningCode[];
     classification_notice?: string;
     secondary_families?: string;
     rules_errored?: string;
@@ -151,6 +156,9 @@ export function buildBrief(
       ...(run.playbook_match_reasoning
         ? { match_reasoning: printable(run.playbook_match_reasoning) }
         : {}),
+      ...(r.near_miss
+        ? { near_type: { id: r.near_miss.playbook_id, score: r.near_miss.score } }
+        : {}),
     },
     counts: countsOf(run.findings),
     actionable: run.findings.filter(isActionable).length,
@@ -168,7 +176,9 @@ export function buildBrief(
       : {}),
     ...(omitted > 0 ? { secondary_families_omitted: omitted } : {}),
     caveats: {
-      ...(r.ingest.warnings.length > 0 ? { ingest_warnings: r.ingest.warnings } : {}),
+      ...(r.ingest.warnings.length > 0
+        ? { ingest_warnings: r.ingest.warnings, ingest_warning_codes: ingestWarningCodes(r.ingest) }
+        : {}),
       ...(run.classification_notice
         ? { classification_notice: run.classification_notice.message }
         : {}),

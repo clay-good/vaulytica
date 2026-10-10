@@ -23,7 +23,7 @@ inputs:
     required: false
     default: ""
   format:
-    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv,docx,docx-comments,bundle-json,bundle-docx,bundle-zip,checklist-md,checklist-csv,dates-md,dates-ics,obligations-csv,deadlines-ics,posture-md,posture-csv,posture-sheet,definitions-csv,brief-json (default sarif) — the checklist-* formats need the closing checklist and the dates-* formats need the critical-dates register, both of which the CLI computes only when asserted. `docx` is the full attorney-facing report and `docx-comments` a commented copy of the input; both are binary and need `out-dir`. The `bundle-*` values write one consolidated artifact for the whole set (implies the cross-document run, needs 2+ inputs and `out-dir`). compare: json|markdown (default markdown). Leave empty to take each command's default."
+    description: "Output format(s). analyze: comma list of json,sarif,html,md,csv,docx,docx-comments,bundle-json,bundle-docx,bundle-zip,checklist-md,checklist-csv,dates-md,dates-ics,obligations-csv,deadlines-ics,posture-md,posture-csv,posture-sheet,definitions-csv,brief-json,triage-md,triage-json (default sarif) — the checklist-* formats need the closing checklist and the dates-* formats need the critical-dates register, both of which the CLI computes only when asserted. `docx` is the full attorney-facing report and `docx-comments` a commented copy of the input; both are binary and need `out-dir`. The `bundle-*` values write one consolidated artifact for the whole set (implies the cross-document run, needs 2+ inputs and `out-dir`). compare: json|markdown (default markdown). Leave empty to take each command's default."
     required: false
     default: ""
   fail-on:
@@ -234,6 +234,15 @@ runs:
         if [ "${SUMMARY:-}" != "false" ] && [ -n "${GITHUB_STEP_SUMMARY:-}" ] \
           && grep -q '[^[:space:]]' "$log"; then
           {
+            # The folder page first, when the run wrote one (`format` includes
+            # triage-md, with `out`): which documents need a person first is
+            # what a reader of this job wants before any log. Its links point
+            # at report files beside it, which a job summary cannot serve, so
+            # they are shown as plain paths here.
+            if [ -n "${OUT:-}" ] && [ -f "$OUT/TRIAGE.md" ]; then
+              head -c 60000 "$OUT/TRIAGE.md" | sed -E 's/\[([^]]+)\]\([^)]*\)/\1/g'
+              echo
+            fi
             echo "## Vaulytica"
             echo
             echo "\`vaulytica ${args[*]}\`"

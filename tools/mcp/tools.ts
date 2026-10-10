@@ -12,6 +12,7 @@ import {
   EXPORT_FORMATS,
   FolderTooLargeError,
   NOT_LEGAL_ADVICE_BUNDLE,
+  SLOT_QUESTION,
   analyzeDocument,
   analyzeFolder,
   buildBrief,
@@ -23,10 +24,13 @@ import {
   isActionable,
   isDocumentType,
   listDocumentTypes,
+  triageFolder,
   type AccuracyDeps,
   type Brief,
   type BriefFinding,
   type ExportFormat,
+  type Triage,
+  type TriageRow,
 } from "../cli/api.js";
 import { ToolError, resolveInRoots, resolveNewInRoots, shownInRoots } from "./roots.js";
 
@@ -255,27 +259,36 @@ export async function analyzeDocumentTool(
 export const MAX_FOLDER_FILES = 200;
 /** …walking at most this many directory levels down. */
 export const MAX_FOLDER_DEPTH = 8;
-/** Rows per page: each is held to 300 bytes, so a page is about 15 KB. */
-export const FOLDER_PAGE_ROWS = 50;
+/**
+ * Matched documents per page (spec-v52 §7). Everything that is not an ordinary
+ * matched document — unread, caveated, unmatched — is always on the first
+ * page in full: those are the rows a person must not miss.
+ */
+export const FOLDER_PAGE_ROWS = 20;
 
+/** One file on the triage page, cut to what fits in 300 bytes. */
 export type FolderRow = {
   path: string;
-  /** Absent when the file was not analyzed; `not_analyzed` says why. */
+  /** 1 not read · 2 read with a caveat · 3 unmatched · 4 matched. */
+  tier: 1 | 2 | 3 | 4;
+  /** Why it is in that tier; for tier 1, why it was not analyzed. */
+  why?: string;
   type?: string;
+  /** Unmatched only: the closest type and its score. Not a match. */
+  near?: string;
   /** Critical / warning / info, the primary match only. */
   c?: number;
   w?: number;
   i?: number;
   /** Findings that carry a recommendation — what there is to work through. */
   act?: number;
+  /** The first critical in document order. */
+  first?: string;
   sha?: string;
-  /** No family matched: only the generic rule set ran, so a short row means little. */
-  unmatched?: true;
-  /** Other families detected from vocabulary — detected, not confirmed. */
+  /** Other types detected from vocabulary — detected, not confirmed. */
   secondary?: number;
-  /** Ingest warnings on this file; read them with analyze_document. */
-  caveats?: number;
-  not_analyzed?: string;
+  /** Byte-identical copies, analyzed once. */
+  same_as?: string[];
 };
 
 export type AnalyzeFolderArgs = {
@@ -291,22 +304,53 @@ type Progress = {
 };
 
 const rowPath = (path: string): string =>
-  path.length <= 160 ? path : `…${path.slice(path.length - 159)}`;
+  path.length <= 120 ? path : `…${path.slice(path.length - 119)}`;
+
+function folderRow(r: TriageRow): FolderRow {
+  return {
+    path: rowPath(r.path),
+    tier: r.tier,
+    ...(r.tier !== 4 ? { why: r.reason.slice(0, 90) } : {}),
+    ...(r.type && r.tier !== 3 ? { type: r.type } : {}),
+    ...(r.near_type ? { near: `${r.near_type.id} (${r.near_type.score})` } : {}),
+    ...(r.counts ? { c: r.counts.critical, w: r.counts.warning, i: r.counts.info } : {}),
+    ...(r.actionable !== undefined ? { act: r.actionable } : {}),
+    ...(r.first_critical
+      ? { first: `${r.first_critical.rule_id}: ${r.first_critical.title}`.slice(0, 70) }
+      : {}),
+    ...(r.sha ? { sha: r.sha } : {}),
+    ...(r.secondary ? { secondary: r.secondary } : {}),
+    ...(r.duplicates ? { same_as: r.duplicates.slice(0, 2).map(rowPath) } : {}),
+  };
+}
+
+/** The first page is the whole triage; a later page is only more matched rows. */
+export type FolderResult = {
+  triage_hash: string;
+  rows: FolderRow[];
+  next_cursor?: string;
+  engine_version?: string;
+  dkb_version?: string;
+  /** Every file that got a row, and how many of them were read. */
+  files?: number;
+  documents?: number;
+  totals?: Triage["totals"];
+  matched_total?: number;
+  caveats?: Triage["caveats"];
+  hidden?: string[];
+  systemic?: Triage["systemic"];
+  systemic_total?: number;
+  spot_check?: Triage["spot_check"];
+  slot_questions?: typeof SLOT_QUESTION;
+  cross_document?: { result_hash: string; findings: unknown[] } | { not_run: string };
+  notes?: { order: string; rows: string; not_legal_advice: string };
+};
 
 export async function analyzeFolderTool(
   args: AnalyzeFolderArgs,
   ctx: Context,
   progress: Progress = {},
-): Promise<{
-  documents: number;
-  totals: { critical: number; warning: number; info: number };
-  rows: FolderRow[];
-  unreadable: Array<{ path: string; reason: string }>;
-  skipped: Array<{ path: string; reason: string }>;
-  cross_document?: { result_hash: string; findings: unknown[] } | { not_run: string };
-  caveats: { folder: string; not_legal_advice: string };
-  next_cursor?: string;
-}> {
+): Promise<FolderResult> {
   if ((args.dir === undefined) === (args.paths === undefined)) {
     throw new ToolError("Pass exactly one of `dir` or `paths`.");
   }
@@ -319,14 +363,18 @@ export async function analyzeFolderTool(
     target = [];
     for (const p of args.paths!) target.push(await resolveInRoots(p, ctx.roots));
   }
+  // Paths on the page are relative to the allowed root that holds them, so
+  // each can be handed straight back to analyze_document.
+  const anchor = typeof target === "string" ? target : target[0]!;
+  const root = ctx.roots.find((r) => anchor === r || anchor.startsWith(r));
 
-  let folder: Awaited<ReturnType<typeof analyzeFolder>>;
+  let result: Awaited<ReturnType<typeof triageFolder>>;
   try {
-    folder = await analyzeFolder(target, {
+    result = await triageFolder(target, {
       deps: ctx.deps,
-      secondaryFamilies: true,
+      root,
       limits: { maxFiles: MAX_FOLDER_FILES, maxDepth: MAX_FOLDER_DEPTH },
-      // One oversized file becomes a `not_analyzed` row, not a stalled server.
+      // One oversized file becomes a not-read row, not a stalled server.
       maxFileBytes: sizeLimit,
       onDocument: async (done, total) => {
         // Analysis is synchronous; yielding here is what lets a cancellation in.
@@ -340,60 +388,45 @@ export async function analyzeFolderTool(
     throw e;
   }
   if (progress.signal?.aborted) throw new ToolError("Cancelled before every file was read.");
-  if (folder.documents.length + folder.unreadable.length === 0) {
+  const { triage, folder } = result;
+  if (triage.rows.length === 0) {
     throw new ToolError("No file this tool reads (.docx, .pdf, .txt, .md) was found there.");
   }
-  const skipped = folder.skipped;
 
-  const shown = (path: string): string => shownInRoots(path, ctx.roots);
-  const rows: FolderRow[] = [];
-  const totals = { critical: 0, warning: 0, info: 0 };
-  for (const d of folder.documents) {
-    const empty = notAnalyzedReason(d.result, d.file);
-    if (empty) {
-      rows.push({ path: rowPath(shown(d.label)), not_analyzed: empty });
-      continue;
-    }
-    const b = buildBrief(d.result, { excerpts: false });
-    totals.critical += b.counts.critical;
-    totals.warning += b.counts.warning;
-    totals.info += b.counts.info;
-    rows.push({
-      path: rowPath(shown(d.label)),
-      type: b.document.type,
-      c: b.counts.critical,
-      w: b.counts.warning,
-      i: b.counts.info,
-      act: b.actionable,
-      sha: b.document.sha256.slice(0, 12),
-      ...(b.caveats.classification_notice ? { unmatched: true as const } : {}),
-      ...(b.secondary_families ? { secondary: b.secondary_families.length } : {}),
-      ...(d.result.ingest.warnings.length > 0 ? { caveats: d.result.ingest.warnings.length } : {}),
-    });
-  }
-  const unreadable = folder.unreadable.map((u) => ({
-    path: rowPath(shown(u.file)),
-    reason: u.reason,
-  }));
-  for (const u of unreadable) rows.push({ path: u.path, not_analyzed: u.reason.slice(0, 120) });
-  rows.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
-
+  // The first page is the whole triage with the first matched rows; a later
+  // page is only more matched rows.
+  const urgent = triage.rows.filter((r) => r.tier !== 4);
+  const matched = triage.rows.filter((r) => r.tier === 4);
   const end = offset + FOLDER_PAGE_ROWS;
+  const page = matched.slice(offset, end).map(folderRow);
+  const next = end < matched.length ? { next_cursor: encodeCursor({ offset: end }) } : {};
+  if (offset > 0) return { triage_hash: triage.triage_hash, rows: page, ...next };
+
   return {
-    documents: folder.documents.length,
-    totals,
-    rows: rows.slice(offset, end),
-    unreadable,
-    skipped: skipped.map((s) => ({ path: rowPath(shown(s.file)), reason: s.reason })),
+    triage_hash: triage.triage_hash,
+    engine_version: triage.engine_version,
+    dkb_version: triage.dkb_version,
+    files: triage.rows.length,
+    documents: triage.documents,
+    totals: triage.totals,
+    rows: [...urgent.map(folderRow), ...page],
+    matched_total: matched.length,
+    caveats: triage.caveats.map((c) => ({ ...c, files: c.files.slice(0, 10).map(rowPath) })),
+    ...(triage.hidden.length > 0 ? { hidden: triage.hidden.slice(0, 10).map(rowPath) } : {}),
+    systemic: triage.systemic.slice(0, 8),
+    systemic_total: triage.systemic.length,
+    spot_check: triage.spot_check,
+    slot_questions: SLOT_QUESTION,
     ...(args.related ? { cross_document: await crossDocument(folder, ctx) } : {}),
-    caveats: {
-      folder:
-        "One row per file, in path order — not a ranking. Counts are the primary document type only. " +
-        "A row marked `not_analyzed` was not checked at all; `unmatched` means only a small generic " +
-        "rule set ran. Open a document with analyze_document before acting on its row.",
+    notes: {
+      order: triage.statements.tiers,
+      rows:
+        "Tier 1 was not analyzed at all. Tier 3 matched no document type: only a small generic " +
+        "rule set ran, so a short row means little. Counts are the primary type only. Open a " +
+        "document with analyze_document before acting on its row.",
       not_legal_advice: NOT_LEGAL_ADVICE_BUNDLE,
     },
-    ...(end < rows.length ? { next_cursor: encodeCursor({ offset: end }) } : {}),
+    ...next,
   };
 }
 

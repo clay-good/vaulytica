@@ -10,7 +10,7 @@
  */
 
 import { realpath } from "node:fs/promises";
-import { delimiter, dirname, basename, join, relative, resolve, sep } from "node:path";
+import { basename, delimiter, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
 
 /** Thrown for a request a person can fix; the server answers it as `isError`. */
 export class ToolError extends Error {}
@@ -47,13 +47,19 @@ const within = (root: string, path: string): boolean =>
 
 /**
  * The real path of an existing file or directory, if it sits under a root.
- * A relative path is taken against the first root.
+ * A relative path is tried against each root in turn — results show paths
+ * relative to the root that holds them, and any of them must work when it is
+ * handed back.
  */
 export async function resolveInRoots(path: string, roots: readonly string[]): Promise<string> {
-  const real = await realpath(resolve(roots[0]!, path)).catch(() => null);
-  if (real === null) throw new ToolError(`No such file or directory: ${path}`);
-  if (!roots.some((r) => within(r, real))) throw outside(path, roots);
-  return real;
+  let found = false;
+  for (const root of isAbsolute(path) ? [roots[0]!] : roots) {
+    const real = await realpath(resolve(root, path)).catch(() => null);
+    if (real === null) continue;
+    found = true;
+    if (roots.some((r) => within(r, real))) return real;
+  }
+  throw found ? outside(path, roots) : new ToolError(`No such file or directory: ${path}`);
 }
 
 /**

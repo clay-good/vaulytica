@@ -29,6 +29,7 @@ import type { DeliveryReport } from "../delivery/types.js";
 import type { CriticalDatesRegister } from "./critical-dates.js";
 import type { ClosingChecklist } from "./closing-checklist.js";
 import type { NegotiationPosture } from "../playbooks/custom-interpreter.js";
+import { ingestWarningCodes, type IngestWarningCode } from "../ingest/warning-codes.js";
 
 /**
  * One additional detected family's scan results (spec-v6 multi-family
@@ -61,7 +62,10 @@ export type JsonReport = {
   ingest: Pick<
     IngestResult,
     "source" | "word_count" | "page_count" | "language" | "sha256" | "warnings"
-  >;
+  > & {
+    /** One code per `warnings` entry, in order. */
+    warning_codes: IngestWarningCode[];
+  };
   /**
    * Report-level provenance (spec-v7 §17). Stamps the versions that
    * produced this report — DKB, engine, and the rule-taxonomy vocabulary
@@ -278,6 +282,8 @@ export function buildJsonReport(
       language: ingest.language,
       sha256: ingest.sha256,
       warnings: ingest.warnings,
+      // One code per warning, in order (spec-v52 §1). Outside `run`.
+      warning_codes: ingestWarningCodes(ingest),
     },
     ...(erroredNotice ? { rules_errored_notice: erroredNotice } : {}),
     provenance: {

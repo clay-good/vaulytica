@@ -49,6 +49,27 @@ jobs:
             if (j.version !== "2.1.0") { console.error("not SARIF 2.1.0"); process.exit(1); }
             if (!Array.isArray(j.runs) || j.runs.length !== 1) { console.error("no run"); process.exit(1); }'
 
+      # A folder gets one page: which documents need a person first. The step
+      # passes or fails on the documents; what is asserted is that the page was
+      # written and reached the job summary.
+      - name: Triage a folder
+        id: triage
+        continue-on-error: true
+        uses: ./
+        with:
+          command: analyze
+          files: tests/fixtures/contracts
+          format: triage-md,sarif
+          out: triage-out
+
+      - name: The folder page was written, and leads the job summary
+        shell: bash
+        run: |
+          set -euo pipefail
+          head -1 triage-out/TRIAGE.md | grep -qx '# Folder triage'
+          grep -q '^## 4\. Matched (25)$' triage-out/TRIAGE.md
+          test -s triage-out/mutual-nda.sarif.json
+
       # The gate must actually gate. `continue-on-error` keeps the job green
       # while the step's own outcome is asserted below — a gate that stopped
       # failing would otherwise look identical to a document that got cleaner.

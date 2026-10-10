@@ -30,12 +30,12 @@ export const LIST_DOCUMENT_TYPES = [
 ].join(" ");
 
 export const ANALYZE_FOLDER = [
-  "Not legal advice, and not a ranking: one row per file in path order, from a deterministic rule engine with no measured accuracy on real contracts. A row is a pointer, not a verdict.",
-  "Checks every .docx, .pdf, .txt and .md file under `dir` (a folder or a .zip, at most 200 files, 8 levels deep) or in `paths`, and returns one short row per file: path, detected type, critical / warning / info counts, and flags.",
-  "A row with `not_analyzed` was not checked at all (unreadable, empty, or a scanned PDF — no OCR here). `unmatched` means no document type matched and only a small generic rule set ran, so a short row means little. `skipped` lists files of types this tool does not read. A partial run is never reported as complete: read `unreadable` and `skipped`.",
-  "Open the documents that matter with analyze_document; the rows carry no findings and quote no document text.",
-  "`related: true` says these files are ONE deal and adds cross-document conflicts (governing law, parties, defined terms that disagree between documents). Do not pass it for an arbitrary folder: unrelated files produce true, meaningless conflicts.",
-  "More than 50 rows come back in pages with `next_cursor`.",
+  "Not legal advice, and not a risk score: a triage page from a deterministic rule engine with no measured accuracy on real contracts. The order is a sort on facts the run recorded.",
+  "Checks every .docx, .pdf, .txt and .md file under `dir` (a folder or a .zip, at most 200 files, 8 levels deep) or in `paths`, and puts each file in one tier: 1 not read (corrupt, unsupported, empty, a scanned PDF — no OCR here), 2 read with a caveat (tracked changes, not English, a crashed rule), 3 no document type matched (only a small generic rule set ran, so a short row means little), 4 matched, by criticals, then warnings.",
+  "Each row has the path, type, counts (`c`/`w`/`i`, the primary type only), `act` (findings that carry a recommendation), and the first critical. Rows carry no findings and quote no document text: open a document with analyze_document, using the row's `path`.",
+  "`spot_check` lists a few things for a PERSON to open to check this tool's work, with what a wrong answer means (`slot_questions`). Pass it on; it is a check of the tool, not an error rate. `systemic` lists rules that fire on most documents of one type.",
+  "`related: true` says these files are ONE deal and adds cross-document conflicts. Do not pass it for an arbitrary folder: unrelated files produce true, meaningless conflicts.",
+  "The first call returns every tier 1–3 row and 20 matched rows; `next_cursor` returns more matched rows.",
 ].join(" ");
 
 export const COMPARE_DOCUMENTS = [

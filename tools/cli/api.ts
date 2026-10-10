@@ -87,6 +87,9 @@ import { runConsistency } from "../../src/engine/consistency/runner.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 import type { ConsistencyRun } from "../../src/engine/consistency/types.js";
 import { nonAdviceStatement } from "../../src/report/disclaimers.js";
+import { sha256Hex } from "../../src/ingest/hash.js";
+import { ENGINE_VERSION } from "../../src/engine/runner.js";
+import { buildTriage, type Triage } from "./triage.js";
 
 export { FolderTooLargeError };
 export type { ConsistencyRun };
@@ -123,6 +126,12 @@ export type AnalyzeResult = {
   secondary_families_present: number;
   /** The matched family's normal pairings, resolved to display names. */
   related_documents: RelatedDocument[];
+  /**
+   * For an UNMATCHED document: the family that came closest, and its score —
+   * the fact behind "Best score was … at 0.4". Absent when a family matched,
+   * and when nothing came close enough to be worth naming. Outside `run`.
+   */
+  near_miss?: { playbook_id: string; score: number };
   /** The ingest result, so the report builders (JSON/HTML) can render. */
   ingest: IngestResult;
   /**
@@ -440,6 +449,14 @@ export type { AccuracyDeps };
 // only this module.
 export { buildBrief, BRIEF_SCHEMA, type Brief, type BriefFinding } from "./brief.js";
 export { isActionable } from "../../src/engine/finding.js";
+export {
+  buildTriage,
+  buildTriageJson,
+  buildTriageMarkdown,
+  SLOT_QUESTION,
+  type Triage,
+  type TriageRow,
+} from "./triage.js";
 
 /* ─────────────────────────────────────────────────────────────────────────
  * Production QA (add-production-qa-pack) — a bundle-level pass over a
@@ -608,6 +625,8 @@ export type FolderAnalysis = {
   unreadable: Array<{ file: string; reason: string }>;
   /** Files passed over for an unsupported type. A partial run says so. */
   skipped: Array<{ file: string; reason: string }>;
+  /** With `dedupe`: byte-identical copies, each named with the file analyzed in its place. */
+  duplicates: Array<{ file: string; of: string }>;
 };
 
 /**
@@ -623,9 +642,11 @@ export async function analyzeFolder(
     limits?: WalkLimits;
     /** A file larger than this is reported unreadable, unread. */
     maxFileBytes?: (file: string) => number;
+    /** Analyze byte-identical files once; the copies are listed in `duplicates`. */
+    dedupe?: boolean;
   } = {},
 ): Promise<FolderAnalysis> {
-  const { onDocument, limits, ...analyzeOpts } = opts;
+  const { onDocument, limits, dedupe, ...analyzeOpts } = opts;
   const skipped: FolderAnalysis["skipped"] = [];
   let zip: ZipView | undefined;
   let files: string[];
@@ -639,8 +660,25 @@ export async function analyzeFolder(
   } else {
     files = await resolveInputs(target, { asText: opts.asText, limits }, skipped);
   }
-  const out: FolderAnalysis = { documents: [], unreadable: [], skipped };
+  const out: FolderAnalysis = { documents: [], unreadable: [], skipped, duplicates: [] };
   try {
+    if (dedupe) {
+      const first = new Map<string, string>();
+      const unique: string[] = [];
+      for (const file of files) {
+        const bytes = await readFile(file).catch(() => null);
+        // An unreadable file keeps its place; the analysis reports why.
+        const sha = bytes ? await sha256Hex(bytes) : null;
+        const original = sha ? first.get(sha) : undefined;
+        if (original !== undefined) {
+          out.duplicates.push({ file: shownPath(file, zip), of: shownPath(original, zip) });
+          continue;
+        }
+        if (sha) first.set(sha, file);
+        unique.push(file);
+      }
+      files = unique;
+    }
     let done = 0;
     for await (const item of analyzeEach(files, analyzeOpts)) {
       const label = shownPath(item.file, zip);
@@ -901,6 +939,52 @@ export async function listDocumentTypes(
 export async function isDocumentType(id: string): Promise<boolean> {
   const data = await docTypes();
   return data.types.some((t) => t.id === id) || id in data.superseded;
+}
+
+/**
+ * What the triage page needs to know about a rule: its name, what it looks
+ * for, and whether it is gated to a document type or runs on every document.
+ */
+export function ruleCatalog(): ReadonlyMap<
+  string,
+  { name: string; description: string; family: boolean }
+> {
+  return new Map(
+    ALL_RULES.map((r) => [
+      r.id,
+      {
+        name: r.name,
+        description: r.description,
+        family: (r.applies_to_playbooks?.length ?? 0) > 0,
+      },
+    ]),
+  );
+}
+
+/**
+ * Analyze a folder and build its triage page (spec-v52). Byte-identical files
+ * are analyzed once. The cross-document rules are not run: a folder is not a
+ * bundle.
+ */
+export async function triageFolder(
+  target: string | readonly string[],
+  opts: Parameters<typeof analyzeFolder>[1] & { root?: string } = {},
+): Promise<{ triage: Triage; folder: FolderAnalysis }> {
+  const { root, ...folderOpts } = opts;
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  const folder = await analyzeFolder(target, {
+    ...folderOpts,
+    deps,
+    secondaryFamilies: true,
+    dedupe: true,
+  });
+  const triage = await buildTriage(folder, {
+    root: root ?? (typeof target === "string" ? target : undefined),
+    rules: ruleCatalog(),
+    engineVersion: ENGINE_VERSION,
+    dkbVersion: deps.dkb.manifest.version,
+  });
+  return { triage, folder };
 }
 
 const ALL_RULES: readonly Rule[] = [

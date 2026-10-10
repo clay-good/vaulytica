@@ -205,10 +205,14 @@
 import "./no-localstorage.js";
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, basename, extname, resolve } from "node:path";
+import { dirname, join, basename, extname, resolve } from "node:path";
 
 import {
   analyzeEach,
+  buildTriage,
+  buildTriageJson,
+  buildTriageMarkdown,
+  ruleCatalog,
   analyzeFile,
   loadAccuracyDeps,
   runProductionQa,
@@ -230,9 +234,11 @@ import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 /** Values the `--regime` flag accepts (`gdpr` expands to both articles). */
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
 import { TIER_RANK } from "../../src/report/posture-movement.js";
+import { ENGINE_VERSION } from "../../src/engine/runner.js";
 import {
   FORMAT_EXT,
   MACHINE_FORMATS,
+  WHOLE_RUN_FORMATS,
   VALID_FORMATS,
   renderDocxReport,
   renderFormat,
@@ -240,6 +246,7 @@ import {
   type Format,
 } from "./artifacts.js";
 import {
+  SKIPPED_HIDDEN,
   SKIPPED_UNSUPPORTED,
   SUPPORTED_EXT,
   documentLabel,
@@ -784,6 +791,13 @@ async function analyzeStdin(args: Args): Promise<void> {
   }
 }
 
+/** Write `name` under `out`, creating the folders a mirrored path needs. */
+async function writeUnder(out: string, name: string, data: string | Uint8Array): Promise<void> {
+  const file = join(out, name);
+  await mkdir(dirname(file), { recursive: true });
+  await writeFile(file, data);
+}
+
 async function analyzeTarget(
   args: Args,
   zip?: ZipView,
@@ -952,6 +966,25 @@ async function analyzeTarget(
   // supplied under an extension this tool does not read.
   const skippedInputs: Array<{ file: string; reason: string }> = [...zipSkipped];
   const inputs = await resolveInputs(args.target, { asText: args.asText }, skippedInputs);
+  // Dotfiles and dot-folders are accounted for (spec-v52 §1) and said once —
+  // but kept out of `skippedInputs`, which feeds the bundle's `rejected` list:
+  // a `.DS_Store` on one machine must not change an artifact's bytes.
+  const hidden = skippedInputs.filter((sk) => sk.reason === SKIPPED_HIDDEN);
+  if (hidden.length > 0) {
+    skippedInputs.splice(
+      0,
+      skippedInputs.length,
+      ...skippedInputs.filter((sk) => sk.reason !== SKIPPED_HIDDEN),
+    );
+    process.stderr.write(
+      `vaulytica: ${hidden.length} hidden file(s) or folder(s) in ${zip?.name ?? args.target} ` +
+        `were not read (names starting with a dot): ` +
+        `${hidden
+          .slice(0, 5)
+          .map((sk) => basename(sk.file))
+          .join(", ")}${hidden.length > 5 ? ", …" : ""}\n`,
+    );
+  }
   if (skippedInputs.length > 0) {
     const shown = skippedInputs.slice(0, 10);
     process.stderr.write(
@@ -988,10 +1021,24 @@ async function analyzeTarget(
   // The zero-format case is `--consistency-only`, and it is not a delivery
   // failure: nothing was rendered, so nothing was dropped. Every other path
   // defaults to one format, so this cannot silence a real drop.
-  if (!args.out && args.formats.length > 0 && (args.formats.length > 1 || inputs.length > 1)) {
+  // A whole-run format (the triage page) is ONE artifact for any number of
+  // inputs, so it streams to stdout on its own. Everything else is per
+  // document.
+  const perDocFormats = args.formats.filter((f) => !WHOLE_RUN_FORMATS.has(f));
+  const wholeRunFormats = args.formats.filter((f) => WHOLE_RUN_FORMATS.has(f));
+  if (
+    !args.out &&
+    perDocFormats.length > 0 &&
+    (perDocFormats.length > 1 || inputs.length > 1 || wholeRunFormats.length > 0)
+  ) {
     throw new Error(
       `multiple formats/inputs require --out <dir> — ` +
         `${inputs.length} input(s) × ${args.formats.length} format(s) would render with nowhere to go`,
+    );
+  }
+  if (!args.out && wholeRunFormats.length > 1) {
+    throw new Error(
+      `--format ${wholeRunFormats.join(",")} is two artifacts; pass one, or --out <dir> for both`,
     );
   }
   if (!args.out && args.certificate) {
@@ -1056,7 +1103,12 @@ async function analyzeTarget(
     return;
   }
   const labels = inputs.map(label);
-  const stems = outputStems(labels);
+  const triageDocs: Array<{ file: string; label: string; result: AnalyzeResult }> = [];
+  // A folder's (or an archive's) reports mirror its layout under --out, so two
+  // files with one name in different subfolders cannot write one report.
+  const walked =
+    zip !== undefined || ((await stat(args.target).catch(() => null))?.isDirectory() ?? false);
+  const stems = outputStems(labels, walked ? (zip?.name ?? args.target) : undefined);
   for (const [i, file] of inputs.entries()) stems.set(file, stems.get(labels[i]!)!);
 
   let breached = false;
@@ -1177,6 +1229,7 @@ async function analyzeTarget(
       continue;
     }
     const r = item.result;
+    if (wholeRunFormats.length > 0) triageDocs.push({ file, label: label(file), result: r });
 
     // `doc_id` must be unique across the bundle (the runner rejects a
     // duplicate) and is what the finding's excerpts name, so it uses the same
@@ -1366,6 +1419,8 @@ async function analyzeTarget(
       : undefined;
 
     for (const fmt of args.formats) {
+      // One artifact for the whole run: built after every document is read.
+      if (fmt === "triage-md" || fmt === "triage-json") continue;
       // SARIF and HTML are the formats that carry the CROSS-document results,
       // and those are not known until every document has been read — so when a
       // bundle was asserted, their render is deferred to after the loop. Every
@@ -1396,7 +1451,7 @@ async function analyzeTarget(
         const reviewed = renderReviewedDocx(await readFile(file), r);
         await mkdir(args.out!, { recursive: true });
         const outName = stems.get(file)! + FORMAT_EXT[fmt];
-        await writeFile(join(args.out!, outName), reviewed.bytes);
+        await writeUnder(args.out!, outName, reviewed.bytes);
         countWrite(fmt);
         human(
           `  Reviewed copy: ${reviewed.anchored} comment(s) anchored` +
@@ -1445,7 +1500,7 @@ async function analyzeTarget(
       if (args.out) {
         await mkdir(args.out, { recursive: true });
         const outName = stems.get(file)! + FORMAT_EXT[fmt];
-        await writeFile(join(args.out, outName), content);
+        await writeUnder(args.out, outName, content);
         countWrite(fmt);
       } else {
         // By construction single input × single format (validated above),
@@ -1460,10 +1515,11 @@ async function analyzeTarget(
       await mkdir(args.out!, { recursive: true });
       const stem = stems.get(file)!;
       const certJson = await buildCertificateJson(r.run);
-      await writeFile(join(args.out!, `${stem}.certificate.json`), certJson);
+      await writeUnder(args.out!, `${stem}.certificate.json`, certJson);
       const certDocx = await buildCertificateDocx(r.run);
-      await writeFile(
-        join(args.out!, `${stem}.certificate.docx`),
+      await writeUnder(
+        args.out!,
+        `${stem}.certificate.docx`,
         new Uint8Array(await certDocx.arrayBuffer()),
       );
       human(`  Verification certificate → ${stem}.certificate.{docx,json}\n`);
@@ -1494,6 +1550,53 @@ async function analyzeTarget(
     );
     for (const u of unreadable) process.stderr.write(`  - ${label(u.file)}: ${u.reason}\n`);
     process.exitCode = 1;
+  }
+
+  // The folder page (spec-v52). Built here, after the files that could not be
+  // read are known: they are its first tier. It is written even when the run
+  // fails for them — the page is where a reader finds out which ones.
+  if (wholeRunFormats.length > 0) {
+    // The report a row links to: the one a person opens, if one was written.
+    const linked = (["html", "md", "json"] as const).find((f) => args.formats.includes(f));
+    const firstBySha = new Map<string, string>();
+    const unique: typeof triageDocs = [];
+    const duplicates: Array<{ file: string; of: string }> = [];
+    for (const d of triageDocs) {
+      const original = firstBySha.get(d.result.run.source_file.sha256);
+      if (original !== undefined) duplicates.push({ file: d.label, of: original });
+      else {
+        firstBySha.set(d.result.run.source_file.sha256, d.label);
+        unique.push(d);
+      }
+    }
+    const triage = await buildTriage(
+      {
+        documents: unique,
+        unreadable: unreadable.map((u) => ({ file: label(u.file), reason: u.reason })),
+        skipped: [...skippedInputs, ...hidden].map((sk) => ({ ...sk, file: label(sk.file) })),
+        duplicates,
+      },
+      {
+        root: walked ? (zip?.name ?? args.target) : undefined,
+        rules: ruleCatalog(),
+        engineVersion: ENGINE_VERSION,
+        dkbVersion: deps.dkb.manifest.version,
+        reportFor: (shown) => {
+          const d = triageDocs.find((x) => x.label === shown);
+          return args.out && linked && d ? stems.get(d.file)! + FORMAT_EXT[linked] : undefined;
+        },
+      },
+    );
+    for (const fmt of wholeRunFormats) {
+      const content = fmt === "triage-md" ? buildTriageMarkdown(triage) : buildTriageJson(triage);
+      if (args.out) {
+        const name = `TRIAGE${FORMAT_EXT[fmt]}`;
+        await writeUnder(args.out, name, content);
+        human(`wrote triage → ${name}\n`);
+      } else {
+        process.stdout.write(content);
+      }
+    }
   }
 
   // spec-v12 Thrust A — cross-document posture coherence. Only meaningful for a
@@ -1546,7 +1649,7 @@ async function analyzeTarget(
       const bytes = await renderDocxReport(d.result, deps.dkb, consistency ?? undefined);
       await mkdir(args.out!, { recursive: true });
       const outName = stems.get(d.file)! + FORMAT_EXT[d.fmt];
-      await writeFile(join(args.out!, outName), bytes);
+      await writeUnder(args.out!, outName, bytes);
       countWrite(d.fmt);
       human(`  Report: ${(bytes.byteLength / 1024).toFixed(1)} KB → ${outName}\n`);
       continue;
@@ -1559,7 +1662,7 @@ async function analyzeTarget(
       consistency ?? undefined,
     );
     await mkdir(args.out!, { recursive: true });
-    await writeFile(join(args.out!, stems.get(d.file)! + FORMAT_EXT[d.fmt]), content);
+    await writeUnder(args.out!, stems.get(d.file)! + FORMAT_EXT[d.fmt], content);
     countWrite(d.fmt);
   }
 
@@ -1731,7 +1834,11 @@ async function analyzeTarget(
     // "for N file(s)" claims N files that do not exist. They announce
     // themselves individually above; this line is about the per-document ones.
     const perDoc = args.formats.filter(
-      (f) => f !== "bundle-json" && f !== "bundle-docx" && f !== "bundle-zip",
+      (f) =>
+        f !== "bundle-json" &&
+        f !== "bundle-docx" &&
+        f !== "bundle-zip" &&
+        !WHOLE_RUN_FORMATS.has(f),
     );
     if (perDoc.length > 0) {
       // Per format, the number of files it actually wrote — not the number of

@@ -40,6 +40,12 @@ git clone https://github.com/clay-good/vaulytica.git && cd vaulytica && npm inst
 npm run cli -- analyze contract.docx --format html --out report
 ```
 
+Point it at a folder to get one page that says which documents need a person first:
+
+```bash
+npm run cli -- analyze ./contracts --format triage-md
+```
+
 Or add it to a GitHub workflow:
 
 ```yaml

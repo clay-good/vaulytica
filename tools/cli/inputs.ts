@@ -9,7 +9,7 @@
 
 import { mkdir, mkdtemp, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, basename, extname, relative } from "node:path";
+import { dirname, join, basename, extname, relative } from "node:path";
 import { unzipSync } from "fflate";
 import {
   ArchiveTooLargeError,
@@ -54,6 +54,9 @@ export class FolderTooLargeError extends Error {
 /** Bounds on a directory walk. Absent: unbounded, as the CLI has always walked. */
 export type WalkLimits = { maxFiles: number; maxDepth: number };
 
+/** Said of a dotfile or dot-folder: present, and deliberately not read. */
+export const SKIPPED_HIDDEN = "hidden (its name starts with a dot)";
+
 /** Said of a directory the walk did not enter because it sat below `maxDepth`. */
 export const SKIPPED_TOO_DEEP = "below the folder depth limit";
 
@@ -77,8 +80,12 @@ export async function walkDir(
   for (const entry of (await readdir(dir, { withFileTypes: true })).sort((a, b) =>
     a.name < b.name ? -1 : a.name > b.name ? 1 : 0,
   )) {
-    if (entry.name.startsWith(".")) continue;
     const full = join(dir, entry.name);
+    // A dotfile or dot-folder is not read, and not entered — but it is said.
+    if (entry.name.startsWith(".")) {
+      skipped.push({ file: full, reason: SKIPPED_HIDDEN });
+      continue;
+    }
     if (entry.isDirectory()) {
       if (limits && state.depth >= limits.maxDepth) {
         skipped.push({ file: full, reason: SKIPPED_TOO_DEEP });
@@ -186,7 +193,10 @@ export async function unpackZip(
   const entries = unzipSync(new Uint8Array(await readFile(target)), {
     filter: (f) => {
       const segments = f.name.split(/[\\/]/);
-      if (f.name.endsWith("/") || segments.some((s) => s.startsWith(".") || s === "__MACOSX")) {
+      // Finder's archive metadata is not a file the user put there.
+      if (f.name.endsWith("/") || segments.includes("__MACOSX")) return false;
+      if (segments.some((s) => s.startsWith("."))) {
+        skipped.push({ file: `${target}/${f.name}`, reason: SKIPPED_HIDDEN });
         return false;
       }
       if (!SUPPORTED_EXT.has(extname(f.name).toLowerCase())) {
@@ -221,26 +231,41 @@ export function shownPath(file: string, zip: ZipView | undefined): string {
 }
 
 /**
- * The `--out` file stem for each input (spec-v50 §6). `deal.md` beside
- * `deal.txt` used to write one `deal.json` and report two. A stem no other
- * input shares is used as it always was; a shared one keeps its extension
- * (`deal.md.json`); a shared file name keeps its folders too.
+ * The `--out` file stem for each input (spec-v50 §6, spec-v52 §1).
+ *
+ * `deal.md` beside `deal.txt` used to write one `deal.json` and report two. A
+ * stem no other input shares is used as it always was; a shared one keeps its
+ * extension (`deal.md.json`).
+ *
+ * With `root` — the folder or archive that was walked — each stem is the
+ * input's path RELATIVE to it, so the reports mirror the input's layout and
+ * `2023/nda.docx` cannot overwrite `2024/nda.docx`. Without one (a single file
+ * or a glob), a shared file name keeps its folders in the name instead.
  */
-export function outputStems(inputs: readonly string[]): Map<string, string> {
+export function outputStems(inputs: readonly string[], root?: string): Map<string, string> {
+  const fold = (x: string): string => x.toLowerCase();
+  const stemOf = (f: string): string => basename(f, extname(f));
+  // Compared case-folded: `Deal.txt` and `deal.md` are one file on macOS and Windows.
   const count = (key: (f: string) => string): Map<string, number> => {
     const m = new Map<string, number>();
     for (const f of inputs) m.set(key(f), (m.get(key(f)) ?? 0) + 1);
     return m;
   };
-  // Compared case-folded: `Deal.txt` and `deal.md` are one file on macOS and Windows.
-  const stem = (f: string): string => basename(f, extname(f)).toLowerCase();
-  const name = (f: string): string => basename(f).toLowerCase();
-  const stems = count(stem);
-  const names = count(name);
   const out = new Map<string, string>();
+  if (root !== undefined) {
+    const folder = (f: string): string => dirname(relative(root, f));
+    const stems = count((f) => fold(join(folder(f), stemOf(f))));
+    for (const f of inputs) {
+      const shared = stems.get(fold(join(folder(f), stemOf(f)))) !== 1;
+      out.set(f, join(folder(f), shared ? basename(f) : stemOf(f)));
+    }
+    return out;
+  }
+  const stems = count((f) => fold(stemOf(f)));
+  const names = count((f) => fold(basename(f)));
   for (const f of inputs) {
-    if (stems.get(stem(f)) === 1) out.set(f, basename(f, extname(f)));
-    else if (names.get(name(f)) === 1) out.set(f, basename(f));
+    if (stems.get(fold(stemOf(f))) === 1) out.set(f, stemOf(f));
+    else if (names.get(fold(basename(f))) === 1) out.set(f, basename(f));
     else out.set(f, f.replace(/^[./\\]+/, "").replace(/[\\/:]+/g, "__"));
   }
   return out;

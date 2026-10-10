@@ -1,6 +1,6 @@
 # Vaulytica v52 — Folder Triage (One Ranked Page for a Directory, and Where to Spot-Check)
 
-> **Status:** **Proposed (2026-10-10).** Not built. Continues after [`spec-v51.md`](spec-v51.md), beginning at **Step 322**.
+> **Status:** **Built (9.862.0).** Steps 322–326 shipped. The `/known-limits` link (§8) waits for [`spec-v53.md`](spec-v53.md) Step 328. Continues after [`spec-v51.md`](spec-v51.md), beginning at **Step 322**.
 > **Scope:** one idea — point the tool at a folder and get **one** artifact that says which documents need a person first, and exactly which things to open to check the tool's work. No new rule.
 > **Posture (unchanged):** deterministic, no AI, nothing uploaded. The ranking is a sort on facts the run already has, never a risk score.
 > **Cousin docs:** [`spec-v48.md`](spec-v48.md) (`analyze_folder` returns this), [`spec-v50.md`](spec-v50.md) (the compact projection; output naming), [`ci-integration.md`](ci-integration.md).

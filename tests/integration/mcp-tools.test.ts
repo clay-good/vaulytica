@@ -8,7 +8,6 @@
  */
 import { spawnSync } from "node:child_process";
 import {
-  copyFileSync,
   mkdirSync,
   mkdtempSync,
   readFileSync,
@@ -33,6 +32,7 @@ import {
 } from "../../tools/mcp/tools.js";
 import * as TEXT from "../../tools/mcp/text.js";
 import { scannedPdf, textPdf } from "./_mcp/pdf.js";
+import { buildTriageFolder } from "../fixtures/triage.js";
 
 const ROOT = process.cwd();
 const BIN = join(ROOT, "bin", "vaulytica.mjs");
@@ -97,39 +97,76 @@ describe("analyze_document agrees with the CLI", { timeout: 300_000 }, () => {
 });
 
 describe("analyze_folder", { timeout: 300_000 }, () => {
-  const room = join(tmp, "room");
-  beforeAll(() => {
-    mkdirSync(join(room, "sub"), { recursive: true });
-    copyFileSync(NDA, join(room, "nda.txt"));
-    copyFileSync(DOCX, join(room, "sub", "bad-nda.docx"));
-    writeFileSync(join(room, "scan.pdf"), scannedPdf());
-    writeFileSync(join(room, "broken.docx"), "not a zip");
-    writeFileSync(join(room, "logo.png"), "x");
-    writeFileSync(join(room, "recipe.txt"), "Mix two cups of flour with one cup of water. Bake.");
+  const room = buildTriageFolder(join(tmp, "room"));
+
+  it("returns the triage page: every file in one tier, and nothing partial called complete", async () => {
+    const r = await analyzeFolderTool({ dir: room }, ctx);
+    const row = (name: string) =>
+      r.rows.find((x) => x.path === join("room", name).replace(/\\/g, "/"))!;
+    // Tier 1: not read — and each says why.
+    for (const name of ["corrupt.docx", "scan.pdf", "empty.txt", "blank.txt", "logo.png"]) {
+      expect(row(name), name).toMatchObject({ tier: 1 });
+      expect(row(name).why, name).toBeTruthy();
+      expect(row(name).c, name).toBeUndefined();
+    }
+    expect(row("scan.pdf").why).toMatch(/no text layer/);
+    // Tier 2: read, with a caveat that can make the findings wrong.
+    expect(row("tracked.docx")).toMatchObject({ tier: 2, why: "tracked-changes" });
+    expect(row("french.txt")).toMatchObject({ tier: 2, why: "not-english" });
+    // Tier 3: no type matched. The closest one is named only when there is one.
+    expect(row("advisor.txt")).toMatchObject({ tier: 3, near: "employment-at-will-us (0.4)" });
+    expect(row("advance.txt")).toMatchObject({ tier: 3 });
+    expect(row("advance.txt").near).toBeUndefined();
+    expect(row("recipe.txt").tier).toBe(3);
+    // Tier 4: matched. One name in two folders is two rows.
+    expect(row("2023/msa.txt")).toMatchObject({ tier: 4, type: "msa-customer-deep" });
+    expect(row("2024/msa.txt")).toMatchObject({ tier: 4 });
+    // A byte-identical copy is one row, analyzed once.
+    const nda = r.rows.filter((x) => x.type === "mutual-nda-deep");
+    expect(nda).toHaveLength(1);
+    expect(nda[0]!.same_as).toHaveLength(1);
+    // Hidden entries are said, and are not rows.
+    expect(r.hidden).toEqual(["room/.DS_Store", "room/.git"]);
+    expect(r.rows.some((x) => x.path.includes(".git"))).toBe(false);
+
+    for (const x of r.rows) expect(JSON.stringify(x).length, x.path).toBeLessThanOrEqual(300);
+    expect(r.rows.map((x) => x.tier)).toEqual([...r.rows.map((x) => x.tier)].sort());
+    expect(r.files).toBe(r.rows.length);
+    expect(r.totals!.by_tier).toEqual({ 1: 5, 2: 2, 3: 3, 4: 3 });
+    expect(JSON.stringify(r).length).toBeLessThanOrEqual(20_000);
+    // Paths are relative to the allowed root, so each can be handed back.
+    expect(JSON.stringify(r)).not.toContain(tmp.replace(/\\/g, "/"));
+    const again = await analyzeDocumentTool({ path: row("advisor.txt").path }, ctx);
+    expect("not_analyzed" in again).toBe(false);
+    expect(r.notes!.order).toMatch(/never a risk score/);
+    expect(r.cross_document).toBeUndefined();
   });
 
-  it("returns one small row per file and never calls a partial run complete", async () => {
-    const r = await analyzeFolderTool({ dir: room }, ctx);
-    expect(r.rows.map((x) => x.path)).toEqual(
-      ["broken.docx", "nda.txt", "recipe.txt", "scan.pdf", join("sub", "bad-nda.docx")]
-        .map((p) => join("room", p))
-        .sort(),
+  it("carries a spot check with every slot filled, and what a wrong answer means", async () => {
+    const r = await analyzeFolderTool({ dir: join(ROOT, "tests", "fixtures", "contracts") }, ctx);
+    const slots = new Set(r.spot_check!.items.map((i) => i.slot));
+    expect([...slots].sort()).toEqual([
+      "absence",
+      "clean",
+      "criticals",
+      "quoted",
+      "systemic",
+      "type",
+    ]);
+    expect(Object.keys(r.slot_questions!).sort()).toEqual([...slots].sort());
+    expect(r.spot_check!.note).toMatch(/not an estimate of an error rate/);
+    // 25 matched documents: 20 on the first page, the rest behind a cursor.
+    expect(r.matched_total).toBe(25);
+    expect(r.rows).toHaveLength(FOLDER_PAGE_ROWS);
+    expect(JSON.stringify(r).length).toBeLessThanOrEqual(20_000);
+    const more = await analyzeFolderTool(
+      { dir: join(ROOT, "tests", "fixtures", "contracts"), cursor: r.next_cursor },
+      ctx,
     );
-    for (const row of r.rows) expect(JSON.stringify(row).length).toBeLessThanOrEqual(300);
-    const row = (name: string) => r.rows.find((x) => x.path.endsWith(name))!;
-    expect(row("nda.txt")).toMatchObject({ type: "mutual-nda-deep", sha: expect.any(String) });
-    expect(row("scan.pdf").not_analyzed).toMatch(/^no text layer/);
-    expect(row("broken.docx").not_analyzed).toBeTruthy();
-    expect(row("recipe.txt").unmatched).toBe(true);
-    // Shown relative to the root that holds them: no absolute path goes out.
-    expect(r.unreadable.map((u) => u.path)).toEqual([join("room", "broken.docx")]);
-    expect(r.skipped.map((s) => s.path)).toEqual([join("room", "logo.png")]);
-    expect(JSON.stringify(r)).not.toContain(tmp);
-    // Totals count only what was analyzed.
-    const nda = row("nda.txt");
-    expect(r.totals.critical).toBeGreaterThanOrEqual(nda.c!);
-    expect(r.caveats.folder).toMatch(/not a ranking/);
-    expect(r.cross_document).toBeUndefined();
+    expect(more.rows).toHaveLength(5);
+    expect(more.next_cursor).toBeUndefined();
+    expect(more.triage_hash).toBe(r.triage_hash);
+    expect(more.spot_check).toBeUndefined();
   });
 
   it("takes explicit paths, and refuses neither-or-both", async () => {
@@ -155,22 +192,18 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     expect(alone.cross_document).toEqual({ not_run: expect.stringMatching(/Fewer than two/) });
   });
 
-  it("stops at the file cap, pages past fifty rows, and honors cancellation", async () => {
+  it("stops at the file cap, reports progress, and honors cancellation", async () => {
     const many = join(tmp, "many");
     mkdirSync(many);
-    for (let i = 0; i < FOLDER_PAGE_ROWS + 5; i++) {
-      writeFileSync(join(many, `n${String(i).padStart(3, "0")}.txt`), `Memo ${i}. Nothing here.`);
+    for (let i = 0; i < 12; i++) {
+      writeFileSync(
+        join(many, `n${String(i).padStart(3, "0")}.txt`),
+        `Memo number ${i}. Nothing here.`,
+      );
     }
-    const first = await analyzeFolderTool({ dir: many }, ctx);
-    expect(first.rows).toHaveLength(FOLDER_PAGE_ROWS);
-    expect(JSON.stringify(first).length).toBeLessThanOrEqual(20_000);
-    const second = await analyzeFolderTool({ dir: many, cursor: first.next_cursor }, ctx);
-    expect(second.rows).toHaveLength(5);
-    expect(second.next_cursor).toBeUndefined();
-
     const seen: number[] = [];
     await analyzeFolderTool({ dir: many }, ctx, { report: (done) => void seen.push(done) });
-    expect(seen.at(-1)).toBe(FOLDER_PAGE_ROWS + 5);
+    expect(seen.at(-1)).toBe(12);
 
     const stop = new AbortController();
     await expect(
@@ -197,11 +230,11 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     const deep = join(tmp, "deep");
     const levels = ["a", "b", "c", "d", "e", "f", "g", "h", "i"];
     mkdirSync(join(deep, ...levels), { recursive: true });
-    writeFileSync(join(deep, "top.txt"), "A memo.");
+    writeFileSync(join(deep, "top.txt"), "A memo about nothing in particular.");
     writeFileSync(join(deep, ...levels, "buried.txt"), "A memo.");
     const r = await analyzeFolderTool({ dir: deep }, ctx);
-    expect(r.rows.map((x) => x.path)).toEqual([join("deep", "top.txt")]);
-    expect(r.skipped.some((s) => /depth limit/.test(s.reason))).toBe(true);
+    expect(r.rows.filter((x) => x.tier !== 1).map((x) => x.path)).toEqual(["deep/top.txt"]);
+    expect(r.rows.some((x) => x.tier === 1 && /depth limit/.test(x.why ?? ""))).toBe(true);
   });
 });
 
