@@ -622,6 +622,7 @@ async function runComparison(
           added: clauseDiff.added.length,
           removed: clauseDiff.removed.length,
           changed: clauseDiff.changed.length,
+          renumbered: clauseDiff.renumbered.length,
           truncated: clauseDiff.truncated,
         },
         posture_movement: postureMovement

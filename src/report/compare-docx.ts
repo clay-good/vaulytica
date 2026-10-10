@@ -470,6 +470,9 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
     para({
       text:
         `${diff.changed.length} changed · ${diff.added.length} added · ${diff.removed.length} removed · ` +
+        // Said only when it happened: a clause whose words are the same and
+        // whose number moved is not an edit, and is not "unchanged" either.
+        (diff.renumbered.length > 0 ? `${diff.renumbered.length} renumbered · ` : "") +
         `${diff.unchanged_count} unchanged (base ${diff.base_clause_count} clauses → revised ${diff.revised_clause_count}).`,
       bold: true,
     }),

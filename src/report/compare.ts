@@ -376,6 +376,8 @@ type ComparisonJsonClauseDiff = {
     /** Inline word-level redline; omitted when the clause was too long to align. */
     word_diff?: WordDiffSegment[];
   }>;
+  /** Same words, a different clause number — what an insertion above does. */
+  renumbered: Array<{ base: ComparisonJsonClause; revised: ComparisonJsonClause }>;
   unchanged_count: number;
   base_clause_count: number;
   revised_clause_count: number;
@@ -394,6 +396,10 @@ function jsonClauseDiff(d: ClauseDiff): ComparisonJsonClauseDiff {
       base: jsonClause(p.base),
       revised: jsonClause(p.revised),
       ...(p.word_diff ? { word_diff: p.word_diff } : {}),
+    })),
+    renumbered: d.renumbered.map((p) => ({
+      base: jsonClause(p.base),
+      revised: jsonClause(p.revised),
     })),
     unchanged_count: d.unchanged_count,
     base_clause_count: d.base_clause_count,

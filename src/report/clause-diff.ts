@@ -32,8 +32,15 @@ export type Clause = {
   heading: string;
   /** Display text — the paragraph's runs joined and trimmed (original spacing). */
   text: string;
-  /** Match key — `text` with insignificant whitespace collapsed. */
+  /**
+   * Match key — `text` with insignificant whitespace collapsed and a leading
+   * clause number removed. The number is where a clause SITS, not what it
+   * says: inserting one clause renumbers every clause after it, and with the
+   * number in the key each of those read as rewritten.
+   */
   key: string;
+  /** The leading clause number the key dropped (`"7."`, `"(a)"`), or `""`. */
+  number: string;
 };
 
 /** One run of the inline word-level redline of a rewritten clause. */
@@ -53,6 +60,12 @@ export type ClauseDiff = {
   removed: Clause[];
   /** A base clause rewritten into a revised clause (a replaced block). */
   changed: ClausePair[];
+  /**
+   * Clauses whose words are the same and whose NUMBER moved — what an
+   * insertion or a deletion above them does. Not an edit, and not counted in
+   * `unchanged_count`: a reader checking a renumbered draft wants to know.
+   */
+  renumbered: Array<{ base: Clause; revised: Clause }>;
   /** Count of clauses identical (modulo whitespace) in both documents. */
   unchanged_count: number;
   base_clause_count: number;
@@ -85,6 +98,23 @@ export const MAX_WORD_DIFF_TOKENS = 600;
 /** Collapse insignificant whitespace so re-wrapping is not read as an edit. */
 function normalizeClause(text: string): string {
   return text.replace(/\s+/g, " ").trim();
+}
+
+/**
+ * A leading clause number: `7.`, `7.1`, `7.1.2.`, `(a)`, `(iv)`, `Section 7.`,
+ * `Article 3`. A bare number needs its dot — "2023 was a difficult year" opens
+ * with a year, not a clause number — unless a division noun introduces it.
+ */
+const CLAUSE_NUMBER =
+  /^(?:(?:section|article|clause|paragraph|§)\s*\d+(?:\.\d+)*\.?|\d+(?:\.\d+)+\.?|\d+\.|\((?:[a-z]{1,2}|[ivxlc]{1,6}|\d{1,3})\))(?=\s|$)\s*/i;
+
+/** Split a normalized clause into its leading number and the words after it. */
+function splitNumber(normalized: string): { number: string; rest: string } {
+  const m = CLAUSE_NUMBER.exec(normalized);
+  if (!m) return { number: "", rest: normalized };
+  const rest = normalized.slice(m[0].length);
+  // A clause that is ONLY a number has nothing else to be matched by.
+  return rest === "" ? { number: "", rest: normalized } : { number: m[0].trim(), rest };
 }
 
 /** Split into alternating whitespace / non-whitespace tokens (exact spacing kept). */
@@ -165,7 +195,8 @@ export function flattenClauses(tree: DocumentTree): Clause[] {
       for (const r of p.runs) text += r.text;
       const trimmed = text.trim();
       if (trimmed.length === 0) continue;
-      out.push({ id: p.id, heading, text: trimmed, key: normalizeClause(trimmed) });
+      const { number, rest } = splitNumber(normalizeClause(trimmed));
+      out.push({ id: p.id, heading, text: trimmed, key: rest, number });
     }
     // Push children in reverse so the first child is processed next.
     for (let i = section.children.length - 1; i >= 0; i--) {
@@ -175,7 +206,10 @@ export function flattenClauses(tree: DocumentTree): Clause[] {
   return out;
 }
 
-type Op = { kind: "equal" | "remove" | "add"; clause: Clause };
+type Op =
+  | { kind: "remove" | "add"; clause: Clause }
+  /** In both documents: the revised clause, and the base clause it matched. */
+  | { kind: "equal"; clause: Clause; base: Clause };
 
 /**
  * Longest-common-subsequence edit script over the clause keys. Returns the
@@ -202,7 +236,7 @@ function lcsOps(base: Clause[], revised: Clause[]): Op[] {
   let j = 0;
   while (i < n && j < m) {
     if (base[i]!.key === revised[j]!.key) {
-      ops.push({ kind: "equal", clause: revised[j]! });
+      ops.push({ kind: "equal", clause: revised[j]!, base: base[i]! });
       i++;
       j++;
     } else if (dp[(i + 1) * w + j]! >= dp[i * w + (j + 1)]!) {
@@ -219,24 +253,96 @@ function lcsOps(base: Clause[], revised: Clause[]): Op[] {
 }
 
 /**
- * Collapse the edit script into added / removed / changed. A maximal run of
- * removes immediately followed by adds is a *replaced block*: the first
- * min(R, A) form `changed` pairs (base clause → revised clause, in order),
- * the surplus on either side stays a plain remove/add. This is the standard
- * unified-diff "replace hunk" pairing.
+ * Above this many candidate pairs in one replaced block, pairing falls back to
+ * position. A block is a handful of clauses; this bounds a pathological one.
+ */
+const MAX_PAIRING_CELLS = 40_000;
+
+/** Below this share of words in common, two clauses are not the same clause rewritten. */
+const MIN_PAIR_SIMILARITY = 0.3;
+
+const wordSet = (c: Clause): Set<string> => new Set(c.key.toLowerCase().match(/[a-z0-9]+/g) ?? []);
+
+/** Dice coefficient over the two clauses' word sets: 0 (nothing shared) to 1. */
+function similarity(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 || b.size === 0) return 0;
+  let shared = 0;
+  for (const w of a) if (b.has(w)) shared++;
+  return (2 * shared) / (a.size + b.size);
+}
+
+/**
+ * Pair the removed and added clauses of one replaced block BY WHAT THEY SAY.
+ *
+ * Pairing by position — first removed with first added — is right when a block
+ * is one clause rewritten. It is wrong the moment a clause is inserted beside
+ * an edit: "7. Governing Law" was paired with "7. Return or Destruction", two
+ * clauses that share a position and nothing else. Each removed clause now takes
+ * the added clause most like it; a clause with no real counterpart stays a
+ * plain remove or add.
+ */
+function pairBlock(
+  rem: Clause[],
+  add: Clause[],
+): { pairs: Array<[Clause, Clause]>; removed: Clause[]; added: Clause[] } {
+  if (rem.length === 0 || add.length === 0) return { pairs: [], removed: rem, added: add };
+  if (rem.length * add.length > MAX_PAIRING_CELLS) {
+    const n = Math.min(rem.length, add.length);
+    return {
+      pairs: rem.slice(0, n).map((r, i) => [r, add[i]!] as [Clause, Clause]),
+      removed: rem.slice(n),
+      added: add.slice(n),
+    };
+  }
+  const remWords = rem.map(wordSet);
+  const addWords = add.map(wordSet);
+  const scored: Array<{ r: number; a: number; score: number }> = [];
+  for (let r = 0; r < rem.length; r++) {
+    for (let a = 0; a < add.length; a++) {
+      const score = similarity(remWords[r]!, addWords[a]!);
+      if (score >= MIN_PAIR_SIMILARITY) scored.push({ r, a, score });
+    }
+  }
+  // Best match first; ties go to the earlier clauses, so the result is stable.
+  scored.sort((x, y) => y.score - x.score || x.r - y.r || x.a - y.a);
+  const takenR = new Set<number>();
+  const takenA = new Set<number>();
+  const chosen: Array<{ r: number; a: number }> = [];
+  for (const { r, a } of scored) {
+    if (takenR.has(r) || takenA.has(a)) continue;
+    takenR.add(r);
+    takenA.add(a);
+    chosen.push({ r, a });
+  }
+  chosen.sort((x, y) => x.r - y.r);
+  return {
+    pairs: chosen.map(({ r, a }) => [rem[r]!, add[a]!] as [Clause, Clause]),
+    removed: rem.filter((_c, r) => !takenR.has(r)),
+    added: add.filter((_c, a) => !takenA.has(a)),
+  };
+}
+
+/**
+ * Collapse the edit script into added / removed / changed / renumbered. A
+ * maximal run of removes immediately followed by adds is a *replaced block*,
+ * paired by {@link pairBlock}. A clause in both documents whose number moved
+ * is `renumbered`.
  */
 function classify(
   ops: Op[],
-): Pick<ClauseDiff, "added" | "removed" | "changed" | "unchanged_count"> {
+): Pick<ClauseDiff, "added" | "removed" | "changed" | "renumbered" | "unchanged_count"> {
   const added: Clause[] = [];
   const removed: Clause[] = [];
   const changed: ClausePair[] = [];
+  const renumbered: ClauseDiff["renumbered"] = [];
   let unchanged = 0;
   let k = 0;
   while (k < ops.length) {
     const op = ops[k]!;
     if (op.kind === "equal") {
-      unchanged++;
+      if (op.base.number !== op.clause.number)
+        renumbered.push({ base: op.base, revised: op.clause });
+      else unchanged++;
       k++;
       continue;
     }
@@ -245,16 +351,14 @@ function classify(
     const add: Clause[] = [];
     while (k < ops.length && ops[k]!.kind === "remove") rem.push(ops[k++]!.clause);
     while (k < ops.length && ops[k]!.kind === "add") add.push(ops[k++]!.clause);
-    const paired = Math.min(rem.length, add.length);
-    for (let p = 0; p < paired; p++) {
-      const base = rem[p]!;
-      const revised = add[p]!;
+    const block = pairBlock(rem, add);
+    for (const [base, revised] of block.pairs) {
       changed.push({ base, revised, word_diff: diffWords(base.text, revised.text) });
     }
-    for (let p = paired; p < rem.length; p++) removed.push(rem[p]!);
-    for (let p = paired; p < add.length; p++) added.push(add[p]!);
+    removed.push(...block.removed);
+    added.push(...block.added);
   }
-  return { added, removed, changed, unchanged_count: unchanged };
+  return { added, removed, changed, renumbered, unchanged_count: unchanged };
 }
 
 /**
@@ -304,6 +408,8 @@ function setDiff(base: Clause[], revised: Clause[]): ClauseDiff {
     added,
     removed,
     changed: [],
+    // No alignment, so a clause cannot be paired with its renumbered self.
+    renumbered: [],
     unchanged_count: unchanged,
     base_clause_count: base.length,
     revised_clause_count: revised.length,
@@ -324,11 +430,12 @@ export function buildClauseDiff(base: DocumentTree, revised: DocumentTree): Clau
   }
 
   const ops = lcsOps(baseClauses, revisedClauses);
-  const { added, removed, changed, unchanged_count } = classify(ops);
+  const { added, removed, changed, renumbered, unchanged_count } = classify(ops);
   return {
     added,
     removed,
     changed,
+    renumbered,
     unchanged_count,
     base_clause_count: baseClauses.length,
     revised_clause_count: revisedClauses.length,

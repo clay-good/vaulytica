@@ -126,14 +126,79 @@ describe("buildClauseDiff", () => {
     expect(d.unchanged_count).toBe(1);
   });
 
-  it("treats an unbalanced replace block as paired + surplus", () => {
-    // base has 1 clause where revised has 2 → 1 changed pair + 1 added.
-    const d = buildClauseDiff(doc("X", "OLD", "Y"), doc("X", "NEW1", "NEW2", "Y"));
+  it("pairs an unbalanced replace block by what the clauses say, not where they sit", () => {
+    // One clause rewritten and one inserted BEFORE it. Position would pair the
+    // old clause with the insertion; similarity pairs it with its own rewrite.
+    const d = buildClauseDiff(
+      doc("X", "Liability is capped at one million dollars.", "Y"),
+      doc(
+        "X",
+        "Each party shall return all materials on request.",
+        "Liability is capped at five million dollars.",
+        "Y",
+      ),
+    );
     expect(d.changed).toHaveLength(1);
-    expect(d.changed[0]!.base.text).toBe("OLD");
-    expect(d.changed[0]!.revised.text).toBe("NEW1");
-    expect(d.added.map((c) => c.text)).toEqual(["NEW2"]);
+    expect(d.changed[0]!.base.text).toContain("one million");
+    expect(d.changed[0]!.revised.text).toContain("five million");
+    expect(d.added.map((c) => c.text)).toEqual([
+      "Each party shall return all materials on request.",
+    ]);
     expect(d.removed).toEqual([]);
+  });
+
+  it("does not pair two clauses that share a position and nothing else", () => {
+    const d = buildClauseDiff(
+      doc("X", "This Agreement is governed by the laws of Delaware.", "Y"),
+      doc("X", "Each party shall return or destroy all Confidential Information.", "Y"),
+    );
+    expect(d.changed).toEqual([]);
+    expect(d.removed).toHaveLength(1);
+    expect(d.added).toHaveLength(1);
+  });
+
+  it("reads a clause whose only change is its number as renumbered, not rewritten", () => {
+    const d = buildClauseDiff(
+      doc("1. Term. One year.", "2. Fees. Net thirty.", "3. Law. Delaware."),
+      doc("1. Term. One year.", "2. Audit. Annual.", "3. Fees. Net thirty.", "4. Law. Delaware."),
+    );
+    expect(d.added.map((c) => c.text)).toEqual(["2. Audit. Annual."]);
+    expect(d.changed).toEqual([]);
+    expect(d.removed).toEqual([]);
+    expect(d.renumbered.map((r) => `${r.base.number}→${r.revised.number}`)).toEqual([
+      "2.→3.",
+      "3.→4.",
+    ]);
+    // Renumbered is its own count: the clause with the same number is unchanged.
+    expect(d.unchanged_count).toBe(1);
+    // The displayed text keeps its number.
+    expect(d.renumbered[0]!.revised.text).toBe("3. Fees. Net thirty.");
+  });
+
+  it.each([
+    ["7. Governing Law.", "7."],
+    ["7.1 Notices shall be in writing.", "7.1"],
+    ["7.1.2. Notices shall be in writing.", "7.1.2."],
+    ["(a) the Recipient shall", "(a)"],
+    ["(iv) the Recipient shall", "(iv)"],
+    ["Section 7. Governing Law.", "Section 7."],
+    ["Article 3 Definitions", "Article 3"],
+  ])("takes the clause number off %j", (text, number) => {
+    const [clause] = flattenClauses(doc(text));
+    expect(clause!.number).toBe(number);
+    expect(clause!.key.startsWith(number)).toBe(false);
+    expect(clause!.text).toBe(text);
+  });
+
+  it.each([
+    "2023 was a difficult year for the Company.",
+    "100 shares shall vest on each anniversary.",
+    "A party may terminate on notice.",
+    "7.",
+  ])("leaves %j alone: it does not open with a clause number", (text) => {
+    const [clause] = flattenClauses(doc(text));
+    expect(clause!.number).toBe("");
+    expect(clause!.key).toBe(text);
   });
 
   it("keeps a moved clause out of added/removed when it still matches", () => {

@@ -544,6 +544,8 @@ export async function compareDocumentsTool(args: CompareDocumentsArgs, ctx: Cont
       rewritten: diff.changed.length,
       added: diff.added.length,
       removed: diff.removed.length,
+      // Same words, a different clause number: not an edit.
+      renumbered: diff.renumbered.length,
       unchanged: diff.unchanged_count,
     },
     caveats: {

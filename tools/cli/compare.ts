@@ -274,7 +274,9 @@ export function formatCompareMarkdown(
   lines.push("");
   lines.push(
     `${clauseDiff.changed.length} rewritten · ${clauseDiff.added.length} added · ` +
-      `${clauseDiff.removed.length} removed · ${clauseDiff.unchanged_count} unchanged` +
+      `${clauseDiff.removed.length} removed · ` +
+      (clauseDiff.renumbered.length > 0 ? `${clauseDiff.renumbered.length} renumbered · ` : "") +
+      `${clauseDiff.unchanged_count} unchanged` +
       (clauseDiff.truncated ? " _(large documents — approximate)_" : ""),
   );
   lines.push("");

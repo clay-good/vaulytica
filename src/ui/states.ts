@@ -361,6 +361,8 @@ export type DropzoneState =
         added: number;
         removed: number;
         changed: number;
+        /** Same words, a different clause number. Optional: absent reads as 0. */
+        renumbered?: number;
         truncated: boolean;
       };
       /**
@@ -995,6 +997,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         redline.textContent =
           `Redline: ${cd.changed} clause${cd.changed === 1 ? "" : "s"} rewritten · ` +
           `${cd.added} added · ${cd.removed} removed` +
+          (cd.renumbered ? ` · ${cd.renumbered} renumbered` : "") +
           (cd.truncated ? " (large documents — approximate)" : "") +
           ". Full text diff in the Word/JSON export.";
       }

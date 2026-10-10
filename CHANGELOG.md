@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.864.0] — 2026-10-10
+
+### Fixed
+- **Inserting one clause read as rewriting every clause after it.** The
+  comparison's clause redline kept the clause number in its match key, so a
+  one-clause insertion into a numbered agreement reported "4 rewritten · 1
+  added" — and rewritten clauses were paired by position, "7. Governing Law"
+  against "7. Return or Destruction".
+  - A leading clause number (`7.`, `7.1`, `(a)`, `Section 7.`) is no longer
+    part of the match key. The displayed text keeps it.
+  - A clause whose words are the same and whose number moved is
+    **renumbered**, a status of its own, in the comparison JSON, the Markdown
+    and Word comparison, the browser's comparison line, and the MCP result.
+  - Rewritten clauses are paired by the words they share, not where they sit;
+    two clauses with nothing in common stay a removal and an addition.
+
+  Held by a relation over every specimen with sequential top-level numbering
+  (250+): insert one clause and renumber the rest, and the diff is exactly one
+  addition and no rewrite. When the cross-references are renumbered too, every
+  rewritten pair differs only in digits. The comparison hash does not move
+  (spec-v51 Step 320).
+
 ## [9.863.0] — 2026-10-10
 
 ### Fixed
