@@ -6,6 +6,7 @@
  * answers it as an `isError` result.
  */
 
+import { stat } from "node:fs/promises";
 import { extname } from "node:path";
 import {
   EXPORT_FORMATS,
@@ -26,7 +27,7 @@ import {
   type BriefFinding,
   type ExportFormat,
 } from "../cli/api.js";
-import { ToolError, resolveInRoots, resolveNewInRoots } from "./roots.js";
+import { ToolError, resolveInRoots, resolveNewInRoots, shownInRoots } from "./roots.js";
 
 export { ToolError };
 
@@ -34,10 +35,18 @@ export { ToolError };
 export const MAX_RESULT_CHARS = 40_000;
 
 /**
- * The longest `text` a call may carry. Analysis is synchronous at roughly
- * 5 ms per KB, so this bounds how long the server can answer nothing else.
+ * The longest `text` a call may carry, and the largest text file a `path` may
+ * name. Analysis is synchronous, and while it runs the server can answer
+ * nothing — not even a cancellation. Measured on 9.859.0 (one document
+ * repeated, secondary families on, a loaded machine): 255 KB in 1.0 s, 509 KB
+ * in 2.3 s, 1,008 KB in 4.0 s, 2,005 KB in 8.3 s — about 4 ms per KB. The cap
+ * holds the worst call near two seconds; 500,000 characters is a contract of
+ * some 250 pages. The CLI's limit stays 50 MB.
  */
-export const MAX_TEXT_CHARS = 1_000_000;
+export const MAX_TEXT_CHARS = 500_000;
+
+/** The largest .docx or .pdf a call reads. The container is larger than its text. */
+export const MAX_CONTAINER_BYTES = 10 * 1024 * 1024;
 
 /** Characters held back on each page for `findings_total` and `next_cursor`. */
 const CURSOR_ALLOWANCE = 256;
@@ -95,6 +104,23 @@ function notAnalyzedReason(
     : "no readable text: the file is empty or holds no words. Nothing in it was checked.";
 }
 
+/** The most bytes this surface reads from a file of this type. */
+const sizeLimit = (path: string): number =>
+  /\.(?:docx|pdf)$/i.test(path) ? MAX_CONTAINER_BYTES : MAX_TEXT_CHARS;
+
+/** Refuse a file past this surface's size limits before reading it. */
+async function assertReadableSize(real: string, shown: string): Promise<void> {
+  const { size } = await stat(real);
+  const limit = sizeLimit(real);
+  if (size > limit) {
+    throw new ToolError(
+      `${shown} is ${size.toLocaleString("en-US")} bytes; this server reads up to ` +
+        `${limit.toLocaleString("en-US")} for that file type. The command line has no such limit: ` +
+        "`vaulytica analyze <file> --format brief-json`.",
+    );
+  }
+}
+
 /* ---------------- analyze_document ---------------- */
 
 export type AnalyzeDocumentArgs = {
@@ -138,6 +164,7 @@ export async function analyzeDocumentTool(
         `${args.path} is not a type this tool reads (${[...READABLE].sort().join(", ")}).`,
       );
     }
+    await assertReadableSize(real, args.path);
     input = { path: real };
     name = args.path;
   } else {
@@ -296,6 +323,8 @@ export async function analyzeFolderTool(
       deps: ctx.deps,
       secondaryFamilies: true,
       limits: { maxFiles: MAX_FOLDER_FILES, maxDepth: MAX_FOLDER_DEPTH },
+      // One oversized file becomes a `not_analyzed` row, not a stalled server.
+      maxFileBytes: sizeLimit,
       onDocument: async (done, total) => {
         // Analysis is synchronous; yielding here is what lets a cancellation in.
         await new Promise((r) => setImmediate(r));
@@ -313,12 +342,13 @@ export async function analyzeFolderTool(
   }
   const skipped = folder.skipped;
 
+  const shown = (path: string): string => shownInRoots(path, ctx.roots);
   const rows: FolderRow[] = [];
   const totals = { critical: 0, warning: 0, info: 0 };
   for (const d of folder.documents) {
     const empty = notAnalyzedReason(d.result, d.file);
     if (empty) {
-      rows.push({ path: rowPath(d.label), not_analyzed: empty });
+      rows.push({ path: rowPath(shown(d.label)), not_analyzed: empty });
       continue;
     }
     const b = buildBrief(d.result, { excerpts: false });
@@ -326,7 +356,7 @@ export async function analyzeFolderTool(
     totals.warning += b.counts.warning;
     totals.info += b.counts.info;
     rows.push({
-      path: rowPath(d.label),
+      path: rowPath(shown(d.label)),
       type: b.document.type,
       c: b.counts.critical,
       w: b.counts.warning,
@@ -334,10 +364,13 @@ export async function analyzeFolderTool(
       sha: b.document.sha256.slice(0, 12),
       ...(b.caveats.classification_notice ? { unmatched: true as const } : {}),
       ...(b.secondary_families ? { secondary: b.secondary_families.length } : {}),
-      ...(b.caveats.ingest_warnings ? { caveats: b.caveats.ingest_warnings.length } : {}),
+      ...(d.result.ingest.warnings.length > 0 ? { caveats: d.result.ingest.warnings.length } : {}),
     });
   }
-  const unreadable = folder.unreadable.map((u) => ({ path: rowPath(u.file), reason: u.reason }));
+  const unreadable = folder.unreadable.map((u) => ({
+    path: rowPath(shown(u.file)),
+    reason: u.reason,
+  }));
   for (const u of unreadable) rows.push({ path: u.path, not_analyzed: u.reason.slice(0, 120) });
   rows.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 
@@ -347,7 +380,7 @@ export async function analyzeFolderTool(
     totals,
     rows: rows.slice(offset, end),
     unreadable,
-    skipped: skipped.map((s) => ({ path: rowPath(s.file), reason: s.reason })),
+    skipped: skipped.map((s) => ({ path: rowPath(shown(s.file)), reason: s.reason })),
     ...(args.related ? { cross_document: await crossDocument(folder, ctx) } : {}),
     caveats: {
       folder:
@@ -408,7 +441,11 @@ async function side(
   if ((path === undefined) === (text === undefined)) {
     throw new ToolError(`Pass exactly one of \`${which}_path\` or \`${which}_text\`.`);
   }
-  if (path !== undefined) return { path: await resolveInRoots(path, ctx.roots) };
+  if (path !== undefined) {
+    const real = await resolveInRoots(path, ctx.roots);
+    await assertReadableSize(real, path);
+    return { path: real };
+  }
   if (text!.length > MAX_TEXT_CHARS) {
     throw new ToolError(
       `The ${which} text is over ${MAX_TEXT_CHARS.toLocaleString("en-US")} characters.`,
@@ -510,13 +547,18 @@ export async function exportReportTool(
   ctx: Context,
 ) {
   const path = await resolveInRoots(args.path, ctx.roots);
+  await assertReadableSize(path, args.path);
   const outDir = await resolveNewInRoots(args.out_dir, ctx.roots);
   if (args.formats.length === 0) throw new ToolError("Pass at least one format.");
   try {
-    return await exportArtifacts(path, args.formats as ExportFormat[], outDir, {
+    const r = await exportArtifacts(path, args.formats as ExportFormat[], outDir, {
       deps: ctx.deps,
       overwrite: args.overwrite ?? false,
     });
+    return {
+      ...r,
+      written: r.written.map((w) => ({ ...w, path: shownInRoots(w.path, ctx.roots) })),
+    };
   } catch (e) {
     throw new ToolError(e instanceof Error ? e.message : String(e));
   }

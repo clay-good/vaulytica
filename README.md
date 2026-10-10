@@ -49,6 +49,28 @@ Or add it to a GitHub workflow:
     files: contracts/
 ```
 
+## For a coding agent
+
+Vaulytica also runs as a local [MCP](https://modelcontextprotocol.io) server, so an agent such as Claude Code can lint a folder of contracts and hand you a short report to spot-check. It runs from the clone above, on your machine. Nothing is hosted, and nothing is on npm.
+
+From the folder that holds your contracts:
+
+```bash
+claude mcp add --scope user vaulytica -- node ~/vaulytica/bin/vaulytica.mjs mcp
+```
+
+Any other agent host takes the same command in its own config:
+
+```json
+{
+  "mcpServers": {
+    "vaulytica": { "command": "node", "args": ["/path/to/vaulytica/bin/vaulytica.mjs", "mcp"] }
+  }
+}
+```
+
+The server reads only the folder it was started in (add `--root <dir>` for others) and opens no network connection. Keep in mind that whatever it returns goes to your agent and its model provider, including quoted excerpts; ask for `excerpts: false` to leave those out. The [reference](docs/reference.md#for-a-coding-agent--the-local-mcp-server) lists the seven tools.
+
 ## Learn more
 
 - [Full reference](docs/reference.md): every check, command, and export format

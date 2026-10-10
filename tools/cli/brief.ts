@@ -104,10 +104,12 @@ function briefFinding(f: Finding, excerpts: boolean): BriefFinding {
     rule_id: f.rule_id,
     rule_version: f.rule_version,
     severity: f.severity,
-    title: printable(f.title),
+    title: truncate(printable(f.title), BRIEF_EXCERPT_CHARS),
     explanation: f.explanation,
     ...(f.recommendation ? { recommendation: f.recommendation } : {}),
-    ...(f.excerpt.section_label ? { section_label: printable(f.excerpt.section_label) } : {}),
+    ...(f.excerpt.section_label
+      ? { section_label: truncate(printable(f.excerpt.section_label), BRIEF_EXCERPT_CHARS) }
+      : {}),
     start_offset: f.excerpt.start_offset,
     end_offset: f.excerpt.end_offset,
     ...(excerpts ? { excerpt: truncate(printable(f.excerpt.text), BRIEF_EXCERPT_CHARS) } : {}),
@@ -132,7 +134,7 @@ export function buildBrief(
   return {
     schema: BRIEF_SCHEMA,
     document: {
-      name: printable(run.source_file.name),
+      name: truncate(printable(run.source_file.name), BRIEF_EXCERPT_CHARS),
       sha256: run.source_file.sha256,
       type: run.playbook_id,
       ...(run.playbook_match_confidence !== undefined

@@ -109,7 +109,7 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     const r = await analyzeFolderTool({ dir: room }, ctx);
     expect(r.rows.map((x) => x.path)).toEqual(
       ["broken.docx", "nda.txt", "recipe.txt", "scan.pdf", join("sub", "bad-nda.docx")]
-        .map((p) => join(room, p))
+        .map((p) => join("room", p))
         .sort(),
     );
     for (const row of r.rows) expect(JSON.stringify(row).length).toBeLessThanOrEqual(300);
@@ -118,8 +118,10 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     expect(row("scan.pdf").not_analyzed).toMatch(/^no text layer/);
     expect(row("broken.docx").not_analyzed).toBeTruthy();
     expect(row("recipe.txt").unmatched).toBe(true);
-    expect(r.unreadable.map((u) => u.path)).toEqual([join(room, "broken.docx")]);
-    expect(r.skipped.map((s) => s.path)).toEqual([join(room, "logo.png")]);
+    // Shown relative to the root that holds them: no absolute path goes out.
+    expect(r.unreadable.map((u) => u.path)).toEqual([join("room", "broken.docx")]);
+    expect(r.skipped.map((s) => s.path)).toEqual([join("room", "logo.png")]);
+    expect(JSON.stringify(r)).not.toContain(tmp);
     // Totals count only what was analyzed.
     const nda = row("nda.txt");
     expect(r.totals.critical).toBeGreaterThanOrEqual(nda.c!);
@@ -195,7 +197,7 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     writeFileSync(join(deep, "top.txt"), "A memo.");
     writeFileSync(join(deep, ...levels, "buried.txt"), "A memo.");
     const r = await analyzeFolderTool({ dir: deep }, ctx);
-    expect(r.rows.map((x) => x.path)).toEqual([join(deep, "top.txt")]);
+    expect(r.rows.map((x) => x.path)).toEqual([join("deep", "top.txt")]);
     expect(r.skipped.some((s) => /depth limit/.test(s.reason))).toBe(true);
   });
 });

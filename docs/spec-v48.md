@@ -1,6 +1,6 @@
 # Vaulytica v48 — The Agent Surface (A Local-Only MCP Server Over the Same Engine)
 
-> **Status:** **In progress.** Steps 302–303 (the callable API; the compact projection and `--format brief-json`) shipped in 9.856.0–9.857.0, and Steps 304–305 (the server process and all seven tools) in 9.858.0–9.859.0. Steps 306–307 are not built. Continues the global step numbering after Step 301, beginning at **Step 302**.
+> **Status:** **Built (9.856.0–9.860.0).** Steps 302–307 shipped: the callable API, the compact projection and `--format brief-json`, the server and its seven tools, the guards, and the install path. The triage shape of `analyze_folder` and the v51 comparison fields land with [`spec-v52.md`](spec-v52.md) Step 325 and [`spec-v51.md`](spec-v51.md) Step 321. Continues the global step numbering after Step 301, beginning at **Step 302**.
 > **Scope:** one idea — a coding agent should be able to lint a folder of contracts with the same engine a person uses in the browser, hand back something small enough to read, and leave a person able to spot-check it. No new rule, no engine logic, no hosted service.
 > **Distribution (decided):** the static site, the GitHub repository, and this server run from a clone. **Nothing is published to npm, now or later.**
 > **Posture (unchanged):** deterministic, no AI in the engine, nothing uploaded, no socket. The agent is a _consumer_ of the report, never a participant in producing it. Vaulytica is the deterministic linter beside the agent.

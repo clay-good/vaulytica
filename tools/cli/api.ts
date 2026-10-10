@@ -578,12 +578,22 @@ export async function analyzeDocument(
  */
 export async function* analyzeEach(
   files: readonly string[],
-  opts: AnalyzeFileOptions = {},
+  opts: AnalyzeFileOptions & {
+    /** A file larger than this is yielded as an error, unread. */
+    maxFileBytes?: (file: string) => number;
+  } = {},
 ): AsyncGenerator<{ file: string; result: AnalyzeResult } | { file: string; error: unknown }> {
+  const { maxFileBytes, ...analyzeOpts } = opts;
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   for (const file of files) {
     try {
-      yield { file, result: await analyzeFile(file, { ...opts, deps }) };
+      const limit = maxFileBytes?.(file);
+      if (limit !== undefined && (await stat(file)).size > limit) {
+        throw new Error(
+          `larger than the ${limit.toLocaleString("en-US")} bytes this surface reads for that file type`,
+        );
+      }
+      yield { file, result: await analyzeFile(file, { ...analyzeOpts, deps }) };
     } catch (error) {
       yield { file, error };
     }
@@ -610,6 +620,8 @@ export async function analyzeFolder(
     onDocument?: (done: number, total: number) => boolean | void | Promise<boolean | void>;
     /** Bounds on a directory walk; with them, a folder past `maxFiles` is an error. */
     limits?: WalkLimits;
+    /** A file larger than this is reported unreadable, unread. */
+    maxFileBytes?: (file: string) => number;
   } = {},
 ): Promise<FolderAnalysis> {
   const { onDocument, limits, ...analyzeOpts } = opts;

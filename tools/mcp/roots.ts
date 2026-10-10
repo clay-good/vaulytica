@@ -10,7 +10,7 @@
  */
 
 import { realpath } from "node:fs/promises";
-import { delimiter, dirname, basename, join, resolve, sep } from "node:path";
+import { delimiter, dirname, basename, join, relative, resolve, sep } from "node:path";
 
 /** Thrown for a request a person can fix; the server answers it as `isError`. */
 export class ToolError extends Error {}
@@ -75,6 +75,15 @@ export async function resolveNewInRoots(path: string, roots: readonly string[]):
     tail.unshift(basename(existing));
     existing = parent;
   }
+}
+
+/**
+ * A path as a result shows it: relative to the root that holds it. Shorter, and
+ * it keeps the user's directory layout above the root out of what a model reads.
+ */
+export function shownInRoots(path: string, roots: readonly string[]): string {
+  const root = roots.find((r) => within(r, path));
+  return root === undefined ? path : relative(root, path) || basename(path);
 }
 
 function outside(path: string, roots: readonly string[]): ToolError {

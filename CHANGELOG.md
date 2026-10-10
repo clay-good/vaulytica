@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.860.0] — 2026-10-10
+
+### Added
+- **The MCP server is installable and documented.** A README section, a site
+  page (`/contract-review-mcp`), an `llms.txt` entry, a committed `.mcp.json`,
+  and `vaulytica mcp --help`. Exercised: the tracked tree copied to an empty
+  directory, `npm ci`, the server started from a different folder, and calls
+  completed there.
+- **Limits on what one MCP call reads, set from a measurement.** Analysis runs
+  at about 4 ms per KB and is synchronous (255 KB in 1.0 s, 1,008 KB in 4.0 s,
+  2,005 KB in 8.3 s), so a call takes at most 500,000 characters of text or a
+  10 MB `.docx` / `.pdf`; in a folder, an oversized file is one `not_analyzed`
+  row. The CLI's limit is unchanged.
+
+### Changed
+- **Document text is confined and capped in the compact report.** Excerpts,
+  section labels, titles and file names are flattened to one printable line
+  and cut at 300 characters. A fixture carrying an instruction to the agent
+  and a forged protocol line comes back with that text in the quoting fields
+  only; with `excerpts: false` it does not travel at all.
+- **Paths in MCP results are relative to the allowed root**, so a result does
+  not carry the directory layout above it.
+- **MCP results join the honesty-caveat reach guard.**
+
+### Removed
+- **The npm publishing instructions.** `docs/ci-integration.md` had a
+  "Publishing to npm" section and thirteen `npx vaulytica` examples that could
+  not work: nothing is published to npm, by decision. The examples run from a
+  clone; `spec-v8.md` is corrected.
+
+Each guard was broken once on purpose and seen to fail: the root prefix check,
+`realpath`, the sanitizer, the excerpt cap, the size limit, `excerpts: false`,
+the folder cap, `not_analyzed`, and the stdout rebinding — the last had no test
+that could fail until a preloaded "dependency" that prints was added
+(spec-v48 Steps 306–307; v48 is complete).
+
 ## [9.859.0] — 2026-10-10
 
 ### Added

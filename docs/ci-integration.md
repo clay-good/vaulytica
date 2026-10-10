@@ -97,36 +97,43 @@ number on a dashboard describes shipped behavior.
 
 ## 2. The `vaulytica` CLI
 
-In a repo that has Vaulytica installed (or once it is published to npm), the
-binary's four everyday commands are `analyze`, `compare`, `diff` and `verify`:
+Vaulytica is not published to npm. The CLI runs from a clone:
+
+```bash
+git clone https://github.com/clay-good/vaulytica ~/vaulytica && cd ~/vaulytica && npm ci
+```
+
+The launcher is `bin/vaulytica.mjs`; call it by its path from any directory
+(`node ~/vaulytica/bin/vaulytica.mjs …`). The examples below are run from the
+clone. The four everyday commands are `analyze`, `compare`, `diff` and `verify`:
 
 ```bash
 # analyze one file → SARIF on stdout
-npx vaulytica analyze contract.docx --format sarif
+node bin/vaulytica.mjs analyze contract.docx --format sarif
 
 # sweep a deal folder, write reports, fail CI on any critical
-npx vaulytica analyze ./deal-room --format html,json,md --out ./out --fail-on critical
+node bin/vaulytica.mjs analyze ./deal-room --format html,json,md --out ./out --fail-on critical
 
 # version comparison + clause redline; fail if the revision introduced a critical
-npx vaulytica compare base.docx revised.docx --fail-on critical
+node bin/vaulytica.mjs compare base.docx revised.docx --fail-on critical
 
 # the obligations ledger and the negotiation sheet, as files
-npx vaulytica analyze msa.docx --playbook-file team.json --posture \\
+node bin/vaulytica.mjs analyze msa.docx --playbook-file team.json --posture \\
   --format obligations-csv,posture-sheet --out ./out
 
 # the closing checklist and the deadline calendar, as files
-npx vaulytica analyze msa.docx --checklist --critical-dates \\
+node bin/vaulytica.mjs analyze msa.docx --checklist --critical-dates \\
   --format checklist-md,dates-ics --out ./out
 
 # diff two custom playbooks · re-derive a saved report's hash
-npx vaulytica diff team-v1.json team-v2.json --exit-code
-npx vaulytica verify report.json original.txt
+node bin/vaulytica.mjs diff team-v1.json team-v2.json --exit-code
+node bin/vaulytica.mjs verify report.json original.txt
 ```
 
 Those four are not the whole surface: the dispatcher exposes **34** commands in
 all — the four above plus `posture-review`, `compare-coherence`, and the 28
 `coherence-*` reads of the document-free posture family (`coherence-trend`,
-`coherence-arc`, `coherence-matrix`, …). `npx vaulytica --help` prints the
+`coherence-arc`, `coherence-matrix`, …). `node bin/vaulytica.mjs --help` prints the
 current list; the [reference's command table](reference.md#headless-api--cli)
 documents each one's flags and exit codes.
 
@@ -139,7 +146,7 @@ CC-\* / CROSS-\* rules the browser has run on every multi-document drop since v3
 disagree:
 
 ```bash
-npx vaulytica analyze ./deal-room --format json --out ./out \
+node bin/vaulytica.mjs analyze ./deal-room --format json --out ./out \
   --emit-consistency ./out/consistency.json \
   --fail-on-consistency critical
 ```
@@ -154,7 +161,7 @@ For the pure question — _does this deal folder contradict itself?_ —
 report, and therefore no `--out`.
 
 ```bash
-npx vaulytica analyze ./deal-room --consistency-only \\
+node bin/vaulytica.mjs analyze ./deal-room --consistency-only \\
   --emit-consistency ./consistency.json --fail-on-consistency critical
 ```
 
@@ -185,7 +192,7 @@ or diffing.
 ### Gating your own ladder
 
 ```bash
-npx vaulytica analyze redline.docx --playbook-file team.json --posture \\
+node bin/vaulytica.mjs analyze redline.docx --playbook-file team.json --posture \\
   --fail-on-posture below-acceptable
 ```
 
@@ -205,7 +212,7 @@ their own `delivery_hash`, so `--fail-on` — which reads the run — never saw 
 `--fail-on-delivery <sev>` gates on them.
 
 ```bash
-npx vaulytica analyze outgoing.docx --delivery --fail-on-delivery critical
+node bin/vaulytica.mjs analyze outgoing.docx --delivery --fail-on-delivery critical
 ```
 
 It is a separate flag for the same reason `--fail-on-consistency` is — switching
@@ -297,21 +304,16 @@ the dependencies installed can call it directly — no global install, no bundle
 node bin/vaulytica.mjs analyze contract.pdf --format sarif --fail-on warning
 ```
 
-## Publishing to npm (maintainer)
+## Distribution: the site, the repository, and a clone
 
-The package is **publish-ready** but ships `private: true` so an accidental
-`npm publish` is refused. To cut a public release:
+Nothing is published to npm, by decision. The tool reaches people three ways:
+the static site (the browser app), this repository (the GitHub Action, pinned
+by tag), and a clone (the CLI and the local MCP server). `package.json` stays
+`private: true`, so an accidental `npm publish` is refused.
 
-1. Flip `"private": false` in `package.json` (and bump `version` if needed).
-2. `npm publish --access public` (requires an npm account with publish rights to
-   the `vaulytica` name).
-3. Tag the release so the Action can be pinned: `git tag v8 && git push --tags`
-   (or a major-version moving tag your consumers reference).
-
-The published tarball ships the source CLI + engine + the starter DKB +
-playbooks (the `files` allow-list, with `!**/*.test.ts` trimming the in-tree
-test files); the runtime data is resolved relative to the package's own tree, so
-`npx vaulytica` works from any directory.
+The launcher resolves the engine, the knowledge base and the playbooks relative
+to its own file, so `node /path/to/vaulytica/bin/vaulytica.mjs` works from any
+directory.
 
 ## Posture in CI (unchanged)
 

@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.859.0` · `MIT`
+`1,825 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `88 state-law overlays (non-compete · security deposit · usury · will formalities)` · `21 export formats` · `0 servers` · `0 AI` · `15,210+ passing tests` · `v9.860.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1221,10 +1221,18 @@ node bin/vaulytica.mjs mcp --root /path/to/contracts
 - **Not a clean bill.** Every result carries the caveats the full report carries. A file that could not be read comes back as `not_analyzed`, never as a short report.
 
 - **A scanned PDF is not a short report.** A file with no text layer comes back as `not_analyzed: no text layer`; the headless path runs no OCR.
+- **Size limits, set from a measurement.** Analysis is synchronous at about 4 ms per KB, so one call takes at most 500,000 characters of text (about two seconds) or a 10 MB `.docx` / `.pdf`. Larger files go through the CLI, which has no such limit.
+- **Document text is data.** A contract can say "ignore your instructions." Quoted text travels only in `excerpt`, `section_label`, `title` and `name`, each capped at 300 characters with control characters removed; `excerpts: false` drops the quotes.
 - **A folder is not a deal.** `analyze_folder` reads at most 200 files, 8 levels deep, and runs the cross-document rules only when `related: true` says the files belong together.
 - **`export_report` is the one tool that writes.** It writes only under an allowed folder and never replaces a file without `overwrite: true`.
 
-The install page and `.mcp.json` are in progress — see [`spec-v48.md`](spec-v48.md).
+**Install.** Clone, `npm ci`, then register the launcher with your agent host. For Claude Code, from the folder that holds the contracts:
+
+```bash
+claude mcp add --scope user vaulytica -- node ~/vaulytica/bin/vaulytica.mjs mcp
+```
+
+The repository also commits a `.mcp.json` for people working inside the clone. Design and rationale: [`spec-v48.md`](spec-v48.md).
 
 ### Drop it into CI — GitHub Action
 

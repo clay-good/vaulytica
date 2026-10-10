@@ -41,6 +41,9 @@ const FINDING_SURFACES: ReadonlyArray<[file: string, what: string]> = [
   // The compact projection (`--format brief-json`, and the MCP server's result).
   // A short report with no caveat reads as a clean bill.
   ["tools/cli/brief.ts", "the brief"],
+  // An MCP result is a render surface (spec-v48 §7): the folder rows flag both
+  // caveats per file, and a document result carries the brief's.
+  ["tools/mcp/tools.ts", "the MCP server's results"],
   ["src/ui/states.ts", "the in-tab result states"],
   // 🚨 Joined in 9.706.0, having rendered findings since the feature shipped
   // without either caveat. It is a byte-copy of the CLIENT'S OWN CONTRACT with

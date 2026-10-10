@@ -24,6 +24,7 @@ const BIN = join(ROOT, "bin", "vaulytica.mjs");
 const SERVER = join(ROOT, "tools", "mcp", "server.ts");
 const TSX = pathToFileURL(createRequire(import.meta.url).resolve("tsx")).href;
 const NO_SOCKET = pathToFileURL(join(ROOT, "tests", "integration", "_mcp", "no-socket.mjs")).href;
+const STRAY_LOG = pathToFileURL(join(ROOT, "tests", "integration", "_mcp", "stray-log.mjs")).href;
 const NDA = "tests/fixtures/specimens/mutual-nda-complete.txt";
 
 type Frame = {
@@ -155,7 +156,7 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
 
   it("writes only protocol frames to stdout, opens no socket, and exits on EOF", async () => {
     const r = await session(
-      ["--import", NO_SOCKET, "--import", TSX, SERVER],
+      ["--import", NO_SOCKET, "--import", STRAY_LOG, "--import", TSX, SERVER],
       [
         ...INIT,
         { jsonrpc: "2.0", id: 2, method: "tools/list" },
@@ -172,6 +173,9 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
     );
     expect(r.code).toBe(0);
     expect(r.stderr).not.toContain("SOCKET-OPENED");
+    // A dependency printed throughout the session; it all went to stderr.
+    expect(r.stderr).toContain("STRAY-LOG");
+    expect(r.stdout).not.toContain("STRAY");
     const lines = r.stdout.split("\n").filter(Boolean);
     const frames = lines.map((l) => JSON.parse(l) as Frame);
     expect(frames.every((f) => (f as { jsonrpc?: string }).jsonrpc === "2.0")).toBe(true);

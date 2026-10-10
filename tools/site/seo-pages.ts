@@ -520,6 +520,71 @@ export const SEO_PAGES: ReadonlyArray<SeoPage> = [
     ],
   },
   {
+    slug: "contract-review-mcp",
+    title: "Contract Review MCP Server for Coding Agents | Vaulytica",
+    description:
+      "A free, local MCP server that lets a coding agent lint a folder of contracts with a deterministic rule engine. Runs from a clone; nothing is hosted.",
+    label: "MCP server for agents",
+    h1: "A contract linter your coding agent can call.",
+    lead: "Vaulytica runs as a local Model Context Protocol server: your agent host starts it as a child process on your own machine, and it answers with the same {rules} deterministic, cited checks the browser runs. The agent reads a compact report; you spot-check it against the document. There is no hosted endpoint and no account.",
+    cta: "Try the engine in the browser first",
+    checksHeading: "What the agent gets",
+    checks: [
+      [
+        "Seven tools",
+        "<code>analyze_document</code>, <code>analyze_folder</code>, <code>compare_documents</code>, <code>list_document_types</code>, <code>describe_document_type</code>, <code>explain_rule</code> and <code>export_report</code>.",
+      ],
+      [
+        "A report small enough to read",
+        "The full JSON report for a six-finding NDA is 293 KB. The server returns the same findings, caveats and hash in about 6 KB, and pages anything past 40,000 characters.",
+      ],
+      [
+        "Findings a person can check",
+        "Every finding carries its id, its rule, and offsets into the document's text, so you can open the file and look.",
+      ],
+      [
+        "The same answer every time",
+        "It is a rule engine, not a model. The agent consumes the report; it takes no part in producing it.",
+      ],
+      [
+        "Folders it is allowed to read, and no others",
+        "The server reads only under the folder it was started in, or the ones you name with <code>--root</code>.",
+      ],
+      [
+        "Honest about what it did not read",
+        "A scanned PDF, a corrupt file or an unmatched document comes back saying so, not as a short clean report.",
+      ],
+    ],
+    extra: {
+      heading: "Install: a clone, and nothing else",
+      html: `<pre><code>git clone https://github.com/clay-good/vaulytica ~/vaulytica
+cd ~/vaulytica && npm ci</code></pre>
+<p>Then, for Claude Code, from the folder that holds the contracts:</p>
+<pre><code>claude mcp add --scope user vaulytica -- node ~/vaulytica/bin/vaulytica.mjs mcp</code></pre>
+<p>Other agent hosts take the same command in their own configuration. It needs Node 22 or newer. Nothing is published to npm.</p>
+<p><strong>What "nothing is uploaded" means under an agent.</strong> The server opens no network connection, and a file you name by path is read on your machine. But the result goes to your agent and its model provider, and a result quotes excerpts from the document. Ask for <code>excerpts: false</code> to get findings with offsets and no quoted text. Text your agent already holds had reached the model before Vaulytica saw it.</p>
+<p>Details are in the <a href="https://github.com/clay-good/vaulytica/blob/main/docs/reference.md#for-a-coding-agent--the-local-mcp-server">reference</a>.</p>`,
+    },
+    faq: [
+      [
+        "Is there a hosted Vaulytica MCP server?",
+        "No. The server runs on your machine as a child process of your agent host, over stdio. The website is static and receives no documents.",
+      ],
+      [
+        "Does my contract stay on my machine?",
+        "The server opens no network connection. What it returns goes to your agent and its model provider, including quoted excerpts unless you turn them off.",
+      ],
+      [
+        "Does the server use AI?",
+        "No. It is a deterministic rule engine. Any summary or advice your agent adds is the agent's, not Vaulytica's.",
+      ],
+      [
+        "Is a short report a clean bill?",
+        "No. There is no measured accuracy on real contracts and no rule is attorney-signed. Treat a finding as a prompt to read a clause, and a silence as silence.",
+      ],
+    ],
+  },
+  {
     slug: "contract-linter-ci",
     title: "Contract Linter for CI — CLI & GitHub Action (SARIF) | Vaulytica",
     description:
@@ -867,6 +932,7 @@ export function buildLlmsTxt(counts: HeadlineCounts): string {
     `- [Sample report](${ORIGIN}/sample-report): an unedited report for a sample NDA`,
     "- [Source code](https://github.com/clay-good/vaulytica): MIT-licensed repository",
     "- [CI integration](https://github.com/clay-good/vaulytica/blob/main/docs/ci-integration.md): CLI and GitHub Action",
+    "- [MCP server](https://github.com/clay-good/vaulytica/blob/main/docs/reference.md#for-a-coding-agent--the-local-mcp-server): a local, stdio-only Model Context Protocol server for coding agents — run from a clone with `node bin/vaulytica.mjs mcp`; no hosted endpoint, not on npm. It opens no network connection, but results (including quoted excerpts) reach the agent's model provider",
     "",
   ].join("\n");
 }

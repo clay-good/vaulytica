@@ -3,8 +3,8 @@
  * `vaulytica` CLI launcher (spec-v8 §22 — distribution surface).
  *
  * The headless engine is TypeScript run through tsx; this thin shim lets the
- * package expose a plain `vaulytica` binary (`npx vaulytica …`, a global
- * install, or the GitHub Action) without a fragile pre-bundle of the WASM/
+ * clone expose a plain `vaulytica` launcher (the CLI, the local MCP server,
+ * or the GitHub Action) without a fragile pre-bundle of the WASM/
  * worker ingest deps (pdf.js / tesseract.js / mammoth). It resolves the CLI
  * entry relative to itself, so every runtime data read (the shipped DKB and
  * the playbook JSON, resolved by `import.meta.url`) lands in the package's own
@@ -21,7 +21,7 @@ const entry = join(here, "..", "tools", "cli", "run.ts");
 /**
  * `--import tsx` is resolved by the child against ITS working directory, which
  * is the user's own — a consumer repository under the GitHub Action, or
- * wherever `npx vaulytica` was typed. `tsx` lives beside this package, so the
+ * wherever the launcher was called from. `tsx` lives beside this package, so the
  * bare specifier only resolved when the two happened to coincide, and every
  * other invocation died with "Cannot find package 'tsx'". Resolve it from this
  * file instead and hand the child an absolute URL, which no working directory

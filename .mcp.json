@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "vaulytica": {
+      "command": "node",
+      "args": ["bin/vaulytica.mjs", "mcp"]
+    }
+  }
+}

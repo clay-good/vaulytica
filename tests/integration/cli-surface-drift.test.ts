@@ -168,7 +168,9 @@ describe("CLI surface drift", () => {
     const documented = new Set<string>();
     for (const doc of [readme, ciDoc]) {
       for (const block of doc.matchAll(/```[a-z]*\n([\s\S]*?)```/g)) {
-        const body = block[1]!;
+        // `claude mcp add --scope user vaulytica -- node …` registers the server
+        // with an agent host: what precedes the `--` is that host's flag, not ours.
+        const body = block[1]!.replace(/^claude mcp add[^\n]*? -- /gm, "");
         if (!/\bvaulytica\b/.test(body)) continue;
         for (const t of body.matchAll(/(?:^|\s)(--[a-z][a-z0-9-]{2,})/g)) documented.add(t[1]!);
       }
