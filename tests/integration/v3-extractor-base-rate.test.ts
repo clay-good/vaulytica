@@ -44,7 +44,7 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  * 327-specimen corpus. Adding a specimen moves these; say so in the CHANGELOG.
  */
 const REACH: Record<keyof V3ExtractedData, number> = {
-  data_categories: 118,
+  data_categories: 119,
   insurance: 53,
   audit_rights: 50,
   subprocessor: 37,

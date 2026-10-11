@@ -51,7 +51,8 @@ export type OverlayFamily =
   | "employment"
   | "residential-lease"
   | "lending"
-  | "sales-based-financing";
+  | "sales-based-financing"
+  | "training-repayment";
 
 /**
  * How the state treats the clause relative to the baseline. Drives the
@@ -83,7 +84,13 @@ export type StateOverlay = {
 
 export const StateOverlaySchema = z.object({
   id: z.string().min(1),
-  family: z.enum(["employment", "residential-lease", "lending", "sales-based-financing"]),
+  family: z.enum([
+    "employment",
+    "residential-lease",
+    "lending",
+    "sales-based-financing",
+    "training-repayment",
+  ]),
   topic: z.string().min(1),
   jurisdiction: z.string().regex(/^us-[a-z]{2}$/, "jurisdiction must be us-XX"),
   state_name: z.string().min(1),
@@ -903,11 +910,43 @@ const SALES_BASED_FINANCING: readonly StateOverlay[] = [
   },
 ];
 
+/**
+ * Training repayment ("stay-or-pay"). California makes most
+ * repayment-on-separation terms unlawful and void, but only in contracts
+ * entered into on or after January 1, 2027 — the statute as first enacted is
+ * inoperative for 2026. Read at leginfo.legislature.ca.gov on 2026-10-10 (as
+ * amended by Stats. 2026, ch. 889, A.B. 1697).
+ */
+const TRAINING_REPAYMENT: readonly StateOverlay[] = [
+  {
+    id: "trn-repayment-us-ca",
+    family: "training-repayment",
+    topic: "repayment on leaving a job",
+    jurisdiction: "us-ca",
+    state_name: "California",
+    posture: "prohibited",
+    headline:
+      "Unlawful and void in contracts entered into on or after January 1, 2027, outside listed exceptions",
+    summary:
+      "For contracts entered into on or after January 1, 2027, California makes it unlawful to include in an employment contract, or require as a condition of work, a term that makes a worker pay an employer, training provider or debt collector if the work relationship ends, or that imposes a fee or cost for leaving; such a contract is void (Bus. & Prof. Code § 16608(b)–(c); Lab. Code § 926(a)). The exceptions are narrow. The one for tuition covers only a transferable credential — a degree from an accredited institution that the current job does not require — under a contract separate from the employment contract that states the amount in advance, does not exceed the employer's cost, prorates the amount over the required period without acceleration, and requires no repayment when the worker is terminated other than for misconduct. Ordinary job training is not within it. A worker may sue for actual damages or $5,000, whichever is greater (Lab. Code § 926(c)).",
+    recommendation:
+      "Check the date the agreement was or will be signed. If it is on or after January 1, 2027 and California law governs, treat a repayment term for ordinary job training as void, and confirm that any tuition repayment term meets every condition of the transferable-credential exception.",
+    severity: "critical",
+    citation: citeAt(
+      "ca-bus-prof-16608",
+      "Cal. Bus. & Prof. Code § 16608; Cal. Lab. Code § 926 (as amended by Stats. 2026, ch. 889)",
+      "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=BPC&sectionNum=16608.",
+      "2026-10-10",
+    ),
+  },
+];
+
 export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...EMPLOYMENT_NONCOMPETE,
   ...RESIDENTIAL_LEASE_DEPOSIT,
   ...LENDING_USURY,
   ...SALES_BASED_FINANCING,
+  ...TRAINING_REPAYMENT,
 ];
 
 /**
@@ -943,6 +982,8 @@ const PLAYBOOK_FAMILY: ReadonlyMap<string, OverlayFamily> = new Map([
   ["guaranty", "lending"],
   // Sales-based financing — Texas regulates the contract's own terms.
   ["merchant-cash-advance", "sales-based-financing"],
+  // Training repayment — California regulates the term itself, by contract date.
+  ["training-repayment-agreement", "training-repayment"],
 ]);
 
 /** Resolve the overlay family for a matched playbook id, if any. */

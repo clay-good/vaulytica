@@ -85,6 +85,7 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   SDA: "software-development-agreement",
   MCA: "merchant-cash-advance",
   SOL: "residential-solar-agreement",
+  TRA: "training-repayment-agreement",
 } as const;
 
 /**

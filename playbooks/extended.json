@@ -16280,7 +16280,6 @@
         "relocation assistance agreement",
         "relocation assistance",
         "relocation and repayment",
-        "repayment agreement",
         "sign-on repayment agreement"
       ],
       "required_clauses": [],
@@ -20586,6 +20585,78 @@
       "Quality control (naked-license)",
       "Goodwill / no-challenge",
       "Proper use (®/™, no genericization)"
+    ]
+  },
+  {
+    "id": "training-repayment-agreement",
+    "version": "1.0.0",
+    "name": "Training Repayment Agreement",
+    "description": "An agreement under which an employer pays for an employee's training and the employee repays it on leaving within a set period — often called a stay-or-pay or training reimbursement agreement. The checks read for what triggers repayment, a stated amount no greater than the employer's cost, proration, how repayment is made after leaving, whether it may be taken from pay, and whether anything is owed when the employer ends the employment.",
+    "match_features": {
+      "title_keywords": [
+        "training repayment agreement",
+        "training reimbursement agreement",
+        "training cost repayment agreement",
+        "training agreement and repayment",
+        "tuition repayment agreement",
+        "tuition reimbursement agreement",
+        "stay-or-pay agreement",
+        "training bond"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "cost of the training",
+        "training costs",
+        "training program",
+        "repay the employer",
+        "commitment period",
+        "tuition",
+        "certification course"
+      ],
+      "negative_features": [
+        "relocation",
+        "moving expenses"
+      ]
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "STATE-WAGE-LAW",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "employment-at-will-us",
+      "offer-letter"
+    ],
+    "compliance_matrix_columns": [
+      "What triggers repayment",
+      "The amount, and that it is no more than the employer's cost",
+      "Proration over the commitment period",
+      "How repayment is made after leaving",
+      "Whether repayment may be taken from pay",
+      "No repayment when the employer ends the employment without misconduct"
     ]
   },
   {

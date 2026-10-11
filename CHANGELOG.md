@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.873.0] — 2026-10-10
+
+### Added
+- **A document type for the training repayment ("stay-or-pay") agreement**
+  (spec-v49 Step 311). It used to fall to the generic fallback. Six checks:
+  what triggers repayment; a stated amount no greater than the employer's
+  cost; proration over the commitment period; how repayment is made after
+  leaving; whether it may be taken from pay; and whether anything is owed when
+  the employer ends the employment without misconduct. 276 document types,
+  1,874 rules, 90 state-law overlays.
+- **California law, where the agreement names it.** For contracts entered
+  into on or after January 1, 2027, California makes most
+  repayment-on-leaving terms unlawful and void, with a narrow exception for
+  tuition for a transferable credential (Bus. & Prof. Code § 16608; Lab. Code
+  § 926). It appears as a state-law note on a training repayment agreement
+  governed by California law, and says to check the signing date. Read at
+  leginfo.legislature.ca.gov on 2026-10-10.
+
+### Fixed
+- **A training repayment agreement is no longer scanned as a relocation
+  agreement.** The relocation type listed the bare title "repayment
+  agreement", which is inside every training repayment agreement's title, so
+  its checks ran as a second type and reported missing relocation terms.
+
+### Notes
+- The six checks are cited as customary practice; no federal rule lists what
+  this agreement must say. The existing stay-or-pay flag (`PERS-008`) still
+  fires on the clause wherever it appears.
+
 ## [9.872.0] — 2026-10-10
 
 ### Added

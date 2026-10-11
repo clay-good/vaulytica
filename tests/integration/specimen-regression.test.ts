@@ -5803,6 +5803,18 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-005",
     ],
   },
+  // spec-v49 Step 311: the training repayment agreement. The thin one is the
+  // form California voids from 2027 — the "value" of in-house training, as
+  // the employer determines it, plus a replacement hire fee, due at once —
+  // and it names California law, which selects the § 16608 overlay.
+  "training-repayment-agreement-complete.txt": {
+    playbook: "training-repayment-agreement",
+    findings: ["OBLI-005", "STRUCT-005"],
+  },
+  "training-repayment-agreement-thin.txt": {
+    playbook: "training-repayment-agreement",
+    findings: ["CHOICE-003", "TRA-001", "TRA-002", "TRA-003", "TRA-004", "TRA-005", "TRA-006"],
+  },
 };
 
 describe("hand-written specimens", () => {

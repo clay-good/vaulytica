@@ -15196,6 +15196,56 @@
    "sources": []
   },
   {
+   "id": "training-repayment-agreement",
+   "name": "Training Repayment Agreement",
+   "group": "Employment",
+   "summary": "An agreement under which an employer pays for an employee's training and the employee repays it on leaving within a set period — often called a stay-or-pay or training reimbursement agreement. The checks read for what triggers repayment, a stated amount no greater than the employer's cost, proration, how repayment is made after leaving, whether it may be taken from pay, and whether anything is owed when the employer ends the employment.",
+   "checks": [
+    {
+     "id": "TRA-001",
+     "name": "What triggers repayment",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "TRA-002",
+     "name": "The amount, and that it is no more than the employer's cost",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "TRA-003",
+     "name": "Proration over the commitment period",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "TRA-004",
+     "name": "How repayment is made after leaving",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "TRA-005",
+     "name": "Whether repayment may be taken from pay",
+     "description": "",
+     "severity": "info"
+    },
+    {
+     "id": "TRA-006",
+     "name": "No repayment when the employer ends the employment without misconduct",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 109,
+   "companions": [
+    "employment-at-will-us",
+    "offer-letter"
+   ],
+   "sources": []
+  },
+  {
    "id": "transition-services-agreement",
    "name": "Transition Services Agreement (TSA)",
    "group": "Commercial & services",

@@ -14,6 +14,7 @@ import { MERCHANT_CASH_ADVANCE_RULES } from "./merchant-cash-advance.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
 import { RESIDENTIAL_SOLAR_RULES } from "./residential-solar.js";
 import { SOFTWARE_DEVELOPMENT_RULES } from "./software-development.js";
+import { TRAINING_REPAYMENT_RULES } from "./training-repayment.js";
 
 /** The v7 ruleset aggregate. Appended after `V6_RULES` in the pipeline. */
 export const V7_RULES: readonly Rule[] = [
@@ -24,6 +25,7 @@ export const V7_RULES: readonly Rule[] = [
   ...SOFTWARE_DEVELOPMENT_RULES,
   ...MERCHANT_CASH_ADVANCE_RULES,
   ...RESIDENTIAL_SOLAR_RULES,
+  ...TRAINING_REPAYMENT_RULES,
 ];
 
 export {
@@ -34,4 +36,5 @@ export {
   SOFTWARE_DEVELOPMENT_RULES,
   MERCHANT_CASH_ADVANCE_RULES,
   RESIDENTIAL_SOLAR_RULES,
+  TRAINING_REPAYMENT_RULES,
 };

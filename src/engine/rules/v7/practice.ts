@@ -13,10 +13,10 @@ import type { Rule } from "../../finding.js";
 import { pack } from "../v5/_pack.js";
 import { practice } from "../v5/_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "../../../extract/amounts.js";
 
 /** A sum of money, in digits or in words. */
-const SUM = String.raw`(?:\$\s?\d|${AMOUNT_IN_WORDS})`;
+const SUM = String.raw`(?:(?:${CURRENCY_TOKEN})\s?\d|${AMOUNT_IN_WORDS})`;
 
 // ── Service level agreement ─────────────────────────────────────────
 const SERVICE_LEVEL = pack("service-level-agreement", "commercial", [

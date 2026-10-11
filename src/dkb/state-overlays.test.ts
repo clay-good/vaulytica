@@ -83,6 +83,24 @@ describe("overlayFamilyForPlaybook", () => {
     expect(loan?.matched.map((o) => o.id)).not.toContain("sbf-contract-terms-us-tx");
   });
 
+  it("selects the California training-repayment node only under California law", () => {
+    expect(overlayFamilyForPlaybook("training-repayment-agreement")).toBe("training-repayment");
+    const law = (raw_text: string) =>
+      [{ clause_kind: "governing-law", raw_text }] as unknown as Parameters<
+        typeof selectStateOverlays
+      >[1];
+    const ca = selectStateOverlays("training-repayment-agreement", law("State of California"));
+    expect(ca?.matched.map((o) => o.id)).toEqual(["trn-repayment-us-ca"]);
+    // The statute as first enacted is inoperative for 2026; the node must say
+    // which contracts it reaches.
+    expect(ca?.matched[0]?.headline).toContain("January 1, 2027");
+    const oh = selectStateOverlays("training-repayment-agreement", law("State of Ohio"));
+    expect(oh?.matched).toEqual([]);
+    // An employment agreement under California law gets the non-compete node.
+    const emp = selectStateOverlays("employment-at-will-us", law("State of California"));
+    expect(emp?.matched.map((o) => o.id)).toEqual(["emp-noncompete-us-ca"]);
+  });
+
   it("returns undefined for non-state-sensitive families", () => {
     expect(overlayFamilyForPlaybook("mutual-nda")).toBeUndefined();
     expect(overlayFamilyForPlaybook("ucc-1-financing-statement")).toBeUndefined();
