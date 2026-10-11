@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.875.0] — 2026-10-10
+
+### Added
+- **A document type for the startup advisor agreement** (spec-v49 Step 311,
+  the last of the ten). It used to fall to the generic fallback. Six checks:
+  the amount of equity; a vesting schedule; an assignment of what the advisor
+  creates; confidentiality; a statement that advising does not conflict with
+  the advisor's other obligations; and, where the grant is an option, an
+  exercise price at fair market value or set under the company's plan. 278
+  document types, 1,887 rules.
+- **The option-pricing check has an authority and a limit.** An option priced
+  below fair market value on the grant date is deferred compensation under
+  section 409A (Treas. Reg. § 1.409A-1(b)(5)(i)(A), read at ecfr.gov on
+  2026-10-10). The check runs only when the grant is an option, and reads only
+  whether the agreement prices it at fair market value or under the plan — not
+  whether the price is in fact fair market value.
+- **All ten documents the catalog had no type for now have one.** Each of the
+  ten probe documents routes to its own type.
+
+### Fixed
+- **The scheduled knowledge-base rebuild no longer fails when main moves
+  under it.** Its push was rejected if anything landed during the half hour
+  the build takes; it now rebases its one commit and retries.
+
+### Notes
+- A one-way confidentiality clause is ordinary in an advisor agreement and is
+  no longer noted as asymmetric on this type; nor is the type asked for an
+  indemnity, a liability cap or payment terms.
+
 ## [9.874.0] — 2026-10-10
 
 ### Added

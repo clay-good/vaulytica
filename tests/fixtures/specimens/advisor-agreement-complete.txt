@@ -1,0 +1,32 @@
+ADVISOR AGREEMENT
+
+This Advisor Agreement (this "Agreement") is entered into as of February 9, 2026 (the "Effective Date") between Kestrel Labs, Inc., a Delaware corporation (the "Company"), and Priya Raman (the "Advisor").
+
+1. Advisory Services. Advisor will advise the Company on product strategy and introductions to prospective customers, for about four hours each month, at times the parties agree (the "Services"). Advisor is an independent contractor and not an employee of the Company.
+
+2. Equity. In return for the Services, the Company will grant Advisor an option to purchase 10,000 shares of the Company's common stock, which is 0.10% of the Company's fully diluted capitalization on the Effective Date. The option will be granted under, and governed by, the Company's 2025 Equity Incentive Plan and a stock option agreement in the Plan's standard form. Its exercise price per share will be no less than the fair market value of the common stock on the date of grant, as determined by the Company's board of directors. The grant is subject to board approval, which the Company will seek at the next board meeting.
+
+3. Vesting. The option vests monthly over two years from the Effective Date, in 24 equal installments, with no cliff, for as long as Advisor continues to provide the Services. Vesting stops when this Agreement ends. If the Company is acquired while Advisor is providing the Services, all unvested shares vest immediately before the closing.
+
+4. Expenses. The Company will reimburse Advisor's reasonable travel expenses that it approves in writing in advance. Advisor receives no cash compensation.
+
+5. Confidentiality. Advisor will keep the Company's non-public information confidential, will use it only to provide the Services, and will return or delete it when this Agreement ends. This obligation continues for three years after this Agreement ends, and for as long as the information remains a trade secret.
+
+6. Assignment of Inventions. Advisor assigns to the Company all right, title and interest in the inventions, ideas and work product that Advisor creates in the course of the Services and that relate to the Company's business. This assignment does not reach anything Advisor creates for Advisor's employer or for others without using the Company's confidential information.
+
+7. No Conflict. Advisor states that providing the Services does not breach any agreement with Advisor's employer or with any other person, and that Advisor will not use or disclose to the Company any confidential information that belongs to someone else. Advisor will tell the Company promptly if a conflict of interest arises.
+
+8. Term and Termination. This Agreement begins on the Effective Date and continues for two years. Either party may terminate it at any time on written notice, and either party may terminate it immediately if the other party materially breaches it. On termination, vesting stops, Advisor keeps the vested portion of the option on the terms of the Plan, and Sections 5, 6 and 9 survive.
+
+9. General. This Agreement is governed by the laws of the State of Delaware, and the state and federal courts located in Wilmington, Delaware have exclusive jurisdiction over any dispute arising under it. This Agreement, with the Plan and the stock option agreement, is the entire agreement of the parties on its subject and may be amended only in a writing signed by both parties.
+
+KESTREL LABS, INC.
+
+By: ______________________
+Name: Tomas Reyes
+Title: Chief Executive Officer
+
+ADVISOR
+
+______________________
+Priya Raman

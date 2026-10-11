@@ -5838,6 +5838,28 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-005",
     ],
   },
+  // spec-v49 Step 311, the last cited family: the advisor agreement. The thin
+  // one grants "a stock option in an amount to be agreed" and nothing else,
+  // so the option-pricing check, which is gated on an option, fires too.
+  "advisor-agreement-complete.txt": {
+    playbook: "advisor-agreement",
+    findings: ["OBLI-005"],
+  },
+  "advisor-agreement-thin.txt": {
+    playbook: "advisor-agreement",
+    findings: [
+      "ADV-001",
+      "ADV-002",
+      "ADV-003",
+      "ADV-004",
+      "ADV-005",
+      "ADV-006",
+      "CHOICE-003",
+      "OBLI-003",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

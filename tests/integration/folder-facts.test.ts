@@ -84,7 +84,7 @@ describe("a folder's facts", { timeout: 300_000 }, () => {
   });
 
   it("names the closest family for an unmatched document, and not for a blank one", () => {
-    const advisor = doc("advisor.txt").result;
+    const advisor = doc("mentor.txt").result;
     expect(advisor.playbook_id).toBe("generic-fallback");
     expect(advisor.near_miss).toEqual({ playbook_id: "employment-at-will-us", score: 0.4 });
     expect(advisor.near_miss!.score).toBeGreaterThanOrEqual(NEAR_MISS_FLOOR);

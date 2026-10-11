@@ -114,7 +114,7 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     expect(row("tracked.docx")).toMatchObject({ tier: 2, why: "tracked-changes" });
     expect(row("french.txt")).toMatchObject({ tier: 2, why: "not-english" });
     // Tier 3: no type matched. The closest one is named only when there is one.
-    expect(row("advisor.txt")).toMatchObject({ tier: 3, near: "employment-at-will-us (0.4)" });
+    expect(row("mentor.txt")).toMatchObject({ tier: 3, near: "employment-at-will-us (0.4)" });
     expect(row("boarding.txt")).toMatchObject({ tier: 3 });
     expect(row("boarding.txt").near).toBeUndefined();
     expect(row("recipe.txt").tier).toBe(3);
@@ -136,7 +136,7 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     expect(JSON.stringify(r).length).toBeLessThanOrEqual(20_000);
     // Paths are relative to the allowed root, so each can be handed back.
     expect(JSON.stringify(r)).not.toContain(tmp.replace(/\\/g, "/"));
-    const again = await analyzeDocumentTool({ path: row("advisor.txt").path }, ctx);
+    const again = await analyzeDocumentTool({ path: row("mentor.txt").path }, ctx);
     expect("not_analyzed" in again).toBe(false);
     expect(r.notes!.order).toMatch(/never a risk score/);
     expect(r.cross_document).toBeUndefined();

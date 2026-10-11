@@ -81,6 +81,13 @@ jobs:
             echo "No DKB changes to commit"
           else
             git commit -m "chore(dkb): rebuild ${{ steps.build.outputs.version }}"
+            # The build and regression take half an hour, and main moves in
+            # that time. The commit only adds a dated directory, so it rebases
+            # cleanly; a rejected push is retried rather than failing the run.
+            for attempt in 1 2 3; do
+              if git push; then exit 0; fi
+              git pull --rebase origin "${GITHUB_REF_NAME}"
+            done
             git push
           fi
 

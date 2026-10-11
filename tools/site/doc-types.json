@@ -223,6 +223,56 @@
    "sources": []
   },
   {
+   "id": "advisor-agreement",
+   "name": "Advisor Agreement",
+   "group": "Equity & financing",
+   "summary": "A short agreement under which a startup gives an outside advisor equity in return for a few hours of advice a month. The checks read for the amount of equity, a vesting schedule, an assignment of what the advisor creates, confidentiality, a statement that advising does not conflict with the advisor's other obligations, and — where the grant is an option — an exercise price at fair market value or set under the company's plan.",
+   "checks": [
+    {
+     "id": "ADV-001",
+     "name": "The amount of equity",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ADV-002",
+     "name": "Vesting schedule and cliff",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ADV-003",
+     "name": "Assignment of what the advisor creates",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ADV-004",
+     "name": "Confidentiality",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ADV-005",
+     "name": "No conflict with the advisor's other obligations",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ADV-006",
+     "name": "Option priced at fair market value, or under the company's plan",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 110,
+   "companions": [
+    "mutual-nda",
+    "consulting-agreement"
+   ],
+   "sources": []
+  },
+  {
    "id": "ai-addendum",
    "name": "AI Usage Addendum",
    "group": "SaaS & technology",

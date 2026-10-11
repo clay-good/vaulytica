@@ -13,7 +13,7 @@
  *   blank.txt           whitespace only
  *   tracked.docx        tracked insertions and deletions
  *   boarding.txt        a horse boarding agreement: no family, and none close
- *   advisor.txt         an advisor agreement: no family, one close (0.4)
+ *   mentor.txt          a mentorship agreement: no family, one close (0.4)
  *   recipe.txt          not a legal document at all
  *   french.txt          a contract, not in English
  *   nda.txt             a complete mutual NDA — the ordinary case
@@ -42,17 +42,17 @@ This Horse Boarding Agreement is entered into on March 3, 2026 between Fallow Ri
 4. Risk of Loss. Owner bears the risk of injury to or death of the horse, except where caused by Stable's gross negligence.
 `;
 
-export const ADVISOR_AGREEMENT = `ADVISOR AGREEMENT
+export const MENTORSHIP_AGREEMENT = `MENTORSHIP AGREEMENT
 
-This Advisor Agreement is between Kestrel Labs, Inc. (the "Company") and Priya Raman (the "Advisor").
+This Mentorship Agreement is between Kestrel Labs, Inc. (the "Company") and Priya Raman (the "Mentor").
 
-1. Services. Advisor will advise the Company on product strategy for about four hours a month.
+1. Services. Mentor will meet with the Company's engineers for about four hours a month.
 
-2. Equity. The Company will grant Advisor an option to purchase 10,000 shares of common stock, vesting monthly over two years.
+2. Stipend. The Company will pay Mentor $500 a month.
 
-3. Confidentiality. Advisor will keep the Company's confidential information confidential.
+3. Confidentiality. Mentor will keep the Company's confidential information confidential.
 
-4. Assignment of Inventions. Advisor assigns to the Company all inventions made in the course of the services.
+4. Assignment of Inventions. Mentor assigns to the Company all inventions made in the course of the mentoring.
 `;
 
 export const RECIPE = `Sourdough, the slow way
@@ -69,7 +69,7 @@ Le présent contrat est conclu entre la société Lumière SAS et la société R
 export const TRIAGE_FILES = {
   not_read: ["corrupt.docx", "scan.pdf", "empty.txt", "blank.txt"],
   caveat: ["tracked.docx", "french.txt"],
-  unmatched: ["boarding.txt", "advisor.txt", "recipe.txt"],
+  unmatched: ["boarding.txt", "mentor.txt", "recipe.txt"],
   matched: ["nda.txt", join("2023", "msa.txt"), join("2024", "msa.txt")],
   duplicate_of: { [join("copies", "nda-copy.txt")]: "nda.txt" },
   unsupported: ["logo.png"],
@@ -86,7 +86,7 @@ export function buildTriageFolder(dir: string): string {
   writeFileSync(join(dir, "blank.txt"), "   \n\n\t\n");
   writeFileSync(join(dir, "tracked.docx"), new Uint8Array(trackedChangesDocx()));
   writeFileSync(join(dir, "boarding.txt"), HORSE_BOARDING);
-  writeFileSync(join(dir, "advisor.txt"), ADVISOR_AGREEMENT);
+  writeFileSync(join(dir, "mentor.txt"), MENTORSHIP_AGREEMENT);
   writeFileSync(join(dir, "recipe.txt"), RECIPE);
   writeFileSync(join(dir, "french.txt"), FRENCH);
   copyFileSync(join(SPECIMENS, "mutual-nda-complete.txt"), join(dir, "nda.txt"));

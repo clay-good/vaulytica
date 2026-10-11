@@ -51,6 +51,7 @@ describe("v7 ruleset shape", () => {
     }
     expect([...counts.keys()].sort()).toEqual(
       [
+        "advisor-agreement",
         "buyer-representation-agreement",
         "hipaa-data-use-agreement",
         "merchant-cash-advance",

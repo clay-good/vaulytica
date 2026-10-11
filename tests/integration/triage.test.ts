@@ -92,7 +92,7 @@ describe("the triage model", { timeout: 300_000 }, () => {
     expect(row("corrupt.docx").reason).toMatch(/could not be read/);
     expect(row("tracked.docx").reason).toBe("tracked-changes");
     expect(row("french.txt").reason).toBe("not-english");
-    expect(row("advisor.txt").near_type).toEqual({ id: "employment-at-will-us", score: 0.4 });
+    expect(row("mentor.txt").near_type).toEqual({ id: "employment-at-will-us", score: 0.4 });
     expect(row("boarding.txt").near_type).toBeUndefined();
     // Not read means no counts: the tool has no opinion.
     expect(row("scan.pdf").counts).toBeUndefined();

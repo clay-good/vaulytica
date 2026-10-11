@@ -323,6 +323,70 @@
     ]
   },
   {
+    "id": "advisor-agreement",
+    "version": "1.0.0",
+    "name": "Advisor Agreement",
+    "description": "A short agreement under which a startup gives an outside advisor equity in return for a few hours of advice a month. The checks read for the amount of equity, a vesting schedule, an assignment of what the advisor creates, confidentiality, a statement that advising does not conflict with the advisor's other obligations, and — where the grant is an option — an exercise price at fair market value or set under the company's plan. Distinct from `consulting-agreement`, which reads a paid services engagement.",
+    "match_features": {
+      "title_keywords": [
+        "advisor agreement",
+        "adviser agreement",
+        "advisory board agreement",
+        "startup advisor agreement",
+        "founder advisor agreement",
+        "strategic advisor agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "the advisor",
+        "advisory services",
+        "shares of common stock",
+        "vesting",
+        "advisory board",
+        "equity incentive plan",
+        "fully diluted"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-VENTURE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "mutual-nda",
+      "consulting-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "The amount of equity",
+      "Vesting schedule and cliff",
+      "Assignment of what the advisor creates",
+      "Confidentiality",
+      "No conflict with the advisor's other obligations",
+      "Option priced at fair market value, or under the company's plan"
+    ]
+  },
+  {
     "id": "ai-addendum",
     "version": "1.1.0",
     "name": "AI Usage Addendum",
