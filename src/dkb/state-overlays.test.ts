@@ -64,6 +64,25 @@ describe("overlayFamilyForPlaybook", () => {
     expect(overlayFamilyForPlaybook("loan-agreement")).toBe("lending");
   });
 
+  it("selects the Texas sales-based financing node only under Texas law", () => {
+    // spec-v49 §6: state law reaches a merchant cash advance through the
+    // overlay, never as a check on every document of the family.
+    expect(overlayFamilyForPlaybook("merchant-cash-advance")).toBe("sales-based-financing");
+    const law = (raw_text: string) =>
+      [{ clause_kind: "governing-law", raw_text }] as unknown as Parameters<
+        typeof selectStateOverlays
+      >[1];
+    const tx = selectStateOverlays("merchant-cash-advance", law("State of Texas"));
+    expect(tx?.matched.map((o) => o.id)).toEqual(["sbf-contract-terms-us-tx"]);
+    expect(tx?.matched[0]?.citation.source).toContain("398.055");
+    const ny = selectStateOverlays("merchant-cash-advance", law("State of New York"));
+    expect(ny?.matched).toEqual([]);
+    expect(ny?.uncovered_states).toEqual(["us-ny"]);
+    // A loan under Texas law gets the usury node, not this one.
+    const loan = selectStateOverlays("loan-agreement", law("State of Texas"));
+    expect(loan?.matched.map((o) => o.id)).not.toContain("sbf-contract-terms-us-tx");
+  });
+
   it("returns undefined for non-state-sensitive families", () => {
     expect(overlayFamilyForPlaybook("mutual-nda")).toBeUndefined();
     expect(overlayFamilyForPlaybook("ucc-1-financing-statement")).toBeUndefined();

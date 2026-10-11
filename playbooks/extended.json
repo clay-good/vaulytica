@@ -12143,6 +12143,76 @@
     ]
   },
   {
+    "id": "merchant-cash-advance",
+    "version": "1.0.0",
+    "name": "Merchant Cash Advance Agreement",
+    "description": "A purchase of a business's future receivables for a lump sum, repaid as a share of daily sales — also called revenue-based or sales-based financing. The checks read for a confession of judgment, a right to reconcile payments to actual receipts, the percentage of receipts purchased, what any personal guaranty covers, and the authorization to debit the merchant's account. Distinct from `loan-agreement`, which reads a loan with interest, and from `factoring-agreement`, which reads a sale of existing invoices.",
+    "match_features": {
+      "title_keywords": [
+        "merchant cash advance agreement",
+        "merchant cash advance",
+        "future receivables purchase agreement",
+        "purchase and sale of future receivables",
+        "future receivables sale and purchase agreement",
+        "revenue purchase agreement",
+        "sales-based financing agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "future receivables",
+        "specified percentage",
+        "purchased amount",
+        "purchase price",
+        "the merchant",
+        "daily remittance",
+        "reconciliation"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL-FINANCE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "guaranty",
+      "ucc-1-financing-statement"
+    ],
+    "compliance_matrix_columns": [
+      "Confession of judgment",
+      "Right to reconcile payments to actual receipts",
+      "The percentage of receipts purchased",
+      "What a personal guaranty covers",
+      "Authorization to debit the merchant's account"
+    ]
+  },
+  {
     "id": "merger-agreement",
     "version": "1.0.0",
     "name": "Merger Agreement",

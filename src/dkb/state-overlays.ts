@@ -47,7 +47,11 @@ import type { JurisdictionReference } from "../extract/types.js";
 const CURATED_AT = "2026-06-01";
 
 /** Families with state-law overlays. A function of the matched playbook id. */
-export type OverlayFamily = "employment" | "residential-lease" | "lending";
+export type OverlayFamily =
+  | "employment"
+  | "residential-lease"
+  | "lending"
+  | "sales-based-financing";
 
 /**
  * How the state treats the clause relative to the baseline. Drives the
@@ -79,7 +83,7 @@ export type StateOverlay = {
 
 export const StateOverlaySchema = z.object({
   id: z.string().min(1),
-  family: z.enum(["employment", "residential-lease", "lending"]),
+  family: z.enum(["employment", "residential-lease", "lending", "sales-based-financing"]),
   topic: z.string().min(1),
   jurisdiction: z.string().regex(/^us-[a-z]{2}$/, "jurisdiction must be us-XX"),
   state_name: z.string().min(1),
@@ -867,10 +871,43 @@ const LENDING_USURY: readonly StateOverlay[] = [
 ];
 
 /** The full curated catalog, ordered by family then id. */
+/**
+ * Sales-based financing (a merchant cash advance). Texas regulates the
+ * contract itself: a confession of judgment is void, and an automatic debit
+ * needs a perfected first-priority security interest in the account. Read
+ * from the enrolled text of H.B. 700 (89th Leg., 2025) at capitol.texas.gov on
+ * 2026-10-10. Other states regulate the offer-stage disclosure, which is not
+ * in the contract, and have no node here (spec-v49 §3).
+ */
+const SALES_BASED_FINANCING: readonly StateOverlay[] = [
+  {
+    id: "sbf-contract-terms-us-tx",
+    family: "sales-based-financing",
+    topic: "confession of judgment and automatic debits",
+    jurisdiction: "us-tx",
+    state_name: "Texas",
+    posture: "prohibited",
+    headline:
+      "Confession of judgment void; automatic debit needs a perfected first-priority security interest",
+    summary:
+      "Texas Finance Code chapter 398, effective September 1, 2025, covers commercial sales-based financing. A confession of judgment or similar provision in the contract is void and unenforceable (§ 398.055). A provider or broker may not set up automatic debits from the recipient's deposit account unless it holds a validly perfected security interest in that account with first priority under Business & Commerce Code chapter 9 (§ 398.056). Banks, credit unions, transactions secured by real property and certain other transactions are exempt (§ 398.003).",
+    recommendation:
+      "If the contract is governed by Texas law and is not exempt, remove any confession of judgment, and confirm before relying on an ACH or automatic-debit authorization that the funder holds a perfected first-priority security interest in the account.",
+    severity: "critical",
+    citation: citeAt(
+      "tx-fin-code-398-055-056",
+      "Tex. Fin. Code §§ 398.055, 398.056 (H.B. 700, 89th Leg., R.S. 2025)",
+      "https://capitol.texas.gov/tlodocs/89R/billtext/html/HB00700F.htm",
+      "2026-10-10",
+    ),
+  },
+];
+
 export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...EMPLOYMENT_NONCOMPETE,
   ...RESIDENTIAL_LEASE_DEPOSIT,
   ...LENDING_USURY,
+  ...SALES_BASED_FINANCING,
 ];
 
 /**
@@ -904,6 +941,8 @@ const PLAYBOOK_FAMILY: ReadonlyMap<string, OverlayFamily> = new Map([
   ["loan-agreement", "lending"],
   ["convertible-note", "lending"],
   ["guaranty", "lending"],
+  // Sales-based financing — Texas regulates the contract's own terms.
+  ["merchant-cash-advance", "sales-based-financing"],
 ]);
 
 /** Resolve the overlay family for a matched playbook id, if any. */

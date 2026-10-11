@@ -10,6 +10,7 @@
 
 import type { Rule } from "../../finding.js";
 import { HIPAA_DUA_RULES } from "./hipaa-dua.js";
+import { MERCHANT_CASH_ADVANCE_RULES } from "./merchant-cash-advance.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
 import { SOFTWARE_DEVELOPMENT_RULES } from "./software-development.js";
 
@@ -20,6 +21,7 @@ export const V7_RULES: readonly Rule[] = [
   ...ROOMMATE_RULES,
   ...HIPAA_DUA_RULES,
   ...SOFTWARE_DEVELOPMENT_RULES,
+  ...MERCHANT_CASH_ADVANCE_RULES,
 ];
 
 export {
@@ -28,4 +30,5 @@ export {
   ROOMMATE_RULES,
   HIPAA_DUA_RULES,
   SOFTWARE_DEVELOPMENT_RULES,
+  MERCHANT_CASH_ADVANCE_RULES,
 };

@@ -115,8 +115,8 @@ describe("analyze_folder", { timeout: 300_000 }, () => {
     expect(row("french.txt")).toMatchObject({ tier: 2, why: "not-english" });
     // Tier 3: no type matched. The closest one is named only when there is one.
     expect(row("advisor.txt")).toMatchObject({ tier: 3, near: "employment-at-will-us (0.4)" });
-    expect(row("advance.txt")).toMatchObject({ tier: 3 });
-    expect(row("advance.txt").near).toBeUndefined();
+    expect(row("boarding.txt")).toMatchObject({ tier: 3 });
+    expect(row("boarding.txt").near).toBeUndefined();
     expect(row("recipe.txt").tier).toBe(3);
     // Tier 4: matched. One name in two folders is two rows.
     expect(row("2023/msa.txt")).toMatchObject({ tier: 4, type: "msa-customer-deep" });

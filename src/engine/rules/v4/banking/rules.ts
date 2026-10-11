@@ -52,6 +52,33 @@ const ENTITY_PARTY =
 
 const CATEGORY = "banking";
 
+/**
+ * A confession-of-judgment (cognovit) clause, and the forms that name one only
+ * to disclaim it. Shared with the merchant-cash-advance check (`MCA-001`),
+ * which reads the same clause under a different authority.
+ */
+export const COGNOVIT_PATTERNS: readonly RegExp[] = [
+  /confess(?:es|ed|ing|ion)?\s+(?:of\s+)?judgment/i,
+  /\bcognovit\b/i,
+  /authori[sz]es?\s+any\s+attorney[^.]{0,80}(?:appear|confess|judgment)/i,
+  /warrant\s+of\s+attorney[^.]{0,60}(?:confess|judgment)/i,
+  // v1.0.0 matched only the "confess(ion of) judgment" order; the reversed
+  // "(entry of) judgment by confession" is an equally common cognovit form.
+  /judgment\s+by\s+confession/i,
+];
+export const COGNOVIT_DISCLAIMED: readonly RegExp[] = [
+  /\bno\b[^.]{0,40}confession\s+of\s+judgment|confession\s+of\s+judgment[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+  /\bno\b[^.]{0,40}judgment\s+by\s+confession|judgment\s+by\s+confession[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+  // Two gaps. The `cognovit` and `warrant of attorney` bad patterns had no
+  // guard at all, so naming either one in order to disclaim it fired the
+  // rule. And the guards above key on a literal "no", missing the "shall
+  // not include any …" form. A note that says it contains no cognovit
+  // clause was reported as containing one.
+  /\b(?:not|no)\b[^.]{0,60}(?:\bcognovit\b|warrant\s+of\s+attorney)/i,
+  /(?:\bcognovit\b|warrant\s+of\s+attorney)[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
+  /(?:shall|must|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authori[sz]e)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
+];
+
 const presence = (s: Omit<V4PresenceSpec, "category">): Rule =>
   buildV4PresenceRule({ ...s, category: CATEGORY });
 const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
@@ -225,27 +252,8 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-D/part-444",
     ),
     playbooks: [BNK_PLAYBOOK_PROMISSORY, BNK_PLAYBOOK_LOAN, BNK_PLAYBOOK_GUARANTY],
-    bad_patterns: [
-      /confess(?:es|ed|ing|ion)?\s+(?:of\s+)?judgment/i,
-      /\bcognovit\b/i,
-      /authori[sz]es?\s+any\s+attorney[^.]{0,80}(?:appear|confess|judgment)/i,
-      /warrant\s+of\s+attorney[^.]{0,60}(?:confess|judgment)/i,
-      // v1.0.0 matched only the "confess(ion of) judgment" order; the reversed
-      // "(entry of) judgment by confession" is an equally common cognovit form.
-      /judgment\s+by\s+confession/i,
-    ],
-    exclude_if: [
-      /\bno\b[^.]{0,40}confession\s+of\s+judgment|confession\s+of\s+judgment[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
-      /\bno\b[^.]{0,40}judgment\s+by\s+confession|judgment\s+by\s+confession[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
-      // Two gaps. The `cognovit` and `warrant of attorney` bad patterns had no
-      // guard at all, so naming either one in order to disclaim it fired the
-      // rule. And the guards above key on a literal "no", missing the "shall
-      // not include any …" form. A note that says it contains no cognovit
-      // clause was reported as containing one.
-      /\b(?:not|no)\b[^.]{0,60}(?:\bcognovit\b|warrant\s+of\s+attorney)/i,
-      /(?:\bcognovit\b|warrant\s+of\s+attorney)[^.]{0,40}\b(?:is\s+)?(?:not|prohibited|void|waived|disclaimed)\b/i,
-      /(?:shall|must|does|do|will|may|can)\s*not\s+(?:include|contain|constitute|authori[sz]e)\b[^.]{0,100}(?:confession\s+of\s+judgment|\bcognovit\b|warrant\s+of\s+attorney|judgment\s+by\s+confession)/i,
-    ],
+    bad_patterns: [...COGNOVIT_PATTERNS],
+    exclude_if: COGNOVIT_DISCLAIMED,
     bad_title: "Confession-of-judgment (cognovit) clause present",
     bad_description:
       "The instrument authorizes entry of judgment against the obligor without prior notice or a hearing.",

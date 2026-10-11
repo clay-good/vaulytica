@@ -12,7 +12,7 @@
  *   empty.txt           zero bytes
  *   blank.txt           whitespace only
  *   tracked.docx        tracked insertions and deletions
- *   advance.txt         a merchant cash advance: no family, and none close
+ *   boarding.txt        a horse boarding agreement: no family, and none close
  *   advisor.txt         an advisor agreement: no family, one close (0.4)
  *   recipe.txt          not a legal document at all
  *   french.txt          a contract, not in English
@@ -29,17 +29,17 @@ import { scannedPdf } from "../integration/_mcp/pdf.js";
 
 const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
 
-export const MERCHANT_CASH_ADVANCE = `MERCHANT CASH ADVANCE AGREEMENT
+export const HORSE_BOARDING = `HORSE BOARDING AGREEMENT
 
-This Merchant Cash Advance Agreement is entered into on March 3, 2026 between Harbor Funding LLC ("Funder") and Tidewater Bakery Inc. ("Merchant").
+This Horse Boarding Agreement is entered into on March 3, 2026 between Fallow Ridge Stables LLC ("Stable") and Maren Holt ("Owner").
 
-1. Purchase of Receivables. Funder purchases $80,000 of Merchant's future receivables for a purchase price of $60,000.
+1. Boarding. Stable will board Owner's gelding, Juniper, in a box stall with daily turnout.
 
-2. Specified Percentage. Merchant authorizes Funder to debit 12% of Merchant's daily card receipts from Merchant's bank account by ACH until the purchased amount has been delivered.
+2. Fee. Owner will pay $650 per month, due on the first day of each month.
 
-3. Confession of Judgment. Merchant irrevocably authorizes any attorney to appear for Merchant in any court and confess judgment against Merchant for the unpaid balance, without notice.
+3. Feed and Care. Stable will provide hay twice daily and fresh water at all times. Owner will arrange farrier and veterinary care.
 
-4. Personal Guaranty. The owner of Merchant personally guarantees Merchant's performance of this Agreement.
+4. Risk of Loss. Owner bears the risk of injury to or death of the horse, except where caused by Stable's gross negligence.
 `;
 
 export const ADVISOR_AGREEMENT = `ADVISOR AGREEMENT
@@ -69,7 +69,7 @@ Le présent contrat est conclu entre la société Lumière SAS et la société R
 export const TRIAGE_FILES = {
   not_read: ["corrupt.docx", "scan.pdf", "empty.txt", "blank.txt"],
   caveat: ["tracked.docx", "french.txt"],
-  unmatched: ["advance.txt", "advisor.txt", "recipe.txt"],
+  unmatched: ["boarding.txt", "advisor.txt", "recipe.txt"],
   matched: ["nda.txt", join("2023", "msa.txt"), join("2024", "msa.txt")],
   duplicate_of: { [join("copies", "nda-copy.txt")]: "nda.txt" },
   unsupported: ["logo.png"],
@@ -85,7 +85,7 @@ export function buildTriageFolder(dir: string): string {
   writeFileSync(join(dir, "empty.txt"), "");
   writeFileSync(join(dir, "blank.txt"), "   \n\n\t\n");
   writeFileSync(join(dir, "tracked.docx"), new Uint8Array(trackedChangesDocx()));
-  writeFileSync(join(dir, "advance.txt"), MERCHANT_CASH_ADVANCE);
+  writeFileSync(join(dir, "boarding.txt"), HORSE_BOARDING);
   writeFileSync(join(dir, "advisor.txt"), ADVISOR_AGREEMENT);
   writeFileSync(join(dir, "recipe.txt"), RECIPE);
   writeFileSync(join(dir, "french.txt"), FRENCH);

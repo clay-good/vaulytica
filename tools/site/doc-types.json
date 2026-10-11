@@ -9023,6 +9023,50 @@
    "sources": []
   },
   {
+   "id": "merchant-cash-advance",
+   "name": "Merchant Cash Advance Agreement",
+   "group": "Lending & credit",
+   "summary": "A purchase of a business's future receivables for a lump sum, repaid as a share of daily sales — also called revenue-based or sales-based financing. The checks read for a confession of judgment, a right to reconcile payments to actual receipts, the percentage of receipts purchased, what any personal guaranty covers, and the authorization to debit the merchant's account.",
+   "checks": [
+    {
+     "id": "MCA-001",
+     "name": "Confession of judgment",
+     "description": "A confession of judgment lets the funder obtain a judgment against the merchant without notice or a hearing.",
+     "severity": "warning"
+    },
+    {
+     "id": "MCA-002",
+     "name": "Right to reconcile payments to actual receipts",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MCA-003",
+     "name": "The percentage of receipts purchased",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MCA-004",
+     "name": "What a personal guaranty covers",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MCA-005",
+     "name": "Authorization to debit the merchant's account",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 108,
+   "companions": [
+    "guaranty",
+    "ucc-1-financing-statement"
+   ],
+   "sources": []
+  },
+  {
    "id": "merger-agreement",
    "name": "Merger Agreement",
    "group": "M&A",

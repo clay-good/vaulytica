@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.871.0] — 2026-10-10
+
+### Added
+- **A document type for the merchant cash advance** (spec-v49 Step 311) —
+  also titled a future receivables purchase or revenue purchase agreement. It
+  used to fall to the generic fallback, and a confession of judgment beside a
+  personal guaranty drew one informational note. Five checks: a confession of
+  judgment; a right to reconcile payments to actual receipts; the percentage
+  of receipts purchased; what a personal guaranty covers; and the
+  authorization to debit the merchant's account. 274 document types, 1,860
+  rules.
+- **Texas law, where the contract names it.** Texas Finance Code chapter 398
+  makes a confession of judgment in this kind of financing void and limits
+  automatic debits to a funder holding a perfected first-priority security
+  interest in the account. It appears as a state-law note on a merchant cash
+  advance governed by Texas law, and nowhere else. Written from the enrolled
+  text of H.B. 700 at capitol.texas.gov, read on 2026-10-10.
+
+### Notes
+- Every check is cited as customary practice. The federal ban on confessions
+  of judgment (16 C.F.R. Part 444) covers consumer credit only and is not
+  cited here; the finding says enforceability depends on the state.
+- The confession-of-judgment recognizer is the one the promissory-note check
+  already used, now shared rather than copied.
+- A merchant cash advance is not asked for an IP clause, an indemnity, a
+  liability cap, payment terms or a termination clause.
+
 ## [9.870.0] — 2026-10-10
 
 ### Added

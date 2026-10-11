@@ -5766,6 +5766,18 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-005",
     ],
   },
+  // spec-v49 Step 311: the merchant cash advance. The thin one is the form
+  // the checks exist for — a fixed daily payment with no percentage and no
+  // reconciliation, an unconditional guaranty, and a confession of judgment —
+  // and it names Texas law, which selects the chapter 398 overlay.
+  "merchant-cash-advance-complete.txt": {
+    playbook: "merchant-cash-advance",
+    findings: ["OBLI-005"],
+  },
+  "merchant-cash-advance-thin.txt": {
+    playbook: "merchant-cash-advance",
+    findings: ["CHOICE-003", "MCA-001", "MCA-002", "MCA-003", "MCA-004", "MCA-005"],
+  },
 };
 
 describe("hand-written specimens", () => {

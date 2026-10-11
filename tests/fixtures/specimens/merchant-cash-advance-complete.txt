@@ -1,0 +1,54 @@
+MERCHANT CASH ADVANCE AGREEMENT
+
+This Merchant Cash Advance Agreement (this "Agreement") is entered into as of March 3, 2026 (the "Effective Date") between Harbor Funding LLC, a New York limited liability company ("Funder"), and Tidewater Bakery Inc., a New Jersey corporation ("Merchant").
+
+1. Definitions.
+
+"Account" means Merchant's operating deposit account at Shoreline Bank ending in 4471.
+
+"Purchase Price" means $60,000.
+
+"Purchased Amount" means $80,000 of Receipts.
+
+"Receipts" means all payments Merchant receives from its customers for goods sold, by card, check, cash or electronic transfer.
+
+"Specified Percentage" means 12% of Receipts.
+
+2. Purchase and Sale of Future Receivables. Merchant sells to Funder, and Funder purchases from Merchant, the Specified Percentage of Merchant's future Receipts until Funder has received the Purchased Amount. Funder will pay Merchant the Purchase Price, less the origination fee of $1,200, within two business days after the Effective Date. This is a sale of future receivables and not a loan. Funder bears the risk that Merchant's Receipts slow or that Merchant's business fails in the ordinary course, and the Purchased Amount has no fixed date by which it must be delivered.
+
+3. Delivery of the Specified Percentage. Until the Purchased Amount has been delivered, Merchant will deliver the Specified Percentage to Funder each business day. As a good-faith estimate of the Specified Percentage, based on Merchant's average Receipts over the prior six months, the daily remittance is $410.
+
+4. Debit Authorization. Merchant authorizes Funder to debit the daily remittance from the Account by ACH on each business day. Funder will not debit any other amount without Merchant's written consent. The authorization ends, and Funder will stop all debits, when the Purchased Amount has been delivered.
+
+5. Reconciliation. Merchant may request a reconciliation at any time by sending Funder its bank statements for the period in question. Within five business days after receiving them, Funder will adjust the daily remittance so that it equals the Specified Percentage of Merchant's actual Receipts for that period, and will refund within the same time any amount it collected above the Specified Percentage. Funder may also request a reconciliation once in each calendar month.
+
+6. Merchant's Covenants. Until the Purchased Amount has been delivered, Merchant will (a) deposit all Receipts into the Account; (b) not direct Receipts anywhere else without notifying Funder; (c) not sell its future receivables to anyone else; and (d) give Funder read-only access to the Account's statements.
+
+7. Events of Default. Merchant is in default if it breaches Section 6, if a statement it made in its application was materially false, or if it blocks or revokes the debit authorization while the Purchased Amount is undelivered. A decline in Merchant's Receipts, or the closing of Merchant's business in the ordinary course, is not a default. On a default, the undelivered part of the Purchased Amount becomes due, and Funder may enforce its rights in court after giving Merchant ten days' written notice.
+
+8. No Confession of Judgment. This Agreement does not include any confession of judgment, and Funder will not ask Merchant or the Guarantor to sign one.
+
+9. Security Interest. Merchant grants Funder a security interest in the Receipts and the Account to secure delivery of the Purchased Amount, and authorizes Funder to file a financing statement describing them.
+
+10. Personal Guaranty of Performance. Lena Ortega (the "Guarantor"), the owner of Merchant, guarantees Merchant's performance of its covenants in Section 6 and the truth of the statements in its application. The guaranty is limited to those obligations. The Guarantor does not guarantee that Merchant's business will generate Receipts, and is not liable if the Purchased Amount is not delivered because Receipts decline or the business closes in the ordinary course.
+
+11. Fees. The only fees under this Agreement are the origination fee in Section 2 and a fee of $35 for each debit returned for insufficient funds, limited to four in any calendar month.
+
+12. General. This Agreement is governed by the laws of the State of New York, and the state and federal courts located in New York County, New York have exclusive jurisdiction over any dispute arising under it. This Agreement is the entire agreement of the parties on its subject and may be amended only in a writing signed by both parties.
+
+HARBOR FUNDING LLC
+
+By: ______________________
+Name: Victor Hale
+Title: Managing Director
+
+TIDEWATER BAKERY INC.
+
+By: ______________________
+Name: Lena Ortega
+Title: President
+
+GUARANTOR
+
+______________________
+Lena Ortega

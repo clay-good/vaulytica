@@ -94,7 +94,7 @@ describe("a folder's facts", { timeout: 300_000 }, () => {
     });
     // Unmatched with nothing close: the sentence still names a family ("Best
     // score was … at 0"), and the field does not.
-    const advance = doc("advance.txt").result;
+    const advance = doc("boarding.txt").result;
     expect(advance.playbook_id).toBe("generic-fallback");
     expect(advance.run.playbook_match_reasoning).toMatch(/Best score was \S+ at 0,/);
     expect(advance.near_miss).toBeUndefined();
