@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.885.0] — 2026-10-11
+
+### Security
+- **`npm audit` is clean** — it reported one high and three moderate
+  advisories.
+  - `sharp`, an image tool used only to generate the site's icons at build
+    time, is updated to 0.35.5 for a vulnerability in a library it bundles
+    (GHSA-wq5f-xc86-pv6w). It never ran in the browser or on a document.
+  - `mammoth`, which reads Word files, ships a command-line script that
+    depends on an old `argparse` and through it on `sprintf-js`, which has a
+    denial-of-service advisory (GHSA-hp3w-g68c-fv3c). This project never runs
+    that script, and mammoth's library imports neither package. `argparse` is
+    now resolved to 2.x for mammoth, which removes `sprintf-js` from the
+    install. A test holds the override and checks that mammoth's library does
+    not import what it changes.
+- Reading a Word file is unchanged: the XML parser mammoth uses is the same
+  version as before, and the browser-versus-command-line hash test passes.
+
 ## [9.884.0] — 2026-10-11
 
 ### Added

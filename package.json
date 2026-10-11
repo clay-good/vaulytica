@@ -1,6 +1,6 @@
 {
   "name": "vaulytica",
-  "version": "9.884.0",
+  "version": "9.885.0",
   "private": true,
   "description": "The free, deterministic, runs-entirely-in-your-browser contract checker. A linter for legal documents.",
   "license": "MIT",
@@ -106,13 +106,16 @@
     "globals": "^17.6.0",
     "js-yaml": "^4.1.1",
     "prettier": "^3.2.5",
-    "sharp": "^0.35.3",
+    "sharp": "^0.35.5",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.1",
     "vite": "^8.0.13",
     "vitest": "^4.1.11"
   },
   "overrides": {
-    "qs": "^6.15.2"
+    "qs": "^6.15.2",
+    "mammoth": {
+      "argparse": "^2.0.1"
+    }
   }
 }
