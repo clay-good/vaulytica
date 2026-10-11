@@ -95,6 +95,7 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   PPA: "commercial-power-purchase-agreement",
   SDP: "student-data-privacy-agreement",
   VEH: "vehicle-purchase-agreement",
+  MSO: "management-services-agreement",
   // Presence notes on a document no type matched (spec-v50 §11).
   GEN: "generic-fallback",
 } as const;

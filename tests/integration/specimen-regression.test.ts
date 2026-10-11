@@ -5970,6 +5970,39 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "vehicle-purchase-agreement",
     findings: ["VEH-001", "VEH-002", "VEH-003", "VEH-004", "VEH-005"],
   },
+  // spec-v49 Step 312, the last tranche B type: a management services
+  // agreement with a medical or dental practice. The thin one gives the
+  // manager "full authority over its operations" and what is left after
+  // expenses, and names Oregon law, which selects the S.B. 951 overlay.
+  "management-services-agreement-complete.txt": {
+    playbook: "management-services-agreement",
+    findings: [
+      "OBLI-005",
+      "RISK-007",
+      "RISK-011",
+      "TEMP-004",
+      "TEMP-005",
+      "TEMP-007",
+      "TEMP-008",
+      "TERM-007",
+    ],
+  },
+  "management-services-agreement-thin.txt": {
+    playbook: "management-services-agreement",
+    findings: [
+      "CHOICE-003",
+      "MSO-001",
+      "MSO-002",
+      "MSO-003",
+      "MSO-004",
+      "MSO-005",
+      "MSO-006",
+      "RISK-001",
+      "RISK-005",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

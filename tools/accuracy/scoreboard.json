@@ -2,10 +2,10 @@
   "schema_version": 1,
   "corpus_version": "v0.0.0-seed",
   "dkb_version": "v2026-10-05-local",
-  "engine_version": "9.885.0",
+  "engine_version": "9.886.0",
   "catalog": {
-    "rules": 1930,
-    "playbooks": 285
+    "rules": 1936,
+    "playbooks": 286
   },
   "doc_counts": {
     "real_graded_pairs": 0,
@@ -58,16 +58,16 @@
     },
     "per_family": [],
     "families_with_documents": 0,
-    "families_total": 284,
+    "families_total": 285,
     "caveats": [
       "The title is both the label and the classifier's strongest feature, so this is an upper bound for well-titled documents.",
       "EDGAR is large-company commercial paper, as HTML. It says nothing about residential leases, consumer documents, court filings, or PDF and DOCX ingest.",
-      "Document types with zero real documents: 284 of 284."
+      "Document types with zero real documents: 285 of 285."
     ]
   },
   "corpus_status": "empty",
   "notes": [
     "No real annotated documents yet. The accuracy harness is verified by unit tests; the ground-truth corpus (spec-v5 Step 68) and attorney annotations (Step 70) are human-gated and pending. No headline precision/recall number is published until real documents land — by design, this is the dishonesty v5 exists to break."
   ],
-  "scoreboard_hash": "0b3beafc54cc39c60f64a6bffe57b6a3bc5da991081ed633466da575f31f07ff"
+  "scoreboard_hash": "d15117eac8c49da7a4d35bd6f47af7a23fb80ea5eb126625e1d9ffb6dd4de65e"
 }

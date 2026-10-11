@@ -1,0 +1,54 @@
+{
+  "id": "management-services-agreement",
+  "version": "1.0.0",
+  "name": "Management Services Agreement (Medical or Dental Practice)",
+  "description": "The agreement under which a management company runs the business side of a medical or dental practice — billing, staffing, purchasing, space. The checks read for the terms that keep the licensed practice in charge of care: clinical decisions stay with the practice, the services the manager provides, the management fee and how it is set, who hires and supervises the clinicians, ownership of patient records, and billing and contracts with payers.",
+  "match_features": {
+    "title_keywords": [
+      "management services agreement",
+      "administrative services agreement",
+      "practice management agreement",
+      "business services agreement",
+      "dental service organization agreement",
+      "dental services organization agreement",
+      "management services organization agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "the practice",
+      "management fee",
+      "clinical decisions",
+      "professional judgment",
+      "patient records",
+      "non-clinical",
+      "licensed professionals"
+    ],
+    "negative_features": ["hotel", "property management", "the property", "asset management"]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    }
+  },
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "STATE-CORPORATE-PRACTICE",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["baa", "physician-employment-agreement"],
+  "compliance_matrix_columns": [
+    "Clinical decisions stay with the practice",
+    "The services the manager provides",
+    "The management fee, and how it is set",
+    "Who hires and supervises the clinicians",
+    "Patient records belong to the practice",
+    "Billing, and contracts with payers"
+  ]
+}

@@ -1121,11 +1121,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "9d7181c395459dfafbb932e365c82203d8dd96ea0e93bf33a81d60cd0528a764",
+  "result_hash": "4f4c92858cf67ff1f11d21cc4b2043cbcc270d68c442d582d8bf2ee1e2fcc43e",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.885.0"
+  "version": "9.886.0"
 }

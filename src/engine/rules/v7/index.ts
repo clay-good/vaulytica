@@ -13,6 +13,7 @@ import { ADVISOR_RULES } from "./advisor.js";
 import { BUYER_REPRESENTATION_RULES } from "./buyer-representation.js";
 import { FALLBACK_RULES } from "./fallback.js";
 import { HIPAA_DUA_RULES } from "./hipaa-dua.js";
+import { MANAGEMENT_SERVICES_RULES } from "./management-services.js";
 import { MEMORANDUM_RULES } from "./memorandum.js";
 import { MERCHANT_CASH_ADVANCE_RULES } from "./merchant-cash-advance.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
@@ -38,6 +39,7 @@ export const V7_RULES: readonly Rule[] = [
   ...MEMORANDUM_RULES,
   ...TRANCHE_B_RULES,
   ...TRANCHE_B_CITED_RULES,
+  ...MANAGEMENT_SERVICES_RULES,
 ];
 
 export {
@@ -55,4 +57,5 @@ export {
   MEMORANDUM_RULES,
   TRANCHE_B_RULES,
   TRANCHE_B_CITED_RULES,
+  MANAGEMENT_SERVICES_RULES,
 };

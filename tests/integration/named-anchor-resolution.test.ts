@@ -41,7 +41,7 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  */
 // 155 in 9.831.0: an order form's "Subscription Start Date", once its field
 // line stopped joining the next one.
-const RESOLVED_NAMED_ANCHORS = 166;
+const RESOLVED_NAMED_ANCHORS = 167;
 
 /**
  * References whose anchor resolves but whose own text is NOT the defined term

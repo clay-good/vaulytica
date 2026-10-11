@@ -8880,6 +8880,56 @@
    "sources": []
   },
   {
+   "id": "management-services-agreement",
+   "name": "Management Services Agreement (Medical or Dental Practice)",
+   "group": "Healthcare",
+   "summary": "The agreement under which a management company runs the business side of a medical or dental practice — billing, staffing, purchasing, space. The checks read for the terms that keep the licensed practice in charge of care: clinical decisions stay with the practice, the services the manager provides, the management fee and how it is set, who hires and supervises the clinicians, ownership of patient records, and billing and contracts with payers.",
+   "checks": [
+    {
+     "id": "MSO-001",
+     "name": "Clinical decisions stay with the practice",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MSO-002",
+     "name": "The services the manager provides",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MSO-003",
+     "name": "The management fee, and how it is set",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MSO-004",
+     "name": "Who hires and supervises the clinicians",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MSO-005",
+     "name": "Patient records belong to the practice",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MSO-006",
+     "name": "Billing, and contracts with payers",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 112,
+   "companions": [
+    "baa",
+    "physician-employment-agreement"
+   ],
+   "sources": []
+  },
+  {
    "id": "manufacturing-supply-agreement",
    "name": "Manufacturing / Supply Agreement",
    "group": "Commercial & services",

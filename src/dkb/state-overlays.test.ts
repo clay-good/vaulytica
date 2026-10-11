@@ -131,6 +131,25 @@ describe("overlayFamilyForPlaybook", () => {
     ).toEqual([]);
   });
 
+  it("selects the California and Oregon management-services nodes by governing law", () => {
+    expect(overlayFamilyForPlaybook("management-services-agreement")).toBe("management-services");
+    const law = (raw_text: string) =>
+      [{ clause_kind: "governing-law", raw_text }] as unknown as Parameters<
+        typeof selectStateOverlays
+      >[1];
+    const ca = selectStateOverlays("management-services-agreement", law("State of California"));
+    expect(ca?.matched.map((o) => o.id)).toEqual(["mso-us-ca"]);
+    expect(ca?.matched[0]?.citation.source).toContain("1191");
+    const or = selectStateOverlays("management-services-agreement", law("State of Oregon"));
+    expect(or?.matched.map((o) => o.id)).toEqual(["mso-us-or"]);
+    // Oregon's two operative dates are the first thing a reader needs.
+    expect(or?.matched[0]?.summary).toContain("January 1, 2026");
+    expect(or?.matched[0]?.summary).toContain("January 1, 2029");
+    const az = selectStateOverlays("management-services-agreement", law("State of Arizona"));
+    expect(az?.matched).toEqual([]);
+    expect(az?.uncovered_states).toEqual(["us-az"]);
+  });
+
   it("returns undefined for non-state-sensitive families", () => {
     expect(overlayFamilyForPlaybook("mutual-nda")).toBeUndefined();
     expect(overlayFamilyForPlaybook("ucc-1-financing-statement")).toBeUndefined();

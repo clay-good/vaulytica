@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.886.0] — 2026-10-11
+
+### Added
+- **Management Services Agreement (Medical or Dental Practice)** — the last
+  of the second probe's thirteen candidates (spec-v49 Step 312). It was held
+  back while the two statutes that now govern it had been read only in
+  secondary sources; both have now been read in primary text. Six checks, all
+  customary practice: clinical decisions stay with the practice; the services
+  the manager provides; the management fee and how it is set; who hires and
+  supervises the clinicians; ownership of patient records; and billing and
+  contracts with payers. 286 document types, 1,936 rules, 94 state-law
+  overlays.
+- **California law, where the agreement names it.** Since January 1, 2026, a
+  private equity group or hedge fund involved with a physician or dental
+  practice may not control its clinical decisions, patient records, payer
+  contracts, coding or clinical hiring, and a contract term that would allow
+  it is void (Health & Safety Code § 1191, read at
+  leginfo.legislature.ca.gov on 2026-10-11). The note says to establish first
+  whether the manager is such a fund.
+- **Oregon law, where the agreement names it.** Senate Bill 951 (2025) bars a
+  management services organization from owning or controlling the practice it
+  manages and lists the controls it may not exercise; a term that authorizes
+  one is void. It applies from January 1, 2026 to entities formed after the
+  Act, and from January 1, 2029 to those that existed before it. Read as the
+  enrolled bill at olis.oregonlegislature.gov on 2026-10-11; the note says to
+  confirm it has not since been amended.
+
 ## [9.885.0] — 2026-10-11
 
 ### Security

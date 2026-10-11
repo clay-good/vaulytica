@@ -54,7 +54,8 @@ export type OverlayFamily =
   | "sales-based-financing"
   | "training-repayment"
   | "buyer-representation"
-  | "student-data";
+  | "student-data"
+  | "management-services";
 
 /**
  * How the state treats the clause relative to the baseline. Drives the
@@ -94,6 +95,7 @@ export const StateOverlaySchema = z.object({
     "training-repayment",
     "buyer-representation",
     "student-data",
+    "management-services",
   ]),
   topic: z.string().min(1),
   jurisdiction: z.string().regex(/^us-[a-z]{2}$/, "jurisdiction must be us-XX"),
@@ -1004,6 +1006,58 @@ const STUDENT_DATA: readonly StateOverlay[] = [
   },
 ];
 
+/**
+ * Management services agreements with a medical or dental practice. Two
+ * states legislated the contract itself in 2025. Both read in primary text on
+ * 2026-10-11: California at leginfo.legislature.ca.gov, Oregon as the
+ * enrolled bill at olis.oregonlegislature.gov. Oregon's entry describes the
+ * bill as enrolled; a later session may have amended it.
+ */
+const MANAGEMENT_SERVICES: readonly StateOverlay[] = [
+  {
+    id: "mso-us-ca",
+    family: "management-services",
+    topic: "control of a physician or dental practice",
+    jurisdiction: "us-ca",
+    state_name: "California",
+    posture: "restricted",
+    headline:
+      "A private equity group or hedge fund may not control clinical decisions; contrary terms are void",
+    summary:
+      "Since January 1, 2026, a private equity group or hedge fund involved in any manner with a physician or dental practice doing business in California may not interfere with the professional judgment of its physicians or dentists — which tests, referrals and treatments are appropriate, and how many patients a clinician sees — and may not control or be delegated power over the content of patient records; hiring or firing clinicians on clinical competency; the terms of contracts with payers; coding and billing decisions; or the selection of medical equipment and supplies (Health & Safety Code § 1191(a)). A contract term that would allow any of these is void (§ 1191(c)). A management contract with such a fund, or a sale of the practice's assets to one, may not bar a provider from competing with the practice after leaving, or from commenting on quality of care, utilization, ethical challenges or revenue strategies; such a clause is void (§ 1191(d)). An unlicensed entity may still assist and consult on those decisions if the physician or dentist keeps ultimate responsibility for them (§ 1191(h)). The statute applies to a private equity group or hedge fund as § 1190 defines them, which excludes hospitals, public agencies and passive investors.",
+    recommendation:
+      "Establish first whether the manager is, or is controlled by, a private equity group or hedge fund. If it is, check that every decision listed in § 1191(a) stays with the practice, and remove any clause that stops a provider competing after leaving or speaking about quality of care.",
+    severity: "warning",
+    citation: citeAt(
+      "ca-health-safety-1191",
+      "Cal. Health & Safety Code §§ 1190–1191 (S.B. 351, Stats. 2025, ch. 409)",
+      "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=HSC&sectionNum=1191.",
+      "2026-10-11",
+    ),
+  },
+  {
+    id: "mso-us-or",
+    family: "management-services",
+    topic: "control of a professional medical entity",
+    jurisdiction: "us-or",
+    state_name: "Oregon",
+    posture: "restricted",
+    headline:
+      "A management services organization may not own or control the practice it manages; contrary terms are void",
+    summary:
+      "Under Oregon Senate Bill 951 (2025), as enrolled, a management services organization and its owners, directors, officers and employees may not own or control a majority of a professional medical entity it has a management contract with; serve as its director or officer; vote its shares by proxy; control or restrict the sale or transfer of its shares or assets (except on listed events such as loss of license, death, or the practice's breach of the management contract); or exercise de facto control over its administrative, business or clinical operations in a way that affects clinical decision making or the quality of care — including ultimate authority over hiring, firing, schedules and pay of medical licensees, clinical staffing levels, diagnostic coding, clinical standards, billing and collection policies, prices for a licensee's services, and contracts with payers (section 1(2)(a)). The organization may still provide support, advice and consultation on business operations (section 1(2)(c)). A provision that authorizes a prohibited act is void and unenforceable, and a licensee or practice that suffers a loss may sue for damages and an injunction (section 1(5)). Section 1 first applies on January 1, 2026 to organizations and practices formed on or after the Act's effective date, and on January 1, 2029 to those that existed before it (section 9). Separately, most noncompetition agreements restricting the practice of medicine or nursing, and nondisclosure and nondisparagement agreements between a medical licensee and a management services organization, are void, with stated exceptions (section 7). Listed entities are exempt, including hospitals, telemedicine-only entities and certain behavioral health providers (section 1(3)–(4)).",
+    recommendation:
+      "Check when the manager and the practice were formed, which decides whether section 1 applies from 2026 or 2029. Then check the agreement against the list of prohibited controls, and remove any noncompetition, nondisclosure or nondisparagement clause binding a medical licensee that falls outside the exceptions. Confirm the bill has not been amended since it was enrolled.",
+    severity: "warning",
+    citation: citeAt(
+      "or-sb-951-2025",
+      "Or. S.B. 951 (2025 Reg. Sess.), enrolled — sections 1, 7 and 9",
+      "https://olis.oregonlegislature.gov/liz/2025R1/Downloads/MeasureDocument/SB951/Enrolled",
+      "2026-10-11",
+    ),
+  },
+];
+
 export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...EMPLOYMENT_NONCOMPETE,
   ...RESIDENTIAL_LEASE_DEPOSIT,
@@ -1012,6 +1066,7 @@ export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...TRAINING_REPAYMENT,
   ...BUYER_REPRESENTATION,
   ...STUDENT_DATA,
+  ...MANAGEMENT_SERVICES,
 ];
 
 /**
@@ -1053,6 +1108,8 @@ const PLAYBOOK_FAMILY: ReadonlyMap<string, OverlayFamily> = new Map([
   ["buyer-representation-agreement", "buyer-representation"],
   // Student data — California lists the contract's required provisions.
   ["student-data-privacy-agreement", "student-data"],
+  // Management services — California and Oregon legislated the contract in 2025.
+  ["management-services-agreement", "management-services"],
 ]);
 
 /** Resolve the overlay family for a matched playbook id, if any. */

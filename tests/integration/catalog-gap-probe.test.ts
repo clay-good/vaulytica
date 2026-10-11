@@ -112,7 +112,7 @@ describe("documents the catalog has no type for", () => {
 
 /**
  * Tranche B (spec-v49 §4, Step 312): thirteen more candidates, measured the
- * same way on 9.878.0. Eight fell to the fallback. Three were judged as a
+ * same way on 9.878.0. All thirteen are now built or routed (9.886.0). Eight fell to the fallback. Three were judged as a
  * neighbour — a founder's stock purchase and a community memorandum of
  * understanding each drew eight criticals from an M&A pack. Two were already
  * handled, by a type whose title keywords name them.
