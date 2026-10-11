@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.876.0] — 2026-10-10
+
+### Added
+- **Paste a contract's text into the browser** (spec-v50 Step 315). A "Paste
+  the text…" control beside the drop zone opens a box; "Review this text" runs
+  the same analysis a file gets. Three places already said this existed — the
+  drop zone's own description, the reference, and the sample-documents guide,
+  which ships a file "to paste into the textarea". Nothing is uploaded.
+- **`.txt` and `.md` files in the browser**, dropped or picked on their own,
+  in a folder, in a `.zip`, and as the revised version in a comparison. The
+  command line has always read them.
+- **The same hash on both surfaces.** Pasted text is analyzed under the name
+  `pasted-text.txt`, so the report from the tab verifies against the same text
+  saved under that name and run from the command line — byte-order mark and
+  all. A test holds the two equal.
+
+### Changed
+- The paste box takes up to 500,000 characters (about 150 pages). The
+  analysis runs in the page, and a megabyte of text held it for about five
+  seconds when measured. A longer document can be dropped as a `.txt` file,
+  and the box says so.
+- A folder or `.zip` dropped in the browser now reads its text files as
+  documents, as the command line does — including a README. Images and other
+  types are still skipped.
+- Every "PDF or DOCX" sentence on the site and in the generated pages now
+  names text and paste.
+
 ## [9.875.0] — 2026-10-10
 
 ### Added

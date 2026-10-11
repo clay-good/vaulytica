@@ -35,23 +35,36 @@ describe("expandBundleInputs", () => {
     // `expandBundleInputs` should defensively drop anything classify-
     // unsupported so `planBundle` sees a tighter list.
     const ok = fakeBlobFile("contract.pdf", strToU8("pdf"));
-    const junk = fakeBlobFile("README.md", strToU8("md"));
-    const txt = fakeBlobFile("notes.txt", strToU8("notes"));
-    const candidates = await expandBundleInputs([ok, junk, txt]);
+    const junk = fakeBlobFile("cover.png", strToU8("png"));
+    const rtf = fakeBlobFile("notes.rtf", strToU8("notes"));
+    const candidates = await expandBundleInputs([ok, junk, rtf]);
     expect(candidates.map((c) => c.filename)).toEqual(["contract.pdf"]);
   });
 
+  it("keeps text files as bundle members, as the command line does", async () => {
+    // spec-v50 §1: `.txt` and `.md` are documents on every surface.
+    const pdf = fakeBlobFile("contract.pdf", strToU8("pdf"));
+    const txt = fakeBlobFile("side-letter.txt", strToU8("Side letter"));
+    const md = fakeBlobFile("terms.md", strToU8("# Terms"));
+    const candidates = await expandBundleInputs([pdf, txt, md]);
+    expect(candidates.map((c) => c.filename).sort()).toEqual([
+      "contract.pdf",
+      "side-letter.txt",
+      "terms.md",
+    ]);
+  });
+
   it("expands a single .zip drop via the zip-bundle path", async () => {
-    // Build a zip with two .pdf entries + one ignored README.
+    // Build a zip with two documents + one ignored image.
     const archive = zipSync({
       "first.pdf": strToU8("aaa"),
       "second.docx": strToU8("bbb"),
-      "README.txt": strToU8("ignored"),
+      "cover.png": strToU8("ignored"),
     });
     const zipFile = fakeBlobFile("docs.zip", archive, "application/zip");
     const candidates = await expandBundleInputs([zipFile]);
     expect(candidates.map((c) => c.filename).sort()).toEqual(["first.pdf", "second.docx"]);
-    // README is silently skipped per spec-v4 §8 (zip path); the
+    // The image is silently skipped per spec-v4 §8 (zip path); the
     // candidate list contains only the accepted entries.
     for (const c of candidates) {
       expect(c.bytes.byteLength).toBeGreaterThan(0);
@@ -86,11 +99,11 @@ describe("expandBundleInputs", () => {
   });
 
   it("zip path with no accepted entries returns an empty list", async () => {
-    // An archive containing only ignored files (README, images, etc.)
+    // An archive containing only ignored files (RTF, images, etc.)
     // returns [] from `extractZipEntries`. `runBundlePipeline` then
     // bails out at the `accepted.length < 2` guard.
     const archive = zipSync({
-      "README.md": strToU8("hi"),
+      "notes.rtf": strToU8("hi"),
       "logo.png": strToU8("png"),
     });
     const zipFile = fakeBlobFile("empty.zip", archive);

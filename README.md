@@ -25,7 +25,7 @@ Drop in a contract, get back a report of what looks wrong or missing. No sign-up
 ## How to use it
 
 1. Open [vaulytica.com](https://vaulytica.com).
-2. Drag in a PDF or Word file (or a folder or `.zip`).
+2. Drag in a PDF, a Word file or a text file (or a folder or `.zip`) — or paste the text.
 3. Read the results, then download the report.
 
 ## Command line

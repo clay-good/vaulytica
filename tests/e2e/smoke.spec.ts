@@ -79,3 +79,42 @@ test("drop-zone → analyze → DOCX download path is intact", async ({ page }, 
 
   expect(externalRequests, "expected zero cross-origin requests during analysis").toEqual([]);
 });
+
+test("paste text → analyze → report, with nothing sent anywhere (spec-v50 §1)", async ({
+  page,
+}) => {
+  const SAMPLE = join(__dirname, "sample-docs", "pasted-services-agreement.txt");
+  test.skip(!existsSync(SAMPLE), `sample missing: ${SAMPLE}`);
+
+  const baseURL =
+    process.env.VAULYTICA_E2E_BASE_URL ??
+    `http://127.0.0.1:${process.env.VAULYTICA_E2E_PORT ?? "4173"}`;
+  const pageOrigin = new URL(baseURL).origin;
+  const externalRequests: string[] = [];
+  page.on("request", (req) => {
+    const u = new URL(req.url());
+    if (u.origin !== pageOrigin && u.protocol !== "data:" && u.protocol !== "blob:") {
+      externalRequests.push(req.url());
+    }
+  });
+
+  await page.goto("/");
+  const panel = page.locator("#paste-panel");
+  await expect(panel).toBeHidden();
+  await page.locator('[data-role="paste-open"]').click();
+  await expect(panel).toBeVisible();
+
+  // An empty paste starts nothing and says why, beside the box.
+  await page.locator('[data-role="paste-submit"]').click();
+  await expect(page.locator('[data-role="paste-note"]')).toContainText("Paste the contract");
+  await expect(page.locator("#dropzone")).toHaveAttribute("data-state", "empty");
+
+  await page.locator("#paste-text").fill(readFileSync(SAMPLE, "utf8"));
+  await page.locator('[data-role="paste-submit"]').click();
+
+  await page.locator('[data-role="docx-download"]').waitFor({ state: "visible", timeout: 60_000 });
+  // The report names the text the way the command line would.
+  await expect(page.locator("#dropzone")).toContainText("pasted-text.txt");
+  await expect(panel).toBeHidden();
+  expect(externalRequests, "expected zero cross-origin requests during analysis").toEqual([]);
+});

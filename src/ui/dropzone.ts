@@ -1,5 +1,5 @@
 /**
- * Drop zone — drag, paste, and click-to-pick interactions. The DOM
+ * Drop zone — drag, click-to-pick, and a paste-text panel. The DOM
  * element is the same in all three pipeline states; the runtime state
  * is toggled via `data-state` so CSS can style transitions without
  * the JS swapping markup.
@@ -7,6 +7,7 @@
  * Validation rules per spec §26 step 12:
  *   - .pdf  → accept (route to ingestPdf)
  *   - .docx → accept (route to ingestDocx)
+ *   - .txt / .md → accept (read as pasted text is; spec-v50 §1)
  *   - .doc  → reject with the user-facing fix-it message
  *   - other → reject with a generic message
  *
@@ -41,24 +42,52 @@
  */
 
 import { ROUND_ARTIFACT } from "../report/round-order.js";
+import {
+  classifyExtension,
+  rejectionForFilename,
+  TEXT_EXTENSIONS,
+  type AcceptedKind,
+} from "../ingest/kinds.js";
 
-export type AcceptedKind = "pdf" | "docx";
+export type { AcceptedKind };
+
+/** The name pasted text is analyzed under. It is inside `result_hash`. */
+export const PASTED_TEXT_NAME = "pasted-text.txt";
+
+/**
+ * The most the paste box takes. The analysis runs on the main thread, and a
+ * megabyte of text held it for about five seconds when measured; half that is
+ * still some 150 pages. A longer document can be dropped as a `.txt` file.
+ */
+export const MAX_PASTE_BOX_CHARS = 500_000;
+
+/** Every extension one dropped or picked document may carry. */
+const DOCUMENT_ACCEPT = [".pdf", ".docx", ...TEXT_EXTENSIONS].join(",");
 
 export type DropResult =
   | { ok: true; file: File; kind: AcceptedKind }
   | { ok: false; reason: string };
 
 export function validateFile(file: File): DropResult {
-  const name = file.name.toLowerCase();
-  if (name.endsWith(".pdf")) return { ok: true, file, kind: "pdf" };
-  if (name.endsWith(".docx")) return { ok: true, file, kind: "docx" };
-  if (name.endsWith(".doc")) {
+  const kind = classifyExtension(file.name);
+  if (kind) return { ok: true, file, kind };
+  return { ok: false, reason: rejectionForFilename(file.name) };
+}
+
+/** What the paste box does with its text: a file to analyze, or why not. */
+export function pastedTextFile(text: string): DropResult {
+  if (text.trim() === "") return { ok: false, reason: "Paste the contract's text first." };
+  if (text.length > MAX_PASTE_BOX_CHARS) {
     return {
       ok: false,
-      reason: "Open it in Word or Google Docs and save it as .docx, then come back.",
+      reason: `That is ${text.length.toLocaleString("en-US")} characters; the paste box takes ${MAX_PASTE_BOX_CHARS.toLocaleString("en-US")}. Save it as a .txt file and drop the file instead.`,
     };
   }
-  return { ok: false, reason: `Vaulytica accepts .pdf and .docx — not "${file.name}".` };
+  return {
+    ok: true,
+    file: new File([text], PASTED_TEXT_NAME, { type: "text/plain" }),
+    kind: "text",
+  };
 }
 
 /** True if the filename indicates a zip archive bundle (spec-v4 §8). */
@@ -76,8 +105,7 @@ export function isZipFile(file: File): boolean {
  * documents it describes.
  */
 export function isBundleMemberName(name: string): boolean {
-  const n = name.toLowerCase();
-  return n.endsWith(".pdf") || n.endsWith(".docx") || n.endsWith(".csv");
+  return classifyExtension(name) !== null || name.toLowerCase().endsWith(".csv");
 }
 
 /** A saved coherence artifact (`*.coherence.json`) — one round of a negotiation. */
@@ -121,6 +149,13 @@ export type DropzoneOptions = {
    * delegation still works for backwards-compatible unit tests.
    */
   folderPickContainer?: HTMLElement | null;
+  /**
+   * The paste-text panel: a `<textarea data-role="paste-text">`, a
+   * `data-role="paste-submit"` button and a `data-role="paste-note"` line. It
+   * starts hidden and is opened by a `data-role="paste-open"` control in
+   * `folderPickContainer`. Omitted, there is no paste path.
+   */
+  pastePanel?: HTMLElement | null;
 };
 
 export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void {
@@ -130,7 +165,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // The pipeline still distinguishes ≥ 2 files vs a single `.zip` and
   // rejects unsupported extensions upstream via `validateFile` /
   // `planBundle`.
-  input.accept = ".pdf,.docx,.csv,.zip,.json";
+  input.accept = `${DOCUMENT_ACCEPT},.csv,.zip,.json`;
   input.multiple = true;
   // Visually hidden but keyboard-focusable. The dropzone wrapper has
   // no role/tabindex of its own; this input is the page's keyboard
@@ -138,7 +173,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // dropzone gets a `:focus-within` ring); Enter/Space opens the
   // native file picker. The aria-label is the accessible name.
   input.className = "sr-only";
-  input.setAttribute("aria-label", "Drop a PDF or DOCX — up to four at once.");
+  input.setAttribute("aria-label", "Drop a PDF, DOCX or text file — up to four at once.");
   dz.appendChild(input);
 
   // Secondary input wired to the folder-picker affordance (spec-v4 §8
@@ -149,7 +184,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
   // so the bundle pipeline can de-duplicate by basename if needed.
   const inputDir = document.createElement("input");
   inputDir.type = "file";
-  inputDir.accept = ".pdf,.docx,.csv,.json";
+  inputDir.accept = `${DOCUMENT_ACCEPT},.csv,.json`;
   inputDir.multiple = true;
   // Set both the property and the attribute so the e2e probe selector
   // `#dropzone input[type="file"][webkitdirectory]` matches.
@@ -286,8 +321,37 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     if (target?.closest('[data-role="folder-pick"]')) {
       e.stopPropagation();
       onPickFolder();
+      return;
+    }
+    if (panel && target?.closest('[data-role="paste-open"]')) {
+      panel.hidden = !panel.hidden;
+      if (!panel.hidden) pasteBox?.focus();
     }
   };
+
+  // Paste-text panel (spec-v50 §1). Pasted text takes the single-file path
+  // under a fixed name, so its report verifies against the same text saved as
+  // `pasted-text.txt` and run from the command line.
+  const panel = opts.pastePanel ?? null;
+  const pasteBox = panel?.querySelector<HTMLTextAreaElement>('[data-role="paste-text"]') ?? null;
+  const pasteNote = panel?.querySelector<HTMLElement>('[data-role="paste-note"]') ?? null;
+  const onPasteClick = (e: Event): void => {
+    const target = e.target as HTMLElement | null;
+    if (!panel || !pasteBox || !target?.closest('[data-role="paste-submit"]')) return;
+    if (dz.getAttribute("data-state") === "analyzing") return;
+    const result = pastedTextFile(pasteBox.value);
+    if (!result.ok) {
+      // Said beside the box, where the text still is — not as an error state
+      // that would replace the page the reader is typing into.
+      if (pasteNote) pasteNote.textContent = result.reason;
+      return;
+    }
+    if (pasteNote) pasteNote.textContent = "";
+    pasteBox.value = "";
+    panel.hidden = true;
+    opts.onFile(result);
+  };
+  panel?.addEventListener("click", onPasteClick);
 
   dz.addEventListener("click", onClick);
   dz.addEventListener("dragenter", onDragEnter as EventListener);
@@ -311,6 +375,7 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     if (opts.folderPickContainer) {
       opts.folderPickContainer.removeEventListener("click", onExternalFolderClick);
     }
+    panel?.removeEventListener("click", onPasteClick);
     dz.removeChild(input);
     dz.removeChild(inputDir);
   };

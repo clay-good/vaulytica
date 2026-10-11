@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { zipSync, strToU8 } from "fflate";
+import { ingestPaste } from "./paste.js";
 
 import {
   BUNDLE_CAP_MESSAGE,
@@ -9,6 +10,8 @@ import {
   MULTIPLE_PRIVILEGE_LOGS_MESSAGE,
   classifyDataMember,
   classifyExtension,
+  decodeText,
+  ingestByKind,
   extractZipEntries,
   looksLikeZip,
   planBundle,
@@ -35,9 +38,32 @@ describe("classifyExtension", () => {
     expect(classifyExtension("NDA.DOCX")).toBe("docx");
   });
   it("returns null for anything else", () => {
-    expect(classifyExtension("notes.txt")).toBeNull();
+    expect(classifyExtension("notes.rtf")).toBeNull();
     expect(classifyExtension("legacy.doc")).toBeNull();
     expect(classifyExtension("scan.png")).toBeNull();
+  });
+});
+
+describe("text files (spec-v50 §1)", () => {
+  it("classifies the four extensions the command line reads", () => {
+    for (const name of ["a.txt", "A.TXT", "b.md", "c.markdown", "d.text"]) {
+      expect(classifyExtension(name), name).toBe("text");
+    }
+  });
+
+  it("decodes a text file as the command line does, byte-order mark included", () => {
+    const bytes = new Uint8Array([0xef, 0xbb, 0xbf, ...new TextEncoder().encode("NDA")]);
+    expect(decodeText(bytes.buffer)).toBe(Buffer.from(bytes).toString("utf8"));
+    expect(decodeText(bytes.buffer).charCodeAt(0)).toBe(0xfeff);
+  });
+
+  it("ingests a text member through the paste path", async () => {
+    const text = "MUTUAL NONDISCLOSURE AGREEMENT\n\n1. Term. Two years.";
+    const viaKind = await ingestByKind(
+      "text",
+      new TextEncoder().encode(text).buffer as ArrayBuffer,
+    );
+    expect(viaKind.sha256).toBe((await ingestPaste(text)).sha256);
   });
 });
 
@@ -46,7 +72,7 @@ describe("rejectionForFilename", () => {
     expect(rejectionForFilename("old.doc")).toMatch(/save it as \.docx/i);
   });
   it("returns the generic accepts-pdf-and-docx message for everything else", () => {
-    expect(rejectionForFilename("notes.txt")).toMatch(/\.pdf and \.docx/);
+    expect(rejectionForFilename("notes.rtf")).toMatch(/\.pdf, \.docx, \.txt and \.md/);
   });
 });
 
@@ -111,12 +137,12 @@ describe("planBundle — caps", () => {
   it("rejects unsupported extensions inside an otherwise valid bundle", () => {
     const r = planBundle([
       { filename: "good.pdf", bytes: fakeBytes(10), size_bytes: 10 },
-      { filename: "bad.txt", bytes: fakeBytes(10), size_bytes: 10 },
+      { filename: "bad.rtf", bytes: fakeBytes(10), size_bytes: 10 },
       { filename: "legacy.doc", bytes: fakeBytes(10), size_bytes: 10 },
     ]);
     expect(r.ok).toBe(true);
     if (!r.ok) return;
-    const txt = r.entries.find((e) => e.filename === "bad.txt")!;
+    const txt = r.entries.find((e) => e.filename === "bad.rtf")!;
     const doc = r.entries.find((e) => e.filename === "legacy.doc")!;
     expect(txt.ok).toBe(false);
     expect(doc.ok).toBe(false);
@@ -189,7 +215,7 @@ describe("extractZipEntries", () => {
     const archive = buildZip({
       "msa.docx": strToU8("docx-bytes"),
       "baa.pdf": strToU8("pdf-bytes"),
-      "README.md": strToU8("# readme — should be skipped"),
+      "cover.png": strToU8("not a document — should be skipped"),
     });
     const entries = extractZipEntries(archive);
     expect(entries).toHaveLength(2);
@@ -200,7 +226,7 @@ describe("extractZipEntries", () => {
     const archive = buildZip({
       "msa.docx": strToU8("docx-bytes"),
       "privilege-log.csv": strToU8("bates_begin,bates_end\nACME-1,ACME-1"),
-      "README.md": strToU8("skip me"),
+      "cover.png": strToU8("skip me"),
     });
     const entries = extractZipEntries(archive);
     expect(entries.map((e) => e.filename).sort()).toEqual(["msa.docx", "privilege-log.csv"]);

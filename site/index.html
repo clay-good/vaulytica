@@ -391,8 +391,36 @@
         margin: 12px 0 0;
         text-align: center;
       }
-      .dropzone:not([data-state="empty"]) + .dropzone-extras {
+      .dropzone:not([data-state="empty"]) + .dropzone-extras,
+      .dropzone:not([data-state="empty"]) ~ .paste-panel {
         display: none;
+      }
+      .paste-panel {
+        max-width: 56ch;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+      }
+      .paste-panel label {
+        display: block;
+        margin-bottom: 6px;
+      }
+      .paste-panel textarea {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        min-height: 9em;
+        padding: 8px 10px;
+        font: inherit;
+        color: inherit;
+        background: transparent;
+        border: 1px solid var(--border, #ddd);
+        border-radius: 8px;
+        resize: vertical;
+      }
+      .paste-panel [data-role="paste-note"] {
+        display: block;
+        min-height: 1.4em;
       }
       @media (prefers-reduced-motion: no-preference) {
         .dropzone[data-state="empty"] {
@@ -2128,7 +2156,7 @@
         "softwareVersion": "__APP_VERSION__",
         "softwareRequirements": "Any modern web browser",
         "permissions": "No permissions required; runs entirely client-side.",
-        "description": "A free legal contract reviewer. Deterministic, not AI. Drop a PDF or DOCX — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease, M&A, estate, court filing — and get a Microsoft Word report in which every finding quotes the clause it came from, gives its exact position, and cites the rule and source behind it. 1,887 checks across 278 document types. No AI, no account, no server, no telemetry.",
+        "description": "A free legal contract reviewer. Deterministic, not AI. Drop a PDF or DOCX, or paste the text — NDA, MSA, SaaS, DPA (GDPR / CCPA), BAA (HIPAA), employment, lease, M&A, estate, court filing — and get a Microsoft Word report in which every finding quotes the clause it came from, gives its exact position, and cites the rule and source behind it. 1,887 checks across 278 document types. No AI, no account, no server, no telemetry.",
         "featureList": [
           "Deterministic rule engine — 1,887 rules across launch + v3 + v4 + v5 + v6 rulesets",
           "278 document-type playbooks — only the checks that belong to your document run",
@@ -2185,10 +2213,10 @@
         "@context": "https://schema.org",
         "@type": "HowTo",
         "name": "How to review a contract with Vaulytica",
-        "description": "Drop a PDF or DOCX into Vaulytica and download a Microsoft Word report in which every finding quotes the clause it came from and cites its rule — entirely in your browser.",
+        "description": "Drop a PDF or DOCX into Vaulytica, or paste the text, and download a Microsoft Word report in which every finding quotes the clause it came from and cites its rule — entirely in your browser.",
         "totalTime": "PT30S",
         "supply": [
-          { "@type": "HowToSupply", "name": "A PDF or DOCX contract" }
+          { "@type": "HowToSupply", "name": "A contract as a PDF, a DOCX, a text file or pasted text" }
         ],
         "tool": [
           { "@type": "HowToTool", "name": "A modern web browser" }
@@ -2204,7 +2232,7 @@
             "@type": "HowToStep",
             "position": 2,
             "name": "Drop your contract",
-            "text": "Drag a PDF or DOCX onto the drop zone — or click to pick a file. The file is read locally; no upload occurs."
+            "text": "Drag a PDF, DOCX or text file onto the drop zone, click to pick a file, or paste the text. It is read locally; no upload occurs."
           },
           {
             "@type": "HowToStep",
@@ -2370,13 +2398,20 @@
               <path d="M5 21h14"></path>
             </svg>
           </span>
-          <div class="dropzone-title" id="dropzone-title">Drop a PDF or DOCX — up to four at once.</div>
+          <div class="dropzone-title" id="dropzone-title">Drop a PDF, DOCX or text file — up to four at once.</div>
           <div class="dropzone-sub" id="dropzone-sub">Read locally in this tab — nothing is uploaded. Drop a pair and they are also checked against each other.</div>
         </div>
         <p class="dropzone-extras" id="dropzone-extras">
           Multiple files? Drop a folder or
           <button type="button" class="btn-link" data-role="folder-pick">choose a folder…</button>
+          No file? <button type="button" class="btn-link" data-role="paste-open" aria-controls="paste-panel">Paste the text…</button>
         </p>
+        <div class="paste-panel dropzone-extras" id="paste-panel" hidden>
+          <label for="paste-text">Paste the contract's text. It is read in this tab and is not uploaded.</label>
+          <textarea id="paste-text" data-role="paste-text" rows="8" spellcheck="false"></textarea>
+          <button type="button" class="btn-link" data-role="paste-submit">Review this text</button>
+          <span data-role="paste-note" aria-live="polite"></span>
+        </div>
         <div class="playbook-panel dropzone-extras" id="playbook-panel" role="group" aria-label="Bring your own playbook"></div>
         <div class="regime-panel dropzone-extras" id="regime-panel" role="group" aria-label="Assert privacy-notice regimes"></div>
         <div class="regime-panel dropzone-extras" id="estate-panel" role="group" aria-label="Assert estate checks"></div>
@@ -2959,7 +2994,7 @@
               <g class="box">
                 <rect x="56" y="124" width="220" height="148" rx="14" />
                 <text class="label" x="166" y="192" text-anchor="middle">Your file</text>
-                <text x="166" y="228" text-anchor="middle">PDF or DOCX</text>
+                <text x="166" y="228" text-anchor="middle">PDF, DOCX or text</text>
               </g>
   
               <!-- Stage 2: Read & extract -->
@@ -3005,7 +3040,7 @@
               <li>
                 <div>
                   <div class="step-title">Your file</div>
-                  <div class="step-sub">PDF or DOCX, dropped in the tab</div>
+                  <div class="step-sub">PDF, DOCX or text, dropped or pasted in the tab</div>
                 </div>
               </li>
               <li>

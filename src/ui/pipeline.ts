@@ -10,7 +10,7 @@
  * concurrently with the module load.
  */
 
-import { ingestPdfBuffer, ingestDocxBuffer } from "../ingest/index.js";
+import { ingestByKind, type AcceptedKind } from "../ingest/multi.js";
 import {
   classifyExtension,
   classifyDataMember,
@@ -549,21 +549,18 @@ let cachedExtendedPlaybooks: Playbook[] | null = null;
 
 export async function prepareDocument(
   file: File,
-  kind: "pdf" | "docx",
+  kind: AcceptedKind,
   config: PipelineConfig = {},
   hooks: PipelineProgress = {},
 ): Promise<PreparedDocument> {
   const buffer = await file.arrayBuffer();
   const dkbPromise = ensureDkb(config.dkb_base ?? DEFAULT_DKB_BASE);
-  const ingest: IngestResult =
-    kind === "pdf"
-      ? // OCR stays off in the browser (fix-privacy-claim-accuracy):
-        // tesseract.js's default worker/wasm/language assets load from a
-        // third-party CDN, which the shipped connect-src 'self' CSP blocks —
-        // so shipped OCR could never run; the ingest emits an honest
-        // scanned-PDF warning instead of failing mid-analysis.
-        await ingestPdfBuffer(buffer, { allowOcr: false })
-      : await ingestDocxBuffer(buffer);
+  // OCR stays off in the browser (fix-privacy-claim-accuracy):
+  // tesseract.js's default worker/wasm/language assets load from a
+  // third-party CDN, which the shipped connect-src 'self' CSP blocks —
+  // so shipped OCR could never run; the ingest emits an honest
+  // scanned-PDF warning instead of failing mid-analysis.
+  const ingest: IngestResult = await ingestByKind(kind, buffer, { allowOcr: false });
 
   const dkb = await dkbPromise;
   hooks.onDkbLoaded?.(dkb.manifest.version);
@@ -635,7 +632,7 @@ export async function prepareDocument(
   // metadata detection uses the extracted party set. Never throws.
   const delivery = await scanDelivery({
     bytes: buffer,
-    source: kind === "pdf" ? "pdf" : "docx",
+    source: kind === "text" ? "paste" : kind,
     text: flattenText(ingest.tree),
     parties: extracted.parties.map((p) => p.name),
   });
@@ -1061,7 +1058,7 @@ export function validateAndPreviewPlaybook(
  */
 export async function runPipeline(
   file: File,
-  kind: "pdf" | "docx",
+  kind: AcceptedKind,
   hooks: PipelineProgress = {},
   config: PipelineConfig = {},
   options: PipelineOptions = {},
@@ -1367,10 +1364,8 @@ export async function prepareBundle(
     // after ingest, since it needs the extracted text) still needs the raw
     // container. Skipped entirely for csv-free bundles, so they are unaffected.
     const deliveryBytes = privilege_log ? entry.bytes.slice(0) : undefined;
-    const ingest: IngestResult =
-      entry.kind === "pdf"
-        ? await ingestPdfBuffer(entry.bytes, { allowOcr: false }) // see single-doc note
-        : await ingestDocxBuffer(entry.bytes);
+    // OCR off — see the single-document note.
+    const ingest: IngestResult = await ingestByKind(entry.kind, entry.bytes, { allowOcr: false });
 
     hooks.onDocumentReady?.(entry.filename, i, total);
 
@@ -1378,7 +1373,7 @@ export async function prepareBundle(
       productionDeliveries.push(
         await scanDelivery({
           bytes: deliveryBytes,
-          source: entry.kind,
+          source: entry.kind === "text" ? "paste" : entry.kind,
           text: flattenText(ingest.tree),
         }),
       );

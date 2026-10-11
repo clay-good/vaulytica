@@ -26,6 +26,17 @@
 import { unzipSync, strFromU8, Unzip, UnzipInflate } from "fflate";
 import { ingestPdfBuffer } from "./pdf.js";
 import { ingestDocxBuffer } from "./docx.js";
+import { ingestPaste } from "./paste.js";
+import { decodeText, type AcceptedKind } from "./kinds.js";
+
+export {
+  classifyExtension,
+  decodeText,
+  rejectionForFilename,
+  TEXT_EXTENSIONS,
+  type AcceptedKind,
+} from "./kinds.js";
+import { classifyExtension, rejectionForFilename } from "./kinds.js";
 import type { IngestResult } from "./types.js";
 
 /** Per-file size ceiling. Matches v1 §28 step 12. */
@@ -56,7 +67,16 @@ export class ArchiveTooLargeError extends Error {
 export const BUNDLE_CAP_MESSAGE =
   "Vaulytica analyzes up to 50 files / 200 MB at once. Split your bundle or upload fewer files.";
 
-export type AcceptedKind = "pdf" | "docx";
+/** Ingest one accepted file by its kind — the one owner of that branch. */
+export function ingestByKind(
+  kind: AcceptedKind,
+  bytes: ArrayBuffer,
+  pdf?: Parameters<typeof ingestPdfBuffer>[1],
+): Promise<IngestResult> {
+  if (kind === "pdf") return ingestPdfBuffer(bytes, pdf);
+  if (kind === "docx") return ingestDocxBuffer(bytes);
+  return ingestPaste(decodeText(bytes));
+}
 
 export type MultiIngestEntry =
   | {
@@ -77,20 +97,6 @@ export type MultiIngestPlan =
   | { ok: false; reason: string };
 
 /* ---------------- Validation helpers ---------------- */
-
-export function classifyExtension(filename: string): AcceptedKind | null {
-  const n = filename.toLowerCase();
-  if (n.endsWith(".pdf")) return "pdf";
-  if (n.endsWith(".docx")) return "docx";
-  return null;
-}
-
-export function rejectionForFilename(filename: string): string {
-  if (filename.toLowerCase().endsWith(".doc")) {
-    return "Open it in Word or Google Docs and save it as .docx, then come back.";
-  }
-  return `Vaulytica accepts .pdf and .docx — not "${filename}".`;
-}
 
 /* ---------------- Production-QA data members ---------------- */
 
@@ -483,10 +489,7 @@ export async function ingestEntries(
       continue;
     }
     try {
-      const result =
-        e.kind === "pdf"
-          ? await ingestPdfBuffer(e.bytes, options.pdf)
-          : await ingestDocxBuffer(e.bytes);
+      const result = await ingestByKind(e.kind, e.bytes, options.pdf);
       ingested.push({ filename: e.filename, kind: e.kind, result });
       total += e.size_bytes;
     } catch (err) {

@@ -11,7 +11,7 @@
  * to drop.
  */
 
-import { bindDropzone } from "./dropzone.js";
+import { bindDropzone, validateFile, type AcceptedKind } from "./dropzone.js";
 import { renderState, select, type DropzoneState } from "./states.js";
 import { createProgressBar } from "./progress.js";
 import { createRuleTicker } from "./ticker.js";
@@ -66,6 +66,8 @@ export async function bootUi(opts: {
    * if one exists in the document.
    */
   folderPickContainer?: HTMLElement | null;
+  /** The paste-text panel (`#paste-panel`). Absent, there is no paste path. */
+  pastePanel?: HTMLElement | null;
   /**
    * Container hosting the bring-your-own-playbook panel (spec-v6 Part II,
    * Step 92). Defaults to the `#playbook-panel` node if one exists. When
@@ -129,6 +131,7 @@ export async function bootUi(opts: {
       if (active) preloadPipeline();
     },
     folderPickContainer: opts.folderPickContainer,
+    pastePanel: opts.pastePanel,
   });
 }
 
@@ -176,7 +179,7 @@ function baseFilename(filename: string): string {
   return i > 0 ? filename.slice(0, i) : filename;
 }
 
-async function runFile(dz: HTMLElement, file: File, kind: "pdf" | "docx"): Promise<void> {
+async function runFile(dz: HTMLElement, file: File, kind: AcceptedKind): Promise<void> {
   try {
     setState(dz, { kind: "analyzing", filename: file.name });
     const pipelineModule = await import("./pipeline.js");
@@ -562,7 +565,12 @@ async function runComparison(
   revisedFile: File,
 ): Promise<void> {
   try {
-    const kind: "pdf" | "docx" = revisedFile.name.toLowerCase().endsWith(".pdf") ? "pdf" : "docx";
+    const checked = validateFile(revisedFile);
+    if (!checked.ok) {
+      setState(dz, { kind: "error", message: checked.reason });
+      return;
+    }
+    const kind = checked.kind;
     setState(dz, { kind: "analyzing", filename: revisedFile.name });
     const { runPipeline } = await import("./pipeline.js");
     const progress = createProgressBar(select(dz, "progress")!);
@@ -1009,6 +1017,7 @@ if (typeof document !== "undefined") {
     void bootUi({
       dropzone: dz,
       folderPickContainer: folderHost,
+      pastePanel: document.getElementById("paste-panel"),
       playbookPanelContainer: playbookHost,
       regimePanelContainer: regimeHost,
       estatePanelContainer: estateHost,

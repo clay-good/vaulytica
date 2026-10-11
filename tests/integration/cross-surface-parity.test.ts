@@ -17,10 +17,12 @@
  * before comparison.
  */
 
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { basename, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 
+import { PASTED_TEXT_NAME, pastedTextFile } from "../../src/ui/dropzone.js";
 import { prepareDocument, runReport } from "../../src/ui/pipeline.js";
 import { analyzeFile, loadAccuracyDeps } from "../../tools/cli/api.js";
 import { resolveDkbDir } from "../../tools/dkb/resolve.js";
@@ -96,6 +98,61 @@ describe("cross-surface parity: browser pipeline vs CLI (same DOCX, same DKB)", 
     // Full-run identity (executed_at normalized — excluded from result_hash).
     expect(blank(ui.run)).toEqual(blank(cli.run));
     expect(JSON.stringify(blank(ui.run))).toBe(JSON.stringify(blank(cli.run)));
+  });
+
+  it("pasted text in the tab hashes as pasted-text.txt does on the command line", async () => {
+    // spec-v50 §1. The name is inside `result_hash`, so the paste box and
+    // `vaulytica analyze pasted-text.txt` must agree on it, on the decoding,
+    // and on the byte count.
+    const sample = join(
+      process.cwd(),
+      "tests",
+      "e2e",
+      "sample-docs",
+      "pasted-services-agreement.txt",
+    );
+    const text = readFileSync(sample, "utf8");
+
+    const pasted = pastedTextFile(text);
+    if (!pasted.ok) throw new Error(pasted.reason);
+    const prepared = await prepareDocument(pasted.file, pasted.kind, {
+      dkb_base: "/x-dkb",
+      playbook_base: "/x-playbooks",
+    });
+    const ui = await runReport(prepared);
+
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-paste-"));
+    const onDisk = join(dir, PASTED_TEXT_NAME);
+    writeFileSync(onDisk, text);
+    const cli = await analyzeFile(onDisk);
+    rmSync(dir, { recursive: true, force: true });
+
+    expect(ui.run.source_file).toEqual(cli.run.source_file);
+    expect(ui.run.result_hash).toBe(cli.run.result_hash);
+    expect(JSON.stringify(blank(ui.run))).toBe(JSON.stringify(blank(cli.run)));
+    // And it is read as a document: a type was matched and rules ran.
+    expect(ui.run.playbook_id).not.toBe("generic-fallback");
+  });
+
+  it("a dropped .md file with a byte-order mark hashes the same on both surfaces", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-md-"));
+    const onDisk = join(dir, "terms.md");
+    const bytes = Buffer.concat([
+      Buffer.from([0xef, 0xbb, 0xbf]),
+      readFileSync(
+        join(process.cwd(), "tests", "fixtures", "specimens", "mutual-nda-complete.txt"),
+      ),
+    ]);
+    writeFileSync(onDisk, bytes);
+    const prepared = await prepareDocument(new File([new Uint8Array(bytes)], "terms.md"), "text", {
+      dkb_base: "/x-dkb",
+      playbook_base: "/x-playbooks",
+    });
+    const ui = await runReport(prepared);
+    const cli = await analyzeFile(onDisk);
+    rmSync(dir, { recursive: true, force: true });
+    expect(ui.run.source_file).toEqual(cli.run.source_file);
+    expect(ui.run.result_hash).toBe(cli.run.result_hash);
   });
 
   it("would catch a CLI running a different DKB (the shipped defect)", async () => {

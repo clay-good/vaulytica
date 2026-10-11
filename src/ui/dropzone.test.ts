@@ -3,6 +3,9 @@ import {
   bindDropzone,
   collectFilesFromEntries,
   isZipFile,
+  MAX_PASTE_BOX_CHARS,
+  PASTED_TEXT_NAME,
+  pastedTextFile,
   validateFile,
   type DropResult,
 } from "./dropzone.js";
@@ -31,9 +34,9 @@ describe("validateFile", () => {
   });
 
   it("rejects unknown extensions with a generic message", () => {
-    const r = validateFile(fakeFile("notes.txt", "text/plain"));
+    const r = validateFile(fakeFile("notes.rtf", "application/rtf"));
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toMatch(/\.pdf and \.docx/);
+    if (!r.ok) expect(r.reason).toMatch(/\.pdf, \.docx, \.txt and \.md/);
   });
 });
 
@@ -278,7 +281,7 @@ describe("folder picker (webkitdirectory)", () => {
     // must survive to the bundle pipeline (it drives Bates/log reconciliation).
     const log = fakeFile("privilege-log.csv", "text/csv");
     const junk = fakeFile(".DS_Store", "application/octet-stream");
-    const readme = fakeFile("README.md", "text/plain");
+    const readme = fakeFile("cover.png", "image/png");
     Object.defineProperty(dirInput, "files", {
       configurable: true,
       get: () => [a, junk, b, log, readme],
@@ -478,5 +481,117 @@ describe("collectFilesFromEntries", () => {
       makeDirEntry("root", [makeFileEntry("keep.pdf"), makeUnreadableFileEntry("locked.pdf")]),
     ]);
     expect(files.map((f) => f.name)).toEqual(["keep.pdf"]);
+  });
+});
+
+describe("text files and pasted text (spec-v50 §1)", () => {
+  it("accepts .txt and .md as documents", () => {
+    for (const name of ["contract.txt", "TERMS.MD", "notes.markdown", "draft.text"]) {
+      const r = validateFile(fakeFile(name, "text/plain"));
+      expect(r.ok, name).toBe(true);
+      if (r.ok) expect(r.kind).toBe("text");
+    }
+  });
+
+  it("names pasted text pasted-text.txt, the name its report is verified under", async () => {
+    const r = pastedTextFile("MUTUAL NDA\n\n1. Term.");
+    expect(r.ok).toBe(true);
+    if (!r.ok) return;
+    expect(r.kind).toBe("text");
+    expect(r.file.name).toBe(PASTED_TEXT_NAME);
+    expect(PASTED_TEXT_NAME).toBe("pasted-text.txt");
+    expect(await r.file.text()).toBe("MUTUAL NDA\n\n1. Term.");
+  });
+
+  it("refuses an empty paste and one over the cap, and says what to do instead", () => {
+    const empty = pastedTextFile("  \n\t ");
+    expect(empty.ok).toBe(false);
+    const big = pastedTextFile("x".repeat(MAX_PASTE_BOX_CHARS + 1));
+    expect(big.ok).toBe(false);
+    if (!big.ok) expect(big.reason).toMatch(/Save it as a \.txt file and drop the file/);
+    expect(pastedTextFile("x".repeat(MAX_PASTE_BOX_CHARS)).ok).toBe(true);
+  });
+
+  function pasteFixture(): { dz: HTMLElement; extras: HTMLElement; panel: HTMLElement } {
+    const dz = document.createElement("div");
+    dz.setAttribute("data-state", "empty");
+    const extras = document.createElement("p");
+    extras.innerHTML = `<button data-role="folder-pick">folder</button><button data-role="paste-open">paste</button>`;
+    const panel = document.createElement("div");
+    panel.hidden = true;
+    panel.innerHTML = `<textarea data-role="paste-text"></textarea><button data-role="paste-submit">go</button><span data-role="paste-note"></span>`;
+    document.body.append(dz, extras, panel);
+    return { dz, extras, panel };
+  }
+
+  it("opens the panel, and sends the pasted text down the single-file path", async () => {
+    const { dz, extras, panel } = pasteFixture();
+    const got: DropResult[] = [];
+    const unbind = bindDropzone(dz, {
+      onFile: (r) => got.push(r),
+      folderPickContainer: extras,
+      pastePanel: panel,
+    });
+    (extras.querySelector('[data-role="paste-open"]') as HTMLButtonElement).click();
+    expect(panel.hidden).toBe(false);
+
+    const box = panel.querySelector("textarea")!;
+    box.value = "SERVICES AGREEMENT\n\n1. Services.";
+    (panel.querySelector('[data-role="paste-submit"]') as HTMLButtonElement).click();
+
+    expect(got).toHaveLength(1);
+    const r = got[0]!;
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.kind).toBe("text");
+      expect(r.file.name).toBe("pasted-text.txt");
+      expect(await r.file.text()).toBe("SERVICES AGREEMENT\n\n1. Services.");
+    }
+    // The box is cleared and closed: the text is in the analysis now.
+    expect(box.value).toBe("");
+    expect(panel.hidden).toBe(true);
+    unbind();
+    dz.remove();
+    extras.remove();
+    panel.remove();
+  });
+
+  it("says why beside the box, and starts nothing, when the paste is empty", () => {
+    const { dz, extras, panel } = pasteFixture();
+    const got: DropResult[] = [];
+    const unbind = bindDropzone(dz, {
+      onFile: (r) => got.push(r),
+      folderPickContainer: extras,
+      pastePanel: panel,
+    });
+    panel.hidden = false;
+    (panel.querySelector('[data-role="paste-submit"]') as HTMLButtonElement).click();
+    expect(got).toEqual([]);
+    expect(panel.querySelector('[data-role="paste-note"]')!.textContent).toMatch(
+      /Paste the contract/,
+    );
+    expect(panel.hidden).toBe(false);
+    unbind();
+    dz.remove();
+    extras.remove();
+    panel.remove();
+  });
+
+  it("does not start a second analysis from the paste box while one is running", () => {
+    const { dz, extras, panel } = pasteFixture();
+    const got: DropResult[] = [];
+    const unbind = bindDropzone(dz, {
+      onFile: (r) => got.push(r),
+      folderPickContainer: extras,
+      pastePanel: panel,
+    });
+    dz.setAttribute("data-state", "analyzing");
+    panel.querySelector("textarea")!.value = "text";
+    (panel.querySelector('[data-role="paste-submit"]') as HTMLButtonElement).click();
+    expect(got).toEqual([]);
+    unbind();
+    dz.remove();
+    extras.remove();
+    panel.remove();
   });
 });

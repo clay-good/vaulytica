@@ -762,7 +762,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     </div>
     <div class="compare-row" data-role="compare-row" hidden>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
-      <input type="file" accept=".pdf,.docx" data-role="compare-input" hidden aria-hidden="true" tabindex="-1" />
+      <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text" data-role="compare-input" hidden aria-hidden="true" tabindex="-1" />
     </div>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
@@ -804,7 +804,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <button class="btn-link" type="button" data-role="bundle-coherence-download" hidden>Save this round's coherence (.coherence.json)</button>
     <div class="compare-row" data-role="bundle-compare-row" hidden>
       <button class="btn-link" type="button" data-role="bundle-compare-button">Compare a revised round…</button>
-      <input type="file" accept=".pdf,.docx,.zip" multiple data-role="bundle-compare-input" hidden aria-hidden="true" tabindex="-1" />
+      <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text,.zip" multiple data-role="bundle-compare-input" hidden aria-hidden="true" tabindex="-1" />
     </div>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,

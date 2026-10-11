@@ -122,8 +122,9 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
    * that is worth saying out loud rather than leaving behind a green tick.
    *
    * Each iterates an element type and asserts a property of each one. The page
-   * currently contains no `<img>`, no static form control (the dropzone's file
-   * input is created by JS at runtime and never appears in this HTML), no
+   * currently contains no `<img>`, one static form control (the paste box,
+   * since 9.876.0 — so the label guard below now has something to test; the
+   * dropzone's file input is created by JS and never appears in this HTML), no
    * `role="button"` element, and exactly one `<nav>` — and the nav check only
    * has a body when there is more than one. So every one of those loops is
    * empty and every check passes without testing anything.
@@ -165,7 +166,7 @@ describe("Static accessibility checks (LAUNCH row h)", () => {
     expect(
       { img: imgs, formControl: controls, roleButton, navs },
       "a dormant guard just woke up — that is good news: the element now exists, so update this record and make sure the guard above really covers it",
-    ).toEqual({ img: 0, formControl: 0, roleButton: 0, navs: 1 });
+    ).toEqual({ img: 0, formControl: 1, roleButton: 0, navs: 1 });
   });
 
   it("every <img> has an alt attribute", () => {

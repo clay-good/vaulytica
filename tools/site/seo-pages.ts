@@ -166,7 +166,7 @@ export const SEO_PAGES: ReadonlyArray<SeoPage> = [
       ],
       [
         "What file types does it accept?",
-        "PDF and DOCX. Everything is read locally in your browser.",
+        "PDF, DOCX, plain-text and Markdown files, and pasted text. Everything is read locally in your browser.",
       ],
     ],
   },
@@ -588,7 +588,7 @@ cd ~/vaulytica && npm ci</code></pre>
     slug: "contract-linter-ci",
     title: "Contract Linter for CI — CLI & GitHub Action (SARIF) | Vaulytica",
     description:
-      "Lint contracts like code. Free, open-source CLI and GitHub Action that reviews PDF and DOCX contracts, emits SARIF, and fails the build on critical findings.",
+      "Lint contracts like code. Free, open-source CLI and GitHub Action that reviews PDF, DOCX and text contracts, emits SARIF, and fails the build on critical findings.",
     label: "CLI & GitHub Action",
     h1: "Lint contracts like code.",
     lead: "The same deterministic engine that runs in the browser ships as a command-line tool and a GitHub Action. Keep your templates in a repository and let a pull request fail when a change introduces a critical issue — with findings annotated in code scanning.",
@@ -824,7 +824,7 @@ export function renderSeoPage(page: SeoPage, counts: HeadlineCounts): string {
           <li>Nothing uploaded</li>
           <li>No account</li>
           <li>${counts.rules} cited checks</li>
-          <li>PDF or DOCX</li>
+          <li>PDF, DOCX or text</li>
         </ul>
       </div>
       <section>
@@ -848,7 +848,7 @@ export function renderSeoPage(page: SeoPage, counts: HeadlineCounts): string {
         <h2>How it works</h2>
         <ol class="steps">
           <li><strong>Open <a href="/">vaulytica.com</a></strong> — no account, nothing to install.</li>
-          <li><strong>Drop your PDF or DOCX.</strong> It is read inside your browser tab; nothing is uploaded.</li>
+          <li><strong>Drop your PDF or DOCX, or paste the text.</strong> It is read inside your browser tab; nothing is uploaded.</li>
           <li><strong>Get your report in seconds.</strong> The document type is detected and only the checks that belong to it run.</li>
         </ol>
         <a class="cta" href="/">${escapeHtml(page.cta)} →</a>
@@ -1096,7 +1096,7 @@ export function buildLlmsTxt(counts: HeadlineCounts): string {
   return [
     "# Vaulytica",
     "",
-    `> Free, open-source (MIT) contract review tool that runs entirely in the browser. Drop a PDF or DOCX and get a report in which every finding quotes the clause and cites its rule and source. ${counts.rules} deterministic checks across ${counts.docTypes} document types. No AI, no account, no upload.`,
+    `> Free, open-source (MIT) contract review tool that runs entirely in the browser. Drop a PDF or DOCX, or paste the text, and get a report in which every finding quotes the clause and cites its rule and source. ${counts.rules} deterministic checks across ${counts.docTypes} document types. No AI, no account, no upload.`,
     "",
     "Vaulytica is a deterministic rule engine, not a language model: the same file always produces the same report. It checks for missing clauses, one-sided terms, dates and deadlines, financial inconsistencies and drafting defects, and exports a Word report, a commented copy of the user's .docx, calendar (.ics) deadlines, and CSV obligation and fix lists. It is not legal advice.",
     "",
@@ -1259,7 +1259,7 @@ export function renderDocTypePage(
         <h2>How it works</h2>
         <ol class="steps">
           <li><strong>Open <a href="/">vaulytica.com</a></strong> — no account, nothing to install.</li>
-          <li><strong>Drop your PDF or DOCX.</strong> The document type is detected and only the checks that belong to it run, inside your browser tab.</li>
+          <li><strong>Drop your PDF or DOCX, or paste the text.</strong> The document type is detected and only the checks that belong to it run, inside your browser tab.</li>
           <li><strong>Get a Word report</strong> in which every finding quotes the clause and cites the rule and source behind it — one of ${counts.rules} checks across ${counts.docTypes} document types.</li>
         </ol>
         <a class="cta" href="/">Review your document — free →</a>

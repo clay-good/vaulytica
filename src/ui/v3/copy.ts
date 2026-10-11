@@ -8,7 +8,7 @@
  */
 
 export const EMPTY_STATE_COPY = {
-  headline: "Drop a PDF or DOCX — up to four at once.",
+  headline: "Drop a PDF, DOCX or text file — up to four at once.",
   sub: "Read locally in this tab — nothing is uploaded. Drop a pair and they are also checked against each other.",
 } as const;
 
