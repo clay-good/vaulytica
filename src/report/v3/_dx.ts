@@ -145,7 +145,8 @@ export function hyperlinkParagraph(
  */
 export { truncate } from "../../engine/text.js";
 
-/** `"1 day"` / `"2 days"` — pluralization-aware count + noun. */
-export function plural(n: number, noun: string): string {
-  return `${n} ${noun}${n === 1 ? "" : "s"}`;
-}
+/**
+ * `"1 day"` / `"2 days"`. Re-exported from the owner for the same reason
+ * `truncate` above is: copies drift.
+ */
+export { plural } from "../../engine/text.js";

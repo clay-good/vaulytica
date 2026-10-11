@@ -22,7 +22,7 @@
  */
 
 import { isActionable, type EngineRun, type Finding, type Severity } from "../engine/finding.js";
-import { truncate } from "../engine/text.js";
+import { plural, truncate } from "../engine/text.js";
 import { sectionLabels } from "../extract/sections.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
@@ -771,6 +771,33 @@ const FIXED_DTSTAMP = "20200101T000000Z";
  * Notice deadlines (a "before"-an-anchor date) carry a DISPLAY alarm at
  * the deadline so they surface in the user's calendar.
  */
+/**
+ * What this calendar holds, in one sentence a calendar app will show.
+ *
+ * Counted from the entries actually written, so the header can never promise
+ * more than the file contains. Each clause is omitted when its count is zero,
+ * so a file of pure deadlines does not advertise dates it has none of.
+ */
+function calendarComposition(deadlines: number, stated: number, toVerify: number): string {
+  const parts: string[] = [];
+  if (deadlines > 0)
+    parts.push(`${plural(deadlines, "deadline")} computed from the document's terms`);
+  if (stated > 0) parts.push(`${plural(stated, "date")} the document states`);
+  if (toVerify > 0)
+    parts.push(
+      // No verb, so the clause agrees at 1 and at many: "1 item … to check",
+      // "6 items … to check". The repo already pins this class of slip
+      // ("1 day", never "1 days").
+      `${plural(toVerify, "item")} that could not be dated, to check by hand (shown on ${SENTINEL_VERIFY_DATE})`,
+    );
+  if (parts.length === 0) return "No dates or deadlines were found in the document.";
+  const list =
+    parts.length === 1
+      ? parts[0]!
+      : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]!}`;
+  return `Contains ${list}.`;
+}
+
 export function buildDeadlinesIcs(extracted: ExtractedData, tree?: DocumentTree): string {
   const { events, unresolved } = collectDeadlines(extracted);
   // 🚨 The section is named, or not mentioned. Both DESCRIPTION branches below
@@ -782,11 +809,27 @@ export function buildDeadlinesIcs(extracted: ExtractedData, tree?: DocumentTree)
   const labelOf = tree ? sectionLabels(tree) : undefined;
   const sectionOf = (id: string | undefined): string | undefined =>
     labelOf ? (labelOf(id) ?? undefined) : id;
-  const lines: string[] = [];
-  lines.push("BEGIN:VCALENDAR");
-  lines.push("VERSION:2.0");
-  lines.push("PRODID:-//Vaulytica//Deadlines Export//EN");
-  lines.push("CALSCALE:GREGORIAN");
+  // 🚨 The file is named "deadlines" and it is not only deadlines.
+  //
+  // Of the corpus's 1,670 entries, 563 are dates the document merely STATES —
+  // a signature date, an address block's date, a recital — and 823 could not
+  // be dated at all. A reader who imports a calendar called "deadlines" and
+  // finds a thousand entries that are not deadlines has been misled by the
+  // name, and until now the file said nothing about what it held: no
+  // `X-WR-CALNAME`, no `X-WR-CALDESC`, so calendar apps showed it untitled.
+  //
+  // Dropping the stated dates was the other option and is worse: a date the
+  // document fixes is information a negotiator wants, and silently discarding
+  // two thirds of an export is a bigger surprise than a mixed one that says
+  // so. So the calendar DECLARES its composition, counted from what is
+  // actually written below — after de-duplication, not before, or the header
+  // would promise entries the file does not contain.
+  //
+  // `X-WR-*` are x-props, which RFC 5545 §3.8.8.2 provides for, and the three
+  // calendar clients that matter (Google, Apple, Outlook) all read them.
+  const body: string[] = [];
+  let deadlines = 0;
+  let stated = 0;
 
   const nextUid = icsUidFactory("");
   events.forEach((ev) => {
@@ -824,21 +867,23 @@ export function buildDeadlinesIcs(extracted: ExtractedData, tree?: DocumentTree)
         : `${ev.iso}|${prefix}${ev.summary}|${desc}|${ev.notice ? "a" : ""}`,
     );
     if (duplicate) return;
-    lines.push("BEGIN:VEVENT");
-    lines.push(`UID:${uid}`);
-    lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);
-    lines.push(`DTSTART;VALUE=DATE:${ymd}`);
-    lines.push(`DTEND;VALUE=DATE:${ymdEnd}`);
-    lines.push(icsFold(`SUMMARY:${icsEscape(summary)}`));
-    lines.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
+    if (ev.computed || ev.notice) deadlines += 1;
+    else stated += 1;
+    body.push("BEGIN:VEVENT");
+    body.push(`UID:${uid}`);
+    body.push(`DTSTAMP:${FIXED_DTSTAMP}`);
+    body.push(`DTSTART;VALUE=DATE:${ymd}`);
+    body.push(`DTEND;VALUE=DATE:${ymdEnd}`);
+    body.push(icsFold(`SUMMARY:${icsEscape(summary)}`));
+    body.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
     if (ev.notice) {
-      lines.push("BEGIN:VALARM");
-      lines.push("ACTION:DISPLAY");
-      lines.push(icsFold(`DESCRIPTION:${icsEscape(summary)}`));
-      lines.push("TRIGGER:PT0S");
-      lines.push("END:VALARM");
+      body.push("BEGIN:VALARM");
+      body.push("ACTION:DISPLAY");
+      body.push(icsFold(`DESCRIPTION:${icsEscape(summary)}`));
+      body.push("TRIGGER:PT0S");
+      body.push("END:VALARM");
     }
-    lines.push("END:VEVENT");
+    body.push("END:VEVENT");
   });
 
   // Unresolved deadlines (no calendar date) are surfaced as all-day
@@ -848,6 +893,7 @@ export function buildDeadlinesIcs(extracted: ExtractedData, tree?: DocumentTree)
   // obviously artificial, so the user reads it as "needs attention," and
   // it keeps the file deterministic. (spec-v7 §17.)
   const nextVerifyUid = icsUidFactory("verify-");
+  let toVerify = 0;
   unresolved.forEach((u) => {
     const ymd = SENTINEL_VERIFY_DATE.replace(/-/g, "");
     const ymdEnd = addDays(SENTINEL_VERIFY_DATE, 1).replace(/-/g, "");
@@ -855,16 +901,27 @@ export function buildDeadlinesIcs(extracted: ExtractedData, tree?: DocumentTree)
     const desc = `Verify manually — ${u.reason}${where ? ` (from section ${where})` : ""}: ${u.raw_text}`;
     const { uid, duplicate } = nextVerifyUid(`${u.raw_text}|${desc}`);
     if (duplicate) return;
-    lines.push("BEGIN:VEVENT");
-    lines.push(`UID:${uid}`);
-    lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);
-    lines.push(`DTSTART;VALUE=DATE:${ymd}`);
-    lines.push(`DTEND;VALUE=DATE:${ymdEnd}`);
-    lines.push(icsFold(`SUMMARY:${icsEscape(`Verify manually: ${u.raw_text}`)}`));
-    lines.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
-    lines.push("END:VEVENT");
+    toVerify += 1;
+    body.push("BEGIN:VEVENT");
+    body.push(`UID:${uid}`);
+    body.push(`DTSTAMP:${FIXED_DTSTAMP}`);
+    body.push(`DTSTART;VALUE=DATE:${ymd}`);
+    body.push(`DTEND;VALUE=DATE:${ymdEnd}`);
+    body.push(icsFold(`SUMMARY:${icsEscape(`Verify manually: ${u.raw_text}`)}`));
+    body.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
+    body.push("END:VEVENT");
   });
 
+  const lines: string[] = [];
+  lines.push("BEGIN:VCALENDAR");
+  lines.push("VERSION:2.0");
+  lines.push("PRODID:-//Vaulytica//Deadlines Export//EN");
+  lines.push("CALSCALE:GREGORIAN");
+  lines.push("X-WR-CALNAME:Vaulytica deadlines and dates");
+  lines.push(
+    icsFold(`X-WR-CALDESC:${icsEscape(calendarComposition(deadlines, stated, toVerify))}`),
+  );
+  lines.push(...body);
   lines.push("END:VCALENDAR");
   return lines.join("\r\n") + "\r\n";
 }

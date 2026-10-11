@@ -30,3 +30,17 @@ export function truncate(text: string, limit: number): string {
   if (lastUnit >= 0xd800 && lastUnit <= 0xdbff) end -= 1;
   return text.slice(0, end) + "…";
 }
+
+/**
+ * `"1 day"` / `"2 days"` — a count and its noun, pluralized.
+ *
+ * Owned here beside {@link truncate} because three modules had written it:
+ * `report/v3/_dx.ts` (which re-exports it, as it already does for
+ * `truncate`), `report/bundle.ts`, and the deadlines calendar's composition
+ * line. `_dx.ts` pulls in the `docx` library, so a CSV or `.ics` writer cannot
+ * import from it without dragging a DOCX dependency into a text path — which
+ * is what made a fourth copy tempting.
+ */
+export function plural(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? "" : "s"}`;
+}

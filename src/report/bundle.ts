@@ -32,7 +32,8 @@ import {
   type ReviewCoverage,
 } from "./review-coverage.js";
 import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
-import { truncate } from "./v3/_dx.js";
+// Both re-exported by `_dx.ts` from their owner in `engine/text.ts`.
+import { plural, truncate } from "./v3/_dx.js";
 import {
   AlignmentType,
   BorderStyle,
@@ -1731,10 +1732,6 @@ function severityColor(severity: Severity): string {
     case "info":
       return "555555";
   }
-}
-
-function plural(n: number, noun: string): string {
-  return `${n} ${noun}${n === 1 ? "" : "s"}`;
 }
 
 function formatHumanDate(iso: string): string {

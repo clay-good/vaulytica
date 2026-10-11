@@ -361,6 +361,60 @@ describe("collectDeadlines", () => {
  * carried "s1" on all 42 rows and its calendar said "Extracted from section
  * s1". Naming a section implies the document has sections and that this is one.
  */
+/**
+ * The file is named "deadlines" and it is not only deadlines.
+ *
+ * Of the corpus's 1,670 entries, 563 are dates the document merely STATES and
+ * 823 could not be dated at all, and the calendar declared nothing: no
+ * `X-WR-CALNAME`, no `X-WR-CALDESC`, so an importing app showed it untitled
+ * and a reader found a thousand entries that are not deadlines. Dropping them
+ * was the other option and is worse — a date the document fixes is information
+ * a negotiator wants — so the calendar says what it holds instead.
+ */
+describe("the calendar declares what it holds", () => {
+  const unfold = (ics: string) => ics.replace(/\r\n /g, "");
+
+  it("names itself and counts each kind of entry it wrote", () => {
+    const tree = buildTree([
+      "Term",
+      'This Lease is made as of April 15, 2026 (the "Effective Date").',
+      "Notice",
+      "Tenant shall give notice within thirty (30) days after the Effective Date.",
+    ]);
+    const ics = unfold(buildDeadlinesIcs(extractAll(tree), tree));
+    expect(ics).toContain("X-WR-CALNAME:Vaulytica deadlines and dates");
+    expect(ics).toMatch(/X-WR-CALDESC:Contains .*deadline/);
+    // The counts describe what was WRITTEN, so they can never promise entries
+    // the file does not contain.
+    const desc = /X-WR-CALDESC:(.*)/.exec(ics)?.[1] ?? "";
+    const written = (ics.match(/BEGIN:VEVENT/g) ?? []).length;
+    const counted = [...desc.matchAll(/(\d+) (?:deadline|date|item)/g)].reduce(
+      (n, m) => n + Number(m[1]),
+      0,
+    );
+    expect(counted).toBe(written);
+  });
+
+  it("agrees at one and at many, and omits a kind it has none of", () => {
+    const ex = emptyExtracted();
+    ex.dates = [date("absolute", "June 1, 2025", { iso: "2025-06-01" })];
+    const one = unfold(buildDeadlinesIcs(ex));
+    // Scoped to the DESCRIPTION: "deadline" also appears in the calendar's own
+    // name and in PRODID, so a whole-file assertion could never hold.
+    const desc = /X-WR-CALDESC:(.*)/.exec(one)?.[1] ?? "";
+    expect(desc).toContain("1 date the document states");
+    expect(desc).not.toContain("1 dates");
+    // No computed deadline and nothing unresolved: neither clause appears.
+    expect(desc).not.toContain("deadline");
+    expect(desc).not.toContain("to check by hand");
+  });
+
+  it("says so plainly when the document has no dates at all", () => {
+    const ics = unfold(buildDeadlinesIcs(emptyExtracted()));
+    expect(ics).toContain("X-WR-CALDESC:No dates or deadlines were found");
+  });
+});
+
 describe("a section is named, or it is not mentioned", () => {
   it("names the section when the document has one", () => {
     const tree = buildTree(["Payment Terms", "Customer shall pay each invoice by June 1, 2025."]);

@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.895.0] — 2026-10-11
+
+### Added
+- **The deadlines calendar declares what it holds.** The export is named
+  "deadlines" and it is not only deadlines: of the corpus's 1,670 entries, 563
+  are dates the document merely STATES (a signature date, a recital, an
+  address block) and 823 could not be dated at all. The file said nothing about
+  that — no `X-WR-CALNAME`, no `X-WR-CALDESC` — so an importing app showed it
+  untitled and a reader who expected deadlines found a thousand entries that
+  are not deadlines.
+  It now carries a name and one factual sentence: *"Contains 2 deadlines
+  computed from the document's terms, 3 dates the document states and 6 items
+  that could not be dated, to check by hand (shown on 2020-01-01)."*
+  🥇 **Counted from the entries actually WRITTEN, after de-duplication** — a
+  header tallied before the dedup promises entries the file does not contain,
+  which is what the new test fails on. Each clause is omitted when its count is
+  zero, so a file of pure deadlines advertises no dates, and a document with
+  none says so plainly. `X-WR-*` are x-props, which RFC 5545 §3.8.8.2 provides
+  for, and Google, Apple and Outlook all read them.
+  **Dropping the stated dates was the alternative and is worse**: a date the
+  document fixes is information a negotiator wants, and silently discarding two
+  thirds of an export is a bigger surprise than a mixed one that says so. This
+  resolves the open question about the export's composition without destroying
+  information.
+
+### Changed
+- `plural` has one owner. Three modules had written it — `report/v3/_dx.ts`,
+  `report/bundle.ts`, and the new composition line — and `_dx.ts` pulls in the
+  `docx` library, so a CSV or `.ics` writer could not import from it without
+  dragging a DOCX dependency into a text path, which is what made a fourth copy
+  tempting. It lives in `engine/text.ts` beside `truncate`, and `_dx.ts`
+  re-exports it exactly as it already re-exported `truncate`, for the reason
+  stated there: copies drift.
+
 ## [9.894.0] — 2026-10-11
 
 ### Fixed
