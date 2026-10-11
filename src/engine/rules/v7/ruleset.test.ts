@@ -66,6 +66,7 @@ describe("v7 ruleset shape", () => {
         "advisor-agreement",
         "buyer-representation-agreement",
         "hipaa-data-use-agreement",
+        "memorandum-of-understanding",
         "merchant-cash-advance",
         "pilot-evaluation-agreement",
         "residential-solar-agreement",
@@ -84,7 +85,7 @@ describe("v7 ruleset shape", () => {
 
   it("cites the three families with no controlling authority as practice, never above a warning", () => {
     // spec-v49 §3: no statute or rule lists what these three must say.
-    const PRACTICE_ONLY = new Set(["SLA", "PILOT", "ROOM"]);
+    const PRACTICE_ONLY = new Set(["SLA", "PILOT", "ROOM", "MOU"]);
     const rules = V7_RULES.filter((r) => PRACTICE_ONLY.has(rulePrefix(r.id)));
     expect(rules.length).toBeGreaterThan(0);
     for (const r of rules) {

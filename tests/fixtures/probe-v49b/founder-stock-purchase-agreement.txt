@@ -1,0 +1,11 @@
+FOUNDER STOCK PURCHASE AGREEMENT
+
+This Founder Stock Purchase Agreement is between Fennel Robotics, Inc. (the "Company") and Mira Castellan (the "Founder").
+
+1. Purchase. Founder purchases 4,000,000 shares of common stock at $0.0001 per share.
+
+2. Vesting. The shares vest over four years with a one-year cliff. The Company may repurchase unvested shares at cost if Founder stops providing services.
+
+3. Section 83(b). Founder understands that an election under Section 83(b) must be filed within 30 days after the purchase.
+
+4. Transfer. Founder may not transfer unvested shares.

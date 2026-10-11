@@ -1,0 +1,11 @@
+SOFTWARE SUPPORT AND MAINTENANCE AGREEMENT
+
+This Software Support and Maintenance Agreement is between Tessera Robotics, Inc. ("Vendor") and Brightwater Logistics LLC ("Customer").
+
+1. Support. Vendor will provide telephone and email support during business hours and will respond to critical errors within two hours.
+
+2. Maintenance. Vendor will provide error corrections, updates and new releases of the licensed software.
+
+3. Fees. Customer will pay an annual support fee of 20% of the license fee, in advance.
+
+4. Term. This Agreement renews each year unless either party gives 60 days notice.

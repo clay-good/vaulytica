@@ -5860,6 +5860,17 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-005",
     ],
   },
+  // spec-v49 Step 312 (tranche B): the memorandum of understanding. A
+  // cooperation document between two organizations, read until 9.879.0 as an
+  // M&A letter of intent.
+  "memorandum-of-understanding-complete.txt": {
+    playbook: "memorandum-of-understanding",
+    findings: [],
+  },
+  "memorandum-of-understanding-thin.txt": {
+    playbook: "memorandum-of-understanding",
+    findings: ["MOU-001", "MOU-002", "MOU-003", "MOU-004", "MOU-005", "STRUCT-004"],
+  },
 };
 
 describe("hand-written specimens", () => {

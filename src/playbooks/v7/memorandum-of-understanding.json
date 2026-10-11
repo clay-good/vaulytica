@@ -1,0 +1,73 @@
+{
+  "id": "memorandum-of-understanding",
+  "version": "1.0.0",
+  "name": "Memorandum of Understanding",
+  "description": "A short document in which two organizations record how they intend to work together — a program run jointly, shared space, a pilot between agencies. The checks read for the shared purpose, what each party will do, whether the memorandum is legally binding, who pays for what, and how long it runs and how it ends. A memorandum of understanding for an acquisition or an investment is read as a letter of intent instead.",
+  "match_features": {
+    "title_keywords": [
+      "memorandum of understanding",
+      "memorandum of agreement",
+      "memorandum of cooperation",
+      "mou"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "this memorandum",
+      "work together",
+      "each party bears its own costs",
+      "not legally binding",
+      "roles and responsibilities",
+      "in-kind"
+    ],
+    "negative_features": [
+      "no-shop",
+      "purchase price",
+      "definitive agreement",
+      "due diligence",
+      "exclusivity period"
+    ]
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["mutual-nda"],
+  "compliance_matrix_columns": [
+    "What the parties are setting out to do",
+    "What each party will do",
+    "Whether the memorandum is legally binding",
+    "Who pays for what",
+    "How long it runs, and how either party ends it"
+  ]
+}

@@ -9128,6 +9128,49 @@
    "sources": []
   },
   {
+   "id": "memorandum-of-understanding",
+   "name": "Memorandum of Understanding",
+   "group": "Commercial & services",
+   "summary": "A short document in which two organizations record how they intend to work together — a program run jointly, shared space, a pilot between agencies. The checks read for the shared purpose, what each party will do, whether the memorandum is legally binding, who pays for what, and how long it runs and how it ends. A memorandum of understanding for an acquisition or an investment is read as a letter of intent instead.",
+   "checks": [
+    {
+     "id": "MOU-001",
+     "name": "What the parties are setting out to do",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MOU-002",
+     "name": "What each party will do",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MOU-003",
+     "name": "Whether the memorandum is legally binding",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MOU-004",
+     "name": "Who pays for what",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "MOU-005",
+     "name": "How long it runs, and how either party ends it",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 106,
+   "companions": [
+    "mutual-nda"
+   ],
+   "sources": []
+  },
+  {
    "id": "merchant-cash-advance",
    "name": "Merchant Cash Advance Agreement",
    "group": "Lending & credit",

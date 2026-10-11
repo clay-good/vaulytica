@@ -88,6 +88,7 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   TRA: "training-repayment-agreement",
   BUY: "buyer-representation-agreement",
   ADV: "advisor-agreement",
+  MOU: "memorandum-of-understanding",
   // Presence notes on a document no type matched (spec-v50 §11).
   GEN: "generic-fallback",
 } as const;

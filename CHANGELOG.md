@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.879.0] — 2026-10-11
+
+### Fixed
+- **A memorandum of understanding is no longer judged as a letter of intent
+  for an acquisition.** The title belonged to the M&A letter-of-intent type,
+  so a library and an arts group agreeing to run a summer program were told,
+  eight times at critical, that their memorandum had no exclusivity period, no
+  purchase price and no transaction structure. It now has a type of its own
+  (spec-v49 Step 312). A memorandum of understanding that *is* about an
+  acquisition — with a no-shop, due diligence and a definitive agreement — is
+  still read as a letter of intent.
+
+### Added
+- **Memorandum of Understanding**, with five checks: the shared purpose; what
+  each party will do; whether the memorandum is legally binding; who pays for
+  what; and how long it runs and how either party ends it. Each is cited as
+  customary practice. 279 document types, 1,895 rules.
+- **The second probe, committed as a test.** Thirteen more candidate types
+  were run through the tool with a correctly titled document each: eight fell
+  to the generic fallback, three were judged as a neighbouring type, and two
+  were already handled. The test pins where each goes today and flips as each
+  type ships.
+
 ## [9.878.0] — 2026-10-10
 
 ### Added

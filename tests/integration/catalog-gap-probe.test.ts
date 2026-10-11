@@ -109,3 +109,114 @@ describe("documents the catalog has no type for", () => {
     expect(titles).toContain("No indemnification clause detected");
   });
 });
+
+/**
+ * Tranche B (spec-v49 §4, Step 312): thirteen more candidates, measured the
+ * same way on 9.878.0. Eight fell to the fallback. Three were judged as a
+ * neighbour — a founder's stock purchase and a community memorandum of
+ * understanding each drew eight criticals from an M&A pack. Two were already
+ * handled, by a type whose title keywords name them.
+ *
+ * `wants` is the type the document should have; `today` is where it went when
+ * measured. A row flips the day its type ships. Where the two are equal the
+ * catalog already had it.
+ */
+const DIR_B = join(process.cwd(), "tests", "fixtures", "probe-v49b");
+const PROBE_B: ReadonlyArray<{ file: string; wants: string; today: string }> = [
+  { file: "beta-test-agreement.txt", wants: "beta-test-agreement", today: "generic-fallback" },
+  {
+    file: "board-observer-agreement.txt",
+    wants: "board-observer-agreement",
+    today: "generic-fallback",
+  },
+  { file: "buy-sell-agreement.txt", wants: "buy-sell-agreement", today: "generic-fallback" },
+  {
+    file: "commercial-power-purchase-agreement.txt",
+    wants: "commercial-power-purchase-agreement",
+    today: "generic-fallback",
+  },
+  {
+    file: "management-services-agreement.txt",
+    wants: "management-services-agreement",
+    today: "generic-fallback",
+  },
+  {
+    file: "student-data-privacy-agreement.txt",
+    wants: "student-data-privacy-agreement",
+    today: "generic-fallback",
+  },
+  {
+    file: "support-maintenance-agreement.txt",
+    wants: "support-maintenance-agreement",
+    today: "generic-fallback",
+  },
+  {
+    file: "vehicle-purchase-agreement.txt",
+    wants: "vehicle-purchase-agreement",
+    today: "generic-fallback",
+  },
+  {
+    file: "founder-stock-purchase-agreement.txt",
+    wants: "founder-stock-purchase-agreement",
+    today: "stock-purchase-agreement",
+  },
+  {
+    file: "memorandum-of-understanding.txt",
+    wants: "memorandum-of-understanding",
+    today: "loi-term-sheet",
+  },
+  // Judged as a commercial construction contract, which is the catalog's
+  // deliberate home for it (its title keywords name it). A California
+  // overlay is the open question, not a missing type.
+  {
+    file: "home-improvement-contract.txt",
+    wants: "construction-contract",
+    today: "construction-contract",
+  },
+  // Already handled.
+  {
+    file: "liability-waiver.txt",
+    wants: "hold-harmless-agreement",
+    today: "hold-harmless-agreement",
+  },
+  {
+    file: "reseller-agreement.txt",
+    wants: "distribution-agreement",
+    today: "distribution-agreement",
+  },
+];
+
+describe("tranche B: more documents the catalog may have no type for", () => {
+  const routed = new Map<string, AnalyzeResult>();
+  beforeAll(async () => {
+    const deps = await loadAccuracyDeps();
+    for (const { file } of PROBE_B)
+      routed.set(file, await analyzeFile(join(DIR_B, file), { deps }));
+    routed.set(
+      "_acquisition-mou.txt",
+      await analyzeFile(join(DIR_B, "_acquisition-mou.txt"), { deps }),
+    );
+  }, 180_000);
+
+  it("routes each one where it was measured to go, until its type ships", async () => {
+    const wrong: string[] = [];
+    for (const { file, wants, today } of PROBE_B) {
+      const expected = (await isDocumentType(wants)) ? wants : today;
+      const actual = routed.get(file)!.playbook_id;
+      if (actual !== expected) wrong.push(`${file}: routed to ${actual}, expected ${expected}`);
+    }
+    expect(wrong).toEqual([]);
+  });
+
+  it("a cooperation memorandum is not told it lacks a purchase price", () => {
+    // The eight criticals were MNA-001…009: exclusivity, purchase price,
+    // transaction structure — on a library's summer reading program.
+    const r = routed.get("memorandum-of-understanding.txt")!;
+    if (r.playbook_id !== "memorandum-of-understanding") return;
+    expect(r.run.findings.filter((f) => f.rule_id.startsWith("MNA-"))).toEqual([]);
+  });
+
+  it("a memorandum of understanding for an acquisition is still read as a letter of intent", () => {
+    expect(routed.get("_acquisition-mou.txt")!.playbook_id).toBe("loi-term-sheet");
+  });
+});

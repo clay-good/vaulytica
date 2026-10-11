@@ -1,0 +1,11 @@
+BETA TEST AGREEMENT
+
+This Beta Test Agreement is between Lumen Analytics, Inc. ("Company") and Harcastle Foods Co. ("Tester").
+
+1. Beta Product. Company will give Tester access to a pre-release version of its forecasting product for testing.
+
+2. Feedback. Tester will report bugs and give feedback, which Company may use freely.
+
+3. Confidentiality. The beta product and its features are confidential.
+
+4. No Warranty. The beta product is provided as is and may contain errors.
