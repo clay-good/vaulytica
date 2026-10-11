@@ -16,7 +16,8 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { DatabaseSync } from "node:sqlite";
+import { createRequire } from "node:module";
+import type { DatabaseSync } from "node:sqlite";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   BODY_KEYS,
@@ -50,9 +51,16 @@ const MIGRATION = readFileSync(
   "utf8",
 );
 
+/**
+ * SQLite, loaded at run time. A static `import … from "node:sqlite"` is
+ * resolved by the test bundler, which on Node 22 does not know the module is
+ * built in and refuses it — green on a newer Node, red on every CI runner.
+ */
+const sqlite = createRequire(import.meta.url)("node:sqlite") as typeof import("node:sqlite");
+
 /** D1's prepare/bind/run/first, over SQLite. */
 function openDb(): { db: Database; raw: DatabaseSync } {
-  const raw = new DatabaseSync(":memory:");
+  const raw = new sqlite.DatabaseSync(":memory:");
   raw.exec(MIGRATION);
   const db: Database = {
     prepare(sql) {
