@@ -18,7 +18,8 @@ permissions:
 jobs:
   rebuild:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 30 -> 50 in 9.886.0: the last run reached its push step at 27 minutes.
+    timeout-minutes: 50
     env:
       VAULYTICA_DKB_BUILDER_UA: "Vaulytica DKB Builder (vaulytica.com)"
     steps:

@@ -27,7 +27,9 @@ jobs:
     # push. Diagnose by DURATION (createdAt -> updatedAt vs this number), never
     # by status. Two releases shipped with this job red because it looked like
     # a supersede.
-    timeout-minutes: 28
+    # 28 -> 45 in 9.886.0: the run took 27m37s, 99% of budget, after the
+    # specimen corpus passed 380 documents. Over-budget reports as `cancelled`.
+    timeout-minutes: 45
     # Exposing the secret as a job-level env var lets `if:` skip the
     # deploy + e2e steps gracefully on forks / environments where the
     # Cloudflare credentials have not been configured. The build/test

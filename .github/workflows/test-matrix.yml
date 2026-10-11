@@ -35,7 +35,11 @@ jobs:
     # parallel, so the slowest runner sets the time.
     #
     # 🚨 Over-budget reports as `cancelled`, not `failed`. Diagnose by DURATION.
-    timeout-minutes: 34
+    # The macOS leg ran 30–31 minutes when this was 34, and was cancelled on
+    # two pushes in a row once the specimen corpus passed 380 documents: every
+    # corpus-rewrite relation costs a little more per specimen. A cancelled leg
+    # reads as "not failed" and proves nothing, so the limit has headroom again.
+    timeout-minutes: 55
     strategy:
       fail-fast: false
       matrix:
