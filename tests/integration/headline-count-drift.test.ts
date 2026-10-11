@@ -19,10 +19,16 @@ import { V3_RULES } from "../../src/engine/rules/v3/index.js";
 import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 import { LAUNCH_PLAYBOOK_IDS } from "../../src/playbooks/registry.js";
 
 const TOTAL_RULES =
-  LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length + V6_RULES.length;
+  LAUNCH_RULES.length +
+  V3_RULES.length +
+  V4_RULES.length +
+  V5_RULES.length +
+  V6_RULES.length +
+  V7_RULES.length;
 
 const EXTENDED = JSON.parse(
   readFileSync(join(process.cwd(), "playbooks", "extended.json"), "utf8"),

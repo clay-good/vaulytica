@@ -50,14 +50,15 @@ import { describe, expect, it } from "vitest";
 import { buildContext } from "../../_test-fixtures.js";
 import { V5_RULES } from "./index.js";
 import { V6_RULES } from "../v6/index.js";
+import { V7_RULES } from "../v7/index.js";
 import { GATED_PACK_RULE_IDS, PACK_SPECS } from "./_pack.js";
 
 /** Every rule this shorthand has built — v5's catalog and v6's law-practice packs. */
-const PACK_RULES = [...V5_RULES, ...V6_RULES].filter((r) => PACK_SPECS.has(r.id));
+const PACK_RULES = [...V5_RULES, ...V6_RULES, ...V7_RULES].filter((r) => PACK_SPECS.has(r.id));
 const NAME_OF = new Map(PACK_RULES.map((r) => [r.id, r.name]));
 
 const familyName = new Map<string, string>();
-for (const wave of ["v5", "v6"]) {
+for (const wave of ["v5", "v6", "v7"]) {
   for (const file of readdirSync(join(process.cwd(), "src", "playbooks", wave))) {
     if (!file.endsWith(".json")) continue;
     const pb = JSON.parse(

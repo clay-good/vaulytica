@@ -36,6 +36,7 @@ import { V3_RULES } from "../../src/engine/rules/v3/index.js";
 import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 import { V4_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v4/_helpers.js";
 import { V3_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v3/_regulated-rule.js";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
@@ -64,7 +65,14 @@ function presenceRuleIds(): Set<string> {
  * scratch probe and throws "Unknown variable dynamic import" in the suite.
  */
 function liveRules(): Map<string, Rule> {
-  const all: Rule[] = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES];
+  const all: Rule[] = [
+    ...LAUNCH_RULES,
+    ...V3_RULES,
+    ...V4_RULES,
+    ...V5_RULES,
+    ...V6_RULES,
+    ...V7_RULES,
+  ];
   return new Map(all.map((r) => [r.id, r]));
 }
 

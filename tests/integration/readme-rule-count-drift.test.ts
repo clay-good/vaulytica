@@ -18,7 +18,14 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import {
+  LAUNCH_RULES,
+  V3_RULES,
+  V4_RULES,
+  V5_RULES,
+  V6_RULES,
+  V7_RULES,
+} from "../../src/engine/index.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 import { STATE_OVERLAYS } from "../../src/dkb/state-overlays.js";
 import { ESTATE_FORMALITIES } from "../../src/dkb/estate-formalities.js";
@@ -78,6 +85,7 @@ describe("README rule counts", () => {
     expect(readme).toContain(`**v4 (+${V4_RULES.length} rules)**`);
     expect(readme).toContain(`**v5 (+${V5_RULES.length} rules)**`);
     expect(readme).toContain(`**v6 (+${V6_RULES.length} rules)**`);
+    expect(readme).toContain(`**v7 (+${V7_RULES.length} rules)**`);
     // Prettier owns the column padding in a markdown table and re-aligns it
     // whenever a cell's width changes, so the row is matched on its CONTENT.
     // Asserting the single-spaced form made these two tests fail the moment
@@ -90,7 +98,12 @@ describe("README rule counts", () => {
 
   it("quotes the live catalog total", () => {
     const total =
-      LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length + V6_RULES.length;
+      LAUNCH_RULES.length +
+      V3_RULES.length +
+      V4_RULES.length +
+      V5_RULES.length +
+      V6_RULES.length +
+      V7_RULES.length;
     expect(readme).toContain(`**${total.toLocaleString("en-US")}-rule**`);
   });
 
@@ -180,7 +193,7 @@ describe("the rule-count sums cover every wave", () => {
       waves,
       "a new rule wave shipped — add its V<n>_RULES to every sum in this file, " +
         "to the README badge, the landing hero and docs/architecture.md",
-    ).toEqual(["v3", "v4", "v5", "v6"]);
+    ).toEqual(["v3", "v4", "v5", "v6", "v7"]);
   });
 });
 
@@ -189,7 +202,12 @@ describe("landing-page rule counts", () => {
     // The hero states the headline number before anything else on the page.
     // It is the first thing a reader checks and the first thing to age.
     const total =
-      LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length + V6_RULES.length;
+      LAUNCH_RULES.length +
+      V3_RULES.length +
+      V4_RULES.length +
+      V5_RULES.length +
+      V6_RULES.length +
+      V7_RULES.length;
     const quoted = [...landing.matchAll(/data-rule-total>([\d,]+)</g)].map((m) =>
       Number(m[1]!.replace(/,/g, "")),
     );
@@ -199,10 +217,15 @@ describe("landing-page rule counts", () => {
 
   it("quotes the live launch set, the v4-v6 addends, and total", () => {
     const total =
-      LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length + V6_RULES.length;
+      LAUNCH_RULES.length +
+      V3_RULES.length +
+      V4_RULES.length +
+      V5_RULES.length +
+      V6_RULES.length +
+      V7_RULES.length;
     expect(landing).toContain(
       `${LAUNCH_RULES.length} rules at launch across ten categories — ${V3_RULES.length} more in v3, ` +
-        `${V4_RULES.length} more in v4, ${V5_RULES.length} more in v5, ${V6_RULES.length} more in v6 ` +
+        `${V4_RULES.length} more in v4, ${V5_RULES.length} more in v5, ${V6_RULES.length} more in v6, ${V7_RULES.length} more in v7 ` +
         `(${total.toLocaleString("en-US")} in`,
     );
   });
@@ -213,7 +236,12 @@ describe("architecture-diagram rule counts", () => {
 
   it("quotes the live launch set and catalog total", () => {
     const total =
-      LAUNCH_RULES.length + V3_RULES.length + V4_RULES.length + V5_RULES.length + V6_RULES.length;
+      LAUNCH_RULES.length +
+      V3_RULES.length +
+      V4_RULES.length +
+      V5_RULES.length +
+      V6_RULES.length +
+      V7_RULES.length;
     expect(architecture).toContain(
       `${LAUNCH_RULES.length} launch · ${total.toLocaleString("en-US")} total rules`,
     );

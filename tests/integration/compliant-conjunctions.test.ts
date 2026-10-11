@@ -20,10 +20,11 @@ import { buildContext } from "../../src/engine/_test-fixtures.js";
 import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 import type { Rule } from "../../src/engine/finding.js";
 import { COMPLIANT } from "./_conjunction-fixtures.js";
 
-const ALL: Rule[] = [...V4_RULES, ...V5_RULES, ...V6_RULES];
+const ALL: Rule[] = [...V4_RULES, ...V5_RULES, ...V6_RULES, ...V7_RULES];
 const rule = (id: string): Rule => {
   const r = ALL.find((x) => x.id === id);
   if (!r) throw new Error(`no rule ${id}`);

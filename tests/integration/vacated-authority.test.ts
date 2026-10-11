@@ -30,7 +30,14 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import {
+  LAUNCH_RULES,
+  V3_RULES,
+  V4_RULES,
+  V5_RULES,
+  V6_RULES,
+  V7_RULES,
+} from "../../src/engine/index.js";
 import type { Rule } from "../../src/engine/finding.js";
 
 /**
@@ -63,6 +70,7 @@ const ALL_RULES: readonly Rule[] = [
   ...V4_RULES,
   ...V5_RULES,
   ...V6_RULES,
+  ...V7_RULES,
 ];
 
 /** Source files whose prose reaches a report as explanation or recommendation. */

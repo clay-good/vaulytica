@@ -133,6 +133,11 @@ lists that sweep them, such as `v34-title-vacuity.test.ts`) rather than growing 
 closed wave. `v7` is the open one: families the **clean-document method** found
 missing, where a complete, well-drafted document of a type the catalog cannot
 name routes somewhere else and is judged by another family's rules.
+Its checks live in `src/engine/rules/v7/`, built with the same `pack()` shorthand
+as v5, one per compliance-matrix column, each under a prefix reserved in
+[`NAMESPACE_OWNERS`](../src/verticals/registry.ts). A v7 family ships with a
+complete specimen that draws none of its own checks and a thin one that draws
+all of them, both pinned in `specimen-regression.test.ts`.
 
 ## 3. Register
 

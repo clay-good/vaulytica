@@ -57,6 +57,7 @@ export {
 } from "./rules/v4/index.js";
 export { V5_RULES } from "./rules/v5/index.js";
 export { V6_RULES } from "./rules/v6/index.js";
+export { V7_RULES } from "./rules/v7/index.js";
 
 export type {
   ConsistencyContext,

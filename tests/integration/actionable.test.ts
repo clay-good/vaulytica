@@ -91,9 +91,9 @@ describe("actionable", { timeout: 600_000 }, () => {
   it("splits the corpus as measured, and no warning or critical gap is left without advice", () => {
     const all = results.flatMap(({ r }) => r.run.findings);
     const tasks = all.filter(isActionable);
-    // Measured on 9.861.0. A change here is a rule gaining or losing advice.
-    expect(all).toHaveLength(1389);
-    expect(tasks).toHaveLength(777);
+    // Measured on 9.868.0. A change here is a rule gaining or losing advice.
+    expect(all).toHaveLength(1419);
+    expect(tasks).toHaveLength(800);
     const silent = all.filter((f) => !isActionable(f) && f.severity !== "info");
     // The one non-info observation is a clause being present, not a gap.
     expect([...new Set(silent.map((f) => `${f.rule_id} ${f.title}`))]).toEqual([

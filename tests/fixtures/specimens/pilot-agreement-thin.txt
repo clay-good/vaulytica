@@ -1,0 +1,25 @@
+PILOT AGREEMENT
+
+This Pilot Agreement is entered into as of May 11, 2026 between Tessera Robotics, Inc. ("Vendor") and Brightwater Logistics LLC ("Customer").
+
+1. Pilot. Vendor will give Customer access to its warehouse-routing software so that the parties can work together on a pilot at Customer's Columbus distribution center.
+
+2. Cooperation. Customer will give Vendor's staff access to the distribution center during business hours and will name a project lead.
+
+3. Fees. There are no fees for the pilot.
+
+4. Confidentiality. Each party will keep the other party's non-public information confidential.
+
+5. Governing Law. This Agreement is governed by the laws of the State of Ohio.
+
+TESSERA ROBOTICS, INC.
+
+By: ______________________
+Name: Ana Sousa
+Title: Chief Executive Officer
+
+BRIGHTWATER LOGISTICS LLC
+
+By: ______________________
+Name: Tom Reyes
+Title: Director of Operations

@@ -1,0 +1,34 @@
+SCHEDULE C
+
+SERVICE LEVEL AGREEMENT
+
+This Service Level Agreement ("SLA") is a schedule to, and forms part of, the Master Subscription Agreement dated March 3, 2026 (the "Agreement") between Corvid Cloud, Inc. ("Provider") and Aldine Freight Co. ("Customer"). Capitalized terms not defined in this SLA have the meanings given in the Agreement. If this SLA conflicts with the Agreement, the Agreement controls.
+
+1. Definitions.
+
+"Downtime" means the total minutes in a calendar month during which the production Service is unavailable to Customer, as measured by Provider's monitoring systems, less Excluded Downtime.
+
+"Monthly Uptime Percentage" means the total minutes in a calendar month, minus Downtime, divided by the total minutes in that month.
+
+"Service Credit" means a credit against future fees, calculated under Section 4.
+
+2. Availability Commitment. Provider will maintain a Monthly Uptime Percentage of at least 99.9% in each calendar month of the Subscription Term.
+
+3. Excluded Downtime. The following are excluded from Downtime: (a) scheduled maintenance of which Provider gives at least 72 hours' notice, limited to eight hours in any calendar month; (b) emergency maintenance needed to address a security vulnerability, limited to four hours in any calendar month; (c) a force majeure event described in the Agreement; (d) failures of Customer's equipment, network or third-party services that Provider does not control; and (e) a suspension of the Service that the Agreement permits.
+
+4. Service Credits. If the Monthly Uptime Percentage in a calendar month is below the Availability Commitment, Customer is entitled to a Service Credit as follows:
+
+Monthly Uptime Percentage / Service Credit
+Below 99.9% but at least 99.0% / 10% of the monthly fees for the affected Service
+Below 99.0% but at least 95.0% / 25% of the monthly fees for the affected Service
+Below 95.0% / 50% of the monthly fees for the affected Service
+
+Service Credits in any calendar month will not exceed 50% of the monthly fees for the affected Service.
+
+5. Claiming a Service Credit. To receive a Service Credit, Customer must submit a claim to Provider's support desk within 30 days after the end of the month in which the Downtime occurred. The claim must identify the dates and times of the Downtime. Provider will respond to each claim within 15 days and will apply an approved Service Credit to the next invoice.
+
+6. Chronic Failure. If the Monthly Uptime Percentage is below 99.0% in three consecutive calendar months, or in any four calendar months of a twelve-month period, Customer may terminate the affected Service on written notice given within 30 days after the last such month, and Provider will refund the prepaid fees for the period after termination.
+
+7. Sole Remedy. Service Credits and the termination right in Section 6 are Customer's sole and exclusive remedies for a failure to meet the Availability Commitment.
+
+8. Support Response Times. Provider will respond to a Severity 1 incident within one hour, to a Severity 2 incident within four hours, and to a Severity 3 incident within one business day, in each case measured from Customer's report to the support desk.

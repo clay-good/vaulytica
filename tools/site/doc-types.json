@@ -10579,6 +10579,56 @@
    "sources": []
   },
   {
+   "id": "pilot-evaluation-agreement",
+   "name": "Pilot and Evaluation Agreement",
+   "group": "SaaS & technology",
+   "summary": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept or evaluation. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer.",
+   "checks": [
+    {
+     "id": "PILOT-001",
+     "name": "License limited to evaluation",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PILOT-002",
+     "name": "Length of the pilot",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PILOT-003",
+     "name": "What happens when the pilot ends",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PILOT-004",
+     "name": "Rights in feedback",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PILOT-005",
+     "name": "Return or deletion of data at the end",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PILOT-006",
+     "name": "As-is disclaimer",
+     "description": "",
+     "severity": "info"
+    }
+   ],
+   "general_checks": 113,
+   "companions": [
+    "saas-customer",
+    "mutual-nda"
+   ],
+   "sources": []
+  },
+  {
    "id": "pip",
    "name": "Performance Improvement Plan (PIP)",
    "group": "Employment",
@@ -11926,6 +11976,49 @@
    "companions": [
     "investor-rights-agreement",
     "voting-agreement"
+   ],
+   "sources": []
+  },
+  {
+   "id": "roommate-agreement",
+   "name": "Roommate Agreement",
+   "group": "Real estate",
+   "summary": "An agreement among the people who share a rented home — who pays what share of the rent, utilities and deposit, what happens when one of them moves out early, how a replacement is found, and how the agreement relates to the lease with the landlord.",
+   "checks": [
+    {
+     "id": "ROOM-001",
+     "name": "Each person's share of rent and utilities",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ROOM-002",
+     "name": "Each person's share of the security deposit",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ROOM-003",
+     "name": "Moving out early",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ROOM-004",
+     "name": "Finding a replacement",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "ROOM-005",
+     "name": "Relationship to the lease with the landlord",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 105,
+   "companions": [
+    "sublease-agreement"
    ],
    "sources": []
   },
@@ -13519,6 +13612,56 @@
    ],
    "general_checks": 110,
    "companions": [],
+   "sources": []
+  },
+  {
+   "id": "service-level-agreement",
+   "name": "Service Level Agreement",
+   "group": "SaaS & technology",
+   "summary": "A service level agreement or service level schedule — the availability commitment, what is excluded from it, the credit owed when it is missed, and how a credit is claimed. It is an attachment to a subscription or services agreement, so it is not expected to carry an indemnity, a liability cap, payment terms or a governing-law clause of its own.",
+   "checks": [
+    {
+     "id": "SLA-001",
+     "name": "Uptime commitment and measurement window",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SLA-002",
+     "name": "Exclusions from the commitment",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SLA-003",
+     "name": "Service credit schedule",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SLA-004",
+     "name": "Deadline and process for claiming a credit",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SLA-005",
+     "name": "Whether credits are the exclusive remedy",
+     "description": "",
+     "severity": "info"
+    },
+    {
+     "id": "SLA-006",
+     "name": "Termination right for repeated failure",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 103,
+   "companions": [
+    "saas-customer",
+    "msa-customer-deep"
+   ],
    "sources": []
   },
   {

@@ -13891,6 +13891,66 @@
     ]
   },
   {
+    "id": "pilot-evaluation-agreement",
+    "version": "1.0.0",
+    "name": "Pilot and Evaluation Agreement",
+    "description": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept or evaluation. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer. Distinct from `saas-customer`, which reads the paid subscription a pilot may convert into.",
+    "match_features": {
+      "title_keywords": [
+        "pilot agreement",
+        "pilot and evaluation agreement",
+        "pilot program agreement",
+        "evaluation agreement",
+        "evaluation license agreement",
+        "proof of concept agreement",
+        "proof-of-concept agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "pilot period",
+        "pilot term",
+        "evaluation period",
+        "evaluation license",
+        "internal evaluation",
+        "proof of concept",
+        "during the pilot"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [
+      "license-grant",
+      "term",
+      "confidentiality-obligation"
+    ],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "saas-customer",
+      "mutual-nda"
+    ],
+    "compliance_matrix_columns": [
+      "License limited to evaluation",
+      "Length of the pilot",
+      "What happens when the pilot ends",
+      "Rights in feedback",
+      "Return or deletion of data at the end",
+      "As-is disclaimer"
+    ]
+  },
+  {
     "id": "pip",
     "version": "1.0.0",
     "name": "Performance Improvement Plan (PIP)",
@@ -16826,6 +16886,82 @@
     ]
   },
   {
+    "id": "roommate-agreement",
+    "version": "1.0.0",
+    "name": "Roommate Agreement",
+    "description": "An agreement among the people who share a rented home — who pays what share of the rent, utilities and deposit, what happens when one of them moves out early, how a replacement is found, and how the agreement relates to the lease with the landlord. Distinct from `sublease-agreement`, where one tenant rents to another, and from the residential lease, which the landlord signs.",
+    "match_features": {
+      "title_keywords": [
+        "roommate agreement",
+        "housemate agreement",
+        "roommate contract",
+        "co-tenant agreement",
+        "co-tenancy agreement among roommates"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "each roommate",
+        "the roommates",
+        "housemates",
+        "replacement roommate",
+        "quiet hours",
+        "shared spaces",
+        "overnight guests"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-011": {
+        "skip": true
+      },
+      "RISK-015": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-RESIDENTIAL-RE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "sublease-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Each person's share of rent and utilities",
+      "Each person's share of the security deposit",
+      "Moving out early",
+      "Finding a replacement",
+      "Relationship to the lease with the landlord"
+    ]
+  },
+  {
     "id": "ropa-art-30",
     "version": "1.0.0",
     "name": "Records of Processing Activities (GDPR Art. 30)",
@@ -18175,6 +18311,91 @@
       "NLRB McLaren Macomb (2023)",
       "SEC Rule 21F-17",
       "Cal. Civ. § 1542"
+    ]
+  },
+  {
+    "id": "service-level-agreement",
+    "version": "1.0.0",
+    "name": "Service Level Agreement",
+    "description": "A service level agreement or service level schedule — the availability commitment, what is excluded from it, the credit owed when it is missed, and how a credit is claimed. It is an attachment to a subscription or services agreement, so it is not expected to carry an indemnity, a liability cap, payment terms or a governing-law clause of its own. Distinct from `saas-customer` and `msa-customer-deep`, which read the agreement the schedule attaches to.",
+    "match_features": {
+      "title_keywords": [
+        "service level agreement",
+        "service-level agreement",
+        "service level addendum",
+        "service level schedule",
+        "service level terms",
+        "service level commitment"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "service credit",
+        "service credits",
+        "monthly uptime percentage",
+        "availability commitment",
+        "scheduled maintenance",
+        "downtime",
+        "sole and exclusive remedy"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "STRUCT-001": {
+        "skip": true
+      },
+      "STRUCT-002": {
+        "skip": true
+      },
+      "STRUCT-003": {
+        "skip": true
+      },
+      "STRUCT-004": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-COMMERCIAL",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "saas-customer",
+      "msa-customer-deep"
+    ],
+    "compliance_matrix_columns": [
+      "Uptime commitment and measurement window",
+      "Exclusions from the commitment",
+      "Service credit schedule",
+      "Deadline and process for claiming a credit",
+      "Whether credits are the exclusive remedy",
+      "Termination right for repeated failure"
     ]
   },
   {

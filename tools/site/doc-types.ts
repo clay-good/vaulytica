@@ -19,6 +19,7 @@ import { V3_RULES } from "../../src/engine/rules/v3/index.js";
 import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 
 export interface DocTypeCheck {
   readonly id: string;
@@ -141,7 +142,7 @@ function groupsFromLanding(root: string): Map<string, string> {
 }
 
 export function buildDocTypes(root: string = process.cwd()): DocTypesData {
-  const rules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES];
+  const rules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES, ...V7_RULES];
   const playbooks = loadPlaybooks(root);
   const groups = groupsFromLanding(root);
   const names = new Map(playbooks.map((p) => [p.id, p.name]));

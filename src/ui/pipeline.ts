@@ -59,6 +59,7 @@ import {
   V4_RULES,
   V5_RULES,
   V6_RULES,
+  V7_RULES,
   runEngine,
   runConsistency,
   type ConsistencyDocument,
@@ -688,7 +689,14 @@ async function runSecondaryFamilies(
   activeFrames?: ReadonlyArray<ComplianceFrame>,
 ): Promise<SecondaryFamilyResult[]> {
   const allRules = filterRulesByFrames(
-    [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES] as readonly Rule[],
+    [
+      ...LAUNCH_RULES,
+      ...V3_RULES,
+      ...V4_RULES,
+      ...V5_RULES,
+      ...V6_RULES,
+      ...V7_RULES,
+    ] as readonly Rule[],
     activeFrames,
   );
   return runSecondaryFamiliesShared(secondaryPlaybooks, allRules, ctx);
@@ -706,7 +714,14 @@ export async function runReport(
   options: PipelineOptions = {},
 ): Promise<PipelineResult> {
   const ruleSet = filterRulesByFrames(
-    [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES] as readonly Rule[],
+    [
+      ...LAUNCH_RULES,
+      ...V3_RULES,
+      ...V4_RULES,
+      ...V5_RULES,
+      ...V6_RULES,
+      ...V7_RULES,
+    ] as readonly Rule[],
     options.active_frames,
   );
   const onRuleProgress = ({
@@ -1010,7 +1025,9 @@ export async function runReport(
  * dynamic-imports this module (already preloaded on hover/drag) on demand.
  */
 export function catalogRuleIds(): string[] {
-  return [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES].map((r) => r.id);
+  return [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES, ...V7_RULES].map(
+    (r) => r.id,
+  );
 }
 
 /**
@@ -1405,7 +1422,14 @@ export async function prepareBundle(
     // Frame-filtered rule set (spec-v3 §61). When `options.active_frames`
     // is omitted, this returns the full LAUNCH+V3 set unchanged.
     const ruleSet = filterRulesByFrames(
-      [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES] as readonly Rule[],
+      [
+        ...LAUNCH_RULES,
+        ...V3_RULES,
+        ...V4_RULES,
+        ...V5_RULES,
+        ...V6_RULES,
+        ...V7_RULES,
+      ] as readonly Rule[],
       options.active_frames,
     );
     const sourceFile = {

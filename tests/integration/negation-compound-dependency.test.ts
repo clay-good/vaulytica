@@ -77,7 +77,7 @@ async function findingSet(text: string, name: string): Promise<string> {
 const DEPENDENT: string[] = [];
 
 /** Specimens carrying at least one inverting `non-` compound. Anti-vacuity. */
-const CARRIERS = 51;
+const CARRIERS = 52;
 
 describe("findings that depend on a negated adjective", () => {
   it("names every specimen whose finding set turns on a non- compound", async () => {

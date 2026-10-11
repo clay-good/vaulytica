@@ -5671,6 +5671,47 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-003",
     ],
   },
+  // spec-v49 Step 310: three types the catalog had no name for. Each has a
+  // complete specimen, which draws none of its family's checks, and a thin
+  // one, which draws all of them. A service level agreement is an attachment,
+  // so neither of its specimens is asked for an indemnity, a liability cap or
+  // a governing-law clause; a free pilot is not asked for payment terms.
+  "service-level-agreement-complete.txt": {
+    playbook: "service-level-agreement",
+    findings: ["OBLI-005", "RISK-013"],
+  },
+  "service-level-agreement-thin.txt": {
+    playbook: "service-level-agreement",
+    findings: ["OBLI-008", "SLA-001", "SLA-002", "SLA-003", "SLA-004", "SLA-005", "SLA-006"],
+  },
+  "pilot-agreement-complete.txt": {
+    playbook: "pilot-evaluation-agreement",
+    findings: ["OBLI-005", "RISK-006", "RISK-007", "TEMP-006"],
+  },
+  "pilot-agreement-thin.txt": {
+    playbook: "pilot-evaluation-agreement",
+    findings: [
+      "CHOICE-003",
+      "IPDATA-001",
+      "PILOT-001",
+      "PILOT-002",
+      "PILOT-003",
+      "PILOT-004",
+      "PILOT-005",
+      "PILOT-006",
+      "RISK-005",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
+  "roommate-agreement-complete.txt": {
+    playbook: "roommate-agreement",
+    findings: ["OBLI-005"],
+  },
+  "roommate-agreement-thin.txt": {
+    playbook: "roommate-agreement",
+    findings: ["ROOM-001", "ROOM-002", "ROOM-003", "ROOM-004", "ROOM-005"],
+  },
 };
 
 describe("hand-written specimens", () => {

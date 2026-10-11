@@ -77,6 +77,10 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   ENG: "law-practice-engagement",
   DISC: "discovery-instruments",
   PLDG: "pleadings",
+  // v7 — families the catalog had no type for (spec-v49.md).
+  SLA: "service-level-agreement",
+  PILOT: "pilot-evaluation-agreement",
+  ROOM: "roommate-agreement",
 } as const;
 
 /**

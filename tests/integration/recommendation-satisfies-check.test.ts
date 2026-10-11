@@ -47,7 +47,14 @@
 
 import { describe, expect, it } from "vitest";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
-import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import {
+  LAUNCH_RULES,
+  V3_RULES,
+  V4_RULES,
+  V5_RULES,
+  V6_RULES,
+  V7_RULES,
+} from "../../src/engine/index.js";
 import { V3_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v3/_regulated-rule.js";
 import { V4_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v4/_helpers.js";
 import { GATED_PACK_RULE_IDS } from "../../src/engine/rules/v5/_pack.js";
@@ -137,7 +144,14 @@ describe("a check is satisfied by the drafting its own recommendation quotes", (
     let fired = 0;
     const probedWaves = new Set<string>();
 
-    const waves = { launch: LAUNCH_RULES, v3: V3_RULES, v4: V4_RULES, v5: V5_RULES, v6: V6_RULES };
+    const waves = {
+      launch: LAUNCH_RULES,
+      v3: V3_RULES,
+      v4: V4_RULES,
+      v5: V5_RULES,
+      v6: V6_RULES,
+      v7: V7_RULES,
+    };
     for (const [wave, rules] of Object.entries(waves)) {
       for (const r of rules) {
         // A gated check is supposed to stay silent on a document that does not

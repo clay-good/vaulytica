@@ -1,0 +1,80 @@
+{
+  "id": "service-level-agreement",
+  "version": "1.0.0",
+  "name": "Service Level Agreement",
+  "description": "A service level agreement or service level schedule — the availability commitment, what is excluded from it, the credit owed when it is missed, and how a credit is claimed. It is an attachment to a subscription or services agreement, so it is not expected to carry an indemnity, a liability cap, payment terms or a governing-law clause of its own. Distinct from `saas-customer` and `msa-customer-deep`, which read the agreement the schedule attaches to.",
+  "match_features": {
+    "title_keywords": [
+      "service level agreement",
+      "service-level agreement",
+      "service level addendum",
+      "service level schedule",
+      "service level terms",
+      "service level commitment"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "service credit",
+      "service credits",
+      "monthly uptime percentage",
+      "availability commitment",
+      "scheduled maintenance",
+      "downtime",
+      "sole and exclusive remedy"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {
+    "CHOICE-001": {
+      "skip": true
+    },
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "STRUCT-001": {
+      "skip": true
+    },
+    "STRUCT-002": {
+      "skip": true
+    },
+    "STRUCT-003": {
+      "skip": true
+    },
+    "STRUCT-004": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COMMERCIAL",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["saas-customer", "msa-customer-deep"],
+  "compliance_matrix_columns": [
+    "Uptime commitment and measurement window",
+    "Exclusions from the commitment",
+    "Service credit schedule",
+    "Deadline and process for claiming a credit",
+    "Whether credits are the exclusive remedy",
+    "Termination right for repeated failure"
+  ]
+}

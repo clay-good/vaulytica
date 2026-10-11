@@ -11,13 +11,13 @@ enforced by [`src/verticals/registry.test.ts`](../src/verticals/registry.test.ts
 
 A pack is five things, each with a single home:
 
-| Part | Where it lives |
-| --- | --- |
-| **Classifier family** | a feature entry in `dkb/v4/sub-domain-features.json` (or a v2 playbook match) |
-| **Playbook(s)/profile(s)** | one or more JSON files under `src/playbooks/` |
-| **A gated rule pack** | rules whose every member declares a gate (see below) |
-| **A reserved rule-ID namespace** | one prefix, listed in the table below |
-| **A scope-of-review statement** | an entry in `SCOPE_OF_REVIEW`, rendered on every report the pack ran on |
+| Part                             | Where it lives                                                                |
+| -------------------------------- | ----------------------------------------------------------------------------- |
+| **Classifier family**            | a feature entry in `dkb/v4/sub-domain-features.json` (or a v2 playbook match) |
+| **Playbook(s)/profile(s)**       | one or more JSON files under `src/playbooks/`                                 |
+| **A gated rule pack**            | rules whose every member declares a gate (see below)                          |
+| **A reserved rule-ID namespace** | one prefix, listed in the table below                                         |
+| **A scope-of-review statement**  | an entry in `SCOPE_OF_REVIEW`, rendered on every report the pack ran on       |
 
 ## The gate: every non-launch rule is gated to its family
 
@@ -39,8 +39,8 @@ gate, or an assertion gate that is not registered.
 
 ### Assertion-gate registry
 
-| Assertion | Pack | Status |
-| --- | --- | --- |
+| Assertion       | Pack                               | Status                                                                                                                                                                                    |
+| --------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `estate-checks` | estate deepening (EST-1xx/2xx/3xx) | Shipped — gated because the will/trust playbooks already ship, so playbook gating alone would change existing hashes. Runs only under `--estate-checks` (or `--state`, which implies it). |
 
 ### Shipped packs
@@ -90,24 +90,25 @@ collision-free across packs. `NAMESPACE_OWNERS` is the source of truth; the
 guard test asserts no prefix is claimed twice and that every shipped non-launch
 rule uses a registered prefix.
 
-| Prefix | Owner |
-| --- | --- |
-| STRUCT, FIN, TEMP, OBLI, RISK, CHOICE, TERM, IPDATA, PERS, DARK | launch contract-lint |
-| BAA | HIPAA business associate |
-| DPA | GDPR data processing |
-| USDPA | US state data processing |
-| TRANSFER | cross-border transfer |
-| ADDENDA | addenda |
-| MSA, NDA | deep MSA / NDA packs |
+| Prefix                                                                  | Owner                                                                                                                                                                                                                                                |
+| ----------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| STRUCT, FIN, TEMP, OBLI, RISK, CHOICE, TERM, IPDATA, PERS, DARK         | launch contract-lint                                                                                                                                                                                                                                 |
+| BAA                                                                     | HIPAA business associate                                                                                                                                                                                                                             |
+| DPA                                                                     | GDPR data processing                                                                                                                                                                                                                                 |
+| USDPA                                                                   | US state data processing                                                                                                                                                                                                                             |
+| TRANSFER                                                                | cross-border transfer                                                                                                                                                                                                                                |
+| ADDENDA                                                                 | addenda                                                                                                                                                                                                                                              |
+| MSA, NDA                                                                | deep MSA / NDA packs                                                                                                                                                                                                                                 |
 | BNK, CON, EMP, EQT, EST, GOV, HC, INS, IPL, MNA, POL, PRV, RE, REG, SET | v4 sub-domain families (EST also owns the assertion-gated EST-1xx/2xx/3xx estate-check rules). The same prefixes carry the v5 US-catalog wave in a disjoint range — `-101` and above, and `EST-401` and above (see [`spec-v45.md`](spec-v45.md) §4). |
-| FILE | filing-format lint (appellate-brief / trial-motion / petition) |
-| CITE | authority-citation lint (same filing playbooks) |
-| DDL | deadline computation (register resolution; no rule pack yet) |
-| PROD | production QA (Bates + privilege-log reconciliation, CLI) |
-| PNOT | privacy notice (CCPA + GDPR Art. 13/14 + CO/VA/TX/OR, incl. the TX § 541.102(b)–(c) exact-wording checks) |
-| ENG | law-practice engagement and fee agreements (ABA Model Rules) — [`spec-v46.md`](spec-v46.md) |
-| DISC | discovery instruments (FRCP 26/30/33/34/36 + FRE 502(d)) — [`spec-v46.md`](spec-v46.md) |
-| PLDG | pleadings (FRCP 8/9/10/11/12/38) — [`spec-v46.md`](spec-v46.md) |
+| FILE                                                                    | filing-format lint (appellate-brief / trial-motion / petition)                                                                                                                                                                                       |
+| CITE                                                                    | authority-citation lint (same filing playbooks)                                                                                                                                                                                                      |
+| DDL                                                                     | deadline computation (register resolution; no rule pack yet)                                                                                                                                                                                         |
+| PROD                                                                    | production QA (Bates + privilege-log reconciliation, CLI)                                                                                                                                                                                            |
+| PNOT                                                                    | privacy notice (CCPA + GDPR Art. 13/14 + CO/VA/TX/OR, incl. the TX § 541.102(b)–(c) exact-wording checks)                                                                                                                                            |
+| ENG                                                                     | law-practice engagement and fee agreements (ABA Model Rules) — [`spec-v46.md`](spec-v46.md)                                                                                                                                                          |
+| DISC                                                                    | discovery instruments (FRCP 26/30/33/34/36 + FRE 502(d)) — [`spec-v46.md`](spec-v46.md)                                                                                                                                                              |
+| PLDG                                                                    | pleadings (FRCP 8/9/10/11/12/38) — [`spec-v46.md`](spec-v46.md)                                                                                                                                                                                      |
+| SLA, PILOT, ROOM                                                        | service level agreement, pilot agreement, roommate agreement — customary practice only, never above a warning — [`spec-v49.md`](spec-v49.md)                                                                                                         |
 
 The estate pack deepens the already-owned **EST** prefix rather than reserving a
 new one.
@@ -128,15 +129,15 @@ surface rather than living in a footnote:
   response formats, privilege-log contents, deposition practice, caption format,
   and jury-demand placement are routinely modified by local rule or by the
   assigned judge. Every `DISC` and `PLDG` scope statement lists that under
-  *not reviewed for*.
+  _not reviewed for_.
 
 A guard test asserts no rule name in the wave contains a professional-duty
 conclusion word.
 
 ## Honesty posture every pack inherits
 
-- **Presence-only.** A pack reports what it *found*, never what it *did not
-  find* as a clean bill of health (`src/delivery/types.ts`). A pack that runs
+- **Presence-only.** A pack reports what it _found_, never what it _did not
+  find_ as a clean bill of health (`src/delivery/types.ts`). A pack that runs
   and finds nothing renders its scope statement and reports "no findings from
   the checks listed" — never "compliant" or "clean."
 - **Scope of review, always rendered.** Each pack declares what it checked and
@@ -156,7 +157,7 @@ conclusion word.
 
 Activating a pack narrows the candidate rules through `selectActiveRules`: a
 rule whose playbook gate excludes the active playbook, or whose assertion gate
-is not asserted, is selected *out* before the engine runs. A property test
+is not asserted, is selected _out_ before the engine runs. A property test
 proves that registering a synthetic pack leaves every launch golden's
 `result_hash` byte-identical when the active playbook is outside the pack's gate
 — and, for assertion-gated rules, whenever the assertion is not made. See

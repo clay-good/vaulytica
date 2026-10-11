@@ -20,6 +20,7 @@ import { V3_RULES } from "../../src/engine/rules/v3/index.js";
 import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 import { buildDocTypes, serializeDocTypes } from "../../tools/site/doc-types.js";
 import {
   docTypeDescription,
@@ -59,7 +60,14 @@ describe("document-type data", () => {
   });
 
   it("lists exactly the checks the engine runs for that playbook", async () => {
-    const rules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES];
+    const rules = [
+      ...LAUNCH_RULES,
+      ...V3_RULES,
+      ...V4_RULES,
+      ...V5_RULES,
+      ...V6_RULES,
+      ...V7_RULES,
+    ];
     const playbooks = readdirSync(join(root, "playbooks"))
       .filter((f) => f.endsWith(".json"))
       .flatMap((f) => {

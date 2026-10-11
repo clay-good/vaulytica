@@ -13,7 +13,14 @@
  */
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
-import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import {
+  LAUNCH_RULES,
+  V3_RULES,
+  V4_RULES,
+  V5_RULES,
+  V6_RULES,
+  V7_RULES,
+} from "../../src/engine/index.js";
 import { MAX_DOCUMENT_BYTES, MAX_OCR_PAGES } from "../../src/ingest/limits.js";
 import { MATCH_THRESHOLD } from "../../src/playbooks/types.js";
 import { MAX_SECONDARY_FAMILIES } from "../../src/ui/playbook-candidates.js";
@@ -38,7 +45,8 @@ export async function buildKnownLimits(root: string = process.cwd()): Promise<Kn
     self_measured: {
       specimens: readdirSync(join(root, "tests", "fixtures", "specimens")).length,
       document_types: buildDocTypes(root).types.length,
-      rules: [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES].length,
+      rules: [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES, ...V7_RULES]
+        .length,
       attorney_signed_rules: (await loadLegalBasisLedger()).length,
     },
     // Largest first; a debt held at zero is a relation that holds, and is

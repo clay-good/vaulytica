@@ -11,7 +11,14 @@ import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import {
+  LAUNCH_RULES,
+  V3_RULES,
+  V4_RULES,
+  V5_RULES,
+  V6_RULES,
+  V7_RULES,
+} from "../../src/engine/index.js";
 import type { Finding } from "../../src/engine/finding.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import {
@@ -39,7 +46,14 @@ const RUN = {
   playbook_id: "mutual-nda-deep",
   findings: [] as Finding[],
 };
-const ALL_RULES = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES];
+const ALL_RULES = [
+  ...LAUNCH_RULES,
+  ...V3_RULES,
+  ...V4_RULES,
+  ...V5_RULES,
+  ...V6_RULES,
+  ...V7_RULES,
+];
 
 describe("a link to the report page", () => {
   it("carries its context in the fragment only: a kind and five identifiers", () => {

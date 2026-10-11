@@ -62,7 +62,14 @@ import {
   type Rule,
   type Severity,
 } from "../../src/engine/finding.js";
-import { LAUNCH_RULES, V3_RULES, V4_RULES, V5_RULES, V6_RULES } from "../../src/engine/index.js";
+import {
+  LAUNCH_RULES,
+  V3_RULES,
+  V4_RULES,
+  V5_RULES,
+  V6_RULES,
+  V7_RULES,
+} from "../../src/engine/index.js";
 import { compareRuns, type Comparison } from "../../src/report/compare.js";
 import { buildClauseDiff, type ClauseDiff } from "../../src/report/clause-diff.js";
 import { comparePosture, type PostureMovement } from "../../src/report/posture-movement.js";
@@ -1013,6 +1020,7 @@ const ALL_RULES: readonly Rule[] = [
   ...V4_RULES,
   ...V5_RULES,
   ...V6_RULES,
+  ...V7_RULES,
 ];
 
 /** A rule's `dkb_citations`, resolved against the shipped DKB. Unknown ids are dropped. */

@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.868.0] — 2026-10-10
+
+### Added
+- **Three document types the catalog had no name for** (spec-v49 Step 310):
+  a **service level agreement**, a **pilot and evaluation agreement**, and a
+  **roommate agreement**. A correctly titled pilot or roommate agreement used
+  to fall to the generic fallback and get an empty report. 271 document types,
+  1,842 rules.
+- **17 checks, one per column.** Service level: the uptime figure and the
+  window it is measured over, what is excluded, the credit schedule, the
+  deadline for claiming a credit, whether credits are the only remedy, and a
+  way out after repeated failure. Pilot: a license confined to evaluation, a
+  stated length, what happens at the end, rights in feedback, return or
+  deletion of data, and an as-is disclaimer. Roommate: each person's share of
+  rent and utilities, the deposit, moving out early, finding a replacement,
+  and how the agreement relates to the lease with the landlord.
+- **Every one is cited as customary practice, and none reports above a
+  warning.** No statute or rule lists what these documents must say, and the
+  citation on each finding says so.
+
+### Fixed
+- **A service level agreement is no longer told it has no indemnification
+  clause.** It used to be taken for the subscription agreement it attaches
+  to and judged by that agreement's rules: one critical and five warnings on a
+  schedule that was complete. As its own type it is not asked for an
+  indemnity, a liability cap, payment terms, a governing-law clause or a
+  signature block. A free pilot is not asked for payment terms or an indemnity;
+  a roommate agreement is not asked for a liability cap or an IP clause.
+
+### Notes
+- The checks are a new rule wave (`src/engine/rules/v7/`), gated to their own
+  three types, so no report for any other document changes.
+- A complete pilot agreement still draws one caveated note from the end-user
+  license type as a secondary family ("EU consumer-law minimums missing"),
+  because its license grant uses that type's vocabulary. That is older
+  behavior for any software license and is not changed here.
+
 ## [9.867.0] — 2026-10-10
 
 ### Added

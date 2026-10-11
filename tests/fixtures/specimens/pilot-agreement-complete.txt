@@ -1,0 +1,47 @@
+PILOT AND EVALUATION AGREEMENT
+
+This Pilot and Evaluation Agreement (this "Agreement") is entered into as of April 6, 2026 (the "Effective Date") between Lumen Analytics, Inc., a Delaware corporation ("Vendor"), and Harcastle Foods Co., an Ohio corporation ("Customer").
+
+1. Definitions.
+
+"Customer Data" means the data that Customer loads into the Service.
+
+"Feedback" means suggestions, comments and ideas that Customer gives Vendor about the Service.
+
+"Pilot Period" means the period described in Section 3.
+
+"Service" means Vendor's hosted demand-forecasting software and its documentation.
+
+2. Evaluation License. Vendor grants Customer a non-exclusive, non-transferable license to access and use the Service during the Pilot Period solely for Customer's internal evaluation of the Service. Customer will not use the Service in production, will not make it available to any third party, and will not reverse engineer it. Up to ten Customer employees may use the Service.
+
+3. Pilot Period. The Pilot Period begins on the Effective Date and continues for 60 days. The parties may extend it once, for up to 30 days, by written agreement.
+
+4. Fees. Customer will pay no fees for the Service during the Pilot Period.
+
+5. End of the Pilot. Customer's access to the Service ends when the Pilot Period ends, unless the parties have signed a commercial subscription agreement by then. Neither party is obligated to enter into a commercial agreement. If the parties sign one within 30 days after the Pilot Period ends, the subscription fee for the first year will be the amount in Vendor's quotation dated April 1, 2026.
+
+6. Customer Data. Customer owns the Customer Data. Vendor will use Customer Data only to provide the Service to Customer during the Pilot Period. Within 30 days after the Pilot Period ends, Vendor will delete all Customer Data from the Service and, on Customer's request made before then, will first return a copy to Customer.
+
+7. Ownership and Feedback. Vendor owns the Service and all intellectual property rights in it. Customer grants Vendor a perpetual, royalty-free license to use Feedback to improve its products. Feedback does not include Customer Data or Customer's Confidential Information.
+
+8. Confidentiality. Each party will keep the other party's non-public information confidential, will use it only to perform this Agreement, and will protect it with reasonable care. This obligation continues for three years after the Pilot Period ends.
+
+9. Disclaimer. The Service is provided "as is" during the Pilot Period. Vendor disclaims all warranties, express or implied, including the implied warranties of merchantability and fitness for a particular purpose. No availability commitment applies during the Pilot Period.
+
+10. Limitation of Liability. Except for a breach of Section 8, neither party will be liable to the other under this Agreement for indirect or consequential damages, and each party's total liability under this Agreement will not exceed $10,000.
+
+11. Termination. Either party may terminate this Agreement at any time on five days' written notice. Either party may terminate this Agreement immediately on written notice if the other party materially breaches it. Sections 5 through 12 survive termination.
+
+12. General. This Agreement is governed by the laws of the State of Delaware, and the state and federal courts located in Wilmington, Delaware have exclusive jurisdiction over any dispute arising under it. This Agreement is the entire agreement of the parties about the pilot and may be amended only in a writing signed by both parties.
+
+LUMEN ANALYTICS, INC.
+
+By: ______________________
+Name: Priya Raman
+Title: Vice President, Sales
+
+HARCASTLE FOODS CO.
+
+By: ______________________
+Name: Daniel Okafor
+Title: Chief Information Officer

@@ -22,6 +22,7 @@ import { V3_RULES } from "../../src/engine/rules/v3/index.js";
 import { V4_RULES } from "../../src/engine/rules/v4/index.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 import { V3_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v3/_regulated-rule.js";
 import { V4_GATED_PRESENCE_RULE_IDS } from "../../src/engine/rules/v4/_helpers.js";
 import { GATED_PACK_RULE_IDS } from "../../src/engine/rules/v5/_pack.js";
@@ -44,7 +45,7 @@ const REVIEWED: Record<string, string> = {
     "what the underlying contract requires is not in the endorsement; the finding is phrased as the question to ask",
 };
 
-const rules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES];
+const rules = [...LAUNCH_RULES, ...V3_RULES, ...V4_RULES, ...V5_RULES, ...V6_RULES, ...V7_RULES];
 const gated = (id: string): boolean =>
   V3_GATED_PRESENCE_RULE_IDS.has(id) ||
   V4_GATED_PRESENCE_RULE_IDS.has(id) ||

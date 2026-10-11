@@ -26,6 +26,7 @@ import { extractAll } from "../../src/extract/index.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 import { V5_RULES } from "../../src/engine/rules/v5/index.js";
 import { V6_RULES } from "../../src/engine/rules/v6/index.js";
+import { V7_RULES } from "../../src/engine/rules/v7/index.js";
 
 const PLAYBOOKS = parsePlaybooks(
   JSON.parse(readFileSync(join(process.cwd(), "playbooks", "extended.json"), "utf8")),
@@ -125,7 +126,9 @@ describe("v5 / v6 catalog routing", () => {
     // `playbooks/extended.json`, its whole ruleset is dead in the deployed
     // product while every unit test still passes.
     const served = new Set(PLAYBOOKS.map((p) => p.id));
-    const gated = new Set([...V5_RULES, ...V6_RULES].flatMap((r) => r.applies_to_playbooks ?? []));
+    const gated = new Set(
+      [...V5_RULES, ...V6_RULES, ...V7_RULES].flatMap((r) => r.applies_to_playbooks ?? []),
+    );
     const missing = [...gated].filter((id) => !served.has(id)).sort();
     expect(
       missing,

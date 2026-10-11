@@ -1,0 +1,11 @@
+SERVICE LEVEL AGREEMENT
+
+This Service Level Agreement applies to the hosted platform that Northgate Systems LLC ("Provider") makes available to Pell Mercantile, Inc. ("Customer") under the parties' Subscription Agreement.
+
+1. Availability. Provider will use commercially reasonable efforts to keep the platform available to Customer at all times.
+
+2. Maintenance. Provider may take the platform offline for maintenance when it considers it necessary.
+
+3. Support. Provider's support desk is open from 9:00 am to 5:00 pm Eastern time on business days. Provider will acknowledge each support request within one business day.
+
+4. Reporting. On Customer's request, Provider will give Customer a report of platform availability for the preceding month.
