@@ -23,6 +23,7 @@ import {
   type Counts,
 } from "./metrics.js";
 import { cohensKappa, type KappaResult, type VerdictPair } from "./kappa.js";
+import { measureRouting, ROUTING_OUTCOMES, type RoutingMeasure } from "./routing.js";
 
 export type ScoreboardArtifact = {
   schema_version: 1;
@@ -43,6 +44,12 @@ export type ScoreboardArtifact = {
   worst_precision: RuleMetric[];
   worst_recall: RuleMetric[];
   unmeasured_rule_ids: string[];
+  /**
+   * Routing on public filings (spec-v53 §8): of the exhibits sampled, how many
+   * the tool recognized for what their own titles say they are. Present with
+   * its caveats even when the sample is empty.
+   */
+  routing: RoutingMeasure;
   /** Honest status: empty (no real docs), thin (<floor), or populated. */
   corpus_status: "empty" | "thin" | "populated";
   notes: string[];
@@ -58,6 +65,8 @@ export type AssembleInput = {
   graded: ReadonlyArray<GradedDocument>;
   /** Paired annotator verdicts feeding the overall κ (spec-v5 §5). */
   kappa_pairs: ReadonlyArray<VerdictPair>;
+  /** The routing sample's measure; omitted, an empty sample over no catalog. */
+  routing?: RoutingMeasure;
   /** Real graded pairs below this count → corpus_status "thin"; 0 → "empty". */
   thin_floor?: number;
   worst_n?: number;
@@ -109,6 +118,7 @@ export function assembleScoreboard(input: AssembleInput): ScoreboardArtifact {
     worst_precision: worstByPrecision(board, worstN),
     worst_recall: worstByRecall(board, worstN),
     unmeasured_rule_ids: board.unmeasured_rule_ids,
+    routing: input.routing ?? measureRouting([], [], []),
     corpus_status,
     notes,
     scoreboard_hash: "",
@@ -179,6 +189,41 @@ export function renderScoreboardMarkdown(a: ScoreboardArtifact): string {
     for (const r of sorted) {
       lines.push(
         `| ${r.rule_id} | ${r.tp} | ${r.fp} | ${r.fn} | ${r.tn} | ${pct(r.precision)} | ${pct(r.recall)} | ${pct(r.f1)} | ${r.graded_docs} | ${r.low_confidence ? "low" : "ok"} |`,
+      );
+    }
+    lines.push("");
+  }
+
+  lines.push("## Routing on public filings");
+  lines.push("");
+  const r = a.routing;
+  lines.push(
+    r.n === 0
+      ? "No exhibits sampled yet. The sample is selected by rule from EDGAR material-contract exhibits, and its size is the owner's decision (spec-v53 §8). No routing number is published until it exists."
+      : `Of ${r.n} EDGAR exhibits, where the tool sent each, against the type its own title names. No exhibit text is held: each record is an accession number, a URL, a date, a hash, a title, a label and a route.`,
+  );
+  lines.push("");
+  lines.push("| Outcome | Exhibits | Share |");
+  lines.push("|---|--:|--:|");
+  const OUTCOME_LABEL = {
+    exact: "The type its title names",
+    acceptable: "Another type accepted for that title",
+    wrong: "A different type",
+    fallback: "No type matched",
+    no_family: "The catalog has no type for this title",
+  } as const;
+  for (const o of ROUTING_OUTCOMES) {
+    lines.push(`| ${OUTCOME_LABEL[o]} | ${r.counts[o]} | ${pct(r.shares[o])} |`);
+  }
+  lines.push("");
+  for (const c of r.caveats) lines.push(`- ${c}`);
+  lines.push("");
+  if (r.per_family.length > 0) {
+    lines.push("| Type | Exhibits | Exact | Acceptable | Wrong | Fallback |");
+    lines.push("|---|--:|--:|--:|--:|--:|");
+    for (const f of r.per_family) {
+      lines.push(
+        `| ${f.family} | ${f.n} | ${f.counts.exact} | ${f.counts.acceptable} | ${f.counts.wrong} | ${f.counts.fallback} |`,
       );
     }
     lines.push("");

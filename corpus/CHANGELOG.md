@@ -9,3 +9,9 @@ compared without noting the version change.
 - Initial scaffolding. Zero real documents. Establishes the layout, the split
   manifest, and the provenance/annotation schemas. Real-document sourcing
   (Step 68) and attorney annotation (Step 70) are human-gated and pending.
+
+## v0.0.0-seed — routing scaffolding (2026-10-11)
+
+- Added `routing/labels.json` (25 titles) and the empty `routing/records/`.
+  No exhibits sampled; `CORPUS_VERSION` is unchanged because no document was
+  added.

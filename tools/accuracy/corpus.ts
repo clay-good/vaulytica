@@ -35,7 +35,7 @@ export type CorpusDocument = {
   text: string;
   /** All gold annotations for this document, one per applicable playbook. */
   annotations: GoldAnnotation[];
-  split: "regression" | "development";
+  split: "regression" | "development" | "routing";
 };
 
 export type Corpus = {

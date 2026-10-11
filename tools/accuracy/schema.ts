@@ -135,7 +135,9 @@ export type GoldAnnotation = z.infer<typeof GoldAnnotationSchema>;
 export const CorpusManifestSchema = z.object({
   corpus_version: z.string().min(1),
   /** corpus_doc_id → split. */
-  splits: z.record(z.string(), z.enum(["regression", "development"])),
+  // `routing` (spec-v53 §8): a document measured only for where it routes.
+  // It has no annotation and is never graded for findings.
+  splits: z.record(z.string(), z.enum(["regression", "development", "routing"])),
 });
 export type CorpusManifest = z.infer<typeof CorpusManifestSchema>;
 

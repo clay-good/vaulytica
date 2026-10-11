@@ -12,9 +12,9 @@
 
 Vaulytica's one-line pitch is **"the second pair of eyes you can cite."** Everything in the product is bent toward that promise: determinism, citation pinning, the audit trail, the no-AI posture. The argument is that a probabilistic tool produces an answer you cannot stake a review on, and a deterministic one produces an answer you can.
 
-There is a hole in the middle of that argument. *Deterministic* is not the same as *correct.* A rule that fires the same way every time can be reliably, reproducibly **wrong** — it can flag a clause that is actually fine (a false positive that erodes a reviewer's trust within minutes), or stay silent on a clause that is actually defective (a false negative that is worse, because the user believes they had a second pair of eyes and did not). Vaulytica today proves determinism three different ways and proves correctness **zero** ways.
+There is a hole in the middle of that argument. _Deterministic_ is not the same as _correct._ A rule that fires the same way every time can be reliably, reproducibly **wrong** — it can flag a clause that is actually fine (a false positive that erodes a reviewer's trust within minutes), or stay silent on a clause that is actually defective (a false negative that is worse, because the user believes they had a second pair of eyes and did not). Vaulytica today proves determinism three different ways and proves correctness **zero** ways.
 
-Concretely, after v4 the engine ships ~1,000 rules across 30+ playbooks, 2,235 passing tests, and a green four-gate CI. But every one of those tests is a **synthetic fixture authored by the same person who authored the rule.** A fixture is built to make a rule fire; the rule is built to fire on the fixture. The loop is closed and self-confirming. We have never measured how the engine behaves on a contract it has not seen, written by a lawyer who has never heard of Vaulytica. We do not know our precision. We do not know our recall. We do not know our false-positive rate. We have never had a practicing attorney confirm that a single rule's *legal premise* is sound — only that its regex matches the fixture.
+Concretely, after v4 the engine ships ~1,000 rules across 30+ playbooks, 2,235 passing tests, and a green four-gate CI. But every one of those tests is a **synthetic fixture authored by the same person who authored the rule.** A fixture is built to make a rule fire; the rule is built to fire on the fixture. The loop is closed and self-confirming. We have never measured how the engine behaves on a contract it has not seen, written by a lawyer who has never heard of Vaulytica. We do not know our precision. We do not know our recall. We do not know our false-positive rate. We have never had a practicing attorney confirm that a single rule's _legal premise_ is sound — only that its regex matches the fixture.
 
 The §8 open-question resolution in spec-v4 is the tell: the classifier confidence threshold was "calibrated against the labeled golden corpus," but that corpus is the synthetic fixtures. We tuned a real parameter against fake data and recorded it as resolved. That is the pattern v5 exists to break.
 
@@ -24,17 +24,17 @@ v5 is the validation layer. It does not make the engine bigger. It makes the eng
 
 **v5 is:**
 
-- A **real-document corpus**: licensed, attributable, real-world legal documents (not synthetic fixtures), each annotated with a gold-standard set of which findings *should* and *should not* appear.
+- A **real-document corpus**: licensed, attributable, real-world legal documents (not synthetic fixtures), each annotated with a gold-standard set of which findings _should_ and _should not_ appear.
 - A **measurement harness** that runs the full engine over the corpus and computes precision, recall, F1, and a confusion matrix — per rule, per family, per sub-domain, per severity, and overall — deterministically and offline, the same way every time.
 - A **legal-basis ledger**: a per-rule record of the legal authority the rule rests on, reviewed and signed off by a credentialed reviewer, with a confidence tier and a retirement path for rules that do not survive review.
 - A **calibration pass**: severities re-grounded against measured impact, a published false-positive budget, and the classifier re-evaluated against real documents instead of fixtures.
-- An **explainability surface**: every finding (and every notably *absent* finding) carries the evidence span and the plain-language reason it fired, so a human can adjudicate it in seconds.
+- An **explainability surface**: every finding (and every notably _absent_ finding) carries the evidence span and the plain-language reason it fired, so a human can adjudicate it in seconds.
 - A set of **public trust artifacts**: a versioned accuracy report, a methodology page, and an honest-limits disclosure, all generated from the harness so they cannot drift from reality.
 - The **deployment and real-user validation work** that v1/v3/v4 launch checklists left `⏳ pending` / `🟡 partial` because they require a live site and real humans.
 
 **v5 is not:**
 
-- A new catalog of document families. The taxonomy froze at v4's 16 sub-domains. v5 may *retire* or *split* rules as a consequence of review, but it does not chase new surfaces.
+- A new catalog of document families. The taxonomy froze at v4's 16 sub-domains. v5 may _retire_ or _split_ rules as a consequence of review, but it does not chase new surfaces.
 - A model. The corpus is used to **measure** the deterministic engine, never to train anything. No statistics derived from the corpus are shipped to the browser as decision logic; the engine remains pure-function `(DocumentTree[], DKB, Playbook) → Findings`. (See §27.)
 - A change to the runtime privacy posture. The corpus and the harness are **build-and-CI-only.** Not one byte of corpus, score, or annotation ships in the deployed bundle or leaves the developer's machine at runtime. The user's document still never leaves the tab.
 - A loosening of determinism. Every metric is computed from canonical, sorted facts; the scoreboard is byte-reproducible across machines exactly as `result_hash` is.
@@ -55,7 +55,7 @@ Every part of v5 exists to produce that sentence honestly and keep it true on ev
 
 The corpus is the foundation; if it is not real and not legally clean, nothing built on it counts. Requirements:
 
-- **Real, not synthetic.** Documents drafted by practicing lawyers for actual transactions, not authored to exercise a rule. Synthetic fixtures stay where they are (they remain the *unit* regression layer); they are explicitly excluded from the *accuracy* corpus and the harness asserts the two sets are disjoint.
+- **Real, not synthetic.** Documents drafted by practicing lawyers for actual transactions, not authored to exercise a rule. Synthetic fixtures stay where they are (they remain the _unit_ regression layer); they are explicitly excluded from the _accuracy_ corpus and the harness asserts the two sets are disjoint.
 - **License-clean and attributable.** Every document carries a provenance record: source, license, retrieval date, and redaction log. Acceptable sources, in priority order:
   1. **Public filings** — SEC EDGAR material-contract exhibits (10-K Ex-10, 8-K), which are public-domain U.S. government republications of real executed agreements. This is the richest clean vein: real MSAs, employment agreements, credit agreements, merger agreements, bylaws, indemnification agreements, leases.
   2. **CC0 / open-license template banks** — Common Paper, Y Combinator (SAFE, Series A), Bonterms, NVCA model docs, Orrick Start-up Forms, GitHub-hosted CC0 contract sets.
@@ -64,18 +64,19 @@ The corpus is the foundation; if it is not real and not legally clean, nothing b
 - **Redaction.** Party names, signatures, account numbers, addresses, and any PII are mechanically scrubbed and the scrub is logged. Redaction must not perturb the structural features the engine reads (clause headings, defined terms, governing-law phrasing survive; only identities are masked).
 - **Coverage targets.** The corpus must touch every sub-domain v4 claims to support, with a stated minimum per family so no family ships an accuracy claim backed by zero real documents:
 
-  | Tier | Families | Min real docs per family | Rationale |
-  |------|----------|--------------------------|-----------|
-  | A — flagship | NDA, MSA, SaaS, DPA, BAA, employment, lease | 15 | Highest usage; EDGAR + Common Paper supply volume |
-  | B — common | equity/SAFE, settlement, IP license, loan, governance | 8 | EDGAR exhibits + NVCA/YC templates |
-  | C — long-tail | M&A, insurance, construction, trust/estate, compliance policy, regulatory prose | 4 | Sparser clean sources; honestly flagged as thin |
+  | Tier          | Families                                                                        | Min real docs per family | Rationale                                         |
+  | ------------- | ------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------- |
+  | A — flagship  | NDA, MSA, SaaS, DPA, BAA, employment, lease                                     | 15                       | Highest usage; EDGAR + Common Paper supply volume |
+  | B — common    | equity/SAFE, settlement, IP license, loan, governance                           | 8                        | EDGAR exhibits + NVCA/YC templates                |
+  | C — long-tail | M&A, insurance, construction, trust/estate, compliance policy, regulatory prose | 4                        | Sparser clean sources; honestly flagged as thin   |
 
   A family below its minimum ships with an explicit `corpus_thin` flag on its accuracy claim (§22) rather than a fabricated number.
+
 - **Negative and clean documents.** The corpus is not all defective docs. It must include **well-drafted, clean** documents (a finding-free or near-finding-free run is the expected output) so false-positive rate is measurable. A corpus of only-broken contracts measures recall and lies about precision.
 
 ## §5. The annotation protocol
 
-A document without a gold annotation is unusable for measurement. The annotation is the human's ground-truth statement of what the engine *should* produce.
+A document without a gold annotation is unusable for measurement. The annotation is the human's ground-truth statement of what the engine _should_ produce.
 
 - **Annotation unit.** For each (document, applicable playbook) pair, an annotator records the **expected finding set**: which rule IDs should fire (a true defect/absence is present) and, by omission, which should not. Optionally, free-form "the engine should ideally catch X" notes capture defects no current rule covers (these feed the v4-non-promise backlog, not the score).
 - **Annotators are credentialed.** Annotation is a legal judgment, not data entry. Annotators are licensed attorneys or supervised senior law students with a documented review by an attorney. Each annotation records the annotator ID and date.
@@ -87,31 +88,45 @@ A document without a gold annotation is unusable for measurement. The annotation
 
 ```jsonc
 {
-  "corpus_doc_id": "edgar-10k-ex10-2021-acme-msa-redacted",   // stable, opaque
-  "source": { "origin": "SEC EDGAR", "accession": "...", "license": "US-Gov-PD",
-              "retrieved_at": "2026-06-01", "redaction_log": "redactions/....json" },
+  "corpus_doc_id": "edgar-10k-ex10-2021-acme-msa-redacted", // stable, opaque
+  "source": {
+    "origin": "SEC EDGAR",
+    "accession": "...",
+    "license": "publicly-filed-no-license",
+    "retrieved_at": "2026-06-01",
+    "redaction_log": "redactions/....json",
+  },
   "applicable_playbooks": ["msa-vendor-deep"],
   "annotations": [
     {
       "playbook_id": "msa-vendor-deep",
-      "annotator_a": "att-014", "annotator_b": "att-022", "adjudicator": null,
+      "annotator_a": "att-014",
+      "annotator_b": "att-022",
+      "adjudicator": null,
       "kappa_input": true,
       "dkb_version_at_annotation": "2026-06-01.1",
       "expected_findings": [
-        { "rule_id": "MSA-006", "verdict": "should_fire",
-          "evidence_hint": "no liability cap in §11", "severity_expected": "high" },
-        { "rule_id": "MSA-024", "verdict": "should_not_fire",
-          "note": "governing law and venue both NY — consistent" }
+        {
+          "rule_id": "MSA-006",
+          "verdict": "should_fire",
+          "evidence_hint": "no liability cap in §11",
+          "severity_expected": "high",
+        },
+        {
+          "rule_id": "MSA-024",
+          "verdict": "should_not_fire",
+          "note": "governing law and venue both NY — consistent",
+        },
       ],
       "uncovered_defects": [
-        { "description": "one-sided audit right with no notice period", "no_rule_yet": true }
-      ]
-    }
-  ]
+        { "description": "one-sided audit right with no notice period", "no_rule_yet": true },
+      ],
+    },
+  ],
 }
 ```
 
-`should_fire` / `should_not_fire` are the gradable verdicts. `uncovered_defects` are tracked but never scored against the engine (you cannot dock recall for a rule that does not exist; you *can* prioritize building it).
+`should_fire` / `should_not_fire` are the gradable verdicts. `uncovered_defects` are tracked but never scored against the engine (you cannot dock recall for a rule that does not exist; you _can_ prioritize building it).
 
 ## §7. Corpus governance and versioning
 
@@ -162,7 +177,7 @@ Metrics are only computed where κ-agreement existed; rules graded only against 
 
 ## §11. Regression gates
 
-The accuracy harness becomes a **fifth CI gate** (joining lint, typecheck, test, build), but a *threshold* gate, not a *green/red* gate, because real-world accuracy is never 100% and pretending otherwise reintroduces the original dishonesty:
+The accuracy harness becomes a **fifth CI gate** (joining lint, typecheck, test, build), but a _threshold_ gate, not a _green/red_ gate, because real-world accuracy is never 100% and pretending otherwise reintroduces the original dishonesty:
 
 - **Floor gates (hard fail):** overall micro-precision ≥ `P_floor`, overall micro-recall ≥ `R_floor`, no shipped rule with precision < `rule_precision_floor` on ≥ K graded documents. Initial floors are set empirically from the **first** full run (Step 71), not aspirationally — we measure first, then set the floor just under the measured value so regressions fail.
 - **Ratchet:** floors only move up. A commit that drops overall F1 below the recorded best fails CI and must be justified in the PR (a deliberate precision/recall trade is allowed but must be explicit and re-baseline the scoreboard).
@@ -172,7 +187,7 @@ The accuracy harness becomes a **fifth CI gate** (joining lint, typecheck, test,
 
 # Part III — Legal accuracy review
 
-Measurement tells us whether a rule matches human annotations. It does not tell us whether the rule's *legal premise* is sound — annotators could share a misconception. Part III grounds each rule in authority a third party can check.
+Measurement tells us whether a rule matches human annotations. It does not tell us whether the rule's _legal premise_ is sound — annotators could share a misconception. Part III grounds each rule in authority a third party can check.
 
 ## §12. The legal-basis ledger
 
@@ -183,11 +198,20 @@ For every rule, a record in `docs/legal-basis/<family>.md` (and a machine mirror
   "rule_id": "BAA-019",
   "claim": "A BAA must require the business associate to report breaches of unsecured PHI to the covered entity.",
   "legal_basis": [
-    { "authority": "45 C.F.R. § 164.410", "pinpoint": "(a)(1)", "dkb_node": "hipaa-baa-breach-notification" }
+    {
+      "authority": "45 C.F.R. § 164.410",
+      "pinpoint": "(a)(1)",
+      "dkb_node": "hipaa-baa-breach-notification",
+    },
   ],
-  "review": { "reviewer": "att-007", "credential": "JD, licensed NY bar #...", "date": "2026-06-15",
-              "verdict": "sound", "tier": "established" },
-  "notes": "Distinct from § 164.404 (CE→individual) and § 164.408 (CE→HHS); this rule targets BA→CE only."
+  "review": {
+    "reviewer": "att-007",
+    "credential": "JD, licensed NY bar #...",
+    "date": "2026-06-15",
+    "verdict": "sound",
+    "tier": "established",
+  },
+  "notes": "Distinct from § 164.404 (CE→individual) and § 164.408 (CE→HHS); this rule targets BA→CE only.",
 }
 ```
 
@@ -244,12 +268,12 @@ The pitch is "a finding you can cite." A reviewer can only cite a finding they c
 ## §19. Evidence spans
 
 - Every `Finding` carries the **exact text span** (clause, sentence, offset) that triggered it — not just a section number. The extractor already walks the document tree; this surfaces the span it matched on.
-- For **absence** findings ("no liability cap present"), the finding carries *where the engine looked* (the sections scanned) so "you missed it, it's in §14" is checkable in one click rather than a debate.
+- For **absence** findings ("no liability cap present"), the finding carries _where the engine looked_ (the sections scanned) so "you missed it, it's in §14" is checkable in one click rather than a debate.
 
 ## §20. Why-fired / why-not
 
 - The report and JSON gain a per-finding **rationale line**: the rule's `claim` (§12) in plain language + the legal basis + the matched span. This already mostly exists as rule metadata; v5 makes it a first-class, user-visible field.
-- A debug-grade **"why did rule X *not* fire on this document"** trace, available in the JSON output (off by default in the DOCX to keep it readable), so a skeptical user — or a contributor — can audit a silence. This is the single most requested thing of any linter and the hardest to fake without determinism; Vaulytica can offer it precisely because it is deterministic.
+- A debug-grade **"why did rule X _not_ fire on this document"** trace, available in the JSON output (off by default in the DOCX to keep it readable), so a skeptical user — or a contributor — can audit a silence. This is the single most requested thing of any linter and the hardest to fake without determinism; Vaulytica can offer it precisely because it is deterministic.
 
 ## §21. The rule card
 
@@ -307,28 +331,28 @@ v5 must not weaken the two load-bearing claims.
 
 Each step is a prompt-sized unit, continuing the global numbering after v4's Step 66. Verification gate for every step: `npm run typecheck && lint && test && build` green; from Step 71 on, `npm run accuracy` within gate.
 
-| # | Step | Output |
-|---|------|--------|
-| 67 | Corpus scaffolding + provenance + redaction tooling ✅ | `corpus/` layout, `CORPUS_VERSION`, provenance schema (`tools/accuracy/schema.ts`), redaction script + redaction log (`redact.ts`), storage decision (in-repo redacted text — `corpus/README.md`), disjoint-from-fixtures guard test (`tests/integration/accuracy-corpus-guard.test.ts`). **Done 2026-06-01.** |
-| 68 | Seed corpus — Tier A (EDGAR + Common Paper) ⏳ | ≥15 real redacted docs each for NDA, MSA, SaaS, DPA, BAA, employment, lease. Provenance records committed. **Human-gated** (real-document sourcing). |
-| 69 | Annotation schema + tooling + protocol doc ✅ | Gold-standard JSON schema (§6, `GoldAnnotationSchema`), `docs/v5/annotation-protocol.md`, Cohen's-κ computation tooling (`tools/accuracy/kappa.ts`), adjudication fields. **Done 2026-06-01.** |
-| 70 | Tier A annotations + κ baseline ⏳ | Two-annotator gold sets for all Tier A docs; κ computed and recorded; adjudications logged. **Human-gated** (credentialed annotation). |
-| 71 | Accuracy harness v1 + first scoreboard ✅ | `tools/accuracy/` runner (`run.ts`), metric computation (§8, `metrics.ts`), Node full-catalog pipeline reuse (`pipeline.ts`), `SCOREBOARD.md` + `scoreboard.json`, reproducible scoreboard hash (`scoreboard.ts`). Verified by unit tests; reports the honest empty state until Step 68/70 land. Empirical floors set once real numbers exist. **Harness done 2026-06-01; numbers pending corpus.** |
-| 72 | Accuracy CI gate (threshold + ratchet) ⏳ | `npm run accuracy` exists; floor + ratchet gate is deferred until the first real measured numbers (Step 71 numbers) exist — gating on a fabricated floor would reintroduce the dishonesty v5 breaks. |
-| 73 | Tier B corpus + annotations | ≥8 real docs each for equity/SAFE, settlement, IP license, loan, governance; annotated; scoreboard extended. |
-| 74 | Tier C corpus + annotations (thin, flagged) | ≥4 real docs each for M&A, insurance, construction, trust/estate, compliance policy, regulatory prose; `corpus_thin` flags wired. |
-| 75 | Legal-basis ledger scaffolding + `tier` on Rule/Finding ✅ | Ledger schema + loader (`tools/accuracy/legal-basis.ts`), honestly-empty machine mirror (`docs/legal-basis/ledger.json` + README), machine-mirror test (`tests/integration/legal-basis-ledger.test.ts`: schema validity, no-dup, rule/DKB referential integrity, **inline `Rule.tier` must be ledger-backed**, honest 0-of-N coverage); `tier` field added to `Rule` and `Finding` and threaded through `makeFinding`. Done **additively** — no rule is signed yet, so no finding carries a tier and the golden baseline is byte-unchanged (the deliberate regen happens with the *first* attorney sign-off, Steps 76/77). **Done 2026-06-04.** |
-| 76 | Legal review — Tier A families | Attorney sign-off on NDA/MSA/SaaS/DPA/BAA/employment/lease rules; verdicts + tiers recorded; first retirements processed. |
-| 77 | Legal review — Tier B + C families | Sign-off on remaining families; disputed/unsound handling; retired.md populated. |
-| 78 | Severity calibration + false-positive budget | Reviewed severity mapping; per-family FP budget published + gated; over-budget rules tightened/downgraded/retired. |
-| 79 | Classifier re-measurement + re-tune on real corpus | Confusion matrix on real docs; feature-table re-tune; §8 threshold re-decided with honest inputs; calibration test re-pointed at corpus. |
-| 80 | Explainability — evidence spans + rationale | `Finding` carries matched span + scanned-sections for absence findings; rationale line in report + JSON. |
-| 81 | Explainability — why-not trace + rule cards | JSON why-not trace; rule-card data assembled from ledger + scoreboard; tier badge + measured-precision surfaced in report/UI. |
-| 82 | Public accuracy report + methodology page | `site/accuracy.html` generated from `scoreboard.json`; `docs/v5/methodology.md`; honest-limits disclosure expansion. |
-| 83 | Privacy/determinism guards for the v5 surface ✅ | `src/`-never-imports-corpus/harness guard + bundle-excludes-corpus guard (`tests/integration/accuracy-corpus-guard.test.ts`); scoreboard-hash determinism test (`tools/accuracy/scoreboard.test.ts`); no corpus-derived runtime logic. **Done 2026-06-01.** |
-| 84 | Deploy + flip mechanical launch rows | Live deploy; smoke suite; record verifier + date for v1-a/c/e/h/i/j/k/l, v3-e/f/i, v4-d/e/f/i/o. |
-| 85 | Real-user usability gate | v1-o protocol against deployed site with corpus docs; lawyer + non-lawyer; feedback → uncovered_defects + FP candidates. |
-| 86 | v5 launch checklist + version bump | Full v5 launch checklist (corpus version, κ, precision/recall floors, ledger completeness, deploy green); bump to 5.0.0; tag v5.0.0. |
+| #   | Step                                                       | Output                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 67  | Corpus scaffolding + provenance + redaction tooling ✅     | `corpus/` layout, `CORPUS_VERSION`, provenance schema (`tools/accuracy/schema.ts`), redaction script + redaction log (`redact.ts`), storage decision (in-repo redacted text — `corpus/README.md`), disjoint-from-fixtures guard test (`tests/integration/accuracy-corpus-guard.test.ts`). **Done 2026-06-01.**                                                                                                                                                                                                                                                                                                                                  |
+| 68  | Seed corpus — Tier A (EDGAR + Common Paper) ⏳             | ≥15 real redacted docs each for NDA, MSA, SaaS, DPA, BAA, employment, lease. Provenance records committed. **Human-gated** (real-document sourcing).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 69  | Annotation schema + tooling + protocol doc ✅              | Gold-standard JSON schema (§6, `GoldAnnotationSchema`), `docs/v5/annotation-protocol.md`, Cohen's-κ computation tooling (`tools/accuracy/kappa.ts`), adjudication fields. **Done 2026-06-01.**                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| 70  | Tier A annotations + κ baseline ⏳                         | Two-annotator gold sets for all Tier A docs; κ computed and recorded; adjudications logged. **Human-gated** (credentialed annotation).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| 71  | Accuracy harness v1 + first scoreboard ✅                  | `tools/accuracy/` runner (`run.ts`), metric computation (§8, `metrics.ts`), Node full-catalog pipeline reuse (`pipeline.ts`), `SCOREBOARD.md` + `scoreboard.json`, reproducible scoreboard hash (`scoreboard.ts`). Verified by unit tests; reports the honest empty state until Step 68/70 land. Empirical floors set once real numbers exist. **Harness done 2026-06-01; numbers pending corpus.**                                                                                                                                                                                                                                             |
+| 72  | Accuracy CI gate (threshold + ratchet) ⏳                  | `npm run accuracy` exists; floor + ratchet gate is deferred until the first real measured numbers (Step 71 numbers) exist — gating on a fabricated floor would reintroduce the dishonesty v5 breaks.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 73  | Tier B corpus + annotations                                | ≥8 real docs each for equity/SAFE, settlement, IP license, loan, governance; annotated; scoreboard extended.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 74  | Tier C corpus + annotations (thin, flagged)                | ≥4 real docs each for M&A, insurance, construction, trust/estate, compliance policy, regulatory prose; `corpus_thin` flags wired.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 75  | Legal-basis ledger scaffolding + `tier` on Rule/Finding ✅ | Ledger schema + loader (`tools/accuracy/legal-basis.ts`), honestly-empty machine mirror (`docs/legal-basis/ledger.json` + README), machine-mirror test (`tests/integration/legal-basis-ledger.test.ts`: schema validity, no-dup, rule/DKB referential integrity, **inline `Rule.tier` must be ledger-backed**, honest 0-of-N coverage); `tier` field added to `Rule` and `Finding` and threaded through `makeFinding`. Done **additively** — no rule is signed yet, so no finding carries a tier and the golden baseline is byte-unchanged (the deliberate regen happens with the _first_ attorney sign-off, Steps 76/77). **Done 2026-06-04.** |
+| 76  | Legal review — Tier A families                             | Attorney sign-off on NDA/MSA/SaaS/DPA/BAA/employment/lease rules; verdicts + tiers recorded; first retirements processed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| 77  | Legal review — Tier B + C families                         | Sign-off on remaining families; disputed/unsound handling; retired.md populated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 78  | Severity calibration + false-positive budget               | Reviewed severity mapping; per-family FP budget published + gated; over-budget rules tightened/downgraded/retired.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| 79  | Classifier re-measurement + re-tune on real corpus         | Confusion matrix on real docs; feature-table re-tune; §8 threshold re-decided with honest inputs; calibration test re-pointed at corpus.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| 80  | Explainability — evidence spans + rationale                | `Finding` carries matched span + scanned-sections for absence findings; rationale line in report + JSON.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| 81  | Explainability — why-not trace + rule cards                | JSON why-not trace; rule-card data assembled from ledger + scoreboard; tier badge + measured-precision surfaced in report/UI.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| 82  | Public accuracy report + methodology page                  | `site/accuracy.html` generated from `scoreboard.json`; `docs/v5/methodology.md`; honest-limits disclosure expansion.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| 83  | Privacy/determinism guards for the v5 surface ✅           | `src/`-never-imports-corpus/harness guard + bundle-excludes-corpus guard (`tests/integration/accuracy-corpus-guard.test.ts`); scoreboard-hash determinism test (`tools/accuracy/scoreboard.test.ts`); no corpus-derived runtime logic. **Done 2026-06-01.**                                                                                                                                                                                                                                                                                                                                                                                     |
+| 84  | Deploy + flip mechanical launch rows                       | Live deploy; smoke suite; record verifier + date for v1-a/c/e/h/i/j/k/l, v3-e/f/i, v4-d/e/f/i/o.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| 85  | Real-user usability gate                                   | v1-o protocol against deployed site with corpus docs; lawyer + non-lawyer; feedback → uncovered_defects + FP candidates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| 86  | v5 launch checklist + version bump                         | Full v5 launch checklist (corpus version, κ, precision/recall floors, ledger completeness, deploy green); bump to 5.0.0; tag v5.0.0.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 Total work: **20 build steps.** Unlike v1–v4, several steps (68, 70, 73, 74, 76, 77, 85) gate on **human** work (real-document sourcing, attorney annotation/review, real users) that cannot be compressed by writing code faster — this is the honest cost of the validation layer and the reason it was deferred until the engine was complete.
 

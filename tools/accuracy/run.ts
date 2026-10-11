@@ -21,6 +21,13 @@ import { gradeAnnotation } from "./grade.js";
 import type { GradedDocument } from "./metrics.js";
 import { assembleScoreboard, renderScoreboardMarkdown } from "./scoreboard.js";
 import type { VerdictPair } from "./kappa.js";
+import { CORPUS_DIR } from "./corpus.js";
+import {
+  GENERIC_FALLBACK,
+  loadRoutingSample,
+  measureRouting,
+  unknownLabelTargets,
+} from "./routing.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = __dirname;
@@ -56,6 +63,22 @@ export async function runAccuracy(): Promise<{ markdown: string; json: string }>
   // is reported as "none" honestly rather than fabricated.
   const kappaPairs: VerdictPair[] = [];
 
+  // Routing on public filings (spec-v53 §8). The label table is checked
+  // against the live catalog: a row naming a type that no longer exists would
+  // count every exhibit under it as wrong.
+  const catalogIds = [...deps.launchPlaybooks, ...deps.extendedPlaybooks]
+    .map((p) => p.id)
+    .filter((id) => id !== GENERIC_FALLBACK)
+    .sort();
+  const sample = await loadRoutingSample(CORPUS_DIR);
+  const stale = unknownLabelTargets(sample.labels, catalogIds);
+  if (stale.length > 0) {
+    throw new Error(
+      `corpus/routing/labels.json names types the catalog does not have: ${stale.join("; ")}`,
+    );
+  }
+  const routing = measureRouting(sample.records, sample.labels, catalogIds);
+
   const artifact = assembleScoreboard({
     corpus_version: corpus.version,
     dkb_version: deps.dkb.manifest.version,
@@ -66,6 +89,7 @@ export async function runAccuracy(): Promise<{ markdown: string; json: string }>
     },
     graded,
     kappa_pairs: kappaPairs,
+    routing,
   });
 
   const markdown = renderScoreboardMarkdown(artifact);

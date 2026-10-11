@@ -27,7 +27,29 @@ corpus/
   documents/<id>.txt          # redacted document text (real source never committed)
   provenance/<id>.json        # source, license, retrieval date, redaction log
   annotations/<id>__<pb>.json # gold annotation per (document × playbook)
+  routing/labels.json        # title → the document types that are right for it
+  routing/records/<n>.json   # one EDGAR exhibit: where it is, its hash, its route
 ```
+
+## Routing on public filings (spec-v53 §8)
+
+A second, smaller question that needs no attorney: did the tool recognize a
+document for what its own title says it is? `routing/` measures that on EDGAR
+material-contract exhibits and **holds none of their text**. An exhibit is
+written by private parties; "publicly filed" describes access, not a license.
+A record is the accession number, the exhibit URL, the retrieval date, the
+SHA-256 of the text that was routed, the exhibit's title, a label, and the
+route observed. Its schema rejects any other field.
+
+`labels.json` maps a title to the type it names and to any other type the
+suite already treats as right for it; a title the catalog has no type for is a
+row too. `npm run accuracy` prints five shares — the named type, an accepted
+type, a different type, no type, and no type exists — with three caveats,
+every time.
+
+**No exhibits are sampled yet.** The sample is chosen by rule (the first N
+Exhibit 10s from a fixed date range), fetched by hand within the SEC's access
+rules, and its size is the owner's decision.
 
 ## Storage decision (spec-v5 §7 / Open-Q #1)
 

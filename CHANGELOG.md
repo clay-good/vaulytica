@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.883.0] — 2026-10-11
+
+### Added
+- **The machinery for a real-document number that needs no lawyer**
+  (spec-v53 Step 332). "Is this finding legally right" needs an attorney;
+  "did the tool recognize a document for what its own title says it is" does
+  not. `npm run accuracy` now prints a **Routing on public filings** section:
+  of the EDGAR exhibits sampled, how many went to the type their title names,
+  to another accepted type, to a different type, to no type — and how many
+  have a title the catalog has no type for, which is counted, not dropped.
+- **No exhibit text is held.** A record is an accession number, a URL, a
+  date, a hash, a title, a label and the route observed, and its schema
+  rejects any other field. An exhibit is written by private parties; "publicly
+  filed" describes access, not a license.
+- **A label table of 25 titles**, each mapped to the type it names and to any
+  other type already treated as right for it. The run fails if a row names a
+  type the catalog no longer has.
+- **Three caveats, printed every time**, sample or no sample: the title is
+  both the label and the strongest feature, so the number is an upper bound;
+  EDGAR is large-company commercial paper and says nothing about leases,
+  consumer documents, filings, or PDF and DOCX; and how many document types
+  have no real document behind them — today, 284 of 284.
+
+### Notes
+- **There is no sample yet, and no routing number is published.** The sample
+  is chosen by rule, fetched by hand within the SEC's access rules, and its
+  size is the owner's decision.
+- The v5 specification's example labelled an EDGAR exhibit `US-Gov-PD`. That
+  was wrong in kind and is corrected there.
+
 ## [9.882.0] — 2026-10-11
 
 ### Added
