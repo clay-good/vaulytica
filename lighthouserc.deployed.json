@@ -1,0 +1,79 @@
+{
+  "//": [
+    "The DEPLOYED-SITE budget run (BUILD_PROGRESS step 36, item 1).",
+    "",
+    "`lighthouserc.json` collects from `staticDistDir` — the built artifact",
+    "served off a local static server. Same bytes, same budgets, every commit.",
+    "What it cannot test is everything the CDN is responsible for: whether the",
+    "response is actually compressed, whether cache lifetimes are set, which",
+    "HTTP version and TLS the edge negotiates. Those contribute to real 4G",
+    "field performance as much as the bytes do, and 'the site loads in under 2s",
+    "on a throttled 4G mobile profile' is a claim about the SITE.",
+    "",
+    "So this config is not a copy of the local one. The two audits that are",
+    "deploy-specific — `uses-text-compression` and `uses-long-cache-ttl` — are",
+    "`warn` locally because a static file server cannot satisfy them, and are",
+    "ERRORS here, because the edge can and must. Everything else keeps the same",
+    "thresholds so a regression means the same thing in both places.",
+    "",
+    "Run after the deploy step in `deploy.yml`, gated on the Cloudflare token",
+    "like the post-deploy smoke test, so forks and pull requests never reach a",
+    "network check. Two runs rather than three: the local job already samples",
+    "three times, and this one is about the edge, not about variance."
+  ],
+  "ci": {
+    "collect": {
+      "url": ["https://vaulytica.com/"],
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "simulate",
+        "throttling": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "cpuSlowdownMultiplier": 4,
+          "requestLatencyMs": 0,
+          "downloadThroughputKbps": 0,
+          "uploadThroughputKbps": 0
+        },
+        "screenEmulation": {
+          "mobile": true,
+          "width": 360,
+          "height": 640,
+          "deviceScaleFactor": 2,
+          "disabled": false
+        },
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo"]
+      },
+      "numberOfRuns": 2
+    },
+    "assert": {
+      "preset": "lighthouse:no-pwa",
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["error", { "minScore": 0.9 }],
+        "categories:seo": ["error", { "minScore": 0.9 }],
+        "interactive": ["error", { "maxNumericValue": 2000 }],
+        "first-contentful-paint": ["error", { "maxNumericValue": 1800 }],
+        "largest-contentful-paint": ["error", { "maxNumericValue": 2000 }],
+        "cumulative-layout-shift": ["error", { "maxNumericValue": 0.1 }],
+        "total-blocking-time": ["error", { "maxNumericValue": 200 }],
+        "viewport": "error",
+        "uses-text-compression": "error",
+        "uses-long-cache-ttl": "error",
+        "csp-xss": "warn",
+        "legacy-javascript": "warn",
+        "unused-javascript": "warn",
+        "unused-css-rules": "warn",
+        "unminified-css": "warn",
+        "color-contrast": "warn",
+        "lcp-lazy-loaded": "off",
+        "non-composited-animations": "off",
+        "prioritize-lcp-image": "off"
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

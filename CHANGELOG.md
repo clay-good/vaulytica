@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.896.0] — 2026-10-11
+
+### Added
+- **The 4G performance budget now runs against the deployed site, not only the
+  built directory** (`lighthouserc.deployed.json`, wired as a post-deploy step
+  in `deploy.yml`). BUILD_PROGRESS step 36's last open item was a wording
+  question — whether "live run against the deployed site" requires hitting the
+  deploy, when the existing job tests the same bytes under the same budgets
+  from a local static server. It is closed by satisfying the stricter reading
+  rather than by deciding the wording.
+  🥇 **It is not a copy of the local config.** What a static file server cannot
+  test is everything the edge is responsible for: whether the response is
+  actually compressed, whether cache lifetimes are set, which HTTP version is
+  negotiated. So the two deploy-specific audits — `uses-text-compression` and
+  `uses-long-cache-ttl` — are `warn` locally and **errors** there. Every other
+  threshold is identical, so a regression means the same thing in both places.
+  Gated on the Cloudflare token exactly like the post-deploy smoke test beside
+  it, so forks and pull requests make no network call, and it runs after the
+  deploy: a failure flags an edge regression without holding the release back.
+  The functional half of "live run" was already covered — the smoke test drives
+  Playwright against the deployed URL.
+
+### Changed
+- **BUILD_PROGRESS step 36 is complete.** Step 37 is now the only partial one
+  left, and its remainder is a manual Narrator + VoiceOver pass — blocked on a
+  human, not on engineering.
+
 ## [9.895.0] — 2026-10-11
 
 ### Added

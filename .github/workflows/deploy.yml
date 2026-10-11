@@ -81,6 +81,21 @@ jobs:
           VAULYTICA_E2E_BASE_URL: https://vaulytica.com
         run: npm run e2e
 
+      # The budget run against the DEPLOYED site, not the built directory.
+      # `lighthouse.yml` tests the same bytes on every commit from a local
+      # static server; it cannot test what the edge is responsible for —
+      # whether the response is compressed, whether cache lifetimes are set,
+      # which HTTP version is negotiated. `lighthouserc.deployed.json` turns
+      # the two deploy-specific audits into errors for that reason. Gated on
+      # the token like the smoke test above, so forks and pull requests make no
+      # network check. The deploy has already happened by here: a failure
+      # flags an edge regression, it does not hold the release back.
+      - name: Post-deploy 4G budget (deployed URL)
+        if: env.CLOUDFLARE_API_TOKEN != ''
+        run: |
+          npm install -g @lhci/cli@0.14.x
+          lhci autorun --config=./lighthouserc.deployed.json
+
       - name: "Note: deploy skipped"
         if: env.CLOUDFLARE_API_TOKEN == ''
         run: |
