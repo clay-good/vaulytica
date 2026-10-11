@@ -832,7 +832,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.24.0"
+      "rule_version": "1.25.0"
     },
     {
       "elapsed_ms": 0,
@@ -1170,7 +1170,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.24.0",
+      "rule_version": "1.25.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1225,11 +1225,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.8). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"residential\".",
-  "result_hash": "5ab154caf4c8aec6152a11f21516a1442dfcde58d204d00a208da07e13680ff0",
+  "result_hash": "af9dc351d80fd7e74e5b9a8a9f9262bae68e370b0dab7a6a2f8d883175104f45",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",
     "size_bytes": 9203
   },
-  "version": "9.873.0"
+  "version": "9.874.0"
 }

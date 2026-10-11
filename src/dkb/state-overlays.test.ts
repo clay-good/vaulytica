@@ -101,6 +101,22 @@ describe("overlayFamilyForPlaybook", () => {
     expect(emp?.matched.map((o) => o.id)).toEqual(["emp-noncompete-us-ca"]);
   });
 
+  it("selects the Texas buyer-agreement node only under Texas law", () => {
+    expect(overlayFamilyForPlaybook("buyer-representation-agreement")).toBe("buyer-representation");
+    const law = (raw_text: string) =>
+      [{ clause_kind: "governing-law", raw_text }] as unknown as Parameters<
+        typeof selectStateOverlays
+      >[1];
+    const tx = selectStateOverlays("buyer-representation-agreement", law("State of Texas"));
+    expect(tx?.matched.map((o) => o.id)).toEqual(["buyer-rep-us-tx"]);
+    expect(tx?.matched[0]?.citation.source).toContain("1101.563");
+    expect(
+      selectStateOverlays("buyer-representation-agreement", law("State of Georgia"))?.matched,
+    ).toEqual([]);
+    // The seller's listing agreement is a different document and gets nothing.
+    expect(selectStateOverlays("listing-agreement", law("State of Texas"))).toBeUndefined();
+  });
+
   it("returns undefined for non-state-sensitive families", () => {
     expect(overlayFamilyForPlaybook("mutual-nda")).toBeUndefined();
     expect(overlayFamilyForPlaybook("ucc-1-financing-statement")).toBeUndefined();

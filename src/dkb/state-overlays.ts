@@ -52,7 +52,8 @@ export type OverlayFamily =
   | "residential-lease"
   | "lending"
   | "sales-based-financing"
-  | "training-repayment";
+  | "training-repayment"
+  | "buyer-representation";
 
 /**
  * How the state treats the clause relative to the baseline. Drives the
@@ -90,6 +91,7 @@ export const StateOverlaySchema = z.object({
     "lending",
     "sales-based-financing",
     "training-repayment",
+    "buyer-representation",
   ]),
   topic: z.string().min(1),
   jurisdiction: z.string().regex(/^us-[a-z]{2}$/, "jurisdiction must be us-XX"),
@@ -941,12 +943,43 @@ const TRAINING_REPAYMENT: readonly StateOverlay[] = [
   },
 ];
 
+/**
+ * Buyer representation. Texas requires a written agreement before a license
+ * holder shows residential property to a prospective buyer, and lists what it
+ * must contain. Read from the enrolled text of S.B. 1968 (89th Leg., 2025) at
+ * capitol.texas.gov on 2026-10-10.
+ */
+const BUYER_REPRESENTATION: readonly StateOverlay[] = [
+  {
+    id: "buyer-rep-us-tx",
+    family: "buyer-representation",
+    topic: "written buyer agreement",
+    jurisdiction: "us-tx",
+    state_name: "Texas",
+    posture: "restricted",
+    headline:
+      "Written agreement required before showing residential property; contents set by statute",
+    summary:
+      "Since January 1, 2026, a Texas license holder must enter into a written agreement with a prospective buyer of residential property before showing any property or, if none is shown, before presenting an offer (Occ. Code § 1101.563(b)). The agreement must state the services to be provided, a termination date, whether it is exclusive or non-exclusive, whether the license holder represents the buyer as agent, the amount or rate of compensation and how it is determined, and a conspicuous disclosure that broker compensation is not set by law and is fully negotiable (§ 1101.563(c)). An agreement only to show property may not be exclusive and may not run more than 14 days (§ 1101.563(e)). Failing to enter into the agreement is a ground for discipline.",
+    recommendation:
+      "Confirm the agreement states each of the six items, was signed before the first showing, and — if it covers showings only — is non-exclusive and ends within 14 days.",
+    severity: "warning",
+    citation: citeAt(
+      "tx-occ-code-1101-563",
+      "Tex. Occ. Code § 1101.563 (S.B. 1968, 89th Leg., R.S. 2025)",
+      "https://capitol.texas.gov/tlodocs/89R/billtext/html/SB01968F.htm",
+      "2026-10-10",
+    ),
+  },
+];
+
 export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...EMPLOYMENT_NONCOMPETE,
   ...RESIDENTIAL_LEASE_DEPOSIT,
   ...LENDING_USURY,
   ...SALES_BASED_FINANCING,
   ...TRAINING_REPAYMENT,
+  ...BUYER_REPRESENTATION,
 ];
 
 /**
@@ -984,6 +1017,8 @@ const PLAYBOOK_FAMILY: ReadonlyMap<string, OverlayFamily> = new Map([
   ["merchant-cash-advance", "sales-based-financing"],
   // Training repayment — California regulates the term itself, by contract date.
   ["training-repayment-agreement", "training-repayment"],
+  // Buyer representation — Texas sets the agreement's contents by statute.
+  ["buyer-representation-agreement", "buyer-representation"],
 ]);
 
 /** Resolve the overlay family for a matched playbook id, if any. */

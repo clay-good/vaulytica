@@ -5815,6 +5815,29 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "training-repayment-agreement",
     findings: ["CHOICE-003", "TRA-001", "TRA-002", "TRA-003", "TRA-004", "TRA-005", "TRA-006"],
   },
+  // spec-v49 Step 311: the buyer representation agreement. The complete one
+  // names Texas law and so also gets the § 1101.563 overlay; the thin one
+  // sets compensation at "whatever amount the seller ... offers", the
+  // open-ended form the 2024 settlement rules out.
+  "buyer-representation-agreement-complete.txt": {
+    playbook: "buyer-representation-agreement",
+    findings: ["OBLI-005", "TEMP-008"],
+  },
+  "buyer-representation-agreement-thin.txt": {
+    playbook: "buyer-representation-agreement",
+    findings: [
+      "BUY-001",
+      "BUY-002",
+      "BUY-003",
+      "BUY-004",
+      "BUY-005",
+      "BUY-006",
+      "BUY-007",
+      "CHOICE-003",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

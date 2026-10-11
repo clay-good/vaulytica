@@ -83,7 +83,11 @@ const TERMINATION_TRIGGER = String.raw`(?:(?:(?:up)?on|after|following)\s+(?:the
 // "On termination for Provider's default, Provider will remove the System and
 // restore the roof" is a solar agreement's effect-of-termination clause, and a
 // complete one was told it had none.
-const CONSEQUENCE = String.raw`removes?|removed|ceases?|ceased|returns?|returned|destroys?|destroyed|deletes?|deleted|purges?|purged|transitions?|transitioned|exports?|exported|refunds?|refunded|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|transfers?|transferred|discontinues?|discontinued|surrenders?|surrendered|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
+// CONTINUES TO APPLY is a survival clause that does not say "survive": "On
+// termination, Sections 5, 7 and 10 continue to apply." Scoped to the
+// continuation phrases, so a bare "continue" elsewhere in the sentence is not
+// a consequence.
+const CONSEQUENCE = String.raw`continues?\s+(?:to\s+apply|in\s+(?:full\s+force|force|effect))|remains?\s+in\s+(?:full\s+force|force|effect)|removes?|removed|ceases?|ceased|returns?|returned|destroys?|destroyed|deletes?|deleted|purges?|purged|transitions?|transitioned|exports?|exported|refunds?|refunded|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|transfers?|transferred|discontinues?|discontinued|surrenders?|surrendered|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
 
 /**
  * Either order, within one sentence. A consequence drafted BEFORE its trigger
@@ -254,7 +258,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.24.0",
+  version: "1.25.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

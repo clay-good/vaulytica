@@ -530,3 +530,17 @@ describe("TERM-005 — removal of what was installed (1.24.0)", () => {
     ).not.toBeNull();
   });
 });
+
+describe("TERM-005 — sections that continue to apply (1.25.0)", () => {
+  it("reads 'On termination, Sections 5, 7 and 10 continue to apply'", () => {
+    expect(
+      TERM_005.check(doc("On termination, Sections 5, 7 and 10 continue to apply.")),
+    ).toBeNull();
+  });
+
+  it("does not take a bare 'continue' for a consequence", () => {
+    expect(
+      TERM_005.check(doc("On the end of each month, the parties continue their discussions.")),
+    ).not.toBeNull();
+  });
+});

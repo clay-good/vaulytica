@@ -51,6 +51,7 @@ describe("v7 ruleset shape", () => {
     }
     expect([...counts.keys()].sort()).toEqual(
       [
+        "buyer-representation-agreement",
         "hipaa-data-use-agreement",
         "merchant-cash-advance",
         "pilot-evaluation-agreement",
@@ -80,6 +81,16 @@ describe("v7 ruleset shape", () => {
       ).toBe(true);
       expect(r.default_severity, r.id).not.toBe("critical");
     }
+  });
+
+  it("says in every settlement citation that the settlement is not law", () => {
+    // spec-v49 §6: "industry practice under the 2024 settlement", never
+    // "required by law".
+    const rules = V7_RULES.filter((r) =>
+      r.dkb_citations.some((c) => c.startsWith("nar-settlement-")),
+    );
+    expect(rules.map((r) => r.id).sort()).toEqual(["BUY-001", "BUY-002", "BUY-003", "BUY-004"]);
+    for (const r of rules) expect(r.default_severity, r.id).not.toBe("critical");
   });
 
   it("cites each data-use-agreement check to its own subparagraph of § 164.514(e)(4)(ii)", () => {

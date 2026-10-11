@@ -13,6 +13,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "../v5/_pack.js";
 import { practice } from "../v5/_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { DATE_SHAPE } from "../../../extract/dates.js";
 import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "../../../extract/amounts.js";
 
 /** A sum of money, in digits or in words. */
@@ -110,7 +111,10 @@ const PILOT = pack("pilot-evaluation-agreement", "commercial", [
         String.raw`\bfor\s+(a\s+period\s+of\s+)?${PERIOD_COUNT}\s+(days?|weeks?|months?)\b`,
         "i",
       ),
-      /\b(ends?|expires?|terminates?|continues?\s+(until|through))\s+(on\s+)?(\w+\s+\d{1,2},\s+\d{4}|\d{4}-\d{2}-\d{2})/i,
+      new RegExp(
+        String.raw`\b(ends?|expires?|terminates?|continues?\s+(until|through))\s+(on\s+)?${DATE_SHAPE}`,
+        "i",
+      ),
     ],
     why: "A pilot with no end date is an indefinite free license. The length also sets when the as-is terms stop applying and a paid agreement has to take over.",
     fix: "State how long the pilot runs — a number of days from a named start date, or a fixed end date — and whether it can be extended.",

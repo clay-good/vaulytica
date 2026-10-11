@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.874.0] — 2026-10-10
+
+### Added
+- **A document type for the buyer representation agreement** (spec-v49 Step
+  311) — the agreement a home buyer signs with a broker before touring homes.
+  It used to fall to the generic fallback. Seven checks: compensation as a
+  specific amount or rate; compensation left open-ended ("whatever the seller
+  offers"); that the broker may not receive more than the agreed amount; a
+  statement that compensation is not set by law and is fully negotiable; an
+  end date; whether the agreement is exclusive; and the services the broker
+  will provide. 277 document types, 1,881 rules, 91 state-law overlays.
+- **The four compensation checks say where they come from.** They are the
+  terms of the 2024 settlement with the National Association of REALTORS®,
+  which binds its members and MLS participants. Each finding says it is
+  industry practice under that settlement and not a requirement of law.
+- **Texas law, where the agreement names it.** Since January 1, 2026, Texas
+  requires a written agreement before a license holder shows residential
+  property and lists what it must contain (Occ. Code § 1101.563). It appears
+  as a state-law note on a buyer agreement governed by Texas law. Written from
+  the enrolled text of S.B. 1968 at capitol.texas.gov, read on 2026-10-10.
+
+### Fixed
+- **"On termination, Sections 5, 7 and 10 continue to apply" is read as an
+  effect-of-termination clause** (`TERM-005` 1.25.0). A survival clause that
+  does not use the word "survive" was not recognized.
+
 ## [9.873.0] — 2026-10-10
 
 ### Added

@@ -2572,6 +2572,66 @@
     ]
   },
   {
+    "id": "buyer-representation-agreement",
+    "version": "1.0.0",
+    "name": "Buyer Representation Agreement",
+    "description": "The agreement a home buyer signs with a real estate broker before touring homes. The checks read for compensation stated as a specific amount or rate and not left open-ended, a statement that the broker may not receive more than that, a statement that compensation is not set by law and is fully negotiable, an end date, whether the agreement is exclusive, and the services the broker will provide. Distinct from `listing-agreement`, which the seller signs.",
+    "match_features": {
+      "title_keywords": [
+        "buyer representation agreement",
+        "exclusive buyer representation agreement",
+        "buyer agency agreement",
+        "buyer broker agreement",
+        "buyer-broker agreement",
+        "buyer brokerage agreement",
+        "buyer tour agreement",
+        "buyer's representation agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "buyer's agent",
+        "not set by law",
+        "fully negotiable",
+        "residential real property",
+        "broker's compensation",
+        "listing broker",
+        "showing"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "US-REAL-ESTATE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "listing-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Compensation as a specific amount or rate",
+      "Compensation left open-ended",
+      "Broker may not receive more than the agreed amount",
+      "Statement that compensation is not set by law and is fully negotiable",
+      "The date the agreement ends",
+      "Whether the agreement is exclusive",
+      "The services the broker will provide"
+    ]
+  },
+  {
     "id": "bylaws-corporation",
     "version": "1.1.0",
     "name": "Corporate Bylaws",

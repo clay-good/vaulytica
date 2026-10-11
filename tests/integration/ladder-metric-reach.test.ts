@@ -52,12 +52,12 @@ const SPECIMENS = readdirSync(DIR)
  * CHANGELOG when it does.
  */
 const REACH: Record<string, number> = {
-  notice_period_days: 112,
+  notice_period_days: 113,
   term_length_days: 40,
   payment_term_days: 56,
   liability_cap_multiple: 22,
   liability_cap_amount: 67,
-  cure_period_days: 63,
+  cure_period_days: 64,
   auto_renewal_notice_days: 26,
   indemnity_cap_amount: 2,
   uptime_sla_percent: 9,

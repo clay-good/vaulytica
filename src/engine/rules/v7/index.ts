@@ -9,6 +9,7 @@
  */
 
 import type { Rule } from "../../finding.js";
+import { BUYER_REPRESENTATION_RULES } from "./buyer-representation.js";
 import { HIPAA_DUA_RULES } from "./hipaa-dua.js";
 import { MERCHANT_CASH_ADVANCE_RULES } from "./merchant-cash-advance.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
@@ -26,6 +27,7 @@ export const V7_RULES: readonly Rule[] = [
   ...MERCHANT_CASH_ADVANCE_RULES,
   ...RESIDENTIAL_SOLAR_RULES,
   ...TRAINING_REPAYMENT_RULES,
+  ...BUYER_REPRESENTATION_RULES,
 ];
 
 export {
@@ -37,4 +39,5 @@ export {
   MERCHANT_CASH_ADVANCE_RULES,
   RESIDENTIAL_SOLAR_RULES,
   TRAINING_REPAYMENT_RULES,
+  BUYER_REPRESENTATION_RULES,
 };

@@ -1821,6 +1821,61 @@
    "sources": []
   },
   {
+   "id": "buyer-representation-agreement",
+   "name": "Buyer Representation Agreement",
+   "group": "Real estate",
+   "summary": "The agreement a home buyer signs with a real estate broker before touring homes. The checks read for compensation stated as a specific amount or rate and not left open-ended, a statement that the broker may not receive more than that, a statement that compensation is not set by law and is fully negotiable, an end date, whether the agreement is exclusive, and the services the broker will provide.",
+   "checks": [
+    {
+     "id": "BUY-001",
+     "name": "Compensation as a specific amount or rate",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BUY-002",
+     "name": "Compensation left open-ended",
+     "description": "Compensation stated as whatever the seller offers, or left to be determined, rather than as an amount the buyer can work out.",
+     "severity": "warning"
+    },
+    {
+     "id": "BUY-003",
+     "name": "Broker may not receive more than the agreed amount",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BUY-004",
+     "name": "Statement that compensation is not set by law and is fully negotiable",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BUY-005",
+     "name": "The date the agreement ends",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BUY-006",
+     "name": "Whether the agreement is exclusive",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BUY-007",
+     "name": "The services the broker will provide",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 112,
+   "companions": [
+    "listing-agreement"
+   ],
+   "sources": []
+  },
+  {
    "id": "bylaws-corporation",
    "name": "Corporate Bylaws",
    "group": "Corporate & governance",
