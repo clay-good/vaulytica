@@ -14,6 +14,7 @@
  *     Worker, and no shipped script names its path.
  */
 import { readFileSync, readdirSync, statSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -419,5 +420,35 @@ describe("the app cannot reach it", () => {
       .filter((f) => readFileSync(f, "utf8").includes('"workers"'))
       .map((f) => f.slice(ROOT.length + 1).replaceAll("\\", "/"));
     expect(touching).toEqual(["tools/reports/write-catalog-ids.ts"]);
+  });
+});
+
+describe("the Worker is in the repository", () => {
+  it("is tracked by git, not swallowed by an ignore rule", () => {
+    // 9.884.0 shipped without `workers/reports/` and `tools/reports/`: a bare
+    // `reports/` line in .gitignore, written for the mutation tool's output,
+    // matched both, and a green local gate was red on every CI runner.
+    let tracked: string;
+    try {
+      tracked = execFileSync("git", ["ls-files", "workers", "tools/reports"], {
+        cwd: ROOT,
+        encoding: "utf8",
+        timeout: 10_000,
+      });
+    } catch {
+      return; // not a git checkout (an extracted archive)
+    }
+    for (const file of [
+      "workers/reports/src/index.ts",
+      "workers/reports/src/handler.ts",
+      "workers/reports/src/store.ts",
+      "workers/reports/src/validate.ts",
+      "workers/reports/src/catalog-ids.json",
+      "workers/reports/migrations/0001_reports.sql",
+      "workers/reports/wrangler.jsonc",
+      "tools/reports/write-catalog-ids.ts",
+    ]) {
+      expect(tracked.split("\n"), file).toContain(file);
+    }
   });
 });

@@ -192,6 +192,8 @@ test-results/
 .lighthouseci/
 
 # Stryker mutation testing — generated reports + temp (committed baseline lives in docs/v7/mutation-baseline.md)
-reports/
+# Root-level report output only. Unanchored, this also ignored
+# `workers/reports/` and `tools/reports/`, and a release shipped without them.
+/reports/
 .stryker-tmp/
 stryker.log

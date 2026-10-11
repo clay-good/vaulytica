@@ -1,0 +1,29 @@
+// vaulytica-reports (spec-v53 §5). NOT DEPLOYED: this file is the launch
+// configuration, and the launch needs the owner's Cloudflare account. See
+// docs/finding-reports.md for the checklist.
+{
+  "name": "vaulytica-reports",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  // Routed only at the report path. Pages keeps serving every static file, and
+  // ordinary use of the site never invokes this Worker.
+  "routes": [{ "pattern": "vaulytica.com/api/reports*", "zone_name": "vaulytica.com" }],
+  // No workers.dev URL, no preview URLs, invocation logs off.
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "vaulytica-reports",
+      // Filled in at launch from `wrangler d1 create vaulytica-reports`.
+      "database_id": "",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // Retention: every report is deleted after 30 days, daily and before each write.
+  "triggers": { "crons": ["17 4 * * *"] }
+  // Secrets, set with `wrangler secret put` and never committed:
+  //   TURNSTILE_SECRET        the Turnstile widget's secret key
+  //   REPORTER_HMAC_SECRET    32+ random bytes, for the per-reporter daily cap
+}
