@@ -47,6 +47,22 @@ row too. `npm run accuracy` prints five shares — the named type, an accepted
 type, a different type, no type, and no type exists — with three caveats,
 every time.
 
+### Adding an exhibit
+
+Save the exhibit from EDGAR by hand, as `.htm` or `.txt`, anywhere outside the
+repository. Then:
+
+```bash
+npm run accuracy:route -- --file ~/Downloads/ex10-1.htm --accession 0001193125-24-123456 --url https://www.sec.gov/Archives/edgar/data/…/ex10-1.htm --title "Employment Agreement" --label "employment agreement" --retrieved 2026-10-11
+```
+
+The command opens no network connection. It extracts the text, routes it
+through the real pipeline, and writes one record to `routing/records/`. The
+label must already be a row of `labels.json`; add a missing row in its own
+commit, so the label is reviewed apart from the result it produces. The same
+exhibit twice is refused. Run `npm run accuracy` afterwards to refresh the
+scoreboard.
+
 **No exhibits are sampled yet.** The sample is chosen by rule (the first N
 Exhibit 10s from a fixed date range), fetched by hand within the SEC's access
 rules, and its size is the owner's decision.

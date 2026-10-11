@@ -1,6 +1,6 @@
 {
   "name": "vaulytica",
-  "version": "9.886.0",
+  "version": "9.887.0",
   "private": true,
   "description": "The free, deterministic, runs-entirely-in-your-browser contract checker. A linter for legal documents.",
   "license": "MIT",
@@ -62,6 +62,7 @@
     "site:doc-types": "tsx tools/site/write-doc-types.ts",
     "site:known-limits": "tsx tools/site/write-known-limits.ts",
     "reports:ids": "tsx tools/reports/write-catalog-ids.ts",
+    "accuracy:route": "tsx tools/accuracy/route-exhibit.ts",
     "playbooks:bundle": "tsx tools/build-extended-playbooks.ts",
     "accuracy": "tsx tools/accuracy/run.ts",
     "golden:churn": "node tools/golden-churn.mjs",

@@ -42,7 +42,7 @@ const VERSION = /^\d{1,3}\.\d{1,5}\.\d{1,3}$/;
 const DKB = /^v[0-9A-Za-z.-]{1,40}$/;
 
 /** Control characters and bidirectional overrides: stripped, never stored. */
-// eslint-disable-next-line no-control-regex, no-misleading-character-class
+// eslint-disable-next-line no-control-regex
 const UNPRINTABLE = /[\u0000-\u001f\u007f-\u009f\u200e\u200f\u202a-\u202e\u2066-\u2069\u2028\u2029\ufeff]/g;
 
 export function cleanNote(note: string): string {

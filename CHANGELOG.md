@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.887.0] — 2026-10-11
+
+### Added
+- **A command for adding an EDGAR exhibit to the routing sample**
+  (`npm run accuracy:route`, spec-v53 Step 332). A maintainer saves an
+  exhibit by hand and names its accession number, URL, title and label; the
+  command extracts the text, routes it through the real pipeline, and writes a
+  record of seven facts. It opens no network connection and writes none of the
+  exhibit's text. The label must already be a row of the label table, and the
+  same exhibit twice is refused.
+- **The label table is checked against the router.** A near-empty document
+  titled with each label reaches the labelled type or an accepted one for 14
+  of 21 titles; the other seven are pinned by name with the reason (titles two
+  types share, where the body is meant to decide, and two bare nouns). No
+  title routes to a type its label does not accept.
+
+### Fixed
+- The label table mapped "registration rights agreement" to the venture
+  investor-rights type. No type claims that title; it is now labelled as one
+  the catalog has no type for.
+
+### Changed
+- Three CI jobs were within a minute or two of their time limits after the
+  specimen corpus grew, and the macOS test leg was cancelled twice. Limits
+  are raised (55, 45 and 50 minutes). A job over its limit reports as
+  "cancelled", which is easy to mistake for a superseded push.
+
 ## [9.886.0] — 2026-10-11
 
 ### Added
