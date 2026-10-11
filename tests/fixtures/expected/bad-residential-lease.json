@@ -89,10 +89,11 @@
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "DARK-001-s5-649",
+      "fired": true,
       "ran": true,
       "rule_id": "DARK-001",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -326,7 +327,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.2.0"
+      "rule_version": "1.2.1"
     },
     {
       "elapsed_ms": 0,
@@ -573,7 +574,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-017",
-      "rule_version": "1.1.0"
+      "rule_version": "1.1.1"
     },
     {
       "elapsed_ms": 0,
@@ -882,6 +883,34 @@
       "severity": "critical",
       "source_citations": [],
       "title": "Unfilled template placeholders: 1"
+    },
+    {
+      "description": "Landlord may update these Terms at any time.",
+      "document_position": 649,
+      "excerpt": {
+        "end_offset": 692,
+        "section_id": "s5",
+        "section_label": "4. Modifications",
+        "start_offset": 649,
+        "text": "Landlord may update these Terms at any time. By continued occupancy of the Premises, Tenant is deemed to have agreed to all updated Terms."
+      },
+      "explanation": "A unilateral modification right without a corresponding customer termination right shifts re-pricing and re-negotiation power to the drafter.",
+      "id": "DARK-001-s5-649",
+      "recommendation": "Bound the modification right: notice before a change takes effect (30 days is the norm), no retroactive application to a period already paid for, and a right to terminate without penalty if the change is adverse. A bare right to amend at will is what makes the rest of the contract provisional.",
+      "rule_id": "DARK-001",
+      "rule_version": "1.3.0",
+      "severity": "warning",
+      "source_citations": [
+        {
+          "id": "stat-ftc-deception-statement",
+          "license": "Public domain (US government work)",
+          "license_url": "https://www.usa.gov/government-works",
+          "retrieved_at": "2026-05-11T00:00:00Z",
+          "source": "FTC Policy Statement on Deception (1983)",
+          "source_url": "https://www.ftc.gov/legal-library/browse/ftc-policy-statement-deception"
+        }
+      ],
+      "title": "Unilateral right to modify terms"
     },
     {
       "description": "Tenant shall provide Landlord at least 30 days written notice of any claim before initiating suit.",
@@ -1225,11 +1254,11 @@
   "playbook_id": "lease-residential-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected lease-residential-us (score 0.8). Title matched: \"residential rental agreement\", \"rental agreement\". Distinguishing phrases: \"residential\".",
-  "result_hash": "0f12f212611a22cf10058094e61f8cd528d8f2bc2be7233590c8455c6ffbb193",
+  "result_hash": "8ee915b534773562686ccd73e13178e2bee2f6c49d379c1ba832cfde908e2327",
   "source_file": {
     "name": "bad-residential-lease.docx",
     "sha256": "e9329baa96e35c934a6bdbb32721f88752314e62fbcce83220e7bfa5c353c638",
     "size_bytes": 9203
   },
-  "version": "9.877.0"
+  "version": "9.878.0"
 }

@@ -92,7 +92,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-001",
-      "rule_version": "1.2.0"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -329,7 +329,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.2.0"
+      "rule_version": "1.2.1"
     },
     {
       "elapsed_ms": 0,
@@ -576,7 +576,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-017",
-      "rule_version": "1.1.0"
+      "rule_version": "1.1.1"
     },
     {
       "elapsed_ms": 0,
@@ -957,9 +957,9 @@
       },
       "explanation": "License grants that pile up perpetual / irrevocable / royalty-free / worldwide / sublicensable / transferable / fully paid-up modifiers over Feedback, Customer Data, User Content, or likeness surrender every lever a customer would ordinarily retain. The scope is often broader than the vendor needs and broader than the customer realizes. Especially for Feedback, the broadly-scoped grant means anything the customer ever says to support — even suggestions for entirely separate products — becomes free fodder for the vendor's roadmap, transferable to acquirers, and unrecoverable.",
       "id": "IPDATA-010-s3-598",
-      "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, terminating on termination of the Agreement, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
+      "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, ending when the arrangement ends, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
       "rule_id": "IPDATA-010",
-      "rule_version": "1.2.0",
+      "rule_version": "1.2.1",
       "severity": "warning",
       "source_citations": [],
       "title": "License grant is perpetual / irrevocable / royalty-free / sublicensable"
@@ -1134,11 +1134,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "9ffbe2d535a96f23c58e472b4a6271e0f651ad4b3677dbc4756e6d7db0bada1e",
+  "result_hash": "25c165a78e486f66c0e4298b9ad15903fd41537e9e6c6bedafb39e1815b1a7d2",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.877.0"
+  "version": "9.878.0"
 }

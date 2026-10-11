@@ -11,6 +11,7 @@
 import type { Rule } from "../../finding.js";
 import { ADVISOR_RULES } from "./advisor.js";
 import { BUYER_REPRESENTATION_RULES } from "./buyer-representation.js";
+import { FALLBACK_RULES } from "./fallback.js";
 import { HIPAA_DUA_RULES } from "./hipaa-dua.js";
 import { MERCHANT_CASH_ADVANCE_RULES } from "./merchant-cash-advance.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
@@ -30,6 +31,7 @@ export const V7_RULES: readonly Rule[] = [
   ...TRAINING_REPAYMENT_RULES,
   ...BUYER_REPRESENTATION_RULES,
   ...ADVISOR_RULES,
+  ...FALLBACK_RULES,
 ];
 
 export {
@@ -43,4 +45,5 @@ export {
   TRAINING_REPAYMENT_RULES,
   BUYER_REPRESENTATION_RULES,
   ADVISOR_RULES,
+  FALLBACK_RULES,
 };

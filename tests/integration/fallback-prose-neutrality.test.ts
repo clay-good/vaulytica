@@ -4,7 +4,7 @@
  *
  * When no family matches, the engine says so in as many words:
  *
- *   > No known document family matched this document … The findings below may
+ *   > No known document type matched this document … The findings below may
  *   > be irrelevant or misleading **for a document that is not a contract**.
  *
  * And then it printed, about a bread recipe:
@@ -29,11 +29,10 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { sourceFiles } from "./_recognizer-sources.js";
+import { LAUNCH_RULES } from "../../src/engine/index.js";
 
 /**
- * The packs the generic fallback runs, named in its own notice: "the
- * structural, basic-financial, temporal, and dark-pattern contract-lint
- * rules".
+ * The packs the generic fallback has always run whole.
  */
 const FALLBACK_PACKS = [
   "src/engine/rules/structural",
@@ -41,6 +40,32 @@ const FALLBACK_PACKS = [
   "src/engine/rules/temporal",
   "src/engine/rules/dark-patterns",
 ] as const;
+
+/**
+ * …and every other rule it runs. The notice used to name those four packs and
+ * this guard read only them, while the fallback also ran choice-of-law, IP,
+ * obligation, personnel and risk rules nobody had checked. The set is derived:
+ * each launch rule the fallback playbook does not skip, by its own file, plus
+ * the notes written for the fallback alone.
+ */
+const FALLBACK_SKIPS = new Set(
+  Object.entries(
+    (
+      JSON.parse(
+        readFileSync(join(process.cwd(), "playbooks", "generic-fallback.json"), "utf8"),
+      ) as { rule_overrides: Record<string, { skip?: boolean }> }
+    ).rule_overrides,
+  )
+    .filter(([, v]) => v.skip)
+    .map(([id]) => id),
+);
+const RULE_FILES = sourceFiles(join(process.cwd(), "src", "engine", "rules"));
+const FALLBACK_RULE_FILES: string[] = [
+  ...LAUNCH_RULES.filter((r) => !FALLBACK_SKIPS.has(r.id)).flatMap((r) =>
+    RULE_FILES.filter((f) => f.endsWith(`/${r.id}.ts`)),
+  ),
+  join(process.cwd(), "src", "engine", "rules", "v7", "fallback.ts"),
+];
 
 /** The finding fields a reader sees. */
 const READER_FIELDS = /(?:title|description|explanation|recommendation|missing_description):/;
@@ -53,8 +78,16 @@ describe("a fallback finding does not assert what the document is", () => {
     const offenders: string[] = [];
     let scanned = 0;
 
+    const files = new Map<string, string>();
     for (const pack of FALLBACK_PACKS) {
-      for (const file of sourceFiles(join(process.cwd(), pack))) {
+      for (const file of sourceFiles(join(process.cwd(), pack))) files.set(file, pack);
+    }
+    for (const file of FALLBACK_RULE_FILES) if (!files.has(file)) files.set(file, "fallback rule");
+    // The derivation must find the rules outside the four packs, or it adds nothing.
+    expect([...files.values()].filter((v) => v === "fallback rule").length).toBeGreaterThan(5);
+
+    {
+      for (const [file, pack] of files) {
         const src = readFileSync(file, "utf8");
         const lines = src.split("\n");
         for (let i = 0; i < lines.length; i += 1) {

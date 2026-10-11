@@ -41,3 +41,27 @@ describe("DARK-001 — unilateral modification right", () => {
     ).toBeNull();
   });
 });
+
+describe("DARK-001 — a party by its own name, an instrument by its own (1.3.0)", () => {
+  it("reads a named party and a memorandum", () => {
+    for (const clause of [
+      "Harbor Arts Collective may amend this Memorandum at any time without notice.",
+      "The University may revise this Memorandum from time to time.",
+      "Sponsor reserves the right to change this Order Form.",
+      "Host may modify this Lease in its sole discretion.",
+    ]) {
+      expect(DARK_001.check(doc(clause)), clause).not.toBeNull();
+    }
+  });
+
+  it("does not take a mutual subject for a party", () => {
+    for (const clause of [
+      "Either Party may amend this Agreement at any time by written notice signed by both parties.",
+      "The Parties may amend this Memorandum at any time.",
+      "Neither Party may modify this Agreement without notice to the other.",
+      "Harbor Arts Collective may amend this Memorandum at any time with the written consent of Dana Whitfield.",
+    ]) {
+      expect(DARK_001.check(doc(clause)), clause).toBeNull();
+    }
+  });
+});

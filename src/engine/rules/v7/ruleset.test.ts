@@ -22,7 +22,19 @@ const playbooks = readdirSync(DIR)
   .map((f) => JSON.parse(readFileSync(join(DIR, f), "utf8")) as Record<string, unknown>);
 const ids = new Set(playbooks.map((p) => String(p.id)));
 
+/** The three notes for a document no type matched are gated to the fallback, not to a v7 family. */
+const FAMILY_RULES = V7_RULES.filter((r) => rulePrefix(r.id) !== "GEN");
+
 describe("v7 ruleset shape", () => {
+  it("gates the fallback notes to the fallback alone, at info", () => {
+    const notes = V7_RULES.filter((r) => rulePrefix(r.id) === "GEN");
+    expect(notes.map((r) => r.id)).toEqual(["GEN-001", "GEN-002", "GEN-003"]);
+    for (const r of notes) {
+      expect(r.applies_to_playbooks, r.id).toEqual(["generic-fallback"]);
+      expect(r.default_severity, r.id).toBe("info");
+    }
+  });
+
   it("has unique ids that collide with no earlier wave", () => {
     const mine = V7_RULES.map((r) => r.id);
     expect(new Set(mine).size).toBe(mine.length);
@@ -33,7 +45,7 @@ describe("v7 ruleset shape", () => {
   });
 
   it("gates every rule to exactly one shipped v7 playbook, under that playbook's prefix", () => {
-    for (const r of V7_RULES) {
+    for (const r of FAMILY_RULES) {
       const gate = r.applies_to_playbooks ?? [];
       expect(gate.length, `${r.id} must name exactly one playbook`).toBe(1);
       expect(ids.has(gate[0]!), `${r.id} names unshipped playbook "${gate[0]}"`).toBe(true);
@@ -45,7 +57,7 @@ describe("v7 ruleset shape", () => {
     // `software-license-enterprise` selects the always-on packs and has no
     // checks of its own; its columns describe what those packs read.
     const counts = new Map<string, number>();
-    for (const r of V7_RULES) {
+    for (const r of FAMILY_RULES) {
       const id = (r.applies_to_playbooks ?? [])[0]!;
       counts.set(id, (counts.get(id) ?? 0) + 1);
     }

@@ -23,7 +23,7 @@ import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "RISK-017",
-  version: "1.1.0",
+  version: "1.1.1",
   name: "One-way attorneys'-fees clause",
   category: "risk-allocation",
   default_severity: "warning",
@@ -89,7 +89,7 @@ export const rule: Rule = {
         explanation:
           "An attorneys'-fees award flowing in only one direction is enforceable in most US jurisdictions but is widely recognized as an unbalanced drafting choice. A small group of states (California Civ. Code § 1717, Florida Stat. § 57.105(7), Oregon ORS 20.096, Washington RCW 4.84.330) automatically convert one-way fee clauses into mutual ones, which itself tells you the asymmetry is broadly viewed as unfair.",
         recommendation:
-          "Replace with a 'prevailing party' formulation: 'The prevailing party in any action arising out of or relating to this Agreement shall be entitled to recover its reasonable attorneys' fees and costs.' Or remove the fee-shifting clause entirely and rely on the American rule.",
+          "Replace with a 'prevailing party' formulation: 'The prevailing party in any action to enforce these terms shall be entitled to recover its reasonable attorneys' fees and costs.' Or remove the fee-shifting clause entirely and rely on the American rule.",
         position: m.position,
       });
     }

@@ -77,7 +77,7 @@ describe("the CLI prints the classification caveat", () => {
     // It still reports findings — the caveat qualifies them, it does not
     // suppress them.
     expect(c.stdout).toContain("generic-fallback");
-    expect(c.stderr).toContain("No known document family matched");
+    expect(c.stderr).toContain("No known document type matched");
     expect(c.stderr).toContain("may be irrelevant or misleading");
   }, 120_000);
 
@@ -85,7 +85,7 @@ describe("the CLI prints the classification caveat", () => {
     // The caveat must not become noise on the ordinary path.
     const c = await capture([NDA]);
     expect(c.stdout).not.toContain("generic-fallback");
-    expect(c.stderr).not.toContain("No known document family matched");
+    expect(c.stderr).not.toContain("No known document type matched");
   }, 120_000);
 
   it("keeps stdout parseable — every caveat goes to stderr", async () => {

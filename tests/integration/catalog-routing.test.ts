@@ -129,7 +129,9 @@ describe("v5 / v6 catalog routing", () => {
     const gated = new Set(
       [...V5_RULES, ...V6_RULES, ...V7_RULES].flatMap((r) => r.applies_to_playbooks ?? []),
     );
-    const missing = [...gated].filter((id) => !served.has(id)).sort();
+    // The fallback is a launch playbook, served on its own; the three notes for
+    // an unmatched document (GEN) are gated to it.
+    const missing = [...gated].filter((id) => !served.has(id) && id !== "generic-fallback").sort();
     expect(
       missing,
       `gated to playbooks absent from the served bundle: ${missing.join(", ")}`,

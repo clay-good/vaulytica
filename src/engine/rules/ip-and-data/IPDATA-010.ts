@@ -45,7 +45,7 @@ const GRANT_CLAUSE =
 
 export const rule: Rule = {
   id: "IPDATA-010",
-  version: "1.2.0",
+  version: "1.2.1",
   name: "Perpetual / irrevocable license overreach",
   category: "ip-and-data",
   default_severity: "warning",
@@ -125,7 +125,7 @@ function evaluate(ctx: RuleContext, hit: ParagraphHit): Finding | null {
     explanation:
       "License grants that pile up perpetual / irrevocable / royalty-free / worldwide / sublicensable / transferable / fully paid-up modifiers over Feedback, Customer Data, User Content, or likeness surrender every lever a customer would ordinarily retain. The scope is often broader than the vendor needs and broader than the customer realizes. Especially for Feedback, the broadly-scoped grant means anything the customer ever says to support — even suggestions for entirely separate products — becomes free fodder for the vendor's roadmap, transferable to acquirers, and unrecoverable.",
     recommendation:
-      "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, terminating on termination of the Agreement, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
+      "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, ending when the arrangement ends, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
     position: hit.position,
   });
 }

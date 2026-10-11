@@ -42,7 +42,6 @@
     "CHOICE-005": {"skip": true},
     "CHOICE-006": {"skip": true},
     "CHOICE-007": {"skip": true},
-    "CHOICE-008": {"skip": true},
     "TERM-001": {"skip": true},
     "TERM-002": {"skip": true},
     "TERM-003": {"skip": true},
@@ -62,7 +61,6 @@
     "PERS-003": {"skip": true},
     "PERS-004": {"skip": true},
     "FIN-005": {"skip": true},
-    "FIN-006": {"skip": true},
     "FIN-007": {"skip": true},
     "FIN-008": {"skip": true}
   },

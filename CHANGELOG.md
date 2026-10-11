@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.878.0] — 2026-10-10
+
+### Added
+- **A document no type matched is now told about the clauses worth naming**
+  (spec-v50 Step 317). A probe holding seven such clauses used to draw one
+  finding. Now it draws seven:
+  - a **jury-trial waiver** and a **liquidated-damages clause** — both rules
+    existed and were switched off for unmatched documents;
+  - a **one-sided right to change the terms**, read when the party is called
+    by its own name ("Harbor Arts Collective may amend this Memorandum at any
+    time") and when the document is a memorandum, a lease or an order rather
+    than "the Agreement" (`DARK-001` 1.3.0);
+  - a **confession of judgment**, an **authorization to deduct from wages**,
+    and an **acceleration clause** — three new notes that run only on an
+    unmatched document, at `info`. Each says the clause is present and where.
+    None says whether it can be enforced: that varies by state and by the kind
+    of transaction, which an unmatched document has not told us.
+  1,890 rules.
+
+### Changed
+- **The notice on an unmatched document states how many checks ran.** It used
+  to say the fallback applied "the structural, basic-financial, temporal, and
+  dark-pattern" rules, while it also ran choice-of-law, IP, obligation,
+  personnel and risk rules. It now gives the count, which is taken from the
+  run, and points to the list of recognized types. This text is part of every
+  unmatched report's hash, so those hashes change once.
+- Two recommendations no longer call the document "the Agreement"
+  (`RISK-017` 1.1.1, `IPDATA-010` 1.2.1). Both run on unmatched documents,
+  where the notice above them says the document may not be a contract. The
+  guard that holds this now covers every rule the fallback runs, derived from
+  the fallback's own settings, not four hand-listed folders.
+
+### Notes
+- The wage-deduction and acceleration rules that already existed check for a
+  clause that is *missing* from a note or an employment document. Run on an
+  unmatched document they would report an absence that means nothing there,
+  so the three notes are separate rules.
+- A personal guaranty is still not named on an unmatched document; no general
+  recognizer for one exists.
+
 ## [9.877.0] — 2026-10-10
 
 ### Fixed

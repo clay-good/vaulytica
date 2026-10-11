@@ -44,15 +44,23 @@ export const RULE_TAXONOMY_VERSION = "9.0.0";
 
 /**
  * Banner stamped into the run when classification fell to the generic
- * fallback. Fixed, canonical text — it feeds `result_hash`, so it must be
- * byte-stable across releases. (add-document-vertical-framework: unmatched
+ * fallback. Canonical text — it feeds `result_hash`, so it changes only on
+ * purpose (last: 9.878.0, when the pack list became a count). (add-document-vertical-framework: unmatched
  * documents are reported as unmatched.)
  */
-export const GENERIC_FALLBACK_NOTICE: ClassificationNotice = {
-  reason: "generic-fallback",
-  message:
-    "No known document family matched this document, so Vaulytica used its generic fallback: it applied the structural, basic-financial, temporal, and dark-pattern contract-lint rules and skipped every family-specific rule. The findings below may be irrelevant or misleading for a document that is not a contract. Treat this report as a best-effort scan of an unrecognized document, not an analysis of its actual type.",
-};
+export function genericFallbackNotice(checksRun: number): ClassificationNotice {
+  return {
+    reason: "generic-fallback",
+    // A COUNT, not a list. The list this replaced named four packs
+    // ("structural, basic-financial, temporal, and dark-pattern") while the
+    // fallback also ran choice-of-law, IP, obligation, personnel and risk
+    // rules — a statement about the run that was not true of the run.
+    message: `No known document type matched this document, so Vaulytica ran only its ${checksRun} general checks — the ones that can apply to any document — and skipped every check written for a specific document type. The findings below may be irrelevant or misleading for a document that is not a contract. Treat this report as a best-effort scan of an unrecognized document, not an analysis of its actual type. The types it recognizes are listed at ${DOCUMENT_TYPES_URL}.`,
+  };
+}
+
+/** Where the recognized document types are listed. Printed, never fetched. */
+export const DOCUMENT_TYPES_URL = "https://vaulytica.com/#types-h2";
 
 export type RunEngineInput = {
   rules: readonly Rule[];
@@ -196,7 +204,7 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
   // `finding.tier`) so a matched run omits the field and its hash is
   // unchanged from before this feature existed.
   if (playbookId === GENERIC_FALLBACK_ID) {
-    run.classification_notice = GENERIC_FALLBACK_NOTICE;
+    run.classification_notice = genericFallbackNotice(execution_log.filter((e) => e.ran).length);
   }
 
   // add-filing-format-lint — stamp the court-profile provenance when the

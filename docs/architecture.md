@@ -11,7 +11,7 @@ flowchart TB
         ingest[Ingest layer<br/>PDF.js · mammoth.js · Tesseract.js WASM]
         normalize[Normalizer<br/>structured document tree]
         extract[Extractors<br/>parties · dates · amounts ·<br/>definitions · sections · crossrefs<br/>· obligations · jurisdictions · classifier]
-        engine[Rule Engine<br/>121 launch · 1,887 total rules<br/>+ 22 cross-document checks]
+        engine[Rule Engine<br/>121 launch · 1,890 total rules<br/>+ 22 cross-document checks]
         playbook[Playbook matcher<br/>NDA · employment · MSA · lease · IC · SaaS · …]
         dkb[(Deterministic<br/>Knowledge Base<br/>shipped as static asset)]
         report[Report builder<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · comparison redline]
@@ -44,7 +44,7 @@ The ingest layer turns a `File` (PDF or DOCX) or pasted text into a **normalized
 
 Determinism contract: same bytes in → same tree out. The normalizer (`normalize.ts`) assigns stable IDs (`s1.p2.r0`) and contiguous offsets so every downstream extractor can refer to positions identically. Order-independence is part of the contract and is guarded separately: a document analyzes identically whatever ran before it in the same process (`determinism-guard.test.ts`), which is what catches a module-level `/g` regex whose `lastIndex` survives a call.
 
-Two further concerns live here rather than in the rule layer, because a rule that has to know about them is a rule that will be written 1,887 times:
+Two further concerns live here rather than in the rule layer, because a rule that has to know about them is a rule that will be written 1,890 times:
 
 - **A presentation form is not a different word.** A ligature (`ﬁ`), fullwidth ASCII (`Ｓｅｃｔｉｏｎ`), a numero sign, a roman-numeral form, and the HYPHEN a PDF emits (U+2010, and Word's non-breaking U+2011) all render as ordinary characters and match none of them. `normalize.ts` folds each back before any rule runs. Every one was found the same way — rewrite the corpus in the form a real file carries and diff the findings ([`format-invariance.test.ts`](../tests/integration/format-invariance.test.ts)) — and every one moved a finding on a large fraction of the corpus, because the fixtures are hand-typed on a keyboard and no example-based test could see it.
 - **A word broken across a line is one word.** A justified column marks the break with a hyphen — "confiden-" then "tial" — using the same character, in the same position, as the hyphen a drafter wrote in "month-to-month". [`hyphenation.ts`](../src/ingest/hyphenation.ts) tells them apart on evidence from the document itself: the joined form is used only when the document writes that word as one word somewhere else, and the hyphen is kept otherwise. The default is the conservative one, so a document's existing result can only change on positive evidence. What the conservatism still costs is a committed list in `format-invariance.test.ts` that may only shrink.
@@ -85,7 +85,7 @@ dkb-classifier-patterns.json # regex overrides
 
 ## Stage 4 — Playbook matcher ([src/playbooks/](../src/playbooks/))
 
-Given the extracted data + the document title, [`matchPlaybook`](../src/playbooks/matcher.ts) scores the document against every playbook's `match_features` (title keywords, required clauses, distinguishing phrases, negative features) and returns the highest-scoring playbook plus a human-readable `reasoning` string. The 12 launch playbooks live as JSON under [`playbooks/`](../playbooks/). If nothing scores above the threshold, `generic-fallback` runs only structural + basic-financial + temporal + dark-pattern rules.
+Given the extracted data + the document title, [`matchPlaybook`](../src/playbooks/matcher.ts) scores the document against every playbook's `match_features` (title keywords, required clauses, distinguishing phrases, negative features) and returns the highest-scoring playbook plus a human-readable `reasoning` string. The 12 launch playbooks live as JSON under [`playbooks/`](../playbooks/). If nothing scores above the threshold, `generic-fallback` runs only the general checks — the ones that can apply to any document — and its notice states how many ran.
 
 Matching is done over a **folded** corpus, on both sides: a feature written one way must find a document written another. The folds are the choices an English-speaking drafter makes without changing what the document is — the apostrophe, the optional hyphen (`non-disclosure` / `nondisclosure` / `non disclosure`), the six interchangeable attachment nouns (an American Exhibit is a London Annexure), and the **spelling** (a "Trade Mark Licence Agreement" is a "Trademark License Agreement"). Each fold was added because a real document routed to the wrong playbook without it, and a document routed to the wrong playbook is checked with the wrong rules — the report is not thin, it is about a different document. `-ise` is folded by an explicit stem list, never a blanket `ise` → `ize`, because English is full of `-ise` words that are variants of nothing: advise, premise, exercise, franchise, compromise, enterprise, and `license` itself.
 

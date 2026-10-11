@@ -1,6 +1,6 @@
 # Vaulytica v50 — What Using It Found (Input, Output, and the Empty Report)
 
-> **Status:** **In progress.** Steps 313–314 shipped in 9.855.0–9.856.0 Step 315 (paste and text files in the browser) in 9.876.0, and Step 316 (an exhibit is not its parent) in 9.877.0; Step 317 is not built. Continues after [`spec-v49.md`](spec-v49.md), beginning at **Step 313**.
+> **Status:** **Built.** Steps 313–314 in 9.855.0–9.856.0, Step 315 (paste and text files in the browser) in 9.876.0, Step 316 (an exhibit is not its parent) in 9.877.0, Step 317 (the fallback's rules and notice) in 9.878.0. One departure from §11: the wage-deduction and acceleration rules that exist are _absence_ checks in their own types, so they could not be admitted as presence notes; three small notes gated to the fallback (`GEN-001`–`GEN-003`) do that instead. The personal-guaranty row stays deferred, as §11 says.
 > **Scope:** one idea — fix what a first-time user and a first-time script hit in the first five minutes. Every item was reproduced on 9.853.0 by running the tool; an adversarial pass then re-ran each one, corrected four, and added the rest of the eleven below.
 > **Posture (unchanged):** deterministic, no AI, nothing uploaded. Steps 313–315 change no finding on any document. Steps 316–317 change reports, and say which.
 > **Cousin docs:** [`spec-v48.md`](spec-v48.md) (shares the compact projection), [`spec-v49.md`](spec-v49.md) (the catalog half of §11), [`reference.md`](reference.md).
