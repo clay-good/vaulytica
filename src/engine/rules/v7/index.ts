@@ -9,6 +9,7 @@
  */
 
 import type { Rule } from "../../finding.js";
+import { HIPAA_DUA_RULES } from "./hipaa-dua.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
 
 /** The v7 ruleset aggregate. Appended after `V6_RULES` in the pipeline. */
@@ -16,6 +17,7 @@ export const V7_RULES: readonly Rule[] = [
   ...SERVICE_LEVEL_RULES,
   ...PILOT_RULES,
   ...ROOMMATE_RULES,
+  ...HIPAA_DUA_RULES,
 ];
 
-export { SERVICE_LEVEL_RULES, PILOT_RULES, ROOMMATE_RULES };
+export { SERVICE_LEVEL_RULES, PILOT_RULES, ROOMMATE_RULES, HIPAA_DUA_RULES };

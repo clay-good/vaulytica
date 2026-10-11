@@ -57,7 +57,7 @@ const REACH: Record<string, number> = {
   payment_term_days: 56,
   liability_cap_multiple: 21,
   liability_cap_amount: 66,
-  cure_period_days: 60,
+  cure_period_days: 61,
   auto_renewal_notice_days: 26,
   indemnity_cap_amount: 2,
   uptime_sla_percent: 9,

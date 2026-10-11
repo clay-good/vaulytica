@@ -50,7 +50,12 @@ describe("v7 ruleset shape", () => {
       counts.set(id, (counts.get(id) ?? 0) + 1);
     }
     expect([...counts.keys()].sort()).toEqual(
-      ["pilot-evaluation-agreement", "roommate-agreement", "service-level-agreement"].sort(),
+      [
+        "hipaa-data-use-agreement",
+        "pilot-evaluation-agreement",
+        "roommate-agreement",
+        "service-level-agreement",
+      ].sort(),
     );
     for (const p of playbooks) {
       if (!counts.has(String(p.id))) continue;
@@ -59,14 +64,25 @@ describe("v7 ruleset shape", () => {
     }
   });
 
-  it("cites every check as practice, and never above a warning", () => {
+  it("cites the three families with no controlling authority as practice, never above a warning", () => {
     // spec-v49 §3: no statute or rule lists what these three must say.
-    for (const r of V7_RULES) {
+    const PRACTICE_ONLY = new Set(["SLA", "PILOT", "ROOM"]);
+    const rules = V7_RULES.filter((r) => PRACTICE_ONLY.has(rulePrefix(r.id)));
+    expect(rules.length).toBeGreaterThan(0);
+    for (const r of rules) {
       expect(
         r.dkb_citations.every((c) => c.startsWith("practice-")),
         r.id,
       ).toBe(true);
       expect(r.default_severity, r.id).not.toBe("critical");
     }
+  });
+
+  it("cites each data-use-agreement check to its own subparagraph of § 164.514(e)(4)(ii)", () => {
+    const rules = V7_RULES.filter((r) => rulePrefix(r.id) === "DUA");
+    expect(rules).toHaveLength(7);
+    const cites = rules.flatMap((r) => r.dkb_citations);
+    expect(new Set(cites).size).toBe(7);
+    for (const c of cites) expect(c).toMatch(/^cfr-45-164-514-e-4-ii-(a|b|c-[1-5])$/);
   });
 });

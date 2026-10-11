@@ -81,6 +81,7 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   SLA: "service-level-agreement",
   PILOT: "pilot-evaluation-agreement",
   ROOM: "roommate-agreement",
+  DUA: "hipaa-data-use-agreement",
 } as const;
 
 /**

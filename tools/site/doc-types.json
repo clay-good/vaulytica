@@ -6902,6 +6902,62 @@
    "sources": []
   },
   {
+   "id": "hipaa-data-use-agreement",
+   "name": "Data Use Agreement for a Limited Data Set (HIPAA)",
+   "group": "Healthcare",
+   "summary": "The agreement a HIPAA covered entity must have before it discloses a limited data set for research, public health or health care operations. The checks read for the seven terms the Privacy Rule requires it to contain: the permitted uses, who may use or receive the data, and the recipient's five commitments — no other use, safeguards, reporting, the same terms for agents, and no re-identification or contact.",
+   "checks": [
+    {
+     "id": "DUA-001",
+     "name": "Permitted uses, within research, public health or health care operations",
+     "description": "",
+     "severity": "critical"
+    },
+    {
+     "id": "DUA-002",
+     "name": "Who may use or receive the limited data set",
+     "description": "",
+     "severity": "critical"
+    },
+    {
+     "id": "DUA-003",
+     "name": "No use or disclosure beyond the agreement, except as required by law",
+     "description": "",
+     "severity": "critical"
+    },
+    {
+     "id": "DUA-004",
+     "name": "Appropriate safeguards",
+     "description": "",
+     "severity": "critical"
+    },
+    {
+     "id": "DUA-005",
+     "name": "Report of any use or disclosure the agreement does not provide for",
+     "description": "",
+     "severity": "critical"
+    },
+    {
+     "id": "DUA-006",
+     "name": "Agents held to the same restrictions",
+     "description": "",
+     "severity": "critical"
+    },
+    {
+     "id": "DUA-007",
+     "name": "No identifying the information or contacting the individuals",
+     "description": "",
+     "severity": "critical"
+    }
+   ],
+   "general_checks": 112,
+   "companions": [
+    "baa",
+    "data-sharing-agreement"
+   ],
+   "sources": []
+  },
+  {
    "id": "hipaa-npp",
    "name": "HIPAA Notice of Privacy Practices",
    "group": "Healthcare",

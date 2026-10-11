@@ -14,7 +14,7 @@
 | ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Measured precision and recall on real documents: **none**           | `SCOREBOARD.md`: status `empty`, 0 graded pairs                                                                                                       |
 | Real documents in the ground-truth corpus: **0**                    | `corpus/manifest.json` has no splits; gated on attorney annotation                                                                                    |
-| Rules signed off by an attorney: **0 of 1,842**                     | Already on the homepage (`data-ledger-signed`), guarded by a test                                                                                     |
+| Rules signed off by an attorney: **0 of 1,849**                     | Already on the homepage (`data-ledger-signed`), guarded by a test                                                                                     |
 | A way to report a wrong finding that any report points to: **none** | No link in the tab or any report; no issue template. `CONTRIBUTING.md` asks for an issue with a redacted fixture, and nothing a user sees leads there |
 | Known, measured defects held open on purpose                        | About twenty debt lists asserted by equality in `tests/integration/`                                                                                  |
 

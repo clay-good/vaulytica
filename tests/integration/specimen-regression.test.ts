@@ -5712,6 +5712,28 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "roommate-agreement",
     findings: ["ROOM-001", "ROOM-002", "ROOM-003", "ROOM-004", "ROOM-005"],
   },
+  // spec-v49 Step 311: the HIPAA limited-data-set data use agreement. The
+  // complete one carries all seven terms 45 C.F.R. § 164.514(e)(4)(ii)
+  // requires; the thin one carries none of them and is told so seven times.
+  "hipaa-data-use-agreement-complete.txt": {
+    playbook: "hipaa-data-use-agreement",
+    findings: ["OBLI-003", "OBLI-005", "TEMP-008", "TERM-007"],
+  },
+  "hipaa-data-use-agreement-thin.txt": {
+    playbook: "hipaa-data-use-agreement",
+    findings: [
+      "CHOICE-003",
+      "DUA-001",
+      "DUA-002",
+      "DUA-003",
+      "DUA-004",
+      "DUA-005",
+      "DUA-006",
+      "DUA-007",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.869.0] — 2026-10-10
+
+### Added
+- **A document type for the HIPAA limited-data-set data use agreement**
+  (spec-v49 Step 311). A covered entity may disclose a limited data set only
+  under an agreement that contains seven terms, and there is now one check for
+  each: the permitted uses, within research, public health or health care
+  operations; who may use or receive the data; no other use except as required
+  by law; appropriate safeguards; reporting; the same terms for agents; and no
+  identifying the information or contacting the individuals. Each finding
+  cites its own subparagraph of 45 C.F.R. § 164.514(e)(4)(ii), read at
+  ecfr.gov on 2026-10-10. 272 document types, 1,849 rules.
+
+### Fixed
+- **A data use agreement missing the agent and no-contact terms is now told
+  so.** It used to be read as a general data-sharing agreement, whose checks
+  know none of the seven required terms.
+
+### Notes
+- Presence only. The checks do not decide whether the data is in fact a
+  limited data set, or whether the stated purpose is in fact research.
+- A document titled only "Data Use Agreement" is still read as a general
+  data-sharing agreement, because that title is not specific to HIPAA. Where it
+  describes a limited data set, the seven checks run on it as a secondary
+  type.
+- A complete agreement for a records study can still draw caveated notes from
+  the clinical trial type as a secondary family, because it names an
+  institutional review board and a principal investigator. That is the
+  secondary-family behavior for any research document and is not changed here.
+
 ## [9.868.0] — 2026-10-10
 
 ### Added

@@ -1,0 +1,47 @@
+DATA USE AGREEMENT FOR A LIMITED DATA SET
+
+This Data Use Agreement (this "Agreement") is entered into as of February 2, 2026 (the "Effective Date") between Ridgeview Health System, an Ohio nonprofit corporation ("Covered Entity"), and Calloway University, an Ohio nonprofit corporation ("Recipient").
+
+1. Definitions.
+
+"Limited Data Set" means the protected health information described in Exhibit A, from which the direct identifiers listed in 45 C.F.R. § 164.514(e)(2) have been removed.
+
+"Study" means the research study titled "Readmission After Hip Replacement, 2019 to 2025," approved by Recipient's institutional review board under protocol 2025-1184.
+
+Terms used but not defined in this Agreement have the meanings given in the HIPAA Privacy Rule, 45 C.F.R. Parts 160 and 164.
+
+2. Disclosure. Covered Entity will disclose the Limited Data Set to Recipient under 45 C.F.R. § 164.514(e) within 30 days after the Effective Date.
+
+3. Permitted Uses and Disclosures. Recipient may use the Limited Data Set only for research, namely to carry out the Study. Recipient may disclose the Limited Data Set only to the persons named in Section 4. Recipient will not use or further disclose the Limited Data Set other than as permitted by this Agreement or as otherwise required by law. Nothing in this Agreement authorizes Recipient to use or disclose the Limited Data Set in a way that would violate the HIPAA Privacy Rule if done by Covered Entity.
+
+4. Who May Use or Receive the Limited Data Set. The only persons permitted to use or receive the Limited Data Set are Dr. Helen Marsh, the principal investigator of the Study, and the members of the Study team who work under her supervision and are listed in the protocol.
+
+5. Safeguards. Recipient will use appropriate safeguards to prevent use or disclosure of the Limited Data Set other than as provided for by this Agreement, including storing it only on Recipient's encrypted research servers and limiting access to the persons named in Section 4.
+
+6. Reporting. Recipient will report to Covered Entity any use or disclosure of the Limited Data Set not provided for by this Agreement of which Recipient becomes aware, within five business days after becoming aware of it.
+
+7. Agents. Recipient will ensure that any agents to whom it provides the Limited Data Set agree in writing to the same restrictions and conditions that apply to Recipient under this Agreement.
+
+8. No Identification or Contact. Recipient will not identify the information in the Limited Data Set and will not contact the individuals to whom the information relates.
+
+9. Term and Termination. This Agreement begins on the Effective Date and continues until Recipient has returned or destroyed the Limited Data Set. Covered Entity may terminate this Agreement on written notice if Recipient materially breaches it and does not cure the breach within 30 days after notice. On termination or completion of the Study, Recipient will return or destroy the Limited Data Set and keep no copies; if return or destruction is not feasible, the protections of this Agreement continue to apply for as long as Recipient holds the Limited Data Set.
+
+10. General. This Agreement is governed by the laws of the State of Ohio, and the state and federal courts located in Franklin County, Ohio have exclusive jurisdiction over any dispute arising under it. This Agreement may be amended only in a writing signed by both parties, and the parties will amend it as needed to comply with changes in the HIPAA Privacy Rule.
+
+RIDGEVIEW HEALTH SYSTEM
+
+By: ______________________
+Name: Carla Mendez
+Title: Chief Privacy Officer
+
+CALLOWAY UNIVERSITY
+
+By: ______________________
+Name: Dr. Owen Pryce
+Title: Vice Provost for Research
+
+EXHIBIT A
+
+Description of the Limited Data Set
+
+For each admission to a Ridgeview hospital for hip replacement between January 1, 2019 and June 30, 2025: admission date, discharge date, five-digit zip code, year of birth, sex, primary and secondary diagnosis codes, procedure codes, discharge disposition, and readmission dates within 90 days.

@@ -1,0 +1,23 @@
+DATA USE AGREEMENT FOR A LIMITED DATA SET
+
+This Data Use Agreement is entered into as of March 9, 2026 between Halcyon Regional Medical Center ("Covered Entity") and Brannock Institute ("Recipient").
+
+1. Limited Data Set. Covered Entity will send Recipient a limited data set, as described in 45 C.F.R. § 164.514(e), drawn from its emergency department records for 2024.
+
+2. Cooperation. Recipient will tell Covered Entity which data fields it needs, and Covered Entity will deliver the limited data set by secure file transfer.
+
+3. Publication. Recipient will give Covered Entity a copy of any article based on the limited data set at least 30 days before submitting it.
+
+4. Governing Law. This Agreement is governed by the laws of the State of Indiana.
+
+HALCYON REGIONAL MEDICAL CENTER
+
+By: ______________________
+Name: Joan Tierney
+Title: Privacy Officer
+
+BRANNOCK INSTITUTE
+
+By: ______________________
+Name: Luis Ferrand
+Title: Executive Director

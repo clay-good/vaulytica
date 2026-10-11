@@ -9211,6 +9211,63 @@
     ]
   },
   {
+    "id": "hipaa-data-use-agreement",
+    "version": "1.0.0",
+    "name": "Data Use Agreement for a Limited Data Set (HIPAA)",
+    "description": "The agreement a HIPAA covered entity must have before it discloses a limited data set for research, public health or health care operations. The checks read for the seven terms the Privacy Rule requires it to contain: the permitted uses, who may use or receive the data, and the recipient's five commitments — no other use, safeguards, reporting, the same terms for agents, and no re-identification or contact. Distinct from `data-sharing-agreement`, which reads a general data-sharing arrangement, and from `baa`, which covers a business associate.",
+    "match_features": {
+      "title_keywords": [
+        "data use agreement for a limited data set",
+        "limited data set data use agreement",
+        "limited data set agreement",
+        "limited data set use agreement",
+        "hipaa data use agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "limited data set",
+        "164.514(e)",
+        "covered entity",
+        "identify the information",
+        "contact the individuals",
+        "direct identifiers"
+      ],
+      "negative_features": []
+    },
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
+    "balanced_defaults": [],
+    "sources": [],
+    "regulator_frame": "HIPAA-PRIVACY-RULE",
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "companion_playbooks": [
+      "baa",
+      "data-sharing-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Permitted uses, within research, public health or health care operations",
+      "Who may use or receive the limited data set",
+      "No use or disclosure beyond the agreement, except as required by law",
+      "Appropriate safeguards",
+      "Report of any use or disclosure the agreement does not provide for",
+      "Agents held to the same restrictions",
+      "No identifying the information or contacting the individuals"
+    ]
+  },
+  {
     "id": "hipaa-npp",
     "version": "1.0.0",
     "name": "HIPAA Notice of Privacy Practices",
