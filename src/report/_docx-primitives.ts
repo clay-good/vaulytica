@@ -58,15 +58,37 @@ export function para(opts: ParaOpts): Paragraph {
 }
 
 /**
- * A table's heading row: white on mint, bold.
+ * A table's heading row: white on mint, bold, and MARKED as a heading row.
  *
- * `tableHeader` marks the row as one Word REPEATS at the top of each page when
- * the table spans a page break. The bundle's compliance matrix needs that and
- * open-coded the whole row to get it.
+ * 🚨 `tableHeader` used to default to FALSE, with one caller passing `true`.
+ * The `docx` library writes the flag either way, so every table in every
+ * report carried `<w:tblHeader w:val="false"/>` — the header row explicitly
+ * declared NOT to be a header row, nine times in a single per-document
+ * report. Two consequences, both for the reader:
+ *
+ *   - **A screen reader does not announce the column headers.** Narrator and
+ *     VoiceOver read a data cell as "Delaware" rather than "Governing law,
+ *     Delaware", because nothing tells them which row holds the headings.
+ *   - **Word does not repeat the row across a page break.** A findings index
+ *     or an obligations ledger that runs onto a second page shows unlabelled
+ *     columns there.
+ *
+ * BUILD_PROGRESS step 37 recorded this surface as covered, citing the v3
+ * compliance matrix's `tableHeader: true` — and that is the one table in the
+ * tree that is never rendered (see `report/v3/inputs.ts`: deriving its cells
+ * needs a legal judgment, so the section is deliberately not built). The claim
+ * described a table nobody receives while all nine that ship said `false`.
+ *
+ * 🥇 Counting the element was not enough to see it: nine tables produced nine
+ * `tblHeader` elements, which reads like success. The VALUE is the finding.
+ *
+ * There is no parameter now, because a row built by this function is a heading
+ * row — that is what the function is for. The flag also makes Word repeat the
+ * row when the table spans pages, which every one of these tables wants.
  */
-export function headerRow(cells: string[], tableHeader = false): TableRow {
+export function headerRow(cells: string[]): TableRow {
   return new TableRow({
-    tableHeader,
+    tableHeader: true,
     children: cells.map(
       (text) =>
         new TableCell({

@@ -67,6 +67,45 @@ function stableXml(bytes: Uint8Array): string {
     .replace(/r:id="rId[A-Za-z0-9_-]+"/g, 'r:id="rIdN"');
 }
 
+/**
+ * Every table's heading row is MARKED as a heading row.
+ *
+ * 🚨 `headerRow`'s `tableHeader` flag defaulted to FALSE with one caller
+ * passing `true`, and the `docx` library writes the flag either way — so every
+ * table in every report carried `<w:tblHeader w:val="false"/>`: the header row
+ * explicitly declared not to be one, nine times in a single per-document
+ * report. A screen reader then reads a cell as "Delaware" instead of
+ * "Governing law, Delaware", and Word does not repeat the row when the table
+ * runs onto a second page.
+ *
+ * 🥇 **Counting the element could not see it.** Nine tables produced nine
+ * `tblHeader` elements, which reads like success; the VALUE was the defect. So
+ * this asserts on the value, and on the pairing — a table without a marked
+ * heading row fails just as loudly as one that marks it false.
+ *
+ * This is the automated half of BUILD_PROGRESS step 37, whose note cited the
+ * v3 compliance matrix's `tableHeader: true` as covering this surface — the
+ * one table in the tree that is never rendered. What remains for a human is
+ * confirming that Narrator and VoiceOver announce what the XML now declares.
+ */
+describe("DOCX tables are announced to a screen reader", () => {
+  it("marks every table's heading row, and marks none of them false", async () => {
+    const dir = await out();
+    await runAnalyze([NDA, "--format", "docx", "--out", dir]);
+    const written = (await readdir(dir)).filter((f) => f.endsWith(".docx"));
+    const xml = documentXml(await readFile(join(dir, written[0]!)));
+
+    const tables = (xml.match(/<w:tbl>/g) ?? []).length;
+    const marked = (xml.match(/<w:tblHeader\s*\/>|<w:tblHeader w:val="true"\s*\/>/g) ?? []).length;
+    const negated = (xml.match(/<w:tblHeader w:val="(?:false|0)"\s*\/>/g) ?? []).length;
+
+    // Anti-vacuity: a report with no tables would satisfy any count rule.
+    expect(tables).toBeGreaterThan(2);
+    expect(negated, "a heading row declared NOT to be a heading row").toBe(0);
+    expect(marked, "every table needs its heading row marked").toBe(tables);
+  });
+});
+
 describe("analyze --format docx", () => {
   it("writes the report and it carries the report's own sections", async () => {
     const dir = await out();

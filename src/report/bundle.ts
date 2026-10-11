@@ -819,7 +819,7 @@ function renderPortfolioMatrix(matrix: PortfolioMatrix): (Paragraph | Table)[] {
   );
   out.push(spacer());
 
-  const header = headerRow(["Document", ...matrix.checks.map((c) => c.label)], true);
+  const header = headerRow(["Document", ...matrix.checks.map((c) => c.label)]);
   const dataRows = matrix.rows.map(
     (row) =>
       new TableRow({

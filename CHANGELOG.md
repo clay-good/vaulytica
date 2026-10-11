@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.900.0] — 2026-10-11
+
+### Fixed
+- **Every table in every report declared its header row NOT to be a header
+  row.** `headerRow`'s `tableHeader` flag defaulted to `false` with a single
+  caller passing `true`, and the `docx` library writes the flag either way — so
+  a per-document report shipped nine tables each carrying
+  `<w:tblHeader w:val="false"/>`. Two consequences for a reader:
+  Narrator and VoiceOver announce a data cell as "Delaware" instead of
+  "Governing law, Delaware", because nothing identifies the heading row; and
+  Word does not repeat that row when a table runs onto a second page, so a
+  findings index or obligations ledger shows unlabelled columns there.
+  `headerRow` now takes no flag at all — a row it builds IS a heading row,
+  which is what the function is for — and the flag also gives Word the
+  page-break repetition every one of these tables wants.
+  🚨 **BUILD_PROGRESS step 37 recorded this surface as covered**, citing the v3
+  compliance matrix's `tableHeader: true`. That is the one table in the tree
+  that is never rendered: `report/v3/inputs.ts` declines to build it because
+  deriving a "Pass" from a column label would make the tool state a legal
+  conclusion. The note described a table nobody receives while all nine that
+  ship said `false`. The claim is corrected in place rather than deleted.
+  🥇 **Counting the element could not see this.** Nine tables produced nine
+  `tblHeader` elements, which reads like success — the VALUE was the defect,
+  the same shape as the probe that returned a plausible number earlier in this
+  session. `cli-docx-report.test.ts` now asserts on the value and on the
+  pairing (every table marked, none negated, and more than two tables present
+  so an empty report cannot satisfy it), verified by reverting the default.
+
+### Changed
+- Step 37's automated half is now mechanical. What remains for a human is
+  confirming that Narrator and VoiceOver announce what the XML declares —
+  genuinely a person with a screen reader, and now checking a true claim
+  instead of a false one.
+
 ## [9.899.0] — 2026-10-11
 
 ### Added
