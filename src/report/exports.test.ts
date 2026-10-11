@@ -343,6 +343,63 @@ describe("collectDeadlines", () => {
   });
 });
 
+/**
+ * A calendar entry must say what is due, not repeat the day it falls on.
+ *
+ * The SUMMARY was the prefix plus the date's own text, so 883 of the corpus's
+ * 1,722 events read "Date: April 20, 2026" ON April 20 — a title that restates
+ * its own DTSTART — and only 16 events in the whole corpus said what was due.
+ * The label comes from two tables the extractor already fills.
+ */
+describe("buildDeadlinesIcs — a calendar entry says what is due", () => {
+  it("titles a date by the anchor it pins, in the document's own casing", () => {
+    const tree = buildTree([
+      "Preamble",
+      'This Agreement is made as of February 9, 2026 (the "Effective Date").',
+    ]);
+    const ics = buildDeadlinesIcs(extractAll(tree));
+    expect(ics).toContain("SUMMARY:Effective Date");
+    // Not "Date: February 9, 2026", and not the normalized "Effective date".
+    expect(ics).not.toContain("SUMMARY:Date: February 9");
+    expect(ics).not.toContain("Effective date:");
+  });
+
+  it("gives one entry, not two, for the anchor and the date it resolves to", () => {
+    // The named-anchor reference and the absolute date are two extracted
+    // records for one concept; titled alike they were two entries on one day.
+    const tree = buildTree([
+      "Preamble",
+      'This Agreement is made as of February 9, 2026 (the "Effective Date").',
+      "Term",
+      "This Agreement begins on the Effective Date.",
+    ]);
+    const ics = buildDeadlinesIcs(extractAll(tree));
+    expect(ics.match(/SUMMARY:Effective Date$/gm)?.length).toBe(1);
+  });
+
+  it("still keeps two mentions of an UNLABELLED date in different sections", () => {
+    // The narrower key applies only where a label exists, so the existing
+    // "same date, different sections" behaviour is untouched.
+    const ex = emptyExtracted();
+    ex.dates = [
+      { ...date("absolute", "March 4, 2026", { iso: "2026-03-04" }), id: "d1" },
+      {
+        ...date("absolute", "March 4, 2026", { iso: "2026-03-04" }),
+        id: "d2",
+        position: { section_id: "s9", paragraph_id: "s9.p1", start: 900, end: 914 },
+      },
+    ];
+    const ics = buildDeadlinesIcs(ex);
+    expect(ics.match(/BEGIN:VEVENT/g)?.length).toBe(2);
+  });
+
+  it("falls back to the bare prefix for a date the document only mentions", () => {
+    const ex = emptyExtracted();
+    ex.dates = [date("absolute", "June 1, 2025", { iso: "2025-06-01" })];
+    expect(buildDeadlinesIcs(ex)).toContain("SUMMARY:Date: June 1\\, 2025");
+  });
+});
+
 describe("buildDeadlinesIcs", () => {
   function icsWithOneEvent(): string {
     const ex = emptyExtracted();

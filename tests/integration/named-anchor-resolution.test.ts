@@ -104,9 +104,16 @@ describe("a named anchor the document defines is not unresolved", () => {
   it("puts the Effective Date in the calendar and leaves termination alone", async () => {
     const ics = buildDeadlinesIcs(await extracted("msa-complete.txt"));
     // The document defines it; the calendar states it.
-    expect(ics).toContain("SUMMARY:Date: Effective Date");
+    //
+    // 9.893.0 — this asserted `SUMMARY:Date: Effective Date`, the shape that
+    // release removed: a calendar entry titled by the day it falls on. The
+    // entry is now titled by what the date IS, with no redundant prefix, and
+    // the anchor reference and the absolute date it resolves to collapse into
+    // this one entry instead of two. The DTSTART assertion below is what makes
+    // this a real check — the title alone could be anywhere in the file.
+    expect(ics).toContain("SUMMARY:Effective Date");
     expect(ics).toMatch(
-      /DTSTART;VALUE=DATE:20260316\r\nDTEND;VALUE=DATE:20260317\r\nSUMMARY:Date: Effective Date/,
+      /DTSTART;VALUE=DATE:20260316\r\nDTEND;VALUE=DATE:20260317\r\nSUMMARY:Effective Date/,
     );
     // 🚨 "the effective date of termination" is a different date and the
     // document does not fix it. It stays a verify-manually item.

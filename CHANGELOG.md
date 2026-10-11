@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.893.0] — 2026-10-11
+
+### Fixed
+- **The deadlines calendar titled its entries with the day they fall on.** The
+  SUMMARY was a prefix plus the date's own text, so **883 of the corpus's 1,722
+  events read "Date: April 20, 2026" ON April 20** — a title that restates its
+  own DTSTART and names nothing — and only **16 events in the whole corpus**
+  said what was actually due. A lawyer importing the file got a month of
+  entries naming their own dates.
+  An entry is now titled by what the document says the date IS, from two tables
+  the extractor already fills: the anchor it pins ("Effective Date",
+  "Commencement Date", "Expiration Date") and, failing that, the obligation it
+  falls inside. Informative entries go **16 → 284**. Measured before building:
+  the anchor names 235 of 1,026 absolute dates and a co-located obligation
+  another 118; `classified` categories name none, because every paragraph
+  carrying a date comes back "unclassified", so that join is not attempted.
+  🥇 The label stands ALONE — a calendar entry already sits on its date, so
+  "Effective Date: February 9, 2026" on February 9 repeats itself. The anchor
+  name is taken in the document's own casing rather than from the normalized
+  lookup key, because an entry reading "Effective date" is quietly wrong about
+  the agreement's own vocabulary.
+- **One concept produced two calendar entries.** The named-anchor reference
+  ("the Effective Date") and the absolute date it resolves to are two extracted
+  records, and once both are titled by the same label they are two entries
+  saying one thing on one day. A labelled event now keys its UID on the date
+  and label alone; **52 duplicate events** go. The narrower key applies only
+  where a label exists, so the existing rule that two mentions of the same date
+  in different sections stay separate is untouched for the dates a document
+  merely mentions (asserted).
+
+### Notes
+- The 823 "verify manually" entries on the 2020-01-01 sentinel are deliberate
+  (spec-v7 §17: not silently dropped, obviously artificial, deterministic) and
+  are left alone. Moving them to a `VTODO` was considered and rejected — Google
+  Calendar ignores VTODO on import, so the items would vanish for those users,
+  which is worse than sitting on a sentinel date.
+
 ## [9.892.0] — 2026-10-11
 
 ### Fixed

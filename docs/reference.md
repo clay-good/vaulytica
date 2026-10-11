@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,936 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `23 export formats` · `0 servers` · `0 AI` · `16,370+ passing tests` · `v9.892.0` · `MIT`
+`1,936 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `23 export formats` · `0 servers` · `0 AI` · `16,370+ passing tests` · `v9.893.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 

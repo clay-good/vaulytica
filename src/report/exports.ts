@@ -22,6 +22,7 @@
  */
 
 import { isActionable, type EngineRun, type Finding, type Severity } from "../engine/finding.js";
+import { truncate } from "../engine/text.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
@@ -425,6 +426,17 @@ export type DeadlineEvent = {
   section?: string;
   /** The raw text the date was extracted from. */
   raw_text: string;
+  /**
+   * What the date IS, when the document says: the anchor it pins ("Effective
+   * Date") or the obligation it falls in ("pay the Subscription Fee").
+   *
+   * Absent for a date the document merely mentions. The calendar's SUMMARY
+   * used to be the prefix plus the date's own text, so 883 of the corpus's
+   * 1,722 events read "Date: April 20, 2026" ON April 20 — a title that
+   * restates its own DTSTART and names nothing. Sixteen events in the whole
+   * corpus said what was due.
+   */
+  label?: string;
   /** True when the date was computed (anchor + offset), not literal. */
   computed: boolean;
   /** True when this is a notice deadline (a "before"-an-anchor date). */
@@ -474,11 +486,66 @@ function buildAnchorMap(extracted: ExtractedData): Map<string, string> {
 }
 
 /**
+ * The ISO date each anchor pins, read backwards: what is THIS date called?
+ *
+ * `buildAnchorMap` answers "what date is the Effective Date"; a calendar needs
+ * the inverse. Built from the same definitions and the same
+ * `definitionAnchorIso` test, so the two cannot disagree — but keyed on the
+ * term as the DOCUMENT writes it rather than on the normalized key, because a
+ * calendar entry reading "Effective date" when the agreement says "Effective
+ * Date" is quietly wrong about the document's own vocabulary. First definition
+ * wins, so the result is deterministic.
+ */
+function anchorNameByIso(extracted: ExtractedData): Map<string, string> {
+  const byIso = new Map<string, string>();
+  for (const entry of extracted.definitions.entries) {
+    const iso = definitionAnchorIso(entry);
+    if (iso && !byIso.has(iso)) byIso.set(iso, entry.term.trim());
+  }
+  return byIso;
+}
+
+/** The obligation stated in each paragraph, for a date that falls inside one. */
+function obligationByParagraph(extracted: ExtractedData): Map<string, string> {
+  const byParagraph = new Map<string, string>();
+  for (const o of extracted.obligations) {
+    const id = o.position.paragraph_id;
+    if (id && !byParagraph.has(id)) byParagraph.set(id, o.action);
+  }
+  return byParagraph;
+}
+
+/** A label fit for a calendar entry: one line, sentence-capitalized, short. */
+function calendarLabel(raw: string): string | undefined {
+  const text = raw
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/[.;,:]+$/, "");
+  if (text.length < 3) return undefined;
+  const capped = truncate(text, 60).replace(/\s*…$/, "…");
+  return capped.charAt(0).toUpperCase() + capped.slice(1);
+}
+
+/**
  * Resolve the engine's extracted dates into calendar events and a list of
  * dates that could not be resolved. Pure and deterministic.
  */
 export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
   const anchors = buildAnchorMap(extracted);
+  // What each date is CALLED, from two tables the extractor already fills.
+  // Measured over the corpus: the anchor names 235 of 1,026 absolute dates and
+  // a co-located obligation another 118, so a third of them stop being titled
+  // with their own date. `classified` categories name none — every paragraph
+  // carrying a date comes back "unclassified" — so that join is not attempted.
+  const anchorNames = anchorNameByIso(extracted);
+  const obligations = obligationByParagraph(extracted);
+  const labelFor = (date: DateReference): string | undefined => {
+    const byAnchor = date.iso ? anchorNames.get(date.iso) : undefined;
+    if (byAnchor) return calendarLabel(byAnchor);
+    const id = date.position.paragraph_id;
+    const byObligation = id ? obligations.get(id) : undefined;
+    return byObligation ? calendarLabel(byObligation) : undefined;
+  };
   const events: DeadlineEvent[] = [];
   const unresolved: UnresolvedDate[] = [];
 
@@ -489,6 +556,7 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
         events.push({
           iso: date.iso,
           summary: date.raw_text,
+          ...(labelFor(date) ? { label: labelFor(date)! } : {}),
           section,
           raw_text: date.raw_text,
           computed: false,
@@ -561,6 +629,9 @@ export function collectDeadlines(extracted: ExtractedData): DeadlinesResult {
         events.push({
           iso,
           summary: date.raw_text,
+          // The raw text IS the anchor's name, so it needs no prefix: this
+          // event used to render "Date: Effective Date".
+          label: date.raw_text.trim(),
           section,
           raw_text: date.raw_text,
           computed: false,
@@ -694,15 +765,36 @@ export function buildDeadlinesIcs(extracted: ExtractedData): string {
   events.forEach((ev) => {
     const ymd = ev.iso.replace(/-/g, "");
     const ymdEnd = addDays(ev.iso, 1).replace(/-/g, "");
+    // A title that restates its own DTSTART tells a reader nothing. Where the
+    // document says what the date IS, that leads; the bare prefix is the
+    // fallback for a date the document merely mentions.
     const prefix = ev.notice ? "Notice deadline: " : ev.computed ? "Deadline: " : "Date: ";
+    // 🥇 The label ALONE, because a calendar entry already sits on its date.
+    // "Effective Date: February 9, 2026" on February 9 repeats itself, and the
+    // repetition also produced two events for one date — the named-anchor
+    // reference and the absolute date each became an entry, titled differently.
+    // Reduced to the label, the two collapse on the deduplicating UID, which is
+    // the same mechanism that removed the duplicate events in 9.656.0.
+    const summary = ev.label ? ev.label : prefix + ev.summary;
     const desc =
       `${ev.computed ? "Computed from " : "Extracted from "}` +
       `${ev.section ? `section ${ev.section}` : "the document"}: ${ev.raw_text}`;
     // The key is the event AS RENDERED — date, title, description and whether
     // it carries an alarm. Two mentions of the same date in different sections
     // stay separate, because the section is inside the description.
+    //
+    // 🚨 A LABELLED event keys on its date and label alone. One concept yields
+    // two date records — the named-anchor reference ("the Effective Date") and
+    // the absolute date it resolves to ("February 9, 2026") — and once both are
+    // titled by the same label they are two calendar entries saying one thing
+    // on one day. Their descriptions differ, so the full key keeps them; the
+    // narrower key is applied ONLY where a label exists, so the
+    // "same date, different sections" rule above is untouched for the dates
+    // the document merely mentions.
     const { uid, duplicate } = nextUid(
-      `${ev.iso}|${prefix}${ev.summary}|${desc}|${ev.notice ? "a" : ""}`,
+      ev.label
+        ? `${ev.iso}|${ev.label}|${ev.notice ? "a" : ""}`
+        : `${ev.iso}|${prefix}${ev.summary}|${desc}|${ev.notice ? "a" : ""}`,
     );
     if (duplicate) return;
     lines.push("BEGIN:VEVENT");
@@ -710,12 +802,12 @@ export function buildDeadlinesIcs(extracted: ExtractedData): string {
     lines.push(`DTSTAMP:${FIXED_DTSTAMP}`);
     lines.push(`DTSTART;VALUE=DATE:${ymd}`);
     lines.push(`DTEND;VALUE=DATE:${ymdEnd}`);
-    lines.push(icsFold(`SUMMARY:${icsEscape(prefix + ev.summary)}`));
+    lines.push(icsFold(`SUMMARY:${icsEscape(summary)}`));
     lines.push(icsFold(`DESCRIPTION:${icsEscape(desc)}`));
     if (ev.notice) {
       lines.push("BEGIN:VALARM");
       lines.push("ACTION:DISPLAY");
-      lines.push(icsFold(`DESCRIPTION:${icsEscape(prefix + ev.summary)}`));
+      lines.push(icsFold(`DESCRIPTION:${icsEscape(summary)}`));
       lines.push("TRIGGER:PT0S");
       lines.push("END:VALARM");
     }
