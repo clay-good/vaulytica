@@ -2,6 +2,78 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.889.0] — 2026-10-11
+
+### Fixed
+- **All four SCC module detectors were dead, and the cross-border transfer
+  page said so about the document instead.** Zero firings across the whole
+  specimen corpus — including the two specimens named `scc-module-2.txt` and
+  `scc-module-3.txt` — so every transfer was reported as "EU SCC (module
+  unspecified)" and the §56 page told its reader the document had not said
+  which module it adopted while the document said so in its own title. The
+  cause was word order, the same shape as the insurance certificate's labels
+  in 9.888.0: the patterns accepted only `SCCs Module Two` or `Module Two …
+  Standard Contractual Clauses`, and real drafting names the instrument FIRST
+  and punctuates between it and the designator ("the Standard Contractual
+  Clauses, **Module Two**, are incorporated"). The designator is now read on
+  either side, and the module's own official name in Decision (EU) 2021/914
+  ("MODULE TWO: TRANSFER CONTROLLER TO PROCESSOR") identifies it with no
+  instrument beside it. A bare "Module 2" still identifies nothing — a
+  software agreement's Module 2 is a software module.
+- **"Transfer Impact Assessment referenced: no" was printed on every report
+  ever rendered.** The line searched `raw_text` — the phrase that identified
+  the mechanism, "SCCs" or "Standard Contractual Clauses" — for the words
+  "transfer impact assessment", which such a phrase can never contain, so the
+  answer was always no, including for documents that reference a TIA in the
+  very clause that adopts the SCCs. Under Chapter V a TIA is the central
+  assurance, which made this the most consequential line on the page and the
+  one that was always wrong. Same for supplementary measures. Both now read
+  the clause.
+- **"Flow-down to subprocessors required: Not required by the document"** was
+  reported against clauses that plainly require it. The detector read the
+  regulation's own wording ("the same data protection obligations") and not the
+  drafter's: `dpa-complete.txt` says "data protection obligations **no less
+  protective than** those in this DPA", and the BAA says "**at least as
+  protective as** those that apply to Business Associate". A comparative of
+  protectiveness is now read alongside the equivalence wordings, which gives
+  five more corpus documents their flow-down. A false "not required" is worse
+  than silence: it is a statement about the document's content, on the page
+  devoted to subprocessing, and it was untrue.
+- **Neither page's excerpt was an excerpt.** The §56 table's column headed
+  "Excerpt (truncated)" and the §57 page's "Source excerpt" line both printed
+  the phrase that matched, so a cell read "SCCs" beside a mechanism already
+  named "EU SCC", and the stated evidence for seven subprocessing findings was
+  the single word "Sub-processors". Both records now carry the clause they were
+  found in, so the §56 page shows the governing text with its section number
+  and the §57 page quotes the clause that supports every row above it.
+- A document that has specified its module is no longer also reported as vague
+  about it. The "module unspecified" row was suppressed only within the
+  paragraph that named a module, so a DPA that pins Module Two in its
+  definitions and then says "the SCCs" a dozen times listed both. They are one
+  instrument; the suppression is document-wide. A DPA that genuinely adopts two
+  modules still lists both, because only the unspecified row is ever removed.
+
+### Added
+- `tests/integration/transfer-mechanism-reach.test.ts` — the guard that was
+  missing. It commits the corpus reach of every transfer-mechanism kind by
+  equality and requires a silent kind to be silent **because the corpus
+  contains none of its vocabulary**, with that vocabulary written
+  independently of the patterns it guards (checking a kind's own pattern
+  against the corpus is circular — a dead pattern matches nothing, which is
+  exactly what it must prove). Had it existed, `scc-module-2`'s entry would
+  have found "Module Two" in two specimens and demanded to know why the kind
+  never fired. Verified by reverting the fix: it fails naming the two kinds
+  that go dead. 🥇 **A detector can be dead inside a healthy extractor** —
+  `v3-extractor-base-rate.test.ts` measures how much of the corpus each
+  extractor claims, and this extractor's reach was fine the whole time.
+
+### Changed
+- `TransferMechanismReference` and `SubprocessorInventory` each carry an
+  `excerpt`. The two report fixtures that stood in for them had put whole
+  sentences in `raw_text`, which is why the TIA assertion passed in the test
+  suite for its entire life while the production line was dead — a fixture
+  that does not resemble what the producer emits tests the fixture.
+
 ## [9.888.0] — 2026-10-11
 
 ### Fixed

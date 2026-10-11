@@ -49,7 +49,7 @@ export function renderTransfersSummary(refs: TransferMechanismReference[]): (Par
   const rendered = refs.map((r) => [
     KIND_LABEL[r.kind] ?? r.kind,
     r.location,
-    truncate(r.raw_text, 160),
+    truncate(r.excerpt, 160),
   ]);
   const distinct = new Map<string, string[]>();
   for (const cells of rendered) {
@@ -60,9 +60,16 @@ export function renderTransfersSummary(refs: TransferMechanismReference[]): (Par
     headerRow(["Mechanism", "Location in document", "Excerpt (truncated)"]),
     ...[...distinct.values()].map((cells) => bodyRow(cells)),
   ]);
-  const tiaMentioned = refs.some((r) => /\bTIA\b|transfer\s+impact\s+assessment/i.test(r.raw_text));
+  // 🚨 These read the EXCERPT, not `raw_text`. `raw_text` is the phrase that
+  // identified the mechanism — "SCCs", "Standard Contractual Clauses" — and no
+  // such phrase can contain the words "transfer impact assessment", so both
+  // lines reported **no** on every document ever rendered, including documents
+  // that reference a TIA in the very clause that adopts the SCCs. Under
+  // Chapter V a TIA is the central assurance, so this printed a confident
+  // falsehood about the thing the page exists to report.
+  const tiaMentioned = refs.some((r) => /\bTIA\b|transfer\s+impact\s+assessment/i.test(r.excerpt));
   const supplementaryMentioned = refs.some((r) =>
-    /supplementary\s+measures|additional\s+safeguards/i.test(r.raw_text),
+    /supplementary\s+measures|additional\s+safeguards/i.test(r.excerpt),
   );
   return [
     h1("Cross-Border Transfer Summary"),

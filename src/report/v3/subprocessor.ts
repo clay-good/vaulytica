@@ -63,7 +63,9 @@ export function renderSubprocessorPage(
       text: "The following terms govern subprocessing under this document. Subprocessors named in external lists are not enumerated here; the v3 engine does not fetch URLs at run time.",
     }),
     buildTable(rows),
-    para({ text: `Source excerpt: "${truncate(inv.raw_text, 480)}"`, italics: true }),
+    // The CLAUSE, not the term that found it: this line is the page's evidence
+    // for every row above it, and it used to read `"Sub-processors"`.
+    para({ text: `Source excerpt: "${truncate(inv.excerpt, 480)}"`, italics: true }),
     pageBreak(),
   ];
 }

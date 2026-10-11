@@ -90,7 +90,20 @@ export type TransferMechanismLocation =
 
 export type TransferMechanismReference = {
   kind: TransferMechanismKind;
+  /** The phrase that identified the mechanism. */
   raw_text: string;
+  /**
+   * The clause the mechanism was found in, truncated.
+   *
+   * The §56 page has always had a column headed "Excerpt (truncated)" and
+   * filled it with `raw_text` — the matched phrase — so the cell read "SCCs"
+   * beside a mechanism already named "EU SCC", telling the reader nothing. The
+   * same field was all the page had to decide whether a Transfer Impact
+   * Assessment was referenced, and a mechanism phrase can never contain the
+   * words "transfer impact assessment", so that line said **no** on every
+   * document ever rendered.
+   */
+  excerpt: string;
   location: TransferMechanismLocation;
   position: DocPosition;
 };
@@ -220,7 +233,17 @@ export type SubprocessorInventory = {
   objection_consequence: SubprocessorObjectionConsequence;
   flow_down_required: boolean;
   position: DocPosition;
+  /** The phrase that identified the clause ("Sub-processors"). */
   raw_text: string;
+  /**
+   * The sub-processing clause itself, truncated.
+   *
+   * The §57 page prints a line headed "Source excerpt" and filled it with
+   * `raw_text`, which is only ever the matched term — so the page's evidence
+   * for seven findings about consent, notice, objection and flow-down was the
+   * single word "Sub-processors". The same defect as the §56 excerpt column.
+   */
+  excerpt: string;
 };
 
 /* ---------------- §25 insurance schedule ---------------- */

@@ -109,16 +109,29 @@ const sampleMatrix: ComplianceMatrix = {
   ],
 };
 
+/**
+ * 🚨 `raw_text` holds the PHRASE that identified the mechanism, and nothing
+ * more — that is what `extractTransferMechanisms` puts there (`m[0]`). This
+ * fixture used to put a whole sentence in it, which is why the TIA assertion
+ * below passed for this file's entire life while the production page said
+ * "Transfer Impact Assessment referenced: no" on every document: the renderer
+ * searched `raw_text` for "TIA", a field that can only ever contain a
+ * mechanism's name. A fixture that does not resemble what the producer emits
+ * tests the fixture. The clause now lives in `excerpt`, where it comes from.
+ */
 const sampleTransfers: TransferMechanismReference[] = [
   {
     kind: "scc-module-2",
-    raw_text: "Module 2 (C-to-P) of the EU SCCs applies. A TIA has been completed.",
+    raw_text: "EU SCCs, Module 2",
+    excerpt:
+      "Module 2 (C-to-P) of the EU SCCs applies to transfers under this Annex. A TIA has been completed.",
     location: "annex",
     position: { section_id: "s7", start: 100, end: 180 },
   },
   {
     kind: "uk-addendum",
-    raw_text: "UK Addendum incorporates the SCCs with supplementary measures.",
+    raw_text: "UK Addendum",
+    excerpt: "The UK Addendum incorporates the SCCs with supplementary measures.",
     location: "by-reference",
     position: { section_id: "s7", start: 200, end: 260 },
   },
@@ -133,7 +146,10 @@ const sampleSubprocessor: SubprocessorInventory = {
   objection_consequence: "terminate-affected-services",
   flow_down_required: true,
   position: { section_id: "s5", start: 50, end: 150 },
-  raw_text:
+  // Same correction as `sampleTransfers`: `raw_text` is the matched TERM, the
+  // clause lives in `excerpt`.
+  raw_text: "subprocessors",
+  excerpt:
     "Customer hereby grants general written authorization for subprocessors. The current list is available at https://example.com/subprocessors. Customer has the right to object on 30 days' notice.",
 };
 
@@ -406,13 +422,62 @@ describe("v3 renderers use the shared, fixed helpers", () => {
  * tell a reader nothing the first one did not. A section column would not have
  * fixed it: all three sit in the same section.
  */
+/**
+ * The two assurance lines, which could never say "yes".
+ *
+ * They searched `raw_text` — the phrase that identified the mechanism — for
+ * "transfer impact assessment", so every §56 page ever rendered reported a TIA
+ * as absent, including pages for documents that reference one in the very
+ * clause that adopts the SCCs. Under Chapter V a TIA is the central assurance,
+ * which made this the most consequential line on the page and the one that was
+ * always wrong.
+ */
+describe("renderTransfersSummary — the TIA and supplementary-measures lines", () => {
+  const ref = (excerpt: string) =>
+    ({
+      kind: "scc-unspecified",
+      raw_text: "Standard Contractual Clauses",
+      excerpt,
+      location: "inline",
+      position: { section_id: "s1", paragraph_id: "s1.p1", start: 0, end: excerpt.length },
+    }) as never;
+
+  const render = (excerpt: string) => JSON.stringify(renderTransfersSummary([ref(excerpt)]));
+
+  it("says yes when the clause references a Transfer Impact Assessment", () => {
+    const out = render(
+      "The Standard Contractual Clauses are incorporated and the parties have completed a Transfer Impact Assessment.",
+    );
+    expect(out).toContain("Transfer Impact Assessment referenced: yes");
+  });
+
+  it("says yes for the TIA abbreviation and for supplementary measures", () => {
+    const out = render(
+      "The Standard Contractual Clauses apply. A TIA was completed and supplementary measures were adopted.",
+    );
+    expect(out).toContain("Transfer Impact Assessment referenced: yes");
+    expect(out).toContain("Supplementary measures referenced: yes");
+  });
+
+  it("still says no when the clause references neither", () => {
+    const out = render(
+      "The Standard Contractual Clauses are incorporated into this Agreement by reference.",
+    );
+    expect(out).toContain("Transfer Impact Assessment referenced: no");
+    expect(out).toContain("Supplementary measures referenced: no");
+  });
+});
+
 describe("renderTransfersSummary — repeated references", () => {
-  const ref = (kind: string, location: string, raw_text: string) =>
+  // The third argument is the EXCERPT, because that is the cell the table
+  // renders and therefore the only one that can make two rows differ.
+  const ref = (kind: string, location: string, excerpt: string) =>
     ({
       kind,
       location,
-      raw_text,
-      position: { section_id: "s1", paragraph_id: "s1.p1", start: 0, end: raw_text.length },
+      raw_text: kind,
+      excerpt,
+      position: { section_id: "s1", paragraph_id: "s1.p1", start: 0, end: excerpt.length },
     }) as never;
 
   /** Body rows in the section's one table (total rows minus the header). */

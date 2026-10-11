@@ -241,6 +241,73 @@ describe("v3 data-category extractor", () => {
 });
 
 describe("v3 transfer-mechanism extractor", () => {
+  /**
+   * The SCC module, in the three orders real DPAs write it.
+   *
+   * All four module detectors were DEAD (zero firings over the corpus,
+   * including the two specimens named for their module) because they accepted
+   * only `SCCs Module Two` or `Module Two … Standard Contractual Clauses`.
+   */
+  it.each([
+    [
+      "instrument first, punctuated",
+      'The "Standard Contractual Clauses" means the clauses annexed to Commission Implementing Decision (EU) 2021/914, Module Two (controller to processor).',
+    ],
+    [
+      "instrument first, em dash",
+      "STANDARD CONTRACTUAL CLAUSES — MODULE THREE (PROCESSOR TO PROCESSOR)",
+    ],
+    [
+      "designator first",
+      "Module Two of the Standard Contractual Clauses is incorporated into this DPA.",
+    ],
+    [
+      "the module's own official name, no instrument beside it",
+      "MODULE TWO: TRANSFER CONTROLLER TO PROCESSOR",
+    ],
+  ])("identifies the module when written %s", (_label, text) => {
+    const refs = extractTransferMechanisms(buildTree(["Transfers", text]));
+    expect(refs.some((r) => r.kind.startsWith("scc-module-"))).toBe(true);
+    // And never leaves the vaguer row beside the specific one.
+    expect(refs.some((r) => r.kind === "scc-unspecified")).toBe(false);
+  });
+
+  it("does not read a software module as an SCC module", () => {
+    const refs = extractTransferMechanisms(
+      buildTree([
+        "Licence",
+        "Customer licenses Module 2 (Reporting) and Module 4 (Billing) of the Software.",
+      ]),
+    );
+    expect(refs).toEqual([]);
+  });
+
+  it("stops calling the module unspecified once the document has specified it", () => {
+    // The module is named once, in the definitions, and the clauses below say
+    // "the SCCs" — one instrument, so one answer for the whole document.
+    const refs = extractTransferMechanisms(
+      buildTree([
+        "Transfers",
+        'The "SCCs" means the Standard Contractual Clauses, Module Two, annexed to Decision (EU) 2021/914.',
+        "The SCCs are incorporated into this DPA.",
+        "Annex I to this DPA serves as Annex I to the SCCs.",
+      ]),
+    );
+    expect(refs.every((r) => r.kind !== "scc-unspecified")).toBe(true);
+    expect(refs.some((r) => r.kind === "scc-module-2")).toBe(true);
+  });
+
+  it("carries the clause as its excerpt, not the phrase that matched", () => {
+    const clause =
+      "6.2 Where Processor Processes Personal Data outside the EEA, the Standard Contractual Clauses are incorporated and a Transfer Impact Assessment has been completed.";
+    const [ref] = extractTransferMechanisms(buildTree(["Transfers", clause]));
+    expect(ref?.raw_text).toBe("Standard Contractual Clauses");
+    expect(ref?.excerpt).toBe(clause);
+    // The §56 page reads the excerpt to answer its TIA line, which `raw_text`
+    // could never have answered.
+    expect(/transfer\s+impact\s+assessment/i.test(ref?.excerpt ?? "")).toBe(true);
+  });
+
   it("classifies SCC Module 2 and locates the annex", () => {
     const tree = buildTree([
       "Cross-border",
@@ -582,6 +649,46 @@ describe("v3 audit-rights extractor", () => {
 });
 
 describe("v3 subprocessor extractor", () => {
+  /**
+   * The Art. 28(4) flow-down, in the wordings contracts actually use.
+   *
+   * The detector read the regulation's own phrasing ("the same data protection
+   * obligations") and not the drafter's, so `dpa-complete.txt` — written to be
+   * correct — had its §57 page report "Flow-down to subprocessors required:
+   * Not required by the document" against a clause that plainly requires it.
+   */
+  it.each([
+    "Processor shall impose on each Sub-processor, by written contract, data protection obligations no less protective than those in this DPA.",
+    "Business Associate shall require each Sub-processor to agree in writing to restrictions at least as protective as those that apply to Business Associate.",
+    "Processor shall impose on each Sub-processor the same data protection obligations as are set out in this DPA.",
+    "Vendor shall impose substantially similar obligations on any subcontractor engaged to process Customer Data.",
+    "The flow-down of this Addendum to each sub-processor is mandatory.",
+  ])("reads the flow-down from %s", (text) => {
+    const inv = extractSubprocessorInventory(buildTree(["Sub-processors", text]));
+    expect(inv?.flow_down_required).toBe(true);
+  });
+
+  it("does not invent a flow-down the clause does not state", () => {
+    const inv = extractSubprocessorInventory(
+      buildTree([
+        "Sub-processors",
+        "Processor may engage Sub-processors and shall maintain a list of them in Annex I.",
+      ]),
+    );
+    expect(inv).not.toBeNull();
+    expect(inv?.flow_down_required).toBe(false);
+  });
+
+  it("carries the clause as its excerpt, not the term that matched", () => {
+    const clause =
+      "4.5 Sub-processors. Controller grants Processor general written authorisation to engage Sub-processors, and Processor shall give thirty (30) days' prior written notice of any addition.";
+    const inv = extractSubprocessorInventory(buildTree(["Sub-processors", clause]));
+    // The §57 page prints the excerpt as its evidence for every row above it;
+    // it used to print `raw_text`, which is only ever the matched term.
+    expect(inv?.raw_text).toMatch(/^Sub-processors?$/i);
+    expect(inv?.excerpt).toBe(clause);
+  });
+
   it("captures consent form, list location, notice, objection, flow-down", () => {
     const tree = buildTree([
       "Subprocessors",
