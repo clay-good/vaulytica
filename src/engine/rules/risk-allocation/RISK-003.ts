@@ -1,6 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { allMatches, emit, isNonOperative, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { allMatches, emit, hitExcerpt, isNonOperative, matchedSentence } from "../_helpers.js";
 
 /** "except for", "excluding", "other than" … immediately before "indemni…". */
 const EXCEPTED_INDEMNITY =
@@ -40,7 +39,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Indemnity cap stated",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 240),
+      excerpt: hitExcerpt(hit, 240),
       explanation:
         "A cap on indemnity exposure is stated. Verify it is reasonable for the deal size.",
       position: hit.position,

@@ -1,6 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { emit, firstParagraphMatch, hitExcerpt, isPresenceDisclaimed } from "../_helpers.js";
 
 /** FIN-006 — Liquidated damages reasonableness (info). */
 export const rule: Rule = {
@@ -21,7 +20,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Liquidated damages clause present",
       description: "A liquidated-damages clause is included.",
-      excerpt: truncate(hit.text, 200),
+      excerpt: hitExcerpt(hit, 200),
       explanation:
         "Liquidated damages must be a reasonable estimate of anticipated harm, not a penalty. If the amount is grossly disproportionate to the likely damages, courts will refuse to enforce it under Restatement (Second) of Contracts § 356.",
       position: hit.position,

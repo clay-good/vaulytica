@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.890.0] — 2026-10-11
+
+### Fixed
+- **A finding's quoted excerpt did not always contain the language the finding
+  was about.** Every report states, in one sentence, that findings carrying an
+  excerpt "quote the exact clause text they fired on". That claim has two
+  halves and only one was true. The excerpt being verbatim document text was
+  already sound — checked over the corpus, 1,116 of 1,116. But rules quoted
+  `truncate(hit.text, N)`, the paragraph's FIRST N characters, while
+  `hit.position` located the match, so whenever the match sat beyond character
+  N the report quoted a clause that did not contain the thing it was flagging:
+  a rent-escalation clause quoted under a finding about arbitration, a
+  force-majeure clause under a finding about reasonable efforts. **94 of 1,116
+  findings, across 17 rules.**
+  SARIF is where it did real damage. `region.charOffset` comes from the
+  position and `snippet.text` from the excerpt, and SARIF's own specification
+  says a snippet is the content of its region — so a code-scanning annotation
+  highlighted one clause and displayed another.
+  One root cause, two helpers. `hitExcerpt` windows the quote around the match
+  and returns `truncate(hit.text, limit)` **byte for byte** when the match
+  already falls inside the limit, which is why this moves 94 findings and not
+  1,116. `matchedSentence` had the same bug one layer in — a sentence longer
+  than its limit was cut from offset zero — and now follows the match too. A
+  window that starts mid-paragraph says so with a leading ellipsis and begins
+  at a word boundary. **94 → 2**, both remaining benign and pinned by name: one
+  quote that correctly BEGINS at its match and is cut by the limit, and one
+  that differs from its span only in casing (a defined term quoted canonically
+  against a lowercase use).
+
+### Added
+- `tests/integration/excerpt-span-agreement.test.ts` holds the invariant over
+  every corpus finding, with the two exceptions declared so a third cannot join
+  quietly. Verified by reverting one rule: it fails naming the specimens.
+  🥇 Its header records a methodological trap worth more than the test. **Three
+  earlier versions of this check were wrong rather than the engine.**
+  `flattenText` inserts section headings and a newline per paragraph, while
+  `normalize` advances its cursor over a heading plus one newline and over run
+  text only — so slicing the flattened string drifts further the deeper into a
+  document you read, and invents whole-clause "misalignments" that do not
+  exist. The guard rebuilds the offset space from the RUNS' OWN recorded
+  `start`/`end` instead. Ask the data for its own coordinates.
+
 ## [9.889.0] — 2026-10-11
 
 ### Fixed

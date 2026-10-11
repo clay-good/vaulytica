@@ -1,6 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, enclosingSentence, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import {
+  emit,
+  enclosingSentence,
+  firstParagraphMatch,
+  hitExcerpt,
+  matchedSentence,
+} from "../_helpers.js";
 
 // The excluded damage TYPES. "indirect" and "exemplary" were absent — yet the
 // canonical waiver enumerates "indirect, incidental, special, consequential,
@@ -56,7 +61,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Consequential damages waiver present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 240),
+      excerpt: hitExcerpt(hit, 240),
       explanation:
         "A waiver of consequential, special, incidental, and punitive damages is standard in commercial contracts. The waiver should be mutual unless deliberately asymmetric.",
       position: hit.position,

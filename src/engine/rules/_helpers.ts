@@ -1,4 +1,5 @@
 import type { DocPosition } from "../../extract/types.js";
+import { truncate } from "../text.js";
 import { PAGE_FURNITURE } from "../../ingest/page-furniture.js";
 import type { RuleContext, Severity } from "../finding.js";
 import { findSource, findStatuteCitation, makeFinding } from "../finding.js";
@@ -106,6 +107,45 @@ export function isNonOperative(text: string): boolean {
 }
 
 /** Find the first paragraph where `re` matches; returns the match + position. */
+/**
+ * The paragraph a hit was found in, quoted so the quote CONTAINS the match.
+ *
+ * 🚨 Rules quote `truncate(hit.text, N)` — the paragraph's FIRST N characters —
+ * while `hit.position` locates the match. When the match sits beyond character
+ * N the two describe different language, and the report quotes a clause that
+ * does not contain the thing it is flagging. Measured over the specimen
+ * corpus: **94 of 1,116 findings that carry a quoted excerpt**, across 17
+ * rules. SARIF makes it worst, because it sets `region.charOffset` from the
+ * position and `snippet.text` from the excerpt, so a code-scanning annotation
+ * highlights one clause and displays another — and SARIF's own spec says a
+ * snippet is the content of its region.
+ *
+ * So the window follows the match instead of the paragraph's opening. A hit
+ * whose match already falls inside the limit returns
+ * `truncate(hit.text, limit)` **byte for byte**, which is why this moves 94
+ * findings and not 1,116: the common case is unchanged by construction.
+ *
+ * A window that starts mid-paragraph says so with a leading ellipsis, and
+ * steps back to a word boundary so the quote does not begin mid-word.
+ */
+export function hitExcerpt(hit: ParagraphHit, limit: number): string {
+  const matchEnd = hit.match.index + hit.match[0].length;
+  // The common case: the match is already inside the quoted prefix.
+  if (matchEnd <= limit) return truncate(hit.text, limit);
+
+  // Keep some of what comes before the match — a limit is rarely read without
+  // its subject — then let `truncate` mark the tail if there is more after.
+  const LEAD = 60;
+  let start = Math.max(0, hit.match.index - LEAD);
+  if (start > 0) {
+    const space = hit.text.indexOf(" ", start);
+    // Snap forward to the next word boundary, but never past the match itself.
+    if (space >= 0 && space < hit.match.index) start = space + 1;
+  }
+  const head = start > 0 ? "…" : "";
+  return head + truncate(hit.text.slice(start), limit - head.length);
+}
+
 export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit | null {
   let hit: ParagraphHit | null = null;
   forEachParagraph(ctx.tree, (p) => {
@@ -392,8 +432,16 @@ export function matchedSentence(text: string, match: { 0: string; index?: number
       ? sentence
       : match[0].trim();
   if (base.length <= 280) return base;
-  const cut = excerptWindow(base, 0, 0, 280);
-  return `${cut.replace(/[\s,;:]+$/, "")}…`;
+  // 🚨 The window used to start at offset ZERO — the sentence's first 280
+  // characters — so a long sentence whose match falls later was quoted without
+  // the language the finding is about. Same defect as the paragraph-prefix
+  // excerpt that `hitExcerpt` exists to fix, one layer in. Follow the match.
+  const inBase = base.indexOf(match[0].trim());
+  const anchor = inBase >= 0 ? inBase : 0;
+  const LEAD = 60;
+  const cut = excerptWindow(base, anchor, Math.min(anchor, LEAD), 280 - Math.min(anchor, LEAD));
+  const head = base.startsWith(cut) ? "" : "…";
+  return `${head}${cut.replace(/[\s,;:]+$/, "")}…`;
 }
 
 /** Returns true if any classified paragraph belongs to `category`. */

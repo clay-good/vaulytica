@@ -1,9 +1,8 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { allMatches, emit, expandSurvivalSectionRefs } from "../_helpers.js";
+import { allMatches, emit, expandSurvivalSectionRefs, hitExcerpt } from "../_helpers.js";
 import type { ParagraphHit } from "../_helpers.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { isLegendLine } from "../../../extract/legends.js";
-import { truncate } from "../../text.js";
 
 const EXPECTED = [
   ["confidentiality", /confidential/i],
@@ -96,7 +95,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Survival list may be missing categories: ${missing.join(", ")}`,
       description: `Survival clause does not appear to include: ${missing.join(", ")}.`,
-      excerpt: truncate(survival.text, 240),
+      excerpt: hitExcerpt(survival, 240),
       explanation:
         "Typical surviving obligations include confidentiality, indemnity, accrued payment obligations, and governing law. Missing any of these is common and worth confirming.",
       recommendation:

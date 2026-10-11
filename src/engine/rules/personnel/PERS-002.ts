@@ -1,6 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstUnnegatedParagraphMatch, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { emit, firstUnnegatedParagraphMatch, hitExcerpt, matchedSentence } from "../_helpers.js";
 
 /** PERS-002 — Non-solicit present (info). */
 export const rule: Rule = {
@@ -34,7 +33,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Non-solicit clause present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 280),
+      excerpt: hitExcerpt(hit, 280),
       explanation:
         "Non-solicit clauses restrict hiring or customer-poaching. Their scope (employees, customers, both) and duration drive enforceability.",
       position: hit.position,

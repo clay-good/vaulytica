@@ -1,6 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { emit, firstParagraphMatch, hitExcerpt, isPresenceDisclaimed } from "../_helpers.js";
 
 // Commercial contracts far more often write the MFN as "most favored CUSTOMER"
 // (the "-nation" origin is a trade-law term of art), and the guarantee is drafted
@@ -44,7 +43,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Most-favored-nation clause present",
       description: "An MFN clause appears in the document.",
-      excerpt: truncate(hit.text, 200),
+      excerpt: hitExcerpt(hit, 200),
       explanation:
         "MFN clauses guarantee one party terms no worse than the other's best customer. They are operationally expensive to administer, sometimes raise antitrust concerns, and lock the drafting party into prices going forward.",
       position: hit.position,

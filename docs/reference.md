@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,936 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `23 export formats` · `0 servers` · `0 AI` · `16,350+ passing tests` · `v9.889.0` · `MIT`
+`1,936 deterministic rules` · `22 cross-document checks` · `5 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `23 export formats` · `0 servers` · `0 AI` · `16,360+ passing tests` · `v9.890.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1479,7 +1479,7 @@ npm run verify       # typecheck + lint + format:check + coverage + build — ex
 npm run build        # static site → dist/
 npm run typecheck    # tsc --noEmit
 npm run lint         # eslint
-npm run test         # vitest — 16,350+ tests, ~140s
+npm run test         # vitest — 16,360+ tests, ~140s
 npm run coverage     # vitest + V8 coverage, enforces the regression floor
 npm run accuracy     # v5 Ground Truth harness → tools/accuracy/SCOREBOARD.md
 npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actually changed

@@ -1,6 +1,12 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { allMatches, emit, firstParagraphMatch, isNonOperative, topPosition } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import {
+  allMatches,
+  emit,
+  firstParagraphMatch,
+  hitExcerpt,
+  isNonOperative,
+  topPosition,
+} from "../_helpers.js";
 
 /** "contains no", "does not contain any", "will not include" — immediately before the mention. */
 const DENIES_CONTAINING =
@@ -84,7 +90,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Data-regime references missing",
       description: "Contract references personal data but does not cite GDPR / CCPA / HIPAA.",
-      excerpt: truncate(personalData.text, 240),
+      excerpt: hitExcerpt(personalData, 240),
       explanation:
         "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
       recommendation:

@@ -1,6 +1,5 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { emit, firstUnnegatedParagraphMatch, hitExcerpt } from "../_helpers.js";
 
 const DISPUTE_SIBLING = String.raw`(?:action|suit|proceeding|hearing|investigation|claim)s?`;
 /**
@@ -86,7 +85,7 @@ export const rule: Rule = {
       description: seat
         ? `Seat: ${seat.raw_text}`
         : "Arbitration clause present; seat not specified.",
-      excerpt: truncate(hit.text, 240),
+      excerpt: hitExcerpt(hit, 240),
       explanation:
         "Arbitration is binding under the Federal Arbitration Act (9 U.S.C. § 2). The seat, governing rules (AAA, JAMS, ICC), and language are the key parameters.",
       position: hit.position,

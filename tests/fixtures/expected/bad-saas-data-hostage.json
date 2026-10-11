@@ -863,14 +863,14 @@
   ],
   "findings": [
     {
-      "description": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…",
+      "description": "…grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models…",
       "document_position": 662,
       "excerpt": {
         "end_offset": 876,
         "section_id": "s3",
         "section_label": "2. AI / Model Training Rights",
         "start_offset": 662,
-        "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning…"
+        "text": "…grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, and developing Vendor's services, machine-learning models…"
       },
       "explanation": "Granting the vendor a license to train ML / AI models on Customer Data creates several distinct problems: (1) under GDPR, training is processing that requires a lawful basis the customer typically cannot grant on behalf of the data subjects; (2) the right-to-erasure under Art. 17 is practically impossible because a trained model cannot unlearn specific training examples; (3) under HIPAA, GLBA, FERPA the training-license breaches the customer's downstream regulatory obligations; (4) downstream IP exposure from training-data litigation (Andersen v. Stability AI, Getty Images) flows back via indemnity.",
       "id": "IPDATA-009-s3-662",
@@ -1134,11 +1134,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "9c81203c86d4913366bb19b1a92d25fdc73c73cd634f6046c546cb88f1fe805c",
+  "result_hash": "b1ac9772811eeab2e6986f9049a9a98abca31086952d0bd020d1e5f48b775561",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.889.0"
+  "version": "9.890.0"
 }
