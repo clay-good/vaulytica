@@ -99,7 +99,9 @@ import {
   determinismStatement,
   nonAdviceStatement,
   privacyStatement,
+  REPORT_PROBLEM_LABEL,
 } from "./disclaimers.js";
+import { reportLinkForRun } from "./report-link.js";
 
 const SEVERITY_ORDER: Severity[] = ["critical", "warning", "info"];
 const SEVERITY_LABEL: Record<Severity, string> = {
@@ -886,6 +888,14 @@ export function buildHtmlReport(
   body.push(`<p>${esc(PRIVACY_STATEMENT)}</p>`);
   body.push("<h3>Not legal advice</h3>");
   body.push(`<p>${esc(NON_ADVICE_STATEMENT)}</p>`);
+  // Once per report, and never when the run used a reader's own playbook.
+  const reportUrl = reportLinkForRun(run);
+  if (reportUrl) {
+    body.push("<h3>Report a problem</h3>");
+    body.push(
+      `<p>${esc(REPORT_PROBLEM_LABEL)} <a href="${esc(reportUrl)}">${esc(reportUrl)}</a></p>`,
+    );
+  }
   // Universal scope-of-review — limited-scope-engagement framing on every report
   // (add-attorney-review-ledger). Distinct from the per-pack "Scope of Review".
   body.push("<h3>Scope of this review</h3>");

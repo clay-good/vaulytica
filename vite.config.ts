@@ -9,6 +9,7 @@ import {
   readHeadlineCounts,
   render404,
   renderKnownLimitsPage,
+  renderReportPage,
   type KnownLimitsData,
   renderDocTypeIndex,
   renderDocTypePage,
@@ -180,6 +181,8 @@ function deployAssets(): Plugin {
         "icon-512.png",
         "icon-maskable-512.png",
         "apple-touch-icon.png",
+        // The script for /report: a static file, loaded by that page alone.
+        "report.js",
       ];
       for (const name of sitePublic) {
         const src = resolve(REPO_ROOT, "site", name);
@@ -255,6 +258,7 @@ function deployAssets(): Plugin {
         writeFileSync(resolve(DIST, `${page.slug}.html`), renderSeoPage(page, counts), "utf8");
       }
       writeFileSync(resolve(DIST, "404.html"), render404(), "utf8");
+      writeFileSync(resolve(DIST, "report.html"), renderReportPage(), "utf8");
       // `/known-limits` (spec-v53): rendered from the committed data file. The
       // build reads the file, never the test ledger it was generated from.
       writeFileSync(

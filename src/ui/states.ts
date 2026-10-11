@@ -310,7 +310,21 @@ export type DropzoneState =
        * every finding so the reader sees the caveat first. The message rides
        * inside the hashed run. Optional / back-compat: omitting hides it.
        */
-      classification_notice?: { message: string };
+      classification_notice?: {
+        message: string;
+        /**
+         * "What kind of document is this?" — a link to the report page naming
+         * the closest type, if any (spec-v53 §4). Absent while a custom
+         * playbook is loaded.
+         */
+        report_url?: string;
+      };
+      /**
+       * A link to the report page for this result: engine, knowledge base and
+       * document type, in the URL fragment. Absent while a custom playbook is
+       * loaded — a reader's own rule ids are theirs.
+       */
+      report_url?: string;
       /**
        * Scope-of-review statement for the active regulated pack
        * (add-document-vertical-framework). Presence-only: what the pack checked
@@ -712,6 +726,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="counts" data-role="counts"></div>
     <div class="review-coverage" data-role="review-coverage" hidden></div>
     <div class="review-coverage" data-role="clause-evidence" hidden></div>
+    <div class="review-coverage" data-role="report-link" hidden></div>
     <div class="rule-errored" data-role="rule-errored" hidden></div>
     <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
     <div class="secondary-families" data-role="secondary-families" hidden></div>
@@ -850,6 +865,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderPlaybookProvenance(dz, state.custom_playbook);
     renderSecondaryFamilies(dz, state.secondary_families, state.secondary_families_omitted);
     renderReviewCoverage(dz, state.review_coverage);
+    renderReportLink(dz, state.report_url);
     renderRuleErrored(dz, state.rule_errored);
     renderClauseEvidence(dz, state.clause_evidence);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
@@ -1608,10 +1624,29 @@ function renderClassificationNotice(
     return;
   }
   el.hidden = false;
+  // The demand signal the catalog lacks: which documents people bring that it
+  // has no type for. The link carries the closest type's id and no score.
+  const ask = notice.report_url
+    ? `<div class="classification-notice-body"><a href="${escapeHtml(notice.report_url)}" target="_blank" rel="noopener noreferrer">What kind of document is this? Tell us</a> — it sends no part of your document.</div>`
+    : "";
   el.innerHTML = `
     <div class="classification-notice-head">Document type not recognized</div>
     <div class="classification-notice-body">${escapeHtml(notice.message)}</div>
+    ${ask}
   `;
+}
+
+/** One link to the report page, under the result. Hidden when there is none. */
+function renderReportLink(dz: HTMLElement, url: string | undefined): void {
+  const el = select<HTMLElement>(dz, "report-link");
+  if (!el) return;
+  if (!url) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  el.hidden = false;
+  el.innerHTML = `Something wrong, or something missed? <a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Report a problem</a> — a report contains no part of your document.`;
 }
 
 /**

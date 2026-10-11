@@ -228,6 +228,7 @@ import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overl
 import type { Finding } from "../engine/finding.js";
 import { scanDelivery, type DeliveryReport } from "../delivery/index.js";
 import { flattenText } from "../ingest/types.js";
+import { nearMissOf } from "../playbooks/types.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -268,7 +269,13 @@ export type PreparedDocument = {
    * annotate) and paste input.
    */
   original_docx_bytes?: ArrayBuffer;
-  match: { playbook_id: string; confidence: number; reasoning: string };
+  match: {
+    playbook_id: string;
+    confidence: number;
+    reasoning: string;
+    /** Unmatched only: the closest family's id (spec-v53 §4). Never its score. */
+    near_type?: string;
+  };
   /**
    * Secondary families the document *also* clearly contains (spec-v6
    * multi-family activation). A composite agreement (e.g. an MSA with an
@@ -301,6 +308,8 @@ export type PipelineResult = {
   run: EngineRun;
   playbook: Playbook;
   match_reasoning: string;
+  /** Unmatched only: the closest family's id, for the "what kind of document is this?" link. */
+  near_type?: string;
   docx_blob: Blob;
   json_blob: Blob;
   /**
@@ -643,6 +652,7 @@ export async function prepareDocument(
       playbook_id: match.playbook_id,
       confidence: match.confidence,
       reasoning: match.reasoning,
+      ...(nearMissOf(match) ? { near_type: nearMissOf(match)!.playbook_id } : {}),
     },
     secondary_playbooks,
     ...(secondarySelection.omitted > 0
@@ -940,6 +950,7 @@ export async function runReport(
     run,
     playbook: prepared.playbook,
     match_reasoning: prepared.match.reasoning,
+    ...(prepared.match.near_type ? { near_type: prepared.match.near_type } : {}),
     docx_blob,
     json_blob,
     fixlist_md_blob,

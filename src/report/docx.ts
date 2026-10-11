@@ -95,7 +95,9 @@ import {
   determinismStatement,
   nonAdviceStatement,
   privacyStatement,
+  REPORT_PROBLEM_LABEL,
 } from "./disclaimers.js";
+import { reportLinkForRun } from "./report-link.js";
 
 const DETERMINISM_STATEMENT = determinismStatement("document");
 
@@ -1235,6 +1237,11 @@ function renderAuditTrail(
     para({ text: `File fingerprint: ${run.source_file.sha256}` }),
     para({ text: `Result hash: ${run.result_hash}` }),
     para({ text: `Executed at: ${run.executed_at || EXECUTED_AT_OMITTED}` }),
+    // Once per report, and never when the run used a reader's own playbook:
+    // the link carries ids the tool chose, and theirs are not the tool's.
+    ...(reportLinkForRun(run)
+      ? [para({ text: `${REPORT_PROBLEM_LABEL} ${reportLinkForRun(run)}` })]
+      : []),
     para({
       text: `Model-clause references: this report references ${referencedInReport} public model clause${
         referencedInReport === 1 ? "" : "s"

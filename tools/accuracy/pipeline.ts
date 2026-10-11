@@ -45,14 +45,10 @@ import {
   type SecondaryFamilyRun,
 } from "../../src/engine/secondary-families.js";
 import { relatedDocuments, type RelatedDocument } from "../../src/report/companions.js";
-import { GENERIC_FALLBACK_ID } from "../../src/playbooks/types.js";
+import { NEAR_MISS_FLOOR, nearMissOf } from "../../src/playbooks/types.js";
 
-/**
- * The lowest score at which the closest family is worth naming for an
- * unmatched document. Below it — and a blank file scores 0 — the "closest"
- * family is whichever sorted first.
- */
-export const NEAR_MISS_FLOOR = 0.2;
+// Re-exported: the floor has one owner, beside the matcher's result type.
+export { NEAR_MISS_FLOOR };
 import { activateFiling } from "../../src/filing/activate.js";
 import type { CourtProfile } from "../../src/filing/court-profile.js";
 import type { BriefKind } from "../../src/filing/run-options.js";
@@ -267,14 +263,8 @@ export async function runIngested(
 
   // The family that came closest when none matched (spec-v52 §1). It existed
   // only inside a sentence — "Best score was employment-at-will-us at 0.4" —
-  // and a folder page has to read it as a fact. Floored: a blank file's best
-  // score is 0, and the family named beside a zero is arbitrary. Outside
-  // `run`, so no hash moves.
-  const closest = match.playbook_id === GENERIC_FALLBACK_ID ? match.alternatives[0] : undefined;
-  const nearMiss =
-    closest && closest.confidence >= NEAR_MISS_FLOOR
-      ? { playbook_id: closest.playbook_id, score: closest.confidence }
-      : undefined;
+  // and a folder page has to read it as a fact. Outside `run`, so no hash moves.
+  const nearMiss = nearMissOf(match);
 
   const run = await runEngine({
     rules: estate.rules,

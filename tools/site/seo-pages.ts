@@ -688,6 +688,7 @@ section{padding:44px 0;border-top:1px solid var(--line)}
 ol.steps{padding-left:22px}ol.steps li{margin-bottom:10px}
 pre{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;white-space:pre-wrap;font-size:14.5px;color:var(--heading)}
 .sev{margin-top:10px!important;font-size:14px!important;color:var(--muted)}.faq h3{margin-top:24px}.links{columns:2 240px;padding-left:20px}
+.choices{display:grid;gap:10px}.choice{display:block;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;cursor:pointer}.choice input{margin-right:8px;accent-color:var(--accent)}textarea{width:100%;background:var(--surface);color:var(--heading);border:1px solid var(--line);border-radius:10px;padding:12px;font:inherit}.muted{color:var(--muted);font-size:15px}
 table{width:100%;border-collapse:collapse;margin:8px 0 20px;font-size:16.5px}th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}th{color:var(--heading);font-size:15px}td:first-child{color:var(--heading);font-variant-numeric:tabular-nums;white-space:nowrap}.plain{list-style:disc;padding-left:22px}.plain li{margin-bottom:10px}
 footer{border-top:1px solid var(--line);padding:32px 0 48px;font-size:15px;color:var(--muted)}footer a{color:var(--muted)}
 `.trim();
@@ -968,10 +969,76 @@ export function renderKnownLimitsPage(d: KnownLimitsData): string {
       </section>
       <section>
         <h2>5. Reported by users</h2>
-        <p>None recorded. There is not yet a way to report a wrong finding from a report itself; until there is, open an issue on <a href="https://github.com/clay-good/vaulytica/issues">GitHub</a>, describing the clause in your own words rather than pasting contract text.</p>
+        <p>None recorded. Every report and result now links to <a href="/report">a report page</a>, which shows exactly what a report would contain — a few identifiers and a short note, never contract text. It cannot send yet; until it can, open an issue on <a href="https://github.com/clay-good/vaulytica/issues">GitHub</a>, describing the clause in your own words.</p>
       </section>
     </main>
     ${footer()}
+  </body>
+</html>
+`;
+}
+
+export const REPORT_SLUG = "report";
+
+/**
+ * `/report` (spec-v53 §4): the one page a wrong finding is reported from.
+ *
+ * Its markup is static and its script is a static file (`/report.js`, allowed
+ * by `script-src 'self'`). Context arrives in the URL fragment. Until the
+ * endpoint of Step 331 exists the page sends nothing and says so; what it
+ * already does is the part that has to be right first — show the reader
+ * exactly what a report would contain.
+ */
+export function renderReportPage(): string {
+  const url = pageUrl(REPORT_SLUG);
+  const title = "Report a Problem | Vaulytica";
+  const description =
+    "Report a wrong finding, something a check missed, or a document type Vaulytica did not recognize. A report contains no part of your document.";
+  const kinds: ReadonlyArray<readonly [string, string]> = [
+    ["wrong-finding", "A finding is wrong"],
+    ["missed", "Something was missed"],
+    ["wrong-type", "The document type is wrong, or was not recognized"],
+    ["site", "The site or a download is broken"],
+  ];
+  const radios = kinds
+    .map(
+      ([value, label]) =>
+        `<label class="choice"><input type="radio" name="report-kind" value="${value}" /> ${escapeHtml(label)}</label>`,
+    )
+    .join("\n          ");
+  return `${head({ title, description, canonical: url, robots: "noindex, follow", jsonLd: [] })}
+  <body>
+    ${HEADER}
+    <main class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Vaulytica</a> › Report a problem</nav>
+      <div class="hero">
+        <h1>Report a problem.</h1>
+        <p class="lead">If a finding is wrong, a check missed something, or the document type was not recognized, this is where to say so. A report holds a few identifiers and, if you like, a short note. It holds no part of your document.</p>
+      </div>
+      <section>
+        <h2>What kind of problem?</h2>
+        <div class="choices" role="radiogroup" aria-label="Kind of problem">
+          ${radios}
+        </div>
+        <h2 style="margin-top:32px"><label for="report-note">A note, if it helps</label></h2>
+        <p><strong>Do not paste contract text. Describe the clause in your own words.</strong></p>
+        <textarea id="report-note" maxlength="280" rows="4" aria-describedby="report-note-count"></textarea>
+        <p class="muted" id="report-note-count">0 / 280</p>
+      </section>
+      <section>
+        <h2>Exactly what would be sent</h2>
+        <p>This is the whole report. The identifiers came from the link you followed; they name a rule and software versions, not your document.</p>
+        <ul class="plain" id="report-preview"><li>Turn on JavaScript to see what a report would contain.</li></ul>
+      </section>
+      <section>
+        <h2>Sending is not available yet</h2>
+        <p id="report-status"><strong>Nothing on this page is sent anywhere.</strong> The place reports will go is still being built, and until it is this page has no button. Your note stays in this tab and is gone when you close it.</p>
+        <p>To report something now, open an issue on <a href="https://github.com/clay-good/vaulytica/issues">GitHub</a>. Issues are public: describe the clause in your own words and leave the contract out.</p>
+        <p class="muted">What the tool has not measured, and where it is already known to be wrong, is on the <a href="/${KNOWN_LIMITS_SLUG}">known limits</a> page.</p>
+      </section>
+    </main>
+    ${footer()}
+    <script type="module" src="/report.js"></script>
   </body>
 </html>
 `;

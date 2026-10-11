@@ -32,6 +32,13 @@ export const KNOWN_LIMITS_URL = "https://vaulytica.com/known-limits";
 export const KNOWN_LIMITS_STATEMENT = `What this tool has not measured, and where it is known to be wrong, is published at ${KNOWN_LIMITS_URL}.`;
 
 /**
+ * The words in front of a link to the report page. One owner: every surface
+ * that offers the link says the same thing about what a report contains.
+ */
+export const REPORT_PROBLEM_LABEL =
+  "Report a wrong finding or a missed one (the report contains no part of your document):";
+
+/**
  * What a clean round of the drafting loop means (spec-v51 §7). An agent can
  * write text that satisfies a pattern and says nothing; the engine cannot
  * detect that and does not claim to. Said wherever a comparison reports that

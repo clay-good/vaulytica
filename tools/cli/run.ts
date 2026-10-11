@@ -235,7 +235,8 @@ import { normalizeUsStateId } from "../../src/dkb/estate-formalities.js";
 const REGIME_FLAG_VALUES = ["ccpa", "gdpr", "gdpr-13", "gdpr-14", "co", "va", "tx", "or"] as const;
 import { TIER_RANK } from "../../src/report/posture-movement.js";
 import { ENGINE_VERSION } from "../../src/engine/runner.js";
-import { KNOWN_LIMITS_STATEMENT } from "../../src/report/disclaimers.js";
+import { KNOWN_LIMITS_STATEMENT, REPORT_PROBLEM_LABEL } from "../../src/report/disclaimers.js";
+import { REPORT_PAGE_URL } from "../../src/report/report-link.js";
 import {
   FORMAT_EXT,
   MACHINE_FORMATS,
@@ -1548,7 +1549,14 @@ async function analyzeTarget(
   // per-file line above scrolls away behind the analysis of the ones that
   // could. A reader has to be able to answer "what is NOT in this report?"
   // without re-reading the whole log.
-  if (caveatsPrinted) process.stderr.write(`vaulytica: ${KNOWN_LIMITS_STATEMENT}\n`);
+  if (caveatsPrinted) {
+    process.stderr.write(`vaulytica: ${KNOWN_LIMITS_STATEMENT}\n`);
+    // The address is printed; nothing is ever sent from here. Not offered with
+    // a custom playbook: a reader's own rule ids are theirs.
+    if (!customPlaybook) {
+      process.stderr.write(`vaulytica: ${REPORT_PROBLEM_LABEL} ${REPORT_PAGE_URL}\n`);
+    }
+  }
   if (unreadable.length > 0) {
     process.stderr.write(
       `vaulytica: ${unreadable.length} of ${inputs.length} input(s) could not be read and are ` +

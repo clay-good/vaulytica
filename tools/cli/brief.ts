@@ -23,6 +23,7 @@ import { truncate } from "../../src/engine/text.js";
 import { ingestWarningCodes, type IngestWarningCode } from "../../src/ingest/warning-codes.js";
 import { nonAdviceStatement } from "../../src/report/disclaimers.js";
 import { erroredRuleNotice } from "../../src/report/execution-log.js";
+import { reportLinkForRun } from "../../src/report/report-link.js";
 import type { AnalyzeResult } from "./api.js";
 
 export const BRIEF_SCHEMA = "vaulytica.brief.v1";
@@ -91,6 +92,12 @@ export type Brief = {
   result_hash: string;
   dkb_version: string;
   engine_version: string;
+  /**
+   * Where a person can report a wrong or missed finding: the report page, with
+   * this engine, knowledge base and document type in the URL fragment. Printed,
+   * never called. Absent when the run used a custom playbook.
+   */
+  report_url?: string;
 };
 
 /**
@@ -191,6 +198,7 @@ export function buildBrief(
     result_hash: run.result_hash,
     dkb_version: run.dkb_version,
     engine_version: run.version,
+    ...(reportLinkForRun(run) ? { report_url: reportLinkForRun(run)! } : {}),
   };
 }
 

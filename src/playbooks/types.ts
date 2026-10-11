@@ -194,3 +194,25 @@ export type PlaybookMatchResult = {
   /** Human-readable explanation of which features matched. */
   reasoning: string;
 };
+
+/**
+ * The lowest score at which the closest family is worth naming for an
+ * unmatched document. Below it — and a blank file scores 0 — the "closest"
+ * family is whichever sorted first.
+ */
+export const NEAR_MISS_FLOOR = 0.2;
+
+/**
+ * For an UNMATCHED document: the family that came closest, as a fact rather
+ * than a phrase inside the match reasoning. `undefined` when a family matched,
+ * and when nothing came close enough to name.
+ */
+export function nearMissOf(
+  match: Pick<PlaybookMatchResult, "playbook_id" | "alternatives">,
+): { playbook_id: string; score: number } | undefined {
+  if (match.playbook_id !== GENERIC_FALLBACK_ID) return undefined;
+  const closest = match.alternatives[0];
+  return closest && closest.confidence >= NEAR_MISS_FLOOR
+    ? { playbook_id: closest.playbook_id, score: closest.confidence }
+    : undefined;
+}

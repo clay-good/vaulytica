@@ -26,6 +26,7 @@ import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
 import { bindRegimePanel } from "./regime-panel.js";
 import { bindEstatePanel, type EstateAssertion } from "./estate-panel.js";
 import type { RegimeId } from "../privacy/regime-data.js";
+import { reportLinkForRun, reportLinkForUnmatched } from "../report/report-link.js";
 
 /**
  * The user-supplied playbook currently loaded in the tab (spec-v6 Part II,
@@ -268,6 +269,7 @@ function renderCompleteState(
   result: {
     playbook: { name: string; deprecated?: boolean; superseded_by?: string };
     match_reasoning: string;
+    near_type?: string;
     run: import("./pipeline.js").PipelineResult["run"];
     /** Carried so version comparison can build a clause-level redline of the base doc. */
     ingest: import("./pipeline.js").PipelineResult["ingest"];
@@ -314,6 +316,13 @@ function renderCompleteState(
   activeFrames: ReadonlyArray<string>,
   onFramesChange: (frames: ReadonlyArray<string>) => void,
 ): void {
+  // Links to the report page (spec-v53 §4). None while a custom playbook is
+  // loaded: a reader's own rule and playbook ids are theirs.
+  const reportOpts = { customPlaybook: Boolean(result.custom_playbook) };
+  const resultReportUrl = reportLinkForRun(result.run, reportOpts);
+  const unmatchedReportUrl = result.run.classification_notice
+    ? reportLinkForUnmatched(result.run, result.near_type, reportOpts)
+    : null;
   setState(dz, {
     kind: "complete",
     filename,
@@ -513,8 +522,12 @@ function renderCompleteState(
     // add-document-vertical-framework — the unmatched-document banner (rides
     // inside the hashed run) and the active pack's scope-of-review statement.
     classification_notice: result.run.classification_notice
-      ? { message: result.run.classification_notice.message }
+      ? {
+          message: result.run.classification_notice.message,
+          ...(unmatchedReportUrl ? { report_url: unmatchedReportUrl } : {}),
+        }
       : undefined,
+    ...(resultReportUrl ? { report_url: resultReportUrl } : {}),
     scope_of_review: scopeForPlaybook(result.run.playbook_id),
     // add-privacy-notice-pack — per-regime coverage table, computed in the
     // lazy pipeline chunk; undefined when no regimes were asserted.

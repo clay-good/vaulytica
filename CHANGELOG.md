@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.867.0] — 2026-10-10
+
+### Added
+- **`/report`: one page to report a wrong finding, a missed one, or an
+  unrecognized document.** It shows the reader exactly what a report would
+  contain: the kind of problem, up to five identifiers from the link they
+  followed (rule and version, engine and knowledge-base versions, document
+  type), and an optional note of at most 280 characters. **It does not send
+  yet** — the endpoint needs the owner's Cloudflare account — and says so:
+  there is no form, no button, and no network call in its script.
+- **Links to it, built so a contract cannot travel with one.** Context rides
+  in the URL fragment, which a browser never sends to a server. Each value
+  must have the shape of an id, so prose does not fit, and a long run of hex
+  (a file's hash) is refused. The link appears once in the HTML report and the
+  Word audit trail, under the result in the browser tab, on the unmatched
+  notice ("What kind of document is this?", naming the closest type and never
+  its score), in the compact report (`report_url`), and as an address at the
+  end of a command-line run. Nothing calls the page; the address is printed.
+- **Never for a reader's own playbook.** A custom-playbook finding gets no
+  link, and no link is offered anywhere while a custom playbook is loaded.
+
+### Changed
+- The near-miss family for an unmatched document has one owner
+  (`nearMissOf`, beside the matcher's result type), shared by the browser, the
+  command line and the triage page.
+
+(spec-v53 Step 330. Step 331 — the endpoint, and with it the rewrite of "there
+is no server" — needs the owner's Cloudflare account and is not built.)
+
 ## [9.866.0] — 2026-10-10
 
 ### Added
