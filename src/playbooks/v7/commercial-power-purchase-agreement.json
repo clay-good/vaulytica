@@ -1,0 +1,50 @@
+{
+  "id": "commercial-power-purchase-agreement",
+  "name": "Power Purchase Agreement (Commercial)",
+  "version": "1.0.0",
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "balanced_defaults": [],
+  "sources": [],
+  "applicable_jurisdictions": ["US"],
+  "description": "A long-term contract under which a business or utility buys the output of a wind, solar or other generating facility. The checks read for the term and the date it starts, the price and how it changes, the delivery point, who gets the renewable energy credits, a commitment on output and the cost of curtailment, and credit support. The solar contract a household signs for its own roof has a type of its own.",
+  "match_features": {
+    "title_keywords": [
+      "power purchase agreement",
+      "energy purchase agreement",
+      "renewable energy purchase agreement",
+      "virtual power purchase agreement",
+      "wind energy purchase agreement",
+      "ppa"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "megawatt-hour",
+      "commercial operation date",
+      "delivery point",
+      "renewable energy credits",
+      "interconnection",
+      "the facility",
+      "environmental attributes"
+    ],
+    "negative_features": ["homeowner", "the home", "residential"]
+  },
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    }
+  },
+  "regulator_frame": "US-ENERGY",
+  "companion_playbooks": ["guaranty"],
+  "compliance_matrix_columns": [
+    "The term, and the date it starts running",
+    "The price, and how it changes",
+    "The delivery point, and who bears losses before it",
+    "Who gets the renewable energy credits",
+    "A commitment on output, and what curtailment costs",
+    "Security for each party's performance"
+  ]
+}

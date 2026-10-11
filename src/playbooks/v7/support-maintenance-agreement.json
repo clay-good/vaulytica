@@ -1,0 +1,50 @@
+{
+  "id": "support-maintenance-agreement",
+  "name": "Software Support and Maintenance Agreement",
+  "version": "1.0.0",
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "balanced_defaults": [],
+  "sources": [],
+  "applicable_jurisdictions": ["US"],
+  "description": "A standalone agreement under which a software vendor supports and maintains software the customer has already licensed. The checks read for support hours, response and resolution times by severity, updates and new releases, which versions are supported, the fee and how it can rise, and what support does not cover. Distinct from `software-license-enterprise`, which reads a license and its support together.",
+  "match_features": {
+    "title_keywords": [
+      "software support and maintenance agreement",
+      "support and maintenance agreement",
+      "software maintenance agreement",
+      "software support agreement",
+      "maintenance and support agreement",
+      "technical support agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "error corrections",
+      "new releases",
+      "support fee",
+      "supported versions",
+      "severity level",
+      "telephone and email support",
+      "maintenance releases"
+    ],
+    "negative_features": []
+  },
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    }
+  },
+  "regulator_frame": "US-COMMERCIAL",
+  "companion_playbooks": ["software-license-enterprise", "service-level-agreement"],
+  "compliance_matrix_columns": [
+    "Support hours and how to reach support",
+    "Response and resolution times by severity",
+    "Updates, upgrades and new releases",
+    "Which versions are supported, and for how long",
+    "The support fee, and how it can rise",
+    "What support does not cover"
+  ]
+}

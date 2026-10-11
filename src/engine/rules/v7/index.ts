@@ -19,6 +19,7 @@ import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js"
 import { RESIDENTIAL_SOLAR_RULES } from "./residential-solar.js";
 import { SOFTWARE_DEVELOPMENT_RULES } from "./software-development.js";
 import { TRAINING_REPAYMENT_RULES } from "./training-repayment.js";
+import { TRANCHE_B_RULES } from "./tranche-b.js";
 
 /** The v7 ruleset aggregate. Appended after `V6_RULES` in the pipeline. */
 export const V7_RULES: readonly Rule[] = [
@@ -34,6 +35,7 @@ export const V7_RULES: readonly Rule[] = [
   ...ADVISOR_RULES,
   ...FALLBACK_RULES,
   ...MEMORANDUM_RULES,
+  ...TRANCHE_B_RULES,
 ];
 
 export {
@@ -49,4 +51,5 @@ export {
   ADVISOR_RULES,
   FALLBACK_RULES,
   MEMORANDUM_RULES,
+  TRANCHE_B_RULES,
 };

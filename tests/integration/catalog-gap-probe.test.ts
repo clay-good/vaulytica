@@ -123,7 +123,13 @@ describe("documents the catalog has no type for", () => {
  */
 const DIR_B = join(process.cwd(), "tests", "fixtures", "probe-v49b");
 const PROBE_B: ReadonlyArray<{ file: string; wants: string; today: string }> = [
-  { file: "beta-test-agreement.txt", wants: "beta-test-agreement", today: "generic-fallback" },
+  // A beta test is an evaluation: the pilot type's checks are the ones it
+  // needs, so it took the title rather than a type of its own (9.881.0).
+  {
+    file: "beta-test-agreement.txt",
+    wants: "pilot-evaluation-agreement",
+    today: "generic-fallback",
+  },
   {
     file: "board-observer-agreement.txt",
     wants: "board-observer-agreement",

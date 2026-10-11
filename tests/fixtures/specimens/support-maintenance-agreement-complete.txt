@@ -1,0 +1,35 @@
+SOFTWARE SUPPORT AND MAINTENANCE AGREEMENT
+
+This Software Support and Maintenance Agreement (this "Agreement") is entered into as of January 12, 2026 (the "Effective Date") between Tessera Robotics, Inc., a Delaware corporation ("Vendor"), and Brightwater Logistics LLC, an Ohio limited liability company ("Customer"), and covers the warehouse-routing software Customer licenses from Vendor under the parties' Software License Agreement dated January 12, 2026 (the "Software").
+
+1. Support Hours. Vendor will provide telephone and email support from 8:00 am to 8:00 pm Eastern time on business days, and around-the-clock telephone support for Severity 1 errors. Customer opens a request through Vendor's support portal or by telephone.
+
+2. Severity Levels and Response Times. A "Severity 1" error stops Customer from using the Software in production. A "Severity 2" error seriously impairs a major function. A "Severity 3" error is any other error. Vendor will respond to a Severity 1 error within one hour and provide a correction or workaround within eight hours; respond to a Severity 2 error within four hours and provide a correction or workaround within three business days; and respond to a Severity 3 error within two business days and correct it in a later release.
+
+3. Maintenance. Vendor will provide Customer, at no added charge, all error corrections, patches, updates and new releases of the Software that Vendor makes generally available, including major new versions.
+
+4. Supported Versions. Vendor supports the current release of the Software and the prior major release. Vendor will give Customer at least twelve months' written notice before it ends support for a release.
+
+5. Exclusions. Support does not cover errors caused by Customer's modification of the Software, by hardware or third-party software that Vendor's documentation does not list as supported, or by use of the Software contrary to its documentation. Vendor will work on an excluded problem at Customer's request at its hourly rates then in effect.
+
+6. Fees. The annual support fee is $48,000, which is 20% of the license fee, payable in advance within 30 days after the invoice date. Vendor may increase the fee at each renewal by no more than 4% over the fee for the prior year.
+
+7. Term and Termination. This Agreement runs for one year from the Effective Date and renews for successive one-year terms unless either party gives written notice of non-renewal at least 60 days before the term ends. Either party may terminate it if the other materially breaches it and does not cure the breach within 30 days after written notice. On termination for Vendor's breach, Vendor will refund the support fee for the rest of the term. Customer's license to the Software is not affected by the end of this Agreement.
+
+8. Warranty and Liability. Vendor will perform support in a professional manner. Neither party will be liable for indirect or consequential damages, and each party's total liability under this Agreement will not exceed the support fees paid in the twelve months before the claim.
+
+9. Indemnification. Vendor will defend Customer against any third-party claim that a correction or release delivered under this Agreement infringes a copyright, and will pay the damages finally awarded, if Customer gives Vendor prompt notice and control of the defense.
+
+10. General. This Agreement is governed by the laws of the State of Delaware, and the state and federal courts located in Wilmington, Delaware have exclusive jurisdiction over any dispute arising under it. It may be amended only in a writing signed by both parties.
+
+TESSERA ROBOTICS, INC.
+
+By: ______________________
+Name: Ana Sousa
+Title: Chief Executive Officer
+
+BRIGHTWATER LOGISTICS LLC
+
+By: ______________________
+Name: Tom Reyes
+Title: Director of Operations

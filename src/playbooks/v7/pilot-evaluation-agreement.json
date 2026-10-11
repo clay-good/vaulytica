@@ -2,7 +2,7 @@
   "id": "pilot-evaluation-agreement",
   "version": "1.0.0",
   "name": "Pilot and Evaluation Agreement",
-  "description": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept or evaluation. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer. Distinct from `saas-customer`, which reads the paid subscription a pilot may convert into.",
+  "description": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept, evaluation or beta test. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer. Distinct from `saas-customer`, which reads the paid subscription a pilot may convert into.",
   "match_features": {
     "title_keywords": [
       "pilot agreement",
@@ -11,7 +11,11 @@
       "evaluation agreement",
       "evaluation license agreement",
       "proof of concept agreement",
-      "proof-of-concept agreement"
+      "proof-of-concept agreement",
+      "beta test agreement",
+      "beta testing agreement",
+      "beta program agreement",
+      "beta evaluation agreement"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [
@@ -21,7 +25,9 @@
       "evaluation license",
       "internal evaluation",
       "proof of concept",
-      "during the pilot"
+      "during the pilot",
+      "beta product",
+      "pre-release"
     ],
     "negative_features": []
   },

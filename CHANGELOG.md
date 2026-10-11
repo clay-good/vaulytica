@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.881.0] — 2026-10-11
+
+### Added
+- **Four more document types** the second probe found falling to the generic
+  fallback (spec-v49 Step 312). 283 document types, 1,918 rules.
+  - **Software Support and Maintenance Agreement** — support hours; response
+    and resolution times by severity; updates and new releases; which versions
+    are supported; the fee and how it can rise; what support does not cover.
+  - **Buy-Sell Agreement** — the events that trigger a purchase; whether it is
+    required or optional; how the price is set; how it is funded; how it is
+    paid; the restriction on transfers to outsiders.
+  - **Board Observer Agreement** — the right to attend without a vote; notice
+    and board materials; the grounds for excluding the observer;
+    confidentiality; the events that end the right.
+  - **Power Purchase Agreement (Commercial)** — the term and the date it
+    starts; the price and how it changes; the delivery point; who gets the
+    renewable energy credits; a commitment on output and the cost of
+    curtailment; credit support.
+- Every check is cited as customary practice, and none reports above a
+  warning.
+
+### Changed
+- **A beta test agreement is read as an evaluation agreement.** It took the
+  pilot type's title rather than a type of its own, because that type's checks
+  are the ones a beta test needs.
+- A buy-sell agreement is not asked for a termination clause, an indemnity, a
+  liability cap or a dollar minimum on the life insurance that funds it. A
+  board observer agreement is not asked for payment terms or a venue.
+
 ## [9.880.0] — 2026-10-11
 
 ### Fixed

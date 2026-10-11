@@ -50,7 +50,7 @@ const REACH: Record<keyof V3ExtractedData, number> = {
   subprocessor: 37,
   breach_timings: 36,
   security_measures: 26,
-  roles: 17,
+  roles: 18,
   dtsa_notice: 15,
   transfer_mechanisms: 10,
 };

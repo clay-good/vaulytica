@@ -6,9 +6,9 @@
   "match_threshold": 0.5
  },
  "self_measured": {
-  "specimens": 349,
-  "document_types": 276,
-  "rules": 1895,
+  "specimens": 357,
+  "document_types": 280,
+  "rules": 1918,
   "attorney_signed_rules": 0
  },
  "open": [
@@ -23,14 +23,14 @@
    "sentence": "On 27 specimens, a correct document does not use every defined term its document type expects, so enforcing that list as a rule would accuse it of a drafting defect. The list is not enforced for that reason."
   },
   {
+   "id": "hyphenated-line-breaks",
+   "count": 27,
+   "sentence": "On 27 specimens, when a long word is split across lines with a hyphen (as a PDF does), a finding appears or disappears because the broken word hides a phrase a rule looks for."
+  },
+  {
    "id": "party-names-layout",
    "count": 27,
    "sentence": "On 27 specimen-and-layout pairs, a party's name is read differently when the layout changes — most often a corporate suffix drifting in or out of the name."
-  },
-  {
-   "id": "hyphenated-line-breaks",
-   "count": 25,
-   "sentence": "On 25 specimens, when a long word is split across lines with a hyphen (as a PDF does), a finding appears or disappears because the broken word hides a phrase a rule looks for."
   },
   {
    "id": "capitals-limitation-of-liability",

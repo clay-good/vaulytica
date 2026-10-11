@@ -2376,6 +2376,81 @@
     ]
   },
   {
+    "id": "board-observer-agreement",
+    "name": "Board Observer Agreement",
+    "version": "1.0.0",
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "balanced_defaults": [],
+    "sources": [],
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "description": "An agreement giving an investor the right to send a non-voting observer to a company's board meetings. The checks read for the right to attend without a vote, notice and board materials, the grounds on which the observer can be excluded, confidentiality, and the events that end the right.",
+    "match_features": {
+      "title_keywords": [
+        "board observer agreement",
+        "board observer rights agreement",
+        "observer rights agreement",
+        "board observation rights agreement",
+        "observer agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "non-voting observer",
+        "non-voting capacity",
+        "the observer",
+        "observer rights",
+        "observer right",
+        "designate one individual"
+      ],
+      "negative_features": [
+        "side letter",
+        "most favored",
+        "information rights",
+        "stock purchase agreement"
+      ]
+    },
+    "rule_overrides": {
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "regulator_frame": "US-VENTURE",
+    "companion_playbooks": [
+      "stockholders-agreement",
+      "mutual-nda"
+    ],
+    "compliance_matrix_columns": [
+      "The right to attend, without a vote",
+      "Notice and board materials",
+      "The grounds on which the observer can be excluded",
+      "Confidentiality of what the observer learns",
+      "The events that end the observer right"
+    ]
+  },
+  {
     "id": "board-resolution",
     "version": "1.1.0",
     "name": "Board Resolution (Standalone)",
@@ -2633,6 +2708,82 @@
       "Alternate site / work arrangements",
       "Communication and notification tree",
       "Testing cadence and plan maintenance"
+    ]
+  },
+  {
+    "id": "buy-sell-agreement",
+    "name": "Buy-Sell Agreement",
+    "version": "1.0.0",
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "balanced_defaults": [],
+    "sources": [],
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "description": "An agreement among the owners of a closely held company about what happens to an owner's interest on death, disability, departure, divorce or bankruptcy. The checks read for the triggering events, whether the purchase is required or optional, how the price is set, how it is funded and paid, and the restriction on transfers to outsiders. Distinct from `stockholders-agreement`, which reads a venture-backed company's investor agreement.",
+    "match_features": {
+      "title_keywords": [
+        "buy-sell agreement",
+        "buy sell agreement",
+        "buy-sell and redemption agreement",
+        "cross-purchase agreement",
+        "stock redemption agreement",
+        "shareholder buy-sell agreement",
+        "buyout agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "deceased shareholder",
+        "surviving shareholders",
+        "agreed value",
+        "life insurance",
+        "right of first refusal",
+        "cross-purchase",
+        "estate of the"
+      ],
+      "negative_features": [
+        "preferred stock",
+        "investors' rights"
+      ]
+    },
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "RISK-016": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "regulator_frame": "STATE-CORPORATE",
+    "companion_playbooks": [
+      "stockholders-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "The events that trigger a purchase",
+      "Whether the purchase is required or optional",
+      "How the price is set",
+      "How the purchase is funded",
+      "How the price is paid",
+      "Restriction on transfers to outsiders"
     ]
   },
   {
@@ -3694,6 +3845,64 @@
       "Annual + ongoing disclosure",
       "Recusal + § 4958 approval",
       "Sanctions for violations"
+    ]
+  },
+  {
+    "id": "commercial-power-purchase-agreement",
+    "name": "Power Purchase Agreement (Commercial)",
+    "version": "1.0.0",
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "balanced_defaults": [],
+    "sources": [],
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "description": "A long-term contract under which a business or utility buys the output of a wind, solar or other generating facility. The checks read for the term and the date it starts, the price and how it changes, the delivery point, who gets the renewable energy credits, a commitment on output and the cost of curtailment, and credit support. The solar contract a household signs for its own roof has a type of its own.",
+    "match_features": {
+      "title_keywords": [
+        "power purchase agreement",
+        "energy purchase agreement",
+        "renewable energy purchase agreement",
+        "virtual power purchase agreement",
+        "wind energy purchase agreement",
+        "ppa"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "megawatt-hour",
+        "commercial operation date",
+        "delivery point",
+        "renewable energy credits",
+        "interconnection",
+        "the facility",
+        "environmental attributes"
+      ],
+      "negative_features": [
+        "homeowner",
+        "the home",
+        "residential"
+      ]
+    },
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      }
+    },
+    "regulator_frame": "US-ENERGY",
+    "companion_playbooks": [
+      "guaranty"
+    ],
+    "compliance_matrix_columns": [
+      "The term, and the date it starts running",
+      "The price, and how it changes",
+      "The delivery point, and who bears losses before it",
+      "Who gets the renewable energy credits",
+      "A commitment on output, and what curtailment costs",
+      "Security for each party's performance"
     ]
   },
   {
@@ -14221,7 +14430,7 @@
     "id": "pilot-evaluation-agreement",
     "version": "1.0.0",
     "name": "Pilot and Evaluation Agreement",
-    "description": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept or evaluation. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer. Distinct from `saas-customer`, which reads the paid subscription a pilot may convert into.",
+    "description": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept, evaluation or beta test. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer. Distinct from `saas-customer`, which reads the paid subscription a pilot may convert into.",
     "match_features": {
       "title_keywords": [
         "pilot agreement",
@@ -14230,7 +14439,11 @@
         "evaluation agreement",
         "evaluation license agreement",
         "proof of concept agreement",
-        "proof-of-concept agreement"
+        "proof-of-concept agreement",
+        "beta test agreement",
+        "beta testing agreement",
+        "beta program agreement",
+        "beta evaluation agreement"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -14240,7 +14453,9 @@
         "evaluation license",
         "internal evaluation",
         "proof of concept",
-        "during the pilot"
+        "during the pilot",
+        "beta product",
+        "pre-release"
       ],
       "negative_features": []
     },
@@ -20108,6 +20323,61 @@
       "Risk-factor acknowledgment",
       "Bad-actor (Rule 506(d)) representations",
       "Acceptance/rejection and escrow of funds"
+    ]
+  },
+  {
+    "id": "support-maintenance-agreement",
+    "name": "Software Support and Maintenance Agreement",
+    "version": "1.0.0",
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "balanced_defaults": [],
+    "sources": [],
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "description": "A standalone agreement under which a software vendor supports and maintains software the customer has already licensed. The checks read for support hours, response and resolution times by severity, updates and new releases, which versions are supported, the fee and how it can rise, and what support does not cover. Distinct from `software-license-enterprise`, which reads a license and its support together.",
+    "match_features": {
+      "title_keywords": [
+        "software support and maintenance agreement",
+        "support and maintenance agreement",
+        "software maintenance agreement",
+        "software support agreement",
+        "maintenance and support agreement",
+        "technical support agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "error corrections",
+        "new releases",
+        "support fee",
+        "supported versions",
+        "severity level",
+        "telephone and email support",
+        "maintenance releases"
+      ],
+      "negative_features": []
+    },
+    "rule_overrides": {
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      }
+    },
+    "regulator_frame": "US-COMMERCIAL",
+    "companion_playbooks": [
+      "software-license-enterprise",
+      "service-level-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Support hours and how to reach support",
+      "Response and resolution times by severity",
+      "Updates, upgrades and new releases",
+      "Which versions are supported, and for how long",
+      "The support fee, and how it can rise",
+      "What support does not cover"
     ]
   },
   {

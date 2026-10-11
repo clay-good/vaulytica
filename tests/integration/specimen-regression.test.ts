@@ -5871,6 +5871,74 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "memorandum-of-understanding",
     findings: ["MOU-001", "MOU-002", "MOU-003", "MOU-004", "MOU-005", "STRUCT-004"],
   },
+  // spec-v49 Step 312 (tranche B): four practice-only types the second probe
+  // found on the fallback. Each complete one draws none of its own checks and
+  // each thin one draws all of them.
+  "support-maintenance-agreement-complete.txt": {
+    playbook: "support-maintenance-agreement",
+    findings: ["RISK-007", "TEMP-004", "TEMP-008"],
+  },
+  "support-maintenance-agreement-thin.txt": {
+    playbook: "support-maintenance-agreement",
+    findings: [
+      "CHOICE-003",
+      "RISK-001",
+      "RISK-005",
+      "SUP-001",
+      "SUP-002",
+      "SUP-003",
+      "SUP-004",
+      "SUP-005",
+      "SUP-006",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
+  "buy-sell-agreement-complete.txt": {
+    playbook: "buy-sell-agreement",
+    findings: ["STRUCT-005"],
+  },
+  "buy-sell-agreement-thin.txt": {
+    playbook: "buy-sell-agreement",
+    findings: ["BSA-001", "BSA-002", "BSA-003", "BSA-004", "BSA-005", "BSA-006", "CHOICE-003"],
+  },
+  "board-observer-agreement-complete.txt": {
+    playbook: "board-observer-agreement",
+    findings: ["OBLI-005", "STRUCT-005"],
+  },
+  "board-observer-agreement-thin.txt": {
+    playbook: "board-observer-agreement",
+    findings: ["OBS-001", "OBS-002", "OBS-003", "OBS-004", "OBS-005"],
+  },
+  "commercial-power-purchase-complete.txt": {
+    playbook: "commercial-power-purchase-agreement",
+    findings: [
+      "FIN-006",
+      "RISK-005",
+      "RISK-007",
+      "RISK-011",
+      "RISK-015",
+      "STRUCT-005",
+      "TEMP-007",
+      "TEMP-008",
+    ],
+  },
+  "commercial-power-purchase-thin.txt": {
+    playbook: "commercial-power-purchase-agreement",
+    findings: [
+      "CHOICE-003",
+      "PPA-001",
+      "PPA-002",
+      "PPA-003",
+      "PPA-004",
+      "PPA-005",
+      "PPA-006",
+      "RISK-001",
+      "RISK-005",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

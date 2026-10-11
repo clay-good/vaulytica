@@ -1,0 +1,29 @@
+BOARD OBSERVER AGREEMENT
+
+This Board Observer Agreement (this "Agreement") is entered into as of February 23, 2026 (the "Effective Date") between Kestrel Labs, Inc., a Delaware corporation (the "Company"), and Halden Ventures LP, a Delaware limited partnership (the "Investor").
+
+1. Observer Right. For as long as this Agreement is in effect, the Investor may designate one individual (the "Observer") to attend all meetings of the Company's board of directors and of its committees in a non-voting capacity. The Observer is not a director, has no vote, and owes no fiduciary duty to the Company or its stockholders.
+
+2. Notice and Materials. The Company will give the Observer notice of each meeting, and copies of all notices, minutes, consents and other materials it provides to the directors, at the same time and in the same manner as it provides them to the directors.
+
+3. Exclusion. The Company may exclude the Observer from any part of a meeting, and withhold any materials, only to the extent the board determines in good faith, on the advice of counsel, that doing so is reasonably necessary to preserve attorney-client privilege, to avoid a conflict of interest between the Company and the Investor, or to protect trade secrets from a competitor. The Company will tell the Observer when it does so and on which ground.
+
+4. Confidentiality. The Observer and the Investor will keep confidential all information received under this Agreement, will use it only to monitor the Investor's investment in the Company, and will not disclose it except to the Investor's partners and advisors who are bound to keep it confidential. This obligation continues for three years after this Agreement ends.
+
+5. Expenses. The Company will reimburse the Observer's reasonable travel expenses to attend meetings in person, on the same basis as it reimburses its non-employee directors.
+
+6. Term. The Observer right ends on the earliest of the closing of the Company's initial public offering, a sale of the Company by merger or sale of substantially all of its assets, and the date the Investor ceases to hold at least 500,000 shares of the Company's preferred stock.
+
+7. General. The Investor may not assign this Agreement except to an affiliated fund. This Agreement is governed by the laws of the State of Delaware and may be amended only in a writing signed by both parties.
+
+KESTREL LABS, INC.
+
+By: ______________________
+Name: Tomas Reyes
+Title: Chief Executive Officer
+
+HALDEN VENTURES LP
+
+By: ______________________
+Name: Ingrid Halden
+Title: Managing Partner

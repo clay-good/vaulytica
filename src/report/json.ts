@@ -115,7 +115,7 @@ export type JsonReport = {
    * unreviewed."
    *
    * The raw `errored` flags ride inside `run.execution_log`, so a consumer
-   * COULD derive this — by iterating 1,895 entries and knowing to look. The
+   * COULD derive this — by iterating 1,918 entries and knowing to look. The
    * whole point of the notice is that a hole in the analysis should not need
    * deriving. Emitted only when a rule actually threw, so the common path is
    * byte-unchanged.

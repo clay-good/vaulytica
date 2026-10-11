@@ -190,7 +190,12 @@ export const KNOWN_DEBT = {
       // phrase a suppression keys on, the suppression lifts, and the INFO venue
       // finding appears.
       "asset-purchase-complete.txt: lost - gained CHOICE-003",
+      // 9.881.0 — two of the tranche B specimens, the same class: a broken
+      // word hides the venue clause from its suppression in one, and the
+      // phrase "liquidated damages" in the other.
+      "buy-sell-agreement-complete.txt: lost - gained CHOICE-003",
       "cloud-services-agreement.txt: lost DARK-002,TEMP-004 gained -",
+      "commercial-power-purchase-complete.txt: lost FIN-006 gained -",
       "construction-contract.txt: lost - gained CHOICE-006",
       "cookie-notice-uk.txt: lost - gained IPDATA-008",
       // 9.640.0 — the eighth clean document, and the THIRD instance of the one

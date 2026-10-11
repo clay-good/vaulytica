@@ -1,0 +1,70 @@
+{
+  "id": "board-observer-agreement",
+  "name": "Board Observer Agreement",
+  "version": "1.0.0",
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "balanced_defaults": [],
+  "sources": [],
+  "applicable_jurisdictions": ["US"],
+  "description": "An agreement giving an investor the right to send a non-voting observer to a company's board meetings. The checks read for the right to attend without a vote, notice and board materials, the grounds on which the observer can be excluded, confidentiality, and the events that end the right.",
+  "match_features": {
+    "title_keywords": [
+      "board observer agreement",
+      "board observer rights agreement",
+      "observer rights agreement",
+      "board observation rights agreement",
+      "observer agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "non-voting observer",
+      "non-voting capacity",
+      "the observer",
+      "observer rights",
+      "observer right",
+      "designate one individual"
+    ],
+    "negative_features": [
+      "side letter",
+      "most favored",
+      "information rights",
+      "stock purchase agreement"
+    ]
+  },
+  "rule_overrides": {
+    "CHOICE-003": {
+      "skip": true
+    },
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
+  "regulator_frame": "US-VENTURE",
+  "companion_playbooks": ["stockholders-agreement", "mutual-nda"],
+  "compliance_matrix_columns": [
+    "The right to attend, without a vote",
+    "Notice and board materials",
+    "The grounds on which the observer can be excluded",
+    "Confidentiality of what the observer learns",
+    "The events that end the observer right"
+  ]
+}

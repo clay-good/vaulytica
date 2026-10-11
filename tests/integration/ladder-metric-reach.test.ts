@@ -53,12 +53,12 @@ const SPECIMENS = readdirSync(DIR)
  */
 const REACH: Record<string, number> = {
   notice_period_days: 114,
-  term_length_days: 41,
-  payment_term_days: 56,
+  term_length_days: 42,
+  payment_term_days: 57,
   liability_cap_multiple: 22,
   liability_cap_amount: 67,
-  cure_period_days: 64,
-  auto_renewal_notice_days: 26,
+  cure_period_days: 66,
+  auto_renewal_notice_days: 27,
   indemnity_cap_amount: 2,
   uptime_sla_percent: 9,
 };

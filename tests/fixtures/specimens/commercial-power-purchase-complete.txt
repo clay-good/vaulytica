@@ -1,0 +1,43 @@
+POWER PURCHASE AGREEMENT
+
+This Power Purchase Agreement (this "Agreement") is entered into as of January 20, 2026 (the "Effective Date") between Mesa Wind Holdings LLC, a Delaware limited liability company ("Seller"), and Aldine Freight Co., a Texas corporation ("Buyer").
+
+1. The Facility. Seller will develop, build, own and operate a 40 MW wind generating facility in Nolan County, Texas (the "Facility").
+
+2. Term. The term of this Agreement is 15 years, beginning on the date the Facility is able to deliver energy to the delivery point on a commercial basis (the "Commercial Operation Date"). If the Commercial Operation Date has not occurred by December 31, 2027, Buyer may terminate this Agreement and Seller will pay Buyer $1,500,000 as liquidated damages.
+
+3. Sale of Energy. Seller will sell and deliver, and Buyer will buy and receive, all of the energy the Facility produces during the term.
+
+4. Contract Price. The contract price is $34.00 per megawatt-hour for the first year of the term, and escalates by 2% on each anniversary of the Commercial Operation Date.
+
+5. Delivery Point. Energy is delivered at the point of interconnection between the Facility and the transmission system (the "Delivery Point"). Title to and risk of loss of the energy pass to Buyer at the Delivery Point. Seller bears all costs and losses before the Delivery Point, and Buyer bears them after it.
+
+6. Renewable Energy Credits. Seller will transfer to Buyer, at no added charge, all renewable energy credits and other environmental attributes associated with the energy delivered, through the regional tracking system, within 30 days after the end of each calendar quarter.
+
+7. Guaranteed Output. Seller guarantees that the Facility will deliver at least 105,000 megawatt-hours in each contract year. For each megawatt-hour of shortfall, Seller will pay Buyer the amount by which the cost of replacement energy and credits exceeds the contract price.
+
+8. Curtailment. If Buyer directs Seller to curtail deliveries for a reason other than an emergency on the transmission system, Buyer will pay the contract price for the energy the Facility would have delivered. Neither party pays for a curtailment ordered by the transmission operator.
+
+9. Billing. Seller will invoice Buyer each month for the energy delivered in the prior month, and Buyer will pay each invoice within 20 days after receiving it.
+
+10. Credit Support. Seller will post, and maintain until the Commercial Operation Date, a letter of credit of $2,000,000, reduced to $800,000 for the rest of the term. Buyer will deliver a guaranty of its obligations from its parent company, and will post a letter of credit of $1,000,000 if its parent's credit rating falls below investment grade.
+
+11. Default and Termination. A party is in default if it fails to pay an amount when due and does not cure within ten business days after written notice, or breaches another material obligation and does not cure within 30 days after written notice. On a default, the other party may terminate this Agreement and recover a termination payment equal to the present value of its loss over the rest of the term. On termination, each party will pay all amounts then owed. Sections 12 and 13 survive termination of this Agreement.
+
+12. Limitation of Liability. Neither party will be liable to the other for indirect or consequential damages, except as part of a termination payment under Section 11.
+
+13. Indemnification. Each party will indemnify the other against third-party claims for injury or property damage caused by its negligence on its side of the Delivery Point.
+
+14. General. This Agreement is governed by the laws of the State of Texas, and the state and federal courts located in Harris County, Texas have exclusive jurisdiction over any dispute arising under it. Neither party may assign it without the other's written consent, except that Seller may assign it as security to its lenders.
+
+MESA WIND HOLDINGS LLC
+
+By: ______________________
+Name: Dolores Vance
+Title: President
+
+ALDINE FREIGHT CO.
+
+By: ______________________
+Name: Marcus Odum
+Title: Chief Financial Officer

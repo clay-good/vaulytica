@@ -1733,6 +1733,50 @@
    "sources": []
   },
   {
+   "id": "board-observer-agreement",
+   "name": "Board Observer Agreement",
+   "group": "Corporate & governance",
+   "summary": "An agreement giving an investor the right to send a non-voting observer to a company's board meetings. The checks read for the right to attend without a vote, notice and board materials, the grounds on which the observer can be excluded, confidentiality, and the events that end the right.",
+   "checks": [
+    {
+     "id": "OBS-001",
+     "name": "The right to attend, without a vote",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "OBS-002",
+     "name": "Notice and board materials",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "OBS-003",
+     "name": "The grounds on which the observer can be excluded",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "OBS-004",
+     "name": "Confidentiality of what the observer learns",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "OBS-005",
+     "name": "The events that end the observer right",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 107,
+   "companions": [
+    "stockholders-agreement",
+    "mutual-nda"
+   ],
+   "sources": []
+  },
+  {
    "id": "board-resolution",
    "name": "Board Resolution (Standalone)",
    "group": "Corporate & governance",
@@ -1867,6 +1911,55 @@
    "companions": [
     "security-incident-response-plan",
     "information-security-policy"
+   ],
+   "sources": []
+  },
+  {
+   "id": "buy-sell-agreement",
+   "name": "Buy-Sell Agreement",
+   "group": "Corporate & governance",
+   "summary": "An agreement among the owners of a closely held company about what happens to an owner's interest on death, disability, departure, divorce or bankruptcy. The checks read for the triggering events, whether the purchase is required or optional, how the price is set, how it is funded and paid, and the restriction on transfers to outsiders.",
+   "checks": [
+    {
+     "id": "BSA-001",
+     "name": "The events that trigger a purchase",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BSA-002",
+     "name": "Whether the purchase is required or optional",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BSA-003",
+     "name": "How the price is set",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BSA-004",
+     "name": "How the purchase is funded",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BSA-005",
+     "name": "How the price is paid",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "BSA-006",
+     "name": "Restriction on transfers to outsiders",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 107,
+   "companions": [
+    "stockholders-agreement"
    ],
    "sources": []
   },
@@ -2571,6 +2664,55 @@
    "general_checks": 104,
    "companions": [
     "code-of-conduct"
+   ],
+   "sources": []
+  },
+  {
+   "id": "commercial-power-purchase-agreement",
+   "name": "Power Purchase Agreement (Commercial)",
+   "group": "Commercial & services",
+   "summary": "A long-term contract under which a business or utility buys the output of a wind, solar or other generating facility. The checks read for the term and the date it starts, the price and how it changes, the delivery point, who gets the renewable energy credits, a commitment on output and the cost of curtailment, and credit support. The solar contract a household signs for its own roof has a type of its own.",
+   "checks": [
+    {
+     "id": "PPA-001",
+     "name": "The term, and the date it starts running",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PPA-002",
+     "name": "The price, and how it changes",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PPA-003",
+     "name": "The delivery point, and who bears losses before it",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PPA-004",
+     "name": "Who gets the renewable energy credits",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PPA-005",
+     "name": "A commitment on output, and what curtailment costs",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "PPA-006",
+     "name": "Security for each party's performance",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 113,
+   "companions": [
+    "guaranty"
    ],
    "sources": []
   },
@@ -10830,7 +10972,7 @@
    "id": "pilot-evaluation-agreement",
    "name": "Pilot and Evaluation Agreement",
    "group": "SaaS & technology",
-   "summary": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept or evaluation. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer.",
+   "summary": "A short agreement under which a customer tries a product before buying it — a pilot, proof of concept, evaluation or beta test. The checks read for a license confined to evaluation, a stated length, what happens when the pilot ends, rights in feedback, return or deletion of data, and an as-is disclaimer.",
    "checks": [
     {
      "id": "PILOT-001",
@@ -14879,6 +15021,56 @@
    "companions": [
     "ppm-narrative",
     "side-letter"
+   ],
+   "sources": []
+  },
+  {
+   "id": "support-maintenance-agreement",
+   "name": "Software Support and Maintenance Agreement",
+   "group": "SaaS & technology",
+   "summary": "A standalone agreement under which a software vendor supports and maintains software the customer has already licensed. The checks read for support hours, response and resolution times by severity, updates and new releases, which versions are supported, the fee and how it can rise, and what support does not cover.",
+   "checks": [
+    {
+     "id": "SUP-001",
+     "name": "Support hours and how to reach support",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SUP-002",
+     "name": "Response and resolution times by severity",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SUP-003",
+     "name": "Updates, upgrades and new releases",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SUP-004",
+     "name": "Which versions are supported, and for how long",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SUP-005",
+     "name": "The support fee, and how it can rise",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SUP-006",
+     "name": "What support does not cover",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 113,
+   "companions": [
+    "software-license-enterprise",
+    "service-level-agreement"
    ],
    "sources": []
   },

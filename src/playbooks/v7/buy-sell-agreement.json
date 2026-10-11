@@ -1,0 +1,69 @@
+{
+  "id": "buy-sell-agreement",
+  "name": "Buy-Sell Agreement",
+  "version": "1.0.0",
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "balanced_defaults": [],
+  "sources": [],
+  "applicable_jurisdictions": ["US"],
+  "description": "An agreement among the owners of a closely held company about what happens to an owner's interest on death, disability, departure, divorce or bankruptcy. The checks read for the triggering events, whether the purchase is required or optional, how the price is set, how it is funded and paid, and the restriction on transfers to outsiders. Distinct from `stockholders-agreement`, which reads a venture-backed company's investor agreement.",
+  "match_features": {
+    "title_keywords": [
+      "buy-sell agreement",
+      "buy sell agreement",
+      "buy-sell and redemption agreement",
+      "cross-purchase agreement",
+      "stock redemption agreement",
+      "shareholder buy-sell agreement",
+      "buyout agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "deceased shareholder",
+      "surviving shareholders",
+      "agreed value",
+      "life insurance",
+      "right of first refusal",
+      "cross-purchase",
+      "estate of the"
+    ],
+    "negative_features": ["preferred stock", "investors' rights"]
+  },
+  "rule_overrides": {
+    "FIN-005": {
+      "skip": true
+    },
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    },
+    "RISK-005": {
+      "skip": true
+    },
+    "RISK-016": {
+      "skip": true
+    },
+    "TERM-002": {
+      "skip": true
+    },
+    "TERM-005": {
+      "skip": true
+    }
+  },
+  "regulator_frame": "STATE-CORPORATE",
+  "companion_playbooks": ["stockholders-agreement"],
+  "compliance_matrix_columns": [
+    "The events that trigger a purchase",
+    "Whether the purchase is required or optional",
+    "How the price is set",
+    "How the purchase is funded",
+    "How the price is paid",
+    "Restriction on transfers to outsiders"
+  ]
+}
