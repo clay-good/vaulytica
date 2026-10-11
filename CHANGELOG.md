@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.898.0] — 2026-10-11
+
+### Fixed
+- 🚨 **The deployed-site budget run was gated behind a secret that is not set,
+  so it would never have run.** 9.896.0 added it as a post-deploy step in
+  `deploy.yml` behind `if: env.CLOUDFLARE_API_TOKEN != ''`, copying the smoke
+  test beside it. Checking the actual job rather than trusting its green tick
+  showed that token is not configured in this repository: the deploy step, the
+  post-deploy smoke test and the new budget run are **all skipped on every
+  push**, with "Note: deploy skipped" succeeding in their place. A check that
+  never fires closes nothing, so step 36's closure was over-claimed.
+  It is now its own scheduled workflow
+  (`.github/workflows/lighthouse-deployed.yml`, daily 06:00 UTC plus manual
+  dispatch) and needs **no credentials at all** — Lighthouse against a public
+  URL never did — so it runs whatever publishes the site, and catches an
+  edge-configuration change within a day. The token-gated step is removed
+  rather than left as a dormant duplicate.
+  (The site is evidently published by something other than this workflow,
+  since `https://vaulytica.com` serves the current hashed assets while the
+  workflow's deploy step is skipped. Worth the owner's attention, but it does
+  not change what this check needs.)
+
+## [9.897.0] — 2026-10-11
+
+### Changed
+- **The deployed-site budget run asserts only what the deploy can get wrong.**
+  9.896.0 shipped it with the timing budgets at error level as well, copied
+  from the local config. That was wrong on two counts: the local job already
+  enforces the same thresholds on the same bytes over three runs against a
+  loopback server, so asserting them again across a real network from a GitHub
+  runner adds flake rather than signal — and because the step runs AFTER the
+  deploy, a flake would put a red cross on a release that is already live.
+  Error level is now exactly `uses-text-compression` and `uses-long-cache-ttl`,
+  the two audits a local static server cannot satisfy and the edge can. The
+  rest are warnings, so a genuine regression is still reported and the full
+  Lighthouse report is still uploaded.
+  Verified against the live site rather than assumed: the document is served
+  `content-encoding: br`, and hashed assets carry `cache-control: public,
+  max-age=31536000, immutable` — so both error-level audits pass today, and a
+  failure means the edge configuration changed.
+
 ## [9.896.0] — 2026-10-11
 
 ### Added

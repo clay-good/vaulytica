@@ -1,0 +1,60 @@
+name: Lighthouse (deployed site, 4G budget)
+
+# The budget run against the DEPLOYED site, which `lighthouse.yml` cannot do.
+#
+# `lighthouse.yml` collects from `staticDistDir` on every commit: the same
+# bytes, the same budgets, a loopback server. What it cannot test is anything
+# the edge is responsible for — whether the response is actually compressed,
+# whether cache lifetimes are set, which HTTP version is negotiated. Those
+# contribute to real 4G field performance as much as the bytes do, and
+# BUILD_PROGRESS step 36's criterion is a claim about the SITE.
+#
+# 🚨 It is a SCHEDULE, not a post-deploy step, and that is deliberate. The
+# first version of this lived in `deploy.yml` behind
+# `if: env.CLOUDFLARE_API_TOKEN != ''`, copying the smoke test beside it — and
+# that token is not configured in this repository, so the deploy step, the
+# smoke test and the budget run are all SKIPPED on every push. A check that
+# never fires closes nothing. Lighthouse against a public URL needs no
+# credentials, so this needs no secret and runs whatever publishes the site.
+#
+# Assertions live in `lighthouserc.deployed.json`, where only the two
+# edge-specific audits are errors; the timing budgets are warnings there
+# because `lighthouse.yml` already enforces them on the same bytes over three
+# runs, and asserting them again across a real network adds flake, not signal.
+
+on:
+  schedule:
+    # Daily 06:00 UTC — often enough to catch an edge-configuration change
+    # within a day, rare enough to cost nothing on the critical path.
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: 4G budget against the deployed site
+        run: lhci autorun --config=./lighthouserc.deployed.json
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-deployed-reports
+          path: .lighthouseci/
+          retention-days: 7
