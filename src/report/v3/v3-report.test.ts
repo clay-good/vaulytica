@@ -143,6 +143,7 @@ const sampleInsurance: InsuranceSchedule = {
       line: "commercial-general-liability",
       per_occurrence_usd: 1_000_000,
       aggregate_usd: 2_000_000,
+      limit_label: "General aggregate",
       raw_text: "$1M / $2M CGL",
       position: { section_id: "s8", start: 0, end: 20 },
     },
@@ -150,6 +151,7 @@ const sampleInsurance: InsuranceSchedule = {
       line: "cyber-liability",
       per_occurrence_usd: 5_000_000,
       aggregate_usd: 5_000_000,
+      limit_label: null,
       raw_text: "$5M cyber",
       position: { section_id: "s8", start: 30, end: 50 },
     },
@@ -254,6 +256,21 @@ describe("renderInsurancePage", () => {
   it("renders the schedule when present", () => {
     const out = renderInsurancePage(sampleInsurance);
     expect(out.length).toBeGreaterThan(0);
+  });
+  /**
+   * This assertion exists because the one above it passed unchanged when the
+   * LIMIT column was added — `out.length > 0` cannot tell a four-column table
+   * from a three-column one, so it could not have noticed the column missing
+   * either. A row has to say which limit it states.
+   */
+  it("names the limit each figure states, and says so when the document does not", () => {
+    const rendered = JSON.stringify(renderInsurancePage(sampleInsurance));
+    expect(rendered).toContain("Limit");
+    expect(rendered).toContain("General aggregate");
+    expect(rendered).toContain("$2,000,000");
+    // The cyber row carries `limit_label: null` — an unlabelled prose
+    // requirement — and must render the em-dash placeholder, not "null".
+    expect(rendered).not.toContain("null");
   });
 });
 

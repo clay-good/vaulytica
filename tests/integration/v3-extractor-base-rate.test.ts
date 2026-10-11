@@ -45,7 +45,7 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
  */
 const REACH: Record<keyof V3ExtractedData, number> = {
   data_categories: 122,
-  insurance: 53,
+  insurance: 55,
   audit_rights: 51,
   subprocessor: 38,
   breach_timings: 36,

@@ -48,10 +48,18 @@ export function renderInsurancePage(
   if (schedule.amounts.length > 0) {
     out.push(
       buildTable([
-        headerRow(["Line", "Per-occurrence (USD)", "Aggregate (USD)"]),
+        // The LIMIT column is what makes the table readable on a certificate.
+        // A certificate's general liability section states six figures — each
+        // occurrence, damage to rented premises, medical expense, personal and
+        // advertising injury, the general aggregate and the products
+        // aggregate — and without their labels this table printed six rows all
+        // reading "Commercial General Liability" with no way to tell which
+        // figure was which. A prose requirement that labels nothing shows "—".
+        headerRow(["Line", "Limit", "Per-occurrence (USD)", "Aggregate (USD)"]),
         ...schedule.amounts.map((a) =>
           bodyRow([
             LINE_LABEL[a.line] ?? a.line,
+            a.limit_label ?? "—",
             a.per_occurrence_usd !== null ? formatUsd(a.per_occurrence_usd) : "—",
             a.aggregate_usd !== null ? formatUsd(a.aggregate_usd) : "—",
           ]),

@@ -657,6 +657,173 @@ describe("v3 insurance extractor", () => {
     expect(sched.notice_of_cancellation_days).toBe(30);
   });
 
+  /**
+   * The certificate's LIMITS column, as a PDF's text layer delivers it.
+   *
+   * Every figure here is labelled, and the label comes FIRST. Before the
+   * labels were read this produced six rows all named "Commercial General
+   * Liability", the aggregate column empty on all six, and the general and
+   * products aggregates printed as per-occurrence limits.
+   */
+  it("reads an ACORD 25 limits grid, each figure on the basis its label states", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Coverages",
+        "COMMERCIAL GENERAL LIABILITY EACH OCCURRENCE $1,000,000 DAMAGE TO RENTED PREMISES (Ea occurrence) $100,000 MED EXP (Any one person) $5,000 PERSONAL & ADV INJURY $1,000,000 GENERAL AGGREGATE $2,000,000 PRODUCTS - COMP/OP AGG $2,000,000",
+      ]),
+    );
+    const got = sched.amounts.map(
+      (a) => `${a.limit_label}|${a.per_occurrence_usd}|${a.aggregate_usd}`,
+    );
+    expect(got).toEqual([
+      "Each occurrence|1000000|null",
+      "Damage to rented premises|100000|null",
+      "Medical expense|5000|null",
+      "Personal and advertising injury|1000000|null",
+      "General aggregate|null|2000000",
+      "Products / completed operations aggregate|null|2000000",
+    ]);
+    expect(sched.amounts.every((a) => a.line === "commercial-general-liability")).toBe(true);
+  });
+
+  it("tells the two aggregates apart however the document spells them", () => {
+    // A certificate abbreviates ("PRODUCTS - COMP/OP AGG"); a prose schedule
+    // spells it out. Both must name the products aggregate, or the report shows
+    // two aggregate rows of the same size a reader cannot tell apart.
+    for (const spelling of [
+      "General aggregate $2,000,000. Products and completed operations aggregate $3,000,000.",
+      "GENERAL AGGREGATE $2,000,000 PRODUCTS - COMP/OP AGG $3,000,000",
+    ]) {
+      const sched = extractInsuranceSchedule(
+        buildTree(["Coverages", `COMMERCIAL GENERAL LIABILITY ${spelling}`]),
+      );
+      expect(sched.amounts.map((a) => `${a.limit_label}|${a.aggregate_usd}`)).toEqual([
+        "General aggregate|2000000",
+        "Products / completed operations aggregate|3000000",
+      ]);
+    }
+  });
+
+  it("claims a limits row for the coverage line above it, and gives the claim up after", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Coverages",
+        "UMBRELLA / EXCESS LIABILITY — Zenith Re — UMB-2026-330047",
+        "Each Occurrence: $5,000,000",
+        "Aggregate: $5,000,000",
+        // Neither a limits row nor a coverage line: the claim ends here, so
+        // nothing below can be attributed to the umbrella policy.
+        "Follows Form: Commercial General Liability",
+        "Administrative fee: $25,000",
+      ]),
+    );
+    expect(
+      sched.amounts.map(
+        (a) => `${a.line}|${a.limit_label}|${a.per_occurrence_usd}|${a.aggregate_usd}`,
+      ),
+    ).toEqual([
+      "umbrella-excess|Each occurrence|5000000|null",
+      "umbrella-excess|Aggregate|null|5000000",
+    ]);
+  });
+
+  it("does not read a retention or a deductible as a limit of liability", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Coverages",
+        "UMBRELLA LIABILITY",
+        "Each Occurrence: $5,000,000",
+        "Retention: $10,000",
+        "Self-Insured Retention: $250,000",
+      ]),
+    );
+    expect(sched.amounts.map((a) => a.per_occurrence_usd)).toEqual([5_000_000]);
+  });
+
+  /**
+   * The regression this change nearly introduced, pinned.
+   *
+   * Preferring the preceding label over the trailing qualifier moved 21 corpus
+   * aggregates into the per-occurrence column, because "…$4,000,000 aggregate;
+   * automobile liability of $1,000,000" puts an aggregate label 26 characters
+   * before a figure it has nothing to do with.
+   */
+  it("does not let a label reach across a clause boundary to the next line's figure", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Insurance",
+        "Architect shall maintain commercial general liability insurance of $2,000,000 per occurrence and $4,000,000 aggregate; automobile liability of $1,000,000; and employer's liability of $1,000,000.",
+      ]),
+    );
+    // Each figure to the cover named nearest before it, and the word
+    // "aggregate" reaching no further than the figure it qualifies.
+    expect(
+      sched.amounts.map(
+        (a) => `${a.line}|${a.limit_label}|${a.per_occurrence_usd}|${a.aggregate_usd}`,
+      ),
+    ).toEqual([
+      "commercial-general-liability|Each occurrence|2000000|null",
+      "commercial-general-liability|Aggregate|null|4000000",
+      "automobile-liability|null|1000000|null",
+      "employers-liability|null|1000000|null",
+    ]);
+  });
+
+  it("keeps an endorsement's edition date, and reads the workers'-comp form", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Endorsements",
+        "Additional insured per ISO form CG 20 10 04 13 and CG 20 37 04 13; waiver of subrogation per CG 24 04 05 09 and WC 00 03 13.",
+      ]),
+    );
+    expect(sched.endorsements.map((e) => e.form_number)).toEqual([
+      "CG 20 10 04 13",
+      "CG 20 37 04 13",
+      "CG 24 04 05 09",
+      "WC 00 03 13",
+    ]);
+  });
+
+  it("reads the ACORD cancellation legend, whose cancellation word comes first", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Cancellation",
+        "SHOULD ANY OF THE ABOVE DESCRIBED POLICIES BE CANCELLED BEFORE THE EXPIRATION DATE THEREOF, THIRTY (30) DAYS WRITTEN NOTICE WILL BE DELIVERED IN ACCORDANCE WITH THE POLICY PROVISIONS TO THE CERTIFICATE HOLDER NAMED BELOW.",
+      ]),
+    );
+    expect(sched.notice_of_cancellation_days).toBe(30);
+  });
+
+  it("states no period when the certificate's legend states none", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Cancellation",
+        "SHOULD ANY OF THE ABOVE DESCRIBED POLICIES BE CANCELLED BEFORE THE EXPIRATION DATE THEREOF, NOTICE WILL BE DELIVERED IN ACCORDANCE WITH THE POLICY PROVISIONS.",
+      ]),
+    );
+    expect(sched.notice_of_cancellation_days).toBeNull();
+  });
+
+  it("does not read a party's own cancellation right as an insurer's", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Cancellation",
+        "The Agency may cancel any placement, in whole or in part, on fourteen (14) days prior written notice without penalty.",
+      ]),
+    );
+    expect(sched.notice_of_cancellation_days).toBeNull();
+  });
+
+  it("reads a notice period stated before the word cancellation", () => {
+    const sched = extractInsuranceSchedule(
+      buildTree([
+        "Insurance",
+        "Each policy shall require thirty (30) days' written notice to Lessor before cancellation.",
+      ]),
+    );
+    expect(sched.notice_of_cancellation_days).toBe(30);
+  });
+
   it("reads the notice period in the 'word (numeral)' drafting form", () => {
     // "thirty (30) days' notice of cancellation" previously parsed to null.
     for (const [text, days] of [

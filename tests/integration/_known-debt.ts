@@ -360,6 +360,22 @@ export const KNOWN_DEBT = {
       "promissory-note.txt: lost FIN-009 gained -",
     ],
   },
+  // insurance-limit-vs-cap.test.ts — CAP_AS_LIMIT_DEBT
+  "liability-cap-as-insurance-limit": {
+    reason:
+      "On {n} specimens, a sum capping a party's liability is listed in the insurance summary as a coverage limit, because the clause that caps it also names a line of cover and the figure sits beside it.",
+    entries: [
+      // 9.888.0 — found while reading the insurance summary for a certificate.
+      // The architect's cap is "the greater of $1,240,000 or the amount of
+      // professional liability insurance proceeds actually available for the
+      // claim", so the clause genuinely names professional liability and the
+      // figure genuinely sits before it. Telling a CAP from a LIMIT needs the
+      // clause's subject, not its vocabulary — the same figure in the same words
+      // is a limit in an insurance schedule and a cap here — and that is a
+      // separate change from reading a certificate's labels. One case.
+      "architect-agreement.txt professional-liability 1240000",
+    ],
+  },
   // expected-defined-terms.test.ts — FALSE_ACCUSATIONS
   "expected-defined-terms": {
     reason:

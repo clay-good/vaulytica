@@ -245,12 +245,29 @@ export type InsuranceAmount = {
   per_occurrence_usd: number | null;
   /** Aggregate USD when stated. */
   aggregate_usd: number | null;
+  /**
+   * The document's own name for this limit, when it labels it.
+   *
+   * A certificate's LIMITS column is a list of labelled figures — "EACH
+   * OCCURRENCE $1,000,000", "GENERAL AGGREGATE $2,000,000", "DAMAGE TO RENTED
+   * PREMISES $100,000" — and without the label the insurance summary printed
+   * six rows all reading "Commercial General Liability" with no way to tell
+   * which figure was which. Null for a prose requirement that states a sum
+   * with no label of its own ("maintain commercial general liability of at
+   * least $1,000,000").
+   */
+  limit_label: string | null;
   raw_text: string;
   position: DocPosition;
 };
 
 export type InsuranceEndorsement = {
-  /** ISO endorsement form (CG 20 10, CG 20 37, CG 20 26, etc.). */
+  /**
+   * The endorsement form as the document designates it, edition date
+   * included: ISO forms are `CG 20 10 04 13` — form CG 20 10, edition 04 13 —
+   * and NCCI workers'-compensation forms are `WC 00 03 13`. Truncating the
+   * edition names a form nobody can look up.
+   */
   form_number: string;
   raw_text: string;
   position: DocPosition;

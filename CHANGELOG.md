@@ -2,6 +2,72 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.888.0] — 2026-10-11
+
+### Fixed
+- **The insurance summary printed the wrong figures for a certificate of
+  insurance, and wrong figures for a clause that names more than one cover.**
+  Both were found by rendering the §58 Insurance Summary for an ACORD 25 and
+  reading it. A certificate states each limit with its label FIRST — "EACH
+  OCCURRENCE $1,000,000 … GENERAL AGGREGATE $2,000,000" — and the extractor
+  read only the qualifier that FOLLOWS a figure, which is how a contract
+  requirement is written. So the certificate's six general-liability figures
+  became six rows all labelled "Commercial General Liability", the aggregate
+  column was empty on every one of them, and **the general aggregate and the
+  products aggregate were printed as per-occurrence limits** — a reader
+  checking whether a vendor carries $1M/$2M saw a per-occurrence limit of
+  $2,000,000 the certificate does not state, and no aggregate at all. The
+  label that precedes a figure is now read, it decides the basis, and it is
+  carried through to a new LIMIT column so every row says which limit it is.
+  Limits on the continuation rows beneath a coverage line are claimed for it,
+  and the claim is given up at the first row that is neither a limit nor a
+  cover — so a certificate's twelve stated limits are all read where six were
+  before, and a retention or deductible is dropped rather than reported as the
+  policy's limit.
+- **The two aggregates read as one.** A certificate abbreviates the products
+  aggregate ("PRODUCTS - COMP/OP AGG") and a prose schedule spells it
+  ("Products and completed operations aggregate"); only the abbreviation was
+  recognized, so the spelled form fell through to the bare "Aggregate" label
+  and the report showed two aggregate rows of the same size a reader could not
+  tell apart.
+- **A clause that names several covers gave every figure to all of them.**
+  "Commercial general liability of $2,000,000 per occurrence and $4,000,000
+  aggregate; automobile liability of $1,000,000; and employer's liability of
+  $1,000,000" put a $4,000,000 aggregate and a $2,000,000 per-occurrence limit
+  on the automobile policy, and the automobile figure on general liability.
+  Over the specimen corpus that was **182 rows of 312**. A figure now belongs
+  to the cover named nearest before it.
+- **`employer's liability` named no cover at all.** The pattern required
+  `employers` before the apostrophe, so the singular possessive — the
+  commonest drafting of the commonest workers'-compensation companion limit —
+  was invisible, and its figure was recorded against whatever cover was named
+  beside it. All four possessive spellings are read now, for both
+  workers' compensation and employer's liability.
+- **Endorsement form numbers were truncated to designations that do not
+  exist.** ISO form `CG 20 10 04 13` is form CG 20 10, edition April 2013; the
+  pattern allowed three two-digit groups and recorded "CG 20 10 04". Editions
+  are kept, and the prefix set now covers the ISO commercial lines (CG, CA,
+  CU, CP, CR, IL) and NCCI's WC — so the workers'-compensation waiver of
+  subrogation, `WC 00 03 13`, is read where it was not seen before.
+- **A certificate's cancellation legend yielded no notice period.** The
+  pattern needed the words "notice of cancellation" in that order; an ACORD 25
+  writes the legend the other way round ("SHOULD ANY OF THE ABOVE DESCRIBED
+  POLICIES BE CANCELLED … THIRTY (30) DAYS WRITTEN NOTICE WILL BE DELIVERED"),
+  as does an ordinary insurance clause ("thirty (30) days' written notice to
+  Lessor before cancellation"). Both are read now, scoped to the sentence and
+  required to name a policy — measuring it showed that without the insurance
+  noun an advertising insertion order's right to cancel a placement on
+  fourteen days' notice was reported as an insurer's. The legend as revised in
+  2010 states no number at all, and that still correctly yields nothing rather
+  than an invented period.
+
+### Changed
+- The §58 Insurance Summary table has a **Limit** column between the cover and
+  the figures. A prose requirement that labels nothing shows an em dash.
+- `InsuranceAmount` carries `limit_label`; `v3-extractor-base-rate`'s
+  insurance reach moves 53 → 55 (an equipment lease and a cyber policy whose
+  cancellation legends are now read).
+
 ## [9.887.0] — 2026-10-11
 
 ### Added
