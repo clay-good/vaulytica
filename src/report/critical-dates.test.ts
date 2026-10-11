@@ -257,6 +257,38 @@ describe("resolveAnchors (companion §2)", () => {
     expect(anchors.get("effective date")).toBe("2025-01-01");
   });
 
+  /**
+   * The FTC cooling-off notice's own cross-reference.
+   *
+   * 16 CFR 429.1(b) prescribes the notice verbatim — "within THREE BUSINESS
+   * DAYS from the above date" — directly beneath a field printing "Date of
+   * transaction:". A residential solar agreement reported Resolved: 0 and put
+   * the consumer's own statutory right to cancel under "verify manually" with
+   * the reason "relative to 'above date', which has no defined calendar date".
+   */
+  it('binds the FTC notice\'s "above date" to its transaction-date field', () => {
+    const tree = buildTree([
+      "Notice of Cancellation",
+      "Date of transaction: April 20, 2026",
+      "You may CANCEL this transaction, without any Penalty or Obligation, within THREE BUSINESS DAYS from the above date.",
+    ]);
+    const anchors = resolveAnchors(extractAll(tree), tree);
+    expect(anchors.get("above date")).toBe("2026-04-20");
+    expect(anchors.get("date of transaction")).toBe("2026-04-20");
+  });
+
+  it('does not bind "above date" in a document with no transaction-date field', () => {
+    // The phrase means whatever sits above it; binding it document-wide would
+    // be wrong anywhere but inside the form that prints its own date field.
+    const tree = buildTree([
+      "Term",
+      "This Agreement is dated March 3, 2026.",
+      "Either party may terminate within ten days from the above date.",
+    ]);
+    const anchors = resolveAnchors(extractAll(tree), tree);
+    expect(anchors.has("above date")).toBe(false);
+  });
+
   it("binds an anchor co-located with its parenthetical", () => {
     const tree = buildTree([
       "Preamble",

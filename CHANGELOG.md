@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.892.0] — 2026-10-11
+
+### Fixed
+- **A consumer's statutory right to cancel was reported as a deadline we could
+  not place on a calendar, on a document that states everything needed to place
+  it.** Found by rendering the deadlines calendar and the critical-dates
+  register for a residential solar agreement and reading them. The register
+  said **Resolved: 0 · Verify manually: 5**, and one of the five was the
+  cooling-off right itself — classified correctly as a notice deadline owed by
+  "You", with the reason *"relative to 'above date', which has no defined
+  calendar date"*.
+  16 CFR 429.1(b) prescribes that notice verbatim — "within THREE BUSINESS DAYS
+  from **the above date**" — printed directly beneath a field reading "Date of
+  transaction: April 20, 2026". A reader resolves it in one glance. Two things
+  stopped the engine: the existing labelled-field rule requires the label to
+  END in "Date" and this one begins with it, and the anchor is positional
+  rather than a named term.
+  The form's own cross-reference is now bound to the form's own field, and only
+  where that field is present — "the above date" means whatever sits above it,
+  so binding the phrase document-wide would be wrong anywhere else. The
+  register now reads *"business-day deadline (3 business days) — no holiday
+  calendar is asserted; verify manually"*: the anchor is resolved and what
+  remains is the engine's deliberate refusal to guess business days.
+  With a holiday calendar asserted (`--deadline-profile frcp-6`) it computes
+  **2026-04-23** — which is exactly the date the document states in prose
+  ("not later than midnight of April 23, 2026"), derived independently from the
+  transaction date. The corpus holds one such document, because the corpus is
+  not where this form lives: the rule covers every door-to-door sale — solar,
+  home improvement, water treatment — and its wording is fixed by regulation.
+
 ## [9.891.0] — 2026-10-11
 
 ### Fixed

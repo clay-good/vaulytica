@@ -443,9 +443,44 @@ export function resolveAnchors(extracted: ExtractedData, tree?: DocumentTree): M
         const iso = firstAbsoluteIso(value.split(/\s(?=[A-Z][A-Za-z ]{0,30}:\s)/)[0]!);
         if (iso && !map.has(key)) map.set(key, iso);
       }
+      bindTransactionDate(ctx.text, map);
     });
   }
   return map;
+}
+
+/**
+ * The FTC cooling-off notice binds "the above date" to its own date field.
+ *
+ * 16 CFR 429.1(b) prescribes the NOTICE OF CANCELLATION verbatim, and it reads
+ * "You may CANCEL this transaction, without any Penalty or Obligation, within
+ * THREE BUSINESS DAYS from the above date" — directly beneath a field that
+ * prints "Date of transaction: <date>". A reader resolves that in one glance,
+ * and the register called it unresolvable: a residential solar agreement
+ * reported **Resolved: 0 · Verify manually: 5**, and one of the five was the
+ * consumer's own statutory right to cancel, classified correctly as a notice
+ * deadline owed by "You" but with no date on it.
+ *
+ * Two things stopped it. `fieldLabel` above requires the label to END in
+ * "Date", and this one begins with it ("Date of transaction"). And the anchor
+ * is POSITIONAL — "the above date" — rather than a named term.
+ *
+ * 🚨 Bound only where the form's own field is present. "The above date" means
+ * whatever sits above it, so binding the phrase document-wide would be wrong
+ * in any other context; inside a document that prints this field there is one
+ * transaction date and the phrase is the regulator's own cross-reference to
+ * it. The corpus holds one such document, because the corpus is not where this
+ * form lives — the rule covers every door-to-door sale (solar, home
+ * improvement, water treatment), and its wording is fixed by regulation.
+ */
+function bindTransactionDate(text: string, map: Map<string, string>): void {
+  const field = /\bdate\s+of\s+(?:this\s+)?transaction\s*:\s*/i.exec(text);
+  if (!field) return;
+  const iso = firstAbsoluteIso(text.slice(field.index + field[0].length).slice(0, 48));
+  if (!iso) return;
+  for (const name of ["above date", "date of transaction", "date of this transaction"]) {
+    if (!map.has(name)) map.set(name, iso);
+  }
 }
 
 // ---------------------------------------------------------------------------
