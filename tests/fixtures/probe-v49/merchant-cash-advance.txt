@@ -1,0 +1,11 @@
+MERCHANT CASH ADVANCE AGREEMENT
+
+This Merchant Cash Advance Agreement is entered into on March 3, 2026 between Harbor Funding LLC ("Funder") and Tidewater Bakery Inc. ("Merchant").
+
+1. Purchase of Receivables. Funder purchases $80,000 of Merchant's future receivables for a purchase price of $60,000.
+
+2. Specified Percentage. Merchant authorizes Funder to debit 12% of Merchant's daily card receipts from Merchant's bank account by ACH until the purchased amount has been delivered.
+
+3. Confession of Judgment. Merchant irrevocably authorizes any attorney to appear for Merchant in any court and confess judgment against Merchant for the unpaid balance, without notice.
+
+4. Personal Guaranty. The owner of Merchant personally guarantees Merchant's performance of this Agreement.

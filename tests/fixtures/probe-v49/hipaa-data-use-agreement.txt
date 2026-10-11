@@ -1,0 +1,11 @@
+DATA USE AGREEMENT FOR A LIMITED DATA SET
+
+This Data Use Agreement is between Ridgeview Health System ("Covered Entity") and Calloway University ("Recipient").
+
+1. Limited Data Set. Covered Entity will disclose to Recipient a limited data set, as defined in 45 C.F.R. 164.514(e), for the research study described in Exhibit A.
+
+2. Permitted Uses. Recipient may use the limited data set only for the research purpose and as required by law.
+
+3. Safeguards. Recipient will use appropriate safeguards to prevent use or disclosure of the limited data set other than as this Agreement provides.
+
+4. Reporting. Recipient will report to Covered Entity any use or disclosure not provided for by this Agreement of which it becomes aware.

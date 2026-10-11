@@ -1,0 +1,11 @@
+SOFTWARE DEVELOPMENT AGREEMENT
+
+This Software Development Agreement is between Pallas Systems LLC ("Developer") and Greywater Outfitters, Inc. ("Client").
+
+1. Services. Developer will design and build the mobile ordering application described in the Statement of Work.
+
+2. Fees. Client will pay Developer $180,000 in three milestone payments.
+
+3. Ownership. The software is a work made for hire and belongs to Client.
+
+4. Warranty. Developer warrants that the software will conform to the Statement of Work for 90 days after delivery.

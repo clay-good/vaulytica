@@ -1,0 +1,11 @@
+PILOT AGREEMENT
+
+This Pilot Agreement is between Lumen Analytics, Inc. ("Vendor") and Harcastle Foods Co. ("Customer").
+
+1. Evaluation License. Vendor grants Customer a limited license to use the software service for internal evaluation for 60 days.
+
+2. Fees. There are no fees during the pilot.
+
+3. Feedback. Customer grants Vendor a license to use feedback.
+
+4. Disclaimer. The service is provided as is, without warranty.
