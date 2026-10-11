@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.884.0] — 2026-10-11
+
+### Added
+- **The problem-report endpoint, written and tested — and not deployed**
+  (spec-v53 Step 331). `workers/reports/` holds a small Cloudflare Worker for
+  `POST /api/reports`. Nothing on the site calls it, the `/report` page still
+  sends nothing, and every "no server" sentence on the site is still true.
+  Launching it needs the owner's Cloudflare account and changes what the site
+  may say about itself; `docs/finding-reports.md` is the checklist.
+- **Built so a contract cannot fit through it**, and tested that way: a body
+  of at most 4 KB with nine named keys and no other; a rule or document type
+  only if it is in the shipped catalog, so a custom playbook's ids are
+  refused; a note of at most 280 characters with control and
+  direction-override characters stripped. There is no key for an excerpt, a
+  filename or a hash.
+- **Nothing identifying the reporter is stored.** The daily limit per
+  reporter is counted against a keyed hash of the day and the IP address,
+  which cannot be reversed without the secret and changes at midnight.
+- **Limits and retention are constants in code**: 5 accepted reports per
+  reporter per day, 200 in total, and every report deleted after 30 days — by
+  a daily sweep and before each write. With any part of its configuration
+  missing, it answers "unavailable" and stores nothing.
+- The tests run the Worker's own SQL against its own migration, and hold
+  three more things: nothing in the app imports the Worker, no script the
+  site ships names its path, and the id list it carries matches the catalog.
+
 ## [9.883.0] — 2026-10-11
 
 ### Added
