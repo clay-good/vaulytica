@@ -21,6 +21,28 @@ name: Lighthouse (deployed site, 4G budget)
 # edge-specific audits are errors; the timing budgets are warnings there
 # because `lighthouse.yml` already enforces them on the same bytes over three
 # runs, and asserting them again across a real network adds flake, not signal.
+#
+# 🚨 **THIS JOB IS EXPECTED TO FAIL until Cloudflare Web Analytics is turned
+# off for the Pages project.** Its first run (2026-10-11) found exactly what a
+# deployed-site check is for: the edge injects
+# `https://static.cloudflareinsights.com/beacon.min.js` plus an inline
+# bootstrap into the served page, and the site's own CSP
+# (`script-src 'self' 'wasm-unsafe-eval'`) blocks both — so `errors-in-console`
+# and `inspector-issues`, which the `lighthouse:no-pwa` preset asserts at error
+# level, score 0.
+#
+# The privacy promise holds: the beacon is BLOCKED, so nothing is sent. But a
+# tool whose front page says no telemetry should not be serving a page that
+# tries to load third-party telemetry at all, and no test in this repository
+# can see it — `custom-playbook-privacy.test.ts` and friends stub `fetch`,
+# `XMLHttpRequest`, `WebSocket` and `sendBeacon` and assert zero network calls,
+# which covers the application's own bytes. A script the CDN injects is not in
+# those bytes.
+#
+# **The fix is the owner's**: disable Web Analytics on the Cloudflare Pages
+# project (dashboard setting, no code change). Then this job goes green and
+# stays a live canary. A red run here is a finding, not a flake — read the
+# uploaded report before assuming otherwise.
 
 on:
   schedule:

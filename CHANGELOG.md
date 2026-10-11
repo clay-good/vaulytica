@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.899.0] — 2026-10-11
+
+### Added
+- **The deployed-site budget check found third-party telemetry on its first
+  run.** Dispatched manually rather than waiting for the schedule — the whole
+  point of 9.898.0 was that an unrun check proves nothing — and it failed,
+  correctly. Cloudflare's edge injects
+  `https://static.cloudflareinsights.com/beacon.min.js` and an inline
+  bootstrap into the served page, and the site's own CSP
+  (`script-src 'self' 'wasm-unsafe-eval'`) blocks both, so `errors-in-console`
+  and `inspector-issues` score 0.
+  🥇 **No test in this repository can see this.** The privacy guards stub
+  `fetch`, `XMLHttpRequest`, `WebSocket` and `sendBeacon` and assert zero
+  network calls, which covers the application's own bytes — and a script the
+  CDN injects is not in those bytes. 16,383 tests pass while the served page
+  tries to load an analytics beacon. That is precisely the gap a deployed-site
+  check exists to close, and it closed it on day one.
+  The two edge audits this release's config asserts — `uses-text-compression`
+  and `uses-long-cache-ttl` — both PASSED; the failures come from the
+  `lighthouse:no-pwa` preset, and they are kept at error level deliberately,
+  because for a tool that advertises no telemetry a console CSP violation from
+  an injected script is the single most important thing this check can report.
+  ⚠️ **The job will stay red until the owner disables Web Analytics on the
+  Cloudflare Pages project** — a dashboard setting, no code change, and not
+  something this session can do. The privacy promise itself holds: the beacon
+  is blocked, nothing is sent. But a page that advertises no telemetry should
+  not be attempting to load any. The workflow says all of this at the top, so
+  a red run is read as the finding it is rather than as a flake.
+
 ## [9.898.0] — 2026-10-11
 
 ### Fixed
