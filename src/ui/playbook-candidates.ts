@@ -280,7 +280,20 @@ export type SecondaryFamilySelection = {
  * merely mentioned in passing. Clear-presence = a specific title keyword,
  * or three or more distinguishing/required-clause hits in the body.
  */
-export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): boolean {
+export function familyIsPresent(
+  playbook: Playbook,
+  signals: CandidateSignals,
+  /**
+   * Title keywords the PRIMARY family matched. A name inside a longer name is
+   * not the document's name: "stock purchase agreement" inside "Founder Stock
+   * Purchase Agreement" is the same three words the restricted-stock type
+   * already claimed, and counting it again ran the M&A purchase pack over a
+   * founder's grant as a second type — seven criticals. A title hit wholly
+   * contained in a longer one of the primary's is set aside here; the family
+   * can still be present on its phrases.
+   */
+  primaryTitleHits: readonly string[] = [],
+): boolean {
   const hits = featureHits(playbook, signals);
 
   // A document's own NAME is strong evidence it is of that family — but an
@@ -300,7 +313,12 @@ export function familyIsPresent(playbook: Playbook, signals: CandidateSignals): 
   // So a full-name title keyword still activates alone; when every title hit
   // is a bare acronym, the family has to earn it the same way a phrase-only
   // candidate does.
-  const titleHits = hits.title;
+  const titleHits = hits.title.filter(
+    (k) =>
+      !primaryTitleHits.some(
+        (longer) => longer.length > k.length && longer.toLowerCase().includes(k.toLowerCase()),
+      ),
+  );
   // The document's own NAME, spelled out, is enough on its own.
   if (titleHits.some((k) => !isAcronymFeature(k))) return true;
 
@@ -375,8 +393,10 @@ export function selectSecondaryFamilies(
   signals: CandidateSignals,
   primaryPlaybookId: string,
 ): SecondaryFamilySelection {
+  const primary = extended.find((p) => p.id === primaryPlaybookId);
+  const primaryTitleHits = primary ? featureHits(primary, signals).title : [];
   const ranked = extended
-    .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals))
+    .filter((p) => p.id !== primaryPlaybookId && familyIsPresent(p, signals, primaryTitleHits))
     // Score each survivor ONCE. A comparator that recomputes the score does it
     // O(n log n) times, which was free when the score was a substring count
     // and is not now that it folds the document.

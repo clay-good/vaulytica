@@ -17444,6 +17444,10 @@
     "match_features": {
       "title_keywords": [
         "restricted stock purchase agreement",
+        "founder stock purchase agreement",
+        "founders stock purchase agreement",
+        "founder's stock purchase agreement",
+        "founder restricted stock agreement",
         "rspa"
       ],
       "required_clauses": [],
@@ -19765,7 +19769,9 @@
         "restated certificate",
         "investors' rights agreement",
         "asset purchase",
-        "merger agreement"
+        "merger agreement",
+        "unvested shares",
+        "83(b)"
       ]
     },
     "expected_clauses": [],

@@ -281,3 +281,35 @@ describe("an acronym feature is matched on word boundaries", () => {
     expect(match.playbook_id).toBe("phrase-family");
   });
 });
+
+describe("familyIsPresent — a name inside the primary's longer name", () => {
+  const spa = pb("stock-purchase-agreement", {
+    title_keywords: ["stock purchase agreement"],
+    distinguishing_phrases: ["working capital", "material adverse effect", "closing date"],
+  });
+  const founder = signals(
+    "Founder Stock Purchase Agreement",
+    "the shares vest over four years with a one-year cliff",
+  );
+
+  it("is not the document's name a second time", () => {
+    // Alone, the title keyword activates the family…
+    expect(familyIsPresent(spa, founder)).toBe(true);
+    // …but not when the primary family matched the longer title that holds it.
+    expect(familyIsPresent(spa, founder, ["founder stock purchase agreement"])).toBe(false);
+  });
+
+  it("still activates on its own phrases", () => {
+    const withTerms = signals(
+      "Founder Stock Purchase Agreement",
+      "subject to a working capital adjustment, no material adverse effect, on the closing date",
+    );
+    expect(familyIsPresent(spa, withTerms, ["founder stock purchase agreement"])).toBe(true);
+  });
+
+  it("leaves an unrelated primary title alone", () => {
+    expect(familyIsPresent(spa, founder, ["restricted stock agreement"])).toBe(true);
+    // The same keyword is not "longer" than itself.
+    expect(familyIsPresent(spa, founder, ["stock purchase agreement"])).toBe(true);
+  });
+});

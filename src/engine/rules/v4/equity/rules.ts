@@ -42,6 +42,7 @@ import {
   eqtPractice,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "../../../../extract/amounts.js";
 
 const CATEGORY = "equity";
 
@@ -807,6 +808,7 @@ const RSU_RULES: Rule[] = [
 const RSPA_RULES: Rule[] = [
   presence({
     id: "EQT-036",
+    version: "1.1.0",
     name: "Purchase price stated",
     description: "RSPA must state purchase price (often par or de minimis).",
     citation: irc("83"),
@@ -816,7 +818,17 @@ const RSPA_RULES: Rule[] = [
     explanation:
       "Without a purchase price the property is treated as compensation income at FMV on transfer (§ 83(a)).",
     recommendation: "Add 'Purchase Price' line with per-share price.",
-    present_patterns: [/purchase\s+price/i, /price\s+per\s+share/i],
+    // "purchases 4,000,000 shares of common stock at $0.0001 per share" states
+    // the price without either phrase, and a founder's agreement that did was
+    // told at critical that it had none.
+    present_patterns: [
+      /purchase\s+price/i,
+      /price\s+per\s+share/i,
+      new RegExp(
+        String.raw`(?:(?:${CURRENCY_TOKEN})\s?\d[\d,.]*|${AMOUNT_IN_WORDS})\s+per\s+share`,
+        "i",
+      ),
+    ],
   }),
   presence({
     id: "EQT-037",

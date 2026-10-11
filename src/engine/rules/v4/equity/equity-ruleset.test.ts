@@ -576,3 +576,21 @@ describe("EQT-015 — the change-of-control event under its other names", () => 
     ).not.toBeNull();
   });
 });
+
+describe("EQT-036 — a price stated per share (1.1.0)", () => {
+  const rule = EQUITY_RULES.find((r) => r.id === "EQT-036")!;
+  it("reads '$0.0001 per share' as the purchase price", () => {
+    const ctx = buildContext([
+      "Founder Stock Purchase Agreement",
+      "Founder purchases 4,000,000 shares of common stock at $0.0001 per share.",
+    ]);
+    expect(rule.check(ctx)).toBeNull();
+  });
+  it("still fires when no price is stated", () => {
+    const ctx = buildContext([
+      "Founder Stock Purchase Agreement",
+      "Founder purchases 4,000,000 shares of common stock.",
+    ]);
+    expect(rule.check(ctx)).not.toBeNull();
+  });
+});

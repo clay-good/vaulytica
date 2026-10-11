@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.880.0] — 2026-10-11
+
+### Fixed
+- **A founder's stock purchase agreement is read as one.** The catalog had
+  the type — the restricted stock purchase agreement, which describes itself
+  as the founder's agreement — but not the title, so a document called
+  "Founder Stock Purchase Agreement" was judged as an M&A stock purchase:
+  eight criticals for a missing working-capital adjustment, closing
+  conditions and the like. It now gets the restricted-stock checks: vesting
+  and the repurchase right, the section 83(b) election, a right of first
+  refusal, the legend (spec-v49 Step 312).
+- **A title inside a longer title is not a second type.** "Stock purchase
+  agreement" inside "Founder Stock Purchase Agreement" is the same three
+  words, and counting them again ran the M&A pack over the document as a
+  second type — seven more criticals. A second type is no longer switched on
+  by a title its words share with the longer title the document's own type
+  matched; it can still be switched on by what the document says.
+- **"$0.0001 per share" is a purchase price** (`EQT-036` 1.1.0). The check
+  wanted the words "purchase price" or "price per share" and reported, at
+  critical, that an agreement stating the price had none.
+
 ## [9.879.0] — 2026-10-11
 
 ### Fixed

@@ -103,7 +103,9 @@ describe("analyze_document", () => {
   });
 
   it("carries secondary findings only when asked", async () => {
-    const file = join(SPECIMENS, "physician-employment.txt");
+    // A services addendum whose data terms are read under a second type: the
+    // second type comes from what the document says, not from its title.
+    const file = join(SPECIMENS, "ai-addendum.txt");
     const plain = await analyzeDocumentTool({ path: file }, ctx);
     const more = await analyzeDocumentTool({ path: file, include: ["secondary_findings"] }, ctx);
     if ("not_analyzed" in plain || "not_analyzed" in more) throw new Error("not analyzed");

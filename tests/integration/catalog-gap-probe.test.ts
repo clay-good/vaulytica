@@ -155,11 +155,10 @@ const PROBE_B: ReadonlyArray<{ file: string; wants: string; today: string }> = [
     wants: "vehicle-purchase-agreement",
     today: "generic-fallback",
   },
-  {
-    file: "founder-stock-purchase-agreement.txt",
-    wants: "founder-stock-purchase-agreement",
-    today: "stock-purchase-agreement",
-  },
+  // The catalog had the type all along — `rspa` describes itself as the
+  // founder's agreement — and did not know the founder's title for it. Until
+  // 9.880.0 this went to `stock-purchase-agreement`, the M&A purchase.
+  { file: "founder-stock-purchase-agreement.txt", wants: "rspa", today: "rspa" },
   {
     file: "memorandum-of-understanding.txt",
     wants: "memorandum-of-understanding",
@@ -214,6 +213,15 @@ describe("tranche B: more documents the catalog may have no type for", () => {
     const r = routed.get("memorandum-of-understanding.txt")!;
     if (r.playbook_id !== "memorandum-of-understanding") return;
     expect(r.run.findings.filter((f) => f.rule_id.startsWith("MNA-"))).toEqual([]);
+  });
+
+  it("a founder's stock purchase is not scanned as an M&A stock purchase", () => {
+    const r = routed.get("founder-stock-purchase-agreement.txt")!;
+    expect(r.secondary_families.map((f) => f.playbook_id)).not.toContain(
+      "stock-purchase-agreement",
+    );
+    // "at $0.0001 per share" is a purchase price.
+    expect(r.run.findings.map((f) => f.rule_id)).not.toContain("EQT-036");
   });
 
   it("a memorandum of understanding for an acquisition is still read as a letter of intent", () => {
