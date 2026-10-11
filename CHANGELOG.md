@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.894.0] — 2026-10-11
+
+### Fixed
+- **`s1` is not a location.** The obligations CSV's `section` column and the
+  deadlines calendar's DESCRIPTION printed `position.section_id` — the ingest
+  tree's internal id — so a complete MSA's CSV carried "s1" on **all 42 rows**
+  and its calendar read "Extracted from **section s1**: April 20, 2026".
+  Naming a section implies the document has sections and that this is one of
+  them.
+  Both now carry the section's NAME, and say nothing when there is none — the
+  pattern `buildDefinitionsCsv` has always followed, through the same
+  `sectionLabels` owner. Called without a tree they keep the raw id, so no
+  existing caller changes shape unannounced; the CLI passes the tree it already
+  has.
+
+### Notes
+- 🚨 **Measured, and the obvious repair must not be attempted: all 363 `.txt`
+  specimens ingest to a SINGLE unheaded section**, which is why the token was
+  "s1" everywhere. `paste.ts` detects only Markdown ATX/Setext headings, and
+  its own header says why — **promoting a line to a heading removes it from the
+  paragraph stream**, so "a missed heading is safe; a false heading escapes
+  every paragraph-based rule". Teaching it to read "1. Services." as a heading
+  would silently blind the entire absence-rule catalog. A legal document's
+  clause numbering staying in the paragraph stream is the safe direction, and
+  the uniform single section is the consequence, not an oversight. DOCX and PDF
+  inputs do get real sections (heading styles, font-size heuristics), so a
+  document's report names its sections when the input format carries them.
+
 ## [9.893.0] — 2026-10-11
 
 ### Fixed

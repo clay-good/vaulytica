@@ -366,9 +366,9 @@ export async function renderFormat(
     case "dates-ics":
       return buildCriticalDatesIcs(r.critical_dates!);
     case "obligations-csv":
-      return buildObligationsCsv(extractAll(r.ingest.tree));
+      return buildObligationsCsv(extractAll(r.ingest.tree), r.ingest.tree);
     case "deadlines-ics":
-      return buildDeadlinesIcs(extractAll(r.ingest.tree));
+      return buildDeadlinesIcs(extractAll(r.ingest.tree), r.ingest.tree);
     case "posture-md":
       return buildNegotiationPostureMarkdown(r.negotiation_posture!, caveats);
     case "posture-csv":

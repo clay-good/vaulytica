@@ -23,13 +23,14 @@
 
 import { isActionable, type EngineRun, type Finding, type Severity } from "../engine/finding.js";
 import { truncate } from "../engine/text.js";
+import { sectionLabels } from "../extract/sections.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
 import { estateFormalitiesForState } from "../dkb/estate-formalities.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { currencyLabel, type CitationCurrency } from "./citations.js";
 import type { DateReference, ExtractedData } from "../extract/types.js";
-import type { IngestResult } from "../ingest/types.js";
+import type { DocumentTree, IngestResult } from "../ingest/types.js";
 import type { CriticalDate, CriticalDatesRegister } from "./critical-dates.js";
 import { deriveDate } from "./critical-dates.js";
 import type { ChecklistCategory, ClosingChecklist } from "./closing-checklist.js";
@@ -392,7 +393,24 @@ export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): st
  * qualifier, section, source clause. Rows follow the extractor's
  * document order, which is already deterministic.
  */
-export function buildObligationsCsv(extracted: ExtractedData): string {
+/**
+ * 🚨 `s1` is not a location.
+ *
+ * The `section` column printed `position.section_id` — the ingest tree's
+ * internal id. Every one of the 363 `.txt` specimens ingests to a SINGLE
+ * unheaded section, because `paste.ts` reads only Markdown headings (and
+ * deliberately so: promoting a line to a heading takes it out of the paragraph
+ * stream, so a false heading would blind every paragraph-based rule). So this
+ * column read "s1" on all 42 rows of a complete MSA, implying the document has
+ * sections and that this is one of them.
+ *
+ * The tree is passed so the column can carry the section's NAME, blank when
+ * there is none — the pattern `buildDefinitionsCsv` has always followed, via
+ * the same `sectionLabels` owner. Called without a tree the column keeps the
+ * raw id, so no existing caller changes shape unannounced.
+ */
+export function buildObligationsCsv(extracted: ExtractedData, tree?: DocumentTree): string {
+  const labelOf = tree ? sectionLabels(tree) : undefined;
   const rows: string[] = [];
   rows.push(
     csvRow(["obligor", "modal", "action", "trigger", "qualifier", "section", "source_text"]),
@@ -405,7 +423,7 @@ export function buildObligationsCsv(extracted: ExtractedData): string {
         o.action,
         o.trigger ?? "",
         o.qualifier ?? "",
-        o.position.section_id,
+        labelOf ? (labelOf(o.position.section_id) ?? "") : o.position.section_id,
         o.raw_text,
       ]),
     );
@@ -753,8 +771,17 @@ const FIXED_DTSTAMP = "20200101T000000Z";
  * Notice deadlines (a "before"-an-anchor date) carry a DISPLAY alarm at
  * the deadline so they surface in the user's calendar.
  */
-export function buildDeadlinesIcs(extracted: ExtractedData): string {
+export function buildDeadlinesIcs(extracted: ExtractedData, tree?: DocumentTree): string {
   const { events, unresolved } = collectDeadlines(extracted);
+  // 🚨 The section is named, or not mentioned. Both DESCRIPTION branches below
+  // already read "…from the document" when no section is known — they were
+  // simply handed the ingest tree's internal id, which is truthy, so a
+  // plain-text document (one unheaded section, which is every `.txt` in the
+  // corpus) produced "Extracted from section s1: April 20, 2026". Naming a
+  // section implies the document has sections and that this is one of them.
+  const labelOf = tree ? sectionLabels(tree) : undefined;
+  const sectionOf = (id: string | undefined): string | undefined =>
+    labelOf ? (labelOf(id) ?? undefined) : id;
   const lines: string[] = [];
   lines.push("BEGIN:VCALENDAR");
   lines.push("VERSION:2.0");
@@ -778,7 +805,7 @@ export function buildDeadlinesIcs(extracted: ExtractedData): string {
     const summary = ev.label ? ev.label : prefix + ev.summary;
     const desc =
       `${ev.computed ? "Computed from " : "Extracted from "}` +
-      `${ev.section ? `section ${ev.section}` : "the document"}: ${ev.raw_text}`;
+      `${sectionOf(ev.section) ? `section ${sectionOf(ev.section)}` : "the document"}: ${ev.raw_text}`;
     // The key is the event AS RENDERED — date, title, description and whether
     // it carries an alarm. Two mentions of the same date in different sections
     // stay separate, because the section is inside the description.
@@ -824,7 +851,8 @@ export function buildDeadlinesIcs(extracted: ExtractedData): string {
   unresolved.forEach((u) => {
     const ymd = SENTINEL_VERIFY_DATE.replace(/-/g, "");
     const ymdEnd = addDays(SENTINEL_VERIFY_DATE, 1).replace(/-/g, "");
-    const desc = `Verify manually — ${u.reason}${u.section ? ` (from section ${u.section})` : ""}: ${u.raw_text}`;
+    const where = sectionOf(u.section);
+    const desc = `Verify manually — ${u.reason}${where ? ` (from section ${where})` : ""}: ${u.raw_text}`;
     const { uid, duplicate } = nextVerifyUid(`${u.raw_text}|${desc}`);
     if (duplicate) return;
     lines.push("BEGIN:VEVENT");

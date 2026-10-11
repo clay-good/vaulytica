@@ -351,6 +351,40 @@ describe("collectDeadlines", () => {
  * its own DTSTART — and only 16 events in the whole corpus said what was due.
  * The label comes from two tables the extractor already fills.
  */
+/**
+ * `s1` is not a location.
+ *
+ * Both surfaces printed `position.section_id`, the ingest tree's internal id.
+ * All 363 `.txt` specimens ingest to ONE unheaded section — `paste.ts` reads
+ * only Markdown headings, deliberately, because promoting a line to a heading
+ * removes it from the paragraph stream — so a complete MSA's obligations CSV
+ * carried "s1" on all 42 rows and its calendar said "Extracted from section
+ * s1". Naming a section implies the document has sections and that this is one.
+ */
+describe("a section is named, or it is not mentioned", () => {
+  it("names the section when the document has one", () => {
+    const tree = buildTree(["Payment Terms", "Customer shall pay each invoice by June 1, 2025."]);
+    const extracted = extractAll(tree);
+    expect(buildObligationsCsv(extracted, tree)).toContain("Payment Terms");
+    expect(buildDeadlinesIcs(extracted, tree)).toContain("section Payment Terms");
+  });
+
+  it("omits it when the document is a single unheaded section", () => {
+    const ex = emptyExtracted();
+    ex.dates = [date("absolute", "June 1, 2025", { iso: "2025-06-01" })];
+    const bare = { sections: [{ id: "s1", heading: "", level: 1, paragraphs: [], children: [] }] };
+    const ics = buildDeadlinesIcs(ex, bare as never);
+    expect(ics).toContain("Extracted from the document:");
+    expect(ics).not.toContain("section s1");
+  });
+
+  it("keeps the raw id when no tree is supplied, so old callers do not shift", () => {
+    const ex = emptyExtracted();
+    ex.dates = [date("absolute", "June 1, 2025", { iso: "2025-06-01" })];
+    expect(buildDeadlinesIcs(ex)).toContain("section s1");
+  });
+});
+
 describe("buildDeadlinesIcs — a calendar entry says what is due", () => {
   it("titles a date by the anchor it pins, in the document's own casing", () => {
     const tree = buildTree([
