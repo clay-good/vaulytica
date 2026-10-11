@@ -916,6 +916,46 @@ describe("a completed FORM states its choices as labelled selections", () => {
       kinds("Clause 18(b) (Choice of forum and jurisdiction): the courts of Ireland."),
     ).toContain("venue:Ireland");
   });
+
+  /**
+   * 🚨 A label with a CLAUSE after it is not a filled blank.
+   *
+   * The labelled reading takes the first capitalized run after the colon, which
+   * in "Governing Law: This Agreement shall be governed by…" is the clause's
+   * SUBJECT. Every such document recorded a second governing law called "This
+   * Agreement shall be", and `CROSS-JURIS-001` reported a three-document bundle
+   * naming California, Delaware and New York as spanning SIX governing-law
+   * clauses, listing "this agreement shall be" and "this statement of work" to
+   * the reader as jurisdictions.
+   *
+   * 🥇 Case cannot tell these apart — "This Summary of Terms" is Title Case
+   * exactly like "North Carolina" — so the test is the governing VERB after the
+   * colon, and the sentence-shaped patterns read those clauses correctly
+   * already.
+   */
+  it.each([
+    [
+      "Governing Law: This Agreement shall be governed by the laws of the State of California.",
+      "California",
+    ],
+    ["Governing Law: This Addendum shall be governed by the laws of Delaware.", "Delaware"],
+    [
+      "Governing Law: This Statement of Work shall be governed by the laws of the State of New York.",
+      "New York",
+    ],
+    ["Governing Law: The laws of the State of Texas govern this Agreement.", "Texas"],
+  ])("records one governing law, not the clause's subject, for %s", (text, place) => {
+    const got = kinds(text).filter((k) => k.startsWith("governing-law:"));
+    expect(got).toEqual([`governing-law:${place}`]);
+  });
+
+  it("still reads the filled blank when no clause follows the label", () => {
+    // The shape the labelled pattern exists for must keep working.
+    expect(kinds("Governing Law: Delaware.")).toEqual(["governing-law:Delaware"]);
+    expect(kinds("Clause 17 (Governing law): the law of Ireland.")).toContain(
+      "governing-law:Ireland",
+    );
+  });
 });
 
 /**

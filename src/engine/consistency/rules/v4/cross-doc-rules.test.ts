@@ -757,6 +757,34 @@ describe("CROSS-DEFTERM-002", () => {
     expect(run.findings[0]!.excerpts).toHaveLength(2);
   });
 
+  /**
+   * 🚨 The USE span locates the term, not the paragraph around it.
+   *
+   * `textExcerpt` quotes the term while the span came from `p.start`–`p.end`,
+   * so the §59 appendix printed "dpa.txt (characters 25–219): \"Governing
+   * Law\"" — a 194-character range offered as the location of a 13-character
+   * quote. A reader following that range lands on the whole clause.
+   */
+  it("spans the term it quotes, not the paragraph the term sits in", async () => {
+    const msa = makeDoc("msa", "msa-vendor-deep", [
+      "Definitions",
+      '"Authorized Users" means the employees and contractors of Customer permitted to access the Services.',
+    ]);
+    const sow = makeDoc("sow", "sow", [
+      "Access",
+      "Provider shall provision access only to the Authorized Users identified in this Statement of Work, and shall keep a current register of them for audit.",
+    ]);
+    const run = await runConsistency({
+      rules: [CROSS_DEFTERM_002],
+      documents: [msa, sow],
+      dkb: STARTER_DKB,
+    });
+    const use = run.findings[0]!.excerpts.find((e) => e.doc_id === "sow");
+    expect(use).toBeDefined();
+    expect(use!.text).toBe("Authorized Users");
+    expect(use!.end_offset - use!.start_offset).toBe("Authorized Users".length);
+  });
+
   it("does not fire when the using document incorporates definitions by reference", async () => {
     const msa = makeDoc("msa", "msa-vendor-deep", [
       "Definitions",

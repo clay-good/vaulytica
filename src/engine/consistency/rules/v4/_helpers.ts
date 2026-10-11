@@ -480,7 +480,18 @@ export function findDefinedTermUsageDrift(
       for (const m of p.text.matchAll(re)) {
         const after = p.text.slice(m.index + m[0].length, m.index + m[0].length + 24);
         if (/^\s+[A-Z]/.test(after)) continue;
-        usePos = { section_id: p.section.id, start: p.start, end: p.end };
+        // 🚨 The SPAN is the term's own occurrence, not the paragraph it sits
+        // in. `textExcerpt` quotes `term` while this supplied `p.start`–
+        // `p.end`, so the §59 appendix printed "dpa.txt (characters 25–219):
+        // \"Governing Law\"" — a 194-character range offered as the location of
+        // a 13-character quote. Same mismatch as the single-document excerpts
+        // repaired in 9.890.0, on the cross-document path, which that guard
+        // does not reach because it reads `Finding.excerpt`.
+        usePos = {
+          section_id: p.section.id,
+          start: p.start + m.index,
+          end: p.start + m.index + m[0].length,
+        };
         break;
       }
     });

@@ -209,6 +209,36 @@ const GOV_LAW_SUBJECT_FIRST = new RegExp(
  * heading ("Governing Law:" followed by a paragraph) is the same shape, and the
  * value is then the first capitalized run after it either way.
  */
+/**
+ * Whether what follows a "Governing Law:" label is an OPERATIVE SENTENCE
+ * rather than a filled-in value.
+ *
+ * 🚨 `GOV_LAW_LABELLED` exists for a FILLED BLANK — "Governing law: Delaware" —
+ * where no verb exists for the sentence patterns to anchor on, so it takes the
+ * first capitalized run after the colon. When the colon introduces a whole
+ * clause instead, that run is the clause's SUBJECT: "Governing Law: **This
+ * Agreement shall be** governed by the laws of the State of California"
+ * recorded a second governing law called "This Agreement shall be" beside the
+ * correct "California".
+ *
+ * The cost was a WARNING with a wrong number in its title. A three-document
+ * bundle whose documents name California, Delaware and New York was reported by
+ * `CROSS-JURIS-001` as spanning **six** governing-law clauses, listing "this
+ * agreement shall be", "this addendum shall be" and "this statement of work"
+ * as jurisdictions to a reader.
+ *
+ * 🥇 Case cannot separate these, which is what the measurement said: the junk
+ * value "This Summary of Terms" is Title Case, exactly like "North Carolina",
+ * while two legitimate values are lowercase relative clauses ("jurisdiction
+ * where the Equipment is located"). The reliable signal is the GOVERNING VERB:
+ * where one follows the colon the clause is operative, and the three
+ * sentence-shaped patterns already read it correctly — they found "California"
+ * in every one of these documents — so the labelled reading has nothing to add
+ * and stands down.
+ */
+const GOV_LAW_OPERATIVE_AFTER_LABEL =
+  /\bgoverning\s+law\b[^:\n]{0,40}:[^.\n]{0,120}?\b(?:(?:shall|will|must|is|are|to)\s+be\s+)?govern(?:ed|s|ing)?\b/i;
+
 const GOV_LAW_LABELLED = new RegExp(
   String.raw`\bgoverning\s+law\b[^:\n]{0,40}:\s*(?:the\s+)?(?:laws?\s+of\s+)?(?:${SOVEREIGN_PREFIX})?([A-Z][A-Za-z&-]+(?:\s+(?:and\s+)?[A-Z][A-Za-z&-]+){0,3})`,
   "gi",
@@ -735,7 +765,9 @@ export function extractJurisdictions(
     });
     collectGovLaw(GOV_LAW_FEDERAL_AND_STATE);
     collectGovLaw(GOV_LAW_SUBJECT_FIRST);
-    collectGovLaw(GOV_LAW_LABELLED);
+    // The labelled reading is for a filled blank, not for a clause that merely
+    // carries the label as a heading. See GOV_LAW_OPERATIVE_AFTER_LABEL.
+    if (!GOV_LAW_OPERATIVE_AFTER_LABEL.test(ctx.text)) collectGovLaw(GOV_LAW_LABELLED);
     collectGovLaw(GOV_LAW_ADJ_SUBJECT);
     const seenVenue = new Set<string>();
     let venueRecorded = false;

@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.891.0] — 2026-10-11
+
+### Fixed
+- **A cross-document warning carried a wrong count in its own title, and
+  listed sentence fragments to the reader as jurisdictions.** Found by
+  rendering the §59 cross-document consistency appendix for a three-document
+  bundle and reading it. Each document names exactly one governing law —
+  California, Delaware, New York — and `CROSS-JURIS-001` reported the bundle as
+  spanning **six** different governing-law clauses, printing "this agreement
+  shall be", "this addendum shall be" and "this statement of work" beside the
+  three real jurisdictions.
+  The cause is the labelled-selection reading. It exists for a FILLED BLANK —
+  "Governing law: Delaware", the shape every executed SCC, IDTA and order form
+  uses, where no verb exists for the sentence patterns to anchor on — and it
+  takes the first capitalized run after the colon. When the colon introduces a
+  whole clause instead, that run is the clause's SUBJECT: "Governing Law:
+  **This Agreement shall be** governed by the laws of the State of California"
+  recorded a second governing law called "This Agreement shall be". The
+  labelled reading now stands down when a governing verb follows the colon,
+  because the three sentence-shaped patterns already read those clauses
+  correctly — they found "California" in every one of them.
+  🥇 **Case could not separate these, and measuring said so before the fix was
+  written.** The junk value "This Summary of Terms" is Title Case exactly like
+  "North Carolina", while two legitimate corpus values are lowercase relative
+  clauses ("jurisdiction where the Equipment is located"). The corpus diff is
+  one line: the junk record goes, every real jurisdiction stays.
+- **The §59 appendix offered a 194-character range as the location of a
+  13-character quote.** `CROSS-DEFTERM-002` quotes the borrowed term while its
+  span came from the paragraph the term sits in, so the appendix printed
+  `dpa.txt (characters 25–219): "Governing Law"`. The span is the term's own
+  occurrence now. Same mismatch as the single-document excerpts repaired in
+  9.890.0, on the cross-document path — which that release's guard does not
+  reach, because it reads `Finding.excerpt` and these are
+  `ConsistencyFinding.excerpts`.
+
 ## [9.890.0] — 2026-10-11
 
 ### Fixed
