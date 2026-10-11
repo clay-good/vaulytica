@@ -1008,7 +1008,34 @@ export const OBLIGATION_MODAL = String.raw`(?:shall|will|must|(?:is|are)\s+(?:re
 export { PAGE_FURNITURE };
 
 export function isIncorporatedExhibit(ctx: RuleContext): boolean {
-  return INCORPORATED_INTO_PARENT.test(documentTextOf(ctx));
+  return INCORPORATED_INTO_PARENT.test(documentTextOf(ctx)) || headedAsExhibitToParent(ctx);
+}
+
+/**
+ * The same statement made in the HEADING: "EXHIBIT B TO THE MASTER SERVICES
+ * AGREEMENT". It is as plain as "incorporated into", and it is the only place
+ * many exhibits say it — the recital form was read and this one was not, so
+ * an exhibit headed this way was told it had no governing law, no indemnity
+ * and no termination clause. Read from the document's opening lines only: the
+ * same words in the body are a cross-reference to some other exhibit.
+ */
+const EXHIBIT_HEADED_TO_PARENT =
+  /^\s*(?:exhibit|schedule|annexure|annex|appendix|attachment)\s+\w[\w.-]{0,6}\s+to\s+(?:the\s+|that\s+certain\s+)?\S[^.\n]{0,120}?\b(?:agreement|contract|subcontract|lease|sublease|licen[sc]e|order|terms|policy|plan|indenture|msa|sow)\b/i;
+
+/** How many opening lines may carry the exhibit heading (a legend can sit above it). */
+const EXHIBIT_HEADING_LINES = 3;
+
+export function headedAsExhibitToParent(ctx: Pick<RuleContext, "tree">): boolean {
+  const lines: string[] = [];
+  for (const section of ctx.tree.sections) {
+    if (lines.length >= EXHIBIT_HEADING_LINES) break;
+    if (section.heading && section.heading.trim()) lines.push(section.heading.trim());
+    for (const p of section.paragraphs) {
+      if (lines.length >= EXHIBIT_HEADING_LINES) break;
+      lines.push(p.runs.map((r) => r.text).join(""));
+    }
+  }
+  return lines.slice(0, EXHIBIT_HEADING_LINES).some((line) => EXHIBIT_HEADED_TO_PARENT.test(line));
 }
 
 function documentTextOf(ctx: Pick<RuleContext, "tree">): string {
@@ -1159,6 +1186,7 @@ export function borrowsParentVocabulary(ctx: Pick<RuleContext, "tree">): boolean
   return (
     RATIFIES_PARENT.test(text) ||
     INCORPORATED_INTO_PARENT.test(text) ||
+    headedAsExhibitToParent(ctx) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||
     INCORPORATES_STANDARD_FORM.test(text) ||
@@ -1235,6 +1263,7 @@ export function amendsParentAgreement(ctx: RuleContext): boolean {
         re.test(shouted),
       )) ||
     INCORPORATED_INTO_PARENT.test(text) ||
+    headedAsExhibitToParent(ctx) ||
     SIGNED_RIDER_INTO_PARENT.test(text) ||
     BORROWS_DEFINITIONS_FROM_PARENT.test(text) ||
     INCORPORATES_STANDARD_FORM.test(text)

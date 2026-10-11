@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.877.0] — 2026-10-10
+
+### Fixed
+- **An exhibit headed "Exhibit B to the Master Services Agreement" is no
+  longer judged as the master services agreement** (spec-v50 Step 316). The
+  heading names two documents, and the one after "to" is the parent. Read as a
+  title, it routed a service level schedule to the master services type —
+  about thirty findings, two of them critical, on an attachment — and, where
+  the exhibit had a type of its own, ran the parent's whole pack over it as a
+  second type. Routing now keeps the label ("Exhibit B") and drops the
+  parent's name; text after a colon or dash, the exhibit's own name, is kept.
+- **The heading counts as saying the exhibit is part of another document.**
+  The checks that stand down for an exhibit "incorporated into" a named
+  agreement read that recital and not the heading, which is as plain and is
+  often the only place an exhibit says it. An exhibit headed this way is no
+  longer told it has no signature block, governing law, indemnity or
+  termination clause.
+- A service level schedule titled "Service Levels" is recognized as one.
+
+### Notes
+- Only headings that begin Exhibit, Schedule, Annex, Appendix or Attachment
+  are read this way. An "Amendment to" or "Addendum to" a named agreement has
+  a type of its own and its title is read whole.
+- Four forms of one service level schedule — standalone, with the recital,
+  with the heading, with both — now route to one type and draw the same
+  findings; a test holds that.
+
 ## [9.876.0] — 2026-10-10
 
 ### Added

@@ -500,6 +500,25 @@ function titleShaped(line: string | undefined): boolean {
   );
 }
 
+/**
+ * An exhibit's heading names its PARENT after "to": "EXHIBIT B TO THE MASTER
+ * SERVICES AGREEMENT". Read as a title, that line routed a service level
+ * schedule to the master services family and ran thirty of its checks over an
+ * attachment. The label stays; the parent's name goes. Whatever follows a
+ * colon or a dash is the exhibit's own name — "SCHEDULE 2 TO THE LEASE:
+ * RULES AND REGULATIONS" — and is kept.
+ *
+ * Only the five attachment nouns. An "Amendment to" or "Addendum to" a named
+ * agreement is a document with a family of its own, and its title is read
+ * whole.
+ */
+const EXHIBIT_PARENT =
+  /^(\s*(?:exhibit|schedule|annexure|annex|appendix|attachment)\s+\w[\w.-]{0,6})\s+to\s+(?:the\s+|that\s+certain\s+)?[^:—–\n]*/i;
+
+export function dropExhibitParent(line: string): string {
+  return line.replace(EXHIBIT_PARENT, "$1");
+}
+
 /** From the first reference to another instrument onward. */
 const PARENT_REFERENCE =
   /\b(?:under\s+(?:and\s+subject\s+to\s+)?(?:the|that|this|a|an)\b|subject\s+to\s+the|pursuant\s+to|governed\s+by|issued\s+under|in\s+connection\s+with)\b[\s\S]*$/i;
@@ -560,12 +579,14 @@ export function titleCorpus(
     );
   }
   const first = tree.sections[0];
-  const heading = (first?.heading ?? "").trim();
+  const heading = dropExhibitParent((first?.heading ?? "").trim());
   const paragraphs = (first?.paragraphs ?? []).slice(0, TITLE_SUBJECT_SCAN_PARAGRAPHS).map((p) =>
-    p.runs
-      .map((r) => r.text)
-      .join("")
-      .trim(),
+    dropExhibitParent(
+      p.runs
+        .map((r) => r.text)
+        .join("")
+        .trim(),
+    ),
   );
   const stripped = dropLegends(paragraphs);
   // The preamble names the document — and then, as often as not, the

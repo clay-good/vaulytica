@@ -1,0 +1,13 @@
+SERVICE LEVEL AGREEMENT
+
+This Service Level Agreement applies to the hosted services that Corvid Cloud, Inc. ("Provider") provides to Aldine Freight Co. ("Customer").
+
+1. Availability. Provider will make the service available 99.9% of the time in each calendar month, excluding scheduled maintenance.
+
+2. Service Credits. If availability falls below 99.9%, Customer may claim a credit of 10% of the monthly subscription fees. Customer must request a credit within 30 days.
+
+3. Sole Remedy. Service credits are the sole and exclusive remedy of Customer for a failure to meet the availability commitment.
+
+4. Chronic Failure. If availability falls below 99.0% in three consecutive months, Customer may terminate the affected service.
+
+5. Support. Provider will respond to severity 1 incidents within one hour.
