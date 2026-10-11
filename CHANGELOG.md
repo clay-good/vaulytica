@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.870.0] — 2026-10-10
+
+### Added
+- **A document type for the software development agreement** (spec-v49 Step
+  311), with six checks: written specifications; an acceptance procedure,
+  including what happens if the client says nothing; a payment schedule tied
+  to the work; an assignment of the software; the developer's pre-existing
+  materials; and open-source components. 273 document types, 1,855 rules.
+- **"The software is a work made for hire" is no longer read as an ownership
+  clause.** For an independent developer, the statute limits work made for
+  hire to nine listed kinds of commissioned work, and software is not one of
+  them (17 U.S.C. § 101, read at copyright.gov on 2026-10-10). The finding
+  says the statement *usually* does not make the client the owner — software
+  can fall in another category — and asks for the assignment that works either
+  way. An agreement where the developer keeps ownership and licenses the
+  client satisfies the check.
+
+### Changed
+- A document titled "Software Development Agreement", "App Development
+  Agreement", "Website Development Agreement" or "Web Development Agreement"
+  now goes to this type. Those four titles used to belong to the general
+  services agreement, whose checks say nothing about acceptance or code
+  ownership.
+- The general "pre-existing IP carve-out" check stands down on this type; its
+  own check asks the same question in the developer's terms.
+
 ## [9.869.0] — 2026-10-10
 
 ### Added

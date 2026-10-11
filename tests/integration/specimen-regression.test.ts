@@ -5734,6 +5734,38 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-005",
     ],
   },
+  // spec-v49 Step 311: the software development agreement. The thin one says
+  // only that the app "is a work made for hire", which for commissioned
+  // software usually transfers nothing (17 U.S.C. § 101); SDA-004 says so.
+  "software-development-agreement-complete.txt": {
+    playbook: "software-development-agreement",
+    findings: [
+      "OBLI-002",
+      "OBLI-005",
+      "RISK-006",
+      "RISK-007",
+      "RISK-011",
+      "TEMP-002",
+      "TEMP-007",
+      "TEMP-008",
+    ],
+  },
+  "software-development-agreement-thin.txt": {
+    playbook: "software-development-agreement",
+    findings: [
+      "CHOICE-003",
+      "RISK-001",
+      "RISK-005",
+      "SDA-001",
+      "SDA-002",
+      "SDA-003",
+      "SDA-004",
+      "SDA-005",
+      "SDA-006",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

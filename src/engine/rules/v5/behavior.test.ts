@@ -1416,7 +1416,7 @@ describe("equipment-lease routing", () => {
 });
 
 describe("website development agreement routing", () => {
-  it("routes to the services family, not to the EULA", async () => {
+  it("routes to the software development family, not to the EULA", async () => {
     const r = await analyzeText(
       [
         "WEBSITE DEVELOPMENT AGREEMENT",
@@ -1429,7 +1429,8 @@ describe("website development agreement routing", () => {
       ].join("\n"),
       "website-development.txt",
     );
-    expect(r.run.playbook_id).toBe("msa-general");
+    // Its own type since 9.870.0; before that, the general services family.
+    expect(r.run.playbook_id).toBe("software-development-agreement");
   });
 });
 

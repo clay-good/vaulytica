@@ -1,0 +1,55 @@
+{
+  "id": "software-development-agreement",
+  "version": "1.0.0",
+  "name": "Software Development Agreement",
+  "description": "An agreement under which a developer builds custom software, a website or an app for a client. The checks read for written specifications, an acceptance procedure, a payment schedule tied to the work, an assignment of the software rather than only a work-for-hire statement, the developer's pre-existing materials, and open-source components. Distinct from `msa-general`, which reads a general services agreement, and from `work-for-hire-agreement`, which reads a commissioned creative work.",
+  "match_features": {
+    "title_keywords": [
+      "software development agreement",
+      "custom software development agreement",
+      "app development agreement",
+      "application development agreement",
+      "website development agreement",
+      "web development agreement",
+      "software development and license agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "source code",
+      "acceptance testing",
+      "acceptance criteria",
+      "the developer",
+      "milestone payment",
+      "pre-existing materials",
+      "open source"
+    ],
+    "negative_features": ["joint development", "jointly developed"]
+  },
+  "expected_clauses": [
+    "ip-ownership",
+    "fees-and-payment",
+    "warranty",
+    "term",
+    "termination-for-cause",
+    "governing-law"
+  ],
+  "expected_defined_terms": [],
+  "rule_overrides": {
+    "IPDATA-002": {
+      "skip": true
+    }
+  },
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-COPYRIGHT",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["sow", "mutual-nda"],
+  "compliance_matrix_columns": [
+    "Specifications the software is built to",
+    "Acceptance testing, and what happens if the client says nothing",
+    "Payment schedule tied to the work",
+    "An assignment of the software, not only a work-for-hire statement",
+    "Developer's pre-existing materials",
+    "Open-source and third-party components"
+  ]
+}

@@ -13907,6 +13907,56 @@
    "sources": []
   },
   {
+   "id": "software-development-agreement",
+   "name": "Software Development Agreement",
+   "group": "SaaS & technology",
+   "summary": "An agreement under which a developer builds custom software, a website or an app for a client. The checks read for written specifications, an acceptance procedure, a payment schedule tied to the work, an assignment of the software rather than only a work-for-hire statement, the developer's pre-existing materials, and open-source components.",
+   "checks": [
+    {
+     "id": "SDA-001",
+     "name": "Specifications the software is built to",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDA-002",
+     "name": "Acceptance testing, and what happens if the client says nothing",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDA-003",
+     "name": "Payment schedule tied to the work",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDA-004",
+     "name": "An assignment of the software, not only a work-for-hire statement",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDA-005",
+     "name": "Developer's pre-existing materials",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDA-006",
+     "name": "Open-source and third-party components",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 114,
+   "companions": [
+    "sow",
+    "mutual-nda"
+   ],
+   "sources": []
+  },
+  {
    "id": "software-license-enterprise",
    "name": "Enterprise Software License and Support Agreement",
    "group": "SaaS & technology",

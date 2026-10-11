@@ -1,0 +1,67 @@
+SOFTWARE DEVELOPMENT AGREEMENT
+
+This Software Development Agreement (this "Agreement") is entered into as of April 6, 2026 (the "Effective Date") between Pallas Systems LLC, a Colorado limited liability company ("Developer"), and Greywater Outfitters, Inc., a Colorado corporation ("Client").
+
+1. Definitions.
+
+"Deliverable" means each item Developer is to deliver under the Specifications, including the Software's source code and documentation.
+
+"Developer Materials" means the software libraries, tools and code that Developer owned or had developed before the Effective Date or develops outside this Agreement, as listed in Exhibit B.
+
+"Software" means the mobile ordering application described in the Specifications.
+
+"Specifications" means the functional and technical requirements for the Software in Exhibit A, as changed under Section 3.
+
+2. Development Services. Developer will design, build and deliver the Software so that it conforms to the Specifications, on the schedule in Exhibit A. Developer will perform the work through its own employees and will not subcontract it without Client's written consent.
+
+3. Changes. Either party may propose a change to the Specifications in writing. A change takes effect only when both parties sign a change order stating its effect on the fees and the schedule.
+
+4. Delivery and Acceptance. Developer will deliver each Deliverable to Client for acceptance testing. Client has 15 business days after delivery to test the Deliverable against the Specifications and to accept or reject it in writing. A rejection must describe each failure to conform to the Specifications. Developer will correct each failure and redeliver within 10 business days, and the acceptance period then starts again. A Deliverable is deemed accepted if Client does not accept or reject it within the acceptance period. If a Deliverable is rejected three times, Client may terminate this Agreement and receive a refund of the fees paid for that Deliverable.
+
+5. Fees. Client will pay Developer a fixed fee of $180,000 in three milestone payments: $45,000 on signing; $72,000 on acceptance of the beta release; and $63,000 on acceptance of the final release. Developer will invoice each milestone payment when it is earned, and Client will pay each invoice within 30 days after receiving it.
+
+6. Ownership.
+
+6.1 Assignment. Client will own the Software and each Deliverable, excluding the Developer Materials. To the extent the Software or a Deliverable is not a work made for hire under the Copyright Act, Developer hereby assigns to Client all right, title and interest in it, including all copyrights, effective on payment of the milestone payment for it. Developer will sign any document Client reasonably requests to record the assignment.
+
+6.2 Developer Materials. Developer retains ownership of the Developer Materials. Developer grants Client a perpetual, irrevocable, worldwide, royalty-free license to use, copy and modify the Developer Materials as part of the Software.
+
+6.3 Open-Source Components. Exhibit B lists each open-source and third-party software component included in the Software and the license that governs it. Developer will not include any other open-source component, and will not include any component whose license would require Client to disclose or license the source code of the Software, without Client's prior written approval.
+
+7. Confidentiality. Each party will keep the other party's non-public information confidential, will use it only to perform this Agreement, and will protect it with reasonable care. This obligation continues for five years after this Agreement ends.
+
+8. Warranties. Developer warrants that (a) for 90 days after acceptance of the final release, the Software will conform to the Specifications, and Developer will correct any failure to conform at no charge; (b) the Software will be Developer's original work, except for the components listed in Exhibit B; and (c) the Software will contain no code designed to disable or damage it. EXCEPT AS STATED IN THIS SECTION, DEVELOPER DISCLAIMS ALL OTHER WARRANTIES, INCLUDING THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+9. Indemnification. Developer will defend Client against any third-party claim that the Software, as delivered, infringes a copyright or misappropriates a trade secret, and will indemnify Client for the damages and costs finally awarded or agreed in settlement. Client will give Developer prompt written notice of the claim and control of its defense.
+
+10. Limitation of Liability. Except for a party's obligations under Section 9 and a breach of Section 7, neither party will be liable to the other for indirect or consequential damages, and each party's total liability under this Agreement will not exceed the fees paid and payable under it.
+
+11. Term and Termination. This Agreement begins on the Effective Date and ends when the warranty period in Section 8 ends. Either party may terminate this Agreement on written notice if the other party materially breaches it and does not cure the breach within 30 days after written notice. On termination, Client will pay for each Deliverable accepted before termination, Developer will deliver all work in progress and its source code, and the assignment in Section 6.1 applies to everything Client has paid for. Sections 6 through 10 and 12 survive termination.
+
+12. General. Developer is an independent contractor. This Agreement is governed by the laws of the State of Colorado, and the state and federal courts located in Denver, Colorado have exclusive jurisdiction over any dispute arising under it. Neither party may assign this Agreement without the other party's written consent, except to a successor to its business. This Agreement, with its exhibits, is the entire agreement of the parties on its subject and may be amended only in a writing signed by both parties.
+
+PALLAS SYSTEMS LLC
+
+By: ______________________
+Name: Irene Vasquez
+Title: Managing Member
+
+GREYWATER OUTFITTERS, INC.
+
+By: ______________________
+Name: Marcus Bell
+Title: Chief Operating Officer
+
+EXHIBIT A
+
+Specifications and Schedule
+
+The Software is a mobile ordering application for iOS and Android that lets a customer browse Client's catalog, place and pay for an order, and track delivery. Beta release: August 3, 2026. Final release: October 5, 2026.
+
+EXHIBIT B
+
+Developer Materials and Open-Source Components
+
+Developer Materials: Developer's authentication module and its build scripts.
+
+Open-source components: React Native (MIT License); SQLite (public domain); OpenSSL (Apache License 2.0).

@@ -1,0 +1,25 @@
+APP DEVELOPMENT AGREEMENT
+
+This App Development Agreement is entered into as of June 8, 2026 between Kestrel Digital LLC ("Developer") and Marlowe Fitness Studios, Inc. ("Client").
+
+1. Services. Developer will build a class-booking app for Client and will deliver it by September 30, 2026.
+
+2. Fees. Client will pay Developer $60,000.
+
+3. Ownership. The app is a work made for hire and belongs to Client.
+
+4. Confidentiality. Each party will keep the other party's non-public information confidential.
+
+5. Governing Law. This Agreement is governed by the laws of the State of Texas.
+
+KESTREL DIGITAL LLC
+
+By: ______________________
+Name: Dana Whitlock
+Title: Member
+
+MARLOWE FITNESS STUDIOS, INC.
+
+By: ______________________
+Name: Peter Marlowe
+Title: President
