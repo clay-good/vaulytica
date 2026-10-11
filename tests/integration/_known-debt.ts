@@ -292,6 +292,43 @@ export const KNOWN_DEBT = {
     ],
   },
   // shouted-clause.test.ts — LIABILITY_DEBT
+  /**
+   * 🚨 TWO REPAIRS MEASURED AND REJECTED (9.891.0). Do not try either again
+   * without reading this.
+   *
+   * The dominant shape in these three lists is a rule that depends on CASE to
+   * recognize a term, losing its signal when a clause is shouted: STRUCT-006
+   * and STRUCT-018 are LOST eleven times between them, because a candidate
+   * needs two occurrences (`positions.length >= 2` in `definitions.ts`) and
+   * shouting one of exactly two drops it below the threshold.
+   *
+   * **1. Matching all-caps runs to FIND candidates: rejected, 19× flood.**
+   * The corpus goes from 185 undefined-term candidates to 3,615. The new ones
+   * are headings, court captions and shouted sentence fragments — "RISK
+   * FACTORS", "IN WITNESS WHEREOF", "COURT FOR THE NORTHERN DISTRICT", "IS
+   * MADE AS OF SEPTEMBER" — every one of which the report would put to a
+   * reader as a term the drafter forgot to define.
+   *
+   * **2. Counting a KNOWN candidate's shouted occurrences: rejected too, and
+   * this one looked safe.** Discovery stays Title-Case only, so there is no
+   * flood: the corpus moves 185 → 208. But 15 of those 23 are junk, because
+   * the shouted pass bypasses every exclusion the Title-Case pass applies —
+   * signatories, case names, city names, a clause number before the phrase,
+   * and the document's own title. It promotes shouted party names from
+   * signature blocks and captions ("Cascadia Surety", "Marisol
+   * Ontiveros-Baez", "Internal Revenue" out of INTERNAL REVENUE CODE), a
+   * division reference ("Article Five"), and — worst — the document's OWN
+   * NAME ("Order Form", "Privacy Notice", "Unanimous Written Consent"), which
+   * `undefinedTermCandidates` carries a documented exemption for precisely
+   * because each was a real false accusation. Making it safe means routing the
+   * shouted pass through all five tests, which is re-implementing the pass for
+   * about seven lines of this ledger.
+   *
+   * A false "you forgot to define this" is a confident accusation about the
+   * reader's own drafting; a finding that moves when a clause is shouted is a
+   * stability wart. The wart is the better trade, and it is the reason these
+   * lists stay.
+   */
   "capitals-limitation-of-liability": {
     reason:
       "On {n} specimens, setting the limitation of liability in capital letters moves a finding, usually because a party name or a heading can no longer be told from the words around it.",
