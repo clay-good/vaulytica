@@ -54,6 +54,7 @@ describe("v7 ruleset shape", () => {
         "hipaa-data-use-agreement",
         "merchant-cash-advance",
         "pilot-evaluation-agreement",
+        "residential-solar-agreement",
         "roommate-agreement",
         "service-level-agreement",
         "software-development-agreement",

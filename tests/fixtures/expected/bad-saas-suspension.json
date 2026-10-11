@@ -831,7 +831,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0"
+      "rule_version": "1.24.0"
     },
     {
       "elapsed_ms": 0,
@@ -1124,7 +1124,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0",
+      "rule_version": "1.24.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1188,11 +1188,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "c60198f7d4e6c0d38c55d69abd7951bcbf44314277355629cd6796f4de0caaea",
+  "result_hash": "2d90f50db7ad82c6c203c0cdfa87f348440576e88955a5f0724714f5079662cd",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.871.0"
+  "version": "9.872.0"
 }

@@ -827,7 +827,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0"
+      "rule_version": "1.24.0"
     },
     {
       "elapsed_ms": 0,
@@ -985,7 +985,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0",
+      "rule_version": "1.24.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1041,11 +1041,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "6b626818777c2a3ddd799ac5f5338cef09dbff70cfe484fdae39f14a8588c5be",
+  "result_hash": "ca1fcc9b4a46383bb99c54a4492c4a0213714d0602e4fd1eb10babb022e6f415",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.871.0"
+  "version": "9.872.0"
 }

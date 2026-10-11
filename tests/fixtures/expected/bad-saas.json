@@ -837,7 +837,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0"
+      "rule_version": "1.24.0"
     },
     {
       "elapsed_ms": 0,
@@ -1167,7 +1167,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0",
+      "rule_version": "1.24.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1316,11 +1316,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "796741efd8c957b036af9f6a37ea237cd9d37912a7aa83695303fc5c2eb44b1e",
+  "result_hash": "893d5ca93057cf4689e02426fd4fdf1c07fccf0f276e566f8ed87d99b6c812f6",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.871.0"
+  "version": "9.872.0"
 }

@@ -1,0 +1,68 @@
+RESIDENTIAL SOLAR POWER PURCHASE AGREEMENT
+
+This Residential Solar Power Purchase Agreement (this "Agreement") is entered into as of April 20, 2026 (the "Effective Date") between Brightfield Solar LLC, an Arizona limited liability company ("Provider"), and Jordan Ellis ("Homeowner"), the owner of the home at 418 Saguaro Lane, Tempe, Arizona (the "Home").
+
+1. Definitions.
+
+"In-Service Date" means the date the local utility gives permission for the System to operate.
+
+"System" means the 7.2 kW photovoltaic system described in Exhibit A, including its panels, inverters and monitoring equipment.
+
+2. The System. Provider will design, install, own, insure and maintain the System on the roof of the Home at Provider's cost. Provider will repair any roof damage its work causes and will warrant the roof penetrations against leaks for ten years.
+
+3. Term. The term of this Agreement is 25 years, beginning on the In-Service Date.
+
+4. Price. Homeowner will pay Provider $0.145 per kilowatt-hour for the electricity the System produces, as measured by the System's meter. The price will increase by 2.9% on each anniversary of the In-Service Date. Exhibit B shows the price for each year of the term. Provider will invoice Homeowner monthly, and each invoice is due 20 days after it is sent.
+
+5. Production Guarantee. Provider guarantees that the System will produce at least 10,400 kilowatt-hours in each year of the term. If it produces less, Provider will pay Homeowner, within 60 days after the end of that year, the shortfall in kilowatt-hours multiplied by the price then in effect.
+
+6. Sale of the Home. If Homeowner sells the Home, Homeowner may (a) transfer this Agreement to the buyer, if the buyer has a credit score of at least 650 and signs an assumption agreement, and Provider will approve or decline the transfer within ten business days after receiving the buyer's application; (b) purchase the System at the price shown for that year in Exhibit B; or (c) prepay the remaining payments at the discount shown in Exhibit B.
+
+7. Filings Against the Home. Provider will record a fixture filing (a UCC-1 financing statement) in the county land records to give notice that Provider owns the System. The fixture filing is not a lien on the Home. Provider will subordinate or temporarily release it within ten business days after Homeowner's request in connection with a refinancing or sale of the Home.
+
+8. End of the Term. At the end of the term Homeowner may renew this Agreement for five years at the price then in effect, purchase the System at its fair market value, or have Provider remove the System and restore the roof at Provider's cost.
+
+9. Default. Homeowner is in default if a payment is more than 60 days late after written notice. Provider is in default if it fails to repair the System within 30 days after written notice that it is not producing. If a default is not cured within 30 days after a further written notice, the other party may terminate this Agreement. On termination for Homeowner's default, Homeowner will pay the prepayment amount for that year shown in Exhibit B, and Provider may remove the System. On termination for Provider's default, Provider will remove the System and restore the roof at its own cost, and Homeowner will owe nothing further.
+
+10. Limitation of Liability. Neither party will be liable to the other for indirect or consequential damages. Provider's total liability under this Agreement will not exceed $50,000, except for damage to the Home caused by Provider's work.
+
+11. No Confession of Judgment. This Agreement does not include any confession of judgment, and Homeowner does not waive the right to cancel described below.
+
+12. General. This Agreement is governed by the laws of the State of Arizona, and the state courts located in Maricopa County, Arizona have exclusive jurisdiction over any dispute arising under it. This Agreement, with its exhibits, is the entire agreement of the parties and may be amended only in a writing signed by both parties.
+
+YOU, THE BUYER, MAY CANCEL THIS TRANSACTION AT ANY TIME PRIOR TO MIDNIGHT OF THE THIRD BUSINESS DAY AFTER THE DATE OF THIS TRANSACTION. SEE THE ATTACHED NOTICE OF CANCELLATION FORM FOR AN EXPLANATION OF THIS RIGHT.
+
+BRIGHTFIELD SOLAR LLC
+
+By: ______________________
+Name: Teresa Coyle
+Title: Vice President, Operations
+
+HOMEOWNER
+
+______________________
+Jordan Ellis
+Date: April 20, 2026
+
+EXHIBIT A
+
+System Description
+
+Twenty 360-watt photovoltaic panels, one string inverter, and a revenue-grade production meter, mounted on the south-facing roof of the Home.
+
+EXHIBIT B
+
+Price, Purchase and Prepayment Schedule
+
+Year 1: $0.145 per kilowatt-hour; purchase price $21,600; prepayment amount $19,800. Each later year is shown in the schedule delivered with this Agreement.
+
+NOTICE OF CANCELLATION
+
+Date of transaction: April 20, 2026
+
+You may cancel this transaction, without any penalty or obligation, within three business days from the above date. If you cancel, any payments made by you under the contract will be returned within ten business days following receipt by the seller of your cancellation notice. To cancel this transaction, mail or deliver a signed and dated copy of this cancellation notice to Brightfield Solar LLC, 900 West Mesa Drive, Tempe, Arizona, not later than midnight of April 23, 2026.
+
+I hereby cancel this transaction.
+
+______________________
+Buyer's signature and date

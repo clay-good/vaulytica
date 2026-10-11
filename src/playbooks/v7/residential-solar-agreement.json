@@ -1,0 +1,57 @@
+{
+  "id": "residential-solar-agreement",
+  "version": "1.0.0",
+  "name": "Residential Solar Lease or Power Purchase Agreement",
+  "description": "A long-term contract under which a company installs and owns solar panels on a home and the homeowner pays for the power or leases the system. The checks read for the three-business-day cancellation terms that apply to a contract signed at home, a confession of judgment or cancellation waiver, the annual price increase, the length of the term, a production guarantee, what happens when the home is sold, and filings against the property.",
+  "match_features": {
+    "title_keywords": [
+      "residential solar power purchase agreement",
+      "solar power purchase agreement",
+      "residential solar lease",
+      "solar lease agreement",
+      "solar lease",
+      "home solar agreement",
+      "solar energy system lease",
+      "residential solar agreement"
+    ],
+    "required_clauses": [],
+    "distinguishing_phrases": [
+      "homeowner",
+      "photovoltaic",
+      "kilowatt-hour",
+      "net metering",
+      "solar energy system",
+      "production guarantee",
+      "solar panels"
+    ],
+    "negative_features": []
+  },
+  "expected_clauses": [],
+  "expected_defined_terms": [],
+  "rule_overrides": {
+    "IPDATA-001": {
+      "skip": true
+    },
+    "OBLI-002": {
+      "skip": true
+    },
+    "RISK-001": {
+      "skip": true
+    }
+  },
+  "balanced_defaults": [],
+  "sources": [],
+  "regulator_frame": "US-CONSUMER",
+  "applicable_jurisdictions": ["US"],
+  "companion_playbooks": ["ucc-1-financing-statement"],
+  "compliance_matrix_columns": [
+    "Statement of the right to cancel within three business days",
+    "Notice of Cancellation form",
+    "Confession of judgment, or waiver of the right to cancel",
+    "Whether the price rises, and by how much each year",
+    "Length of the term",
+    "Production guarantee",
+    "What happens when the home is sold",
+    "Filings against the home"
+  ]
+}

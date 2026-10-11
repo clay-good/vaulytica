@@ -512,3 +512,21 @@ describe("TERM-005 — a contingency's long condition", () => {
     ).toBeNull();
   });
 });
+
+describe("TERM-005 — removal of what was installed (1.24.0)", () => {
+  it("reads 'on termination, Provider will remove the System'", () => {
+    expect(
+      TERM_005.check(
+        doc(
+          "On termination for Provider's default, Provider will remove the System and restore the roof at its own cost.",
+        ),
+      ),
+    ).toBeNull();
+  });
+
+  it("still fires when removal is not tied to the agreement ending", () => {
+    expect(
+      TERM_005.check(doc("Provider will remove debris from the site at the end of each work day.")),
+    ).not.toBeNull();
+  });
+});

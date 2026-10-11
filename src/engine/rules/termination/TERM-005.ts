@@ -79,7 +79,11 @@ const TERMINATION_TRIGGER = String.raw`(?:(?:(?:up)?on|after|following)\s+(?:the
 // the plainest consequence a contract can state — did not match, while
 // "shall return" did. Which form a drafter reaches for is a choice about the
 // subject, not about the clause.
-const CONSEQUENCE = String.raw`ceases?|ceased|returns?|returned|destroys?|destroyed|deletes?|deleted|purges?|purged|transitions?|transitioned|exports?|exported|refunds?|refunded|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|transfers?|transferred|discontinues?|discontinued|surrenders?|surrendered|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
+// REMOVE is the wind-down of anything installed on the other party's property:
+// "On termination for Provider's default, Provider will remove the System and
+// restore the roof" is a solar agreement's effect-of-termination clause, and a
+// complete one was told it had none.
+const CONSEQUENCE = String.raw`removes?|removed|ceases?|ceased|returns?|returned|destroys?|destroyed|deletes?|deleted|purges?|purged|transitions?|transitioned|exports?|exported|refunds?|refunded|reverts?|reverted|vests?\s+in|deliver(?:s|ed)?|conveys?|conveyed|transfers?|transferred|discontinues?|discontinued|surrenders?|surrendered|releas(?:e|es|ed)|wind[\s-]down|forfeit(?:s|ed|ure)?|disable[sd]?`;
 
 /**
  * Either order, within one sentence. A consequence drafted BEFORE its trigger
@@ -250,7 +254,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.23.0",
+  version: "1.24.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

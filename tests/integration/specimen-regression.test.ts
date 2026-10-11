@@ -5778,6 +5778,31 @@ export const EXPECTED: Record<string, Expectation> = {
     playbook: "merchant-cash-advance",
     findings: ["CHOICE-003", "MCA-001", "MCA-002", "MCA-003", "MCA-004", "MCA-005"],
   },
+  // spec-v49 Step 311: the residential solar lease or power purchase
+  // agreement. The complete one carries the Cooling-Off Rule's cancellation
+  // statement and form; the thin one waives the right to cancel instead.
+  "residential-solar-ppa-complete.txt": {
+    playbook: "residential-solar-agreement",
+    findings: ["RISK-006", "RISK-007", "STRUCT-005"],
+  },
+  "residential-solar-ppa-thin.txt": {
+    playbook: "residential-solar-agreement",
+    findings: [
+      "CHOICE-003",
+      "FIN-005",
+      "RISK-005",
+      "SOL-001",
+      "SOL-002",
+      "SOL-003",
+      "SOL-004",
+      "SOL-005",
+      "SOL-006",
+      "SOL-007",
+      "SOL-008",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
 };
 
 describe("hand-written specimens", () => {

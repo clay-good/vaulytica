@@ -12,6 +12,7 @@ import type { Rule } from "../../finding.js";
 import { HIPAA_DUA_RULES } from "./hipaa-dua.js";
 import { MERCHANT_CASH_ADVANCE_RULES } from "./merchant-cash-advance.js";
 import { PILOT_RULES, ROOMMATE_RULES, SERVICE_LEVEL_RULES } from "./practice.js";
+import { RESIDENTIAL_SOLAR_RULES } from "./residential-solar.js";
 import { SOFTWARE_DEVELOPMENT_RULES } from "./software-development.js";
 
 /** The v7 ruleset aggregate. Appended after `V6_RULES` in the pipeline. */
@@ -22,6 +23,7 @@ export const V7_RULES: readonly Rule[] = [
   ...HIPAA_DUA_RULES,
   ...SOFTWARE_DEVELOPMENT_RULES,
   ...MERCHANT_CASH_ADVANCE_RULES,
+  ...RESIDENTIAL_SOLAR_RULES,
 ];
 
 export {
@@ -31,4 +33,5 @@ export {
   HIPAA_DUA_RULES,
   SOFTWARE_DEVELOPMENT_RULES,
   MERCHANT_CASH_ADVANCE_RULES,
+  RESIDENTIAL_SOLAR_RULES,
 };

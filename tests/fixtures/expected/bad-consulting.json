@@ -833,7 +833,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0"
+      "rule_version": "1.24.0"
     },
     {
       "elapsed_ms": 0,
@@ -1073,7 +1073,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0",
+      "rule_version": "1.24.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1192,11 +1192,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected consulting-agreement (score 1). Title matched: \"consulting agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\", \"the Consulting Services\", \"consulting services\", \"consultant\".",
-  "result_hash": "83e9380f2de1302d92626c94392de067eec7e7cc0226b589c2518a5e9d0a4b1c",
+  "result_hash": "e7444c22a77105e8b02df90b09709307e70e8fcf15277001e265e9c0dbab63d2",
   "source_file": {
     "name": "bad-consulting.docx",
     "sha256": "f66f070f4bb768dbc3f21ee6782418bca5ed64451d483dab533b345a8ddbe691",
     "size_bytes": 9331
   },
-  "version": "9.871.0"
+  "version": "9.872.0"
 }

@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.872.0] — 2026-10-10
+
+### Added
+- **A document type for the residential solar lease or power purchase
+  agreement** (spec-v49 Step 311). A 25-year contract with a 2.9% annual
+  increase used to fall to the generic fallback and get an empty report. Eight
+  checks: the statement of the right to cancel within three business days; the
+  Notice of Cancellation form; a confession of judgment or a waiver of the
+  right to cancel; the annual price increase; the length of the term; a
+  production guarantee; what happens when the home is sold; and filings
+  against the home. 275 document types, 1,868 rules.
+- **The two cancellation checks say what they cannot know.** The Cooling-Off
+  Rule (16 C.F.R. § 429.1, read at ecfr.gov on 2026-10-10) applies to a
+  contract solicited in person and signed away from the seller's place of
+  business. The contract does not say where it was signed, so those two notes
+  are informational and name the condition.
+
+### Fixed
+- **"On termination, Provider will remove the System" is read as an
+  effect-of-termination clause** (`TERM-005` 1.24.0). Removal of what was
+  installed on the other party's property was not among the consequences the
+  check knew, so a complete solar agreement was told it did not say what
+  happens on termination.
+
 ## [9.871.0] — 2026-10-10
 
 ### Added

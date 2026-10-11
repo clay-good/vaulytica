@@ -828,7 +828,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0"
+      "rule_version": "1.24.0"
     },
     {
       "elapsed_ms": 0,
@@ -950,7 +950,7 @@
       "id": "TERM-005-s1-0",
       "recommendation": "Add an effect-of-termination clause: what is owed for work already performed, what each party returns or deletes, which licences continue, and which sections survive — naming them by number, not \"the provisions that by their nature survive\".",
       "rule_id": "TERM-005",
-      "rule_version": "1.23.0",
+      "rule_version": "1.24.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No effect-of-termination clause detected"
@@ -1042,11 +1042,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "e2b1c246ea0cbd72d75fb1f93739ff597c7f1aaa9a3724b577eb631e1eabdbcc",
+  "result_hash": "3ff9eb7e7e2f65cbfcf1e948f3055866753f4452d705884dfc591d65b3f186c4",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.871.0"
+  "version": "9.872.0"
 }

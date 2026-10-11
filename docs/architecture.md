@@ -11,7 +11,7 @@ flowchart TB
         ingest[Ingest layer<br/>PDF.js · mammoth.js · Tesseract.js WASM]
         normalize[Normalizer<br/>structured document tree]
         extract[Extractors<br/>parties · dates · amounts ·<br/>definitions · sections · crossrefs<br/>· obligations · jurisdictions · classifier]
-        engine[Rule Engine<br/>121 launch · 1,860 total rules<br/>+ 22 cross-document checks]
+        engine[Rule Engine<br/>121 launch · 1,868 total rules<br/>+ 22 cross-document checks]
         playbook[Playbook matcher<br/>NDA · employment · MSA · lease · IC · SaaS · …]
         dkb[(Deterministic<br/>Knowledge Base<br/>shipped as static asset)]
         report[Report builder<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · comparison redline]
@@ -44,7 +44,7 @@ The ingest layer turns a `File` (PDF or DOCX) or pasted text into a **normalized
 
 Determinism contract: same bytes in → same tree out. The normalizer (`normalize.ts`) assigns stable IDs (`s1.p2.r0`) and contiguous offsets so every downstream extractor can refer to positions identically. Order-independence is part of the contract and is guarded separately: a document analyzes identically whatever ran before it in the same process (`determinism-guard.test.ts`), which is what catches a module-level `/g` regex whose `lastIndex` survives a call.
 
-Two further concerns live here rather than in the rule layer, because a rule that has to know about them is a rule that will be written 1,860 times:
+Two further concerns live here rather than in the rule layer, because a rule that has to know about them is a rule that will be written 1,868 times:
 
 - **A presentation form is not a different word.** A ligature (`ﬁ`), fullwidth ASCII (`Ｓｅｃｔｉｏｎ`), a numero sign, a roman-numeral form, and the HYPHEN a PDF emits (U+2010, and Word's non-breaking U+2011) all render as ordinary characters and match none of them. `normalize.ts` folds each back before any rule runs. Every one was found the same way — rewrite the corpus in the form a real file carries and diff the findings ([`format-invariance.test.ts`](../tests/integration/format-invariance.test.ts)) — and every one moved a finding on a large fraction of the corpus, because the fixtures are hand-typed on a keyboard and no example-based test could see it.
 - **A word broken across a line is one word.** A justified column marks the break with a hyphen — "confiden-" then "tial" — using the same character, in the same position, as the hyphen a drafter wrote in "month-to-month". [`hyphenation.ts`](../src/ingest/hyphenation.ts) tells them apart on evidence from the document itself: the joined form is used only when the document writes that word as one word somewhere else, and the hyphen is kept otherwise. The default is the conservative one, so a document's existing result can only change on positive evidence. What the conservatism still costs is a committed list in `format-invariance.test.ts` that may only shrink.

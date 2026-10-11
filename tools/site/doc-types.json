@@ -11889,6 +11889,67 @@
    "sources": []
   },
   {
+   "id": "residential-solar-agreement",
+   "name": "Residential Solar Lease or Power Purchase Agreement",
+   "group": "Commercial & services",
+   "summary": "A long-term contract under which a company installs and owns solar panels on a home and the homeowner pays for the power or leases the system. The checks read for the three-business-day cancellation terms that apply to a contract signed at home, a confession of judgment or cancellation waiver, the annual price increase, the length of the term, a production guarantee, what happens when the home is sold, and filings against the property.",
+   "checks": [
+    {
+     "id": "SOL-001",
+     "name": "Statement of the right to cancel within three business days",
+     "description": "",
+     "severity": "info"
+    },
+    {
+     "id": "SOL-002",
+     "name": "Notice of Cancellation form",
+     "description": "",
+     "severity": "info"
+    },
+    {
+     "id": "SOL-003",
+     "name": "Confession of judgment, or waiver of the right to cancel",
+     "description": "A confession of judgment, or a waiver of the buyer's right to cancel, in a contract with a homeowner.",
+     "severity": "warning"
+    },
+    {
+     "id": "SOL-004",
+     "name": "Whether the price rises, and by how much each year",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SOL-005",
+     "name": "Length of the term",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SOL-006",
+     "name": "Production guarantee",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SOL-007",
+     "name": "What happens when the home is sold",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SOL-008",
+     "name": "Filings against the home",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 112,
+   "companions": [
+    "ucc-1-financing-statement"
+   ],
+   "sources": []
+  },
+  {
    "id": "revocable-living-trust",
    "name": "Revocable Living Trust",
    "group": "Estate & family",
