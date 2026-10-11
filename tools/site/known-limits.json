@@ -6,9 +6,9 @@
   "match_threshold": 0.5
  },
  "self_measured": {
-  "specimens": 357,
-  "document_types": 280,
-  "rules": 1918,
+  "specimens": 361,
+  "document_types": 282,
+  "rules": 1930,
   "attorney_signed_rules": 0
  },
  "open": [

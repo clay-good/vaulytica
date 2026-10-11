@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.882.0] — 2026-10-11
+
+### Added
+- **Student Data Privacy Agreement** — the agreement a school signs with a
+  provider of classroom software (spec-v49 Step 312). Seven checks: the
+  school's ownership and control of the data; use limited to the service with
+  no further disclosure; no targeted advertising or sale; security measures;
+  notice of an unauthorized disclosure; parents' access and correction; and
+  deletion at the end. The first two cite the conditions on which FERPA lets a
+  school share records with a vendor (34 C.F.R. § 99.31(a)(1)(i)(B), read at
+  ecfr.gov on 2026-10-11) — and say that the rule sets conditions and does not
+  prescribe contract clauses.
+- **California law, where the agreement names it.** California lists nine
+  provisions such a contract must contain, and a contract missing one is void
+  if not cured after notice (Educ. Code § 49073.1, read at
+  leginfo.legislature.ca.gov on 2026-10-11). It appears as a state-law note on
+  a student data agreement governed by California law.
+- **Used Vehicle Purchase Agreement.** Five checks: the vehicle's
+  identification number and odometer reading; the price and each fee added to
+  it; the statement that the window form is part of the contract; the warranty
+  or an as-is sale; and title free of liens. The window-form check cites the
+  FTC's Used Car Rule (16 C.F.R. § 455.3(b), read at ecfr.gov on 2026-10-11).
+  The rule binds a dealer — someone who has sold five or more used vehicles in
+  a year — which the contract does not establish, so that note is
+  informational and names the condition.
+- 285 document types, 1,930 rules, 92 state-law overlays.
+
+### Notes
+- This completes the second probe. Of thirteen candidate types, eight were
+  built, two were fixed by routing to a type that already existed, and two
+  were already handled. One, the management services agreement, is
+  deliberately not built: the statutes that govern it changed in 2025 and have
+  been read only in secondary sources.
+
 ## [9.881.0] — 2026-10-11
 
 ### Added

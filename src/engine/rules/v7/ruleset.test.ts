@@ -76,8 +76,10 @@ describe("v7 ruleset shape", () => {
         "roommate-agreement",
         "service-level-agreement",
         "software-development-agreement",
+        "student-data-privacy-agreement",
         "support-maintenance-agreement",
         "training-repayment-agreement",
+        "vehicle-purchase-agreement",
       ].sort(),
     );
     for (const p of playbooks) {

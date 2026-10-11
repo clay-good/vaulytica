@@ -20,6 +20,7 @@ import { RESIDENTIAL_SOLAR_RULES } from "./residential-solar.js";
 import { SOFTWARE_DEVELOPMENT_RULES } from "./software-development.js";
 import { TRAINING_REPAYMENT_RULES } from "./training-repayment.js";
 import { TRANCHE_B_RULES } from "./tranche-b.js";
+import { TRANCHE_B_CITED_RULES } from "./tranche-b-cited.js";
 
 /** The v7 ruleset aggregate. Appended after `V6_RULES` in the pipeline. */
 export const V7_RULES: readonly Rule[] = [
@@ -36,6 +37,7 @@ export const V7_RULES: readonly Rule[] = [
   ...FALLBACK_RULES,
   ...MEMORANDUM_RULES,
   ...TRANCHE_B_RULES,
+  ...TRANCHE_B_CITED_RULES,
 ];
 
 export {
@@ -52,4 +54,5 @@ export {
   FALLBACK_RULES,
   MEMORANDUM_RULES,
   TRANCHE_B_RULES,
+  TRANCHE_B_CITED_RULES,
 };

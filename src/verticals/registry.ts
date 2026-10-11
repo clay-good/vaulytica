@@ -93,6 +93,8 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   BSA: "buy-sell-agreement",
   OBS: "board-observer-agreement",
   PPA: "commercial-power-purchase-agreement",
+  SDP: "student-data-privacy-agreement",
+  VEH: "vehicle-purchase-agreement",
   // Presence notes on a document no type matched (spec-v50 §11).
   GEN: "generic-fallback",
 } as const;

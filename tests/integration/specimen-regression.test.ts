@@ -5939,6 +5939,37 @@ export const EXPECTED: Record<string, Expectation> = {
       "TERM-005",
     ],
   },
+  // spec-v49 Step 312 (tranche B): the two types with an authority. The
+  // complete student-data agreement names California law and so also gets the
+  // Educ. Code § 49073.1 overlay; the complete vehicle contract carries the
+  // Used Car Rule's window-form sentence and draws nothing at all.
+  "student-data-privacy-agreement-complete.txt": {
+    playbook: "student-data-privacy-agreement",
+    findings: ["OBLI-005", "STRUCT-005", "TEMP-006", "TEMP-008"],
+  },
+  "student-data-privacy-agreement-thin.txt": {
+    playbook: "student-data-privacy-agreement",
+    findings: [
+      "CHOICE-003",
+      "SDP-001",
+      "SDP-002",
+      "SDP-003",
+      "SDP-004",
+      "SDP-005",
+      "SDP-006",
+      "SDP-007",
+      "TERM-002",
+      "TERM-005",
+    ],
+  },
+  "vehicle-purchase-agreement-complete.txt": {
+    playbook: "vehicle-purchase-agreement",
+    findings: [],
+  },
+  "vehicle-purchase-agreement-thin.txt": {
+    playbook: "vehicle-purchase-agreement",
+    findings: ["VEH-001", "VEH-002", "VEH-003", "VEH-004", "VEH-005"],
+  },
 };
 
 describe("hand-written specimens", () => {

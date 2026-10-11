@@ -20075,6 +20075,71 @@
     ]
   },
   {
+    "id": "student-data-privacy-agreement",
+    "name": "Student Data Privacy Agreement",
+    "version": "1.0.0",
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "balanced_defaults": [],
+    "sources": [],
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "description": "The agreement a school or district signs with a provider of classroom software or record storage, about the student data the provider receives. The checks read for the school's ownership and control of the data, use limited to the service with no further disclosure, no targeted advertising or sale, security measures, notice of an unauthorized disclosure, parents' access and correction, and deletion at the end.",
+    "match_features": {
+      "title_keywords": [
+        "student data privacy agreement",
+        "student data privacy addendum",
+        "student data protection agreement",
+        "student privacy agreement",
+        "pupil records agreement",
+        "student data sharing agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "student data",
+        "pupil records",
+        "school official",
+        "legitimate educational interest",
+        "ferpa",
+        "education records",
+        "targeted advertising"
+      ],
+      "negative_features": []
+    },
+    "rule_overrides": {
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      }
+    },
+    "regulator_frame": "FERPA",
+    "companion_playbooks": [
+      "saas-customer",
+      "data-sharing-agreement"
+    ],
+    "compliance_matrix_columns": [
+      "Student data stays the school's, under its control",
+      "Use limited to the service, and no further disclosure",
+      "No targeted advertising, and no sale of student data",
+      "Security measures",
+      "Notice of an unauthorized disclosure",
+      "Parents' access to, and correction of, the records",
+      "Deletion or return of student data at the end"
+    ]
+  },
+  {
     "id": "subcontractor-agreement",
     "version": "1.1.0",
     "name": "Subcontractor Agreement",
@@ -21891,6 +21956,84 @@
       "Management-rights reservation",
       "Seniority, layoff, and recall",
       "Term, reopener, and evergreen clause"
+    ]
+  },
+  {
+    "id": "vehicle-purchase-agreement",
+    "name": "Used Vehicle Purchase Agreement",
+    "version": "1.0.0",
+    "expected_clauses": [],
+    "expected_defined_terms": [],
+    "balanced_defaults": [],
+    "sources": [],
+    "applicable_jurisdictions": [
+      "US"
+    ],
+    "description": "The contract for the sale of a used car or truck, from a dealer or between individuals. The checks read for the vehicle's identification number and odometer reading, the price and each fee added to it, the statement that the window form is part of the contract, the warranty or an as-is sale, and title free of liens.",
+    "match_features": {
+      "title_keywords": [
+        "used vehicle purchase agreement",
+        "vehicle purchase agreement",
+        "motor vehicle purchase agreement",
+        "used car purchase agreement",
+        "vehicle sales agreement",
+        "vehicle bill of sale and purchase agreement",
+        "retail purchase agreement"
+      ],
+      "required_clauses": [],
+      "distinguishing_phrases": [
+        "odometer",
+        "vin",
+        "trade-in",
+        "documentary fee",
+        "window form",
+        "certificate of title",
+        "buyers guide"
+      ],
+      "negative_features": [
+        "fleet",
+        "lessee"
+      ]
+    },
+    "rule_overrides": {
+      "CHOICE-001": {
+        "skip": true
+      },
+      "CHOICE-003": {
+        "skip": true
+      },
+      "FIN-005": {
+        "skip": true
+      },
+      "IPDATA-001": {
+        "skip": true
+      },
+      "OBLI-002": {
+        "skip": true
+      },
+      "RISK-001": {
+        "skip": true
+      },
+      "RISK-005": {
+        "skip": true
+      },
+      "TERM-002": {
+        "skip": true
+      },
+      "TERM-005": {
+        "skip": true
+      }
+    },
+    "regulator_frame": "FTC-USED-CAR-RULE",
+    "companion_playbooks": [
+      "bill-of-sale"
+    ],
+    "compliance_matrix_columns": [
+      "The vehicle, by VIN and odometer reading",
+      "The price, and each fee added to it",
+      "Statement that the window form is part of the contract",
+      "Warranty, or a sale as is",
+      "Title, and any lien on the vehicle"
     ]
   },
   {

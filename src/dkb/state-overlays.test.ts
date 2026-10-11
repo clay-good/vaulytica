@@ -117,6 +117,20 @@ describe("overlayFamilyForPlaybook", () => {
     expect(selectStateOverlays("listing-agreement", law("State of Texas"))).toBeUndefined();
   });
 
+  it("selects the California pupil-records node only under California law", () => {
+    expect(overlayFamilyForPlaybook("student-data-privacy-agreement")).toBe("student-data");
+    const law = (raw_text: string) =>
+      [{ clause_kind: "governing-law", raw_text }] as unknown as Parameters<
+        typeof selectStateOverlays
+      >[1];
+    const ca = selectStateOverlays("student-data-privacy-agreement", law("State of California"));
+    expect(ca?.matched.map((o) => o.id)).toEqual(["student-data-us-ca"]);
+    expect(ca?.matched[0]?.citation.source).toContain("49073.1");
+    expect(
+      selectStateOverlays("student-data-privacy-agreement", law("State of Arizona"))?.matched,
+    ).toEqual([]);
+  });
+
   it("returns undefined for non-state-sensitive families", () => {
     expect(overlayFamilyForPlaybook("mutual-nda")).toBeUndefined();
     expect(overlayFamilyForPlaybook("ucc-1-financing-statement")).toBeUndefined();

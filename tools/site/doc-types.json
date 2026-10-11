@@ -14821,6 +14821,62 @@
    "sources": []
   },
   {
+   "id": "student-data-privacy-agreement",
+   "name": "Student Data Privacy Agreement",
+   "group": "Privacy & data protection",
+   "summary": "The agreement a school or district signs with a provider of classroom software or record storage, about the student data the provider receives. The checks read for the school's ownership and control of the data, use limited to the service with no further disclosure, no targeted advertising or sale, security measures, notice of an unauthorized disclosure, parents' access and correction, and deletion at the end.",
+   "checks": [
+    {
+     "id": "SDP-001",
+     "name": "Student data stays the school's, under its control",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDP-002",
+     "name": "Use limited to the service, and no further disclosure",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDP-003",
+     "name": "No targeted advertising, and no sale of student data",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDP-004",
+     "name": "Security measures",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDP-005",
+     "name": "Notice of an unauthorized disclosure",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDP-006",
+     "name": "Parents' access to, and correction of, the records",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "SDP-007",
+     "name": "Deletion or return of student data at the end",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 110,
+   "companions": [
+    "saas-customer",
+    "data-sharing-agreement"
+   ],
+   "sources": []
+  },
+  {
    "id": "subcontractor-agreement",
    "name": "Subcontractor Agreement",
    "group": "Commercial & services",
@@ -16052,6 +16108,49 @@
    "general_checks": 108,
    "companions": [
     "employee-handbook"
+   ],
+   "sources": []
+  },
+  {
+   "id": "vehicle-purchase-agreement",
+   "name": "Used Vehicle Purchase Agreement",
+   "group": "Commercial & services",
+   "summary": "The contract for the sale of a used car or truck, from a dealer or between individuals. The checks read for the vehicle's identification number and odometer reading, the price and each fee added to it, the statement that the window form is part of the contract, the warranty or an as-is sale, and title free of liens.",
+   "checks": [
+    {
+     "id": "VEH-001",
+     "name": "The vehicle, by VIN and odometer reading",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "VEH-002",
+     "name": "The price, and each fee added to it",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "VEH-003",
+     "name": "Statement that the window form is part of the contract",
+     "description": "",
+     "severity": "info"
+    },
+    {
+     "id": "VEH-004",
+     "name": "Warranty, or a sale as is",
+     "description": "",
+     "severity": "warning"
+    },
+    {
+     "id": "VEH-005",
+     "name": "Title, and any lien on the vehicle",
+     "description": "",
+     "severity": "warning"
+    }
+   ],
+   "general_checks": 106,
+   "companions": [
+    "bill-of-sale"
    ],
    "sources": []
   },

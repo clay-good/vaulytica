@@ -53,7 +53,8 @@ export type OverlayFamily =
   | "lending"
   | "sales-based-financing"
   | "training-repayment"
-  | "buyer-representation";
+  | "buyer-representation"
+  | "student-data";
 
 /**
  * How the state treats the clause relative to the baseline. Drives the
@@ -92,6 +93,7 @@ export const StateOverlaySchema = z.object({
     "sales-based-financing",
     "training-repayment",
     "buyer-representation",
+    "student-data",
   ]),
   topic: z.string().min(1),
   jurisdiction: z.string().regex(/^us-[a-z]{2}$/, "jurisdiction must be us-XX"),
@@ -973,6 +975,35 @@ const BUYER_REPRESENTATION: readonly StateOverlay[] = [
   },
 ];
 
+/**
+ * Student data. California lists nine provisions a school's contract with a
+ * provider of digital educational software or record storage must contain,
+ * and a contract missing one is void if not cured after notice. Read at
+ * leginfo.legislature.ca.gov on 2026-10-11.
+ */
+const STUDENT_DATA: readonly StateOverlay[] = [
+  {
+    id: "student-data-us-ca",
+    family: "student-data",
+    topic: "contracts for pupil records",
+    jurisdiction: "us-ca",
+    state_name: "California",
+    posture: "restricted",
+    headline: "Nine contract provisions required; a contract missing one is void if not cured",
+    summary:
+      "A California school district, county office of education or charter school that contracts with a third party for digital storage of pupil records, or for digital educational software that uses them, must ensure the contract contains nine things (Educ. Code § 49073.1(b)): (1) a statement that pupil records remain the property of and under the control of the agency; (2) how pupils keep control of pupil-generated content, if applicable; (3) a prohibition on using pupil-record information for any purpose other than those the contract requires or permits; (4) how a parent, guardian or eligible pupil may review and correct the records; (5) the actions the third party will take to keep the records secure and confidential, including designating and training responsible individuals; (6) how affected parents or eligible pupils are notified of an unauthorized disclosure; (7) a certification that the records will not be retained or available to the third party when the contract ends, and how that is enforced; (8) how the agency and the third party will jointly ensure compliance with FERPA; and (9) a prohibition on using personally identifiable information in pupil records for targeted advertising. A contract that does not comply is void if the noncompliant party fails to cure after notice, and all pupil records must then be returned (§ 49073.1(c)).",
+    recommendation:
+      "Check the contract against each of the nine provisions. The certification that records are not retained (7) and the joint FERPA compliance description (8) are the two most often missing.",
+    severity: "warning",
+    citation: citeAt(
+      "ca-educ-code-49073-1",
+      "Cal. Educ. Code § 49073.1",
+      "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?lawCode=EDC&sectionNum=49073.1.",
+      "2026-10-11",
+    ),
+  },
+];
+
 export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...EMPLOYMENT_NONCOMPETE,
   ...RESIDENTIAL_LEASE_DEPOSIT,
@@ -980,6 +1011,7 @@ export const STATE_OVERLAYS: readonly StateOverlay[] = [
   ...SALES_BASED_FINANCING,
   ...TRAINING_REPAYMENT,
   ...BUYER_REPRESENTATION,
+  ...STUDENT_DATA,
 ];
 
 /**
@@ -1019,6 +1051,8 @@ const PLAYBOOK_FAMILY: ReadonlyMap<string, OverlayFamily> = new Map([
   ["training-repayment-agreement", "training-repayment"],
   // Buyer representation — Texas sets the agreement's contents by statute.
   ["buyer-representation-agreement", "buyer-representation"],
+  // Student data — California lists the contract's required provisions.
+  ["student-data-privacy-agreement", "student-data"],
 ]);
 
 /** Resolve the overlay family for a matched playbook id, if any. */

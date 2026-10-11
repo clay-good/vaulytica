@@ -1,0 +1,39 @@
+STUDENT DATA PRIVACY AGREEMENT
+
+This Student Data Privacy Agreement (this "Agreement") is entered into as of July 6, 2026 (the "Effective Date") between Lakeshore Unified School District, a California school district (the "District"), and Brightpath Learning, Inc., a Delaware corporation (the "Provider"), and applies to the online reading platform the Provider supplies to the District under the order the District signed on the same date (the "Subscription Agreement"). That platform is the "Service".
+
+1. Definitions. "Student Data" means any information directly related to a student that the District gives the Provider or that the Provider collects from a student through the Service, including the student's name, grade, reading scores and written work. It does not include information that cannot be used to identify an individual student.
+
+2. Ownership and Control. Student Data remains the property of and under the direct control of the District. The Provider acts as a school official with a legitimate educational interest, performing a function the District would otherwise use its own employees to perform.
+
+3. Students' Own Work. A student may download the stories and reports the student writes in the Service, and may transfer them to a personal account before the student's school account is closed.
+
+4. Permitted Use. The Provider will use Student Data only to provide the Service to the District and as this Agreement permits. The Provider will not use Student Data for any other purpose, and will not disclose it to anyone except the Provider's subcontractors who need it to provide the Service and are bound in writing to the terms of this Agreement.
+
+5. No Advertising or Sale. The Provider will not use Student Data for targeted advertising, will not build a profile of a student except to provide the Service, and will not sell Student Data.
+
+6. Parents' Review and Correction. A parent, legal guardian or eligible student may review the Student Data held about the student and ask for errors to be corrected by writing to the District's records office. The Provider will make the records available to the District, and make any correction the District directs, within ten days after the District's request.
+
+7. Security. The Provider will keep Student Data secure and confidential by encrypting it in transit and at rest, limiting access to employees who need it to provide the Service, designating a privacy officer responsible for Student Data, and training each employee with access when hired and each year after.
+
+8. Unauthorized Disclosure. If Student Data is disclosed without authorization, the Provider will notify the District within 72 hours after discovering it, with a description of what happened, the students and data affected, and the steps taken. The District will notify the affected parents, legal guardians and eligible students, and the Provider will pay the reasonable cost of that notice.
+
+9. Deletion. The Provider certifies that Student Data will not be retained by or available to the Provider after the Subscription Agreement ends. The Provider will delete all Student Data within 60 days after it ends, or earlier at the District's written request, and will give the District a written certificate of deletion signed by an officer. The District may audit the deletion once on reasonable notice.
+
+10. Compliance with FERPA. The District will designate the Provider as a school official in its annual notice to parents, and will send the Provider only the Student Data needed for the Service. The Provider will follow the District's written instructions about Student Data and will redisclose it only as 34 C.F.R. § 99.33(a) allows.
+
+11. Term and Termination. This Agreement lasts as long as the Subscription Agreement. The District may terminate both agreements on written notice if the Provider breaches this Agreement and does not cure the breach within 30 days after written notice. On termination, Section 9 applies and Sections 5 and 9 survive.
+
+12. General. If this Agreement and the Subscription Agreement conflict, this Agreement controls. It is governed by the laws of the State of California, and the state courts located in Alameda County, California have exclusive jurisdiction over any dispute arising under it.
+
+LAKESHORE UNIFIED SCHOOL DISTRICT
+
+By: ______________________
+Name: Dr. Renee Castellanos
+Title: Superintendent
+
+BRIGHTPATH LEARNING, INC.
+
+By: ______________________
+Name: Joel Abrams
+Title: Chief Executive Officer
