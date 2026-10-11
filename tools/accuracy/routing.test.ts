@@ -139,6 +139,73 @@ describe("the label table", () => {
   });
 });
 
+describe("the label table, against the router", () => {
+  /**
+   * Each labelled title, as the title of a document with almost no body. Not
+   * the measurement — a real exhibit has a body — but the cheapest check that
+   * a label names a type the router can reach from that title at all.
+   *
+   * Measured on 9.886.0: 14 of 21 route to the labelled type. The other seven
+   * fall to the fallback, for two reasons, both deliberate:
+   *
+   *   - FIVE are titles two types both claim ("employment agreement",
+   *     "separation agreement", "indemnification agreement", "credit
+   *     agreement") or that only a shorter keyword reaches ("stock option
+   *     agreement"). A shared name earns nobody the title credit — the body is
+   *     meant to break the tie (`longestOpeningKeyword`) — so a body-less
+   *     document stays unmatched, and the fallback names the closest type.
+   *   - TWO are bare nouns no type claims alone ("lease", "license
+   *     agreement"): which lease, which license, is in the body.
+   *
+   * Pinned so a label that stops reaching its type shows up here, and so a
+   * title that starts reaching it is noticed and the list shortened.
+   */
+  const UNREACHED_WITHOUT_A_BODY = [
+    "credit agreement",
+    "employment agreement",
+    "indemnification agreement",
+    "lease",
+    "license agreement",
+    "separation agreement",
+    "stock option agreement",
+  ];
+
+  it("reaches the labelled type from the title alone, except where the title is shared or bare", async () => {
+    const deps = await loadAccuracyDeps();
+    const { analyzeText } = await import("../cli/api.js");
+    const sample = await loadRoutingSample(CORPUS_DIR);
+    const unreached: string[] = [];
+    const wrong: string[] = [];
+    for (const l of sample.labels.filter((x) => !x.no_family)) {
+      const named = l.label.replace(/\b\w/g, (c) => c.toUpperCase());
+      const text = `${l.label.toUpperCase()}\n\nThis ${named} is entered into as of March 2, 2026 between Alder Corporation, a Delaware corporation, and Birch Holdings LLC, a Delaware limited liability company.\n\n1. General. The parties agree to the terms set out below.\n`;
+      const r = await analyzeText(text, "stub.txt", { deps });
+      if (r.playbook_id === l.exact || l.acceptable.includes(r.playbook_id)) continue;
+      if (r.playbook_id === "generic-fallback") unreached.push(l.label);
+      else wrong.push(`${l.label} → ${r.playbook_id}`);
+    }
+    // A title never routes to a type the label does not accept.
+    expect(wrong).toEqual([]);
+    expect(unreached.sort()).toEqual(UNREACHED_WITHOUT_A_BODY);
+  }, 120_000);
+
+  it("gives a title with no type of its own no type", async () => {
+    const deps = await loadAccuracyDeps();
+    const { analyzeText } = await import("../cli/api.js");
+    const sample = await loadRoutingSample(CORPUS_DIR);
+    const none = sample.labels.filter((x) => x.no_family).map((x) => x.label);
+    expect(none).toContain("registration rights agreement");
+    for (const label of none) {
+      const r = await analyzeText(
+        `${label.toUpperCase()}\n\nThis document is entered into as of March 2, 2026 between Alder Corporation and Birch Holdings LLC.\n`,
+        "stub.txt",
+        { deps },
+      );
+      expect(r.playbook_id, label).toBe("generic-fallback");
+    }
+  }, 120_000);
+});
+
 describe("the manifest and the scoreboard", () => {
   it("accepts a routing split", () => {
     expect(

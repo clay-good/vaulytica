@@ -15,3 +15,7 @@ compared without noting the version change.
 - Added `routing/labels.json` (25 titles) and the empty `routing/records/`.
   No exhibits sampled; `CORPUS_VERSION` is unchanged because no document was
   added.
+- `routing/labels.json`: "registration rights agreement" is a title the catalog
+  has no type for, and is labelled so (it had been mapped to the venture
+  investor-rights type, which no document with that title routes to). The
+  table is now checked against the router in `tools/accuracy/routing.test.ts`.

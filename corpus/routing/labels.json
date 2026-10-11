@@ -15,7 +15,7 @@
   { "label": "license agreement", "exact": "patent-license", "acceptable": ["copyright-license", "trademark-license", "software-license-enterprise"] },
   { "label": "stock purchase agreement", "exact": "stock-purchase-agreement", "acceptable": ["venture-stock-purchase-agreement"] },
   { "label": "asset purchase agreement", "exact": "asset-purchase-agreement", "acceptable": [] },
-  { "label": "registration rights agreement", "exact": "investor-rights-agreement", "acceptable": [] },
+  { "label": "registration rights agreement", "no_family": true },
   { "label": "equity incentive plan", "exact": "equity-incentive-plan", "acceptable": [] },
   { "label": "stock option agreement", "exact": "stock-option-grant", "acceptable": [] },
   { "label": "restricted stock unit agreement", "exact": "rsu-grant", "acceptable": [] },
