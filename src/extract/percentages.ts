@@ -27,8 +27,23 @@ import type { PercentageReference } from "./types.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
 import { parseWordPhrase } from "./amounts.js";
 
-/** The number words `parseWordPhrase` understands, as a fragment. */
-const NUMBER_WORDS = String.raw`(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|and|[-\s])+`;
+/**
+ * The number words `parseWordPhrase` understands.
+ *
+ * 🚨 This was `(?:zero|one|…|and|[-\s])+` — one unbounded repetition over an
+ * alternation that included WHITESPACE — in front of a required "percent". On a
+ * 50,000-character run of the word "one" the `+` swallowed the lot, failed to
+ * find "percent", and retried from every position: **14,491 ms for one
+ * paragraph**, measured. A pasted document with a long run of number words
+ * would have hung the tab, and the fuzz suite's runs (commas, spaces, hyphens,
+ * NBSP) never spelled a number, so nothing caught it.
+ *
+ * The shape is now WORD (separator WORD){0,5}: bounded repetition, and the
+ * separator can no longer be matched as a number word in its own right. A
+ * spelled percentage is at most a few words — "one hundred and fifty" is four.
+ */
+const NUMBER_WORD = String.raw`(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)`;
+const NUMBER_WORDS = String.raw`${NUMBER_WORD}(?:[-\s]{1,3}(?:and[-\s]{1,3})?${NUMBER_WORD}){0,5}`;
 
 /**
  * The three spellings a drafted instrument uses, in one pass so that the

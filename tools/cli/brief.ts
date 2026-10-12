@@ -19,7 +19,7 @@
  */
 
 import { isActionable, type Finding, type Severity } from "../../src/engine/finding.js";
-import { truncate } from "../../src/engine/text.js";
+import { truncate, truncateQuote } from "../../src/engine/text.js";
 import { ingestWarningCodes, type IngestWarningCode } from "../../src/ingest/warning-codes.js";
 import { nonAdviceStatement } from "../../src/report/disclaimers.js";
 import { erroredRuleNotice } from "../../src/report/execution-log.js";
@@ -132,7 +132,7 @@ function briefFinding(f: Finding, excerpts: boolean): BriefFinding {
       : {}),
     start_offset: f.excerpt.start_offset,
     end_offset: f.excerpt.end_offset,
-    ...(excerpts ? { excerpt: truncate(printable(f.excerpt.text), BRIEF_EXCERPT_CHARS) } : {}),
+    ...(excerpts ? { excerpt: truncateQuote(printable(f.excerpt.text), BRIEF_EXCERPT_CHARS) } : {}),
     ...(first ? { citation: { source: first.source, source_url: first.source_url } } : {}),
     citations_total: f.source_citations.length,
   };

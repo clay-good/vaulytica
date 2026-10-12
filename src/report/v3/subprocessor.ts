@@ -10,7 +10,16 @@
 
 import type { Paragraph, Table } from "docx";
 import type { SubprocessorInventory } from "../../extract/v3/types.js";
-import { h1, para, pageBreak, buildTable, headerRow, bodyRow, truncate, plural } from "./_dx.js";
+import {
+  h1,
+  para,
+  pageBreak,
+  buildTable,
+  headerRow,
+  bodyRow,
+  plural,
+  truncateQuote,
+} from "./_dx.js";
 
 const CONSENT_LABEL: Record<SubprocessorInventory["consent_form"], string> = {
   "general-written": "General written authorization (Art. 28(2) opt-in)",
@@ -65,7 +74,7 @@ export function renderSubprocessorPage(
     buildTable(rows),
     // The CLAUSE, not the term that found it: this line is the page's evidence
     // for every row above it, and it used to read `"Sub-processors"`.
-    para({ text: `Source excerpt: "${truncate(inv.excerpt, 480)}"`, italics: true }),
+    para({ text: `Source excerpt: "${truncateQuote(inv.excerpt, 480)}"`, italics: true }),
     pageBreak(),
   ];
 }

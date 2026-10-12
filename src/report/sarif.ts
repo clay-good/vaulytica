@@ -35,7 +35,7 @@ import {
 import type { V9Surfaces } from "./v9-surfaces.js";
 import { buildReviewCoverage, reviewCoverageSentence } from "./review-coverage.js";
 import { erroredRuleNotice } from "./execution-log.js";
-import { truncate } from "./v3/_dx.js";
+import { truncateQuote } from "./v3/_dx.js";
 import { buildClauseEvidence, clauseEvidenceSentence } from "./clause-evidence.js";
 import type { HandoffFinding } from "../delivery/types.js";
 import type { IngestResult } from "../ingest/types.js";
@@ -436,7 +436,7 @@ export function buildSarif(
               // its `excerpt.text` is the rule's marker string, and presenting
               // that as a snippet quotes words the document never contained.
               ...(f.excerpt.end_offset > f.excerpt.start_offset
-                ? { snippet: { text: truncate(f.excerpt.text, 900) } }
+                ? { snippet: { text: truncateQuote(f.excerpt.text, 900) } }
                 : {}),
             },
           },

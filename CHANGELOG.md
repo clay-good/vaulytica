@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.921.0] — 2026-10-12
+
+### Fixed
+- 🚨 **30% OF EVERY OBLIGATIONS LEDGER ROW CUT ITS ACTION MID-WORD.** 9.920.0
+  fixed the engine's excerpts; this finishes the sweep across the surfaces that
+  display the document's own words. The largest instance was the column beside
+  the one this release series spent its time getting right:
+
+  | surface | measured |
+  | --- | --- |
+  | obligations ledger `action` (DOCX + HTML) | **1,146 of 3,822** actions exceed 160 chars — **all 1,146** cut mid-word |
+  | comparison report clause quote | **31 of 1,600** excerpts exceed 360 — **all 31** cut mid-word |
+  | comparison report redline (4 sites) | clause text at 600, same cut |
+  | subprocessor "Source excerpt" | quote at 480 |
+  | cross-document consistency quote (DOCX + HTML) | quote at 480 |
+  | transfers excerpt | quote at 160 |
+  | brief `excerpt` | quote at 300 |
+
+  "…not later than 30 days after the date o…", "…security senior to or on
+  parity with th…", "…caused by the negligent acts or omiss…" — all in
+  documents a lawyer reads.
+
+  ⚠️ **Labels were deliberately left alone.** Titles, descriptions, file names
+  and section labels keep `truncate`: a label cut at the character limit is
+  fine, and `truncate`'s docstring says so. The rule applied here is narrower —
+  text presented as the DOCUMENT'S OWN WORDS ends on a word.
+
+- 🥇 **The 900-character display backstops were changed on measurement, not on
+  suspicion.** `sarif.ts`, `html.ts` and `docx.ts` cap a displayed quote at
+  900; over the corpus the longest excerpt is 725 and **zero of 1,600 reach
+  900**, so those caps have never fired here. They use `truncateQuote` anyway,
+  because a reader cannot tell a backstop from a working limit by looking at
+  the output — and because the measurement proves the change moves nothing
+  today.
+
+### Security
+- 🚨 **A ReDoS in the percentage extractor, shipped in 9.917.0.** The
+  number-word pattern was `(?:zero|one|…|and|[-\s])+` — one unbounded
+  repetition over an alternation that INCLUDED WHITESPACE — in front of a
+  required "percent". On a 50,000-character run of the word "one" the `+`
+  swallowed the lot, failed to find "percent", and retried from every position:
+
+  | input | before | after |
+  | --- | --- | --- |
+  | `"one " × 12,500` | **14,491 ms** | 17 ms |
+  | `"hundred and " × 8,000` | — | 5 ms |
+  | near miss: the run plus `"percen"` | — | 5 ms |
+
+  A pasted document with a long run of spelled numbers would have hung the
+  browser tab. The shape is now WORD (separator WORD){0,5} — bounded, and the
+  separator can no longer match as a number word in its own right.
+
+  ⚠️ **`fuzz-boundary.test.ts` could not have caught this**: it builds its runs
+  from a single CHARACTER (commas, spaces, hyphens, NBSP), so none of them ever
+  spelled a number. The adversarial input for a word-list pattern is a run of
+  its own words, and the near-miss — a run that almost completes the match — is
+  the worst case. `percentages.test.ts` now holds all three under 2 seconds,
+  verified by restoring the old pattern (8,732 ms, failed).
+
+  Found while investigating a fuzz-suite failure that turned out to be
+  load-related — the comma-run case measured 5 ms in this extractor. The real
+  defect was latent and uncovered.
+
+### Changed
+- `tools/cli/brief.test.ts` asserted `excerpt.length === BRIEF_EXCERPT_CHARS`.
+  The documented contract is a CAP — "a quoted excerpt is capped here; the
+  offsets still locate the whole span" — so that assertion was pinning the hard
+  cut's arithmetic rather than the contract. It now asserts the cap, a floor a
+  word's width below it, and that the quote ends on a word; the LABEL fields
+  keep the exact-length check, because they are still cut at the limit.
+
 ## [9.920.0] — 2026-10-12
 
 ### Fixed

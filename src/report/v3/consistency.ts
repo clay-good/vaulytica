@@ -9,7 +9,18 @@
 
 import type { Paragraph, Table } from "docx";
 import type { ConsistencyRun, ConsistencyFinding } from "../../engine/consistency/types.js";
-import { h1, h2, h3, para, pageBreak, buildTable, headerRow, bodyRow, truncate } from "./_dx.js";
+import {
+  h1,
+  h2,
+  h3,
+  para,
+  pageBreak,
+  buildTable,
+  headerRow,
+  bodyRow,
+  truncate,
+  truncateQuote,
+} from "./_dx.js";
 
 export function renderConsistencyAppendix(run: ConsistencyRun): (Paragraph | Table)[] {
   if (run.findings.length === 0) {
@@ -64,7 +75,7 @@ function renderConsistencyFinding(f: ConsistencyFinding): Paragraph[] {
   for (const e of f.excerpts) {
     paragraphs.push(
       para({
-        text: `${e.doc_id} (${e.source_file_name}): "${truncate(e.text, 480)}"`,
+        text: `${e.doc_id} (${e.source_file_name}): "${truncateQuote(e.text, 480)}"`,
         italics: true,
       }),
     );

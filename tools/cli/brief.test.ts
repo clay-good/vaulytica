@@ -48,10 +48,22 @@ describe("the compact projection", () => {
   it("caps each quoted string and says when it cut", () => {
     const b = buildBrief(hostile("word ".repeat(500)));
     const f = b.findings[0]!;
-    for (const value of [f.excerpt!, f.title, f.section_label!, b.document.name]) {
+    // A LABEL is cut at the cap exactly: `truncate` stops at the character
+    // limit, which is right for a title or a file name.
+    for (const value of [f.title, f.section_label!, b.document.name]) {
       expect(value.length).toBe(BRIEF_EXCERPT_CHARS);
       expect(value.endsWith("…")).toBe(true);
     }
+    // ⚠️ The EXCERPT is the document's own words, so it is cut at the last word
+    // boundary inside the cap and comes back a few characters shorter. The
+    // documented contract is a CAP — "a quoted excerpt is capped here; the
+    // offsets still locate the whole span" — and `.toBe(cap)` was asserting the
+    // hard cut's arithmetic rather than that contract.
+    expect(f.excerpt!.length).toBeLessThanOrEqual(BRIEF_EXCERPT_CHARS);
+    expect(f.excerpt!.length).toBeGreaterThan(BRIEF_EXCERPT_CHARS - 25);
+    expect(f.excerpt!.endsWith("…")).toBe(true);
+    // The quote ends on a word: no partial token before the ellipsis.
+    expect(f.excerpt!).toMatch(/\w…$/);
     // The offsets still locate the whole span.
     expect(f.end_offset).toBe(result.run.findings[0]!.excerpt.end_offset);
   });

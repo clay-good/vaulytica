@@ -99,7 +99,7 @@ import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
-import { amountCell, truncate } from "./v3/_dx.js";
+import { amountCell, truncate, truncateQuote } from "./v3/_dx.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
@@ -293,7 +293,7 @@ function renderProof(f: Finding): string[] {
   }
   return [
     `<p class="proof-basis"><strong>Evidence</strong> — ${esc(findingLocator(f))}</p>`,
-    `<blockquote>${esc(truncate(f.excerpt.text, 900))}</blockquote>`,
+    `<blockquote>${esc(truncateQuote(f.excerpt.text, 900))}</blockquote>`,
   ];
 }
 
@@ -402,7 +402,7 @@ function renderConsistencySection(consistency: ConsistencyRun | undefined): stri
       for (const e of f.excerpts) {
         out.push(
           `<blockquote>${esc(e.doc_id)} (${esc(e.source_file_name)}): ` +
-            `&ldquo;${esc(truncate(e.text, 480))}&rdquo;</blockquote>`,
+            `&ldquo;${esc(truncateQuote(e.text, 480))}&rdquo;</blockquote>`,
         );
       }
     }
@@ -473,7 +473,7 @@ function renderObligationsLedgerSection(extracted: ExtractedData | undefined): s
   for (const o of extracted.obligations) {
     out.push(
       `<tr><td>${esc(o.obligor)}</td><td>${esc(o.modal)}</td>` +
-        `<td>${esc(truncate(o.action, 160))}</td>` +
+        `<td>${esc(truncateQuote(o.action, 160))}</td>` +
         `<td>${esc([o.trigger, o.qualifier].filter(Boolean).join(" — ") || "—")}</td></tr>`,
     );
   }

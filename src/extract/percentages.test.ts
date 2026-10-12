@@ -46,6 +46,31 @@ describe("the percentages a document states", () => {
     expect(await pcts("Compensation at the 75 percentile of the market.")).toEqual([]);
   });
 
+  // 🚨 A ReDoS this module shipped with in 9.917.0 and 9.918.0–9.920.0. The
+  // pattern was `(?:zero|one|…|and|[-\s])+` — ONE unbounded repetition over an
+  // alternation that included WHITESPACE — in front of a required "percent". On
+  // a 50,000-character run of the word "one" the `+` swallowed the lot, failed
+  // to find "percent", and retried from every position: **14,491 ms for one
+  // paragraph**, against 17 ms now.
+  //
+  // ⚠️ `tests/integration/fuzz-boundary.test.ts` builds its runs from a single
+  // CHARACTER (commas, spaces, hyphens, NBSP), so none of them ever spelled a
+  // number and none of them could catch this. The adversarial input for a
+  // word-list pattern is a run of its own words, and the near-miss — a run that
+  // almost completes the match — is the worst case of all.
+  it("does not backtrack on a long run of number words", async () => {
+    for (const text of [
+      "one ".repeat(12_500),
+      "hundred and ".repeat(8_000),
+      // The near miss: everything the pattern wants except the final word.
+      `${"one ".repeat(12_500)}percen`,
+    ]) {
+      const t = performance.now();
+      await pcts(text);
+      expect(performance.now() - t).toBeLessThan(2_000);
+    }
+  }, 30_000);
+
   it("does not read a section number or a decimal as a percentage", async () => {
     expect(await pcts("As provided in Section 5.2 and Section 12.")).toEqual([]);
   });

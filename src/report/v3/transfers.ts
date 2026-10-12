@@ -8,7 +8,7 @@
 
 import type { Paragraph, Table } from "docx";
 import type { TransferMechanismReference, TransferMechanismKind } from "../../extract/v3/types.js";
-import { h1, para, pageBreak, buildTable, headerRow, bodyRow, truncate } from "./_dx.js";
+import { h1, para, pageBreak, buildTable, headerRow, bodyRow, truncateQuote } from "./_dx.js";
 
 const KIND_LABEL: Record<TransferMechanismKind, string> = {
   "scc-module-1": "EU SCC Module 1 (C → C)",
@@ -49,7 +49,7 @@ export function renderTransfersSummary(refs: TransferMechanismReference[]): (Par
   const rendered = refs.map((r) => [
     KIND_LABEL[r.kind] ?? r.kind,
     r.location,
-    truncate(r.excerpt, 160),
+    truncateQuote(r.excerpt, 160),
   ]);
   const distinct = new Map<string, string[]>();
   for (const cells of rendered) {

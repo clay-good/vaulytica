@@ -20,7 +20,7 @@
 // `truncate` is imported, not redefined: a local copy of it here kept the
 // pre-fix behavior that splits a surrogate pair and emits U+FFFD into a
 // quoted excerpt, long after the shared helper was corrected.
-import { truncate } from "./v3/_dx.js";
+import { truncateQuote } from "./v3/_dx.js";
 import {
   AlignmentType,
   BorderStyle,
@@ -384,7 +384,12 @@ function renderFinding(f: Finding): Paragraph[] {
       bold: true,
     }),
     para({
-      text: `Clause${f.excerpt.section_label ? ` (${f.excerpt.section_label})` : ""}: "${truncate(f.excerpt.text, 360)}"`,
+      // 🚨 `truncateQuote`, not `truncate`: 31 of the corpus's 1,600 excerpts
+      // run past 360 characters and EVERY ONE of them was cut mid-word here —
+      // "…security senior to or on parity with th…", "…caused by the negligent
+      // acts or omiss…". This is the document a reader opens to compare two
+      // drafts, so the quote is the whole point of the row.
+      text: `Clause${f.excerpt.section_label ? ` (${f.excerpt.section_label})` : ""}: "${truncateQuote(f.excerpt.text, 360)}"`,
       italics: true,
     }),
     para({ text: f.explanation }),
@@ -422,8 +427,10 @@ function renderClauseDeltaAppendix(unchanged: UnchangedPair[]): (Paragraph | Tab
         rows: [
           headerRow(["Base", "Revised"]),
           bodyRow([
-            truncate(u.base_finding.excerpt.text, 600),
-            truncate(u.finding.excerpt.text, 600),
+            // The same quote, side by side; the 600 cap is reachable on a long
+            // clause and was cut the same way.
+            truncateQuote(u.base_finding.excerpt.text, 600),
+            truncateQuote(u.finding.excerpt.text, 600),
           ]),
         ],
       }),
@@ -522,7 +529,7 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
               headerRow(["Base", "Revised"]),
-              bodyRow([truncate(pair.base.text, 600), truncate(pair.revised.text, 600)]),
+              bodyRow([truncateQuote(pair.base.text, 600), truncateQuote(pair.revised.text, 600)]),
             ],
           }),
         );
@@ -535,7 +542,9 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
   if (diff.added.length > 0) {
     out.push(h3("Added clauses"));
     for (const c of diff.added.slice(0, MAX_REDLINE_ROWS)) {
-      out.push(para({ text: `+ [${clauseLabel(c)}] ${truncate(c.text, 600)}`, color: "1A7A4C" }));
+      out.push(
+        para({ text: `+ [${clauseLabel(c)}] ${truncateQuote(c.text, 600)}`, color: "1A7A4C" }),
+      );
     }
     pushOverflowNote(out, diff.added.length, "added clauses");
   }
@@ -543,7 +552,9 @@ function renderRedline(diff: ClauseDiff): (Paragraph | Table)[] {
   if (diff.removed.length > 0) {
     out.push(h3("Removed clauses"));
     for (const c of diff.removed.slice(0, MAX_REDLINE_ROWS)) {
-      out.push(para({ text: `− [${clauseLabel(c)}] ${truncate(c.text, 600)}`, color: "B00020" }));
+      out.push(
+        para({ text: `− [${clauseLabel(c)}] ${truncateQuote(c.text, 600)}`, color: "B00020" }),
+      );
     }
     pushOverflowNote(out, diff.removed.length, "removed clauses");
   }

@@ -71,7 +71,7 @@ import { describeExecutionLogEntry, erroredRuleNotice } from "./execution-log.js
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
-import { amountCell, truncate, plural } from "./v3/_dx.js";
+import { amountCell, truncate, plural, truncateQuote } from "./v3/_dx.js";
 import {
   renderComplianceMatrix,
   renderTransfersSummary,
@@ -452,7 +452,7 @@ function renderProof(f: Finding): Paragraph[] {
   }
   return [
     para({ text: `Evidence — ${findingLocator(f)}`, bold: true, size: 20 }),
-    quote(truncate(f.excerpt.text, 900)),
+    quote(truncateQuote(f.excerpt.text, 900)),
   ];
 }
 
@@ -578,7 +578,11 @@ function renderObligationsLedger(run: EngineRun, extracted?: ExtractedData): (Pa
           bodyRow([
             o.obligor,
             o.modal,
-            truncate(o.action, 160),
+            // 🚨 The document's own words, and 1,146 of the corpus's 3,822
+            // obligation actions run past 160 characters — every one of them
+            // was cut mid-word here, beside an obligor column this release
+            // series spent its time getting right.
+            truncateQuote(o.action, 160),
             [o.trigger, o.qualifier].filter(Boolean).join(" — ") || "—",
           ]),
         ),
