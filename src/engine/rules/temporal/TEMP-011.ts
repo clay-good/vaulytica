@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstUnnegatedParagraphMatch } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
 
 /**
@@ -45,7 +45,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Auto-renewal notice window under 30 days: ${days}`,
       description: `Auto-renewal requires non-renewal notice ${days} day${days === 1 ? "" : "s"} in advance.`,
-      excerpt: truncate(hit.text, 280),
+      excerpt: truncateQuote(hit.text, 280),
       explanation:
         "An under-30-day non-renewal window compresses the customer's decision time. " +
         AUTO_RENEWAL_LAW +

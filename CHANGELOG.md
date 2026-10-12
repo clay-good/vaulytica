@@ -2,6 +2,63 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.920.0] — 2026-10-12
+
+### Fixed
+- 🚨 **WINDOWS BROKE THE CROSS-OS DETERMINISM MATRIX, and the cause was a test
+  this session added.** 9.916.0's listening-script staleness guard ran
+  `execFileSync("npx", ["tsx", …])`. On Windows `npx` is `npx.cmd`, which
+  `execFileSync` will not resolve without a shell, so
+  `windows-latest / Node 22` failed with `spawnSync npx ENOENT` while macOS and
+  both Ubuntu legs passed. A platform bug in the test, not the product — but it
+  reddened the job that stands behind this tool's central claim.
+
+  Fixed with the portable form `mcp-server.test.ts` already uses: resolve the
+  `tsx` loader and hand it to the Node binary that is already running
+  (`process.execPath` + `--import`). No shell, no PATH lookup, no platform
+  branch. Swept the tree for the same pattern; nothing else had it.
+
+- 🚨 **A QUOTE ENDED MID-WORD IN EVERY TRUNCATED EXCERPT.** Reading the fix
+  list for `architect-agreement.txt` showed its evidence lines as "expenses
+  incurred through t…", "This limitation does no…", "payment of the fees ea…" —
+  **7 of 9 excerpts.** `excerptWindow`'s own docstring already said why that
+  matters: "a finding that quotes half a word reads as a broken tool, whatever
+  it says next."
+
+  The START boundary was guarded in every path. The END was guarded in none,
+  and `excerpt-is-evidence.test.ts` said so out loud — "a truncated quote's END
+  is the ellipsis's business". That sentence was the hole. Four paths build
+  excerpts and only one was word-aware:
+
+  | path | sites | end boundary before |
+  | --- | --- | --- |
+  | `matchedSentence` | 83 | snapped |
+  | `excerpt: truncate(…)` | 27 | raw cut |
+  | `hitExcerpt` | 15 | raw cut |
+  | `truncate(hit.sentence, …)` and `excerptText:` variants | 9 files | raw cut |
+
+  All now use `truncateQuote`, and the relation ASSERTS the end boundary over
+  all 363 specimens instead of excusing it. That assertion immediately caught
+  16 specimens the first pass had missed — all `RISK-015`, cut at BOTH ends
+  ("ovided that Customer promptly notifies V") — because the first sweep's
+  pattern matched only the literal `excerpt: truncate(` form.
+
+### Changed
+- ⚠️ **A word-boundary backup must never cut into the MATCH**, and
+  `excerpt-span-agreement.test.ts` caught it doing so the moment quotes became
+  word-aware: `TERM-001` on `channel-referral-agreement.txt` lost the tail of
+  the very language it was flagging. `hitExcerpt` now takes the backup only
+  when what survives still covers the match; a match reaching the limit keeps
+  the hard cut, mid-word and honest about it. The two constraints are in
+  tension and the trade-off is written down rather than discovered twice.
+
+- The golden churn was verified SEMANTICALLY rather than trusted: finding ids
+  and severities identical, every golden identical once `result_hash`,
+  `version` and `excerpt` are stripped, and only excerpt text moved
+  ("foundational mod…" → "foundational…"). ⚠️ A first attempt at that check was
+  VACUOUS — it compared a v3 golden after regenerating only v4, so both sides
+  were the same file.
+
 ## [9.919.0] — 2026-10-12
 
 ### Fixed

@@ -1,5 +1,5 @@
 import type { DocPosition } from "../../extract/types.js";
-import { truncate } from "../text.js";
+import { truncate, truncateQuote } from "../text.js";
 import { PAGE_FURNITURE } from "../../ingest/page-furniture.js";
 import type { RuleContext, Severity } from "../finding.js";
 import { findSource, findStatuteCitation, makeFinding } from "../finding.js";
@@ -120,18 +120,41 @@ export function isNonOperative(text: string): boolean {
  * highlights one clause and displays another — and SARIF's own spec says a
  * snippet is the content of its region.
  *
- * So the window follows the match instead of the paragraph's opening. A hit
- * whose match already falls inside the limit returns
- * `truncate(hit.text, limit)` **byte for byte**, which is why this moves 94
- * findings and not 1,116: the common case is unchanged by construction.
+ * So the window follows the match instead of the paragraph's opening.
  *
  * A window that starts mid-paragraph says so with a leading ellipsis, and
  * steps back to a word boundary so the quote does not begin mid-word.
+ *
+ * 🚨 **AND IT NO LONGER ENDS MID-WORD EITHER.** This used to say the common
+ * case returns `truncate(hit.text, limit)` byte for byte — true, and that was
+ * the whole problem: `truncate` cuts at the character limit, so the END of the
+ * quote landed wherever it fell. `architect-agreement.txt` showed "…survival
+ * clause … for convenience the license is conditioned on payment of the fees
+ * ea…" and "…through t…". The start boundary was guarded here from the
+ * beginning; the end was guarded nowhere, in any of the three excerpt paths.
+ * `truncateQuote` is the same function with the tail snapped back to a word,
+ * and the byte-identity promise is deliberately gone.
  */
+/**
+ * ⚠️ A word-boundary backup must never cut into the MATCH. `truncateQuote`
+ * retreats to the last space before the limit, and when the match ends within
+ * a word of that limit the retreat removes part of the very language the
+ * finding is about — which is the one thing this function exists to prevent.
+ * `excerpt-span-agreement.test.ts` caught exactly that on TERM-001 /
+ * `channel-referral-agreement.txt` the moment the quote became word-aware. So
+ * the backup is taken only when what survives still covers the match; a match
+ * that reaches the limit keeps the hard cut, mid-word and honest about it.
+ */
+function quoteCovering(text: string, limit: number, mustKeep: number): string {
+  const backed = truncateQuote(text, limit);
+  // `- 1` for the ellipsis the truncation adds.
+  return backed.length - 1 >= mustKeep ? backed : truncate(text, limit);
+}
+
 export function hitExcerpt(hit: ParagraphHit, limit: number): string {
   const matchEnd = hit.match.index + hit.match[0].length;
   // The common case: the match is already inside the quoted prefix.
-  if (matchEnd <= limit) return truncate(hit.text, limit);
+  if (matchEnd <= limit) return quoteCovering(hit.text, limit, matchEnd);
 
   // Keep some of what comes before the match — a limit is rarely read without
   // its subject — then let `truncate` mark the tail if there is more after.
@@ -143,7 +166,8 @@ export function hitExcerpt(hit: ParagraphHit, limit: number): string {
     if (space >= 0 && space < hit.match.index) start = space + 1;
   }
   const head = start > 0 ? "…" : "";
-  return head + truncate(hit.text.slice(start), limit - head.length);
+  // The match's end, in the sliced window's own coordinates.
+  return head + quoteCovering(hit.text.slice(start), limit - head.length, matchEnd - start);
 }
 
 export function firstParagraphMatch(ctx: RuleContext, re: RegExp): ParagraphHit | null {

@@ -60,3 +60,31 @@ export function amountCell(a: { amount: string; range_max?: string; per_unit?: s
   const value = a.range_max ? `${a.amount} \u2013 ${a.range_max}` : a.amount;
   return a.per_unit ? `${value} per ${a.per_unit}` : value;
 }
+
+/**
+ * A QUOTE, shortened so it still ends on a word.
+ *
+ * 🚨 `truncate` above cuts at the character limit, which is right for a label
+ * and wrong for evidence. 83 rules build their excerpt through
+ * `matchedSentence`, which snaps to word boundaries; **28 quote
+ * `truncate(hit.text, 280)` directly**, and on `architect-agreement.txt` that
+ * put seven of nine excerpts in front of a reader ending mid-word — "…survives
+ * termination of this Agreement, excep…", "…employer's liability of $1,000,000;
+ * and professio…". `excerptWindow`'s own docstring already says why that
+ * matters: "a finding that quotes half a word reads as a broken tool, whatever
+ * it says next."
+ *
+ * ⚠️ Backs up only as far as a word's length (24 characters, matching
+ * `WORD_SNAP_MAX` in `_helpers.ts`), and not at all when there is no space to
+ * retreat to. A single long token — a URL, a 300-character defined term — must
+ * still be shown, and collapsing it to nothing would be worse than cutting it.
+ */
+export function truncateQuote(text: string, limit: number): string {
+  if (text.length <= limit) return text;
+  const hard = truncate(text, limit);
+  const body = hard.slice(0, -1);
+  const lastSpace = body.lastIndexOf(" ");
+  if (lastSpace < 0 || body.length - lastSpace > 24) return hard;
+  // Trailing punctuation before an ellipsis reads as a typo ("due,…").
+  return `${body.slice(0, lastSpace).replace(/[\s,;:.]+$/, "")}…`;
+}

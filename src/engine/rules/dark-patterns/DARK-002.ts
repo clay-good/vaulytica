@@ -2,7 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
 import { PERIOD_COUNT, countValue } from "../../../extract/counts.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.js";
 
 /**
@@ -111,7 +111,7 @@ export const rule: Rule = {
       description: far
         ? `Notice window: ${days} days, stated in section ${noticeClause}; the renewal is in section ${autoClause}.`
         : `Notice window: ${days} days.`,
-      excerpt: truncate(auto.text, 200),
+      excerpt: truncateQuote(auto.text, 200),
       explanation:
         "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. " +
         AUTO_RENEWAL_LAW,

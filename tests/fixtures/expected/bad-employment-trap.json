@@ -936,7 +936,7 @@
         "section_id": "s5",
         "section_label": "4. Arbitration",
         "start_offset": 1208,
-        "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Rules then in effect. Employee waives any …"
+        "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Rules then in effect. Employee waives any…"
       },
       "explanation": "Mandatory arbitration combined with a class-action waiver effectively immunizes widespread small-dollar harms from collective redress. Enforceable in many jurisdictions, but worth surfacing prominently when the agreement is consumer-facing.",
       "id": "DARK-004-s5-1208",
@@ -1074,7 +1074,7 @@
         "section_id": "s5",
         "section_label": "4. Arbitration",
         "start_offset": 1078,
-        "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration Ru…"
+        "text": "Any dispute, claim, or controversy arising out of or relating to Employee's employment shall be resolved exclusively by final and binding arbitration before a single arbitrator administered by JAMS pursuant to its Employment Arbitration…"
       },
       "explanation": "Arbitration is binding under the Federal Arbitration Act (9 U.S.C. § 2). The seat, governing rules (AAA, JAMS, ICC), and language are the key parameters.",
       "id": "CHOICE-006-s5-1078",
@@ -1133,11 +1133,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "99fb5f3458cf5c44b2a2d5cdb32bb4e37a15586bc4e9da05aa0d186c21c621bc",
+  "result_hash": "3e42b2ebd7046ad941aedf735faa09825454122ee4348955bd170151e830413d",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.919.0"
+  "version": "9.920.0"
 }

@@ -336,10 +336,28 @@ function csvRow(fields: string[]): string {
 /**
  * The clause, at a length a checklist row can hold. 300 rather than the
  * report's 900: this is a line in a to-do item, not the evidence block.
+ *
+ * 🚨 A QUOTE ENDS ON A WORD. This cut a raw 299 characters and the fix list
+ * read "expenses incurred through t…", "This limitation does no…" and
+ * "payment of the fees ea…" — a lawyer's evidence line stopping in the middle
+ * of a word. `excerpt-is-evidence.test.ts` already holds the ENGINE's excerpts
+ * to this, with its own 🚨 about FIN-009 quoting "ys after its due date bears a
+ * late charge"; the display truncation in front of them was never held to the
+ * same rule.
+ *
+ * ⚠️ A single token longer than the limit keeps the hard cut: there is no word
+ * boundary to retreat to, and a URL or a 400-character defined term must still
+ * be shown somehow. Backing up only when it leaves most of the quote intact is
+ * what keeps that case from collapsing to nothing.
  */
 function truncateExcerpt(text: string): string {
   const t = text.trim().replace(/\s+/g, " ");
-  return t.length > 300 ? `${t.slice(0, 299)}…` : t;
+  if (t.length <= 300) return t;
+  const hard = t.slice(0, 299);
+  const lastSpace = hard.lastIndexOf(" ");
+  const body = lastSpace > 200 ? hard.slice(0, lastSpace) : hard;
+  // Trailing punctuation before an ellipsis reads as a typo ("due,…").
+  return `${body.replace(/[\s,;:.]+$/, "")}…`;
 }
 
 export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): string {

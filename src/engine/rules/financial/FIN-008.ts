@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 import { AMOUNT_IN_WORDS, CURRENCY_TOKEN } from "../../../extract/amounts.js";
 
 /** FIN-008 — Minimum commitment language (info). */
@@ -39,7 +39,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Minimum commitment clause present",
       description: "A minimum-commitment or take-or-pay clause is included.",
-      excerpt: truncate(hit.text, 200),
+      excerpt: truncateQuote(hit.text, 200),
       explanation:
         "Minimum-commitment language obliges the customer to pay regardless of consumption. Verify the commitment level is reasonable and tied to a credit (e.g., usage above the minimum reduces future minimums).",
       position: hit.position,

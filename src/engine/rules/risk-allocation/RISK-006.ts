@@ -2,7 +2,7 @@ import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit } from "../_helpers.js";
 import { forEachParagraph } from "../../../extract/walk.js";
 import type { DocPosition } from "../../../extract/types.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 const TYPICAL = [
   ["fraud", /fraud/i],
@@ -157,7 +157,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `LoL exceptions: ${present.length}/${TYPICAL.length} typical carve-outs present`,
       description: `Present: ${present.join(", ") || "none"}. Missing: ${missing.join(", ") || "none"}.`,
-      excerpt: truncate(hit.excerpt, 320),
+      excerpt: truncateQuote(hit.excerpt, 320),
       explanation:
         "Typical LoL carve-outs include fraud, willful misconduct, IP indemnity, confidentiality breach, and accrued payment obligations. Missing categories may be deliberate but are worth confirming.",
       position: hit.position,

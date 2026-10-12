@@ -5,7 +5,7 @@ import { findStatuteCitation, makeFinding } from "../../finding.js";
 import { forEachParagraph, forEachSection } from "../../../extract/walk.js";
 import { isIncorporatedExhibit } from "../_helpers.js";
 import { DATE_SHAPE_MONTHS, DATE_SHAPE_TITLED } from "../../../extract/dates.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 // A signature block is as often laid out as a TABLE as typed as lines, and
 // `src/ingest/docx.ts` flattens a table row to "cell | cell" — so the label
@@ -585,7 +585,7 @@ export const rule: Rule = {
       rule,
       title: "No signature block detected",
       description: "The end of this document does not contain the standard signature pattern.",
-      excerptText: truncate(last.text, 160),
+      excerptText: truncateQuote(last.text, 160),
       explanation:
         "A contract without identifiable signatures may be unenforceable or invalid. Electronic signatures are permitted under ESIGN and state UETA equivalents, but the document must still record the parties' consent to be bound — typically via a 'By / Name / Title / Date' block.",
       recommendation:

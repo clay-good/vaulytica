@@ -1028,7 +1028,7 @@
         "section_id": "s2",
         "section_label": "1. Most-Favored-Nation Pricing",
         "start_offset": 285,
-        "text": "Provider represents and warrants that the fees charged hereunder are, and shall at all times during the Term remain, no less favorable than those offered to any other customer of Provider for substan…"
+        "text": "Provider represents and warrants that the fees charged hereunder are, and shall at all times during the Term remain, no less favorable than those offered to any other customer of Provider for…"
       },
       "explanation": "MFN clauses guarantee one party terms no worse than the other's best customer. They are operationally expensive to administer, sometimes raise antitrust concerns, and lock the drafting party into prices going forward.",
       "id": "FIN-007-s2-285",
@@ -1087,11 +1087,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "ae8a2c7c34cb66757b5501747d284cafee0a3d6a41cf02451ad40aa7b0e81ccb",
+  "result_hash": "f533454a547b33047dfe998b459622f891c540e190043d0eb6dc1b4e0d090c80",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.919.0"
+  "version": "9.920.0"
 }

@@ -63,6 +63,7 @@ describe("an excerpt with a span is text the document contains", () => {
       const haystack = flat(text);
       const result = await analyzeText(text, name);
       const bad: string[] = [];
+      const endCut: string[] = [];
       for (const finding of result.run.findings) {
         const excerpt = finding.excerpt as unknown as
           | { text?: string; start_offset?: number; end_offset?: number }
@@ -97,12 +98,38 @@ describe("an excerpt with a span is text the document contains", () => {
         // while `excerptWindow` sat in `_helpers.ts`. Every occurrence is
         // tried, because a term's first occurrence may sit inside its plural
         // ("Covered Claim" in "Covered Claims") while a later one stands
-        // alone. A truncated quote's END is the ellipsis's business.
-        if (!wordAligned(haystack, needle, flat(excerpt.text) !== needle))
+        // alone.
+        const truncated = flat(excerpt.text) !== needle;
+        if (!wordAligned(haystack, needle, truncated))
           bad.push(`${finding.rule_id}: cut mid-word — ${JSON.stringify(needle.slice(0, 60))}`);
         inspected++;
+
+        // 🚨 This used to say "a truncated quote's END is the ellipsis's
+        // business", and that sentence was the hole. The START boundary was
+        // guarded in all three excerpt paths; the END was guarded in none, so
+        // `architect-agreement.txt` put SEVEN OF NINE quotes in front of a
+        // reader ending mid-word — "…conditioned on payment of the fees ea…",
+        // "…expenses incurred through t…". An ellipsis says the quote was
+        // shortened; it does not excuse shortening it through the middle of a
+        // word.
+        //
+        // ⚠️ A quote whose last word genuinely continues in the document is the
+        // same text read two ways, so the test is: the character AFTER the
+        // quote's final word, in the document, must not be a word character.
+        if (truncated) {
+          const body = flat(excerpt.text).replace(/…+$/, "").trimEnd();
+          const at = haystack.indexOf(body);
+          if (at >= 0) {
+            const next = haystack.charAt(at + body.length);
+            if (/\w/.test(next))
+              endCut.push(
+                `${finding.rule_id}: ellipsis mid-word — ${JSON.stringify(body.slice(-40))}`,
+              );
+          }
+        }
       }
       expect(bad, `${name} quotes text it does not contain:\n  ${bad.join("\n  ")}`).toEqual([]);
+      expect(endCut, `${name} ends a quote inside a word:\n  ${endCut.join("\n  ")}`).toEqual([]);
     },
     120_000,
   );

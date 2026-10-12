@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 /** RISK-012 — IP indemnity scope (info). */
 export const rule: Rule = {
@@ -48,7 +48,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "IP indemnity present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 280),
+      excerpt: truncateQuote(hit.text, 280),
       explanation:
         "IP indemnity protects against third-party infringement claims. Standard scope is third-party claims only; broader scope shifts more risk to the indemnifying party.",
       position: hit.position,

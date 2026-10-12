@@ -8,7 +8,7 @@ import {
 } from "../_helpers.js";
 import { forEachSection } from "../../../extract/walk.js";
 import { isStatutoryDandOIndemnity } from "./RISK-015.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 const PROCEDURE = [
   // The notice element is stated with the VERB at least as often as the noun
@@ -206,7 +206,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: `Indemnity procedural elements missing: ${missing.join(", ")}`,
       description: `Indemnity clause appears to be missing: ${missing.join(", ")}.`,
-      excerpt: truncate(substantive ?? indem.text, 280),
+      excerpt: truncateQuote(substantive ?? indem.text, 280),
       explanation:
         "A complete indemnity clause specifies (a) the timeline and form for notice of a claim, (b) which party controls defense, and (c) whether settlement requires consent.",
       recommendation:

@@ -905,7 +905,7 @@
         "section_id": "s4",
         "section_label": "13. Miscellaneous",
         "start_offset": 634,
-        "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the then-current…"
+        "text": "(c) Renewal. This Agreement shall automatically renew for successive one-year terms unless Customer provides written notice of non-renewal at least ninety (90) days before the end of the…"
       },
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
       "id": "DARK-002-s4-634",
@@ -1316,11 +1316,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "0172e9de7f3c5434d0c9d504337da763895308ae353f5e1434988aec09fa24dd",
+  "result_hash": "cf2993b57faab28dbef695147c309080213457e7e12ed5d438aa75bd5d57ded3",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.919.0"
+  "version": "9.920.0"
 }

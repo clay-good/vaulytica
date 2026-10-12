@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 /** TERM-006 — Wind-down or transition services (info). */
 export const rule: Rule = {
@@ -27,7 +27,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Wind-down / transition services clause present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 240),
+      excerpt: truncateQuote(hit.text, 240),
       explanation:
         "Transition services keep the relationship functional during a handover. Verify duration, scope, and pricing.",
       position: hit.position,

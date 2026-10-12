@@ -890,7 +890,7 @@
         "section_id": "s5",
         "section_label": "4. Term and Renewal",
         "start_offset": 1175,
-        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer tha…"
+        "text": "Subscription Term: one (1) year, renewing automatically for successive one-year terms unless Customer provides written notice of non-renewal by certified mail to Vendor's General Counsel no fewer…"
       },
       "explanation": "When the non-renewal notice window is in a different section from the auto-renewal clause or longer than 90 days, customers commonly miss it. Whether the renewal binds depends on the contract and the state. For consumer subscriptions sold online, ROSCA (15 U.S.C. § 8403) and state automatic-renewal laws such as California's (Cal. Bus. & Prof. Code § 17600 et seq.) require clear disclosure of the renewal terms and a simple way to cancel. For business contracts, New York General Obligations Law § 5-903 makes an automatic-renewal clause in a contract for service, maintenance or repair to real or personal property unenforceable against the customer unless the provider serves written notice of the clause, personally or by certified mail, 15 to 30 days before the non-renewal deadline.",
       "id": "DARK-002-s5-1175",
@@ -1188,11 +1188,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "2cf52f4d8f878742dd9820a92a7823694b9e879b7c63041893e81833e9be245c",
+  "result_hash": "6a8f7e806a117392d4e4f717cb566749e1251adf4416e8e926cdda56d2e57d10",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.919.0"
+  "version": "9.920.0"
 }

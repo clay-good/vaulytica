@@ -1,7 +1,7 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { MODAL_QUALIFIER, OBLIGATION_MODAL, matchedSentence } from "../_helpers.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 // Consumer terms address the reader in the second person — "YOU shall pay
 // Vendor's attorneys' fees" — so a party-name-only subject list missed the
@@ -60,7 +60,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "One-way attorneys' fee-shifting",
       description: matchedSentence(oneSided.text, oneSided.match),
-      excerpt: truncate(oneSided.text, 280),
+      excerpt: truncateQuote(oneSided.text, 280),
       explanation:
         "Fee-shifting that runs only one way stacks the cost of disputes asymmetrically. The standard 'prevailing party' formulation runs both ways.",
       recommendation:

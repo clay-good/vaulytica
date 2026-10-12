@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 /** IPDATA-006 — Source code escrow (info). */
 export const rule: Rule = {
@@ -26,7 +26,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Source code escrow clause present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 240),
+      excerpt: truncateQuote(hit.text, 240),
       explanation:
         "Source-code escrow gives the customer access if the vendor fails (bankruptcy, discontinuation). Verify trigger conditions are clear and the escrow agent is named.",
       position: hit.position,

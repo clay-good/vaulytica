@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 import { INSTRUMENT_NOUN } from "../../../extract/instrument-kinds.js";
 
 /** DARK-001 — Unilateral modification right (warning). */
@@ -75,7 +75,7 @@ function found(
   return emit(ctx, rule, {
     title: "Unilateral right to modify terms",
     description: matchedSentence(hit.text, hit.match),
-    excerpt: truncate(hit.text, 280),
+    excerpt: truncateQuote(hit.text, 280),
     explanation:
       "A unilateral modification right without a corresponding customer termination right shifts re-pricing and re-negotiation power to the drafter.",
     recommendation:

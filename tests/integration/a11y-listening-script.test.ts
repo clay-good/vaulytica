@@ -15,12 +15,24 @@
  * when the committed copy no longer matches what the report produces.
  */
 import { execFileSync } from "node:child_process";
+import { createRequire } from "node:module";
+import { pathToFileURL } from "node:url";
 import { mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 const SCRIPT = join(process.cwd(), "docs", "a11y", "listening-script.md");
+
+/**
+ * 🚨 `execFileSync("npx", …)` FAILED ON WINDOWS with `spawnSync npx ENOENT`,
+ * and it took down the cross-OS determinism matrix — `npx` is `npx.cmd` there
+ * and `execFileSync` does not resolve a `.cmd` without a shell. The portable
+ * form is the one `mcp-server.test.ts` already uses: hand the `tsx` loader to
+ * the Node binary that is already running. No shell, no PATH lookup, no
+ * platform branch.
+ */
+const TSX = pathToFileURL(createRequire(import.meta.url).resolve("tsx")).href;
 
 describe("the screen-reader listening script", () => {
   it("matches the report the tool currently produces", () => {
@@ -29,7 +41,7 @@ describe("the screen-reader listening script", () => {
     // rewrites `docs/` leaves the tree dirty and the next release picks it up
     // silently.
     const tmp = join(mkdtempSync(join(tmpdir(), "vaulytica-a11y-cmp-")), "listening-script.md");
-    execFileSync("npx", ["tsx", "tools/a11y/write-listening-script.ts"], {
+    execFileSync(process.execPath, ["--import", TSX, "tools/a11y/write-listening-script.ts"], {
       cwd: process.cwd(),
       encoding: "utf8",
       timeout: 300_000,

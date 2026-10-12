@@ -20,7 +20,7 @@ import type { DocPosition } from "../../../extract/types.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { distributeListModal, findDenial } from "../_helpers.js";
 import { isLegendLine } from "../../../extract/legends.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 export type RegulatedRuleConfig = {
   category: string;
@@ -266,7 +266,7 @@ export function buildPresenceRule(spec: PresenceSpec, config: RegulatedRuleConfi
             rule: this as Rule,
             title: spec.denied_title ?? spec.missing_title,
             description: spec.denied_description ?? spec.missing_description,
-            excerptText: truncate(denial.sentence, 280),
+            excerptText: truncateQuote(denial.sentence, 280),
             explanation: spec.explanation,
             recommendation: spec.recommendation,
             position: denial.position,
@@ -340,7 +340,7 @@ export function buildLanguageRule(spec: LanguageSpec, config: RegulatedRuleConfi
         rule: this as Rule,
         title: spec.bad_title,
         description: spec.bad_description,
-        excerptText: truncate(h.text, 280),
+        excerptText: truncateQuote(h.text, 280),
         explanation: spec.explanation,
         recommendation: spec.recommendation,
         position: h.position,

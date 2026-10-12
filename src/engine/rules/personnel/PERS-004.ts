@@ -1,6 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, isPresenceDisclaimed, matchedSentence } from "../_helpers.js";
-import { truncate } from "../../text.js";
+import { truncateQuote } from "../../text.js";
 
 /** Limited to the people who worked on the engagement. */
 const NARROWED =
@@ -52,7 +52,7 @@ export const rule: Rule = {
       return emit(ctx, rule, {
         title: "Employee non-solicit limited to engagement personnel",
         description: matchedSentence(hit.text, hit.match),
-        excerpt: truncate(hit.text, 280),
+        excerpt: truncateQuote(hit.text, 280),
         severity: "info",
         explanation:
           "This non-solicitation is limited to the employees involved in the engagement and runs for a bounded period — the narrow form antitrust enforcers treat as ancillary to a legitimate collaboration, unlike a naked no-poach agreement between competitors.",
@@ -64,7 +64,7 @@ export const rule: Rule = {
     return emit(ctx, rule, {
       title: "Anti-poaching / no-hire clause present",
       description: matchedSentence(hit.text, hit.match),
-      excerpt: truncate(hit.text, 280),
+      excerpt: truncateQuote(hit.text, 280),
       explanation:
         "Naked no-poach agreements between competing employers can violate Sherman Act § 1 (15 U.S.C. § 1). DOJ has prosecuted no-poach agreements between competitors.",
       recommendation:

@@ -1057,7 +1057,7 @@
         "section_id": "s2",
         "section_label": "1. Customer Data and Termination",
         "start_offset": 400,
-        "text": "Upon termination, Vendor may, at its discretion and upon Customer's payment of all amounts then due (including amounts subject to good-faith dispute), provide Customer with an export of Customer Data in a format selected by Vendor. Vendor'…"
+        "text": "Upon termination, Vendor may, at its discretion and upon Customer's payment of all amounts then due (including amounts subject to good-faith dispute), provide Customer with an export of Customer Data in a format selected by Vendor…"
       },
       "explanation": "IP and data ownership are different. For SaaS, the customer typically owns its data; the vendor typically owns usage analytics. Address each explicitly.",
       "id": "IPDATA-004-s2-400",
@@ -1076,7 +1076,7 @@
         "section_id": "s3",
         "section_label": "2. AI / Model Training Rights",
         "start_offset": 751,
-        "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training, an…"
+        "text": "Customer grants Vendor a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, and create derivative works from Customer Data (including any Personal Data therein) for the purposes of operating, improving, training…"
       },
       "explanation": "When a contract touches personal data, citing the governing regime (GDPR Art. 28, CCPA, HIPAA 45 CFR 164.504) makes obligations explicit and discoverable.",
       "id": "IPDATA-005-s3-751",
@@ -1134,11 +1134,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "4a24ca04bf12f35692369c19a7e4082e1fd823f72ece553b1264078eb265a6f4",
+  "result_hash": "d6257a17eba3485da023e09f2c1576c51be25d73ce74b2d1d447b3c937ed66dc",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.919.0"
+  "version": "9.920.0"
 }
