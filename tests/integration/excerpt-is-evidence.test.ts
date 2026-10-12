@@ -41,7 +41,21 @@ function wordAligned(haystack: string, needle: string, truncated: boolean): bool
   return false;
 }
 
+/**
+ * 🚨 HOW MANY EXCERPTS THIS FILE ACTUALLY INSPECTED. Without it the sweep has
+ * two ways to report green having checked nothing: `it.each([])` registers ZERO
+ * tests if the listing comes back empty, and a specimen whose findings carry no
+ * `excerpt.text` skips the inner loop entirely, so `bad` is empty because
+ * nothing was looked at. The repo met the same shape in its browser suite,
+ * where a third of the specs passed against a different application.
+ */
+let inspected = 0;
+
 describe("an excerpt with a span is text the document contains", () => {
+  it("has a corpus to sweep", () => {
+    expect(SPECIMENS.length).toBeGreaterThan(300);
+  });
+
   it.each(SPECIMENS)(
     "%s",
     async (name) => {
@@ -86,9 +100,16 @@ describe("an excerpt with a span is text the document contains", () => {
         // alone. A truncated quote's END is the ellipsis's business.
         if (!wordAligned(haystack, needle, flat(excerpt.text) !== needle))
           bad.push(`${finding.rule_id}: cut mid-word — ${JSON.stringify(needle.slice(0, 60))}`);
+        inspected++;
       }
       expect(bad, `${name} quotes text it does not contain:\n  ${bad.join("\n  ")}`).toEqual([]);
     },
     120_000,
   );
+
+  // Runs last, after every case above. See `inspected`: this is what makes the
+  // greens above mean something.
+  it("inspected the excerpts it claims to have checked", () => {
+    expect(inspected).toBeGreaterThan(1_000);
+  });
 });

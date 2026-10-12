@@ -50,6 +50,11 @@ describe("v5 corpus privacy guard (spec-v5 §VIII, Step 83)", () => {
         offenders.push(file.replace(REPO_ROOT + "/", ""));
       }
     }
+    // 🚨 A walk that returns nothing makes this posture guard pass for the
+    // wrong reason. The idiom is `shared-vocabulary.test.ts`'s: say out loud
+    // how many sources were read, so a path change fails here instead of
+    // quietly retiring the promise that the product never ships the corpus.
+    expect(tsFiles.length, "no sources found — the walk is broken").toBeGreaterThan(100);
     expect(offenders, "src/ must never import the corpus or accuracy harness").toEqual([]);
   });
 
@@ -65,6 +70,7 @@ describe("v5 corpus privacy guard (spec-v5 §VIII, Step 83)", () => {
         offenders.push(file.replace(REPO_ROOT + "/", ""));
       }
     }
+    expect(tsFiles.length, "no sources found — the walk is broken").toBeGreaterThan(100);
     expect(offenders, "src/ must never import the citation-check tool").toEqual([]);
   });
 

@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.915.0] — 2026-10-12
+
+### Added
+- **Three sweeps that could have reported green having read nothing.** Prompted
+  by 9.914.0, where a third of the browser suite passed against a different
+  application, every test that walks a directory was audited for a reach
+  assertion:
+
+  | sweep | what it now says out loud |
+  | --- | --- |
+  | `excerpt-is-evidence.test.ts` | the corpus has >300 specimens, and **1,113 excerpts were actually inspected** |
+  | `accuracy-corpus-guard.test.ts` ×2 | the `src/` walk found >100 sources, twice |
+
+  The excerpt sweep had two ways to pass vacuously: `it.each([])` registers ZERO
+  tests on an empty listing, and a specimen whose findings carry no
+  `excerpt.text` skips the inner loop entirely, so `bad` comes back empty
+  because nothing was looked at. The floor of 1,000 was set against a measured
+  1,113, so it catches a collapse without tripping on normal variation.
+
+  The two `accuracy-corpus-guard` walks protect an architectural promise — that
+  the product never imports the corpus or the accuracy harness — and a path
+  change would have retired that promise silently. Both bounds were verified by
+  breaking the walk: each fails with "no sources found — the walk is broken".
+
+### Changed
+- 🥇 **The audit mostly cleared the repo, and that is the finding.** Of 14 files
+  a keyword grep flagged, 8 were examined and 5 already guarded themselves in
+  ways the grep could not see:
+
+  - `site-overclaim.test.ts` asserts its walk `toContain` two specific pages;
+  - `family-owns-its-name.test.ts` and `readme-spec-table.test.ts` each pair two
+    tests so that an empty sweep makes the OTHER one fail — "so the list cannot
+    outlive it", as one of them puts it;
+  - `accuracy-corpus-guard.test.ts` documents its own vacuity where the seed
+    corpus is genuinely empty (`// vacuously true for the seed corpus`);
+  - `regime-discussion-routing.test.ts` asserts per-document routing by name
+    rather than sweeping for emptiness.
+
+  A first patch to `site-overclaim.test.ts` was written and then reverted: it
+  both duplicated an existing guard and referenced a variable that does not
+  exist there. Checking the file instead of trusting the heuristic is what
+  caught it.
+
 ## [9.914.0] — 2026-10-12
 
 ### Fixed
