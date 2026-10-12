@@ -258,6 +258,38 @@ export const KNOWN_DEBT = {
     ],
   },
   // passive-voice.test.ts — PASSIVE_DEBT
+  /**
+   * 🚨 THE ROOT CAUSE, diagnosed s44, and why the obvious repair is unsafe.
+   *
+   * This entry is a SYMPTOM. The cause is that the obligation extractor reads
+   * a passive clause's SUBJECT as its obligor, and in passive voice the
+   * subject is the beneficiary — or not a party at all:
+   *
+   *   "Licensor shall be indemnified … by Licensee"  → obligor "Licensor"
+   *   "The Goods shall be delivered by the Supplier" → obligor "The Goods"
+   *
+   * The first INVERTS who owes the duty; the second records a thing as owing
+   * one. `report/exports.ts` and the DOCX obligations ledger print `obligor`
+   * verbatim, so a passive-voice contract yields a ledger naming the wrong
+   * party — or a crate of goods — as the obligor. Passive voice is ordinary
+   * legal drafting, not a presentation artifact, so this is wrong on real
+   * documents and not only under the transform.
+   *
+   * Measured over the corpus: **395 of 3,822 obligations (10.3%) are
+   * passive.** But only **5** carry a named agent after "by", and
+   * re-attributing the obligation to that agent — the repair that suggests
+   * itself — is wrong on at least one of the five: "…governed by Ohio" would
+   * make OHIO the obligor, where "by" introduces a governing law, not an
+   * actor. The other 390 are AGENTLESS passives ("the Goods shall be
+   * delivered"), where the sentence names no obligor to record at all.
+   *
+   * So the three available repairs each fail differently: re-attribution is
+   * unsafe (measured), dropping passive obligations loses a tenth of the
+   * ledger, and marking them needs a new field on `Obligation` plus a
+   * presentation decision for every consumer. That is a product call, and it
+   * belongs with the obligor-fragment work this debt already neighbours —
+   * where the measured repair likewise adds a finding to 55% of specimens.
+   */
   "passive-voice-indemnity": {
     reason:
       'On {n} specimens, rewriting an indemnity in the passive voice ("shall be indemnified by") draws a one-sided-indemnity finding the original does not.',
