@@ -44,6 +44,11 @@ function documentXml(bytes: Uint8Array): string {
   return strFromU8(unzipSync(bytes)["word/document.xml"]!);
 }
 
+/** The style part, where the document-default run properties live. */
+function stylesXml(bytes: Uint8Array): string {
+  return strFromU8(unzipSync(bytes)["word/styles.xml"]!);
+}
+
 /**
  * Two things in a DOCX render differ between two runs of the *same* analysis,
  * and both were found by writing this comparison rather than assumed:
@@ -89,6 +94,22 @@ function stableXml(bytes: Uint8Array): string {
  * confirming that Narrator and VoiceOver announce what the XML now declares.
  */
 describe("DOCX tables are announced to a screen reader", () => {
+  /**
+   * WCAG 2.2 SC 3.1.1 (Language of Page) is Level A, and the report declared
+   * no language at all — no `<w:lang/>` in any produced file. A screen reader
+   * then speaks the text through whatever voice the user's system defaults to,
+   * so an English legal report read by a German or French phonetic engine is
+   * close to unintelligible. Nothing in the document's APPEARANCE reveals it,
+   * which is how it survived: a sighted reader sees a perfectly normal file.
+   */
+  it("declares the document language so a screen reader speaks it correctly", async () => {
+    const dir = await out();
+    await runAnalyze([NDA, "--format", "docx", "--out", dir]);
+    const written = (await readdir(dir)).filter((f) => f.endsWith(".docx"));
+    const styles = stylesXml(await readFile(join(dir, written[0]!)));
+    expect(styles).toContain('w:lang w:val="en-US"');
+  });
+
   it("marks every table's heading row, and marks none of them false", async () => {
     const dir = await out();
     await runAnalyze([NDA, "--format", "docx", "--out", dir]);

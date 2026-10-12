@@ -84,6 +84,7 @@ import {
 import {
   BODY_SIZE,
   DEFAULT_FONT,
+  DOCUMENT_DEFAULT_RUN,
   MINT,
   bodyRow,
   headerRow,
@@ -193,7 +194,7 @@ export async function buildDocxReport(
     styles: {
       default: {
         document: {
-          run: { font: DEFAULT_FONT, size: BODY_SIZE },
+          run: DOCUMENT_DEFAULT_RUN,
         },
       },
     },

@@ -91,7 +91,15 @@ import {
   type PortfolioExecutiveSummary,
   type PortfolioStatus,
 } from "./portfolio.js";
-import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
+import {
+  BODY_SIZE,
+  DEFAULT_FONT,
+  DOCUMENT_DEFAULT_RUN,
+  MINT,
+  bodyRow,
+  headerRow,
+  para,
+} from "./_docx-primitives.js";
 import {
   EXECUTED_AT_OMITTED,
   determinismStatement,
@@ -609,7 +617,7 @@ export async function buildBundleDocxReport(input: BundleReportInput): Promise<B
     styles: {
       default: {
         document: {
-          run: { font: DEFAULT_FONT, size: BODY_SIZE },
+          run: DOCUMENT_DEFAULT_RUN,
         },
       },
     },

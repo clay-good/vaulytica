@@ -41,7 +41,15 @@ import type { Comparison, SeverityCounts, UnchangedPair } from "./compare.js";
 import type { Clause, ClauseDiff, WordDiffSegment } from "./clause-diff.js";
 import type { NegotiationTier } from "../playbooks/custom-interpreter.js";
 import type { PostureMovement, PostureMovementKind } from "./posture-movement.js";
-import { BODY_SIZE, DEFAULT_FONT, MINT, bodyRow, headerRow, para } from "./_docx-primitives.js";
+import {
+  BODY_SIZE,
+  DEFAULT_FONT,
+  DOCUMENT_DEFAULT_RUN,
+  MINT,
+  bodyRow,
+  headerRow,
+  para,
+} from "./_docx-primitives.js";
 import { determinismStatement, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
 
 /**
@@ -87,7 +95,7 @@ export async function buildComparisonDocx(
     creator: "Vaulytica",
     title: "Vaulytica Comparison Report",
     description: "Deterministic version comparison",
-    styles: { default: { document: { run: { font: DEFAULT_FONT, size: BODY_SIZE } } } },
+    styles: { default: { document: { run: DOCUMENT_DEFAULT_RUN } } },
     sections: [
       {
         properties: {

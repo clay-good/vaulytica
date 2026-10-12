@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.901.0] — 2026-10-11
+
+### Fixed
+- **No DOCX this tool writes declared a language**, so none carried a
+  `<w:lang/>` at all — not the per-document report, not the comparison report,
+  not the bundle. **WCAG 2.2 SC 3.1.1 (Language of Page) is Level A** for a
+  concrete reason: with no language declared, Narrator and VoiceOver speak the
+  text through whatever voice the reader's system defaults to, so an English
+  legal report read by a German or French phonetic engine is close to
+  unintelligible. Nothing in the document's appearance reveals it — a sighted
+  reader sees a perfectly normal file — which is how it survived.
+  All three producers now start from one `DOCUMENT_DEFAULT_RUN` constant that
+  declares `en-US`, describing the REPORT's own prose (American English
+  whatever language the document under review is in). Written once so the three
+  cannot drift, for the same reason `headerRow` takes no flag and `truncate`
+  has a single owner.
+  Found by continuing the step-37 audit past `tblHeader`: the headings outline
+  (`Title`, `Heading1`–`Heading3`) and the announced document title
+  (`dc:title`) were already correct, so the language was the one screen-reader
+  essential still missing. `cli-docx-report.test.ts` asserts it on a real
+  produced file, verified by removing the declaration.
+
 ## [9.900.0] — 2026-10-11
 
 ### Fixed

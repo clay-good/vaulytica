@@ -31,6 +31,33 @@ export const DEFAULT_FONT = "Arial";
 /** Half-points: 22 = 11pt. */
 export const BODY_SIZE = 22;
 
+/**
+ * The document-default run style every DOCX this tool writes starts from.
+ *
+ * 🚨 `language` is the reason this is a shared constant rather than three
+ * inline objects. All three producers — the per-document report, the
+ * comparison report and the bundle — set the same font and size and declared
+ * **no language at all**, so no `<w:lang/>` reached any produced file.
+ *
+ * A screen reader needs it. WCAG 2.2 SC 3.1.1 (Language of Page) is **Level
+ * A** precisely because, with no language declared, Narrator and VoiceOver
+ * read the text through whatever voice the user's system defaults to: an
+ * English legal report spoken by a German or French phonetic engine is close
+ * to unintelligible. Nothing in the report's appearance reveals it, which is
+ * why it survived — a sighted reader sees a perfectly normal document.
+ *
+ * `en-US` describes the REPORT's own prose, which is American English
+ * whatever language the document under review is written in.
+ *
+ * Written once so the three cannot drift: the same reason `headerRow` below
+ * takes no flag and `truncate` has a single owner.
+ */
+export const DOCUMENT_DEFAULT_RUN = {
+  font: DEFAULT_FONT,
+  size: BODY_SIZE,
+  language: { value: "en-US" },
+} as const;
+
 export type ParaOpts = {
   text: string;
   bold?: boolean;
