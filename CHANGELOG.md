@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.912.0] — 2026-10-12
+
+### Fixed
+- 🚨 **A published known limitation named a CORRECT party as debt.**
+  `GRANDVIEW HOLDINGS 447 LLC` had sat in `party-name-fragments` for two
+  releases because the ledger's predicate treats a digit as a sign of a
+  fragment — and that name is a real party: "…and GRANDVIEW HOLDINGS 447 LLC, a
+  New York limited liability company (\"Landlord\")". A ledger that calls a
+  right answer debt is the same kind of false statement the ledger exists to
+  record. The predicate now requires a digit-bearing name to LACK a corporate
+  suffix before it counts, and the note says plainly what happened.
+
+- **Four fragments that turned out to be decidable after all**, re-examined
+  rather than left because an earlier pass had called them undecidable:
+
+  | was | now |
+  | --- | --- |
+  | `ONE, TO DEFENDANT PACIFIC RIDGE PROPERTY MANAGEMENT` | caption addressee stripped; the phantom MERGED into the already-correct party |
+  | `Apartment 3B` | a unit designation is part of an address; rejected |
+  | `Larkfield Road, Longmont, Colorado. Ellery Development Partners` | address prefix stripped → `Ellery Development Partners` |
+  | `Sponsor. Harrowgate Coffee Roasters` | role label and full stop stripped → `Harrowgate Coffee Roasters` |
+
+  The address strip is bounded by a STATE NAME followed by a full stop, so it
+  cannot reach a name that merely contains a state word — "The Regents of
+  Calloway State University" has neither — and it only removes a PREFIX, so the
+  party on the far side survives. `ALLCAPS_ROLE_LABEL` already read the
+  field-block form of the role label, where CAPITALS tell a label from the
+  first word of a name; here the full stop does it, which is why this form can
+  be read in title case where that one cannot.
+
+### Added
+- **A party the extractor had never extracted.** `Sponsor` joins
+  `PARTY_ROLE_LABEL`, and `informed-consent.txt` now yields
+  `Kestrel Ophthalmic Research Foundation` with role `Sponsor` from its
+  "Sponsor: …" line. The vocabulary change was measured before it was kept: it
+  moves exactly those two rows and nothing else.
+
+### Changed
+- `party-name-fragments` drops from 9 entries to **4**.
+  🥇 One fix cleaned up after another: `ADDRESS_PREFIX` runs earlier in the
+  pipeline than 9.909.0's run-on-article strip, so the residue that fix left on
+  `nonprofit-bylaws.txt` — `New Hanover County, North Carolina` — is now taken
+  whole rather than trimmed to a shorter non-name.
+
 ## [9.911.0] — 2026-10-12
 
 ### Fixed

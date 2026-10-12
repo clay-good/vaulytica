@@ -76,7 +76,18 @@ describe("the shape of an extracted party name", { timeout: 900_000 }, () => {
     for (const file of FILES) {
       for (const n of await names(file)) {
         const sentenceBreak = /[a-z]\.\s+[A-Z]/.test(n) && !HONORIFIC.test(n);
-        if (sentenceBreak || FUNCTION_RUN.test(n) || /[0-9]/.test(n)) found.push(`${file} ${n}`);
+        // 🚨 A DIGIT IS NOT A SIGN OF A FRAGMENT WHEN THE NAME IS AN ENTITY.
+        // This predicate flagged `GRANDVIEW HOLDINGS 447 LLC` — a real party,
+        // "…and GRANDVIEW HOLDINGS 447 LLC, a New York limited liability
+        // company (\"Landlord\")" — so the published ledger called a correct
+        // name debt for two releases. A corporate suffix is what tells a
+        // numbered entity from an address line or a contract number.
+        const entity =
+          /\b(?:LLC|L\.L\.C|Inc|Incorporated|Corp|Corporation|Co|Company|Ltd|Limited|LLP|LP|L\.P|PLC|PC|PA|GmbH|B\.V|N\.V|Pty|AB|AG|SA|SAS|Oy|Trust|Foundation|Association|Partners|Partnership)\.?$/i.test(
+            n,
+          );
+        if (sentenceBreak || FUNCTION_RUN.test(n) || (/[0-9]/.test(n) && !entity))
+          found.push(`${file} ${n}`);
       }
     }
     expect([...new Set(found)].sort()).toEqual([...FRAGMENT_DEBT].sort());

@@ -524,7 +524,7 @@ function hasPreambleLead(lead: string): boolean {
  * Information") is not read as a party name.
  */
 /** The role labels a party line or a role-first preamble uses. */
-const PARTY_ROLE_LABEL = String.raw`Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Service\s+Provider|Subcontractor|Sublicensee|Sublessee|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Named\s+Insured|Insured|Insurer|Producer|Party\s+[AB]`;
+const PARTY_ROLE_LABEL = String.raw`Data\s+Exporter|Data\s+Importer|Exporter|Importer|Discloser|Disclosing\s+Party|Recipient|Receiving\s+Party|Covered\s+Entity|Business\s+Associate|Controller|Processor|Sub-?processor|Service\s+Provider|Subcontractor|Sublicensee|Sublessee|Landlord|Tenant|Lessor|Lessee|Licensor|Licensee|Buyer|Seller|Purchaser|Vendor|Supplier|Provider|Customer|Client|Company|Employer|Employee|Contractor|Consultant|Borrower|Lender|Guarantor|Trustee|Grantor|Settlor|Named\s+Insured|Insured|Insurer|Producer|Sponsor|Party\s+[AB]`;
 
 const LABELED_PARTY = new RegExp(
   // The name body absorbs an in-abbreviation period — one followed by a
@@ -1816,6 +1816,54 @@ function isBareDate(n: string): boolean {
   return m !== null && monthNumber(m[1]!) !== undefined;
 }
 
+/**
+ * A ROLE LABEL ON A NUMBERED SECTION, with the party under it: sweepstakes
+ * rules open "1. Sponsor. Harrowgate Coffee Roasters, Inc., 118 Kestrel
+ * Lane …", and the name run began at the label, publishing a party called
+ * "Sponsor. Harrowgate Coffee Roasters".
+ *
+ * `ALLCAPS_ROLE_LABEL` already reads the field-block form of this ("PRODUCER"
+ * over a name); that one requires CAPITALS to tell a label from the first word
+ * of a name. Here the FULL STOP does it, which is why this form can be read in
+ * title case where that one cannot. The vocabulary is `PARTY_ROLE_LABEL`.
+ */
+const ROLE_LABEL_SENTENCE = new RegExp(String.raw`^(?:${PARTY_ROLE_LABEL})\.\s+(?=[A-Z])`, "i");
+
+/**
+ * AN ADDRESS BEFORE THE NAME, closed by its state: a certificate's "Re:" line
+ * reads "… 88 Larkfield Road, Longmont, Colorado. Ellery Development Partners,
+ * LLC and Bramble Construction Group, Inc. are included as additional
+ * insureds", and the run started at the street and swallowed the state.
+ *
+ * ⚠️ A state name followed by a FULL STOP is what bounds it, so this cannot
+ * reach a name that merely contains a state word — "The Regents of Calloway
+ * State University" has no state name and no full stop — and it only ever
+ * removes a PREFIX, so the party on the far side is what survives.
+ */
+const ADDRESS_PREFIX = new RegExp(
+  // A COMMA in the prefix is what marks it as an address rather than a
+  // sentence: "Larkfield Road, Longmont, Colorado." The street NUMBER is not
+  // required, because the run routinely starts after it — on `coi.txt` the
+  // "88" sits before where the name run began.
+  String.raw`^[^.]*,[^.]*\b${US_STATE}\.\s+(?=[A-Z])`,
+  "i",
+);
+
+/**
+ * A LITIGATION CAPTION'S addressee line: "REQUEST NO. ONE, TO DEFENDANT
+ * PACIFIC RIDGE PROPERTY MANAGEMENT" is a discovery request numbered and
+ * directed at a party, and the name is what follows the party word.
+ */
+const CAPTION_ADDRESSEE =
+  /^.*\bto\s+(?:defendant|plaintiff|respondent|petitioner|counter-?defendant|counter-?claimant)s?\s+(?=[A-Z])/i;
+
+/**
+ * A UNIT DESIGNATION is part of an address, not a party: "Apartment 3B".
+ * Rejected whole, because nothing precedes or follows it that is a name.
+ */
+const UNIT_DESIGNATION =
+  /^(?:apartment|apt\.?|unit|suite|ste\.?|floor|fl\.?|room|rm\.?|no\.?|#)\s*[\w-]{1,6}$/i;
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // A LETTER's address block arrives as one line — "Ms. Carla Benton / Chief
@@ -1827,8 +1875,14 @@ function cleanPartyName(raw: string): string {
   // A document's own title is not one of its parties.
   n = stripHeadingPrefix(n);
   // See RECITAL_LEAD: the recital a note opens with is not part of the name
-  // that follows it.
-  n = n.replace(RECITAL_LEAD, "");
+  // that follows it. The three siblings below each strip a PREFIX the name run
+  // started inside — a section's role label, an address closed by its state,
+  // and a litigation caption's addressee line.
+  n = n
+    .replace(RECITAL_LEAD, "")
+    .replace(ROLE_LABEL_SENTENCE, "")
+    .replace(ADDRESS_PREFIX, "")
+    .replace(CAPTION_ADDRESSEE, "");
   // Strip a role label the preamble put in FRONT of the legal name.
   n = n.replace(LEADING_ROLE, "");
   // Strip trailing entity descriptor like ", a Delaware corporation".
@@ -1904,7 +1958,7 @@ function cleanPartyName(raw: string): string {
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";
   // See STATE_AND_ZIP / isBareDate: neither is a name, so neither is a party.
-  if (STATE_AND_ZIP.test(n) || isBareDate(n)) return "";
+  if (STATE_AND_ZIP.test(n) || isBareDate(n) || UNIT_DESIGNATION.test(n)) return "";
   return n;
 }
 

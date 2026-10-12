@@ -48,11 +48,6 @@
    "sentence": "On 9 specimens, a late-fee rate written in words (\"five percent\") is not read, so the usury check stays silent."
   },
   {
-   "id": "party-name-fragments",
-   "count": 9,
-   "sentence": "On 9 party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
-  },
-  {
    "id": "capitals-indemnity",
    "count": 6,
    "sentence": "On 6 specimens, setting the indemnity clause in capital letters moves a finding; with no lowercase letters, where a sentence starts — and so who indemnifies whom — can be misread."
@@ -61,6 +56,11 @@
    "id": "capitals-warranty-disclaimer",
    "count": 4,
    "sentence": "On 4 specimens, setting the warranty disclaimer in capital letters (as drafters do) moves a finding."
+  },
+  {
+   "id": "party-name-fragments",
+   "count": 4,
+   "sentence": "On 4 party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
   },
   {
    "id": "section-renamed-article",

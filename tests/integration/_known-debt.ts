@@ -467,6 +467,14 @@ export const KNOWN_DEBT = {
    * a longest-side test keeps "Harrowgate Coffee Roasters" but then keeps the
    * ADDRESS on the `coi.txt` row.
    *
+   * 🚨 ONE ENTRY WAS NEVER A FRAGMENT. `GRANDVIEW HOLDINGS 447 LLC` sat here
+   * for two releases because the predicate treats a digit as a sign, and that
+   * name is a real party — "…and GRANDVIEW HOLDINGS 447 LLC, a New York
+   * limited liability company (\"Landlord\")". A published ledger that calls a
+   * correct name debt is the same kind of false statement this ledger exists
+   * to record, so the predicate now requires a digit-bearing name to lack a
+   * corporate suffix before it counts.
+   *
    * ⚠️ NOT EVERY FRAGMENT HAS A DECIDABLE SIGN, so this ledger is narrower
    * than the defect. Clearing the state-and-ZIP rows from
    * `source-code-escrow.txt` left the CITY line of the same address block
@@ -487,13 +495,8 @@ export const KNOWN_DEBT = {
     entries: [
       "allcaps-guaranty.txt AGREED TO EXTEND CREDIT TO ODEGAARD MILLWORK",
       "assignment-assumption.txt Counterparty with respect to its subject matter",
-      "coi.txt Larkfield Road, Longmont, Colorado. Ellery Development Partners",
       "gsa-schedule-contract.txt K7MDX4RB2",
       "guaranty-payment-individual.txt Lender dated January 20",
-      "lease-assignment.txt GRANDVIEW HOLDINGS 447 LLC",
-      "requests-for-admission.txt ONE, TO DEFENDANT PACIFIC RIDGE PROPERTY MANAGEMENT",
-      "roommate-agreement-complete.txt Apartment 3B",
-      "sweepstakes-official-rules.txt Sponsor. Harrowgate Coffee Roasters",
     ],
   },
   "liability-cap-as-insurance-limit": {
