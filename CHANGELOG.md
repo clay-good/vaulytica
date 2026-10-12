@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.918.0] — 2026-10-12
+
+### Added
+- 🚨 **The emailable report carried no extracted data at all, and the reason it
+  gave was false.** `src/report/html.ts` keeps a written list of what the DOCX
+  has and it deliberately omits, and the extracted-data appendix was on it,
+  justified like this: a single scrolling page "does not need a triage table
+  over content it already contains". That is true of the findings INDEX. It was
+  carried across to something it does not fit.
+
+  Rendering the report for `advertising-insertion-order.txt` and searching it:
+
+  | searched for | found |
+  | --- | --- |
+  | Amounts | **0** |
+  | Percentages | **0** |
+  | Parties | **0** |
+  | Defined terms | **0** |
+
+  **The content was not there to search.** A reader handed the emailable report
+  — which this file's own docstring calls something a reader is "just as likely
+  to be handed" — lost every party, sum, percentage, date and defined term the
+  tool had extracted.
+
+  The HTML report now renders all five tables with proper `<thead>`/`<th>`, and
+  `html-report-content-parity.test.ts` asserts both surfaces carry them, with a
+  fixture guard so the case cannot pass on a document whose extraction found
+  nothing. Verified to fail by removing the call.
+
+### Changed
+- 🥇 **This is the THIRD entry to come off that deliberate-omissions list for
+  the same reason**, after the jurisdiction overlays and the obligations ledger.
+  The parity guard's own docstring named the failure mode before this one was
+  found: "filing content there is how a deliberate-omissions list stops being a
+  decision and becomes a place things go."
+
+- `amountCell` moved from `report/docx.ts` to `engine/text.ts`, beside
+  `truncate` and `plural`. ⚠️ Not copied: `html.ts` must not import `docx.ts`,
+  because that would drag the whole `docx` library into the emailable report's
+  bundle — so the moment the HTML gained an amounts table, a second copy was
+  the obvious and wrong next step.
+
 ## [9.917.0] — 2026-10-12
 
 ### Added

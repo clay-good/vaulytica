@@ -71,7 +71,7 @@ import { describeExecutionLogEntry, erroredRuleNotice } from "./execution-log.js
 import { modelClauseForRule, MODEL_CLAUSE_COVERAGE } from "../dkb/model-clauses.js";
 import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overlays.js";
 import type { V3ReportInputs } from "./v3/types.js";
-import { truncate, plural } from "./v3/_dx.js";
+import { amountCell, truncate, plural } from "./v3/_dx.js";
 import {
   renderComplianceMatrix,
   renderTransfersSummary,
@@ -711,11 +711,6 @@ function renderSecondaryFamiliesSection(
  * clause, while what the table SHOWS is not. The raw-text column still carries
  * the phrase verbatim, so nothing is replaced — only completed.
  */
-function amountCell(a: { amount: string; range_max?: string; per_unit?: string }): string {
-  const value = a.range_max ? `${a.amount} – ${a.range_max}` : a.amount;
-  return a.per_unit ? `${value} per ${a.per_unit}` : value;
-}
-
 /** "Clean to send" — the delivery / HANDOFF-* pre-disclosure section (Thrust A). */
 function renderDeliverySection(delivery: DeliveryReport | undefined): (Paragraph | Table)[] {
   if (!delivery || delivery.findings.length === 0) return [];

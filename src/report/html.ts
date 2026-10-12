@@ -26,11 +26,21 @@
  *
  * What the DOCX still has and this does not, deliberately: the cover page and
  * its proof fields, the executive summary, the findings INDEX (a triage table
- * ahead of the same findings rendered below it), the extracted-data appendix,
- * and the audit trail. Those are the paginated report's navigation and
- * reference apparatus; a single scrolling page that a reader can search does
- * not need a triage table over content it already contains. If one of them is
- * ever added, add it here and to this list together.
+ * ahead of the same findings rendered below it), and the audit trail. Those are
+ * the paginated report's navigation and reference apparatus; a single scrolling
+ * page that a reader can search does not need a triage table over content it
+ * already contains. If one of them is ever added, add it here and to this list
+ * together.
+ *
+ * 🚨 **A THIRD entry came off that list in 9.918.0: the extracted-data
+ * appendix.** Its justification was that a searchable page "does not need a
+ * triage table over content it already contains" — and the content was not
+ * there to search. Rendering this report for `advertising-insertion-order.txt`
+ * and grepping it returned ZERO mentions of Amounts, Percentages, Parties or
+ * Defined terms, so a reader handed the emailable report lost every party,
+ * sum, percentage, date and defined term the tool had extracted. The
+ * justification was sound for the findings index and had been carried across to
+ * something it did not fit.
  *
  * 🚨 **Two entries were on that list and did not belong on it**: the
  * jurisdiction overlays and the obligations ledger, both here since 9.579.0. A
@@ -89,7 +99,7 @@ import { ENGAGEMENT_SCOPE } from "./engagement-scope.js";
 import type { V9Surfaces } from "./v9-surfaces.js";
 import type { ReportSecondaryFamily } from "./json.js";
 import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
-import { truncate } from "./v3/_dx.js";
+import { amountCell, truncate } from "./v3/_dx.js";
 import type { DeliveryReport } from "../delivery/types.js";
 import type { ClosingChecklist, ChecklistCategory } from "./closing-checklist.js";
 import type { CriticalDatesRegister, CriticalDateKind } from "./critical-dates.js";
@@ -471,6 +481,80 @@ function renderObligationsLedgerSection(extracted: ExtractedData | undefined): s
   return out;
 }
 
+/**
+ * 🚨 THE EXTRACTED-DATA APPENDIX WAS FILED UNDER "APPARATUS" AND IS CONTENT.
+ *
+ * The deliberate-omissions list at the top of this file justified leaving it
+ * out on the grounds that "a single scrolling page that a reader can search
+ * does not need a triage table over content it already contains". That is true
+ * of the findings INDEX. It is false of this: rendering the report for
+ * `advertising-insertion-order.txt` and searching it found **zero** mentions of
+ * Amounts, Percentages, Parties or Defined terms. The HTML does not contain
+ * that content anywhere, so there was nothing for a reader to search — a
+ * reader handed the emailable report lost every party, sum, percentage, date
+ * and defined term the tool had extracted.
+ *
+ * This is the THIRD entry to come off that list for the same reason, after the
+ * jurisdiction overlays and the obligations ledger, and the list's own
+ * docstring names the failure mode: filing content there is how a
+ * deliberate-omissions list stops being a decision and becomes a place things
+ * go.
+ */
+function renderExtractedAppendix(extracted: ExtractedData | undefined): string[] {
+  if (!extracted) return [];
+  const out: string[] = [];
+  const table = (heading: string, headers: string[], rows: string[][]): void => {
+    if (rows.length === 0) return;
+    out.push(`<h3>${esc(heading)}</h3>`);
+    out.push(
+      `<table><thead><tr>${headers.map((h) => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>`,
+    );
+    for (const r of rows) out.push(`<tr>${r.map((c) => `<td>${esc(c)}</td>`).join("")}</tr>`);
+    out.push("</tbody></table>");
+  };
+
+  const parties = extracted.parties.map((p) => [
+    p.name,
+    p.role ?? "—",
+    p.entity_type ?? "—",
+    p.jurisdiction_of_formation ?? "—",
+  ]);
+  const amounts = extracted.amounts.map((a) => [
+    truncate(a.raw_text, 80),
+    a.currency,
+    amountCell(a),
+    a.word_form ? "yes" : "no",
+  ]);
+  // `?? []` because a round SAVED BEFORE the field existed has no such key, and
+  // saved rounds are reloaded from disk. Same reason as in `docx.ts`.
+  const percentages = (extracted.percentages ?? []).map((p) => [
+    truncate(p.raw_text, 80),
+    `${p.percent}%`,
+    p.word_form ? "yes" : "no",
+  ]);
+  const dates = extracted.dates.map((d) => [truncate(d.raw_text, 60), d.type, d.iso ?? "—"]);
+  const terms = extracted.definitions.entries.map((e) => [
+    e.term,
+    truncate(e.definition, 160),
+    e.used_at.length > 0 ? `${e.used_at.length}` : "0",
+  ]);
+
+  if (parties.length + amounts.length + percentages.length + dates.length + terms.length === 0) {
+    return [];
+  }
+
+  out.push("<h2>Extracted data</h2>");
+  out.push(
+    '<p class="v9-note">What the tool read out of the document, so a reader can check it against the document itself.</p>',
+  );
+  table("Parties", ["Name", "Role", "Entity type", "Formation jurisdiction"], parties);
+  table("Amounts", ["Raw text", "Currency", "Amount", "Word form"], amounts);
+  table("Percentages and shares", ["Raw text", "Percent", "Word form"], percentages);
+  table("Dates", ["Raw text", "Type", "ISO"], dates);
+  table("Defined terms", ["Term", "Definition", "Uses"], terms);
+  return out;
+}
+
 function renderSecondaryFamiliesSection(
   secondary: ReadonlyArray<ReportSecondaryFamily> | undefined,
   omitted?: number,
@@ -823,6 +907,8 @@ export function buildHtmlReport(
   );
   // Same reclassification: who owes what, by when, is content.
   body.push(...renderObligationsLedgerSection(extracted));
+  body.push(...renderExtractedAppendix(extracted));
+
   // spec-v3 §59 — the cross-document consistency appendix. The DOCX has
   // rendered it since v3 (`renderConsistencyAppendix`); this file did not, and
   // the omission was not on the deliberate list in the header above — so a

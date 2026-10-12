@@ -89,6 +89,57 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
    * reports must say "an honest coverage gap — not a clean pass" rather than
    * printing an empty overlay section, which a reader takes for a clean bill.
    */
+  it("renders the extracted-data appendix in BOTH, not only the Word report", async () => {
+    // 🚨 The THIRD entry to come off the deliberate-omissions list, for the
+    // same reason as the overlays and the obligations ledger before it. Its
+    // justification was that a searchable page "does not need a triage table
+    // over content it already contains" — and the content was not there to
+    // search: grepping the rendered HTML for this specimen returned ZERO
+    // mentions of Amounts, Parties or Defined terms. A reader handed the
+    // emailable report lost every party, sum, date and defined term the tool
+    // had extracted.
+    const deps = await loadAccuracyDeps();
+    const r = await analyzeFile(SPECIMEN, { deps });
+    const extracted = extractAll(r.ingest.tree);
+    const html = buildHtmlReport(
+      r.run,
+      r.ingest,
+      deps.dkb,
+      r.playbook,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      extracted,
+    );
+    const docxXml = strFromU8(
+      unzipSync(
+        new Uint8Array(
+          await (
+            await buildDocxReport(r.run, r.ingest, deps.dkb, r.playbook, undefined, extracted)
+          ).arrayBuffer(),
+        ),
+      )["word/document.xml"]!,
+    );
+
+    // Guard the fixture: the assertions below pass vacuously on a document
+    // whose extraction found nothing.
+    expect(extracted.parties.length, "fixture has no parties to print").toBeGreaterThan(0);
+    expect(extracted.definitions.entries.length, "fixture defines no terms").toBeGreaterThan(0);
+
+    for (const heading of ["Parties", "Defined terms"]) {
+      expect(html, `HTML omits the ${heading} table`).toContain(heading);
+      expect(docxXml, `DOCX omits the ${heading} table`).toContain(heading);
+    }
+    // The appendix's own heading, so the section is announced rather than the
+    // tables appearing loose among the findings.
+    expect(html).toContain("Extracted data");
+    // A party the document actually names, in both.
+    const someone = extracted.parties[0]!.name;
+    expect(html).toContain(someone);
+    expect(docxXml).toContain(someone);
+  }, 120_000);
+
   it("says an uncovered state is a GAP, in both reports, unconditionally", async () => {
     const deps = await loadAccuracyDeps();
     const r = await analyzeFile(SPECIMEN, { deps });

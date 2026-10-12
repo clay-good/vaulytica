@@ -44,3 +44,19 @@ export function truncate(text: string, limit: number): string {
 export function plural(n: number, noun: string): string {
   return `${n} ${noun}${n === 1 ? "" : "s"}`;
 }
+
+/**
+ * A money reference as a reader should see it: the range's two bounds where
+ * there are two, and the per-unit qualifier kept attached.
+ *
+ * Lives here, with `truncate` and `plural`, because BOTH human report surfaces
+ * print it and neither may import the other — `html.ts` pulling `docx.ts` in
+ * would drag the whole `docx` library into the emailable report's bundle. It
+ * was defined privately in `docx.ts` while the HTML report had no amounts
+ * table at all; the moment the HTML gained one, a second copy was the obvious
+ * and wrong next step.
+ */
+export function amountCell(a: { amount: string; range_max?: string; per_unit?: string }): string {
+  const value = a.range_max ? `${a.amount} \u2013 ${a.range_max}` : a.amount;
+  return a.per_unit ? `${value} per ${a.per_unit}` : value;
+}

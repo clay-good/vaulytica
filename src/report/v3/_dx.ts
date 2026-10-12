@@ -143,7 +143,7 @@ export function hyperlinkParagraph(
  * was previously fixed in one place and three stale copies in the v3
  * renderers kept the old splitting behavior.
  */
-export { truncate } from "../../engine/text.js";
+export { amountCell, truncate } from "../../engine/text.js";
 
 /**
  * `"1 day"` / `"2 days"`. Re-exported from the owner for the same reason
