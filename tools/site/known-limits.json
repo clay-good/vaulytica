@@ -29,8 +29,13 @@
   },
   {
    "id": "party-names-layout",
-   "count": 27,
-   "sentence": "On 27 specimen-and-layout pairs, a party's name is read differently when the layout changes — most often a corporate suffix drifting in or out of the name."
+   "count": 26,
+   "sentence": "On 26 specimen-and-layout pairs, a party's name is read differently when the layout changes — most often a corporate suffix drifting in or out of the name."
+  },
+  {
+   "id": "party-name-fragments",
+   "count": 16,
+   "sentence": "On 16 party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
   },
   {
    "id": "capitals-limitation-of-liability",

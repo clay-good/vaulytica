@@ -971,17 +971,26 @@ describe("a document's own title is not one of its parties", () => {
     // and a heading are written in the same register and case cannot separate
     // them. The HEADING_NOUN requirement is what does: "IN FAVOR OF NORTHLAND
     // MERCANTILE BANK" has no noun that names a paper or a corporate body in
-    // front of it, so the run is untouched — which is also why the name still
-    // carries the stray "FAVOR OF" that a lower-case document would never
-    // produce. That residue is a DIFFERENT shape (a preposition in prose, not
-    // a title above a name) and is deliberately left.
+    // front of it, so the run is untouched by that stripping — which is what
+    // this case guards, and it still holds.
+    //
+    // The stray "FAVOR OF" it used to leave behind was called a DIFFERENT
+    // shape here — a preposition in prose, not a title above a name — and
+    // left on purpose for that reason. 9.909.0 is that different fix:
+    // `RECITAL_LEAD` strips the fixed phrase a guaranty or a note opens with,
+    // where which side carries the name IS decidable, so the expectation moves
+    // from the residue to the name. The ALL-CAPS register is untouched.
     const p = extractParties(
       buildTree([
         "CONTINUING GUARANTY",
         'THIS CONTINUING GUARANTY (THIS "GUARANTY") IS MADE AS OF SEPTEMBER 30, 2026 BY MARTIN R. ODEGAARD, AN INDIVIDUAL RESIDING IN HENNEPIN COUNTY, MINNESOTA (THE "GUARANTOR"), IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A. (THE "LENDER").',
       ]),
     );
-    expect(p.map((x) => x.name)).toContain("FAVOR OF NORTHLAND MERCANTILE BANK, N.A");
+    const names = p.map((x) => x.name);
+    expect(names).toContain("NORTHLAND MERCANTILE BANK, N.A");
+    // The point of the case: the ALL-CAPS name is not re-cased or truncated by
+    // the heading stripping, and the individual guarantor survives beside it.
+    expect(names.some((n) => /ODEGAARD/.test(n))).toBe(true);
   });
 });
 

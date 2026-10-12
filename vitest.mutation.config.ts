@@ -123,6 +123,10 @@ export default defineConfig({
       // termination" OUT of it. Both numbers are pinned by equality, so a
       // mutant that relaxes either is killed.
       "tests/integration/named-anchor-resolution.test.ts",
+      // Drives `cleanPartyName` over every specimen's party names: the
+      // run-on-sentence cut is held at ZERO and the remaining fragments are
+      // pinned by equality, so a mutant that loosens either is killed.
+      "tests/integration/party-name-shape.test.ts",
       // Imports `critical-dates.ts` for its register TYPE while testing the
       // export Blob wrappers. A type-only import is still an import as far as
       // the scope guard is concerned, and including it costs nothing: the suite

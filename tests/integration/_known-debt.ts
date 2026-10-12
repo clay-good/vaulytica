@@ -34,8 +34,13 @@ export const debtCount = (d: KnownDebt): number => d.count ?? d.entries.length;
 /** The reason with its count filled in: "On 1 specimen, …", "On 9 specimens, …". */
 export function debtSentence(d: KnownDebt): string {
   const n = debtCount(d);
-  return d.reason.replace(/\{n\} (specimen(?:-and-layout pair)?)s\b/, (_m, unit: string) =>
-    n === 1 ? `1 ${unit}` : `${n.toLocaleString("en-US")} ${unit}s`,
+  // The units a ledger entry can be counted in. "party name" joined them
+  // because `party-name-fragments` counts NAMES, not documents — three of its
+  // rows come from one specimen — and calling those specimens on the published
+  // page would overstate how many documents are affected.
+  return d.reason.replace(
+    /\{n\} (specimen(?:-and-layout pair)?|party name)s\b/,
+    (_m, unit: string) => (n === 1 ? `1 ${unit}` : `${n.toLocaleString("en-US")} ${unit}s`),
   );
 }
 
@@ -141,7 +146,6 @@ export const KNOWN_DEBT = {
       "cba.txt [double-spaced] lost:RIDGELINE AEROSPACE COMPONENTS, INC|Employer|INC| gained:RIDGELINE AEROSPACE COMPONENTS||INC|",
       "charter-incorporation.txt [blank lines stripped] lost:Corvid Optical Systems, Inc||corporation| gained:CORVID OPTICAL SYSTEMS, INC. Corvid Optical Systems||Inc|,Corvid Optical Systems||Inc|",
       "conflict-of-interest-policy.txt [double-spaced] lost:Pemberton Ridge Land Conservancy||corporation|Colorado gained:-",
-      "convertible-note.txt [blank lines stripped] lost:VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware gained:Delaware FOR VALUE RECEIVED, Northgate Instrument Company|Company|corporation|Delaware",
       "demand-letter.txt [blank lines stripped] lost:Larkspur Timber Supply LLC|Client|LLC| gained:Larkspur Timber Supply|Larkspur|LLC|",
       "dissolution-plan.txt [double-spaced] lost:Alderbrook Instruments, Inc|Company|corporation|Delaware gained:Alderbrook Instruments|Company|Inc|Delaware",
       "expert-retention.txt [double-spaced] lost:Anneke Vosberg, Ph.D., P.E. Vosberg Forensic Engineering||LLC| gained:-",
@@ -442,6 +446,54 @@ export const KNOWN_DEBT = {
     ],
   },
   // insurance-limit-vs-cap.test.ts — CAP_AS_LIMIT_DEBT
+  // party-name-shape.test.ts — FRAGMENT_DEBT
+  /**
+   * The extracted-data appendix prints a party's name verbatim, and on these
+   * documents the name run crossed out of the name: into the sentence around
+   * it ("Counterparty with respect to its subject matter", "Fennimore Yards
+   * Owner LLC, as landlord"), into a recital that opens a note ("VALUE
+   * RECEIVED, Kirkbride Ceramics LLC"), or into an address, a ZIP or a date
+   * ("Texas 78701", "January 1, 2025", "Lender dated January 20").
+   *
+   * ⚠️ WHICH SIDE OF A SENTENCE BOUNDARY CARRIES THE NAME IS NOT DECIDABLE
+   * FROM THE PUNCTUATION, and that is why this is a ledger rather than a fix.
+   * On "Sponsor. Harrowgate Coffee Roasters" and "Larkfield Road, Longmont,
+   * Colorado. Ellery Development Partners" the party is the side AFTER the
+   * full stop; on "Trust Agreement. The" neither side is a party at all.
+   * Dropping either side by rule loses a real party on some document, and a
+   * legal report that omits a party is worse than one that prints a fragment.
+   * Two heuristics were measured and declined: an entity-suffix test keeps
+   * "Ellery Development Partners" but drops "Harrowgate Coffee Roasters", and
+   * a longest-side test keeps "Harrowgate Coffee Roasters" but then keeps the
+   * ADDRESS on the `coi.txt` row.
+   *
+   * 🥇 Length is NOT a sign of a fragment, and a word-count rule would have
+   * been the obvious wrong move: "The Regents of Calloway State University",
+   * "Wexley Distressed Opportunities Fund II, L.P" and "Willow Bend Estates
+   * Homeowners Association, Inc" are all over five words and all correct.
+   */
+  "party-name-fragments": {
+    reason:
+      "On {n} party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date.",
+    entries: [
+      "allcaps-guaranty.txt AGREED TO EXTEND CREDIT TO ODEGAARD MILLWORK",
+      "assignment-assumption.txt Counterparty with respect to its subject matter",
+      "coi.txt Larkfield Road, Longmont, Colorado. Ellery Development Partners",
+      "demand-for-inspection.txt January 1, 2025",
+      "demand-for-inspection.txt June 30",
+      "gsa-schedule-contract.txt K7MDX4RB2",
+      "guaranty-payment-individual.txt Lender dated January 20",
+      "lease-assignment.txt GRANDVIEW HOLDINGS 447 LLC",
+      "requests-for-admission.txt ONE, TO DEFENDANT PACIFIC RIDGE PROPERTY MANAGEMENT",
+      "roommate-agreement-complete.txt Apartment 3B",
+      "scc-module-3.txt Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland",
+      "source-code-escrow.txt Michigan 49684",
+      "source-code-escrow.txt New York 10004",
+      "source-code-escrow.txt Texas 78701",
+      "sub-processing-agreement.txt Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland",
+      "sweepstakes-official-rules.txt Sponsor. Harrowgate Coffee Roasters",
+    ],
+  },
   "liability-cap-as-insurance-limit": {
     reason:
       "On {n} specimens, a sum capping a party's liability is listed in the insurance summary as a coverage limit, because the clause that caps it also names a line of cover and the figure sits beside it.",

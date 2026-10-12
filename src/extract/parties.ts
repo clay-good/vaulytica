@@ -1416,7 +1416,17 @@ function registerParty(
     position?: DocPosition;
   },
 ): void {
-  const clean = stripHeadingPrefix(repairFieldRun(name));
+  // 🚨 THE CLEANING BELONGS TO THE FUNNEL, NOT TO THE CALLERS. Seventeen call
+  // sites each ran `cleanPartyName` on their own candidate, and this — the one
+  // place every party enters the map — ran only two of its steps. A reader
+  // that passed a raw candidate therefore registered an UNCLEANED name beside
+  // the clean one: `estoppel-certificate.txt` published both "Fennimore Yards
+  // Owner LLC" and "Fennimore Yards Owner LLC, as landlord" as two parties.
+  // Running it here makes the pipeline unconditional; it is a sequence of
+  // strips, so a second pass over an already-clean name changes nothing.
+  const clean = cleanPartyName(repairFieldRun(name));
+  // `cleanPartyName` returns "" for a candidate that is not a name at all.
+  if (!clean) return;
   // 🚨 The key ignores a trailing FOREIGN entity suffix, because two readers see
   // the same party and spell it differently: `FOREIGN_ENTITY_ROLE_PARTY` strips
   // the suffix into `entity_type` ("Nordic Freight" + `AB`) while the generic
@@ -1749,6 +1759,30 @@ const FORMATION_LEAD =
 const REGISTRATION_NUMBER =
   /\((?:ABN|ACN|ARBN|NZBN|CRN|UEN|EIN|[Cc]ompany\s+(?:[Nn]o\.?|[Nn]umber|[Rr]egistration)|[Rr]egistration\s+(?:[Nn]o\.?|[Nn]umber)|[Rr]egistered\s+(?:[Nn]o\.?|[Nn]umber))\b[^)]*\)/g;
 
+/**
+ * A RECITAL LEAD IS NOT PART OF THE NAME THAT FOLLOWS IT. A note opens "FOR
+ * VALUE RECEIVED, Vanterra Mechanical Services, LLC … promises to pay", and a
+ * guaranty "… IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A." — fixed boilerplate
+ * standing immediately before the party, so the name run began inside the
+ * recital and five specimens published a party called "VALUE RECEIVED,
+ * Kirkbride Ceramics LLC" or "FAVOR OF NORTHLAND MERCANTILE BANK, N.A".
+ *
+ * ⚠️ Unlike the sentence-boundary case (see `cleanPartyName`), which side
+ * carries the name IS decidable here: a recital lead is a fixed phrase and the
+ * party always follows it. Only phrases that can only be a lead are listed —
+ * "AGREED TO EXTEND CREDIT TO Odegaard Millwork" is left in the ledger,
+ * because its wording varies with the instrument and no fixed phrase bounds it.
+ */
+const RECITAL_LEAD = /^.*?(?:FOR\s+)?VALUE\s+RECEIVED,\s*|^.*?(?:IN\s+)?FAVOR\s+OF\s+/i;
+
+/**
+ * "Fennimore Yards Owner LLC, as landlord" — the role an appositive assigns a
+ * party is not part of its legal name, exactly as the possessive appositive
+ * ", its general partner" is not (see `cleanPartyName`). The role vocabulary
+ * is `PARTY_ROLE_LABEL`, not a second copy of it.
+ */
+const ROLE_APPOSITIVE = new RegExp(String.raw`,\s*as\s+(?:${PARTY_ROLE_LABEL})\s*$`, "i");
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // A LETTER's address block arrives as one line — "Ms. Carla Benton / Chief
@@ -1759,6 +1793,9 @@ function cleanPartyName(raw: string): string {
   n = n.replace(EXECUTIVE_TITLE_PREFIX, "");
   // A document's own title is not one of its parties.
   n = stripHeadingPrefix(n);
+  // See RECITAL_LEAD: the recital a note opens with is not part of the name
+  // that follows it.
+  n = n.replace(RECITAL_LEAD, "");
   // Strip a role label the preamble put in FRONT of the legal name.
   n = n.replace(LEADING_ROLE, "");
   // Strip trailing entity descriptor like ", a Delaware corporation".
@@ -1803,6 +1840,31 @@ function cleanPartyName(raw: string): string {
   if ((n.match(/\(/g) ?? []).length > (n.match(/\)/g) ?? []).length) {
     n = n.slice(0, n.lastIndexOf("(")).trim();
   }
+  // 🚨 A NAME DOES NOT RUN INTO THE NEXT SENTENCE. `DETERMINER_ONLY` below
+  // already rejects a name that IS a bare article — but where the name run
+  // started inside a heading it reached the article on the far side of the
+  // full stop and kept it, and five specimens published a party whose last
+  // word was the first word of the following sentence: `Trust Agreement. The`,
+  // `Purposes. The`, `Name. This`, `No Members. The`, `New Hanover County,
+  // North Carolina. The`.
+  //
+  // ⚠️ Only the TRAILING article is cut, not everything after the full stop.
+  // Which side of a sentence boundary carries the name is not decidable from
+  // the punctuation: on `Sponsor. Harrowgate Coffee Roasters` the party is the
+  // side AFTER it, on `Larkfield Road, Longmont, Colorado. Ellery Development
+  // Partners` likewise, and on `Dr. Owen Pryce` the full stop belongs to an
+  // honorific and there is no boundary at all. Dropping either side by rule
+  // would lose a real party on some document, which is worse than printing a
+  // fragment, so this takes only what IS decidable. The rest is measured and
+  // recorded in `tests/integration/party-name-shape.test.ts`.
+
+  // See ROLE_APPOSITIVE. Applied HERE, not beside `RECITAL_LEAD` above: the
+  // appositive is only at the END of the candidate once the other comma
+  // descriptors have come off. A lease's "Re:" line hands over "Fennimore
+  // Yards Owner LLC, as landlord, and Brightwater Analytics, Inc., as tenant,
+  // for Suite 700 …", where an anchored pattern matches nothing at all.
+  n = n.replace(ROLE_APPOSITIVE, "");
+  n = n.replace(/\.\s+(?:the|this|that|these|those|such|a|an|no|it)\s*$/i, "");
   n = trimEnd(n, /[.,;]/);
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";

@@ -2,6 +2,99 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.909.0] — 2026-10-12
+
+### Fixed
+- 🚨 **A party's name ran into the next sentence, and the report printed it.**
+  Five specimens published a party whose last word was the first word of the
+  following sentence — `Trust Agreement. The`, `Purposes. The`, `Name. This`,
+  `No Members. The`, `New Hanover County, North Carolina. The` — and the
+  extracted-data appendix of every report prints a party's name verbatim.
+  `cleanPartyName` now cuts the trailing article, which also made a sixth
+  entry (`A. The`) collapse to nothing and disappear as a party altogether.
+
+  ⚠️ **Only the trailing article is cut**, and the reason is recorded rather
+  than left to be rediscovered: which side of a sentence boundary carries the
+  name is not decidable from the punctuation. On `Sponsor. Harrowgate Coffee
+  Roasters` the party is the side AFTER the full stop; on `Trust Agreement.
+  The` neither side is a party; on `Dr. Owen Pryce` there is no boundary at
+  all. Two heuristics were measured and declined — an entity-suffix test keeps
+  `Ellery Development Partners` but drops `Harrowgate Coffee Roasters`, and a
+  longest-side test keeps the Roasters but then keeps an ADDRESS on another row.
+  A legal report that omits a party is worse than one that prints a fragment.
+
+- 🚨 **`cleanPartyName` was applied by its 17 CALLERS, not by the funnel they
+  all pass through**, so a reader that handed over a raw candidate registered
+  an uncleaned name BESIDE the clean one. `estoppel-certificate.txt` published
+  "Fennimore Yards Owner LLC" and "Fennimore Yards Owner LLC, as landlord" as
+  two separate parties, and every rule that reasons about the party set saw a
+  phantom beside the real one — the failure `registerParty`'s own comment
+  describes for foreign entity suffixes, reached by a third route. The cleaning
+  now runs in `registerParty`, so a caller that forgets cannot reintroduce it;
+  it is a sequence of strips, so a second pass over a clean name changes
+  nothing. One row of 1,150 left the corpus and no other moved.
+
+- **A recital lead is not part of the name that follows it.** A note opens "FOR
+  VALUE RECEIVED, Vanterra Mechanical Services, LLC … promises to pay" and a
+  guaranty "… IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A.", and the name run
+  began inside the recital on five instruments. Unlike the sentence-boundary
+  case above, which side carries the name IS decidable here: the lead is a
+  fixed phrase and the party always follows it. Only phrases that can ONLY be a
+  lead are listed — "AGREED TO EXTEND CREDIT TO Odegaard Millwork" stays in the
+  ledger, because its wording varies with the instrument and no fixed phrase
+  bounds it.
+
+- **The role an appositive assigns is not part of a legal name**, exactly as
+  the possessive appositive ", its general partner" is not. "Pioneer Square
+  Holdings LP, as landlord" had been registered as a SECOND party beside
+  "Pioneer Square Holdings" — the appositive was blocking the merge — and the
+  two are now one row reading "Pioneer Square Holdings LP". The role
+  vocabulary is `PARTY_ROLE_LABEL`, not a second copy of it, and the strip runs
+  LATE in the pipeline: the appositive is only at the end of a candidate once
+  the other comma descriptors have come off, and a lease's "Re:" line hands
+  over "… as landlord, and Brightwater Analytics, Inc., as tenant, for Suite
+  700 …", where an anchored pattern matches nothing at all.
+
+  🥇 The strip is NOT anchored to the start of the candidate, and that is what
+  closed a layout-invariance debt as well: with blank lines stripped,
+  `convertible-note.txt` handed over "Delaware FOR VALUE RECEIVED, Northgate
+  Instrument Company", so an anchored pattern read the party differently
+  depending on the document's line structure. "The name follows the lead" is
+  decidable wherever the lead appears, so the `parties-layout` ledger loses an
+  entry too.
+
+### Added
+- **`party-name-fragments`**, a new published known limitation holding the
+  **16 party names** that still carry a decidable sign of a fragment: a
+  lowercase run from the surrounding sentence (`Counterparty with respect to
+  its subject matter`, `Fennimore Yards Owner LLC, as landlord`), a recital
+  that opens a note (`VALUE RECEIVED, Kirkbride Ceramics LLC`), or an address,
+  ZIP or date (`Texas 78701`, `January 1, 2025`, `Lender dated January 20`).
+  Pinned by equality in `tests/integration/party-name-shape.test.ts`, so a new
+  one fails and a repair must update the ledger.
+
+  🥇 **Length is not a sign of a fragment, and a word-count rule would have
+  been the obvious wrong move.** `The Regents of Calloway State University`,
+  `Wexley Distressed Opportunities Fund II, L.P` and `Willow Bend Estates
+  Homeowners Association, Inc` are all over five words and all correct.
+
+  The debt ledger learned one new unit, `party name`, because this entry counts
+  NAMES and not documents — three of its rows come from one specimen — and
+  calling them specimens would have overstated how many documents are affected.
+
+### Changed
+- **A relation was probed and NOT shipped, and the measurement is the finding.**
+  Renaming every party across the corpus and diffing the findings: 323
+  documents, 744 names renamed, and **the engine proved party-name
+  independent** — every mover traced to the probe's own rewriting, four times
+  running. `MNA-110`, `EMP-101`, `DARK-003`, `GOV-065`, `RISK-002`,
+  `STRUCT-006`, `CHOICE-003`, `TERM-002` and nineteen `MSA-*` rules each
+  "moved" only because the probe had replaced a role word (`Employee`,
+  `Lender`, `Limited`), a common noun the extractor had wrongly returned as a
+  name (`Trust`, `ORDER`), or one casing of a name but not the other — which
+  does not rename a party, it splits it in two. There is no relation to pin
+  until the names are clean; what the probe found was the names.
+
 ## [9.908.0] — 2026-10-11
 
 ### Fixed

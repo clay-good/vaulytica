@@ -31,7 +31,8 @@ describe("the known-debt ledger", () => {
     const bad: string[] = [];
     for (const [id, d] of Object.entries(KNOWN_DEBT)) {
       const s = debtSentence(d);
-      if (!/^On [\d,]+ specimen/.test(s)) bad.push(`${id}: does not open with its count`);
+      if (!/^On [\d,]+ (?:specimen|party name)/.test(s))
+        bad.push(`${id}: does not open with its count`);
       if (!s.endsWith(".")) bad.push(`${id}: not a sentence`);
       if (s.length < 60 || s.length > 320) bad.push(`${id}: ${s.length} characters`);
       // Maintainer narrative stays beside the entries: no release numbers, no
