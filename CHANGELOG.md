@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.902.0] — 2026-10-11
+
+### Fixed
+- 🚨 **The entire Playwright browser suite had never run in CI, and running it
+  found a serious accessibility violation.** `npm run e2e` appeared only in
+  `deploy.yml`, on steps gated by `if: env(CLOUDFLARE_API_TOKEN) != ''` — and
+  that secret is not configured, so **56 browser tests were skipped on every
+  push** while the job reported green. Silently uncovered: both axe scans
+  (WCAG 2.2 AA on two real page states), the keyboard spec, the two named spec
+  scenarios, and **`no-network.spec.ts` — the test behind the product's
+  central promise that nothing leaves the browser.** BUILD_PROGRESS steps 36
+  and 37 both cite these specs as evidence.
+  It needs no deploy and no secret: with `VAULYTICA_E2E_BASE_URL` unset,
+  `playwright.config.ts` already starts the Vite preview server against the
+  build output. The suite now runs as its own `ci.yml` job on every push and
+  pull request, in parallel so the browser download does not extend the main
+  job.
+- **A link in running text was distinguishable only by colour** — axe
+  `link-in-text-block`, impact **serious**. The "Report a problem" link added
+  with the `/report` page scored 1.75 contrast against its surrounding text
+  (`#e9c05a` on `#97948b`) where 3.0 is required, so a reader relying on
+  anything but hue could not tell it is a link. WCAG 1.4.1 (Use of Color),
+  Level A.
+  🥇 **The fix already existed in the stylesheet.** `.section-lead a` carries
+  an underline under a comment citing this exact rule by name — the newer link
+  simply never got it, the same "fixed at one site, not its sibling" shape as
+  the signature/preamble windows in 9.499.0. The rule now lists every
+  running-text container (`.section-lead`, `.review-coverage`, `.scope-note`,
+  `.disclaimer`) so the decision stays in one place instead of being
+  rediscovered per link.
+
+### Notes
+- ⚠️ A local re-run showed BOTH axe scans failing after the CSS fix, which
+  looked like a regression caused by the fix. It was a stale preview server:
+  `reuseExistingServer` is true outside CI, so the rebuilt `dist/` was not
+  being served. Trusting that output would have reverted a correct fix — kill
+  the preview server, rebuild, then re-run.
+
 ## [9.901.0] — 2026-10-11
 
 ### Fixed

@@ -24,3 +24,41 @@ jobs:
       # plain, faster `npm run test` for determinism checks on every platform.
       - run: npm run coverage
       - run: npm run build
+
+  # 🚨 The Playwright suite had NEVER run in CI.
+  #
+  # `npm run e2e` appeared only in `deploy.yml`, on a step gated by
+  # `if: env.CLOUDFLARE_API_TOKEN != ''` — and that secret is not configured,
+  # so the browser suite was skipped on every push while the job reported
+  # green. That silently covered: both axe accessibility scans
+  # (`a11y-axe.spec.ts`, WCAG 2.2 AA on two real page states), the keyboard
+  # spec, the two named spec scenarios, and `no-network.spec.ts` — which is the
+  # test behind the product's central promise that nothing leaves the browser.
+  # BUILD_PROGRESS steps 36 and 37 both cite these specs as evidence.
+  #
+  # No deploy and no secret is needed: with `VAULYTICA_E2E_BASE_URL` unset,
+  # `playwright.config.ts` starts the Vite preview server against the build
+  # output and tests that. Its own job so the browser download and run do not
+  # extend the main job, which is already close to its limit.
+  e2e:
+    name: Browser suite (a11y, keyboard, offline)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # `dist/` is what the preview server serves, so the build comes first.
+      - run: npm run build
+      - run: npm run e2e:install
+      - run: npm run e2e
+      - name: Upload Playwright traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-traces
+          path: test-results/
+          retention-days: 7

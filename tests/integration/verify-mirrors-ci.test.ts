@@ -18,6 +18,20 @@
  * running it. So there is one command that IS the gate, and this test pins it
  * to the workflow file so the two cannot drift apart again — the same
  * discipline as `cli-surface-drift` and `readme-rule-count-drift`.
+ *
+ * 🚨 **`verify` names `npm run build` twice, and that is not a typo.** `ci.yml`
+ * has two jobs since 9.902.0 — the main gate and the browser suite — and each
+ * builds, because each runs on its own runner. This test flattens every job's
+ * steps into one sequence, so the duplicate is what CI genuinely does and
+ * `verify` is a literal transcript of it. Deduping here was the alternative
+ * and was rejected: the comparison's whole value is that it is exact, and a
+ * dedupe would also hide a real omission or reordering. A second local build
+ * costs about a second.
+ *
+ * The browser suite joined `verify` for the reason this file exists. It had
+ * never run in CI at all — `npm run e2e` lived only in `deploy.yml` behind an
+ * unset `CLOUDFLARE_API_TOKEN` — so putting it in `ci.yml` without putting it
+ * here would have recreated exactly the drift above, for a fourth time.
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";

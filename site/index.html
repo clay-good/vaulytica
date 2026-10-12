@@ -2012,8 +2012,20 @@
         max-width: 720px;
       }
       /* A link inside running text must be told apart by more than colour
-         (WCAG 1.4.1; Lighthouse link-in-text-block). */
-      .section-lead a {
+         (WCAG 1.4.1; Lighthouse link-in-text-block).
+         🚨 This rule existed for `.section-lead` only, and the later
+         "Report a problem" link in the results panel did not get it: axe
+         scored `link-in-text-block` as a SERIOUS violation there, the link
+         (#e9c05a) reaching just 1.75 against its surrounding text (#97948b)
+         where 3.0 is required, so with colour alone a reader cannot tell it
+         IS a link. It went unseen because the browser suite that runs axe had
+         never executed in CI. Every container of running text that can hold a
+         link is listed here, so the decision stays in one place rather than
+         being rediscovered per link. */
+      .section-lead a,
+      .review-coverage a,
+      .scope-note a,
+      .disclaimer a {
         text-decoration: underline;
         text-underline-offset: 3px;
       }
