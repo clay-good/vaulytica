@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.919.0] — 2026-10-12
+
+### Fixed
+- 🚨 **The HTML report's two accessibility checks had never seen its CONTENT.**
+  `tests/e2e/html-report-responsive.spec.ts` scans the real `buildHtmlReport`
+  output for axe violations and for horizontal overflow at 320–1280px — and
+  both calls passed `undefined` for `extracted`. Three sections only render
+  when that argument is present:
+
+  - the jurisdiction overlays,
+  - the obligations ledger, and
+  - the extracted-data appendix (new in 9.918.0).
+
+  So the report being scanned had no parties, amounts, percentages, dates or
+  defined terms in it, and **the widest tables this surface produces were never
+  seen by axe or by the narrow-viewport check** — which is exactly what a
+  four-column party row and a 160-character definition cell are for.
+
+  Both checks now receive a deliberately AWKWARD fixture rather than a
+  representative one: a long definition, a per-unit amount, a relative date of
+  seventy characters. A tidy fixture would have reported green for the easy
+  case. Result: **no violations and no overflow**, so the three sections are
+  clean — but they are now actually covered.
+
+### Added
+- **An anti-vacuity control beside them.** Threading `extracted` through is
+  worth nothing if the sections it unlocks do not render, and a fixture that
+  produced none of them would leave both checks as blind as before while
+  LOOKING like the gap had closed. A third case asserts the report contains the
+  appendix, the obligations ledger, all five appendix tables, and the widest
+  cell in the fixture.
+
 ## [9.918.0] — 2026-10-12
 
 ### Added

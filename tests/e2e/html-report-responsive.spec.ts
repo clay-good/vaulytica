@@ -17,6 +17,7 @@ import { buildHtmlReport } from "../../src/report/html.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 import type { EngineRun, Finding } from "../../src/engine/finding.js";
 import type { IngestResult } from "../../src/ingest/types.js";
+import type { ExtractedData } from "../../src/extract/types.js";
 
 const LONG_NAME =
   "Master_Services_Agreement_and_Data_Processing_Addendum_between_Acme_Corporation_and_Globex_Industries_FINAL_v12_executed.pdf";
@@ -200,14 +201,142 @@ async function expectNoHorizontalOverflow(page: Page): Promise<void> {
   }
 }
 
+/**
+ * 🚨 BOTH CHECKS BELOW USED TO PASS `undefined` FOR `extracted`, and three
+ * CONTENT sections only render when it is present: the jurisdiction overlays,
+ * the obligations ledger, and the extracted-data appendix. So the report this
+ * spec scanned had none of them — a report with no parties, amounts, dates or
+ * defined terms in it — and the widest tables the surface produces were never
+ * seen by axe or by the 320px overflow check.
+ *
+ * This fixture is deliberately AWKWARD rather than representative: a long
+ * definition, a four-column party row and a 160-character cell are what break
+ * a narrow viewport, and a tidy fixture would have reported green for the easy
+ * case.
+ */
+const extracted: ExtractedData = {
+  parties: [
+    {
+      id: "party-1",
+      name: "Northbridge Cloud Ltd",
+      role: "Processor",
+      entity_type: "Ltd",
+      jurisdiction_of_formation: "Ireland",
+      positions: [],
+    },
+  ],
+  dates: [
+    {
+      id: "date-1",
+      type: "relative",
+      raw_text: "within thirty (30) days after the end of the applicable calendar quarter",
+      position: { section_id: "s1", start: 0, end: 70 },
+    },
+  ],
+  amounts: [
+    {
+      id: "money-1",
+      raw_text: "$1,250,000 per incident",
+      amount: "1250000",
+      currency: "USD",
+      word_form: false,
+      per_unit: "incident",
+      position: { section_id: "s1", start: 0, end: 23 },
+    },
+  ],
+  percentages: [
+    {
+      id: "pct-1",
+      raw_text: "one and one-half percent (1.5%)",
+      percent: "1.5",
+      word_form: false,
+      position: { section_id: "s1", start: 0, end: 31 },
+    },
+  ],
+  definitions: {
+    entries: [
+      {
+        term: "Sub-processor Governance Standard",
+        definition:
+          "the technical and organisational measures a sub-processor must maintain, which shall be no less protective than those required of the Processor under Article 28(4)",
+        defined_at: { section_id: "s1", start: 0, end: 10 },
+        used_at: [],
+      },
+    ],
+    unused_terms: [],
+    undefined_capitalized: [],
+  },
+  outline: { nodes: [], by_id: {} },
+  crossrefs: [],
+  obligations: [
+    {
+      id: "obl-1",
+      obligor: "Northbridge Cloud Ltd",
+      modal: "shall",
+      action:
+        "impose on each sub-processor data-protection obligations no less protective than those in this Agreement",
+      position: { section_id: "s1", start: 0, end: 100 },
+    },
+  ],
+  jurisdictions: [],
+  classified: [],
+} as unknown as ExtractedData;
+
 test("standalone HTML report scrolls vertically only (320–1280px)", async ({ page }) => {
-  const html = buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9, posture);
+  const html = buildHtmlReport(
+    run,
+    ingest,
+    loadStarterDkbSync(),
+    undefined,
+    v9,
+    posture,
+    undefined,
+    undefined,
+    extracted,
+  );
   await page.setContent(html);
   await expectNoHorizontalOverflow(page);
 });
 
+test("the fixture reaches the sections the two checks exist to cover", () => {
+  // Anti-vacuity. Threading `extracted` through is only worth anything if the
+  // sections it unlocks actually render: a fixture that produced none of them
+  // would leave both checks exactly as blind as they were, while LOOKING like
+  // the gap had been closed.
+  const html = buildHtmlReport(
+    run,
+    ingest,
+    loadStarterDkbSync(),
+    undefined,
+    v9,
+    posture,
+    undefined,
+    undefined,
+    extracted,
+  );
+  expect(html).toContain("Extracted data");
+  expect(html).toContain("Obligations ledger");
+  for (const table of ["Parties", "Amounts", "Percentages and shares", "Dates", "Defined terms"]) {
+    expect(html, `the appendix is missing its ${table} table`).toContain(table);
+  }
+  // The widest cell in the fixture, which is what the 320px check is for.
+  expect(html).toContain("Sub-processor Governance Standard");
+});
+
 test("standalone HTML report has zero axe violations (WCAG 2 AA)", async ({ page }) => {
-  await page.setContent(buildHtmlReport(run, ingest, loadStarterDkbSync(), undefined, v9, posture));
+  await page.setContent(
+    buildHtmlReport(
+      run,
+      ingest,
+      loadStarterDkbSync(),
+      undefined,
+      v9,
+      posture,
+      undefined,
+      undefined,
+      extracted,
+    ),
+  );
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
