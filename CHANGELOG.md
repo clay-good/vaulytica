@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.906.0] — 2026-10-11
+
+### Fixed
+- 🚨 **An architect's liability CAP was listed as its professional-liability
+  insurance LIMIT.** The §58 Insurance Summary read "The total aggregate
+  liability of Architect to Owner … shall not exceed the greater of $1,240,000
+  or the amount of professional liability insurance proceeds actually
+  available for the claim" and recorded $1,240,000 as cover the architect
+  carries. A reader checking the certificate against the requirement would
+  have read the architect's exposure ceiling as its policy limit — the two
+  numbers a construction lawyer most needs kept apart.
+
+  ⚠️ **Vocabulary cannot separate them**, which is why this was held open and
+  published as a known limitation: the same figure in the same words IS a
+  coverage limit in an insurance schedule, and the capping clause genuinely
+  names professional liability with the figure genuinely beside it.
+  🥇 **The SUBJECT can**, and the debt note said so a release before the fix
+  existed. A cap's subject is the liability itself under a superlative
+  determiner — "the TOTAL AGGREGATE liability of X", "in no event" — where a
+  requirement's subject is the party ("Contractor shall maintain …") or the
+  cover ("the limits of liability shall be not less than …"). That last shape
+  is why the new `LIABILITY_CAP_SUBJECT` matches a liability subject *only*
+  under the determiner: "the limits of liability" names cover, "the total
+  aggregate liability" names exposure.
+
+  **One row of 132 left the summary and no other moved.**
+  `tests/integration/insurance-limit-vs-cap.test.ts` now holds the count at
+  zero — and carries a **positive control**, because an equality against an
+  empty list is satisfied by an extractor that returns nothing at all: a
+  requirement clause whose own subject is the limits of liability must still
+  yield both its figures. Verified in both directions, by disabling the guard
+  (two cases fail) and by widening it to swallow "limits of liability" (the
+  control fails).
+
+### Changed
+- The published known-limitations page drops from 14 open debts to 13; the
+  `liability-cap-as-insurance-limit` entry is now held at zero. BUILD_PROGRESS
+  step 29's "known and left" note is rewritten to record the fix and the means.
+
 ## [9.905.0] — 2026-10-11
 
 ### Fixed

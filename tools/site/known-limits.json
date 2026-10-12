@@ -68,11 +68,6 @@
    "sentence": "On 1 specimen, double-spacing the document changes which deadline the critical-dates register derives."
   },
   {
-   "id": "liability-cap-as-insurance-limit",
-   "count": 1,
-   "sentence": "On 1 specimen, a sum capping a party's liability is listed in the insurance summary as a coverage limit, because the clause that caps it also names a line of cover and the figure sits beside it."
-  },
-  {
    "id": "passive-voice-indemnity",
    "count": 1,
    "sentence": "On 1 specimen, rewriting an indemnity in the passive voice (\"shall be indemnified by\") draws a one-sided-indemnity finding the original does not."
@@ -87,6 +82,7 @@
   "amounts-layout",
   "dates-layout",
   "jurisdictions-layout",
+  "liability-cap-as-insurance-limit",
   "shall-written-as-must"
  ]
 }

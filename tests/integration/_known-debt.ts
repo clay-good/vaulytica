@@ -445,17 +445,21 @@ export const KNOWN_DEBT = {
   "liability-cap-as-insurance-limit": {
     reason:
       "On {n} specimens, a sum capping a party's liability is listed in the insurance summary as a coverage limit, because the clause that caps it also names a line of cover and the figure sits beside it.",
-    entries: [
-      // 9.888.0 — found while reading the insurance summary for a certificate.
-      // The architect's cap is "the greater of $1,240,000 or the amount of
-      // professional liability insurance proceeds actually available for the
-      // claim", so the clause genuinely names professional liability and the
-      // figure genuinely sits before it. Telling a CAP from a LIMIT needs the
-      // clause's subject, not its vocabulary — the same figure in the same words
-      // is a limit in an insurance schedule and a cap here — and that is a
-      // separate change from reading a certificate's labels. One case.
-      "architect-agreement.txt professional-liability 1240000",
-    ],
+    // HELD AT ZERO since 9.906.0. The one case was the architect's cap, "the
+    // total aggregate liability of Architect to Owner … shall not exceed the
+    // greater of $1,240,000 or the amount of professional liability insurance
+    // proceeds actually available for the claim" — a clause that genuinely
+    // names professional liability with the figure genuinely beside it.
+    //
+    // The note that stood here said telling a CAP from a LIMIT "needs the
+    // clause's subject, not its vocabulary", and that turned out to be the
+    // whole fix: `LIABILITY_CAP_SUBJECT` in `extract/v3/insurance.ts` reads a
+    // liability subject under a SUPERLATIVE determiner ("the TOTAL AGGREGATE
+    // liability of X", "in no event"), which is exposure, where a requirement's
+    // subject is the party ("Contractor shall maintain") or the cover ("the
+    // limits of liability shall be not less than"). One row of 132 left the
+    // §58 Insurance Summary and no other moved.
+    entries: [],
   },
   // expected-defined-terms.test.ts — FALSE_ACCUSATIONS
   "expected-defined-terms": {

@@ -233,6 +233,41 @@ const LIMIT_LABELS: { rx: RegExp; basis: "per-occurrence" | "aggregate"; label: 
 const NOT_A_LIMIT_RX =
   /\b(?:self[-\s]?insured\s+retention\b|\bSIR\b|retention\b|deductible\b|premium\b|surcharge\b)/i;
 
+/**
+ * 🚨 A SUM THAT CAPS A PARTY'S LIABILITY IS NOT A COVERAGE LIMIT, however much
+ * insurance vocabulary its clause carries. An architect's limitation reads
+ * "The total aggregate liability of Architect to Owner … shall not exceed the
+ * greater of $1,240,000 or the amount of professional liability insurance
+ * proceeds actually available for the claim" — so the clause genuinely names
+ * professional liability and the figure genuinely sits before it, and the
+ * §58 Insurance Summary listed the architect's CAP as its professional-
+ * liability limit. A reader checking cover against a requirement would have
+ * read $1,240,000 as insurance the architect carries.
+ *
+ * ⚠️ Vocabulary cannot tell the two apart: the same figure in the same words
+ * is a limit in an insurance schedule and a cap here. The SUBJECT can. A cap's
+ * subject is the liability itself — "the total aggregate liability of X", "in
+ * no event" — where a requirement's subject is the party ("Contractor shall
+ * maintain …") or the limits ("limits of liability shall be not less than …").
+ * That last one is why this matches a liability subject only under a
+ * SUPERLATIVE determiner: "the limits of liability" names cover, "the total
+ * aggregate liability" names exposure.
+ */
+const LIABILITY_CAP_SUBJECT =
+  /^\s*(?:in\s+no\s+event\b|(?:the\s+)?(?:total|aggregate|maximum|entire|cumulative)\s+(?:aggregate\s+)?liabilit(?:y|ies)\b)/i;
+
+/**
+ * The paragraph from the start of the sentence `at` falls in. Only the START
+ * matters to the one caller — `LIABILITY_CAP_SUBJECT` is anchored, because it
+ * is the clause's subject that tells a cap from a limit — so the sentence's
+ * end is not computed.
+ */
+function fromSentenceStart(text: string, at: number): string {
+  let from = 0;
+  for (const m of text.slice(0, at).matchAll(/[.;:]\s+/g)) from = (m.index ?? 0) + m[0].length;
+  return text.slice(from);
+}
+
 /** The widest gap allowed between a label and the figure it labels. */
 const LABEL_GAP = 40;
 
@@ -472,6 +507,8 @@ export function extractInsuranceSchedule(tree: DocumentTree): InsuranceSchedule 
         // A retention, deductible or premium is not coverage: dropped, never
         // guessed at as the line's limit.
         if (labelled && labelled.basis === null) continue;
+        // See LIABILITY_CAP_SUBJECT: a cap is exposure, not cover.
+        if (LIABILITY_CAP_SUBJECT.test(fromSentenceStart(ctx.text, at))) continue;
         const amt = normalizeAmount(am[2], am[3]);
         const qualifier = am[5] ?? "";
         // 🚨 The qualifier that FOLLOWS a figure wins over the label that
