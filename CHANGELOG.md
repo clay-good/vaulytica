@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.907.0] — 2026-10-11
+
+### Fixed
+- 🚨 **A repeated `--format` silently threw away the artifact you asked for
+  first.** Both of the CLI's comma-separated options were ASSIGNED on each
+  occurrence rather than accumulated, so a second flag discarded whatever the
+  first had set — and neither said a word:
+
+  | command | wrote / asserted |
+  | --- | --- |
+  | `--format triage-md --format triage-json` | only `TRIAGE.json` |
+  | `--format triage-json --format triage-md` | only `TRIAGE.md` |
+  | `--regime ccpa --regime gdpr` | only the GDPR regimes |
+
+  The documented form is comma-separated, but repeating the flag is what a
+  caller reaches for — and both triage formats are whole-run artifacts with
+  FIXED names, so the dropped one leaves nothing behind to notice. The regime
+  case is worse than a missing file: a whole pack of notice-content checks did
+  not run on a document the caller had asserted it against.
+
+  🥇 **Found by rendering an export nothing had read.** `triage-json` had a
+  single test reference of any kind, so the two formats were requested
+  together on a four-document folder simply to look at what comes out — and
+  only one file appeared. The parser's own comment, three lines above the
+  assignment, promises that empty, unknown and duplicate `--format` values are
+  "never a silent no-op".
+
+  A repeated flag now ADDS. Each option keeps its existing tolerance for a
+  repeat rather than being made uniform: `--format md,md` was always a usage
+  error, so `--format md --format md` now reports `--format md given twice`,
+  while `--regime gdpr,gdpr` was always accepted, so the regime union stays
+  silent. What matters is that nothing is lost. `--regime ccpa --regime gdpr`
+  now stamps `["ccpa", "gdpr-13", "gdpr-14"]`.
+
+  `tests/integration/cli-repeated-flags.test.ts` names the class and holds all
+  three cases; each was verified to fail against the assignment it replaced.
+
 ## [9.906.0] — 2026-10-11
 
 ### Fixed

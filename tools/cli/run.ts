@@ -529,7 +529,25 @@ function parseArgs(argv: string[]): Args {
         if (new Set(values).size !== values.length) {
           throw new Error(`duplicate --format value in "${val}"`);
         }
-        args.formats = values as Format[];
+        // 🚨 A REPEATED --format ADDS; it must not replace. This was a plain
+        // assignment, so `--format triage-md --format triage-json` wrote only
+        // TRIAGE.json and `--format triage-json --format triage-md` only
+        // TRIAGE.md — the LAST flag won and the earlier one vanished, with no
+        // warning, in the one place the comment above promises that empty,
+        // unknown and duplicate values are "never a silent no-op". The
+        // documented form is comma-separated, but repeating the flag is what a
+        // caller reaches for, and dropping an artifact they asked for is worse
+        // than either accepting it or refusing it.
+        //
+        // The duplicate check now spans the whole run of flags, so
+        // `--format md --format md` is the same usage error as
+        // `--format md,md`.
+        const chosen = args.formatExplicit ? [...args.formats, ...values] : values;
+        const repeated = chosen.find((f, at) => chosen.indexOf(f) !== at);
+        if (repeated !== undefined) {
+          throw new Error(`--format ${repeated} given twice`);
+        }
+        args.formats = chosen as Format[];
         args.formatExplicit = true;
         i++;
         break;
@@ -712,7 +730,12 @@ function parseArgs(argv: string[]): Args {
             throw new Error(`unknown --regime "${r}" (valid: ${REGIME_FLAG_VALUES.join(", ")})`);
           }
         }
-        args.regimes = [...new Set(resolved)];
+        // The same defect `--format` carried: a repeated flag ADDS. Swept
+        // here as the second instance of the class — `--regime gdpr --regime
+        // ccpa` asserted only ccpa, and the regime checks a caller asked for
+        // simply did not run. Unlike `--format` this union stays tolerant of
+        // a repeat, because `--regime gdpr,gdpr` always was.
+        args.regimes = [...new Set([...(args.regimes ?? []), ...resolved])];
         i++;
         break;
       }
