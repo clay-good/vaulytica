@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.922.0] — 2026-10-12
+
+### Security
+- 🚨 **The same ReDoS shape in the MONEY path, found by sweeping for it rather
+  than waiting for a second report.** `AMOUNT_IN_WORDS` and `WORD_FORM` in
+  `extract/amounts.ts` were `(?:<number word>|and|[-\s])+` before a required
+  currency noun — the pattern `extract/percentages.ts` was modelled on, and the
+  one 9.921.0 fixed there:
+
+  | input | before | after |
+  | --- | --- | --- |
+  | `"one " × 12,500` | 1,185 ms | **4 ms** |
+  | `"hundred and " × 8,000` | 2,039 ms | **2 ms** |
+  | `"one-" × 12,500` | 1,056 ms | **1 ms** |
+
+  Milder than the 14,491 ms in the percentage extractor — that one repeats the
+  run across three branches — but this is the money path, which runs on every
+  document, and `AMOUNT_IN_WORDS` is exported and read by rules and by
+  `extract/obligations.ts`. A will, a trust and a promissory note all spell
+  their amounts out.
+
+  ⚠️ The bound is GENEROUS because a real spelled amount is long: "Seven
+  Hundred Fifty Thousand Four Hundred and Twenty-Three Dollars" is nine number
+  words plus an "and", and it still parses to 750423. What removes the
+  backtracking is the STRUCTURE — WORD (separator (and separator)? WORD){0,11}
+  — not the size of the bound, and the test says so.
+
+### Fixed
+- 🥇 **A metric that had been passing on a coincidence.** Bounding the amount
+  pattern dropped `liability_cap_amount` from 67 documents to 66, and the lost
+  one explains itself:
+
+  > `api-terms.txt`: "…IS LIMITED TO THE GREATER OF THE FEES YOU PAID IN THE
+  > PRIOR TWELVE MONTHS **AND** FIVE THOUSAND DOLLARS ($5,000)."
+
+  `capInWords` allows 60 characters between the trigger and the amount; the
+  first number word sits at **65**. The cap was located only because the old
+  unbounded pattern could start the run at the CONJUNCTION "AND", four
+  characters earlier. That was luck, not reach.
+
+  The "and" in "the greater of X and Y" is not part of the number, so excluding
+  it is right and the GAP was the thing that was wrong. At 80 it recovers
+  `api-terms.txt` **and locates `eula.txt`** — the same drafting shape ("THE
+  GREATER OF THE FEES … AND ONE HUNDRED DOLLARS"), never located at all before.
+  The pin moves 67 → **68**, and is now right for a reason rather than by
+  accident. The extra hit was read before it was accepted: a $100 floor on a
+  greater-of cap is a real cap.
+
 ## [9.921.0] — 2026-10-12
 
 ### Fixed

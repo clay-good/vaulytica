@@ -56,7 +56,17 @@ const REACH: Record<string, number> = {
   term_length_days: 44,
   payment_term_days: 57,
   liability_cap_multiple: 22,
-  liability_cap_amount: 67,
+  // 67 → 68 in 9.922.0. `capInWords`'s gap from the trigger to the amount was
+  // 60 characters, and a GREATER-OF cap does not fit: `api-terms.txt` reads
+  // "LIMITED TO THE GREATER OF THE FEES YOU PAID IN THE PRIOR TWELVE MONTHS
+  // AND FIVE THOUSAND DOLLARS" — 65 characters to the first number word. It
+  // had been located only because `AMOUNT_IN_WORDS` could START at the
+  // conjunction "AND", four characters earlier; that was luck, not reach, and
+  // it ended when the amount pattern was bounded to kill a ReDoS. Widening the
+  // gap to 80 recovers it AND locates `eula.txt`, which states the same shape
+  // ("THE GREATER OF THE FEES … AND ONE HUNDRED DOLLARS") and had never been
+  // located at all.
+  liability_cap_amount: 68,
   cure_period_days: 68,
   auto_renewal_notice_days: 28,
   indemnity_cap_amount: 2,

@@ -817,7 +817,20 @@ function digitsBeforeCap(subject: string): RegExp {
  */
 function capInWords(subject: string): RegExp {
   return new RegExp(
-    `${subject}[^.${CURRENCY_GLYPHS}]{0,120}?(?:limited\\s+to|(?:shall|will|must)?\\s*not\\s+exceed|capped\\s+at)[^.${CURRENCY_GLYPHS}]{0,60}?(${AMOUNT_IN_WORDS})`,
+    // 🚨 The gap was 60 and a GREATER-OF cap does not fit in it. `api-terms.txt`
+    // reads "LIMITED TO THE GREATER OF THE FEES YOU PAID IN THE PRIOR TWELVE
+    // MONTHS AND FIVE THOUSAND DOLLARS": 65 characters from the trigger to the
+    // first number word. It used to be located only because
+    // `AMOUNT_IN_WORDS` could START at the conjunction "AND", four characters
+    // earlier, which squeaked inside 60. That was luck, not reach — and the
+    // "AND" in "the greater of X and Y" is not part of the number, so when the
+    // amount pattern was bounded (to kill a ReDoS) and stopped swallowing it,
+    // the cap went unlocated.
+    //
+    // 80 covers the greater-of phrasing with room; the gap still cannot cross
+    // a sentence or a currency glyph, which is what keeps it from reaching
+    // into the next clause for a number.
+    `${subject}[^.${CURRENCY_GLYPHS}]{0,120}?(?:limited\\s+to|(?:shall|will|must)?\\s*not\\s+exceed|capped\\s+at)[^.${CURRENCY_GLYPHS}]{0,80}?(${AMOUNT_IN_WORDS})`,
     "g",
   );
 }

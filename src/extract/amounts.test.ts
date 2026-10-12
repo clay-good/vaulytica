@@ -156,6 +156,49 @@ describe("extractAmounts", () => {
   });
 });
 
+describe("extractAmounts — the spelled-amount run cannot backtrack", () => {
+  /**
+   * 🚨 `AMOUNT_IN_WORDS` and `WORD_FORM` were
+   * `(?:<number word>|and|[-\\s])+` before a required currency noun — one
+   * unbounded repetition over an alternation that includes the SEPARATOR. On a
+   * 50,000-character run of spelled numbers that cost **1,185 ms** ("one "),
+   * **2,039 ms** ("hundred and ") and **1,056 ms** ("one-") for a single
+   * paragraph, because the `+` swallows the run, fails to find "dollars", and
+   * retries from every position.
+   *
+   * Found by SWEEPING FOR THE SHAPE after `extract/percentages.ts` shipped the
+   * same bug at 14,491 ms — not by waiting for a second report. These patterns
+   * are what that one was modelled on.
+   *
+   * ⚠️ `fuzz-boundary.test.ts` cannot cover this: its 50,000-char runs are
+   * built from a single CHARACTER, so none of them ever spells a number.
+   */
+  it("reads a pathological run of number words in milliseconds", () => {
+    for (const text of [
+      "one ".repeat(12_500),
+      "hundred and ".repeat(8_000),
+      "one-".repeat(12_500),
+      // The near miss: the run plus a prefix of the currency noun it wants.
+      `${"one ".repeat(12_500)}dollar`,
+    ]) {
+      const t = performance.now();
+      extractAmounts(buildTree(["Body", text]));
+      expect(performance.now() - t).toBeLessThan(1_000);
+    }
+  }, 30_000);
+
+  it("still reads a long REAL spelled amount, which is why the bound is generous", () => {
+    // Nine number words and an "and" — the shape the bound has to admit.
+    const got = extractAmounts(
+      buildTree([
+        "Note",
+        "the sum of Seven Hundred Fifty Thousand Four Hundred and Twenty-Three Dollars ($750,423)",
+      ]),
+    );
+    expect(got.map((a) => a.amount)).toContain("750423");
+  });
+});
+
 describe("extractAmounts — ISO code with no space before digits (USD5,000)", () => {
   it("parses a code fused to its digits and does not misparse a longer ticker/word", () => {
     const out = extractAmounts(

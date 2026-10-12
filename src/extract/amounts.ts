@@ -375,10 +375,34 @@ const SCALES: Record<string, string> = {
  * insurance minimums were the corpus's evidence — 37 specimens lost the
  * finding when their limits were respelled in words.
  */
-export const AMOUNT_IN_WORDS = String.raw`\b(?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s{1,8}(?:dollars?|euros?|pounds?\s+sterling|pounds?)\b`;
+/**
+ * 🚨 ONE UNBOUNDED REPETITION OVER AN ALTERNATION THAT INCLUDES THE SEPARATOR,
+ * in front of a required literal, is a ReDoS. Both patterns below were
+ * `(?:<number word>|and|[-\s])+` before a required currency noun, and on a
+ * 50,000-character run of spelled numbers `extractAmounts` took **1,185 ms**
+ * ("one " x 12,500), **2,039 ms** ("hundred and " x 8,000) and **1,056 ms**
+ * ("one-" x 12,500) for a single paragraph — because the `+` swallows the run,
+ * fails to find "dollars", and retries from every position.
+ *
+ * `extract/percentages.ts` shipped the same shape and was far worse (14,491
+ * ms) because its run appears in three branches; this one is milder and was
+ * found by sweeping for the shape after that bug, rather than by waiting for a
+ * second report.
+ *
+ * ⚠️ The bound is GENEROUS because a spelled amount genuinely is long: "nine
+ * hundred ninety-nine thousand nine hundred ninety-nine dollars" is nine
+ * number words, and a drafter may write "and" between several of them. Twelve
+ * covers everything the corpus contains with room to spare, and the structure
+ * — WORD (separator (and separator)? WORD){0,11} — is what removes the
+ * backtracking, not the size of the bound.
+ */
+const NUMBER_WORD = String.raw`(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion)`;
+const NUMBER_WORD_RUN = String.raw`${NUMBER_WORD}(?:[-\s]{1,3}(?:and[-\s]{1,3})?${NUMBER_WORD}){0,11}`;
+
+export const AMOUNT_IN_WORDS = String.raw`\b(?:${NUMBER_WORD_RUN})\s{1,8}(?:dollars?|euros?|pounds?\s+sterling|pounds?)\b`;
 
 const WORD_FORM = new RegExp(
-  String.raw`\b((?:(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+))\s{1,8}(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
+  String.raw`\b(${NUMBER_WORD_RUN})\s{1,8}(dollars?|euros?|pounds?\s+sterling|pounds?)\b`,
   "gi",
 );
 
