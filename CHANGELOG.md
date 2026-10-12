@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.913.0] — 2026-10-12
+
+### Fixed
+- 🚨 **A PLACE was standing in as the Guarantor of a guaranty and the
+  Beneficiary of a special needs trust.** Five specimens published a
+  city-and-state line as a party HOLDING A REAL ROLE, each beside the person
+  who actually held it:
+
+  | phantom | role it took | real holder, already extracted |
+  | --- | --- | --- |
+  | `Evanston, Illinois` | Guarantor | Rosalind Achterberg |
+  | `Waterbury, Connecticut` | Guarantor | — |
+  | `Evanston, Illinois` | Settlor | — |
+  | `Multnomah County, Oregon` | Beneficiary | Daniel R. Abernathy (individual) |
+  | `Multnomah County, Oregon` | Settlor | — |
+
+  🚨 **None of the five was in the `party-name-fragments` ledger**, because none
+  carries a digit, a function-word run or a sentence boundary — the three signs
+  that ledger's predicate can see. They were found by reading each specimen's
+  FULL party set instead of the flagged string, and they are wrong ANSWERS, not
+  cosmetic fragments: `STATE_AND_ZIP` could not reach them because an address's
+  city line carries no ZIP.
+
+- **The preamble's shouted "BY", glued to the signer it introduces.** An
+  ALL-CAPS guaranty reads "IS MADE AS OF SEPTEMBER 30, 2026 BY MARTIN R.
+  ODEGAARD", and the guarantor was published as `BY MARTIN R. ODEGAARD`.
+  ⚠️ Matched in CAPITALS ONLY, and that is the whole safety of it: "By Design,
+  Inc." is a real company and a title-case "By" could begin one.
+
+- **Two trailing phrases the name run continued into**, closing the last two
+  decidable ledger entries: `Counterparty with respect to its subject matter`
+  and `Lender dated January 20`. Both are fixed phrases that cannot appear
+  inside a legal name, which is what makes the cut decidable where a sentence
+  boundary is not. ⚠️ "dated" needs the space in front of it, so "Consolidated
+  Edison" is untouched. In both documents the phantom was duplicating a role
+  the real party already held — `Vantage Grocery Distribution, Inc` is the
+  Counterparty — so the row drops out entirely rather than being shortened.
+
+### Changed
+- `party-name-fragments` drops from 3 entries to **1**, and now carries the
+  judgment call it rests on.
+
+  ⚠️ **A governmental party styled "X County, State" would be dropped.** The
+  carve-out covers the `County of Multnomah, Oregon` styling a caption uses,
+  not `Multnomah County, Oregon`. No such document is in the corpus, which is
+  exactly why this is recorded rather than decided quietly: the five cases
+  fixed are wrong answers that can be seen, and the risk is a shape that is
+  being guessed at.
+
 ## [9.912.0] — 2026-10-12
 
 ### Fixed

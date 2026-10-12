@@ -58,11 +58,6 @@
    "sentence": "On 4 specimens, setting the warranty disclaimer in capital letters (as drafters do) moves a finding."
   },
   {
-   "id": "party-name-fragments",
-   "count": 4,
-   "sentence": "On 4 party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
-  },
-  {
    "id": "section-renamed-article",
    "count": 3,
    "sentence": "On 3 specimens that already have Articles, renaming every Section to an Article makes two numbering schemes collide, and a cross-reference finding appears that the original does not draw."
@@ -71,6 +66,11 @@
    "id": "critical-dates-double-spacing",
    "count": 1,
    "sentence": "On 1 specimen, double-spacing the document changes which deadline the critical-dates register derives."
+  },
+  {
+   "id": "party-name-fragments",
+   "count": 1,
+   "sentence": "On 1 party name, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
   },
   {
    "id": "passive-voice-indemnity",

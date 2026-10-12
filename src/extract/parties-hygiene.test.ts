@@ -219,6 +219,24 @@ describe("party extraction hygiene", () => {
       ),
     ).not.toContain("EU SCC In");
   });
+  it("does not invent a party from an entity type glued to DIGITS", () => {
+    // 🚨 The sibling of the case above, through the boundary it did not close.
+    // Those guards excluded a LETTER on each side and admitted a digit — and an
+    // identifier is exactly where digits and suffix letters run together. A GSA
+    // schedule writes "UEI: K7MDX4RB2LP9": `LP` sits between "2" and "9", both
+    // guards passed, and the appendix published a party named "K7MDX4RB2" with
+    // entity type "LP" — a manufactured party AND a truncated identifier.
+    const got = names(
+      "GSA Schedule",
+      "Contractor: Wrentham Geospatial Systems LLC",
+      "UEI: K7MDX4RB2LP9",
+    );
+    expect(got).not.toContain("K7MDX4RB2");
+    expect(got.some((n) => /K7MDX4RB2/.test(n))).toBe(false);
+    // The real party on the line above is still read.
+    expect(got).toContain("Wrentham Geospatial Systems LLC");
+  });
+
   it("stops a name at a field label it ran into", () => {
     // Ingest joins a short label line to the line under it, so a whole field
     // block arrives as one paragraph and a name run can cross the next

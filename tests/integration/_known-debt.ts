@@ -475,6 +475,18 @@ export const KNOWN_DEBT = {
    * to record, so the predicate now requires a digit-bearing name to lack a
    * corporate suffix before it counts.
    *
+   * ⚠️ A GOVERNMENTAL PARTY STYLED "X COUNTY, STATE" WOULD BE DROPPED.
+   * `CITY_AND_STATE` rejects a city-and-state line because five specimens
+   * published one AS A PARTY HOLDING A REAL ROLE — "Evanston, Illinois" as a
+   * Guarantor and a Settlor, "Waterbury, Connecticut" as a Guarantor,
+   * "Multnomah County, Oregon" as a Beneficiary and a Settlor — each standing
+   * beside the person who actually held it. The carve-out covers the
+   * "County of Multnomah, Oregon" styling a caption uses, not the "Multnomah
+   * County, Oregon" form, so a county suing in the latter form would be lost.
+   * No such document is in the corpus, which is exactly why this is recorded
+   * rather than guessed at: the five cases are wrong ANSWERS (a place holding
+   * a party's role), and the risk is a hypothetical.
+   *
    * ⚠️ NOT EVERY FRAGMENT HAS A DECIDABLE SIGN, so this ledger is narrower
    * than the defect. Clearing the state-and-ZIP rows from
    * `source-code-escrow.txt` left the CITY line of the same address block
@@ -492,12 +504,7 @@ export const KNOWN_DEBT = {
   "party-name-fragments": {
     reason:
       "On {n} party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date.",
-    entries: [
-      "allcaps-guaranty.txt AGREED TO EXTEND CREDIT TO ODEGAARD MILLWORK",
-      "assignment-assumption.txt Counterparty with respect to its subject matter",
-      "gsa-schedule-contract.txt K7MDX4RB2",
-      "guaranty-payment-individual.txt Lender dated January 20",
-    ],
+    entries: ["allcaps-guaranty.txt AGREED TO EXTEND CREDIT TO ODEGAARD MILLWORK"],
   },
   "liability-cap-as-insurance-limit": {
     reason:

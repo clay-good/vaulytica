@@ -192,7 +192,21 @@ const PARTY_DECL = new RegExp(
   // name is manufactured, and it is not harmless — rules that compare a phrase
   // against the party set (STRUCT-006) treat it as real and party-tallying
   // rules (RISK-002) report counts against it.
-  String.raw`(?<!\b(?:[Aa]|[Aa][Nn])\s)(?![Aa]n?\s)([A-Z][\w&.,'’-]{0,80}(?:(?<!${ENTITY_SUFFIX_BEFORE_COMMA})\s+(?:&\s+)?(?![Aa]n?\s)[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:[Aa]n?)?\s*(?:(${US_STATE})\s+)?(?:${ENTITY_QUALIFIERS}\s+){0,3}(?<![A-Za-z])(${ENTITY_TYPES.join("|")})(?![A-Za-z])` +
+  //
+  // 🚨 THE GUARDS EXCLUDED A LETTER AND ADMITTED A DIGIT, and an identifier is
+  // where digits and suffix letters run together. A GSA schedule writes "UEI:
+  // K7MDX4RB2LP9"; `LP` sits between "2" and "9", both guards passed, and the
+  // appendix published a party named "K7MDX4RB2" with entity type "LP" — a
+  // manufactured party AND a truncated identifier, exactly the harm the
+  // paragraph above describes, reached through the one boundary it did not
+  // close. An entity suffix is always its own TOKEN, so neither side may be a
+  // letter OR a digit.
+  //
+  // ⚠️ The sibling guards at `STANDALONE_DESCRIPTOR` and `BETWEEN_RE` are left
+  // as they are: the first is anchored after "a"/"an" and the second requires a
+  // comma before the suffix, so a digit cannot sit against the suffix in
+  // either.
+  String.raw`(?<!\b(?:[Aa]|[Aa][Nn])\s)(?![Aa]n?\s)([A-Z][\w&.,'’-]{0,80}(?:(?<!${ENTITY_SUFFIX_BEFORE_COMMA})\s+(?:&\s+)?(?![Aa]n?\s)[A-Z][\w&.,'’-]{0,80}){0,6})\s*,?\s*(?:[Aa]n?)?\s*(?:(${US_STATE})\s+)?(?:${ENTITY_QUALIFIERS}\s+){0,3}(?<![A-Za-z0-9])(${ENTITY_TYPES.join("|")})(?![A-Za-z0-9])` +
     // A QUALIFIER may sit between the entity type and the role parenthetical:
     // "Sonoran Crest Management, Inc., an Arizona corporation HOLDING ARIZONA
     // REAL ESTATE BROKER LICENSE NUMBER BR-558214 (\"Manager\")". Requiring the
@@ -1864,6 +1878,45 @@ const CAPTION_ADDRESSEE =
 const UNIT_DESIGNATION =
   /^(?:apartment|apt\.?|unit|suite|ste\.?|floor|fl\.?|room|rm\.?|no\.?|#)\s*[\w-]{1,6}$/i;
 
+/**
+ * A trailing phrase the name run continued into. Both are fixed phrases that
+ * cannot appear inside a legal name, which is what makes the cut decidable
+ * where a sentence boundary is not:
+ *
+ *   "Counterparty with respect to its subject matter"  → Counterparty
+ *   "Lender dated January 20"                          → Lender
+ *
+ * ⚠️ "dated" needs the space in front of it. "Consolidated Edison" contains
+ * the letters and has no space, so it is untouched.
+ */
+const TRAILING_PHRASE = /\s+(?:with\s+respect\s+to|dated)\s+.+$/i;
+
+/**
+ * A CITY AND STATE is an address line, not a party. `guaranty-payment-
+ * individual.txt` published "Evanston, Illinois" AS ITS GUARANTOR — a phantom
+ * holding the role that identifies the real one — and `STATE_AND_ZIP` could
+ * not see it because that line carries no ZIP.
+ *
+ * ⚠️ A MUNICIPALITY really is a party, and "City of Evanston, Illinois" is how
+ * it is named, so the governmental forms are carved out rather than caught.
+ */
+const CITY_AND_STATE = new RegExp(
+  String.raw`^(?!(?:the\s+)?(?:city|county|town|township|village|borough|parish|state|commonwealth|district)\s+of\b)[A-Z][\w.'’-]*(?:\s+[A-Z][\w.'’-]*){0,3},\s*${US_STATE}$`,
+  "i",
+);
+
+/**
+ * The preamble's "BY", glued to the signer it introduces: an ALL-CAPS guaranty
+ * reads "IS MADE AS OF SEPTEMBER 30, 2026 BY MARTIN R. ODEGAARD" and the name
+ * run kept the preposition, publishing a guarantor called "BY MARTIN R.
+ * ODEGAARD".
+ *
+ * ⚠️ Matched in CAPITALS ONLY, and that is the whole safety of it: "By Design,
+ * Inc." is a real company name, and a title-case "By" could be the first word
+ * of one. A SHOUTED "BY" is the preamble's.
+ */
+const PREAMBLE_BY = /^BY\s+(?=[A-Z])/;
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // A LETTER's address block arrives as one line — "Ms. Carla Benton / Chief
@@ -1879,6 +1932,7 @@ function cleanPartyName(raw: string): string {
   // started inside — a section's role label, an address closed by its state,
   // and a litigation caption's addressee line.
   n = n
+    .replace(PREAMBLE_BY, "")
     .replace(RECITAL_LEAD, "")
     .replace(ROLE_LABEL_SENTENCE, "")
     .replace(ADDRESS_PREFIX, "")
@@ -1953,12 +2007,15 @@ function cleanPartyName(raw: string): string {
   n = n.replace(ROLE_APPOSITIVE, "");
   // See TRAILING_STREET: an address written straight after a comma.
   n = n.replace(TRAILING_STREET, "");
+  // See TRAILING_PHRASE: a fixed phrase the run continued into.
+  n = n.replace(TRAILING_PHRASE, "");
   n = n.replace(/\.\s+(?:the|this|that|these|those|such|a|an|no|it)\s*$/i, "");
   n = trimEnd(n, /[.,;]/);
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";
   // See STATE_AND_ZIP / isBareDate: neither is a name, so neither is a party.
-  if (STATE_AND_ZIP.test(n) || isBareDate(n) || UNIT_DESIGNATION.test(n)) return "";
+  if (STATE_AND_ZIP.test(n) || isBareDate(n) || UNIT_DESIGNATION.test(n) || CITY_AND_STATE.test(n))
+    return "";
   return n;
 }
 
