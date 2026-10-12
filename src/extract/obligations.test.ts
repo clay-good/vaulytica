@@ -1558,6 +1558,49 @@ describe("extractObligations — a shared subject across 'but'", () => {
   });
 });
 
+describe("extractObligations — a shared subject across a comma-coordinated 'or'", () => {
+  // 🚨 `SHARED_SUBJECT` accepted only "and" and "but" as the coordinator, so a
+  // mechanic's-lien notice — which states the two tenses of the SAME duty as a
+  // disjunction, "has furnished, or shall furnish" — printed its obligor as
+  // "The Claimant has furnished, or": a verb fragment in the one column a
+  // reader scans to answer "who owes this?".
+  //
+  // ⚠️ Only the COMMA-coordinated "or" is read this way, and "nor" not at all.
+  // Measured over the 363 specimens, accepting a bare "or" moved 7 obligations
+  // and only 1 of them for the better: "If any payment applied to the
+  // Guaranteed Obligations is avoided or must be returned" is two verbs with
+  // their own argument, not one elided subject, and on
+  // tx-conditional-lien-waiver.txt it silently dropped a disjunct from the
+  // ACTION ("has already paid or will use the funds" → "will use the funds").
+  // "nor" is worse still: it introduces a clause with its OWN subject ("…nor
+  // shall anything in this Safe be construed…") — there is no assertion for
+  // "nor" below because none could FAIL: subject resolution reaches a
+  // different obligor on that sentence whether "nor" is accepted or not, and a
+  // guard that cannot fail is not a guard. The measurement above is the record.
+  // With the comma required, exactly one obligation in 3,822 moves — this one.
+  it("reads 'The Claimant has furnished, or shall furnish' as the Claimant's", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Notice of Claim",
+        "The Claimant has furnished, or shall furnish, labor and materials to the Project.",
+      ]),
+      [],
+    );
+    expect(o!.obligor).toBe("The Claimant");
+  });
+
+  it("does not read a bare 'or' as one subject's two verbs", () => {
+    const [o] = extractObligations(
+      buildTree([
+        "Guaranty",
+        "If any payment applied to the Guaranteed Obligations is avoided or must be returned, this Guaranty is reinstated.",
+      ]),
+      [],
+    );
+    expect(o!.obligor).not.toBe("payment applied to the Guaranteed Obligations");
+  });
+});
+
 describe("extractObligations — a subject that defines a term", () => {
   it("is named by the term, however its dates are written", () => {
     const spelled = extractObligations(

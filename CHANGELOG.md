@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.904.0] — 2026-10-11
+
+### Fixed
+- **A lien notice's obligor read "The Claimant has furnished, or"** — a verb
+  fragment in the one column a reader scans to answer "who owes this?".
+  `SHARED_SUBJECT`, which recovers the subject of an elided second verb
+  phrase, accepted only "and" and "but" as the coordinator. A mechanic's-lien
+  notice states the two tenses of the SAME duty as a disjunction — "The
+  Claimant **has furnished, or** shall furnish, labor and materials" — and
+  that shape fell through.
+
+  ⚠️ **Only the comma-coordinated "or" is read this way, and "nor" not at
+  all.** Measured over the 363 specimens, accepting a bare "or" moved 7
+  obligations and improved exactly 1: "If any payment applied to the
+  Guaranteed Obligations **is avoided or** must be returned" is two verbs each
+  with its own argument, not one elided subject, and on
+  `tx-conditional-lien-waiver.txt` it silently dropped a disjunct from the
+  ACTION ("has already paid or will use the funds" → "will use the funds").
+  "nor" is worse still — it introduces a clause with its own subject ("…nor
+  shall anything in this Safe be construed…"). With the comma required,
+  **exactly one obligation in 3,822 moves**, and it is this one.
+
+  The companion "nor" assertion was written and then deleted rather than
+  shipped green: subject resolution reaches a different obligor on that
+  sentence whether "nor" is accepted or not, so the test could not fail, and a
+  guard that cannot fail is not a guard. The measurement is recorded in the
+  comment instead.
+
 ## [9.903.0] — 2026-10-11
 
 ### Fixed

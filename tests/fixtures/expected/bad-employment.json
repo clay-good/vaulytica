@@ -1259,11 +1259,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "85ff40ba66cd2356f9a8ffdb1f8da59d7da162166baddb1b6515af6c3d46ff92",
+  "result_hash": "b8b728dc1e4834ef0c7b21d4e38ed43818fb13ea6e5c8737ddc61f83a87d857a",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.903.0"
+  "version": "9.904.0"
 }

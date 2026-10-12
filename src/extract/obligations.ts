@@ -83,7 +83,7 @@ const MODALS = [
 
 /** "S <finite verb> … and" — the subject of an elided second verb phrase is S. */
 const SHARED_SUBJECT =
-  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should|owes?|holds?|commenced|acknowledges?|agrees?|represents?|retains?|receives?|remains?)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?\s+(?:and|but)\s*$/i;
+  /^\s*([^,;]{2,90}?)\s+(?:has|have|had|is|are|was|were|does|do|did|may|can|could|might|should|owes?|holds?|commenced|acknowledges?|agrees?|represents?|retains?|receives?|remains?)\s+(?:not\s+)?(?:been\s+|be\s+)?\w[\w'’-]*\b[^;]*?(?:\s+(?:and|but)|,\s*or)\s*$/i;
 
 /** A subject opened by a negative determiner: the negation belongs to the row. */
 const NEGATED_SUBJECT = /^(?:no|neither|none|nothing)\b/i;
