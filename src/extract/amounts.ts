@@ -397,7 +397,7 @@ const SCALES: Record<string, string> = {
  * backtracking, not the size of the bound.
  */
 const NUMBER_WORD = String.raw`(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion)`;
-const NUMBER_WORD_RUN = String.raw`${NUMBER_WORD}(?:[-\s]{1,3}(?:and[-\s]{1,3})?${NUMBER_WORD}){0,11}`;
+export const NUMBER_WORD_RUN = String.raw`${NUMBER_WORD}(?:[-\s]{1,3}(?:and[-\s]{1,3})?${NUMBER_WORD}){0,11}`;
 
 export const AMOUNT_IN_WORDS = String.raw`\b(?:${NUMBER_WORD_RUN})\s{1,8}(?:dollars?|euros?|pounds?\s+sterling|pounds?)\b`;
 

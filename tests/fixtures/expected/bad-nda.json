@@ -194,7 +194,7 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "FIN-001-s2-374",
+      "finding_id": "FIN-001-s2-375",
       "fired": true,
       "ran": true,
       "rule_id": "FIN-001",
@@ -865,16 +865,16 @@
   "findings": [
     {
       "description": "Spelled-out amount 50,000 does not match numeral 75,000.",
-      "document_position": 374,
+      "document_position": 375,
       "excerpt": {
         "end_offset": 407,
         "section_id": "s2",
         "section_label": "1. Confidentiality Obligation",
-        "start_offset": 374,
-        "text": " fifty thousand dollars ($75,000)"
+        "start_offset": 375,
+        "text": "fifty thousand dollars ($75,000)"
       },
       "explanation": "When a contract states an amount in words followed by a numeral in parentheses, the two forms must match. Courts in most US jurisdictions resolve a conflict in favor of the spelled-out form, but the inconsistency itself is a drafting error worth catching before signature.",
-      "id": "FIN-001-s2-374",
+      "id": "FIN-001-s2-375",
       "recommendation": "Verify the intended amount with the drafter and correct whichever form is wrong.",
       "rule_id": "FIN-001",
       "rule_version": "1.2.0",
@@ -1121,11 +1121,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "36f81cbf9b60693e4e8be15b831d7e62532b6ac78d4f8845519e4c496f53afd8",
+  "result_hash": "21297c7a652a6e40534508b0abc202c689381d0e833b3fd3ef84118d299ef33b",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.922.0"
+  "version": "9.923.0"
 }

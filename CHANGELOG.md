@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.923.0] — 2026-10-12
+
+### Security
+- 🚨 **A THIRD copy of the ReDoS shape, in `FIN-001`.** Its `PAIR` pattern was
+  `((?:<number word>|and|[-\s])+)` followed by an **optional** currency noun
+  before a required `(` — even less to stop the retry than the two already
+  fixed. Measured through the whole engine, with `percentages.ts` and
+  `amounts.ts` already bounded:
+
+  | input | before | after |
+  | --- | --- | --- |
+  | `"one " × 12,500` | 1,587 ms | **155 ms** |
+  | `"hundred and " × 8,000` | 2,464 ms | **137 ms** |
+  | `liability … "one " × 12,000` | 1,284 ms | **57 ms** |
+
+  It now shares `NUMBER_WORD_RUN` with `extract/amounts.ts`, which removed a
+  third copy of the number-word list as well as the backtracking.
+
+- **The sweep is now exhausted by measurement.** 19 candidate sites carried the
+  shape; 3 were real and are fixed. The other 16 were driven individually with
+  inputs built from their own vocabularies — power-of-attorney acceptance runs,
+  audit-cost runs, the currency-override run, governed-by, documented
+  instructions, data ownership, judge titles, income-tax purposes — and the
+  whole engine stays between **45 ms and 155 ms** on every one.
+
+### Fixed
+- `FIN-001`'s quote now starts at the word rather than the space before it
+  (`" fifty thousand dollars ($75,000)"` → `"fifty thousand dollars ($75,000)"`
+  on `bad-nda.docx`). ⚠️ The golden churn was checked field by field rather
+  than regenerated on faith: rule ids and severities identical, and the only
+  changes are the excerpt text, its `start_offset` (374 → 375) and the
+  offset-derived finding id. **The mismatch itself is still caught** — fifty
+  thousand ≠ $75,000.
+
+### Changed
+- `fuzz-boundary.test.ts` gains three WORD runs ("one ", "hundred and ", "one-")
+  beside its single-character ones, since a word-list pattern can only be
+  driven into backtracking by a run of its own words.
+
+  ⚠️ **And its comment says plainly that these runs do NOT catch that class at
+  this budget** — a claim I checked instead of assuming. Restoring the
+  unbounded percentage pattern leaves this file green: through `buildTree` the
+  bad pattern costs ~1,900 ms where the same input through `ingestPaste` costs
+  14,491 ms, and the 8,000 ms budget is deliberately loose because a truly
+  quadratic pattern takes minutes. The guards that actually fail on this class
+  are the per-module timing cases, each proven by restoring the unbounded form.
+
 ## [9.922.0] — 2026-10-12
 
 ### Security

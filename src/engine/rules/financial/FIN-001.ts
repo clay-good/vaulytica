@@ -2,6 +2,7 @@ import Decimal from "decimal.js";
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
+import { NUMBER_WORD_RUN } from "../../../extract/amounts.js";
 import { parseWordPhrase } from "../../../extract/amounts.js";
 
 /**
@@ -14,8 +15,20 @@ import { parseWordPhrase } from "../../../extract/amounts.js";
  * but the dispute itself can be expensive.
  */
 
-const PAIR =
-  /\b((?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|million|billion|trillion|and|[-\s])+)\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥₹₩₽]?\s*([\d,]+(?:\.\d+)?)\s*(k|m|mm|b|bn)?\s*\)/gi;
+const PAIR = new RegExp(
+  // 🚨 This was a THIRD copy of the number-word list, with the same unbounded
+  // `(?:…|and|[-\s])+` shape that cost 14,491 ms in `extract/percentages.ts`
+  // and 2,039 ms in `extract/amounts.ts` — and worse here, because what
+  // follows the run is an OPTIONAL currency noun before a required "(", so
+  // there is even less to stop the retry. Measured through the whole engine on
+  // a 50,000-character run of spelled numbers: 2,464 ms before, with the other
+  // two already fixed.
+  //
+  // It now shares `NUMBER_WORD_RUN` with the extractor that owns it, which
+  // removes the copy as well as the backtracking.
+  String.raw`\b(${NUMBER_WORD_RUN})\s+(?:dollars?|euros?|pounds?\s+sterling|pounds?)?\s*\(\s*[$€£¥₹₩₽]?\s*([\d,]+(?:\.\d+)?)\s*(k|m|mm|b|bn)?\s*\)`,
+  "gi",
+);
 
 export const rule: Rule = {
   id: "FIN-001",
