@@ -252,10 +252,49 @@ function withExceptListTail(predicate: string, m: RegExpExecArray | null): strin
   return trimEnd(q + rest, /[\s.]/);
 }
 
+/**
+ * A PASSIVE clause's agent, when the passive verb governs it directly:
+ * "… shall be selected BY INDEMNITEE", "… shall not be disclosed BY THE
+ * COMPANY", "… shall be indemnified and held harmless BY LICENSEE".
+ *
+ * 🚨 In the passive voice the SUBJECT is not the obligor — it is the thing
+ * done to, or the party the duty is owed to — and recording it as the obligor
+ * inverts the duty. The obligations ledger prints `obligor` verbatim, so a
+ * passive clause reached a lawyer's report as `Independent Counsel | shall |
+ * be selected by Indemnitee` (the wrong party owes it), `It | shall | be
+ * assigned by the Physician`, and `terms of this Summary of Terms | shall |
+ * be disclosed by the Company`. Passive voice is ordinary legal drafting, so
+ * this is wrong on real documents, not only under a transform.
+ *
+ * 🥇 **The agent must be governed by THE PASSIVE VERB, and must be a party to
+ * this document.** Both halves were measured, and each looser form is wrong:
+ *
+ *   - Any "by <capitalised phrase>" in the action: 5 corpus cases, and
+ *     "…governed by Ohio" would make OHIO the obligor, because there "by"
+ *     introduces a governing law and not an actor.
+ *   - Any "by <known party>" anywhere in the action: 7 cases, 3 of them wrong,
+ *     because the action text spans several clauses and the by-phrase may
+ *     govern a different verb — "be determined by Independent Counsel
+ *     selected by INDEMNITEE" is not determined by the Indemnitee.
+ *   - Governed directly, and a party: **3 cases, all three correct.**
+ *
+ * The 390 remaining passives are AGENTLESS ("the Goods shall be delivered"),
+ * where the sentence names no obligor at all; those keep the subject, and the
+ * reason is in `_known-debt.ts` under `passive-voice-indemnity`.
+ */
+const PASSIVE_AGENT =
+  /^\s*(?:not\s+)?be\s+\w+(?:ed|n)\b(?:\s+(?:and|or)\s+\w+){0,2}(?:\s+(?:harmless|promptly|immediately|solely|jointly|directly|fully|duly)){0,2}\s+by\s+((?:the\s+)?[A-Z][\w.&'’-]*(?:\s+[A-Z][\w.&'’-]*){0,3})/;
+
 export function extractObligations(tree: DocumentTree, parties: Party[]): Obligation[] {
   const partyNames = new Set(parties.map((p) => p.name.toLowerCase()));
   const partyRoles = new Set(parties.flatMap((p) => (p.role ? [p.role.toLowerCase()] : [])));
   const initialedNames = parties.map((p) => p.name).filter((n) => MIDDLE_INITIAL.test(n));
+  // As the document writes them, so a re-attributed obligor keeps its casing.
+  const partyAsWritten = new Map<string, string>();
+  for (const p of parties) {
+    if (p.name) partyAsWritten.set(p.name.toLowerCase(), p.name.trim());
+    if (p.role) partyAsWritten.set(p.role.toLowerCase(), p.role.trim());
+  }
 
   const out: Obligation[] = [];
   let counter = 0;
@@ -341,6 +380,22 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // sale" would otherwise be recorded as a duty of the Wife's.
         if (BARE_PRONOUN.test(obligor)) {
           obligor = protasisObligor(subject, partyNames, partyRoles) ?? obligor;
+        }
+        // A PASSIVE clause names its obligor after "by", not before the modal.
+        // See PASSIVE_AGENT: the agent must be governed by the passive verb
+        // itself and be a party to this document, because both looser readings
+        // were measured wrong.
+        const passiveAgent = PASSIVE_AGENT.exec(predicate);
+        if (passiveAgent) {
+          const agent = passiveAgent[1]!.replace(/^the\s+/i, "").trim();
+          // The agent may carry the sentence's own final period, and the name
+          // pattern has to allow an interior dot for "Globex Industries, Inc.".
+          // So the full form is tried first and the trimmed form second —
+          // "… by Licensee." must not be looked up as `licensee.`.
+          const asWritten =
+            partyAsWritten.get(agent.toLowerCase()) ??
+            partyAsWritten.get(agent.toLowerCase().replace(/\.$/, ""));
+          if (asWritten) obligor = asWritten;
         }
         // A FRONTED condition is a trigger too, and it lives in the SUBJECT.
         // `TRIGGER_RE` was only ever run over the predicate, so "If my wishes

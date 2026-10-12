@@ -2479,9 +2479,16 @@ export const EXPECTED: Record<string, Expectation> = {
   // cause. MNA-004 reported at `critical` that a document stating a
   // $28,000,000 round, a $112,000,000 pre-money valuation, and a per-share
   // price stated no price — it knew only the M&A vocabulary.
+  // OBLI-002 arrived in 9.903.0 with the passive-agent obligor fix, and it is
+  // a finding the term sheet earns: "The existence and terms of this Summary
+  // of Terms … may not be disclosed BY THE COMPANY" binds the Company alone,
+  // and the Lead Investor — who receives the same terms — bears no
+  // confidentiality duty at all. Before the fix the obligor read "terms of
+  // this Summary of Terms", so the asymmetry was invisible to a rule that
+  // compares duties BY PARTY.
   "term-sheet.txt": {
     playbook: "loi-term-sheet",
-    findings: ["CHOICE-003", "OBLI-005", "STRUCT-006"],
+    findings: ["CHOICE-003", "OBLI-002", "OBLI-005", "STRUCT-006"],
   },
 
   // A WARN Act plant-closing notice, titled only in its "Re:" line. Two

@@ -657,6 +657,57 @@ describe("extractObligations", () => {
   });
 });
 
+/**
+ * In the passive voice the obligor is named after "by", not before the modal.
+ *
+ * Recording the subject inverts the duty, and the obligations ledger prints
+ * `obligor` verbatim — so a lawyer's report read "Independent Counsel | shall
+ * | be selected by Indemnitee" (the wrong party owes it), "It | shall | be
+ * assigned by the Physician", and "terms of this Summary of Terms | shall | be
+ * disclosed by the Company".
+ */
+describe('a passive clause names its obligor after "by"', () => {
+  const obligorsOf = (clause: string, preamble: string) => {
+    const tree = buildTree(["Agreement", preamble, clause]);
+    return extractObligations(tree, extractParties(tree)).map((o) => o.obligor);
+  };
+  const PREAMBLE =
+    'This Agreement is between Acme Corp., a Delaware corporation ("Licensee"), and Globex Industries, Inc., a New York corporation ("Licensor").';
+
+  it("re-attributes to the agent the passive verb governs", () => {
+    expect(
+      obligorsOf("Licensor shall be indemnified and held harmless by Licensee.", PREAMBLE),
+    ).toEqual(["Licensee"]);
+  });
+
+  it("will not take an agent that is not a party to this document", () => {
+    // 🚨 "…governed by Ohio" would otherwise make OHIO the obligor: there "by"
+    // introduces a governing law, not an actor. Measured over the corpus, this
+    // was 1 wrong attribution in 5 before the party test.
+    const got = obligorsOf("This Agreement shall be governed by Ohio law.", PREAMBLE);
+    expect(got).not.toContain("Ohio");
+  });
+
+  it("will not take an agent that belongs to a different verb", () => {
+    // 🚨 "be determined by Independent Counsel selected by LICENSEE" is not
+    // determined by the Licensee. The agent must be governed by the PASSIVE
+    // VERB; any "by <party>" in the clause was 3 wrong in 7, measured.
+    const got = obligorsOf(
+      "The entitlement shall be determined by Independent Counsel selected by Licensee.",
+      PREAMBLE,
+    );
+    expect(got).not.toContain("Licensee");
+  });
+
+  it("leaves an AGENTLESS passive alone — there is no obligor to name", () => {
+    // 390 of the corpus's 395 passives are this shape. The subject stays, and
+    // the reason is recorded in `_known-debt.ts` under
+    // `passive-voice-indemnity`.
+    const got = obligorsOf("The Goods shall be delivered within thirty (30) days.", PREAMBLE);
+    expect(got).toEqual(["The Goods"]);
+  });
+});
+
 describe("a sentence that opens with a fronted adverbial", () => {
   const obligorsOf = (text: string) => {
     const tree = buildTree(["Body", text]);

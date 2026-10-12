@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.903.0] — 2026-10-11
+
+### Fixed
+- 🚨 **A passive-voice duty was recorded against the party that is OWED it.**
+  The obligation extractor read a clause's subject as its obligor, and in the
+  passive voice the subject is the beneficiary — or not a party at all:
+
+  | clause | obligor printed | obligor owed |
+  | --- | --- | --- |
+  | "…shall be disclosed **by the Company**" | `terms of this Summary of Terms` | Company |
+  | "…shall not be assigned **by the Physician**" | `It` | Physician |
+  | "…shall be selected **by Indemnitee**" | `Independent Counsel` | Indemnitee |
+
+  `report/exports.ts` and the DOCX obligations ledger print `obligor`
+  verbatim, so the one column a reader scans to answer "who owes this?" named
+  a pronoun, a fragment, or the wrong side. Passive voice is ordinary legal
+  drafting, so this was wrong on real documents, not only under a transform.
+
+  The repair reads the agent after "by" — but only where **the passive verb
+  itself governs that agent** and **the agent is a party to the document**.
+  Both restrictions were arrived at by measuring the looser rules, not by
+  taste:
+
+  | rule | cases | wrong |
+  | --- | --- | --- |
+  | any `by <Capitalized>` | 5 | 1 — "governed **by Ohio**" made Ohio the obligor |
+  | any `by <known party>` in the action | 7 | 3 — the by-phrase can govern a *different* verb ("be determined by Independent Counsel **selected by Indemnitee**") |
+  | agent governed by the passive verb **and** a party | 3 | **0** ← shipped |
+
+  🥇 **The fix found a real one-sided clause the tool had been unable to
+  see.** `term-sheet.txt` now draws OBLI-002 (asymmetric confidentiality):
+  "The existence and terms of this Summary of Terms … may not be disclosed
+  **by the Company**" binds the Company alone, while the Lead Investor — who
+  receives the same terms — bears no confidentiality duty. A rule that
+  compares duties *by party* could never have found that while the obligor
+  column read `terms of this Summary of Terms`.
+
+  What remains debt, and is recorded as such, is the other **390 of 3,822
+  passive obligations (10.3%)**: AGENTLESS passives ("the Goods shall be
+  delivered"), where the sentence names no obligor at all and the subject
+  still stands in the column. Dropping them loses a tenth of the ledger and
+  marking them needs a new field plus a presentation decision for every
+  consumer — a product call, not a bug fix.
+
+  Found by the repo's own guards twice over: `shall-will.test.ts` and
+  `apostrophe-tolerance.test.ts` both failed the first draft of the pattern
+  (a missing `must`, and a character class that admitted only the straight
+  apostrophe — so the rule would have been blind to any obligor pasted from
+  Word).
+
 ## [9.902.0] — 2026-10-11
 
 ### Fixed

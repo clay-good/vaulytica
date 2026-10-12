@@ -283,8 +283,20 @@ export const KNOWN_DEBT = {
    * actor. The other 390 are AGENTLESS passives ("the Goods shall be
    * delivered"), where the sentence names no obligor to record at all.
    *
-   * So the three available repairs each fail differently: re-attribution is
-   * unsafe (measured), dropping passive obligations loses a tenth of the
+   * RE-ATTRIBUTION IS NOW SHIPPED, under two restrictions that were arrived at
+   * by measuring three widths of the rule (9.903.0, `PASSIVE_AGENT`):
+   *
+   *   any `by <Capitalized>`            5 cases, 1 wrong ("governed by Ohio")
+   *   any `by <known party>` in action  7 cases, 3 wrong (the by-phrase can
+   *                                     govern a DIFFERENT verb: "be
+   *                                     determined by Independent Counsel
+   *                                     selected by Indemnitee")
+   *   agent governed by the passive
+   *   verb AND a party to the document  3 cases, 3 correct  ← shipped
+   *
+   * What REMAINS debt is the other 390: AGENTLESS passives ("the Goods shall
+   * be delivered"), where the sentence names no obligor to record at all and
+   * the subject stands in the column. Dropping them loses a tenth of the
    * ledger, and marking them needs a new field on `Obligation` plus a
    * presentation decision for every consumer. That is a product call, and it
    * belongs with the obligor-fragment work this debt already neighbours —
