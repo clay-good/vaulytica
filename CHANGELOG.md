@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.905.0] — 2026-10-11
+
+### Fixed
+- 🚨 **A document that writes in the first person had "we" for an obligor.**
+  101 of the corpus's 3,822 obligations printed a bare "we" in the one column
+  a reader scans to answer "who owes this?" — and privacy notices, WARN
+  notices, API terms of use, telehealth consents, engagement letters and
+  cookie notices are *all* drafted that way. None of them is anonymous: each
+  names the entity speaking, in its first line or in its own parenthetical,
+  `Halcyon Data, Inc. ("Halcyon", "we", or "us")`.
+
+  "we" now resolves to the named party — **but only where the document names
+  exactly ONE**. That corrected **55 obligations across 15 documents, and all
+  55 are duties of the notice issuer or service provider**: "We will send you
+  a closing letter" → the firm; "we will do what we can to help you through
+  this transition" → the employer giving the WARN notice; "we will refund any
+  prepaid, unearned fee on a pro rata basis" → the adviser.
+
+  ⚠️ **Two restrictions, and each is load-bearing.** With a second party
+  extracted there is nothing in the pronoun itself to say which one speaks: an
+  engagement letter naming the firm, the client, the matter and the adverse
+  party would be a guess, so those keep the pronoun (as do the 7 of 27
+  documents that name no party at all). And **"you" is never resolved**, even
+  in a one-party document — there "you" is precisely the party that is *not*
+  named, so resolving it to the sole named party would record the duty against
+  the opposite side.
+
+  The object form "us" is not matched either, and the comment says why rather
+  than leaving a reader to wonder: `BARE_PRONOUN` is the test that opens this
+  branch and it lists subject forms only, so an "us" arm could never run.
+
 ## [9.904.0] — 2026-10-11
 
 ### Fixed

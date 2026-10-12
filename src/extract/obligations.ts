@@ -296,6 +296,26 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
     if (p.role) partyAsWritten.set(p.role.toLowerCase(), p.role.trim());
   }
 
+  // A DOCUMENT WRITTEN IN THE FIRST PERSON NAMES ITS OBLIGOR "WE", and the
+  // ledger printed the pronoun: 101 of the corpus's 3,822 obligations read
+  // "we" in the one column a reader scans to answer "who owes this?". A
+  // privacy notice, a WARN notice, an API terms of use and a telehealth
+  // consent are all drafted that way, and none of them is anonymous — each
+  // names the entity speaking, usually in its first line or in its own
+  // parenthetical: `Halcyon Data, Inc. ("Halcyon", "we", or "us")`.
+  //
+  // ⚠️ Resolved ONLY where the document names exactly ONE party. "we" is the
+  // speaker, and with a second party extracted there is nothing in the
+  // pronoun itself to say which one speaks — an engagement letter naming the
+  // firm, the client and the adverse party would be a guess. Measured over
+  // the 363 specimens, 14 of the 27 documents that print a "we" obligor name
+  // exactly one party; 7 name none at all.
+  //
+  // "you" is deliberately NOT resolved, even here: in a one-party document
+  // "you" is the party that is *not* named, so resolving it to the sole named
+  // party would attribute the duty to the opposite side.
+  const soleParty = parties.length === 1 ? parties[0]!.name.trim() : undefined;
+
   const out: Obligation[] = [];
   let counter = 0;
   const nextId = (): string => `obli-${++counter}`;
@@ -379,7 +399,10 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // refinance within that period, THE HOMESTEAD shall be listed for
         // sale" would otherwise be recorded as a duty of the Wife's.
         if (BARE_PRONOUN.test(obligor)) {
-          obligor = protasisObligor(subject, partyNames, partyRoles) ?? obligor;
+          obligor =
+            protasisObligor(subject, partyNames, partyRoles) ??
+            (FIRST_PERSON_PLURAL.test(obligor) ? soleParty : undefined) ??
+            obligor;
         }
         // A PASSIVE clause names its obligor after "by", not before the modal.
         // See PASSIVE_AGENT: the agent must be governed by the passive verb
@@ -567,6 +590,13 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
  */
 /** A pronoun standing alone names nobody in a ledger column. */
 const BARE_PRONOUN = /^(?:it|they|he|she|we)$/i;
+
+/**
+ * See `soleParty`: the pronoun a first-person document uses for itself. Only
+ * "we" — the object form "us" cannot reach this branch, because `BARE_PRONOUN`
+ * above is what opens it and lists subject forms only.
+ */
+const FIRST_PERSON_PLURAL = /^we$/i;
 
 /**
  * The party the protasis names, for an apodosis that refers back to it with a

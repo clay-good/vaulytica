@@ -1601,6 +1601,63 @@ describe("extractObligations — a shared subject across a comma-coordinated 'or
   });
 });
 
+describe("extractObligations — a document that writes in the first person", () => {
+  // 🚨 101 of the corpus's 3,822 obligations printed "we" as the obligor — the
+  // one column a reader scans to answer "who owes this?". Privacy notices,
+  // WARN notices, API terms and telehealth consents are all drafted in the
+  // first person, and none of them is anonymous: each names the entity
+  // speaking. Resolving "we" to the sole named party corrected 55 rows across
+  // 15 documents and every one of the 55 is a duty of the notice issuer or
+  // service provider ("we will send you a closing letter" → the firm).
+  const notice = () =>
+    buildTree([
+      "Privacy Notice",
+      'This Privacy Notice explains how Vanterra Analytics, Inc. ("Vanterra," "we," "us") collects personal information.',
+      "We shall respond to your request within forty-five (45) days.",
+    ]);
+
+  it("names the party that is speaking, not the pronoun", () => {
+    const tree = notice();
+    const [o] = extractObligations(tree, extractParties(tree));
+    expect(o!.obligor).not.toMatch(/^we$/i);
+    expect(o!.obligor).toMatch(/Vanterra/i);
+  });
+
+  // ⚠️ With a SECOND party extracted there is nothing in the pronoun itself to
+  // say which one speaks, and an engagement letter naming the firm, the client
+  // and the adverse party would be a guess. 7 of the 27 "we" documents name no
+  // party at all, and those keep the pronoun too.
+  it("leaves the pronoun alone when more than one party is named", () => {
+    const tree = buildTree([
+      "Joint Representation",
+      'This letter confirms that Vandermeer & Achebe LLP will represent both Halstead Brothers Aggregates, Inc. ("Halstead") and Corvid Materials Partners, LLC ("Corvid").',
+      "We shall withdraw from representing both clients if a conflict becomes unwaivable.",
+    ]);
+    const parties = extractParties(tree);
+    expect(parties.length).toBeGreaterThan(1);
+    const o = extractObligations(tree, parties).find((x) => /withdraw/.test(x.action));
+    expect(o, "the withdrawal duty must be extracted at all").toBeDefined();
+    expect(o!.obligor).toMatch(/^we$/i);
+  });
+
+  // "you" is the party that is *not* named in a one-party document, so the
+  // sole-party resolution must never reach it: it would attribute the duty to
+  // the opposite side. Two locks hold that — `BARE_PRONOUN` does not list
+  // "you", and `FIRST_PERSON_PLURAL` is "we" alone — and this case pins the
+  // OUTCOME, so it fails only when both are broken. Verified by breaking
+  // both.
+  it("never resolves 'you' to the party that is named", () => {
+    const tree = buildTree([
+      "Website Terms",
+      'These Terms govern your use of the site operated by Tidemark Atlas, Inc. ("Tidemark," "we," "us").',
+      "You shall not scrape the site or circumvent any rate limit.",
+    ]);
+    const parties = extractParties(tree);
+    const o = extractObligations(tree, parties).find((x) => /scrape/.test(x.action));
+    expect(o?.obligor).not.toMatch(/Tidemark/i);
+  });
+});
+
 describe("extractObligations — a subject that defines a term", () => {
   it("is named by the term, however its dates are written", () => {
     const spelled = extractObligations(
