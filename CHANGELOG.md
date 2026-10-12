@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.911.0] — 2026-10-12
+
+### Fixed
+- 🚨 **"5%" and "5 percent" are the same rate, and two rules disagreed.**
+  **42 rule files read a percentage, in 139 places**, each with its own notion
+  of what one looks like — there is no shared percent vocabulary the way there
+  is for obligation modals — so the forms they accept were free to drift apart.
+  Rewriting every bare `N%` across the corpus as `N percent` and diffing the
+  findings found both directions of the same defect:
+
+  | rule | effect of the word form |
+  | --- | --- |
+  | **FIN-009** | **LOST** its finding on `ny-residential-lease.txt`. The rate pattern required the literal sign, so "a late fee of 5 percent per month" was invisible and the 18%/year usury threshold silently did not run — on the one rule whose whole job is that threshold. |
+  | **GOV-121** | **GAINED** a false one on `proxy-statement-narrative.txt`. It listed `5%` and `five percent` as alternatives and omitted `5 percent`, so a proxy stating its 5%-holder table in that form was told the table was missing. |
+
+  Both now read "the sign OR the word", and each was verified to fail
+  independently by reverting it alone. The widening is purely additive: no
+  finding moves on the corpus as written, so no golden churns.
+
+### Added
+- **`tests/integration/percent-word-form.test.ts`** — a RELATION, not two
+  patches. It rewrites every bare percentage across the 75 specimens that write
+  one and asserts no finding moves, so **the other 40 readers and any rule
+  added later are covered** without anyone having to notice the convention.
+
+  ⚠️ The parenthesized convention "six percent (6%)" is deliberately excluded
+  from the rewrite, and that exclusion is asserted: the sign sits inside the
+  parenthetical, so a sign-only reader already sees it, and including it would
+  make the relation measure nothing.
+
+### Changed
+- `openspec/changes/add-estate-planning-pack` task 1 stays DEFERRED, and now
+  records what the deferral COST. It was deferred so share arithmetic would not
+  go through the hashed amounts path; the consequence was that no extractor
+  owns a percentage, which is how 42 independent readers came to exist and how
+  two of them came to disagree. With the class now held at zero by a relation,
+  the deferral is safe to keep — which it demonstrably was not before.
+
 ## [9.910.0] — 2026-10-12
 
 ### Fixed

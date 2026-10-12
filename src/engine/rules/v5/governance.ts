@@ -289,7 +289,7 @@ const PROXY = pack("proxy-statement-narrative", C, [
     ),
     pat: [
       /beneficial\s+(owner|ownership)/i,
-      /(5%|five[-\s]+percent|directors\s+and\s+executive\s+officers\s+as\s+a\s+group)/i,
+      /(5\s*(?:%|per\s?cent(?:um)?\b)|five[-\s]+percent|directors\s+and\s+executive\s+officers\s+as\s+a\s+group)/i,
     ],
     why: "Item 403 requires ownership of 5% holders, each director and named executive officer, and the group total, computed on the § 13d-3 beneficial-ownership standard including exercisable options.",
     fix: "Include the beneficial ownership table with 5% holders, individual directors and NEOs, the group total, and the 60-day exercisable-securities footnote.",
