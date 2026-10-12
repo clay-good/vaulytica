@@ -1917,6 +1917,25 @@ const CITY_AND_STATE = new RegExp(
  */
 const PREAMBLE_BY = /^BY\s+(?=[A-Z])/;
 
+/**
+ * A PERSON DESCRIPTOR IS NOT A NAME. An ALL-CAPS guaranty reads "BY MARTIN R.
+ * ODEGAARD, AN INDIVIDUAL RESIDING IN HENNEPIN COUNTY, MINNESOTA (THE
+ * \"GUARANTOR\")": the descriptor strip takes that off the signer's own name,
+ * but a second reader took the text before the role parenthetical as a party
+ * in its own right, so the document published "INDIVIDUAL RESIDING IN
+ * HENNEPIN COUNTY, MINNESOTA" as a GUARANTOR beside the man himself.
+ *
+ * ⚠️ Deliberately NOT `PARTY_DESCRIPTOR`, which this file already owns: that
+ * one asks whether a phrase CONTAINS a descriptor word, for deciding when a
+ * role may stand in as a name, and it lists "company", "corporation" and
+ * "client" — rejecting on it would delete most of the corpus. This asks
+ * whether the candidate IS nothing but a descriptor, which is why it is
+ * anchored at both ends: "Person Group LLC" continues past the noun and is
+ * untouched.
+ */
+const DESCRIPTOR_ONLY =
+  /^(?:an?\s+)?(?:individual|natural\s+person|person|entity)(?:\s+(?:residing|domiciled|located|situated|organi[sz]ed|incorporated)\b.*)?$/i;
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // A LETTER's address block arrives as one line — "Ms. Carla Benton / Chief
@@ -2014,7 +2033,13 @@ function cleanPartyName(raw: string): string {
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";
   // See STATE_AND_ZIP / isBareDate: neither is a name, so neither is a party.
-  if (STATE_AND_ZIP.test(n) || isBareDate(n) || UNIT_DESIGNATION.test(n) || CITY_AND_STATE.test(n))
+  if (
+    STATE_AND_ZIP.test(n) ||
+    isBareDate(n) ||
+    UNIT_DESIGNATION.test(n) ||
+    CITY_AND_STATE.test(n) ||
+    DESCRIPTOR_ONLY.test(n)
+  )
     return "";
   return n;
 }

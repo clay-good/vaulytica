@@ -13,6 +13,11 @@ const PORT = Number(process.env.VAULYTICA_E2E_PORT ?? 4173);
 const BASE_URL = process.env.VAULYTICA_E2E_BASE_URL ?? `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
+  // See tests/e2e/_setup/assert-our-app.ts: `reuseExistingServer` below will
+  // attach to ANY server already on the port, and a foreign one produced 17
+  // failures and 39 meaningless passes. The served page identifies itself
+  // before a single test runs.
+  globalSetup: "./tests/e2e/_setup/assert-our-app.ts",
   testDir: "tests/e2e",
   fullyParallel: false,
   forbidOnly: !!process.env.CI,

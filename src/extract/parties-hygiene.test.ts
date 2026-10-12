@@ -237,6 +237,29 @@ describe("party extraction hygiene", () => {
     expect(got).toContain("Wrentham Geospatial Systems LLC");
   });
 
+  it("does not make a party out of a person's DESCRIPTOR", () => {
+    // 🚨 An ALL-CAPS guaranty names its guarantor and then describes him. The
+    // descriptor strip takes that off HIS name, but a second reader took the
+    // text before the role parenthetical as a party of its own — so the
+    // document published "INDIVIDUAL RESIDING IN HENNEPIN COUNTY, MINNESOTA"
+    // as a GUARANTOR standing beside the man himself.
+    // ⚠️ The preamble is quoted as the specimen writes it, "AS OF <date> BY",
+    // and the date is load-bearing: dropping it moves where the name run
+    // starts, and the candidate becomes "IS MADE BY MARTIN R. ODEGAARD" — a
+    // shape no specimen produces (checked: zero of 1,132 extracted names begin
+    // with is/this/made/entered). A case written without it would be testing a
+    // path the corpus never takes.
+    const got = names(
+      "CONTINUING GUARANTY",
+      'THIS CONTINUING GUARANTY (THIS "GUARANTY") IS MADE AS OF SEPTEMBER 30, 2026 BY MARTIN R. ODEGAARD, AN INDIVIDUAL RESIDING IN HENNEPIN COUNTY, MINNESOTA (THE "GUARANTOR"), IN FAVOR OF NORTHLAND MERCANTILE BANK, N.A. (THE "LENDER").',
+    );
+    expect(got.some((n) => /^INDIVIDUAL\b/i.test(n))).toBe(false);
+    // Both real parties survive, and the man is named without the preamble's
+    // "BY" glued to the front of him.
+    expect(got).toContain("MARTIN R. ODEGAARD");
+    expect(got).toContain("NORTHLAND MERCANTILE BANK, N.A");
+  });
+
   it("stops a name at a field label it ran into", () => {
     // Ingest joins a short label line to the line under it, so a whole field
     // block arrives as one paragraph and a name run can cross the next

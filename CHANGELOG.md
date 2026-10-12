@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.914.0] — 2026-10-12
+
+### Fixed
+- **A person's DESCRIPTION was published as a party, holding his role.** An
+  ALL-CAPS guaranty names its guarantor and then describes him — "BY MARTIN R.
+  ODEGAARD, AN INDIVIDUAL RESIDING IN HENNEPIN COUNTY, MINNESOTA (THE
+  \"GUARANTOR\")". The descriptor strip takes that off HIS name, but a second
+  reader took the text before the role parenthetical as a party in its own
+  right, so the document published `INDIVIDUAL RESIDING IN HENNEPIN COUNTY,
+  MINNESOTA` as a GUARANTOR standing beside the man himself. One row of 1,132
+  leaves the corpus and no other moves.
+
+  ⚠️ `DESCRIPTOR_ONLY` is deliberately NOT the existing `PARTY_DESCRIPTOR`,
+  which this file already owns. That one asks whether a phrase CONTAINS a
+  descriptor word, for deciding when a role may stand in as a name, and its
+  list includes "company", "corporation" and "client" — rejecting on it would
+  delete most of the corpus. The new test asks whether the candidate IS nothing
+  but a descriptor, anchored at both ends, so "Person Group LLC" continues past
+  the noun and is untouched.
+
+### Added
+- 🚨 **The browser suite could silently test a DIFFERENT APPLICATION, and did.**
+  `playwright.config.ts` sets `reuseExistingServer: !process.env.CI`, so a local
+  run attaches to whatever already holds port 4173. Another project's `vite
+  preview` held it, and this suite ran against that app: **17 failed and 39
+  PASSED**, in a normal 33 seconds.
+
+  **The 39 passes were the real danger.** The axe, keyboard and responsiveness
+  specs pass against any well-formed page, so a third of the suite reported
+  green for work it had never exercised. The failures looked like the
+  load-related flake this repo has seen before; only reading the captured DOM
+  showed a heading from someone else's site where `#dropzone` should have been.
+
+  A `globalSetup` now asks the served page to identify itself before a single
+  test runs, and a foreign server fails the run on the first line of output
+  with its `<title>` named. Verified by standing a foreign server on the port:
+  the run aborts and no test executes.
+
+  ⚠️ Wall time is NOT the tell, and a note that said so has been corrected. The
+  foreign page loads instantly. A SLOW red run (6–19 minutes) is the separate,
+  load-related failure.
+
+### Changed
+- The new case quotes the preamble as the specimen writes it, "AS OF <date>
+  BY", because **the date turned out to be load-bearing**. A first draft
+  omitted it, which moved where the name run starts and produced `IS MADE BY
+  MARTIN R. ODEGAARD` — a shape no specimen produces, confirmed by checking
+  that none of the 1,132 extracted names begins with is/this/made/entered. The
+  draft would have tested a path the corpus never takes, so the reason is
+  recorded beside the case rather than left for someone to trip over.
+
+- `party-name-fragments` holds at **1**. The remaining entry, `AGREED TO EXTEND
+  CREDIT TO ODEGAARD MILLWORK`, stays open on purpose: no fixed phrase bounds
+  it — the wording varies with the instrument — and inventing a verb list for a
+  single corpus instance is the over-fitting this ledger exists to avoid. The
+  same judgment was applied earlier to a one-instance interior-honorific case
+  and is applied here for consistency.
+
 ## [9.913.0] — 2026-10-12
 
 ### Fixed
