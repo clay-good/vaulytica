@@ -467,6 +467,15 @@ export const KNOWN_DEBT = {
    * a longest-side test keeps "Harrowgate Coffee Roasters" but then keeps the
    * ADDRESS on the `coi.txt` row.
    *
+   * ⚠️ NOT EVERY FRAGMENT HAS A DECIDABLE SIGN, so this ledger is narrower
+   * than the defect. Clearing the state-and-ZIP rows from
+   * `source-code-escrow.txt` left the CITY line of the same address block
+   * standing as three parties — "Austin", "Traverse City", "New York" — and
+   * nothing in those strings separates a city from a surname or a defined
+   * term. They carry no digit, no function-word run and no sentence boundary,
+   * so the predicates here do not see them and no rule should guess at them;
+   * the fix is upstream, in not reading a name out of an address block at all.
+   *
    * 🥇 Length is NOT a sign of a fragment, and a word-count rule would have
    * been the obvious wrong move: "The Regents of Calloway State University",
    * "Wexley Distressed Opportunities Fund II, L.P" and "Willow Bend Estates
@@ -479,18 +488,11 @@ export const KNOWN_DEBT = {
       "allcaps-guaranty.txt AGREED TO EXTEND CREDIT TO ODEGAARD MILLWORK",
       "assignment-assumption.txt Counterparty with respect to its subject matter",
       "coi.txt Larkfield Road, Longmont, Colorado. Ellery Development Partners",
-      "demand-for-inspection.txt January 1, 2025",
-      "demand-for-inspection.txt June 30",
       "gsa-schedule-contract.txt K7MDX4RB2",
       "guaranty-payment-individual.txt Lender dated January 20",
       "lease-assignment.txt GRANDVIEW HOLDINGS 447 LLC",
       "requests-for-admission.txt ONE, TO DEFENDANT PACIFIC RIDGE PROPERTY MANAGEMENT",
       "roommate-agreement-complete.txt Apartment 3B",
-      "scc-module-3.txt Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland",
-      "source-code-escrow.txt Michigan 49684",
-      "source-code-escrow.txt New York 10004",
-      "source-code-escrow.txt Texas 78701",
-      "sub-processing-agreement.txt Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland",
       "sweepstakes-official-rules.txt Sponsor. Harrowgate Coffee Roasters",
     ],
   },

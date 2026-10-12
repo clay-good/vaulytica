@@ -2,6 +2,7 @@ import type { DocumentTree } from "../ingest/types.js";
 import type { Party, DocPosition } from "./types.js";
 import { forEachParagraph, trimEdges, trimEnd } from "./walk.js";
 import { ATTACHMENT_KIND } from "./attachment-kinds.js";
+import { monthNumber } from "./absolute-date.js";
 
 /**
  * Extract contracting parties from the document preamble and signature
@@ -1783,6 +1784,38 @@ const RECITAL_LEAD = /^.*?(?:FOR\s+)?VALUE\s+RECEIVED,\s*|^.*?(?:IN\s+)?FAVOR\s+
  */
 const ROLE_APPOSITIVE = new RegExp(String.raw`,\s*as\s+(?:${PARTY_ROLE_LABEL})\s*$`, "i");
 
+/**
+ * An ADDRESS TAIL is not a party. A signature or notice block writes "Austin,
+ * Texas 78701" and the name run reached the last line of it, so the appendix
+ * published parties called "Texas 78701", "New York 10004" and "Michigan
+ * 49684". `US_STATE` is the state vocabulary this file already owns.
+ */
+const STATE_AND_ZIP = new RegExp(String.raw`^${US_STATE}\s+\d{5}(?:-\d{4})?$`, "i");
+
+/**
+ * A STREET ADDRESS after the name it belongs to: "Northbridge Cloud Ltd, 88
+ * Superior Avenue, Dublin 2, Ireland". The existing address strips require the
+ * document to say "of" / "residing at" / "whose address is"; an SCC annex
+ * writes the address straight after a comma and says nothing.
+ *
+ * ⚠️ The COMMA is what makes this safe: a number inside the name itself has
+ * none before it, so "GRANDVIEW HOLDINGS 447 LLC" survives.
+ */
+const TRAILING_STREET = /,\s*\d+\s+[A-Z][\s\S]*$/;
+
+/**
+ * A DATE is not a party: a notice's "Re:" line and a guaranty's recital both
+ * put one where a name is read from, and the appendix published parties called
+ * "January 1, 2025" and "June 30". The month vocabulary is `monthNumber`'s, in
+ * `absolute-date.ts`, rather than a second month table here.
+ */
+const BARE_DATE = /^([A-Za-z]+)\.?\s+\d{1,2}(?:st|nd|rd|th)?(?:,?\s*\d{4})?$/;
+
+function isBareDate(n: string): boolean {
+  const m = BARE_DATE.exec(n);
+  return m !== null && monthNumber(m[1]!) !== undefined;
+}
+
 function cleanPartyName(raw: string): string {
   let n = trimEdges(raw.trim(), /["“”'’\s]/);
   // A LETTER's address block arrives as one line — "Ms. Carla Benton / Chief
@@ -1864,10 +1897,14 @@ function cleanPartyName(raw: string): string {
   // Yards Owner LLC, as landlord, and Brightwater Analytics, Inc., as tenant,
   // for Suite 700 …", where an anchored pattern matches nothing at all.
   n = n.replace(ROLE_APPOSITIVE, "");
+  // See TRAILING_STREET: an address written straight after a comma.
+  n = n.replace(TRAILING_STREET, "");
   n = n.replace(/\.\s+(?:the|this|that|these|those|such|a|an|no|it)\s*$/i, "");
   n = trimEnd(n, /[.,;]/);
   if (n.length < 2 || n.length > 80) return "";
   if (!/[A-Z]/.test(n.charAt(0))) return "";
+  // See STATE_AND_ZIP / isBareDate: neither is a name, so neither is a party.
+  if (STATE_AND_ZIP.test(n) || isBareDate(n)) return "";
   return n;
 }
 

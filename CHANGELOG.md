@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.910.0] — 2026-10-12
+
+### Fixed
+- 🚨 **An address line and a date were published as PARTIES, and three of them
+  had taken a real party's role with them.** `source-code-escrow.txt` listed
+  "Texas 78701" as its *Depositor*, "Michigan 49684" as its *Beneficiary* and
+  "New York 10004" as its *Escrow Agent* — a phantom standing beside each real
+  party, carrying the role that identifies it. `demand-for-inspection.txt`
+  listed "January 1, 2025" and "June 30". Three further classes now reject or
+  trim what is not a name:
+
+  | class | effect |
+  | --- | --- |
+  | `STATE_AND_ZIP` — the last line of an address block | 3 phantoms dropped, each returning its role to the real party |
+  | `isBareDate` — a date where a name is read from | 2 dropped |
+  | `TRAILING_STREET` — an address straight after a comma | `Northbridge Cloud Ltd, 88 Superior Avenue, Dublin 2, Ireland` MERGED with `Northbridge Cloud` into `Northbridge Cloud Ltd`, on two specimens |
+
+  The existing address strips all require the document to say "of", "residing
+  at" or "whose address is"; an SCC annex writes the address straight after a
+  comma and says nothing. ⚠️ The COMMA is what makes the new strip safe — a
+  number inside a name has none before it, so `GRANDVIEW HOLDINGS 447 LLC`
+  survives.
+
+  🥇 **The merges recovered the spelling the document actually writes.**
+  `ny-residential-lease.txt` had both `Harborview Ridge Holdings` and an
+  uncleaned fuller form; it now reads `Harborview Ridge Holdings LLC`. Party
+  rows over the corpus: **1,149 → 1,142**, with every affected document's full
+  party set read individually rather than inferred from the count —
+  `source-code-escrow.txt` goes from 12 rows to 9 with all three real parties
+  keeping their names AND their roles.
+
+  Both vocabularies are borrowed, not rewritten: `US_STATE` is the list this
+  file already owns, and the month table is `monthNumber`'s in
+  `absolute-date.ts`, which is its declared owner under the shared-vocabulary
+  guard.
+
+### Changed
+- `party-name-fragments` drops from 16 entries to **9**.
+
+  ⚠️ **And the ledger now says where it is narrower than the defect.** Clearing
+  the state-and-ZIP rows left the CITY line of the same address block standing
+  as three parties — "Austin", "Traverse City", "New York". Nothing in those
+  strings separates a city from a surname or a defined term: no digit, no
+  function-word run, no sentence boundary. No predicate should guess at them,
+  and a city list would eventually delete somebody named Austin. The fix is
+  upstream, in not reading a name out of an address block at all, and the note
+  records that rather than leaving the next reader to rediscover it.
+
 ## [9.909.0] — 2026-10-12
 
 ### Fixed

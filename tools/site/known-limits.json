@@ -33,11 +33,6 @@
    "sentence": "On 26 specimen-and-layout pairs, a party's name is read differently when the layout changes — most often a corporate suffix drifting in or out of the name."
   },
   {
-   "id": "party-name-fragments",
-   "count": 16,
-   "sentence": "On 16 party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
-  },
-  {
    "id": "capitals-limitation-of-liability",
    "count": 15,
    "sentence": "On 15 specimens, setting the limitation of liability in capital letters moves a finding, usually because a party name or a heading can no longer be told from the words around it."
@@ -51,6 +46,11 @@
    "id": "late-fee-rate-in-words",
    "count": 9,
    "sentence": "On 9 specimens, a late-fee rate written in words (\"five percent\") is not read, so the usury check stays silent."
+  },
+  {
+   "id": "party-name-fragments",
+   "count": 9,
+   "sentence": "On 9 party names, the extracted name runs past the name itself — into the sentence around it, into a recital, or into an address, ZIP or date."
   },
   {
    "id": "capitals-indemnity",
