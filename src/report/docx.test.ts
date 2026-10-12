@@ -777,6 +777,81 @@ describe("model-clause references (spec-v6 Part IV)", () => {
   });
 });
 
+describe("the percentages appendix", () => {
+  /**
+   * The field would be dead without a reader, and a dead optional field is a
+   * defect this repo has already swept once (29 of 201 were read by nobody).
+   * So the extraction has a consumer and the consumer has a test.
+   *
+   * ⚠️ It is a table of its OWN, not a row in "Amounts": that table has a
+   * CURRENCY column, and `FIN-003` warns "Multiple currencies referenced"
+   * whenever the set of currencies in `extracted.amounts` has two members.
+   * 145 of the 363 specimens state a bare percentage and carry exactly one
+   * currency, so a percentage in that array would put a false multi-currency
+   * accusation on 40% of the corpus.
+   */
+  const text = async (extracted: import("../extract/types.js").ExtractedData): Promise<string> => {
+    const blob = await buildDocxReport(
+      makeRun(),
+      ingest,
+      loadStarterDkbSync(),
+      loadMutualNda(),
+      undefined,
+      extracted,
+    );
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const entries = unzipSync(new Uint8Array(await blob.arrayBuffer()));
+    return (strFromU8(entries["word/document.xml"]!).match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("|");
+  };
+
+  const base = (): import("../extract/types.js").ExtractedData => ({
+    parties: [],
+    dates: [],
+    amounts: [],
+    percentages: [],
+    definitions: { entries: [], unused_terms: [], undefined_capitalized: [] } as never,
+    outline: { nodes: [], by_id: {} } as never,
+    crossrefs: [],
+    obligations: [],
+    jurisdictions: [],
+    classified: [],
+  });
+
+  it("prints what the document stated, with the spelled form marked", async () => {
+    const got = await text({
+      ...base(),
+      percentages: [
+        {
+          id: "pct-1",
+          raw_text: "twenty percent (20%)",
+          percent: "20",
+          word_form: false,
+          position: { section_id: "s1", start: 0, end: 20 },
+        },
+        {
+          id: "pct-2",
+          raw_text: "five percent",
+          percent: "5",
+          word_form: true,
+          position: { section_id: "s1", start: 30, end: 42 },
+        },
+      ],
+    });
+    expect(got).toContain("Percentages and shares");
+    expect(got).toContain("twenty percent (20%)");
+    expect(got).toContain("20%");
+    expect(got).toContain("five percent");
+    // The header must not offer a Currency column for a thing with no currency.
+    expect(got).not.toMatch(/Percentages and shares\|Raw text\|Currency/);
+  });
+
+  it("prints no table at all when the document states none", async () => {
+    expect(await text(base())).not.toContain("Percentages and shares");
+  });
+});
+
 describe("jurisdiction overlays (spec-v6 Part VI §21, Step 101)", () => {
   function empRun(): EngineRun {
     const run = makeRun();
@@ -788,6 +863,7 @@ describe("jurisdiction overlays (spec-v6 Part VI §21, Step 101)", () => {
       parties: [],
       dates: [],
       amounts: [],
+      percentages: [],
       definitions: { entries: [] } as never,
       outline: { sections: [] } as never,
       crossrefs: [],

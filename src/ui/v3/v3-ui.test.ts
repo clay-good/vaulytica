@@ -23,6 +23,7 @@ function emptyExtracted(definitions: Record<string, string> = {}): ExtractedData
     parties: [],
     dates: [],
     amounts: [],
+    percentages: [],
     definitions: {
       entries: Object.entries(definitions).map(([term, body]) => ({
         term,

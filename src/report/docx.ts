@@ -1164,6 +1164,31 @@ function renderExtractedAppendix(run: EngineRun, extracted?: ExtractedData): (Pa
     );
   }
 
+  // The percentages the document states, beside the sums. Kept out of the
+  // Amounts table above because that table has a CURRENCY column and a
+  // percentage has no currency — see `extract/percentages.ts` for the
+  // measurement that ruled out merging the two.
+  // 🚨 `?? []`, not `.length` on the bare field. A round SAVED BEFORE this
+  // field existed has no such key, and the browser reloads saved rounds from
+  // disk — so the report builder meets an older shape in normal use, not only
+  // in a test that built the object loosely. Reading it unguarded threw
+  // "Cannot read properties of undefined".
+  const percentages = extracted.percentages ?? [];
+  if (percentages.length > 0) {
+    out.push(spacer(), h2("Percentages and shares"));
+    out.push(
+      new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        rows: [
+          headerRow(["Raw text", "Percent", "Word form"]),
+          ...percentages.map((p) =>
+            bodyRow([truncate(p.raw_text, 80), `${p.percent}%`, p.word_form ? "yes" : "no"]),
+          ),
+        ],
+      }),
+    );
+  }
+
   if (extracted.definitions.entries.length > 0) {
     out.push(spacer(), h2("Defined terms"));
     out.push(

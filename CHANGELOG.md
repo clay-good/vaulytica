@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.917.0] — 2026-10-12
+
+### Added
+- **The percentages a document states, as extracted data.** `20%`, `20 percent`
+  / `20 per cent`, and `twenty percent` — **455 of them across 147 of the 363
+  specimens** — with the spelled-plus-numeral convention `twenty percent (20%)`
+  read as ONE figure rather than two. A "Percentages and shares" table joins the
+  DOCX appendix, because a field nobody reads is the dead-optional-field defect
+  this repo already swept once (29 of 201 were read by nobody).
+
+  This closes `openspec/changes/add-estate-planning-pack` task 1 — **the last
+  open task across all 28 change specs** — but by a different design than the
+  one written there, and the difference is the point.
+
+  🚨 **The task asked for percentages in `extracted.amounts`, and that design is
+  measurably wrong.** `amounts` is `MoneyReference[]`, `currency` is a REQUIRED
+  string, and two consumers read the array as money: `report/docx.ts` renders an
+  Amounts table with a **Currency** column, and **FIN-003 warns "Multiple
+  currencies referenced" whenever the set of currencies has two members.**
+  Measured: 145 specimens state a bare percentage and carry exactly one currency
+  today, and 0 are already multi-currency — so the planned build would have put
+  a confident false accusation on **40% of the corpus**.
+
+  🥇 **A separate field met the task's own regression requirement literally, and
+  for every document rather than only those containing none.** The requirement
+  was that existing amounts goldens stay byte-identical; `extractAmounts` is not
+  touched, and **all 1,114 golden tests pass UNREGENERATED** — `result_hash`
+  does not fold in the extracted shape, so nothing moved at all.
+
+### Changed
+- ⚠️ **Word-fractions are measured and DECLINED**, which is the other half of
+  what that task asked for. Reading `N/M` as a share returned roughly one wrong
+  answer per right one:
+
+  | read as a share | what it actually is |
+  | --- | --- |
+  | `AND 00/100 DOLLARS` | the cents convention every promissory note writes |
+  | `5/2`, `14/1` | dates in slash form |
+  | `90/20` | a ratio, not a share |
+
+  against genuine `2/3` votes and `1/48` vesting fractions. Telling them apart
+  needs the surrounding words, not the punctuation — the same lesson as telling
+  a liability CAP from an insurance LIMIT. A report that tells an attorney a
+  note pays "0% of the whole" because it quoted the cents convention is worse
+  than one that stays quiet. The spelled share is covered regardless:
+  "one-half percent" is number words and reads correctly.
+
+### Fixed
+- **A bug the new consumer introduced, caught by the existing tests.** Reading
+  `extracted.percentages.length` unguarded threw "Cannot read properties of
+  undefined" — because **a round SAVED BEFORE this field existed has no such
+  key**, and the browser reloads saved rounds from disk. That is normal use, not
+  a loose test fixture, so the consumer reads `?? []` and says why.
+
 ## [9.916.0] — 2026-10-12
 
 ### Added

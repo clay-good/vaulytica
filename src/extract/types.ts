@@ -117,6 +117,21 @@ export type MoneyReference = {
   position: DocPosition;
 };
 
+/**
+ * A percentage or share the document states. Kept apart from
+ * {@link MoneyReference} on purpose — see `extract/percentages.ts` for the
+ * measurement that ruled out putting these in `amounts`.
+ */
+export type PercentageReference = {
+  id: string;
+  raw_text: string;
+  /** Percent of the whole, as a decimal string: "20", "1.5", "50" for 1/2. */
+  percent: string;
+  /** True when the document spelled it out with no numeral ("twenty percent"). */
+  word_form: boolean;
+  position: DocPosition;
+};
+
 export type DefinitionEntry = {
   /** The defined term (e.g., "Confidential Information"). */
   term: string;
@@ -285,6 +300,7 @@ export type ExtractedData = {
   parties: Party[];
   dates: DateReference[];
   amounts: MoneyReference[];
+  percentages: PercentageReference[];
   definitions: DefinitionMap;
   outline: SectionOutline;
   crossrefs: CrossRef[];

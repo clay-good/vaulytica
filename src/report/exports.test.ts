@@ -65,6 +65,7 @@ function emptyExtracted(): ExtractedData {
     parties: [],
     dates: [],
     amounts: [],
+    percentages: [],
     definitions: { entries: [], unused_terms: [], undefined_capitalized: [] },
     outline: { nodes: [], by_id: {} },
     crossrefs: [],

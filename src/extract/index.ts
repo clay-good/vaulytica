@@ -16,6 +16,7 @@ import { extractDefinitions } from "./definitions.js";
 import { extractSections } from "./sections.js";
 import { extractCrossRefs } from "./crossrefs.js";
 import { extractObligations } from "./obligations.js";
+import { extractPercentages } from "./percentages.js";
 import { extractJurisdictions, type DkbLookup } from "./jurisdictions.js";
 import { classifyClauses, type ClassifierData } from "./classifier.js";
 import type { ExtractedData } from "./types.js";
@@ -44,6 +45,7 @@ export { extractDefinitions } from "./definitions.js";
 export { extractSections, flattenOutline } from "./sections.js";
 export { extractCrossRefs } from "./crossrefs.js";
 export { extractObligations } from "./obligations.js";
+export { extractPercentages } from "./percentages.js";
 export { extractJurisdictions } from "./jurisdictions.js";
 export type { DkbLookup } from "./jurisdictions.js";
 export { classifyClauses } from "./classifier.js";
@@ -60,6 +62,7 @@ export function extractAll(
   const parties = extractParties(tree);
   const dates = extractDates(tree);
   const amounts = extractAmounts(tree);
+  const percentages = extractPercentages(tree);
   const definitions = extractDefinitions(tree);
   const outline = extractSections(tree);
   const crossrefs = extractCrossRefs(tree, outline);
@@ -70,6 +73,7 @@ export function extractAll(
     parties,
     dates,
     amounts,
+    percentages,
     definitions,
     outline,
     crossrefs,
