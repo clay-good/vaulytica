@@ -71,8 +71,22 @@ export type TriageRow = {
   rules_run?: { family: number; general: number };
   /** First 12 characters of the input's SHA-256. */
   sha?: string;
-  /** Other families detected from vocabulary — detected, not confirmed. */
+  /**
+   * Other families this run also CHECKED, from vocabulary — checked, not
+   * confirmed. 🚨 Not the number DETECTED: the run caps how many secondary
+   * families it scans, and this row printed the scanned count under the word
+   * "detected", so on a capped document the figure was false in the direction
+   * that matters — it understated what the tool had seen and said nothing
+   * about what it had skipped. `secondary_omitted` is the rest.
+   */
   secondary?: number;
+  /**
+   * Detected families this run did NOT scan, because the cap was reached.
+   * Every other surface already reports it — `brief`, the bundle JSON and the
+   * multi-doc card all carry `secondary_families_omitted` — and the triage
+   * page was the one that dropped it.
+   */
+  secondary_omitted?: number;
   /** Byte-identical copies, analyzed once and shown on this one row. */
   duplicates?: string[];
   /** Where this document's own report was written, when one was. */
@@ -328,6 +342,9 @@ export async function buildTriage(
         : {}),
       rules_run: { family, general: ran.length - family },
       ...(r.secondary_families.length > 0 ? { secondary: r.secondary_families.length } : {}),
+      ...(r.secondary_families_present > r.secondary_families.length
+        ? { secondary_omitted: r.secondary_families_present - r.secondary_families.length }
+        : {}),
       ...(report ? { report: report.replace(/\\/g, "/") } : {}),
     });
   }
@@ -689,7 +706,14 @@ export function buildTriageMarkdown(t: Triage): string {
         ? `${r.first_critical.rule_id}: ${r.first_critical.title}${r.first_critical.section_label ? ` (${r.first_critical.section_label})` : ""}`
         : "—";
       const flags = [
-        r.secondary ? `+${r.secondary} type${r.secondary === 1 ? "" : "s"} detected` : "",
+        // The house wording, as the multi-doc card already states it: what was
+        // CHECKED, and then what was detected and NOT checked.
+        r.secondary ? `+${r.secondary} type${r.secondary === 1 ? "" : "s"} also checked` : "",
+        r.secondary_omitted
+          ? `+${r.secondary_omitted} further detected ${
+              r.secondary_omitted === 1 ? "type" : "types"
+            } NOT scanned`
+          : "",
         r.duplicates ? `same bytes as ${r.duplicates.join(", ")}` : "",
       ].filter(Boolean);
       const file = r.report ? `[${r.path}](${encodeURI(r.report)})` : r.path;

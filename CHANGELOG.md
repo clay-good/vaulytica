@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.908.0] — 2026-10-11
+
+### Fixed
+- 🚨 **The folder triage page carried a caveat its own table contradicted.**
+  The row printed the number of secondary families the run had CHECKED under
+  the word *"detected"* — and dropped the ones it had detected and skipped. So
+  a capped document's row read `+4 types detected` while the caveat below it
+  read "More document types were detected than were scanned". Both sentences
+  were on one page, and one of them was false.
+
+  🥇 **Every other surface already reported the missing figure.** `brief`, the
+  bundle JSON and the multi-doc card all carry `secondary_families_omitted`,
+  and the card already had the honest wording — "+N further detected families
+  NOT scanned". The triage page was the one surface that computed the scanned
+  count and threw the rest away. The row now reads `+4 types also checked; +1
+  further detected type NOT scanned`, and `secondary_omitted` joins the JSON
+  (an optional field, so `vaulytica.triage.v1` is unchanged).
+
+  Two new relations in `tests/integration/triage.test.ts`, both verified to
+  fail against the old row: wherever the `secondary-cap` caveat names a file,
+  that file's row must say by HOW MANY — asserted as corroboration between the
+  caveat and the table rather than as a count, with an anti-vacuity check that
+  the caveat fires somewhere — and the page must never print a checked count
+  under the word "detected".
+
+  Found by rendering the page and READING it. The triage markdown was already
+  covered by 16 assertions, and not one of them read this line.
+
 ## [9.907.0] — 2026-10-11
 
 ### Fixed

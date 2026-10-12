@@ -108,6 +108,41 @@ describe("the triage model", { timeout: 300_000 }, () => {
     expect(caveat("empty")).toEqual(["blank.txt", "empty.txt"]);
   });
 
+  // 🚨 The row printed the count of secondary families the run CHECKED under
+  // the word "detected", and dropped the ones it had detected and skipped. So
+  // on a capped document the page carried a caveat — "More document types were
+  // detected than were scanned" — that its own table CONTRADICTED: the row
+  // said 4 types were detected and the caveat said more were. Every other
+  // surface already reports the omitted count (`brief`, the bundle JSON, the
+  // multi-doc card); the triage page was the one that did not.
+  //
+  // This asserts the CORROBORATION rather than a count: wherever the caveat
+  // names a file, that file's row must show how many were left unscanned.
+  it("backs the secondary-type caveat with a figure on the row it is about", () => {
+    const capped = [awkward, contracts].flatMap((t) =>
+      (t.caveats.find((c) => c.code === "secondary-cap")?.files ?? []).map((f) => ({ t, f })),
+    );
+    // Anti-vacuity: a green here must mean the caveat fired somewhere, not
+    // that no folder in the suite reached the cap.
+    expect(capped.length).toBeGreaterThan(0);
+    for (const { t, f } of capped) {
+      const row = t.rows.find((r) => posix(r.path) === posix(f));
+      expect(row, `no row for the caveat's file ${f}`).toBeDefined();
+      expect(row!.secondary_omitted, `${f} is capped, so the row must say by how many`).toBeTypeOf(
+        "number",
+      );
+      expect(row!.secondary_omitted!).toBeGreaterThan(0);
+    }
+  });
+
+  // A row that says "detected" where it means "checked" is a false statement
+  // about the tool's own reach, and it is the shape this page is for.
+  it("never claims a checked count is a detected count", () => {
+    for (const t of [awkward, contracts]) {
+      expect(buildTriageMarkdown(t)).not.toMatch(/types? detected(?! type)/);
+    }
+  });
+
   it("names the first critical in DOCUMENT order", () => {
     const withTwo = contractsFolder.documents.find(
       (d) => d.result.run.findings.filter((f) => f.severity === "critical").length >= 2,
