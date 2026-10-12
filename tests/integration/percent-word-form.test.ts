@@ -24,6 +24,24 @@
  * This is a RELATION, not two patches: it runs over every specimen that writes
  * a bare percentage and so covers the other 40 readers and any rule added
  * later, without anyone having to notice the convention.
+ *
+ * ── Not the same question as `spelled-amount.test.ts` ───────────────────
+ *
+ * That relation rewrites `20%` as "twenty percent" — the numeral GONE — and
+ * records FIN-009's loss as measured debt it deliberately does NOT repair, for
+ * two stated reasons: a rate is routinely fractional ("one and one-half
+ * percent per month" is the commonest late-fee spelling there is) and no
+ * integer word-parser represents it, and the cost of misreading is a confident
+ * false accusation about a legal limit, which that rule has already been
+ * narrowed twice to avoid.
+ *
+ * Both reasons are about PARSING A NUMBER OUT OF WORDS, and neither applies
+ * here. This rewrite KEEPS the numeral and changes only the unit marker, so
+ * FIN-009 reads "5 percent" and "1.5 percent" with exactly the arithmetic it
+ * already used for "5%" — the fraction included, as the second case below
+ * asserts. Repairing this form therefore does not reopen the decision recorded
+ * there; the fully spelled form remains that relation's debt and remains
+ * unrepaired.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";

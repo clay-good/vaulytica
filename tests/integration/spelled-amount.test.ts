@@ -28,6 +28,12 @@
  * a legal limit, which this rule has already been narrowed twice to avoid
  * (v1.6.0, v1.6.1). Recorded here as the measured debt it is, asserted by
  * equality so a repair cannot land unnoticed and a regression cannot either.
+ *
+ * ⚠️ The DIGIT-PLUS-WORD form is a different question and was repaired in
+ * 9.911.0: "5 percent" and "1.5 percent" keep the numeral, so FIN-009 parses
+ * them with the arithmetic it already used for "5%" and neither reason above
+ * applies. `percent-word-form.test.ts` holds that form at zero. The debt
+ * recorded here is the fully spelled rate, and it stands.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
