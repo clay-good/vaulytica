@@ -282,4 +282,21 @@ describe("FIN-009 — a branch that asserts no law cites none", () => {
     expect(f?.title).toMatch(/One-time late fee/);
     expect(f?.source_citations).toEqual([]);
   });
+
+  it("does not read the figure a rate is a FRACTION OF as the rate", () => {
+    // 1% a month — 12%/year — was reported as "~24.0%" usury.
+    const ctx = buildContext([
+      "Late Payment",
+      "Interest shall accrue at the rate of one-half of 2% per month on past-due amounts.",
+    ]);
+    expect(FIN_009.check(ctx)).toBeNull();
+  });
+
+  it("still fires on a plain 2% per month beside the guard", () => {
+    const ctx = buildContext([
+      "Late Payment",
+      "Interest shall accrue at the rate of 2% per month on past-due amounts.",
+    ]);
+    expect(FIN_009.check(ctx)?.title).toMatch(/24/);
+  });
 });

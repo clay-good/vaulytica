@@ -84,9 +84,24 @@ const PERCENT = new RegExp(
  * LIMIT — and a report that tells an attorney a note pays "0% of the whole"
  * because it quoted the cents convention is worse than one that stays quiet.
  *
- * The spelled form that matters for a share is already covered: "one-half" is
- * number words, so "one-half percent" reads correctly through the pass above.
+ * 🚨 This comment used to say "one-half percent" reads correctly because
+ * "one-half" is number words. It is not — `half` is not in `NUMBER_WORD` — and
+ * it yields nothing, which is the honest outcome. The dangerous neighbour is
+ * below.
  */
+
+/**
+ * A FRACTION OF the percentage that follows: "one-half of one percent per
+ * month" is 0.5%, and the pass above read "one percent" out of it and reported
+ * 1% — twice the rate, on the clause a usury reader cares about most
+ * ("one-quarter of one percent" came out four times too high). The figure that
+ * follows `of` is not the document's figure, so it is not reported. A
+ * parenthetical numeral restates the WHOLE rate ("one-half of one percent
+ * (0.5%)") and is still read.
+ */
+const FRACTION_OF_BEFORE =
+  /\b(?:halves|half|thirds?|quarters?|fourths?|fifths?|sixths?|eighths?|tenths?|hundredths?)\s{1,3}of\s{1,3}$/i;
+
 export function extractPercentages(tree: DocumentTree): PercentageReference[] {
   const out: PercentageReference[] = [];
   let counter = 0;
@@ -99,6 +114,8 @@ export function extractPercentages(tree: DocumentTree): PercentageReference[] {
       // The spelled-plus-numeral form is one percentage, not two.
       const words = m[1] ?? m[4];
       const digits = m[2] ?? m[3];
+      if (m[2] === undefined && FRACTION_OF_BEFORE.test(ctx.text.slice(Math.max(0, at - 24), at)))
+        continue;
       let value: string | null = null;
       if (digits !== undefined) {
         value = new Decimal(digits).toString();

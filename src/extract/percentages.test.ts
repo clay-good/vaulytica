@@ -74,4 +74,17 @@ describe("the percentages a document states", () => {
   it("does not read a section number or a decimal as a percentage", async () => {
     expect(await pcts("As provided in Section 5.2 and Section 12.")).toEqual([]);
   });
+
+  it("does not report the 1% inside 'one-half of one percent'", async () => {
+    // 0.5%, which this extractor read as 1% — twice the rate. Silence, not a
+    // wrong figure, when only the fraction says what the rate is.
+    const late = "Interest on overdue sums accrues at one-half of one percent per month.";
+    expect(await pcts(late)).toEqual([]);
+    expect(await pcts("A late charge of one-quarter of 1% per day.")).toEqual([]);
+  });
+
+  it("still reads the numeral that restates the whole fractional rate", async () => {
+    const p = await pcts("Interest accrues at one-half of one percent (0.5%) per month.");
+    expect(p.map((x) => x.percent)).toEqual(["0.5"]);
+  });
 });

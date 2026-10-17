@@ -71,6 +71,16 @@ export const rule: Rule = {
       /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
+    // "one-half of 2% per month" is 1% a month: the captured figure is what the
+    // rate is a FRACTION OF, not the rate. Read as 2%, it asserted "~24.0%"
+    // usury on a 12% loan. No assertion rather than a wrong one.
+    const rateAt = /\d+(?:\.\d+)?\s*(?:%|per\s?cent)/i.exec(hit.match[0])?.index ?? 0;
+    if (
+      /\b(?:halves|half|thirds?|quarters?|fourths?|fifths?|tenths?|hundredths?)\s{1,3}of\s{1,3}$/i.test(
+        hit.match[0].slice(Math.max(0, rateAt - 24), rateAt),
+      )
+    )
+      return null;
     const rate = Number(hit.match[1]);
     const period = (hit.match[2] ?? "").toLowerCase();
     if (!Number.isFinite(rate) || rate <= 0) return null;

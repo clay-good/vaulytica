@@ -444,6 +444,21 @@ describe("EQT-012 — usury threshold recognizes 'per year' and parenthesized ra
   ])("stays silent on a lawful rate / savings clause / non-rate percentage: %s", async (b) => {
     expect(await fires(b)).toBe(false);
   });
+
+  // v1.2.0 — the pattern had no left boundary, so it read the digits AFTER a
+  // decimal point: 6.75% was "75%", a critical usury finding on an ordinary note.
+  it.each([
+    "This note bears interest at 6.75% per annum.",
+    "The interest rate is 8.30% per year.",
+    "Interest accrues at 1.25% per annum.",
+    "Interest accrues at one-half of 40% per annum.",
+  ])("stays silent on a decimal or fractional rate below the threshold: %s", async (b) => {
+    expect(await fires(b)).toBe(false);
+  });
+
+  it("still fires on a three-digit rate", async () => {
+    expect(await fires("Interest accrues at 125% per annum.")).toBe(true);
+  });
 });
 
 describe("EQT-028 — repricing detection recognizes 'reduce price' and reversed order (v1.2.0)", () => {

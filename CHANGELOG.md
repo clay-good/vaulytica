@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.925.0] — 2026-10-17
+
+### Fixed
+- 🚨 **`EQT-012` called ordinary convertible-note rates usurious, at CRITICAL.**
+  Its pattern for "25% or more per annum" had no left boundary, so it read
+  the digits AFTER a decimal point: **"6.75% per annum" was "75%"**, and 8.30%
+  and 1.25% fired too. v1.2.0 adds `(?<![\d.])`. Found by a sweep that ran all
+  1,936 rules on decimal rates and their whole-number neighbours, looking for a
+  rule that fires on 6.75% but on neither 6% nor 7%. Re-run against the
+  original rule, the sweep flags EQT-012 and nothing else.
+- 🚨 **A rate stated as a FRACTION OF a percentage was read as the percentage,
+  in three places.** "One-half of one percent per month" is 0.5%:
+  - `extract/percentages.ts` reported **1%** (and "one-quarter of one percent" 1%,
+    four times too high) in the DOCX/HTML "Percentages and shares" table.
+  - `FIN-009` read "one-half of 2% per month" as 2% a month and warned of
+    **"~24.0%" usury on a 12% rate**; "one-half of 3%" (18%, not above the line)
+    was reported as ~36.0%.
+  - `EQT-012` raised a critical finding on "one-half of 40% per annum" (20%).
+
+  A figure that follows "<fraction> of" is what the rate is a fraction of, so
+  none of the three reads it as the rate. A parenthetical numeral that restates the
+  whole rate ("one-half of one percent (0.5%)") is still read. Found by probing
+  the reason `late-fee-rate-in-words` is recorded as unrepaired ("fractional
+  rates … would risk a confident false accusation"): the shared extractor was
+  already making that accusation.
+- `percentages.ts` claimed in a comment that "one-half percent" reads correctly
+  because "one-half" is number words. `half` is not a number word, and the form
+  yields nothing; the comment now says so.
+
+The corpus contains none of these shapes. The only golden change is EQT-012's
+`rule_version` in 86 execution logs: **zero findings moved**, checked field by
+field.
+
 ## [9.924.0] — 2026-10-17
 
 ### Fixed
