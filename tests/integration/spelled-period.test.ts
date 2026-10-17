@@ -199,24 +199,22 @@ const READS_WORDS =
   /PERIOD_COUNT|NUM_WORDS|thirty|sixty|ninety|twelve|fourteen|seventy|forty|fifteen|twenty|eighteen|five|six|seven|eight|nine|ten|eleven|one|two|three|four|\\w\+\(\?:/;
 
 /**
- * The one exception, and it is not a period at all: FIN-004 reads a late-fee
- * INTEREST RATE — "1.5% per month" — where the digits are a percentage and the
- * period noun is the rate's denominator. No drafter writes "one point five
- * percent per month" as a count to parse.
+ * No exceptions.
  *
- * There used to be a second, and its removal is the point of the scanner
- * change that came with it: FIN-005 reads the words via an interpolated
- * `NUM_WORDS`, and the per-CHUNK scanner saw only the tail, which looks blind.
+ * There were two. FIN-005 reads the words via an interpolated `NUM_WORDS`, and
+ * the per-CHUNK scanner saw only the tail, which looked blind;
  * `recognizerSources` now takes a template expression whole, so the
- * interpolated name is itself the evidence and the exception is gone.
+ * interpolated name is itself the evidence.
+ *
+ * FIN-004 reads a late-fee INTEREST RATE ("1.5% per month"): the digits are a
+ * percentage and the period noun is the rate's denominator, not a count.
+ * ⚠️ It left this list in 9.929.0 because the DETECTOR stopped seeing it, not
+ * because it changed kind: its rate now reads `(?:%|per\s?cent…)` before the
+ * period noun, and `BLIND_ANY_COUNT` does not cross a `|`. FIN-009 has the same
+ * shape. A recognizer can hide from this guard the same way, so an absence here
+ * says only that no pipe-free digit-to-noun span was found.
  */
-const DECLARED_ANY_COUNT = declaredExceptions([
-  {
-    file: "src/engine/rules/financial/FIN-004.ts",
-    pattern: String.raw`%\s*(?:per`,
-    why: "a late-fee interest RATE — the digits are a percentage, the period noun its denominator",
-  },
-]);
+const DECLARED_ANY_COUNT = declaredExceptions([]);
 
 describe("a recognizer that accepts any count", () => {
   it("reads that count in words too", () => {

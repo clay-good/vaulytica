@@ -1,10 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch } from "../_helpers.js";
+import { isUsurySavingsClause } from "./_usury-savings.js";
 
 /** FIN-004 — Late payment interest rate sanity (warning). */
 export const rule: Rule = {
   id: "FIN-004",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Late payment interest rate sanity",
   category: "financial",
   default_severity: "warning",
@@ -23,9 +24,12 @@ export const rule: Rule = {
     // five-fold (merchant-cash-advance and payday rates do exceed 100%).
     const hit = firstParagraphMatch(
       ctx,
-      /(?:late\s+(?:payment|charge|fee)|past\s+due|overdue|default\s+(?:interest|rate)|delinquent|in\s+arrears)[\s\S]{0,80}?(?<![\d.,])(\d{1,3}(?:\.\d+)?)\s*%\s*(?:per\s+(?:month|year|annum|day)|monthly|annually|daily)/i,
+      /(?:late\s+(?:payment|charge|fee)|past[\s-]+due|overdue|default\s+(?:interest|rate)|delinquent|in\s+arrears)[\s\S]{0,80}?(?<![\d.,])(\d{1,3}(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?\s*(?:(?:per|an?)\s+(?:month|year|annum|day)\b|monthly|annually|daily)/i,
     );
     if (!hit) return null;
+    // "the lesser of eighteen percent (18%) per year and the maximum rate
+    // permitted by applicable law" caps itself at the legal limit.
+    if (isUsurySavingsClause(hit.text, hit.match.index ?? 0)) return null;
     const rate = parseFloat(hit.match[1] ?? "0");
     if (rate < 12) return null;
     return emit(ctx, rule, {

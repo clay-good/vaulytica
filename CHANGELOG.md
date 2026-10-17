@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.929.0] — 2026-10-17
+
+### Fixed
+- **The three usury rules went silent or vague on ordinary ways of writing a
+  rate.** A sweep ran each on one clause in 16 spellings ("30% per annum",
+  "30 percent per annum", "30 per cent", "thirty percent (30%)", "per year",
+  "annually", "a year", and the monthly forms):
+
+  | rule | missed |
+  | --- | --- |
+  | `EQT-012` (critical) | "percent" / "per cent", "annually", "a year" |
+  | `FIN-004` | "past-due" (its trigger was `past\s+due`), "percent", the ")" in "thirty percent (30%) per annum", "a year" |
+  | `FIN-009` | "30% a year", "2% a month" reported as "no stated period" |
+
+  EQT-012 v1.3.0, FIN-004 v1.4.0 and FIN-009 v1.11.0 agree across all 16.
+- **…and widening FIN-004 exposed a usury savings clause it had never excluded.**
+  Over the 327 specimens the wider pattern added exactly two findings, both on
+  "the lesser of eighteen percent (18%) per year and the maximum rate permitted by
+  applicable law", which by its terms cannot exceed the legal limit. FIN-004 had
+  been silent there only because the ")" broke its match. A shared
+  `_usury-savings.ts` now excludes savings clauses from FIN-004 and from FIN-009's
+  usury warning (EQT-012 already had the same `exclude_if`). After that, the three
+  rules' findings over the whole corpus are **identical, line for line, to
+  before this release**; goldens move only the three `rule_version` strings. The
+  new tests fail with the savings check disabled.
+
+### Changed
+- `spelled-period.test.ts` loses its last declared exception (FIN-004), and its
+  comment says why. FIN-004 didn't stop being a rate; the guard's detector stopped
+  seeing it, because the rate now reads `(?:%|per\s?cent…)` before the period
+  noun and `BLIND_ANY_COUNT` does not cross a `|`. That limit of the detector is
+  now written down beside it.
+
 ## [9.928.0] — 2026-10-17
 
 ### Fixed

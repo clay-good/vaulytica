@@ -304,4 +304,17 @@ describe("FIN-009 — a branch that asserts no law cites none", () => {
     const ctx = buildContext(["Late Payment", "A late fee of 1,030% per month applies."]);
     expect(FIN_009.check(ctx)?.title ?? "").not.toMatch(/360/);
   });
+
+  it("reads 'a month' as a stated period (v1.11.0)", () => {
+    const ctx = buildContext(["Late Payment", "Past-due amounts bear interest at 2% a month."]);
+    expect(FIN_009.check(ctx)?.title).toMatch(/24\.0/);
+  });
+
+  it("makes no usury assertion on a savings clause", () => {
+    const ctx = buildContext([
+      "Late Payment",
+      "Past-due amounts bear interest at the lesser of two percent (2%) per month and the maximum rate permitted by law.",
+    ]);
+    expect(FIN_009.check(ctx)).toBeNull();
+  });
 });

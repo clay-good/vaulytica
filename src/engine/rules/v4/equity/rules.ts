@@ -285,7 +285,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
   }),
   language({
     id: "EQT-012",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Interest rate above plausible usury threshold",
     description:
       "Most state usury caps for non-bank lenders sit in the 7–24% range; rates above 25% are heuristically usurious in many states.",
@@ -302,7 +302,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
     // "one-half of 40% per annum" is 20%, and the figure after "of" is what the
     // rate is a fraction OF.
     bad_patterns: [
-      /(?<![\d.])(?<!\b(?:halves|half|thirds?|quarters?|fourths?|fifths?|tenths?|hundredths?)\s{1,3}of\s{1,3})(2[5-9]|[3-9]\d|1\d{2,})\s*%\s*\)?\s*(?:per\s+(?:annum|year)|\/\s*(?:year|yr|annum))/i,
+      /(?<![\d.])(?<!\b(?:halves|half|thirds?|quarters?|fourths?|fifths?|tenths?|hundredths?)\s{1,3}of\s{1,3})(2[5-9]|[3-9]\d|1\d{2,})\s*(?:%|per\s?cent(?:um)?\b)\s*\)?\s*(?:per\s+(?:annum|year)|annually|an?\s+year\b|\/\s*(?:year|yr|annum))/i,
     ],
     exclude_if: [
       /(?:not\s+to\s+exceed|(?:shall|will|must)\s+not\s+exceed|maximum\s+(?:rate\s+)?(?:permitted|allowed)|highest\s+lawful\s+rate|permitted\s+by\s+(?:applicable\s+)?law)/i,

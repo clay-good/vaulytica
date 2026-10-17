@@ -1,5 +1,6 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
 import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
+import { isUsurySavingsClause } from "./_usury-savings.js";
 
 /**
  * FIN-009 — Late fee or interest exceeds 1.5%/month / 18%/year
@@ -26,7 +27,7 @@ import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -68,7 +69,7 @@ export const rule: Rule = {
       // amount between the trigger and the rate, and a plain `[^.]` window
       // dies at the cents — the same late fee written "$50" was read and the
       // one written "$50.00" was not (v1.6.1).
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(?<![\d.,])(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(?<![\d.,])(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:(?:per|an?)\s+(month|year|annum|day)\b|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
     // v1.10.0 — the rate group carries `(?<![\d.,])`, so "1,030%" is not read
@@ -165,7 +166,8 @@ export const rule: Rule = {
       });
     }
 
-    if (annualRate <= 18) return null;
+    // A savings clause caps the rate at the legal limit, so it is never above it.
+    if (annualRate <= 18 || isUsurySavingsClause(hit.text, hit.match.index ?? 0)) return null;
 
     return emit(ctx, rule, {
       title: `Late-payment rate above 18%/year: ~${annualRate.toFixed(1)}%`,

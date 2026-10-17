@@ -456,6 +456,14 @@ describe("EQT-012 — usury threshold recognizes 'per year' and parenthesized ra
     expect(await fires(b)).toBe(false);
   });
 
+  it.each([
+    "This note bears interest at 30 percent per annum.",
+    "This note bears interest at 30% annually.",
+    "This note bears interest at 30 per cent a year.",
+  ])("fires however the rate and its period are spelled (v1.3.0): %s", async (b) => {
+    expect(await fires(b)).toBe(true);
+  });
+
   it("still fires on a three-digit rate", async () => {
     expect(await fires("Interest accrues at 125% per annum.")).toBe(true);
   });

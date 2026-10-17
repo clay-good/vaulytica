@@ -71,3 +71,29 @@ describe("FIN-004 — reads a three-digit rate whole (v1.3.0)", () => {
     expect(f?.title).toBe("Late-payment interest rate 125% may exceed usury limits");
   });
 });
+
+describe("FIN-004 — the spellings a lender actually uses (v1.4.0)", () => {
+  it.each([
+    "Past-due amounts shall bear interest at 30 percent per annum.",
+    "Past-due amounts shall bear interest at thirty percent (30%) per annum.",
+    "Overdue amounts bear interest at 30% a year.",
+  ])("fires on %s", (t) => {
+    expect(FIN_004.check(buildContext(["Terms", t]))?.title).toBe(
+      "Late-payment interest rate 30% may exceed usury limits",
+    );
+  });
+});
+
+describe("FIN-004 — a usury savings clause caps itself", () => {
+  it.each([
+    "Late payments bear interest at the lesser of eighteen percent (18%) per year or the maximum rate permitted by law.",
+    "Overdue amounts accrue interest at 18% per annum or the maximum rate permitted by applicable law, whichever is less.",
+  ])("is silent on %s", (t) => {
+    expect(FIN_004.check(buildContext(["Terms", t]))).toBeNull();
+  });
+
+  it("still fires on the same rate without the cap", () => {
+    const t = "Late payments bear interest at eighteen percent (18%) per year.";
+    expect(FIN_004.check(buildContext(["Terms", t]))).not.toBeNull();
+  });
+});
