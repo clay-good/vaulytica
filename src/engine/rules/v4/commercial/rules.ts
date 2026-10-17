@@ -29,6 +29,7 @@
  */
 
 import type { Rule } from "../../../finding.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 import { buildV4PresenceRule, type V4PresenceSpec } from "../_helpers.js";
 import {
   COMM_PLAYBOOK_MANUFACTURING,
@@ -79,7 +80,7 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-002",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Delivery schedule / lead time",
     description:
       "A supply agreement should state delivery timing — a schedule, lead time, or Incoterms delivery point.",
@@ -99,7 +100,12 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       // verb and "within" ("deliver THE PRODUCTS within 15 days") and spells the
       // count with a parenthetical ("within fifteen (15) days") — the original
       // rigid "deliver within <digit>" missed both.
-      /(?:ship|deliver)\w*\b[^.]{0,40}?\bwithin\s+[^.]{0,12}?\(?\d{1,3}\)?\s*(?:business\s+|calendar\s+)?(?:days?|weeks?|months?|hours?)/i,
+      // v1.2.0 — and in words alone: "within fifteen days" / "within ten
+      // business days" drew a CRITICAL "lead time missing".
+      new RegExp(
+        String.raw`(?:ship|deliver)\w*\b[^.]{0,40}?\bwithin\s+[^.]{0,12}?(?:${PERIOD_COUNT})\s*(?:business\s+|calendar\s+)?(?:days?|weeks?|months?|hours?)`,
+        "i",
+      ),
     ],
   }),
   presence({

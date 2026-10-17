@@ -548,3 +548,13 @@ describe("distribution playbook — a non-exclusive software reseller", () => {
     }
   });
 });
+
+describe("COMM-002 — a lead time in words is a lead time (v1.2.0)", () => {
+  it.each([
+    "Seller shall deliver the Products within fifteen days after receipt of each Purchase Order.",
+    "Seller shall ship each order within ten business days.",
+    "Seller shall deliver the Products within the next 15 days.",
+  ])("is satisfied by %s", async (body) => {
+    expect((await fired(MFG, body)).has("COMM-002")).toBe(false);
+  });
+});

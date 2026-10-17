@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.931.0] — 2026-10-17
+
+### Fixed
+- **`BAA-024` called a bounded return-or-destroy clause unbounded.** "…as soon
+  as practicable, and in any event within **thirty days**" drew "Return-or-
+  destruction lacks definite outer bound", because its exclusion read the bound
+  only as digits. v1.3.0 reads it through the shared `PERIOD_COUNT`.
+- **`COMM-002` reported "Delivery schedule / lead time missing" (CRITICAL) on a
+  lead time written in words**: "deliver the Products within fifteen days",
+  "ship each order within ten business days". v1.2.0 reads the count through
+  `PERIOD_COUNT`, keeping the 12-character gap that lets "within the next 15
+  days" match.
+
+This closes the review of the 14 recognizers the widened `spelled-period`
+detector surfaced. Three were wrong (BAA-020 in 9.930.0, and these two). The
+other eleven are not period counts: day-of-month ordinals in FIN-005 and
+STRUCT-002 ("on the 5th day of"), date ordinals in the date extractors, two
+patterns that already read words through `\w+`, and a consent-form duration
+whose sibling `over \w+ weeks` reads words. Goldens move only the two
+`rule_version` strings; zero findings changed.
+
 ## [9.930.0] — 2026-10-17
 
 ### Fixed

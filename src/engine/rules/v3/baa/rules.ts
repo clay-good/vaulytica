@@ -14,6 +14,7 @@
  */
 
 import { expressDenial } from "../../_helpers.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 import type { Rule } from "../../../finding.js";
 import {
   buildBaaLanguageRule,
@@ -557,7 +558,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-024",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Return-or-destruction lacks definite outer bound",
     description:
       "Flags return-or-destruction language that is open-ended ('as soon as practicable', 'commercially reasonable').",
@@ -584,9 +585,11 @@ export const BAA_RULES: Rule[] = [
     // (30) days" wraps the digits in a parenthetical, so the exclude_if must
     // tolerate the ")" or a compliant bounded clause fires as unbounded (the
     // digit-in-paren class, on the suppression side).
+    //
+    // v1.3.0 — `PERIOD_COUNT` reads the count in all three spellings. With
+    // digits only, "in any event within thirty days" was called unbounded.
     exclude_if: [
-      /\b\d+\)?\s+(?:calendar\s+|business\s+)?days?\b/i,
-      /\(\d+\)\s+(?:calendar\s+|business\s+)?days?\b/i,
+      new RegExp(String.raw`(?:${PERIOD_COUNT})\s+(?:calendar\s+|business\s+)?days?\b`, "i"),
     ],
     default_severity: "warning",
   }),

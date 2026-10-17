@@ -371,6 +371,12 @@ describe("BAA defect rules catch the pattern's real form (v1.1.0)", () => {
     expect((await run1("Breach", t)).has("BAA-020")).toBe(true);
   });
 
+  it("BAA-024 is silent when the bound is written in words alone (v1.3.0)", async () => {
+    const t =
+      "Upon termination, Business Associate shall return or destroy all PHI as soon as practicable, and in any event within thirty days.";
+    expect((await run1("Return", t)).has("BAA-024")).toBe(false);
+  });
+
   it("BAA-024 is silent when a definite bound is written 'thirty (30) days'", async () => {
     expect(
       (
