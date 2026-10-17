@@ -1859,7 +1859,14 @@ const ADDRESS_PREFIX = new RegExp(
   // sentence: "Larkfield Road, Longmont, Colorado." The street NUMBER is not
   // required, because the run routinely starts after it — on `coi.txt` the
   // "88" sits before where the name run began.
-  String.raw`^[^.]*,[^.]*\b${US_STATE}\.\s+(?=[A-Z])`,
+  //
+  // 🚨 The first run must stop at the FIRST comma. As `[^.]*,[^.]*` both runs
+  // could hold commas, so on a run of them the engine tried every split point
+  // and failed the state alternation at each: QUADRATIC — 128 ms at 5,000
+  // commas, 5,791 ms at 40,000, and the reason fuzz-boundary's comma/party case
+  // kept missing its budget. Choosing the first comma accepts exactly the same
+  // prefixes, since any prefix that has a comma has a first one.
+  String.raw`^[^.,]*,[^.]*\b${US_STATE}\.\s+(?=[A-Z])`,
   "i",
 );
 

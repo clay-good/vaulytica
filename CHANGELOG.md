@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.933.0] — 2026-10-17
+
+### Security
+- 🚨 **A quadratic regex in the party extractor, and a gate that blamed the
+  machine for it.** `ADDRESS_PREFIX` in `src/extract/parties.ts`,
+  `^[^.]*,[^.]*\b<US state>\.`, let both runs hold commas, so on a run of
+  them the engine tried every split point and failed the state alternation at
+  each: **128 ms at 5,000 commas, 5,791 ms at 40,000**. The first run now stops
+  at the first comma (`^[^.,]*,`). That accepts exactly the same prefixes, since
+  any prefix with a comma has a first one, and it costs **1–6 ms** at every size
+  measured.
+- That is `fuzz-boundary`'s "comma run (party)" case, which failed the local gate
+  four times in this session and was **twice written off as load** because
+  isolated timings came in under budget. Its wall time swung from 0.65 s to
+  7.8 s with V8's regex tier-up, just under the 8 s budget, so only load made it
+  visible.
+
+### Changed
+- `fuzz-boundary`'s timed cases now judge **scaling**, not wall time: each runs
+  the same phrase at a tenth of the size (once untimed to warm up, then timed)
+  and fails when the full run takes over 250 ms **and** more than 25× the small
+  one. Honest cases measure 8–17×; the restored quadratic measures **385×**
+  (14 ms → 5,390 ms) and fails on scaling alone. The old 8 s budget let it
+  through warm. Load slows both runs together, so the verdict no longer depends
+  on the machine. The decision function has its own tests, built from the
+  measured numbers.
+
+All findings and every extracted party name over the corpus (3,435 lines) are
+identical before and after, measured against a worktree of HEAD. Goldens move
+only the version stamp.
+
 ## [9.932.0] — 2026-10-17
 
 ### Fixed
