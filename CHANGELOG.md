@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.930.0] — 2026-10-17
+
+### Fixed
+- 🚨 **`BAA-020` accused the most compliant BAAs of breaking HIPAA's 60-day limit,
+  at CRITICAL.** Its business-day branch accepted *any* count, so "Within 5
+  business days after discovery, Business Associate shall notify Covered Entity
+  of the Breach" (prompt notice, far inside the limit) was reported as "Breach
+  notification timing exceeds 60-day HIPAA cap", as were 2 and 10 business days.
+  It hid in word order: the common "notify … of any Breach within 5 business
+  days" put the breach words *before* the count, out of the branch's reach.
+  v1.2.0 flags only counts of **45 or more** business days, which run nine weeks
+  (63 days) wherever they start. 43–44 can land on either side of 60 depending on
+  the weekday, so the rule asserts nothing about them. The branch also now reads
+  "forty-five (45) business days", which it could not read before.
+
+Found by measuring the `spelled-period` detector's blind spot (9.929.0): widened
+to cross a `|`, it surfaces 14 more recognizers. This is the first of them
+fixed; the rest are reviewed in the next release. The corpus has no BAA written
+this way; goldens move only BAA-020's `rule_version`.
+
 ## [9.929.0] — 2026-10-17
 
 ### Fixed

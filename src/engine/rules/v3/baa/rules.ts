@@ -456,7 +456,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-020",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Breach notification looser than 60 days",
     description:
       "Flags breach-notice timing that exceeds the 60-day outer bound or shifts the trigger to a later event.",
@@ -475,7 +475,14 @@ export const BAA_RULES: Rule[] = [
       // breach window entirely.
       /\b(9[0-9]|1[0-9]{2}|[2-9][0-9]{2})\)?\s*(calendar\s+)?days\b.{0,80}(breach|notif)/is,
       /(breach|notif).{0,80}\b(9[0-9]|1[0-9]{2}|[2-9][0-9]{2})\)?\s*(calendar\s+)?days\b/is,
-      /\b(within|no\s+later\s+than)\s+(\d+)\)?\s*(business|working)\s+days?\b.{0,80}(breach|notif)/is,
+      // v1.2.0 — this branch accepted ANY count of business days, so "Within 5
+      // business days after discovery, Business Associate shall notify…" —
+      // prompt notice, far inside the limit — drew a CRITICAL "exceeds 60-day
+      // HIPAA cap". It means the business-day count that runs past sixty
+      // calendar days: 45 business days is nine weeks (63 days) wherever it
+      // starts, while 43–44 can land either side of 60, so they assert nothing.
+      // It also reads "forty-five (45) business days".
+      /\b(within|no\s+later\s+than)\s+(?:[a-z-]+\s*\(\s*)?(?<![\d.,])(4[5-9]|[5-9]\d|[1-9]\d{2})\)?\s*(business|working)\s+days?\b.{0,80}(breach|notif)/is,
     ],
     default_severity: "critical",
   }),

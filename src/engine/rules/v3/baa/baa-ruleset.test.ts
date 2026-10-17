@@ -355,6 +355,22 @@ describe("BAA defect rules catch the pattern's real form (v1.1.0)", () => {
     ).toBe(false);
   });
 
+  // v1.2.0 — the business-day branch accepted ANY count, so prompt notice with
+  // the window written first drew a critical "exceeds 60-day HIPAA cap".
+  it.each([
+    "Within 5 business days after discovery, Business Associate shall notify Covered Entity of the Breach.",
+    "No later than 10 business days after discovery, Business Associate shall report the Breach.",
+    "Within 44 business days after discovery, Business Associate shall notify Covered Entity of the Breach.",
+  ])("BAA-020 is silent on a business-day window inside sixty days: %s", async (t) => {
+    expect((await run1("Breach", t)).has("BAA-020")).toBe(false);
+  });
+
+  it("BAA-020 still fires on 'forty-five (45) business days', always past sixty", async () => {
+    const t =
+      "Within forty-five (45) business days after discovery, Business Associate shall notify Covered Entity of the Breach.";
+    expect((await run1("Breach", t)).has("BAA-020")).toBe(true);
+  });
+
   it("BAA-024 is silent when a definite bound is written 'thirty (30) days'", async () => {
     expect(
       (
