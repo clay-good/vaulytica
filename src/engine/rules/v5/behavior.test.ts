@@ -976,6 +976,20 @@ describe("EMP-142 — sixty-day advance timing", () => {
     return result.run.findings.find((f) => f.rule_id === "EMP-142") ?? null;
   };
 
+  it("is silent on an undated notice that states 'sixty (60) days' (v2.1.0)", async () => {
+    // With no dates the rule falls back to the wording, which took "60 days" and
+    // "sixty days" but not the standard form with the numeral in parentheses.
+    const undated = [
+      "WORKER ADJUSTMENT AND RETRAINING NOTIFICATION ACT NOTICE",
+      "To: Affected employees of Kestrel Manufacturing, Inc., Plant 3, Akron, Ohio 44305.",
+      "Kestrel Manufacturing, Inc. is providing this notice under the federal Worker Adjustment and Retraining Notification Act, 29 U.S.C. 2101 et seq.",
+      "The company will permanently close Plant 3 no sooner than sixty (60) days after the date of this notice. The action is permanent, not a temporary layoff.",
+      "All 212 positions at Plant 3 will be eliminated. There is no bumping right.",
+      "Questions to Marisol Trent, Director of Human Resources, (330) 555-0148.",
+    ].join("\n\n");
+    expect(await emp142(undated)).toBeNull();
+  });
+
   it("is silent on a notice that gives ninety days without saying so", async () => {
     expect(await emp142(NOTICE("September 1, 2026", "November 30, 2026"))).toBeNull();
   });

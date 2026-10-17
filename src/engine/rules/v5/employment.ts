@@ -877,8 +877,12 @@ const WARN_EXCEPTION =
   /\b(?:faltering\s+compan\w*|unforeseeable\s+business\s+circumstance\w*|natural\s+disaster|2102\s*\(\s*b\s*\))/i;
 
 /** The words the shipped column looked for, kept as the no-dates fallback. */
+// "sixty (60) days" — the way a WARN notice is drafted — puts the numeral
+// between the word and "days"; without the optional parenthetical the standard
+// form drew a CRITICAL "Sixty-day advance timing — not found" while "60 days"
+// and "sixty days" were satisfied.
 const WARN_TIMING_WORDS =
-  /\b(?:60|sixty)\s+(?:calendar\s+)?days\b|\badvance\s+(?:written\s+)?notice\b|\bprior\s+to\s+the\s+(?:separation|closing|layoff)\b/i;
+  /\b(?:60|sixty(?:\s*\(\s*60\s*\))?)\s+(?:calendar\s+)?days\b|\badvance\s+(?:written\s+)?notice\b|\bprior\s+to\s+the\s+(?:separation|closing|layoff)\b/i;
 
 /** § 2102 itself, cited on the finding the way the pack cites its columns. */
 const WARN_2102 = usc(
@@ -892,7 +896,7 @@ const MS_PER_DAY = 86_400_000;
 
 const WARN_ADVANCE_TIMING: Rule = {
   id: "EMP-142",
-  version: "2.0.0",
+  version: "2.1.0",
   name: "Sixty-day advance timing",
   category: C,
   default_severity: "critical",

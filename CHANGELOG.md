@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.928.0] — 2026-10-17
+
+### Fixed
+- 🚨 **`EMP-142` told a WARN notice drafted the standard way that it gave no
+  sixty days, at CRITICAL.** With no computable dates the rule falls back to the
+  notice's wording, and that pattern took "60 days" and "sixty days" but not
+  **"sixty (60) days"**, where the numeral sits between the word and "days". v2.1.0
+  accepts the parenthetical. The new test routes a full undated notice
+  through the engine and was broken on purpose: on the old pattern it draws the
+  critical finding.
+
+Found by a fourth sweep over all 1,936 rules, which runs each one on the same
+clause written three ways ("30 days" / "thirty (30) days" / "thirty days") and
+flags any rule whose result changes. 24 rules disagree. Most are presence rules
+that a one-sentence probe satisfies or fails by accident; the critical ones that
+remain (POL-130, HC-014, RE-037, COMM-011, COMM-002) accept the digits and the
+parenthetical and reject only the uncommon words-only spelling ("within five
+days"), each beside sibling patterns a real document meets. A source scan for
+the "word or digits, no parenthetical" shape found three more patterns, and each
+has a sibling pattern that already covers the standard form. EQT-025 and EQT-038
+are left as they are: they are *satisfied* only by the parenthetical form, and
+widening a satisfier to any "30 days" would hide a genuinely missing 83(b)
+advisory.
+
 ## [9.927.0] — 2026-10-17
 
 ### Fixed
