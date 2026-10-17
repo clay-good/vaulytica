@@ -172,13 +172,14 @@ describe("the cross-document run is not a function of the format", () => {
    * section legitimately defines a term the rest of the DEAL uses. Unlike the
    * corporate-suffix split, this one does not separate the artifacts from the
    * findings. Do not ship it.
+   *
+   * 🥇 9.924.0 repaired it at the root instead: a field label whose value
+   * imposes an obligation ("Governing Law: This Statement of Work shall be
+   * governed…") is a run-in heading, not a cover-block field, so the SOW no
+   * longer "defines" Governing Law in any layout. The list is now empty.
    */
   it("holds the known movers by equality — every one an ingest-join artifact", async () => {
-    const OWED: ReadonlyArray<string> = [
-      // Two defined-term conflicts lost: joining lines changes which document
-      // the extractor believes defines "Governing Law".
-      "governing-law-mismatch [blank lines stripped]: -CROSS-DEFTERM-002[dpa.txt+sow.txt] -CROSS-DEFTERM-002[msa.txt+sow.txt]",
-    ];
+    const OWED: ReadonlyArray<string> = [];
 
     const owed: string[] = [];
     for (const bundle of bundleNames) {
@@ -200,10 +201,11 @@ describe("the cross-document run is not a function of the format", () => {
     expect(owed.sort()).toEqual([...OWED].sort());
   }, 600_000);
 
-  it("only the blank-line transform moves anything", async () => {
-    // The load-bearing claim of the whole file: three of the four transforms
-    // are inert, so a green is about the ENGINE, not about transforms too weak
-    // to disturb it.
+  it("no transform moves anything", async () => {
+    // Until 9.924.0 the blank-line transform moved the governing-law-mismatch
+    // bundle (see above). A green here is about the ENGINE, not transforms too
+    // weak to disturb it: the same TRANSFORMS move 46 extracted terms in
+    // `defined-terms-format.test.ts`.
     const movers = new Set<string>();
     for (const bundle of bundleNames) {
       const base = await conflicts(bundle, identity);
@@ -211,6 +213,6 @@ describe("the cross-document run is not a function of the format", () => {
         if ((await conflicts(bundle, fn)) !== base) movers.add(label);
       }
     }
-    expect([...movers]).toEqual(["blank lines stripped"]);
+    expect([...movers]).toEqual([]);
   }, 600_000);
 });

@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.924.0] — 2026-10-17
+
+### Fixed
+- 🚨 **A document report downloaded from a bundle in the browser never had its
+  §59 cross-document consistency appendix.** `prepareBundle` built each
+  member's DOCX before the consistency run existed, so `V3ReportInputs.consistency`
+  was never set there. The CLI's per-document report for the same bundle
+  always carried it: same bundle, same builder, two different artifacts. Each
+  member's DOCX is now built in `runBundleReport`, after the run. With the
+  §62 consistency toggle **off**, the appendix is left out, not printed empty,
+  because an empty run reads "No cross-document conflicts were detected", which
+  describes checks that did not run. Guarded by
+  `tests/integration/bundle-member-docx-consistency.test.ts`, which was broken on
+  purpose both ways (run never passed; run passed with the toggle off) and failed
+  each time.
+- **A run-in clause heading was read as a defined term.** "Governing Law: This
+  Statement of Work shall be governed by the laws of the State of New York."
+  at the start of a line registered "Governing Law" as a cover-block field the
+  SOW *defines*, and `CROSS-DEFTERM-002` then told the MSA and DPA, which carry
+  the same heading mid-paragraph, that they use it undefined. A field's value
+  states a fact (a date, an amount, "net 30"); a value with `shall` / `must` /
+  `will` (matched case-sensitively, so the month "May" in a date doesn't count)
+  is a clause, and the label is its heading. Found by **reading the rendered §59 page**,
+  which had never been opened. An earlier fix had already corrected this exact
+  excerpt's character offsets without asking whether it was a defined term at all.
+  - Measured over the 327 specimens + every bundle: field-label entries 104 → 102,
+    exactly the SOW heading and a credit-card disclosure row ("Minimum Interest
+    Charge: If you are charged interest, the charge will be…", never used as a term).
+  - `governing-law-mismatch` goes from 4 cross-document findings to 2: both
+    `CROSS-DEFTERM-002` removed; `CC-005` and `CROSS-JURIS-001`, the real
+    governing-law conflict the bundle is named for, kept. Every per-document
+    finding count is unchanged; the other 343 goldens differ only in the version stamp.
+  - **Two known-debt entries retired:** the only cross-document format-invariance
+    mover (diagnosed in 9.538.0 and left open), so no layout transform now moves
+    any bundle's conflicts; and the credit-card entry in `defined-terms-layout`.
+
+### Noted, not changed
+- The §55 Citation Index was also read for the first time. It is correct: the
+  same numbering as the findings and the Bibliography, real URLs, and the DKB
+  version and build date. It does repeat the Bibliography that comes right before
+  it, adding only the DKB column. Merging the two would change a spec-v3 section,
+  so it is left for a product decision.
+
 ## [9.923.0] — 2026-10-12
 
 ### Security

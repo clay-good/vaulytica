@@ -54,7 +54,6 @@ export const KNOWN_DEBT = {
       "coi.txt [blank lines stripped] lost:INSURERS AFFORDING COVERAGE Insurer A gained:Insurer A",
       "coi.txt [double-spaced] lost:INSURERS AFFORDING COVERAGE Insurer A gained:Insurer A",
       "construction-lien-waiver.txt [blank lines stripped] lost:Through Date gained:-",
-      "credit-card.txt [blank lines stripped] lost:Minimum Interest Charge gained:-",
       "cta.txt [blank lines stripped] lost:- gained:Chief Executive Officer ACKNOWLEDGED",
       "cyber-policy.txt [blank lines stripped] lost:Continuity Date gained:-",
       "cyber-policy.txt [hard-wrapped] lost:Retroactive Date gained:Named Insured Retroactive Date",

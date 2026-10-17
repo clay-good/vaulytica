@@ -410,6 +410,18 @@ function isShoutedLabel(term: string): boolean {
 }
 
 const FIELD_LABEL = /\b([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){1,4})\s*(?::|\|)\s+/g;
+
+/**
+ * A field's value states a FACT — "May 1, 2026", "$250,000", "net 30". A value
+ * that imposes an obligation is a clause, and the label in front of it is a
+ * RUN-IN HEADING: "Governing Law: This Statement of Work shall be governed by
+ * the laws of the State of New York." registered "Governing Law" as a term the
+ * SOW defines, and CROSS-DEFTERM-002 then told the MSA and the DPA — which
+ * carry the same heading mid-paragraph — that they use it undefined.
+ *
+ * Case-SENSITIVE, so the month "May" in a date is not the modal.
+ */
+const OPERATIVE_VALUE = /\b(?:shall|must|will)\b/;
 const FIELD_BLOCK_MAX_LENGTH = 240;
 
 /** What may precede a cover block's FIRST label: nothing, or a capitalized
@@ -1083,7 +1095,7 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
           const value = ctx.text
             .slice(labels[i]!.valueStart, labels[i + 1]?.start ?? ctx.text.length)
             .trim();
-          if (!value) continue;
+          if (!value || OPERATIVE_VALUE.test(value)) continue;
           registerDefinition(definitions, {
             term: labels[i]!.term,
             definition: value,

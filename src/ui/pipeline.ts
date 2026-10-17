@@ -1222,8 +1222,11 @@ export type BundlePipelineResult = {
  * the spec-v3 §62 cross-doc consistency toggle can re-run via
  * `runBundleReport` without re-ingesting every document.
  */
+/** A bundle member before `runBundleReport` has built its DOCX. */
+export type PreparedBundleDocument = Omit<BundlePerDocument, "docx_blob">;
+
 export type PreparedBundle = {
-  documents: BundlePerDocument[];
+  documents: PreparedBundleDocument[];
   rejected: Array<{ filename: string; reason: string }>;
   /**
    * Per-document tree + extracted payloads needed to re-run the
@@ -1338,7 +1341,7 @@ export async function prepareBundle(
   const extendedPlaybooks = await extendedPromise;
 
   const total = accepted.length;
-  const perDoc: BundlePerDocument[] = [];
+  const perDoc: PreparedBundleDocument[] = [];
   // Parallel array keeping each doc's tree + extracted so the
   // consistency pass can re-use them without re-ingesting.
   const consistencyDocs: ConsistencyDocument[] = [];
@@ -1500,22 +1503,8 @@ export async function prepareBundle(
       });
     }
 
-    const bundleV3 = buildV3ReportInputs(ingest.tree, {
-      parties: extracted.parties,
-      dkb_build_date: dkb.manifest.built_at,
-    });
-    const docx_blob = await buildDocxReport(
-      run,
-      ingest,
-      dkb,
-      playbook,
-      hasV3Sections(bundleV3) ? bundleV3 : undefined,
-      extracted,
-      secondary_families,
-      secondarySelection.omitted > 0
-        ? { secondaryFamiliesOmitted: secondarySelection.omitted }
-        : undefined,
-    );
+    // No DOCX here: it carries the §59 appendix, which needs the consistency
+    // run, and that only exists in `runBundleReport`.
     const json_blob = buildJsonReport(
       run,
       ingest,
@@ -1541,7 +1530,6 @@ export async function prepareBundle(
       match_reasoning: match.reasoning,
       ingest,
       extracted,
-      docx_blob,
       json_blob,
       v3_detection,
       secondary_families,
@@ -1601,6 +1589,33 @@ export async function runBundleReport(
     dkb: prepared.dkb,
     executed_at: new Date().toISOString(),
   });
+
+  // Each member's own DOCX, built here rather than in `prepareBundle` so it
+  // carries the §59 consistency appendix — as the CLI's per-document report
+  // for the same bundle always has. With the toggle off the run is passed as
+  // absent, not empty: an empty run prints "No cross-document conflicts were
+  // detected", which is a claim about checks that did not run.
+  const documents: BundlePerDocument[] = [];
+  for (const d of prepared.documents) {
+    const v3 = buildV3ReportInputs(d.ingest.tree, {
+      parties: d.extracted.parties,
+      dkb_build_date: prepared.dkb.manifest.built_at,
+      ...(consistencyEnabled ? { consistency } : {}),
+    });
+    const docx_blob = await buildDocxReport(
+      d.run,
+      d.ingest,
+      prepared.dkb,
+      d.playbook,
+      hasV3Sections(v3) ? v3 : undefined,
+      d.extracted,
+      d.secondary_families,
+      d.secondary_families_omitted
+        ? { secondaryFamiliesOmitted: d.secondary_families_omitted }
+        : undefined,
+    );
+    documents.push({ ...d, docx_blob });
+  }
 
   // spec-v12 Thrust B — cross-document posture coherence. Computed only when
   // every document carries a posture (the active custom playbook defined
@@ -1706,7 +1721,7 @@ export async function runBundleReport(
   });
 
   return {
-    documents: prepared.documents,
+    documents,
     rejected: prepared.rejected,
     consistency,
     bundle_docx_blob,

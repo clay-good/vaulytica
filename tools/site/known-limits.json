@@ -14,8 +14,8 @@
  "open": [
   {
    "id": "defined-terms-layout",
-   "count": 47,
-   "sentence": "On 47 specimen-and-layout pairs, rewriting a document's line structure (blank lines stripped, hard-wrapped, double-spaced) makes the defined-terms table gain or lose a term."
+   "count": 46,
+   "sentence": "On 46 specimen-and-layout pairs, rewriting a document's line structure (blank lines stripped, hard-wrapped, double-spaced) makes the defined-terms table gain or lose a term."
   },
   {
    "id": "expected-defined-terms",

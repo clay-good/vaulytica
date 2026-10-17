@@ -1068,6 +1068,27 @@ describe("cover-block field labels and embedded definitions", () => {
     expect(map.unused_terms).not.toContain("Issue Date");
   });
 
+  it("a run-in clause heading is not a field label", () => {
+    // The value is an obligation, not a fact: this is a clause under a
+    // heading, and "Governing Law" is not a term the document defines.
+    const map = extractDefinitions(
+      buildTree([
+        "Statement of Work No. 1",
+        "Governing Law: This Statement of Work shall be governed by the laws of the State of New York.",
+      ]),
+    );
+    expect(map.entries.map((e) => e.term)).not.toContain("Governing Law");
+  });
+
+  it("a date in May is still a fact, not the modal", () => {
+    const map = extractDefinitions(
+      buildTree(["Order Form", "Subscription Start Date: May 1, 2026"]),
+    );
+    expect(map.entries.find((e) => e.term === "Subscription Start Date")?.definition).toBe(
+      "May 1, 2026",
+    );
+  });
+
   it("a signature-block 'Date:' line does not register (single word)", () => {
     const map = extractDefinitions(buildTree(["Signatures", "Date: March 10, 2026"]));
     expect(map.entries.map((e) => e.term)).not.toContain("Date");
