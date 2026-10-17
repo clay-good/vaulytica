@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractAmounts, wordAmountValue } from "./amounts.js";
+import { CURRENCY_MARK, extractAmounts, wordAmountValue } from "./amounts.js";
 import { buildTree } from "./_fixtures.js";
 
 describe("extractAmounts", () => {
@@ -417,5 +417,29 @@ describe("extractAmounts — an ISO code spaced from the dollar sign", () => {
       ["AUD", "5000000"],
       ["USD", "500"],
     ]);
+  });
+});
+
+// A sum written with its ISO code is a sum (9.932.0). The rules that use this
+// are held by `tests/integration/currency-code-parity.test.ts`.
+describe("CURRENCY_MARK", () => {
+  const mark = new RegExp(`^${CURRENCY_MARK}\\d`, "i");
+  it.each([
+    "$1,000,000",
+    "€5",
+    "USD 1,000,000",
+    "USD1,000,000",
+    "US$1,000,000",
+    "EUR 250",
+    "AUD $5,000,000",
+  ])("marks %s", (s) => expect(mark.test(s)).toBe(true));
+
+  it("still counts a glyph with no figure, as on a blank form", () => {
+    expect(new RegExp(CURRENCY_MARK).test("a fee of $________")).toBe(true);
+  });
+
+  it("does not let a currency CODE stand alone — rules run with the i flag and RUB is a code", () => {
+    expect(new RegExp(CURRENCY_MARK, "i").test("rub the surface clean")).toBe(false);
+    expect(new RegExp(CURRENCY_MARK, "i").test("payable in USD")).toBe(false);
   });
 });

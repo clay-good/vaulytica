@@ -7,7 +7,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { expressDenial, practice, stateLaw, usc } from "./_helpers.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "real-estate";
 
@@ -154,11 +154,15 @@ const LEASE_LOI = pack("letter-of-intent-lease", C, [
 const PROPERTY_MGMT = pack("property-management-agreement", C, [
   {
     id: "RE-112",
+    ver: "1.1.0",
     name: "Scope of authority and expenditure limits",
     cite: practice("pma-authority", "authority limits in property management agreements"),
     pat: [
       /(authority|authori[sz]ed\s+to)/i,
-      /(without\s+(the\s+)?owner['’]?s?\s+(prior\s+)?(written\s+)?(approval|consent)|expenditures?\s+(in\s+excess\s+of|exceeding)|[$€£¥₹₩₽])/i,
+      new RegExp(
+        String.raw`(without\s+(the\s+)?owner['’]?s?\s+(prior\s+)?(written\s+)?(approval|consent)|expenditures?\s+(in\s+excess\s+of|exceeding)|${CURRENCY_MARK})`,
+        "i",
+      ),
     ],
     why: "A manager with unbounded spending authority can commit the owner to capital work it never approved. The dollar threshold and the emergency exception are the central controls.",
     fix: "State the manager's authority, the per-item and annual expenditure limits requiring owner approval, and the emergency exception with a notice duty.",
@@ -335,11 +339,15 @@ const OPTION = pack("option-to-purchase-real-estate", C, [
   },
   {
     id: "RE-125",
+    ver: "1.1.0",
     name: "Purchase price or pricing formula",
     cite: practice("option-price", "price determination in real property options"),
     pat: [
       /(purchase\s+price|option\s+price)/i,
-      /([$€£¥₹₩₽]|formula|apprais|fair\s+market\s+value|determined\s+by)/i,
+      new RegExp(
+        String.raw`(${CURRENCY_MARK}|formula|apprais|fair\s+market\s+value|determined\s+by)`,
+        "i",
+      ),
     ],
     why: "An option with an open price term is often unenforceable for indefiniteness. Where price is by appraisal, the appraiser-selection mechanism has to be complete enough to work without cooperation.",
     fix: "State the price, or a complete formula including the appraisal process, appraiser qualifications, selection method, and tie-breaking.",
@@ -437,7 +445,7 @@ const QUITCLAIM = pack("quitclaim-deed", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Consideration recital and transfer-tax statement",
     cite: stateLaw(
       "transfer-tax",
@@ -445,7 +453,7 @@ const QUITCLAIM = pack("quitclaim-deed", C, [
       "https://www.law.cornell.edu/wex/transfer_tax",
     ),
     pat: [
-      /(consideration|in\s+consideration\s+of|[$€£¥₹₩₽])/i,
+      new RegExp(String.raw`(consideration|in\s+consideration\s+of|${CURRENCY_MARK})`, "i"),
       /(transfer[-\s]+tax|documentary\s+(stamp|transfer)|exempt|revenue\s+stamps)/i,
     ],
     why: "Recorders reject deeds without the consideration recital or the transfer-tax declaration, and intra-family quitclaims need the exemption stated to avoid the tax.",

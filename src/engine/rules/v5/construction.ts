@@ -7,7 +7,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { expressDenial, practice, standardForm, stateLaw } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "construction";
 
@@ -185,6 +185,7 @@ const ARCHITECT = pack("architect-agreement", C, [
   },
   {
     id: "CON-112",
+    ver: "1.1.0",
     name: "Professional liability insurance limits",
     cite: practice(
       "architect-insurance",
@@ -193,7 +194,7 @@ const ARCHITECT = pack("architect-agreement", C, [
     pat: [
       /insur(e|ance)/i,
       new RegExp(
-        String.raw`(professional\s+liability|errors\s+and\s+omissions|per\s+claim|aggregate|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS}))`,
+        String.raw`(professional\s+liability|errors\s+and\s+omissions|per\s+claim|aggregate|(?:${CURRENCY_MARK}\d|${AMOUNT_IN_WORDS}))`,
         "i",
       ),
     ],
@@ -237,6 +238,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
   },
   {
     id: "CON-115",
+    ver: "1.1.0",
     name: "Labor or materials furnished and estimated value",
     cite: stateLaw(
       "lien-notice-contents",
@@ -245,7 +247,10 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     ),
     pat: [
       /(labou?r|services|materials|equipment)\s+(furnished|provided|supplied)/i,
-      /(estimated\s+(total\s+)?(price|value|amount)|general\s+description|[$€£¥₹₩₽])/i,
+      new RegExp(
+        String.raw`(estimated\s+(total\s+)?(price|value|amount)|general\s+description|${CURRENCY_MARK})`,
+        "i",
+      ),
     ],
     why: "The estimated price puts the owner on notice of the exposure and, in some states, caps the eventual lien. A notice omitting it is defective on its face.",
     fix: "Describe the labor, services, equipment, or materials furnished, and state the estimated total price.",

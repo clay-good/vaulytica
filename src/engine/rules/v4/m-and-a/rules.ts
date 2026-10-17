@@ -43,7 +43,7 @@ import {
   maPractice,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../../extract/counts.js";
-import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../../extract/amounts.js";
 
 const CATEGORY = "m-and-a";
 
@@ -1141,6 +1141,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-047",
+    version: "1.1.0",
     name: "Escrow amount, asset type, account specified",
     description: "Escrow agreement must specify amount, asset (cash / stock / other), and account.",
     citation: maPractice(
@@ -1157,7 +1158,7 @@ const ESCROW_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /escrow\s+(fund|amount|account)/i,
       new RegExp(
-        String.raw`(?:[$€£¥₹₩₽][\d,]+|${AMOUNT_IN_WORDS})\s+(in\s+escrow|escrow\s+deposit)`,
+        String.raw`(?:${CURRENCY_MARK}[\d,]+|${AMOUNT_IN_WORDS})\s+(in\s+escrow|escrow\s+deposit)`,
         "is",
       ),
     ],

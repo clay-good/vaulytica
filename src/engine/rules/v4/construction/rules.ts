@@ -25,7 +25,7 @@ import {
   caCiv2782,
   conPractice,
 } from "./_helpers.js";
-import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../../extract/amounts.js";
 
 const CATEGORY = "construction";
 
@@ -346,6 +346,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
   }),
   presence({
     id: "CON-015",
+    version: "1.1.0",
     name: "Identified claimant + property + project",
     description:
       "Lien waiver must identify the claimant, the property / project, and the through-date / payment amount.",
@@ -361,11 +362,15 @@ const LIEN_WAIVER_RULES: Rule[] = [
     present_patterns: [
       /(claimant|undersigned|subcontractor)/i,
       /(property|project|job)/i,
-      /(through\s+(the\s+)?date|payment\s+amount|amount\s+of\s+[$€£¥₹₩₽])/i,
+      new RegExp(
+        String.raw`(through\s+(the\s+)?date|payment\s+amount|amount\s+of\s+${CURRENCY_MARK})`,
+        "i",
+      ),
     ],
   }),
   presence({
     id: "CON-016",
+    version: "1.1.0",
     name: "Scope of waiver — limited to amount received / through-date",
     description:
       "Waiver must limit its effect to the amount actually received and through the stated date.",
@@ -379,7 +384,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
     recommendation:
       "Add 'Scope' limiting the waiver to the amount paid and through the through-date specified.",
     present_patterns: [
-      /(amount\s+of\s+[$€£¥₹₩₽]|through\s+(the\s+)?date)/i,
+      new RegExp(String.raw`(amount\s+of\s+${CURRENCY_MARK}|through\s+(the\s+)?date)`, "i"),
       /(waives?|releases?)/i,
     ],
     require_all_present: true,
@@ -517,6 +522,7 @@ const BOND_RULES: Rule[] = [
   }),
   presence({
     id: "CON-022",
+    version: "1.1.0",
     name: "Penal sum",
     description: "Bond must state the penal sum (maximum surety liability).",
     citation: millerAct(),
@@ -527,8 +533,11 @@ const BOND_RULES: Rule[] = [
       "Surety liability is capped at the penal sum; the bond must state it. Miller Act and Little Miller Acts require it.",
     recommendation: "Add 'Penal Sum' specifying the maximum surety obligation in dollars.",
     present_patterns: [
-      /(penal\s+sum|sum\s+of\s+[$€£¥₹₩₽]|in\s+the\s+penal\s+amount)/i,
-      new RegExp(String.raw`(?:[$€£¥₹₩₽]\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
+      new RegExp(
+        String.raw`(penal\s+sum|sum\s+of\s+${CURRENCY_MARK}|in\s+the\s+penal\s+amount)`,
+        "i",
+      ),
+      new RegExp(String.raw`(?:${CURRENCY_MARK}\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
     ],
   }),
   presence({
@@ -604,6 +613,7 @@ const BOND_RULES: Rule[] = [
 const CHANGE_ORDER_RULES: Rule[] = [
   presence({
     id: "CON-026",
+    version: "1.1.0",
     name: "Original contract sum + revised contract sum",
     description:
       "Change order must reference the original contract sum and state the revised contract sum.",
@@ -618,7 +628,7 @@ const CHANGE_ORDER_RULES: Rule[] = [
     present_patterns: [
       /(original\s+contract\s+sum)/i,
       /(revised\s+contract\s+sum|new\s+contract\s+sum)/i,
-      new RegExp(String.raw`(?:[$€£¥₹₩₽]\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
+      new RegExp(String.raw`(?:${CURRENCY_MARK}\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
     ],
   }),
   presence({

@@ -35,6 +35,7 @@ import {
   recordingAct,
   bnkPractice,
 } from "./_helpers.js";
+import { CURRENCY_MARK } from "../../../../extract/amounts.js";
 
 /**
  * An ENTITY among the parties — the premise of the affirmative covenants
@@ -91,6 +92,7 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const PROMISSORY_NOTE_RULES: Rule[] = [
   presence({
     id: "BNK-001",
+    version: "1.1.0",
     name: "Maker, payee, and principal amount",
     description: "Promissory note must identify maker, payee, and principal amount.",
     citation: ucc("3-104", "Negotiable instrument requirements"),
@@ -103,7 +105,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
     present_patterns: [
       /(maker|borrower)/i,
       /(payee|lender|holder)/i,
-      /(principal\s+(amount|sum)|[$€£¥₹₩₽])/i,
+      new RegExp(String.raw`(principal\s+(amount|sum)|${CURRENCY_MARK})`, "i"),
     ],
   }),
   presence({
@@ -699,7 +701,7 @@ const GUARANTY_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-024",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Continuing nature + maximum amount (limited guaranty)",
     description:
       "Guaranty should state whether it is continuing and any maximum dollar limitation.",
@@ -726,7 +728,10 @@ const GUARANTY_RULES: Rule[] = [
     // ambiguous. Ambiguity is what the rule's own explanation says it is for.
     present_patterns: [
       /continuing\s+guarant/i,
-      /(maximum\s+(amount|liability)|\bcaps?\b|limit\s+of\s+[$€£¥₹₩₽]|aggregate\s+liability)/i,
+      new RegExp(
+        String.raw`(maximum\s+(amount|liability)|\bcaps?\b|limit\s+of\s+${CURRENCY_MARK}|aggregate\s+liability)`,
+        "i",
+      ),
       /\bgood[-\s]guy\b/i,
       /\band\s+not\s+thereafter\b/i,
       /\b(?:liability|obligations?|guaranty)\b[^.]{0,80}?\b(?:ends?|terminates?|ceases?|expires?)\s+(?:on|upon|as\s+of)\b/i,

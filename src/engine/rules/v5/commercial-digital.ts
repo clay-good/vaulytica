@@ -13,7 +13,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, practice, stateLaw, ucc, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "commercial";
 
@@ -676,13 +676,13 @@ const VENUE = pack("venue-rental-agreement", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Insurance and additional-insured status",
     cite: practice("venue-insurance", "insurance requirements in venue rental agreements"),
     pat: [
       /insur(e|ance)/i,
       new RegExp(
-        String.raw`(additional[-\s]+insured|certificate\s+of\s+insurance|general\s+liability|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS}))`,
+        String.raw`(additional[-\s]+insured|certificate\s+of\s+insurance|general\s+liability|(?:${CURRENCY_MARK}\d|${AMOUNT_IN_WORDS}))`,
         "i",
       ),
     ],

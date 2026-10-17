@@ -186,8 +186,12 @@ const MONEY_ROOTS = DOCUMENT_READING_ROOTS;
  * sweep from flagging three deadline recognizers as blind to a sum they never
  * read.
  */
+// `CURRENCY_MARK` (9.932.0) is the token rules use for "there is money here";
+// without it in this list, a rule written `${CURRENCY_MARK}\d` with no word
+// form would be invisible to this sweep \u2014 the blind spot `spelled-period`'s
+// detector turned out to have for a `|`.
 const CURRENCY =
-  /[\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd]|\\\$(?![{/`])|CURRENCY_TOKEN|\[\$\{CURRENCY_GLYPHS\}\]|\bUSD/;
+  /[\u20ac\u00a3\u00a5\u20b9\u20a9\u20bd]|\\\$(?![{/`])|CURRENCY_TOKEN|CURRENCY_MARK|\[\$\{CURRENCY_GLYPHS\}\]|\bUSD/;
 const UNBOUNDED_DIGITS = /\\d|\[\\d/;
 const READS_A_SUM_IN_WORDS = /AMOUNT_IN_WORDS|million|thousand|dollars/i;
 
@@ -196,6 +200,11 @@ const DECLARED_MONEY = declaredExceptions([
     file: "src/extract/amounts.ts",
     pattern: "CAD|AUD|US|CA|AU|NZ|HK|MX",
     why: "CURRENCY_TOKEN itself — AMOUNT_IN_WORDS is its sibling in this file",
+  },
+  {
+    file: "src/extract/amounts.ts",
+    pattern: "(?:${CURRENCY_TOKEN})\\s?(?=\\d)",
+    why: "CURRENCY_MARK itself — a building block; the rules that use it are swept here",
   },
   {
     file: "src/extract/definitions.ts",

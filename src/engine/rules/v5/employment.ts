@@ -11,6 +11,7 @@ import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, stateLaw, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
 import { truncateQuote } from "../../text.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "employment";
 
@@ -302,11 +303,15 @@ const BONUS = pack("bonus-plan", C, [
 const RELOCATION = pack("relocation-agreement", C, [
   {
     id: "EMP-120",
+    ver: "1.1.0",
     name: "Benefits provided and dollar cap",
     cite: practice("relocation-benefits", "scope and caps in relocation benefit agreements"),
     pat: [
       /(relocation\s+(benefits|expenses|assistance)|moving\s+expenses)/i,
-      /(up\s+to\s+[$€£¥₹₩₽]|not\s+to\s+exceed|maximum\s+of|lump\s+sum)/i,
+      new RegExp(
+        String.raw`(up\s+to\s+(?:${CURRENCY_MARK}|${AMOUNT_IN_WORDS})|not\s+to\s+exceed|maximum\s+of|lump\s+sum)`,
+        "i",
+      ),
     ],
     why: "Relocation packages are commonly described in an offer letter and never bounded. Without a cap and a category list, the reimbursement argument arrives with the invoices.",
     fix: "Enumerate the reimbursable categories, the dollar cap, and the documentation and deadline for submitting expenses.",

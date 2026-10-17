@@ -488,7 +488,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -970,7 +970,7 @@
       "id": "RISK-005-s1-0",
       "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -1121,11 +1121,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "a74eafd361918f38dd863d017560abd4839569b92b85f8c55d4a370ea7fcbc97",
+  "result_hash": "2fbef4a794788df3a43fa837bca97ca98284373c371bac7c4633521fc02627db",
   "source_file": {
     "name": "bad-nda.docx",
     "sha256": "06ef03390c5dc6e696e8d41505220db6858f8f47c987bebe2b381f9f7d53a58b",
     "size_bytes": 8974
   },
-  "version": "9.931.0"
+  "version": "9.932.0"
 }

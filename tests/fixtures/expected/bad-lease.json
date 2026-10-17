@@ -490,7 +490,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -976,7 +976,7 @@
       "id": "RISK-005-s1-0",
       "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -1295,11 +1295,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "08ce61ca2eb3b25e490659588dc1502e37e30d2fc276547c85e06ecede325686",
+  "result_hash": "71e69cacf75ce647b56549efa2b7d3efafc417aad3a9e7e95fde568d00bc6d8a",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.931.0"
+  "version": "9.932.0"
 }

@@ -118,6 +118,20 @@ export const CURRENCY_GLYPHS = "$€£¥₹₩₽";
 // insurance minimum was recorded as five million US dollars. Three-letter codes
 // only: "a $500 fee" must never read as A$.
 export const CURRENCY_TOKEN = String.raw`\b(?:USD|CAD|AUD|NZD|HKD|SGD|MXN|BRL)\s\$|\b(?:CAD|AUD|US|CA|AU|NZ|HK|MX|C|A|S|R)\$|[${CURRENCY_GLYPHS}]|\b(?:USD|EUR|GBP|JPY|CAD|AUD|NZD|CHF|CNY|INR|KRW|BRL|MXN|ZAR|SGD|HKD|SEK|NOK|DKK|RUB)(?:\b|(?=\d))`;
+
+/**
+ * "There is money here", for a RULE pattern. Rules hand-copied the glyph class
+ * `[$€£¥₹₩₽]`, so a sum written with its ISO code — "USD 1,000,000", the norm in
+ * cross-border drafting — was no sum at all: a promissory note for USD
+ * 1,000,000 drew BNK-001's CRITICAL "Maker / payee / principal clause missing".
+ *
+ * A glyph alone still counts, as it did ("$________" on a blank form); any other
+ * currency token counts only when a figure follows, after at most one space,
+ * which it consumes. The digit requirement matters because rules run with the
+ * `i` flag and the code list includes RUB: a bare token would let "rub" satisfy
+ * a money check.
+ */
+export const CURRENCY_MARK = String.raw`(?:[${CURRENCY_GLYPHS}]|(?:${CURRENCY_TOKEN})\s?(?=\d))`;
 const CUR = CURRENCY_TOKEN;
 // Digit counts are BOUNDED (`{1,40}`, not `*`/`+`): in RANGE_NUMERIC
 // the amount is followed by a REQUIRED range connector, so an unbounded `\d+`

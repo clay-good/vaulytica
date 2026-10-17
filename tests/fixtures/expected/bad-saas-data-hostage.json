@@ -492,7 +492,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -978,7 +978,7 @@
       "id": "RISK-005-s1-0",
       "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -1134,11 +1134,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "125b0652e45fc2268a44714d1d97751d582aa6b592aa46b4b042cc9e75ee1a56",
+  "result_hash": "d4d9a624ead9193ffafcd5f56a376d84d7a283ce703cf18313212fb6a5c3e90b",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.931.0"
+  "version": "9.932.0"
 }

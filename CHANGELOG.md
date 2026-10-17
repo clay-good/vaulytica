@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.932.0] — 2026-10-17
+
+### Fixed
+- 🚨 **A sum written with its ISO currency code was no sum at all.** Rule
+  patterns had hand-copied the glyph class `[$€£¥₹₩₽]`, so "USD 1,000,000", the
+  norm in cross-border drafting, matched nothing. A promissory note for
+  USD 1,000,000 drew BNK-001's CRITICAL "Maker / payee / principal clause
+  missing", a performance bond CON-022's CRITICAL "Penal sum clause missing",
+  and CON-026, REG-006, GOV-133 and RE-112 likewise at CRITICAL. A sweep running
+  all 1,936 rules over one clause in seven money spellings found **19 rules** that
+  disagreed between "$1,000,000" and "USD 1,000,000".
+- New `CURRENCY_MARK` in `src/extract/amounts.ts`, built on the existing
+  `CURRENCY_TOKEN`: a glyph alone still counts (so "$________" on a blank form is
+  unchanged), and any other currency token counts when a figure follows after at
+  most one space. The figure is required because rules run with the `i` flag and
+  the code list includes RUB, so a bare token would let the word "rub" satisfy a
+  money check. 26 patterns now use it, and RISK-005's cap recognizer is one of
+  them, so "aggregate liability shall be USD 1,000,000" reads as a cap. EMP-120 and
+  SET-131 also read "one million dollars ($1,000,000)" through `AMOUNT_IN_WORDS`.
+- All 25 rules whose behavior changed carry a version bump (checked at runtime
+  against HEAD, rule by rule).
+
+**Every rule's findings over the whole corpus (327 specimens plus every bundle
+document, 2,213 findings) are identical, line for line, before and after.** That
+was measured against a separate worktree of HEAD, and the same harness reproduces
+the 19-rule gap on HEAD, so the empty diff is real. Goldens move only
+`rule_version` strings.
+
+### Added
+- `tests/integration/currency-code-parity.test.ts`: `CURRENCY_MARK`'s own
+  contract; every rule giving the same verdict for "$" and "USD" spellings of
+  seven money clauses; and a static ratchet forbidding the bare glyph class in
+  rule sources outside two listed, reasoned exceptions (FIN-001's optional glyph,
+  and INS's finding-*raising* sublimit test, which is unmeasured on ISO codes).
+  The parity test and the ratchet both fail with HEAD's rule files.
+- POL-050 is excluded on purpose: it looks for the federal gift figures "$20" and
+  "$50", not for any sum.
+- `spelled-amount.test.ts`'s money detector now recognizes `CURRENCY_MARK`.
+  Without it, a rule written `${CURRENCY_MARK}\d` with no word form would have
+  been invisible to the sweep that requires sums to be read in words too, the
+  same blind spot the period detector had for `|`. Proven by stripping the word
+  form from one converted pattern: the sweep flags it. `CURRENCY_MARK`'s own
+  definition is declared beside `CURRENCY_TOKEN`'s.
+- `CURRENCY_MARK`'s contract lives in `src/extract/amounts.test.ts`, so the
+  mutation run counts its kills. The all-rules parity sweep takes ~3–20s per run
+  and stays out of the per-mutant scope.
+
 ## [9.931.0] — 2026-10-17
 
 ### Fixed

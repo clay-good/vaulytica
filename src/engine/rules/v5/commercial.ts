@@ -12,6 +12,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { cfr, expressDenial, practice, standardForm, stateLaw, ucc, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "commercial";
 
@@ -1237,11 +1238,15 @@ const MEDIA_RELEASE = pack("media-release", C, [
   },
   {
     id: "COMM-185",
+    ver: "1.1.0",
     name: "Consideration recited",
     cite: practice("release-consideration", "consideration in likeness releases"),
     pat: [
       /(in\s+consideration\s+of|for\s+good\s+and\s+valuable\s+consideration)/i,
-      /([$€£¥₹₩₽]|payment|compensation|receipt\s+of\s+which\s+is\s+acknowledged)/i,
+      new RegExp(
+        String.raw`(${CURRENCY_MARK}|payment|compensation|receipt\s+of\s+which\s+is\s+acknowledged)`,
+        "i",
+      ),
     ],
     why: "A gratuitous release is revocable in several jurisdictions. Reciting consideration — even nominal, and acknowledging receipt — is what makes the release a contract rather than a permission.",
     fix: "Recite the consideration paid and acknowledge its receipt, or state the non-monetary consideration exchanged.",

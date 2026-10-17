@@ -488,7 +488,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -969,7 +969,7 @@
       "id": "RISK-005-s1-0",
       "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -1100,11 +1100,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "67ce6896a4c602fb39de2b239899d524e72d77814c440e530aeac0a26ae6c158",
+  "result_hash": "d2218ab93df129cd8faf7eb31f4aee2be3bcfd2159fabc8ac2111649f40458a2",
   "source_file": {
     "name": "bad-unilateral-nda.docx",
     "sha256": "be3d09f211f21ac2141d1ff1d2ec9023dafe4f56502a8a6b66aec83361fdeca6",
     "size_bytes": 8915
   },
-  "version": "9.931.0"
+  "version": "9.932.0"
 }

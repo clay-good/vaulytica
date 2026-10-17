@@ -8,6 +8,7 @@ import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, uniformAct } from "./_helpers.js";
 import { MODAL_QUALIFIER } from "../_helpers.js";
 import { dgcl } from "../v4/governance/_helpers.js";
+import { CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "governance";
 
@@ -454,10 +455,11 @@ const FISCAL_SPONSORSHIP = pack("fiscal-sponsorship-agreement", C, [
 const GRANT = pack("grant-agreement", C, [
   {
     id: "GOV-133",
+    ver: "1.1.0",
     name: "Grant amount, period, and payment schedule",
     cite: cfr("2", "200.211", "Uniform Guidance — information contained in a federal award"),
     pat: [
-      /(grant\s+(amount|award)|award\s+amount|[$€£¥₹₩₽])/i,
+      new RegExp(String.raw`(grant\s+(amount|award)|award\s+amount|${CURRENCY_MARK})`, "i"),
       /(grant\s+period|period\s+of\s+performance|payment\s+schedule|disburse)/i,
     ],
     why: "The period of performance bounds which costs are allowable. Costs incurred outside it are unallowable even when the work was necessary.",

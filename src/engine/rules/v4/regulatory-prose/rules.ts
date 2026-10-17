@@ -36,7 +36,7 @@ import {
   blueSky,
   regPractice,
 } from "./_helpers.js";
-import { AMOUNT_IN_WORDS } from "../../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../../extract/amounts.js";
 
 const CATEGORY = "regulatory-prose";
 
@@ -131,7 +131,7 @@ const FORM_D_RULES: Rule[] = [
   }),
   presence({
     id: "REG-006",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Offering amount + minimum investment",
     description:
       "Form D narrative must state aggregate offering amount and any minimum investment.",
@@ -146,7 +146,7 @@ const FORM_D_RULES: Rule[] = [
     present_patterns: [
       /(offering\s+(size|amount|aggregate))/i,
       /(minimum\s+(investment|subscription))/i,
-      new RegExp(String.raw`(?:[$€£¥₹₩₽]\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
+      new RegExp(String.raw`(?:${CURRENCY_MARK}\s*[\d,]+|${AMOUNT_IN_WORDS})`, ""),
     ],
   }),
   presence({

@@ -8,7 +8,7 @@ import { DATE_SHAPE } from "../../../extract/dates.js";
 import { pack } from "./_pack.js";
 import { cfr, expressDenial, practice, usc } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "ip-licensing";
 
@@ -420,7 +420,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     id: "IPL-128",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Indemnity and insurance from the licensee",
     cite: practice(
       "university-indemnity",
@@ -429,7 +429,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     pat: [
       /indemnif/i,
       new RegExp(
-        String.raw`(insur(e|ance)|product\s+liability|name\s+the\s+university\s+as\s+an\s+additional[-\s]+insured|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS}))`,
+        String.raw`(insur(e|ance)|product\s+liability|name\s+the\s+university\s+as\s+an\s+additional[-\s]+insured|(?:${CURRENCY_MARK}\d|${AMOUNT_IN_WORDS}))`,
         "i",
       ),
     ],

@@ -16,7 +16,7 @@ import {
   usc,
 } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "banking";
 
@@ -484,12 +484,13 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
   },
   {
     id: "BNK-133",
+    ver: "1.1.0",
     name: "Fee schedule and penalty pricing",
     cite: cfr("12", "1026.52", "Regulation Z — limitations on fees"),
     pat: [
       /(annual\s+fee|late\s+fee|returned\s+payment|foreign\s+transaction|cash\s+advance\s+fee)/i,
       new RegExp(
-        String.raw`(penalty\s+apr|(?:[$€£¥₹₩₽]\d|${AMOUNT_IN_WORDS})|percent\s+of\s+the)`,
+        String.raw`(penalty\s+apr|(?:${CURRENCY_MARK}\d|${AMOUNT_IN_WORDS})|percent\s+of\s+the)`,
         "i",
       ),
     ],

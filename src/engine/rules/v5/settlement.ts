@@ -8,6 +8,7 @@ import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { frcp, fre, stateLaw, practice, standardForm, modelRule, agency } from "./_helpers.js";
 import { PERIOD_COUNT } from "../../../extract/counts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "settlement";
 
@@ -63,13 +64,17 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
   },
   {
     id: "SET-104",
+    ver: "1.1.0",
     name: "Amount, payment terms, and default acceleration",
     cite: practice(
       "consent-judgment-payment",
       "payment and acceleration terms in stipulated judgments",
     ),
     pat: [
-      /(judgment\s+(is\s+)?(hereby\s+)?entered|in\s+the\s+(amount|sum)\s+of|[$€£¥₹₩₽])/i,
+      new RegExp(
+        String.raw`(judgment\s+(is\s+)?(hereby\s+)?entered|in\s+the\s+(amount|sum)\s+of|${CURRENCY_MARK})`,
+        "i",
+      ),
       /(payment|instal?lment|default|acceler|interest)/i,
     ],
     why: "The value of a consent judgment is that it converts a payment promise into an executable judgment. Without an acceleration clause on default, the plaintiff must move for entry each time an installment is missed.",
@@ -398,6 +403,7 @@ const ARB_DEMAND = pack("arbitration-demand", C, [
   },
   {
     id: "SET-125",
+    ver: "1.1.0",
     name: "Relief and amount in controversy",
     cite: standardForm(
       "AAA Commercial Arbitration Rules",
@@ -406,7 +412,10 @@ const ARB_DEMAND = pack("arbitration-demand", C, [
     ),
     pat: [
       /(relief\s+sought|remedy|amount\s+(in\s+controversy|claimed))/i,
-      /([$€£¥₹₩₽]|damages|specific\s+performance|declaratory|interest|fees)/i,
+      new RegExp(
+        String.raw`(${CURRENCY_MARK}|damages|specific\s+performance|declaratory|interest|fees)`,
+        "i",
+      ),
     ],
     why: "The claimed amount sets the administrative fee tier and, under expedited rules, whether the case is heard on documents or by a panel.",
     fix: "State the relief sought and the amount in controversy, or state that the amount is undetermined and why.",
@@ -489,10 +498,14 @@ const EXPERT = pack("expert-witness-retention", C, [
   },
   {
     id: "SET-131",
+    ver: "1.1.0",
     name: "Rates, retainer, and deposition-fee responsibility",
     cite: frcp("26(b)(4)(E)", "payment of expert fees by the party seeking discovery"),
     pat: [
-      /(hourly\s+rate|fees?\s+(of|for)\s+[$€£¥₹₩₽]|retainer)/i,
+      new RegExp(
+        String.raw`(hourly\s+rate|fees?\s+(of|for)\s+(?:${CURRENCY_MARK}|${AMOUNT_IN_WORDS})|retainer)`,
+        "i",
+      ),
       /(deposition|the\s+party\s+(seeking|taking)|reasonable\s+fee)/i,
     ],
     why: "Rule 26(b)(4)(E) requires the party taking the deposition to pay the expert a reasonable fee. Whether the retaining party fronts it, and at what rate, needs to be agreed before the notice arrives.",

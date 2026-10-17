@@ -491,7 +491,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1023,7 +1023,7 @@
       "id": "RISK-005-s1-0",
       "recommendation": "Add a limitation-of-liability clause: a cap tied to something knowable (the fees paid in a stated period, or a figure), a consequential-damages waiver, and the carve-outs that are not capped — usually confidentiality, indemnity, fraud, and wilful misconduct.",
       "rule_id": "RISK-005",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No limitation-of-liability clause detected"
@@ -1188,11 +1188,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "002287e5b3557dfe95e404c6b17790400d9caee587f7a97718499444254e2b4d",
+  "result_hash": "20468a582e6a6213d9f79261bf9fc74e9c4d57ceea30de8fdc1ae5a978bb9a2f",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.931.0"
+  "version": "9.932.0"
 }

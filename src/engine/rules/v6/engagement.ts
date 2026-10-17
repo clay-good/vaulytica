@@ -13,7 +13,7 @@
 
 import type { Rule } from "../../finding.js";
 import { pack, modelRule, practice, ethicsOpinion } from "./_helpers.js";
-import { AMOUNT_IN_WORDS } from "../../../extract/amounts.js";
+import { AMOUNT_IN_WORDS, CURRENCY_MARK } from "../../../extract/amounts.js";
 
 const C = "law-practice";
 
@@ -273,10 +273,11 @@ const CONTINGENCY = pack("contingency-fee-agreement", C, [
 const FLAT_FEE = pack("flat-fee-agreement", C, [
   {
     id: "ENG-016",
+    ver: "1.1.0",
     name: "Services the flat fee covers",
     cite: modelRule("1.5(b)", "fees — communication of the basis or rate"),
     pat: [
-      /(flat\s+fee|fixed\s+fee|the\s+fee\s+(of|is)\s+[$€£¥₹₩₽])/i,
+      new RegExp(String.raw`(flat\s+fee|fixed\s+fee|the\s+fee\s+(of|is)\s+${CURRENCY_MARK})`, "i"),
       /(covers?|includes?|for\s+the\s+following|scope\s+of\s+(the\s+)?(work|services))/i,
     ],
     all: true,
