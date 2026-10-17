@@ -64,3 +64,18 @@ describe("TEMP-008 — the cure period's unit", () => {
     expect(f?.title).toBe("Cure period: 20 business days");
   });
 });
+
+// The shared `PERIOD_COUNT` had no left boundary on its bare numeral, so it read
+// the tail of a longer figure: "3.25 days" was a 25-day cure period.
+describe("TEMP-008 — a count it cannot read whole is not read in part", () => {
+  it.each(["3.25", "10.5", "1,030", "1030"])("reads no cure period from %s days", (n) => {
+    expect(
+      TEMP_008.check(doc(`Licensee may cure any breach within ${n} days after notice.`)),
+    ).toBeNull();
+  });
+
+  it("still reads a whole count", () => {
+    const f = TEMP_008.check(doc("Licensee may cure any breach within 30 days after notice."));
+    expect(f?.title).toBe("Cure period: 30 days");
+  });
+});

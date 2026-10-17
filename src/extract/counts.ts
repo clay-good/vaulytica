@@ -51,8 +51,15 @@ const WORDS = `(?:${HUNDREDS}|${SMALL})`;
  * — the optional paren with a free `\s*` behind it lets a match begin on the
  * space before the digits, and every excerpt built from the span then carries
  * a leading blank.
+ *
+ * 🚨 The bare numeral needs a LEFT boundary. Without one it read the tail of a
+ * longer figure: "3.25 days" was a 25-day cure period, "10.5 days" a 5-day
+ * one TEMP-009 called unusual, and "1,030 days" — or "1030 days", where the
+ * engine walks forward to "030" — a 30-day one. `(?<![\d.,])` leaves those
+ * unread, which is the honest outcome; a count this pattern cannot read whole
+ * it must not read in part.
  */
-export const PERIOD_COUNT = `(?:\\b(?:${WORDS})\\s*\\(\\s*\\d{1,3}\\s*\\)|\\b(?:${WORDS})|\\(\\s*\\d{1,3}\\s*\\)|\\d{1,3})`;
+export const PERIOD_COUNT = `(?:\\b(?:${WORDS})\\s*\\(\\s*\\d{1,3}\\s*\\)|\\b(?:${WORDS})|\\(\\s*\\d{1,3}\\s*\\)|(?<![\\d.,])\\d{1,3})`;
 
 /**
  * The number words, in ONE place.

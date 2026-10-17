@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.926.0] — 2026-10-17
+
+### Fixed
+- **The shared period count read the tail of a longer number.** The bare-numeral
+  branch of `PERIOD_COUNT` (`extract/counts.ts`, used by 39 files) had no left
+  boundary: **"3.25 days" was a 25-day cure period**, TEMP-009 called
+  "10.5 days" an *unusual* 5-day cure period, and "1,030 days" (or "1030 days",
+  where the engine walks forward to "030") was 30 days. `(?<![\d.,])` leaves a
+  count it cannot read whole unread. Found by extending 9.925.0's
+  decimal-neighbor sweep (all 1,936 rules; fires on N.5 but on neither N nor
+  N+1) to durations, money and counts.
+  - In the corpus this boundary touches only "accrue … at the rate of 1.5 days per
+    month" and "averaged 9.4 months", both previously readable as 5 days and 4 months.
+    Every golden is unchanged apart from the version stamp.
+
+### Noted, not changed
+- The same sweep shows 30 presence rules reporting "— not found" when a duration
+  is written as a decimal ("within 6.5 days"), because their patterns want a
+  whole number. Contracts do not write decimal day counts, so this is recorded
+  rather than widened.
+
 ## [9.925.0] — 2026-10-17
 
 ### Fixed
