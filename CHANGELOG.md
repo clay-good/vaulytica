@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.927.0] — 2026-10-17
+
+### Fixed
+- **`FIN-004` reported a three-digit rate as its last two digits.** "Late
+  payments bear interest at 125% per annum" was "Late-payment interest rate
+  **25%** may exceed usury limits", understating the most extreme rate five-fold.
+  Merchant-cash-advance and payday rates do exceed 100%. v1.3.0 reads up to three
+  digits behind a `(?<![\d.,])` boundary.
+- `FIN-009` gets the same boundary (v1.10.0), so "1,030%" is not read as its tail
+  "030". The version also covers the fraction-of-a-rate guard 9.925.0 added
+  without bumping it.
+
+Found by a third sweep over all 1,936 rules, which compares the figure each
+finding **states** with the document's figure and flags any finding that quotes
+only its tail (25 from 125, 30 from 1,030). Numbers the rule also states for an
+unrelated figure (thresholds, statute numbers) are filtered out. After the fixes
+the sweep returns only those threshold mentions. Goldens move only the two
+`rule_version` strings; **zero findings changed**.
+
 ## [9.926.0] — 2026-10-17
 
 ### Fixed

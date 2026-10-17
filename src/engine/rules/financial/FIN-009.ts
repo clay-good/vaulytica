@@ -26,7 +26,7 @@ import { emit, firstParagraphMatch, matchedSentence } from "../_helpers.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -68,10 +68,11 @@ export const rule: Rule = {
       // amount between the trigger and the rate, and a plain `[^.]` window
       // dies at the cents — the same late fee written "$50" was read and the
       // one written "$50.00" was not (v1.6.1).
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(?<![\d.,])(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:per\s+(month|year|annum|day)|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
-    // "one-half of 2% per month" is 1% a month: the captured figure is what the
+    // v1.10.0 — the rate group carries `(?<![\d.,])`, so "1,030%" is not read
+    // as its tail "030" (30%). And: "one-half of 2% per month" is 1% a month: the captured figure is what the
     // rate is a FRACTION OF, not the rate. Read as 2%, it asserted "~24.0%"
     // usury on a 12% loan. No assertion rather than a wrong one.
     const rateAt = /\d+(?:\.\d+)?\s*(?:%|per\s?cent)/i.exec(hit.match[0])?.index ?? 0;

@@ -62,3 +62,12 @@ describe("FIN-004 — late-payment interest-rate sanity (period-honest)", () => 
     ).toBeNull();
   });
 });
+
+describe("FIN-004 — reads a three-digit rate whole (v1.3.0)", () => {
+  it("reports 125%, not its last two digits", () => {
+    const f = FIN_004.check(
+      buildContext(["Terms", "Late payments bear interest at 125% per annum."]),
+    );
+    expect(f?.title).toBe("Late-payment interest rate 125% may exceed usury limits");
+  });
+});

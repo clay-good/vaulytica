@@ -299,4 +299,9 @@ describe("FIN-009 — a branch that asserts no law cites none", () => {
     ]);
     expect(FIN_009.check(ctx)?.title).toMatch(/24/);
   });
+
+  it("does not read the tail of a comma-grouped figure as the rate", () => {
+    const ctx = buildContext(["Late Payment", "A late fee of 1,030% per month applies."]);
+    expect(FIN_009.check(ctx)?.title ?? "").not.toMatch(/360/);
+  });
 });
