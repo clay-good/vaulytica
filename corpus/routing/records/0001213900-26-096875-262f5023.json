@@ -5,5 +5,5 @@
   "text_sha256": "262f5023817fc4e3ab5dcc7510bb9ccaf36312dc87fdab183f33a67301cfb0ce",
   "title": "The purpose of this agreement (this “Confirmation”)",
   "label": "derivative confirmation",
-  "observed_route": "distribution-agreement"
+  "observed_route": "generic-fallback"
 }

@@ -5,5 +5,5 @@
   "text_sha256": "8f6a50f9dc61b7a804da0b59833d0a930e1ca0ab699e7e921369b0d8334f81bd",
   "title": "LOCK-UP AGREEMENT",
   "label": "lock-up agreement",
-  "observed_route": "rsu-grant"
+  "observed_route": "generic-fallback"
 }

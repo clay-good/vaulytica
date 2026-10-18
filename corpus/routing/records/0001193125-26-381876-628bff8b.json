@@ -5,5 +5,5 @@
   "text_sha256": "628bff8be81c3e3068bb3e1c22b24c01c085391b63943932e732925139e56b25",
   "title": "NOTE PURCHASE AGREEMENT",
   "label": "note purchase agreement",
-  "observed_route": "loan-agreement"
+  "observed_route": "generic-fallback"
 }

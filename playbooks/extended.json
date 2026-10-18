@@ -7885,7 +7885,10 @@
         "equity incentive plan",
         "stock incentive plan",
         "omnibus incentive plan",
-        "stock plan"
+        "stock plan",
+        "omnibus award plan",
+        "incentive award plan",
+        "stock and award plan"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -17802,7 +17805,10 @@
       "title_keywords": [
         "restricted stock unit",
         "rsu",
-        "rsu grant"
+        "rsu grant",
+        "restricted share unit",
+        "performance share unit",
+        "performance stock unit"
       ],
       "required_clauses": [],
       "distinguishing_phrases": [
@@ -21530,8 +21536,8 @@
     "match_features": {
       "title_keywords": [
         "trust amendment",
-        "amendment to the",
-        "amendment to",
+        "amendment to the … trust",
+        "amendment to … trust",
         "amendment to trust",
         "restatement of trust",
         "first amendment to the trust"

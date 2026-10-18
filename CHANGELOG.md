@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.940.0] — 2026-10-18
+
+### Fixed
+- **The router's wrong routes on public filings, measured against the 9.939.0
+  EDGAR sample with its labels unchanged.** Of the 187 exhibits the catalog has a
+  type for, accepted routes went from 98 (52%) to 119 (64%) and wrong ones from
+  78 (42%) to 37 (20%). Of the 140 it has no type for, 52 now fall back where 18
+  did. Four causes, each fixed in general, not per exhibit:
+  - **EDGAR's document header was read as the title.** The SEC serves an
+    exhibit inside its SGML wrapper, so a saved or copied exhibit opens on
+    "EX-10.1 / 2 / tm…_ex10-1.htm". The sequence number ended the run of title
+    lines, so the title read "EX-10.1" and the exhibit routed on its body.
+    `dropLegends` now drops that header, whether one field to a line or all on
+    one line, and a bare type code wherever it repeats. That alone moved 44
+    exhibits, and 19 more routed correctly.
+  - **Three common words routed a hundred-page contract.** Three
+    distinguishing phrases clear the threshold, and in a long document they
+    were often single dictionary words. A credit agreement went to `answer` (a
+    court pleading) on "admits", "denies" and "paragraph". An employment contract
+    went to `durable-poa-financial` on "principal", "incapacity" and "appoint". A
+    route with no title keyword and no required clause now needs at least two
+    *specific* phrases (more than one word, or not a word at all), and otherwise
+    falls back. Every hand-written specimen routes as before. The trade, stated plainly: 8
+    exhibits that body words had routed correctly now fall back, while 20 wrong
+    routes and 34 forced routes of untyped documents are gone. The fallback's
+    reasoning says why.
+  - **`trust-amendment` claimed every amendment.** Its title keywords included
+    "amendment to" and "amendment to the", so it took amendments to a sublease,
+    a promissory note and a registration rights agreement. A title keyword can now hold a
+    gap, "amendment to the … trust" (up to six words), and the family names
+    what it amends. 11 of its 15 commercial amendments are gone. Four remain:
+    three reached on generic amendment phrases in the body, and one that amends
+    a "Bank and Trust Company" plan.
+  - **EDGAR's names for existing types.** "FORM OF X" now earns X its opening
+    position. `rsu-grant` reads "restricted share unit", "performance share unit"
+    and "performance stock unit". `equity-incentive-plan` reads "omnibus award
+    plan", "incentive award plan" and "stock and award plan".
+- **Left as gaps, on purpose:**
+  - A bare "WARRANT" title: the keyword would also match "warranty".
+  - Merger "support agreements": `voting-agreement` is the NVCA venture
+    instrument, and its checks would not apply.
+  - Public-company securities purchase agreements: the catalog has no PIPE type.
+  - "Transition agreement": it names both an executive transition and M&A
+    transition services.
+  - An exhibit converted from PDF to positioned `<div>`s whose title extracts
+    as "S".
+
 ## [9.939.0] — 2026-10-18
 
 ### Fixed

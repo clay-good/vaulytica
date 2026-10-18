@@ -954,9 +954,32 @@ function cachedPattern(source: string): RegExp {
   return re;
 }
 
+/**
+ * A GAP in a feature: "amendment to the … trust" reads up to this many words
+ * where the ellipsis stands.
+ *
+ * A trust amendment is titled with the trust's own name between its two
+ * words — "SECOND AMENDMENT TO THE HARROWGATE FAMILY REVOCABLE LIVING TRUST" —
+ * so `trust-amendment` listed "amendment to" and "amendment to the" as its
+ * names, and those are the names of every amendment there is. On the first
+ * EDGAR routing sample it took 15 commercial amendments: to a sublease, a
+ * promissory note, a registration rights agreement, a merger agreement's
+ * investment agreement. The gap lets a family say what it amends.
+ */
+const FEATURE_GAP = " … ";
+const FEATURE_GAP_WORDS = 6;
+
 function matchesIn(corpus: Corpus, feature: string): boolean {
   const needle = foldFeature(feature.toLowerCase());
   if (needle.length === 0) return false;
+  if (needle.includes(FEATURE_GAP)) {
+    const source = needle
+      .split(FEATURE_GAP)
+      .map((part) => part.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+      .join(String.raw`(?:\s+\S+){0,${FEATURE_GAP_WORDS}}?\s+`);
+    const re = cachedPattern(String.raw`(?:^|[^a-z0-9])${source}(?![a-z0-9])`);
+    return re.test(corpus.plain) || re.test(corpus.spaced);
+  }
   const variants: Array<[string, string]> = [
     [corpus.plain, needle],
     [corpus.noHyphen, needle.replace(/-/g, "")],
@@ -1071,7 +1094,10 @@ function openingKeywordLength(title: Corpus, keyword: string): number {
   // earns the credit — the same line the feature matcher already draws.
   if (needle.length <= ACRONYM_MAX_LENGTH && /^[a-z0-9][a-z0-9. ]*$/.test(needle)) return 0;
   if (needle.length === 0) return 0;
-  const head = title.spaced.trimStart();
+  // "FORM OF VOTING AGREEMENT" is a voting agreement: EDGAR files a template
+  // under its own name with "Form of" in front, and the prefix cost the name
+  // its opening position.
+  const head = title.spaced.trimStart().replace(/^form\s+of\s+/, "");
   if (!head.startsWith(needle)) return 0;
   // The keyword must END where a word ends, so "guaranty" does not claim the
   // opening of a document titled "Guarantyship Waiver".
@@ -1382,7 +1408,12 @@ export function matchPlaybook(
     raw_confidence: round3(s.raw_score),
   }));
 
-  if (!top || top.playbook.id === GENERIC_FALLBACK_ID || top.score < MATCH_THRESHOLD) {
+  if (
+    !top ||
+    top.playbook.id === GENERIC_FALLBACK_ID ||
+    top.score < MATCH_THRESHOLD ||
+    onlyCommonWords(top)
+  ) {
     return {
       playbook_id: GENERIC_FALLBACK_ID,
       confidence: top ? round3(top.score) : 0,
@@ -1397,7 +1428,10 @@ export function matchPlaybook(
               raw_confidence: round3(s.raw_score),
             }))
         : [],
-      reasoning: buildFallbackReasoning(top),
+      reasoning:
+        top && top.score >= MATCH_THRESHOLD && onlyCommonWords(top)
+          ? `Best score was ${top.playbook.id} at ${round3(top.score)}, on common words in the body alone (${quote(top.matched_distinguishing_phrases)}) with no title or required clause; using ${GENERIC_FALLBACK_ID}.`
+          : buildFallbackReasoning(top),
     };
   }
 
@@ -1408,6 +1442,40 @@ export function matchPlaybook(
     alternatives,
     reasoning: buildReasoning(top),
   };
+}
+
+/**
+ * A route the BODY alone decided, on words any long contract contains.
+ *
+ * Three distinguishing phrases clear the threshold on their own (3 × 0.2), and
+ * that is right for a short document whose phrases are its register — "table of
+ * authorities", "alternate payee", "30(b)(6)". It is not right when the phrases
+ * are single dictionary words and the document runs to a hundred pages: on the
+ * first EDGAR routing sample, 118 exhibits were routed with no title match and
+ * no required clause on three such words. A credit agreement went to `answer`
+ * on "admits", "denies" and "paragraph"; an employment contract to
+ * `durable-poa-financial` on "principal", "incapacity" and "appoint"; 28
+ * exhibits to `loan-agreement` on "commitment", "borrower" and "facility".
+ *
+ * So a route with neither a title keyword nor a required clause needs at least
+ * two SPECIFIC phrases: more than one word, or a token that is not a word at
+ * all. Without them the document falls back, which says "not recognized"
+ * instead of reviewing it against another family's checks.
+ */
+const SPECIFIC_PHRASES_FOR_A_BODY_ROUTE = 2;
+
+function isSpecificPhrase(phrase: string): boolean {
+  const p = phrase.trim();
+  return /\s/.test(p) || !/^[a-z]+$/i.test(p);
+}
+
+function onlyCommonWords(top: ScoredPlaybook): boolean {
+  return (
+    top.matched_title_keywords.length === 0 &&
+    top.matched_required_clauses.length === 0 &&
+    top.matched_distinguishing_phrases.filter(isSpecificPhrase).length <
+      SPECIFIC_PHRASES_FOR_A_BODY_ROUTE
+  );
 }
 
 function clamp(n: number, lo: number, hi: number): number {

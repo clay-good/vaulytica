@@ -215,6 +215,26 @@ describe("the label table, against the router", () => {
     expect(unreached.sort()).toEqual(UNREACHED_WITHOUT_A_BODY);
   }, 120_000);
 
+  it("reads past EDGAR's document header to the title", async () => {
+    // EDGAR serves an exhibit inside its SGML wrapper, and the type, sequence
+    // and file name read as the document's first lines. Before 9.940.0 the
+    // title corpus was "EX-10.1" and the exhibit routed on its body alone.
+    const deps = await loadAccuracyDeps();
+    const { analyzeText } = await import("../cli/api.js");
+    // A cover page, as a credit agreement's is: the title over short lines.
+    // Without the header handling, every one of these fell to the fallback.
+    const body = `CONSULTING AGREEMENT\n\nDated as of March 2, 2026\n\namong\n\nALDER CORPORATION,\n\nas the Company,\n\nand\n\nBIRCH HOLDINGS LLC\n\nThis consulting agreement is entered into as of March 2, 2026 between Alder Corporation, a Delaware corporation, and Birch Holdings LLC.\n\n1. General. The parties agree to the terms set out below.\n`;
+    const plain = await analyzeText(body, "stub.txt", { deps });
+    expect(plain.playbook_id).toBe("consulting-agreement");
+    for (const header of [
+      "EX-10.1\n2\nalder_ex10-1.htm\nEX-10.1\n\nExhibit 10.1\n\nEXECUTION VERSION\n\n",
+      "EX-10.1 2 alder_ex10-1.htm EXHIBIT 10.1\n\nEXECUTION VERSION\n\n",
+    ]) {
+      const wrapped = await analyzeText(header + body, "stub.txt", { deps });
+      expect(wrapped.playbook_id, JSON.stringify(header)).toBe(plain.playbook_id);
+    }
+  }, 120_000);
+
   it("gives a title with no type of its own no type", async () => {
     const deps = await loadAccuracyDeps();
     const { analyzeText } = await import("../cli/api.js");

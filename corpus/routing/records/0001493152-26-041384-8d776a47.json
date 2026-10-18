@@ -5,5 +5,5 @@
   "text_sha256": "8d776a47c16e742c33594b97176bfbb6e30c4d7ac1b33588bf135c0ff8c21e9c",
   "title": "SECURITIES PURCHASE AGREEMENT",
   "label": "securities purchase agreement",
-  "observed_route": "board-resolution"
+  "observed_route": "generic-fallback"
 }

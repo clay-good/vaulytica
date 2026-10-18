@@ -5,5 +5,5 @@
   "text_sha256": "e293b14bbd43afd3aac397f6aebc5220f45b49f137bf96ce720247f1cf442231",
   "title": "The purpose of this communication (this “Confirmation”) is to set forth the terms and conditions of the above-referenced",
   "label": "derivative confirmation",
-  "observed_route": "rsu-grant"
+  "observed_route": "generic-fallback"
 }

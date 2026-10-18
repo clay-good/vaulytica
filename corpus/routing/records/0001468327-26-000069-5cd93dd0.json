@@ -5,5 +5,5 @@
   "text_sha256": "5cd93dd0a88658209d5d54a2d4c40ebfaea214282f0ff704158116875ca6c2b2",
   "title": "Stipulation of Settlement",
   "label": "class action settlement stipulation",
-  "observed_route": "distribution-agreement"
+  "observed_route": "generic-fallback"
 }

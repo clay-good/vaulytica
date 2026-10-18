@@ -5,5 +5,5 @@
   "text_sha256": "551a8aa760fb0dbaf630ab6cc985030deb5e8c07cf3ba4c9a678d2af214bc79b",
   "title": "WARRANT",
   "label": "warrant",
-  "observed_route": "loan-agreement"
+  "observed_route": "generic-fallback"
 }

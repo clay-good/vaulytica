@@ -5,5 +5,5 @@
   "text_sha256": "ed6bafbc2fe992e5cb45fbd252ef1c38dfe566847fe6dbcaa379b8ad096ba1fe",
   "title": "Restricted Stock Unit Grant Notice (Long Term Incentive Plan)",
   "label": "restricted stock unit agreement",
-  "observed_route": "rsu-grant"
+  "observed_route": "generic-fallback"
 }

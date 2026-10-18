@@ -84,13 +84,55 @@ export function isLegendLine(line: string): boolean {
   return LEGEND_LINE.test(line.trim());
 }
 
-export function dropLegends(lines: readonly string[]): string[] {
+/**
+ * EDGAR's document header: the `<TYPE>`, `<SEQUENCE>` and `<FILENAME>` fields
+ * of the SGML wrapper the SEC serves around an exhibit, which read as text —
+ * "EX-10.1" / "2" / "tm2624321d2_ex10-1.htm", then the filer's description.
+ * One field to a line when the exhibit is saved as text; on ONE line when it
+ * is copied from a browser, which renders the unknown tags inline.
+ *
+ * It stood above the exhibit's own name, and the bare sequence number ended
+ * the run of title lines, so the title read "EX-10.1": on the first EDGAR
+ * routing sample, 44 of 327 exhibits routed differently with the header
+ * removed. Read past, 19 more routed correctly. Recognized only at the very
+ * top, and only when it opens on an exhibit type code.
+ */
+const EDGAR_TYPE = String.raw`EX-\d{1,3}(?:\.\d{1,3})?[A-Z]?`;
+const EDGAR_TYPE_LINE = new RegExp(String.raw`^\s*${EDGAR_TYPE}\s*$`);
+const EDGAR_SEQUENCE_LINE = /^\s*\d{1,4}\s*$/;
+const EDGAR_FILENAME_LINE = /^\s*[\w.-]{1,120}\.(?:htm|html|txt)\s*$/i;
+const EDGAR_HEADER_ONE_LINE = new RegExp(
+  String.raw`^\s*${EDGAR_TYPE}\s+\d{1,4}\s+[\w.-]{1,120}\.(?:htm|html|txt)\s*`,
+  "i",
+);
+
+/** The lines after EDGAR's header, or the lines unchanged when there is none. */
+function dropEdgarHeader(lines: readonly string[]): readonly string[] {
+  const first = lines[0] ?? "";
+  const oneLine = EDGAR_HEADER_ONE_LINE.exec(first);
+  if (oneLine) {
+    // What follows the file name is the filer's description; it stays, for
+    // the legend and container tests below to judge like any other line.
+    const rest = first.slice(oneLine[0].length).trim();
+    return rest.length > 0 ? [rest, ...lines.slice(1)] : lines.slice(1);
+  }
+  if (!EDGAR_TYPE_LINE.test(first)) return lines;
+  let i = 1;
+  if (EDGAR_SEQUENCE_LINE.test(lines[i] ?? "")) i += 1;
+  if (EDGAR_FILENAME_LINE.test(lines[i] ?? "")) i += 1;
+  return lines.slice(i);
+}
+
+export function dropLegends(input: readonly string[]): string[] {
+  const lines = dropEdgarHeader(input);
   let i = 0;
   while (
     i < lines.length &&
     (lines[i]!.length === 0 ||
       LEGEND_LINE.test(lines[i]!) ||
       CONTAINER_MARKER.test(lines[i]!) ||
+      // The description field often repeats the type code.
+      EDGAR_TYPE_LINE.test(lines[i]!) ||
       isLegendSentence(lines[i]!))
   )
     i += 1;

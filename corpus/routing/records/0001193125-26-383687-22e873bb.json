@@ -5,5 +5,5 @@
   "text_sha256": "22e873bbf7e9876f438b6999e1ec11feb9409bd4c4ee861a85284e55321d2bfb",
   "title": "Non-Employee Director Restricted Stock Unit Grant Notice",
   "label": "restricted stock unit agreement",
-  "observed_route": "rsu-grant"
+  "observed_route": "generic-fallback"
 }

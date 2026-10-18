@@ -8,7 +8,10 @@
       "equity incentive plan",
       "stock incentive plan",
       "omnibus incentive plan",
-      "stock plan"
+      "stock plan",
+      "omnibus award plan",
+      "incentive award plan",
+      "stock and award plan"
     ],
     "required_clauses": [],
     "distinguishing_phrases": [

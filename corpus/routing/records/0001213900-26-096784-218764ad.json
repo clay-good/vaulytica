@@ -5,5 +5,5 @@
   "text_sha256": "218764adbb4c3699425776094eab01ded102e5d2ef84655f830818734e2e731b",
   "title": "FORM OF FIRST AMENDMENT TO LICENSE AND DEVELOPMENT AGREEMENT BETWEEN NORTHSTRIVE BIOSCIENCES INC",
   "label": "amendment",
-  "observed_route": "trust-amendment"
+  "observed_route": "generic-fallback"
 }

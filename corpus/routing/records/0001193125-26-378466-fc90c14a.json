@@ -5,5 +5,5 @@
   "text_sha256": "fc90c14ab02f88a87106d817df3a284dad483561f31117c2231120d81a54347c",
   "title": "AMENDMENT TO FOUNDER’S RIGHTS AGREEMENT",
   "label": "amendment",
-  "observed_route": "trust-amendment"
+  "observed_route": "generic-fallback"
 }

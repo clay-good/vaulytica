@@ -5,5 +5,5 @@
   "text_sha256": "b074dde71a3b19158d710a9609e987f7176c4afd41766f9db5aac34d09c7769d",
   "title": "Transition and Separation Letter Agreement",
   "label": "separation agreement",
-  "observed_route": "npp-acknowledgment"
+  "observed_route": "generic-fallback"
 }

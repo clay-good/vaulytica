@@ -5,5 +5,5 @@
   "text_sha256": "ade278d0a95c0b73aad724d64925e9551aaf8d88b40e981f1b902ed19fbe158c",
   "title": "JAPAN LOCAL CURRENCY ADDENDUM (FIVE-YEAR FACILITY) JAPAN LOCAL CURRENCY ADDENDUM,",
   "label": "credit facility addendum",
-  "observed_route": "loan-agreement"
+  "observed_route": "generic-fallback"
 }

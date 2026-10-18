@@ -5,5 +5,5 @@
   "text_sha256": "6e8286fa5fd622646a05fcf86ef6a04b1f0ffde2129dd5bc9ff54b07fe81c214",
   "title": "Acknowledgment and Agreement (Guarantor)",
   "label": "guaranty",
-  "observed_route": "loan-agreement"
+  "observed_route": "guaranty"
 }

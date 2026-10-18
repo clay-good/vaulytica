@@ -5,5 +5,5 @@
   "text_sha256": "160fe4cfc615df0fb2464f594bbd1d259555fdee49a4989fc1cd35ffc37fd8a6",
   "title": "$800,000,000 SECOND AMENDED & RESTATED CREDIT AGREEMENT",
   "label": "credit agreement",
-  "observed_route": "answer"
+  "observed_route": "generic-fallback"
 }

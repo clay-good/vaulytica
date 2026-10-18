@@ -81,9 +81,11 @@ to about four requests a second (the SEC's limit is ten).
   into positioned `<div>`s, and its title reads "S ECOND A MENDED…"; it is
   routed as extracted.
 
-The result is in [`SCOREBOARD.md`](../tools/accuracy/SCOREBOARD.md). Only 52%
-of the exhibits the catalog has a type for reached an accepted type; the
-wrong routes are the work this sample exists to find.
+The result is in [`SCOREBOARD.md`](../tools/accuracy/SCOREBOARD.md). At
+9.939.0, 52% of the exhibits the catalog has a type for reached an accepted
+type and 42% a wrong one. 9.940.0 fixed the causes the sample found: 64%
+accepted, 20% wrong (see the CHANGELOG). The labels did not change between the
+two measurements.
 
 ## Storage decision (spec-v5 §7 / Open-Q #1)
 

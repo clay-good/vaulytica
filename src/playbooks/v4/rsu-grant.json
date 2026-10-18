@@ -4,7 +4,14 @@
   "name": "Restricted Stock Unit (RSU) Grant",
   "description": "RSU grant under an equity-incentive plan (IRC § 409A short-term-deferral or deferred-compensation). Selects the §6.C equity ruleset (EQT-029..EQT-035).",
   "match_features": {
-    "title_keywords": ["restricted stock unit", "rsu", "rsu grant"],
+    "title_keywords": [
+      "restricted stock unit",
+      "rsu",
+      "rsu grant",
+      "restricted share unit",
+      "performance share unit",
+      "performance stock unit"
+    ],
     "required_clauses": [],
     "distinguishing_phrases": [
       "units",

@@ -5,5 +5,5 @@
   "text_sha256": "4dc88fb88acdefb0ceb869b3011b427d42a9b06b4aa0a8bb5f9a724c92a3b080",
   "title": "FORBEARANCE AND LOAN MODIFICATION AGREEMENT",
   "label": "forbearance agreement",
-  "observed_route": "security-agreement"
+  "observed_route": "generic-fallback"
 }

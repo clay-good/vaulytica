@@ -232,3 +232,81 @@ describe("titleCorpus — a letter with two address blocks", () => {
     expect(titleCorpus(tree, "letter.txt")).not.toContain("Notice of Furnishing");
   });
 });
+
+describe("the first EDGAR routing sample's matcher findings", () => {
+  const pb = (id: string, title_keywords: string[], distinguishing_phrases: string[]): Playbook =>
+    parsePlaybook({
+      id,
+      version: "1.0.0",
+      name: id,
+      description: id,
+      match_features: {
+        title_keywords,
+        required_clauses: [],
+        distinguishing_phrases,
+        negative_features: [],
+      },
+      expected_clauses: [],
+      expected_defined_terms: [],
+      rule_overrides: {},
+      balanced_defaults: [],
+      sources: [],
+      applicable_jurisdictions: ["US"],
+    });
+  const extracted = { definitions: { entries: [] } } as unknown as ExtractedData;
+  const match = (pbs: Playbook[], title: string, body: string) =>
+    matchPlaybook(extracted, [], pbs, { title, body_text: body });
+
+  it("does not route a long document on three common words", () => {
+    // A credit agreement went to `answer` on "admits", "denies", "paragraph".
+    const answer = pb("answer", ["answer to complaint"], ["admits", "denies", "paragraph"]);
+    const r = match(
+      [answer],
+      "CREDIT AGREEMENT",
+      "The Borrower admits that it denies nothing in this paragraph.",
+    );
+    expect(r.playbook_id).toBe("generic-fallback");
+    expect(r.reasoning).toMatch(/common words in the body alone/);
+  });
+
+  it("still routes on specific phrases with no title", () => {
+    const deposition = pb(
+      "deposition-notice",
+      ["notice of deposition"],
+      ["please take notice", "30(b)(6)", "stenographic"],
+    );
+    const r = match(
+      [deposition],
+      "",
+      "Please take notice that the 30(b)(6) deposition will be recorded by stenographic means.",
+    );
+    expect(r.playbook_id).toBe("deposition-notice");
+  });
+
+  it("reads a gap in a title keyword, and no further than six words", () => {
+    // "amendment to" was the name of every amendment; a trust amendment
+    // states the trust's own name between the two.
+    const trust = pb(
+      "trust-amendment",
+      ["amendment to the … trust", "trust amendment"],
+      ["amends the trust", "the settlor reserved the right to amend"],
+    );
+    const body = "This amends the trust; the settlor reserved the right to amend.";
+    expect(
+      match([trust], "SECOND AMENDMENT TO THE HARROWGATE FAMILY REVOCABLE LIVING TRUST", body)
+        .playbook_id,
+    ).toBe("trust-amendment");
+    expect(
+      match([trust], "FIRST AMENDMENT TO THE REGISTRATION RIGHTS AGREEMENT", body).playbook_id,
+    ).toBe("generic-fallback");
+    expect(
+      match([trust], "AMENDMENT TO THE ONE TWO THREE FOUR FIVE SIX SEVEN EIGHT TRUST", body)
+        .playbook_id,
+    ).toBe("generic-fallback");
+  });
+
+  it("reads a template's name past 'Form of'", () => {
+    const voting = pb("voting-agreement", ["voting agreement"], []);
+    expect(match([voting], "FORM OF VOTING AGREEMENT", "").playbook_id).toBe("voting-agreement");
+  });
+});

@@ -5,5 +5,5 @@
   "text_sha256": "2b8bbd0995e4f1aed4ca196612fd4910c5e7323bff9fe178fada5e39828948af",
   "title": "VOTING AND SUPPORT AGREEMENT",
   "label": "voting agreement",
-  "observed_route": "board-resolution"
+  "observed_route": "generic-fallback"
 }

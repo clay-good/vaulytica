@@ -5,5 +5,5 @@
   "text_sha256": "f81a555485d057d05552b1bb8d2eb974aa6ca9cbd74a19db7a9a6f9040e5b5e7",
   "title": "CIF LOCAL CURRENCY ADDENDUM (364-DAY FACILITY) CIF LOCAL CURRENCY ADDENDUM,",
   "label": "credit facility addendum",
-  "observed_route": "loan-agreement"
+  "observed_route": "generic-fallback"
 }

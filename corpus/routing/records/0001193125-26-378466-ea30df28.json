@@ -5,5 +5,5 @@
   "text_sha256": "ea30df28fd00ceb461384b45a3abf966ad98859381ff9274466802ed32cd133b",
   "title": "AMENDMENT TO MANAGEMENT AGREEMENT",
   "label": "amendment",
-  "observed_route": "trust-amendment"
+  "observed_route": "generic-fallback"
 }

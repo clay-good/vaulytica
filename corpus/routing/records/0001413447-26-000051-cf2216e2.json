@@ -5,5 +5,5 @@
   "text_sha256": "cf2216e212c0968876930b5a4f83281c7c8487fa532d4790e39072b10006e58e",
   "title": "Finance Contract (Facility A)",
   "label": "credit agreement",
-  "observed_route": "answer"
+  "observed_route": "generic-fallback"
 }

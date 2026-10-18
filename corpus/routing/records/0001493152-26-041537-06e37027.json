@@ -5,5 +5,5 @@
   "text_sha256": "06e370273192d9f4416291172bf841c1bbe14dc2e837dc6ec86932b2032292ed",
   "title": "Exchange Agreement",
   "label": "exchange agreement",
-  "observed_route": "loan-agreement"
+  "observed_route": "generic-fallback"
 }

@@ -5,5 +5,5 @@
   "text_sha256": "bc056b3b4f6ab82bb2dafb4b9a799e913911a1fef42fff553ba38d3f4857c9db",
   "title": "LONG-TERM INCENTIVE PROGRAM AWARD AGREEMENT",
   "label": "restricted stock unit agreement",
-  "observed_route": "rsu-grant"
+  "observed_route": "generic-fallback"
 }

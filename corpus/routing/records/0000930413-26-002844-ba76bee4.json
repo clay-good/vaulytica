@@ -5,5 +5,5 @@
   "text_sha256": "ba76bee481b4b4ae5e5be291640e7334206b33b1df453108012ab213e358bb96",
   "title": "NUVEEN FARMLAND REIT INDEPENDENT TRUSTEE RESTRICTED COMMON SHARE PLAN ARTICLE",
   "label": "equity incentive plan",
-  "observed_route": "deed-of-trust"
+  "observed_route": "generic-fallback"
 }

@@ -5,5 +5,5 @@
   "text_sha256": "a99af8ed6336ccdbafa8b8cdd7ca2d769eb68ed9e34e9d0b4adc22d262e3349b",
   "title": "MATRIX SERVICE COMPANY AWARD AGREEMENT",
   "label": "restricted stock unit agreement",
-  "observed_route": "rsu-grant"
+  "observed_route": "generic-fallback"
 }
