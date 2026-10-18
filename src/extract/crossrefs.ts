@@ -701,7 +701,7 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // Capture any trailing parenthetical sub-reference chain
       // ("(a)(ii)") that follows the matched label, without disturbing
       // resolution (which keys on the section number) or `raw_text`.
-      const inMatch = /(\([a-z0-9]+\))+$/i.exec(m[2] ?? "")?.[0] ?? "";
+      const inMatch = /(?<!\([a-z0-9]+\))(\([a-z0-9]+\))+$/i.exec(m[2] ?? "")?.[0] ?? "";
       // Bounded like the guard slices above: the consumer is `^`-anchored and
       // a subsection run is a few characters, but the slice was the whole
       // remainder — per match, which is the shape that made five quadratics.

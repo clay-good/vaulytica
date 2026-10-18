@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.937.0] — 2026-10-18
+
+### Security
+- **The census, re-run on repeating units instead of single characters.**
+  9.935.0 and 9.936.0 timed every regex on runs of one character. A pattern
+  that absorbs a run of *tokens* (`[\w-]+`, a run of capitalized words, a run
+  of initials) is only driven into backtracking by a run of its own tokens, and
+  those survive ingest: ". . ." is not a whitespace run. All 12,126 regexes the
+  current code executes were re-collected from all three surfaces and timed on
+  15 repeating units; five were super-linear:
+
+  | where | unit | before (20k chars) |
+  | --- | --- | --- |
+  | `MNA-010` (share purchase) | `a-` | 923 ms |
+  | `extract/v3/role-classifier.ts` (party definitions) | `Ab ` / `A. ` | 322 ms |
+  | `extract/citations.ts` (state code citations) | `A. ` | 281 ms |
+  | `extract/crossrefs.ts` (sub-paragraph suffix) | `(a)` | 256 ms |
+  | `RISK-002` (indemnity sentences) | `Ab ` | 203 ms |
+
+- Each fix again forbids a start that an earlier start already covers, so each
+  is exact. RISK-002 now starts only at the **first** capital of a sentence
+  (`(?<=(?:^|\.(?!\d))(?:[^.A-Z]|\.(?=\d))*)`); the lookbehind walks back
+  only to the previous capital, so it is linear. MNA-010's `[\w-]+` could also
+  start at a hyphen, so its condition is "not preceded by a word character, or
+  by hyphens after one" (`\b(?<!\w)(?<!\w-+)`), checked against hyphenated
+  edge cases ("co-Investor", "-Buyer", "X--Y"). After the fixes the worst of the
+  five patterns across 13 units is 0.2 ms at 20,000 characters.
+- Measured, not assumed: the complete `extractAll` output for every specimen,
+  its full `extractAllV3`, every finding with its excerpt, and every citation
+  `extractCitations` reads (610 across 363 specimens) are identical to HEAD's.
+  Goldens differ only in the version stamp; no rule's output moved, so no rule
+  version did.
+
+### Changed
+- `rule-scaling.test.ts` adds three repeating units (`a-`, `Ab `, `A. `) for
+  the rules and the v3 extractors. Against HEAD's code it fails on MNA-010
+  (31 ms → 3,006 ms) and the role classifier (89 ms → 8,646 ms). The file now
+  takes ~65 s.
+
 ## [9.936.0] — 2026-10-18
 
 ### Security

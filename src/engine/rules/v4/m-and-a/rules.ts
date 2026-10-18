@@ -305,7 +305,7 @@ const SPA_RULES: Rule[] = [
       /sell.{0,40}shares?.{0,40}to\s+buyer/is,
       /buyer\s+(?:shall|will|must)\s+purchase.{0,40}shares?/is,
       /\bsells?\s+(?:and\s+(?:transfers?|delivers?|assigns?)\s+)?to\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
-      /\b[A-Z]?[\w-]+\s+(?:(?:shall|will|must)\s+|agrees?\s+to\s+)?purchases?\s+from\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
+      /\b(?<!\w)(?<!\w-+)[A-Z]?[\w-]+\s+(?:(?:shall|will|must)\s+|agrees?\s+to\s+)?purchases?\s+from\s+[A-Z]?[\w-]+\b[^.]{0,80}?\bshares?\b/,
     ],
   }),
   presence({

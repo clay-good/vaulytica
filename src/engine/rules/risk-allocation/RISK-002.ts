@@ -42,7 +42,7 @@ export const rule: Rule = {
     // instances. A decimal point is the only period these clauses contain.
     const lines = allMatches(
       ctx,
-      /(?<![A-Z])[A-Z](?:[^.]|\.(?=\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d))*\./,
+      /(?<=(?:^|\.(?!\d))(?:[^.A-Z]|\.(?=\d))*)[A-Z](?:[^.]|\.(?=\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d))*\./,
     );
     if (lines.length === 0) return null;
     // Only the parties that BEAR the agreement. The extractor also records

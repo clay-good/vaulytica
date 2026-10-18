@@ -46,6 +46,12 @@ const RUNS: ReadonlyArray<[string, string]> = [
   ["dot", "."],
   ["lower", "a"],
   ["upper", "A"],
+  // Repeating UNITS, not single characters (9.937.0): a pattern that absorbs a
+  // token run — `[\w-]+`, a run of capitalized words, a run of initials — is
+  // only driven into backtracking by a run of its own tokens.
+  ["hyphenated word", "a-"],
+  ["capitalized words", "Ab "],
+  ["initials", "A. "],
 ];
 
 /** A sentence that reaches the common number contexts: days, money, a section. */
