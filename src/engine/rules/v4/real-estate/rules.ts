@@ -38,6 +38,7 @@ import {
   irc1031,
   rePractice,
 } from "./_helpers.js";
+import { PERIOD_COUNT } from "../../../../extract/counts.js";
 
 const CATEGORY = "real-estate";
 
@@ -895,7 +896,7 @@ const CCR_RULES: Rule[] = [
   }),
   presence({
     id: "RE-037",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Term / duration of restrictions",
     description:
       "CC&Rs should specify term (perpetual or set years) and automatic-extension mechanic.",
@@ -913,7 +914,9 @@ const CCR_RULES: Rule[] = [
       // A CC&R duration states the initial period as "thirty (30) years" and
       // the renewal as "automatically renew for successive ten-year periods":
       // tolerate the spelled+parenthetical year and the verb-form renewal.
-      /(?:\d{1,3}|thirty|forty|fifty|sixty|ninety|twenty)\s*(?:\(\s*\d{1,3}\s*\)\s*)?years?/i,
+      // v1.2.0 — `PERIOD_COUNT` reads every spelling; the hand list stopped at
+      // the tens, so "fifteen years" was no duration.
+      new RegExp(String.raw`(?:${PERIOD_COUNT})\s*years?`, "i"),
       /(?:automatic\w*\s+renew\w*|renew\w+\s+(?:automatically|for\s+successive))/i,
     ],
     default_severity: "warning",

@@ -468,7 +468,7 @@ const IRP = pack("security-incident-response-plan", C, [
     id: "POL-130",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Regulatory notification clocks and owners",
     cite: stateLaw(
       "breach-notification",
@@ -478,7 +478,7 @@ const IRP = pack("security-incident-response-plan", C, [
     pat: [
       /(notif(y|ication))/i,
       new RegExp(
-        String.raw`(72\s*\)?\s*hours|${PERIOD_COUNT}\s*(business\s+)?days|regulator|attorney\s+general|state\s+breach|hhs|securities\s+and\s+exchange|deadline)`,
+        String.raw`(${PERIOD_COUNT}\s*(business\s+)?(?:hours|days)|regulator|attorney\s+general|state\s+breach|hhs|securities\s+and\s+exchange|deadline)`,
         "i",
       ),
     ],

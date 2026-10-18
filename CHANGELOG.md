@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.934.0] — 2026-10-17
+
+### Fixed
+- **Three presence rules called a clause missing when its count was spelled in
+  words.** 9.928.0 recorded these as "words-only spelling, uncommon in
+  drafting", but each one is a "missing" finding against a clause that is
+  there, two of them at CRITICAL:
+
+  | rule | clause it called missing |
+  | --- | --- |
+  | `POL-130` (critical) | "send notification to affected individuals within **seventy-two hours**" (it read only "72 hours") |
+  | `COMM-011` (critical) | "end its appointment on **five days'** prior written notice" (digits only) |
+  | `RE-037` | restrictions that "run with the land for **fifteen years**" (a hand list that stopped at the tens) |
+
+  Each now reads the count through the shared `PERIOD_COUNT` (POL-130 v1.2.0,
+  COMM-011 v1.1.0, RE-037 v1.2.0). POL-130 also accepts any hour count beside a
+  notification, not only 72: 24- and 48-hour clocks are regulatory deadlines too.
+- `HC-014` stays as it is. Its count-like branch (`on|by <digit>`) reads a date,
+  not a period, and the sweep hit came from an unrelated survival clause.
+
+`tests/integration/spelled-count-satisfiers.test.ts` gives each rule its clause
+in three spellings ("72" / "seventy-two (72)" / "seventy-two") and requires one
+verdict. All three cases fail on HEAD's rules. The POL-130 case was first
+written with "regulator" in it, which satisfies the rule by another route, so it
+passed on HEAD too; it now names no agency, so only the count can satisfy it.
+Over the corpus, all findings and party names (3,435 lines) are identical to
+HEAD's. Goldens move only `rule_version`.
+
 ## [9.933.0] — 2026-10-17
 
 ### Security
