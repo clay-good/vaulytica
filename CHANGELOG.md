@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.938.0] — 2026-10-18
+
+### Added
+- **An injection audit of every surface that renders a document's text, and an
+  e2e guard for the one a static read cannot follow.** No product change:
+  escaping held everywhere it was tried.
+  - The HTML report, rendered from a contract carrying script, `onerror`,
+    `onload`, `javascript:` and `</style>` payloads in its title, parties,
+    defined terms, clause text, governing law and signature block: every payload
+    is escaped, every live link is an `https:` authority from the catalog, and
+    no element carries a `src`, `style` or event-handler attribute.
+  - `/report` writes every fragment value with `textContent`, never
+    `innerHTML`, and builds no URL from it.
+  - The app UI fills ~30 `innerHTML` templates, partly from fragments built
+    elsewhere, which a static scan cannot follow reliably. The new
+    `tests/e2e/injection.spec.ts` drops the payload contract into the real app,
+    alone and as a two-document bundle, **under hostile filenames** (the filename
+    is the document-derived field the result panel shows). It asserts that no
+    dialog fires, that nothing in the DOM carries a handler, a `javascript:` URL
+    or a payload element, and that the hostile filename is visible as text.
+    Removing one `escapeHtml` from the bundle card makes `alert('f1')` run and
+    the spec fail.
+- Production also blocks inline handlers by policy (`script-src 'self'
+  'wasm-unsafe-eval'`, checked against vaulytica.com's live headers), so a
+  missed escape there would be stopped twice. The e2e preview server does not
+  apply `_headers`, which is why the spec tests the escaping itself.
+
 ## [9.937.0] — 2026-10-18
 
 ### Security
