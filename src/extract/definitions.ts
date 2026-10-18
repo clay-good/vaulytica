@@ -2106,13 +2106,16 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
     .map(([term, positions]) => ({ term, positions }))
     .sort((a, b) => a.term.localeCompare(b.term, "en"));
 
-  const circular_terms = detectCircularDefinitions([...definitions.values()]);
+  const { cycles: circular_terms, truncated } = detectCircularDefinitions([
+    ...definitions.values(),
+  ]);
 
   return {
     entries: [...definitions.values()].sort((a, b) => a.term.localeCompare(b.term, "en")),
     unused_terms,
     undefined_capitalized,
     ...(circular_terms.length > 0 ? { circular_terms } : {}),
+    ...(truncated ? { circular_truncated: true as const } : {}),
   };
 }
 
@@ -2122,7 +2125,12 @@ export function extractDefinitions(tree: DocumentTree): DefinitionMap {
  * of terms. Deterministic: terms are processed in sorted order and each
  * cycle is canonicalized to start at its alphabetically-first term.
  */
-function detectCircularDefinitions(entries: DefinitionEntry[]): string[][] {
+export const CYCLE_SEARCH_STEPS = 200_000;
+
+export function detectCircularDefinitions(entries: DefinitionEntry[]): {
+  cycles: string[][];
+  truncated: boolean;
+} {
   const byTerm = new Map<string, DefinitionEntry>();
   for (const e of entries) byTerm.set(e.term, e);
   const terms = [...byTerm.keys()].sort();
@@ -2136,9 +2144,18 @@ function detectCircularDefinitions(entries: DefinitionEntry[]): string[][] {
     edges.set(a, targets);
   }
   const cyclesByKey = new Map<string, string[]>();
+  // The depth cap alone does not bound this. A credit agreement's definitions
+  // cite each other densely, and the number of simple paths of length eight
+  // grows as the branching factor to the eighth: a 166,000-character EDGAR
+  // credit agreement ran for over an hour and exhausted an 8 GB heap here. So
+  // the walk also has a step budget, far above what any ordinary document
+  // spends; once it is spent the cycles already found are reported, every one
+  // of them real, and the report says the list is incomplete.
+  let steps = 0;
   const visit = (start: string, node: string, path: string[], seen: Set<string>): void => {
     if (path.length > 8) return; // bound DFS on dense definition graphs
     for (const next of edges.get(node) ?? []) {
+      if (++steps > CYCLE_SEARCH_STEPS) return;
       if (next === start && path.length >= 2) {
         const cycle = [...path];
         const min = cycle.indexOf([...cycle].sort()[0]!);
@@ -2152,7 +2169,10 @@ function detectCircularDefinitions(entries: DefinitionEntry[]): string[][] {
     }
   };
   for (const t of terms) visit(t, t, [t], new Set([t]));
-  return [...cyclesByKey.values()].sort((a, b) => a.join().localeCompare(b.join(), "en"));
+  return {
+    cycles: [...cyclesByKey.values()].sort((a, b) => a.join().localeCompare(b.join(), "en")),
+    truncated: steps > CYCLE_SEARCH_STEPS,
+  };
 }
 
 /** Trim a captured reference/scope label and strip trailing sentence punctuation. */

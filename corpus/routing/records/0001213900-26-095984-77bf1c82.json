@@ -1,0 +1,9 @@
+{
+  "accession": "0001213900-26-095984",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/1859807/000121390026095984/ea030417001ex10-1.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "77bf1c8292bbc01a78f71acad9e4ec530831169a2e8e0d27edb8b175abf0f77a",
+  "title": "SENIOR SECURED CONVERTIBLE PROMISSORY NOTE, DATED SEPTEMBER 1, 2026, ISSUED BY THE COMPANY TO ASCENT PARTNERS FUND LLC",
+  "label": "convertible note",
+  "observed_route": "convertible-note"
+}

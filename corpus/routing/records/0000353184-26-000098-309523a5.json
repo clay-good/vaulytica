@@ -1,0 +1,9 @@
+{
+  "accession": "0000353184-26-000098",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/353184/000035318426000098/a105federalassignmentofc.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "309523a5c3dfdafe747a783b7f21fee3c4fc8585589f6fb9ed27da481b921c17",
+  "title": "Federal Assignment of Claims Agreement",
+  "label": "assignment of claims agreement",
+  "observed_route": "loan-agreement"
+}

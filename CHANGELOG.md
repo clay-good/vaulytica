@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.939.0] — 2026-10-18
+
+### Fixed
+- **A real credit agreement hung the pipeline and exhausted an 8 GB heap.** The
+  circular-definition search listed every cycle of up to nine terms in the
+  graph of which definitions cite which. Its depth cap does not bound that
+  work: a credit agreement's definitions cite each other densely, and the
+  number of paths grows as the branching factor to the eighth. A 166,000-character
+  EDGAR "Finance Contract (Facility A)" ran for over an hour before the process
+  died; in the browser that is a frozen tab. The search now has a step budget
+  of 200,000. The most any corpus document or fixture spends is 488, so their
+  output is unchanged. On a dense document the search stops, every cycle it
+  lists is still real, and the definitions report says the list is incomplete
+  (`circular_truncated`). That exhibit now finishes in about a second; 18 of the
+  327 EDGAR exhibits below reach the budget. A test of 24 terms that each cite
+  every other runs out of memory without the budget.
+
+### Added
+- **The first routing measurement on public filings (spec-v53 Step 332).**
+  Every Exhibit 10 attached to an 8-K, 10-Q or 10-K filed September 1–4, 2026:
+  334 exhibits, 7 excluded by rule (6 image-only, 1 unreadable), 327 routed.
+  Each record holds seven facts and no exhibit text.
+
+  | Outcome | Exhibits | Share |
+  |---|--:|--:|
+  | The type its title names | 83 | 25.4% |
+  | Another type accepted for that title | 15 | 4.6% |
+  | A different type | 78 | 23.9% |
+  | No type matched | 11 | 3.4% |
+  | The catalog has no type for this title | 140 | 42.8% |
+
+  Of the 187 exhibits the catalog has a type for, **98 (52%) reached an
+  accepted type.** The wrong routes are not near misses: credit agreements went
+  to `board-resolution` (7) and `answer` (2), securities purchase agreements to
+  `form-d-narrative` (8), warrants to `loan-agreement` (7), employment
+  agreements to `durable-poa-financial`. Of the 140 exhibits with no type, only
+  18 fell back; the rest were given one (12 amendments went to
+  `trust-amendment`). These are published as measured, before any router change.
+  - **The labels were assigned by an AI model (Claude)** from each exhibit's
+    title and opening, not by an attorney. A label says what the document is,
+    never where the tool sent it.
+  - 47 label rows added. 21 name a type; 31 rows in all now say the catalog has
+    no type, and amendments (48 exhibits) are the largest group.
+  - The routing test pins six titles that EDGAR filers use and no type lists
+    ("WARRANT", "SECURITIES PURCHASE AGREEMENT", "Restricted Stock Award"…),
+    and one name collision: a Federal Assignment of Claims Agreement (government
+    contract payments pledged to a lender) reaches `assignment-of-claim`, the
+    litigation-claim type, on its title alone.
+  - Extraction is the HTML path. One exhibit converted from PDF into positioned
+    `<div>`s extracts its title as "S ECOND A MENDED…" and is routed as extracted.
+  - The caveats print with the number: it is an upper bound for well-titled
+    documents, EDGAR says nothing about consumer documents or PDF/DOCX ingest,
+    and 250 of 285 types have no real document.
+
 ## [9.938.0] — 2026-10-18
 
 ### Added

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "corpus_version": "v0.0.0-seed",
   "dkb_version": "v2026-10-18-local",
-  "engine_version": "9.938.0",
+  "engine_version": "9.939.0",
   "catalog": {
     "rules": 1936,
     "playbooks": 286
@@ -41,33 +41,419 @@
   "worst_recall": [],
   "unmeasured_rule_ids": [],
   "routing": {
-    "n": 0,
+    "n": 327,
     "counts": {
-      "exact": 0,
-      "acceptable": 0,
-      "wrong": 0,
-      "fallback": 0,
-      "no_family": 0
+      "exact": 83,
+      "acceptable": 15,
+      "wrong": 78,
+      "fallback": 11,
+      "no_family": 140
     },
     "shares": {
-      "exact": null,
-      "acceptable": null,
-      "wrong": null,
-      "fallback": null,
-      "no_family": null
+      "exact": 0.25382262996941896,
+      "acceptable": 0.045871559633027525,
+      "wrong": 0.23853211009174313,
+      "fallback": 0.03363914373088685,
+      "no_family": 0.42813455657492355
     },
-    "per_family": [],
-    "families_with_documents": 0,
+    "per_family": [
+      {
+        "family": "advisor-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 1,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "asset-purchase-agreement",
+        "n": 2,
+        "counts": {
+          "exact": 2,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "bonus-plan",
+        "n": 2,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "consulting-agreement",
+        "n": 5,
+        "counts": {
+          "exact": 5,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "convertible-note",
+        "n": 8,
+        "counts": {
+          "exact": 8,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "director-indemnification-agreement",
+        "n": 5,
+        "counts": {
+          "exact": 4,
+          "acceptable": 1,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "employee-stock-purchase-plan",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "employment-restrictive-covenant",
+        "n": 1,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "equity-incentive-plan",
+        "n": 10,
+        "counts": {
+          "exact": 2,
+          "acceptable": 0,
+          "wrong": 7,
+          "fallback": 1,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "escrow-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "executive-employment",
+        "n": 17,
+        "counts": {
+          "exact": 10,
+          "acceptable": 5,
+          "wrong": 2,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "forbearance-agreement",
+        "n": 3,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 2,
+          "fallback": 1,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "guaranty",
+        "n": 5,
+        "counts": {
+          "exact": 3,
+          "acceptable": 0,
+          "wrong": 2,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "joint-development-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "lease-commercial-multitenant",
+        "n": 2,
+        "counts": {
+          "exact": 2,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "loan-agreement",
+        "n": 14,
+        "counts": {
+          "exact": 3,
+          "acceptable": 0,
+          "wrong": 11,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "management-services-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "master-purchase-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 1,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "msa-general",
+        "n": 4,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 4,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "offer-letter",
+        "n": 11,
+        "counts": {
+          "exact": 4,
+          "acceptable": 5,
+          "wrong": 1,
+          "fallback": 1,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "operating-agreement-llc",
+        "n": 4,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 4,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "partnership-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "piia",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "promissory-note",
+        "n": 5,
+        "counts": {
+          "exact": 2,
+          "acceptable": 3,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "revolving-credit-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "rspa",
+        "n": 4,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 2,
+          "fallback": 1,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "rsu-grant",
+        "n": 22,
+        "counts": {
+          "exact": 16,
+          "acceptable": 0,
+          "wrong": 6,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "security-agreement",
+        "n": 7,
+        "counts": {
+          "exact": 7,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "separation-agreement",
+        "n": 7,
+        "counts": {
+          "exact": 2,
+          "acceptable": 0,
+          "wrong": 3,
+          "fallback": 2,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "stock-option-grant",
+        "n": 2,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 2,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "stock-purchase-agreement",
+        "n": 1,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 0,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "subscription-agreement",
+        "n": 4,
+        "counts": {
+          "exact": 3,
+          "acceptable": 0,
+          "wrong": 1,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "venture-stock-purchase-agreement",
+        "n": 13,
+        "counts": {
+          "exact": 0,
+          "acceptable": 0,
+          "wrong": 13,
+          "fallback": 0,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "voting-agreement",
+        "n": 11,
+        "counts": {
+          "exact": 3,
+          "acceptable": 0,
+          "wrong": 4,
+          "fallback": 4,
+          "no_family": 0
+        }
+      },
+      {
+        "family": "warrant-agreement",
+        "n": 9,
+        "counts": {
+          "exact": 1,
+          "acceptable": 0,
+          "wrong": 8,
+          "fallback": 0,
+          "no_family": 0
+        }
+      }
+    ],
+    "families_with_documents": 35,
     "families_total": 285,
     "caveats": [
       "The title is both the label and the classifier's strongest feature, so this is an upper bound for well-titled documents.",
       "EDGAR is large-company commercial paper, as HTML. It says nothing about residential leases, consumer documents, court filings, or PDF and DOCX ingest.",
-      "Document types with zero real documents: 285 of 285."
+      "Document types with zero real documents: 250 of 285."
     ]
   },
   "corpus_status": "empty",
   "notes": [
     "No real annotated documents yet. The accuracy harness is verified by unit tests; the ground-truth corpus (spec-v5 Step 68) and attorney annotations (Step 70) are human-gated and pending. No headline precision/recall number is published until real documents land — by design, this is the dishonesty v5 exists to break."
   ],
-  "scoreboard_hash": "3ce164a2498e06d7fdc4ec0b81d297cd037f7bd725ffc850fd6c645ca97efd0c"
+  "scoreboard_hash": "391c6f2c586d87eb55a4359e41369b3e27e03056baeefe84e1dc749da0758cac"
 }

@@ -1,0 +1,9 @@
+{
+  "accession": "0001628280-26-060632",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/107140/000162828026060632/exhibit101fy27restricted.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "7f2a378342f8bd2136091bfaffc4a5dc11bb163aab665d168805cd4df9367741",
+  "title": "Restricted Share Unit Grant Agreement",
+  "label": "restricted stock unit agreement",
+  "observed_route": "rsu-grant"
+}

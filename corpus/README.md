@@ -63,9 +63,27 @@ commit, so the label is reviewed apart from the result it produces. The same
 exhibit twice is refused. Run `npm run accuracy` afterwards to refresh the
 scoreboard.
 
-**No exhibits are sampled yet.** The sample is chosen by rule (the first N
-Exhibit 10s from a fixed date range), fetched by hand within the SEC's access
-rules, and its size is the owner's decision.
+### The first sample (9.939.0)
+
+**Rule:** every Exhibit 10 attached to an 8-K, 10-Q or 10-K (or its /A) filed on
+a business day from 2026-09-01, in EDGAR daily-index order, taking whole days
+until at least 300. That is September 1–4, 2026: **334 exhibits**, fetched
+2026-10-18 by a script that identified the maintainer in its User-Agent and kept
+to about four requests a second (the SEC's limit is ten).
+
+- **7 excluded, by rule:** 6 whose extracted text is under 200 characters (an
+  image of a scanned page) and 1 whose text is font-glyph noise. 327 routed.
+- **Labels were assigned by an AI model (Claude) from each exhibit's title and
+  opening**, reviewed against the document where the title was ambiguous. A
+  label says what the document is, never where the tool sent it. They are not
+  an attorney's labels.
+- **Extraction is the HTML path only.** One exhibit was converted from a PDF
+  into positioned `<div>`s, and its title reads "S ECOND A MENDED…"; it is
+  routed as extracted.
+
+The result is in [`SCOREBOARD.md`](../tools/accuracy/SCOREBOARD.md). Only 52%
+of the exhibits the catalog has a type for reached an accepted type; the
+wrong routes are the work this sample exists to find.
 
 ## Storage decision (spec-v5 §7 / Open-Q #1)
 

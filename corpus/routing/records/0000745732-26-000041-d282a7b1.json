@@ -1,0 +1,9 @@
+{
+  "accession": "0000745732-26-000041",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/745732/000074573226000041/formofrsa_board.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "d282a7b1c3ef2effe0cd1f0e7c130f7a96bfc43f62fae3580012924420978670",
+  "title": "Restricted Stock Award",
+  "label": "restricted stock award agreement",
+  "observed_route": "stock-option-grant"
+}

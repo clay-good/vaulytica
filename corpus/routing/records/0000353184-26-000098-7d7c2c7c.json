@@ -1,0 +1,9 @@
+{
+  "accession": "0000353184-26-000098",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/353184/000035318426000098/a103consolidatedtermnote.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "7d7c2c7cd074bd8a61411d502ac78c4e544f468fd0e7839cd499250e8bb3d9af",
+  "title": "Consolidated Term Note",
+  "label": "promissory note",
+  "observed_route": "convertible-note"
+}

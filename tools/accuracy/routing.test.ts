@@ -157,18 +157,44 @@ describe("the label table, against the router", () => {
    *   - TWO are bare nouns no type claims alone ("lease", "license
    *     agreement"): which lease, which license, is in the body.
    *
+   * The first EDGAR sample (9.939.0) added six more, for a third reason: the
+   * name EDGAR filers use is not one the type lists. A bare "WARRANT", a
+   * "SECURITIES PURCHASE AGREEMENT", a "Restricted Stock Award", a "Cash Award
+   * Notice", a "CO-DEVELOPMENT AND LICENSE AGREEMENT", and — though the type
+   * lists it — a "SUBSCRIPTION AGREEMENT", which a second type also claims.
+   * These are router gaps the sample found, pinned here rather than tuned
+   * away before the measurement that found them was published.
+   *
    * Pinned so a label that stops reaching its type shows up here, and so a
    * title that starts reaching it is noticed and the list shortened.
    */
   const UNREACHED_WITHOUT_A_BODY = [
+    "cash incentive award",
     "credit agreement",
+    "development and license agreement",
     "employment agreement",
     "indemnification agreement",
     "lease",
     "license agreement",
+    "restricted stock award agreement",
+    "securities purchase agreement",
     "separation agreement",
     "stock option agreement",
+    "subscription agreement",
+    "warrant",
   ];
+
+  /**
+   * A title a type shares by NAME but not by substance. A "Federal Assignment
+   * of Claims Agreement" assigns a government contract's payments to a lender
+   * under the Assignment of Claims Act; `assignment-of-claim` reviews the
+   * assignment of a legal claim or judgment (champerty, notice to the
+   * obligor). On the title alone the router takes the name. Pinned so the
+   * collision is visible; the measurement reports what the body does.
+   */
+  const NAMED_LIKE_ANOTHER_TYPE: Readonly<Record<string, string>> = {
+    "assignment of claims agreement": "assignment-of-claim",
+  };
 
   it("reaches the labelled type from the title alone, except where the title is shared or bare", async () => {
     const deps = await loadAccuracyDeps();
@@ -201,7 +227,7 @@ describe("the label table, against the router", () => {
         "stub.txt",
         { deps },
       );
-      expect(r.playbook_id, label).toBe("generic-fallback");
+      expect(r.playbook_id, label).toBe(NAMED_LIKE_ANOTHER_TYPE[label] ?? "generic-fallback");
     }
   }, 120_000);
 });

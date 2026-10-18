@@ -156,6 +156,29 @@ describe("extractDefinitions", () => {
     const flat = (map.circular_terms ?? []).flat();
     expect(flat).toContain("Term");
     expect(flat).toContain("Termination Date");
+    expect(map.circular_truncated).toBeUndefined();
+  });
+
+  it("stops the cycle search on a densely cross-referenced definitions article", () => {
+    // A credit agreement's definitions cite each other densely, and listing
+    // every cycle up to nine terms long is exponential in that density: a
+    // 166,000-character EDGAR credit agreement ran for over an hour and
+    // exhausted an 8 GB heap. Twenty-four terms, each citing every other, is
+    // the same shape in miniature.
+    const terms = Array.from({ length: 24 }, (_, i) => `Facility ${String.fromCharCode(65 + i)}`);
+    const tree = buildTree([
+      "Definitions",
+      ...terms.map(
+        (t) => `"${t}" means the commitment under ${terms.filter((o) => o !== t).join(", ")}.`,
+      ),
+      `The Borrower may draw on ${terms.join(" and ")}.`,
+    ]);
+    const t0 = performance.now();
+    const map = extractDefinitions(tree);
+    expect(performance.now() - t0).toBeLessThan(10_000);
+    // Every cycle listed is still real, and the report knows the list is partial.
+    expect(map.circular_terms?.length).toBeGreaterThan(0);
+    expect(map.circular_truncated).toBe(true);
   });
 
   it("captures a definition whose 'Means' is capitalized", () => {

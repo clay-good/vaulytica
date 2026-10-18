@@ -46,6 +46,8 @@ export type DefinitionsReport = {
   defined: Array<{ term: string; defined_at: DocPosition; use_count: number }>;
   /** Secondary annotation: definition cycles (each an ordered term list). */
   circular: string[][];
+  /** Present when the cycle search stopped early: `circular` is incomplete. */
+  circular_truncated?: true;
   counts: {
     undefined_used: number;
     duplicates: number;
@@ -188,6 +190,7 @@ export async function buildDefinitionsReport(
     unused: byTermName(unused),
     defined: byTermName(defined),
     circular: defs.circular_terms ?? [],
+    ...(defs.circular_truncated ? { circular_truncated: true as const } : {}),
     counts: {
       undefined_used: undefined_used.length,
       duplicates: duplicates.length,
@@ -315,6 +318,11 @@ export function buildDefinitionsMarkdown(report: DefinitionsReport): string {
   if (report.circular.length > 0) {
     lines.push("### Circular definitions");
     for (const cycle of report.circular) lines.push(`- ${cycle.join(" → ")}`);
+    if (report.circular_truncated) {
+      lines.push(
+        "- _The definitions cite each other too densely to list every cycle; the search stopped, and more may exist._",
+      );
+    }
     lines.push("");
   }
   lines.push(`definitions_hash: \`${report.definitions_hash}\``);

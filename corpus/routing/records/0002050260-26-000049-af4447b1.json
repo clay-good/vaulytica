@@ -1,0 +1,9 @@
+{
+  "accession": "0002050260-26-000049",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/2050260/000205026026000049/a20260826ex101.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "af4447b156cd3517e40918366e43a8eeef3b54453cfa6a9ab14ce75c239a0382",
+  "title": "CREDIT AGREEMENT",
+  "label": "credit agreement",
+  "observed_route": "loan-agreement"
+}

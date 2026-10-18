@@ -1,0 +1,9 @@
+{
+  "accession": "0000353184-26-000098",
+  "exhibit_url": "https://www.sec.gov/Archives/edgar/data/353184/000035318426000098/a104acknowledgmentandagr.htm",
+  "retrieved_at": "2026-10-18",
+  "text_sha256": "6e8286fa5fd622646a05fcf86ef6a04b1f0ffde2129dd5bc9ff54b07fe81c214",
+  "title": "Acknowledgment and Agreement (Guarantor)",
+  "label": "guaranty",
+  "observed_route": "loan-agreement"
+}

@@ -195,6 +195,11 @@ export type DefinitionMap = {
    * here for the report layer and that future rule.
    */
   circular_terms?: string[][];
+  /**
+   * Present when the cycle search stopped at its step budget, so
+   * `circular_terms` lists only the cycles found before it stopped.
+   */
+  circular_truncated?: true;
 };
 
 export type SectionOutlineNode = {
