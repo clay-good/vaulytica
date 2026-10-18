@@ -19,7 +19,7 @@ import { PERIOD_COUNT, countValue } from "../counts.js";
  */
 const BREACH_NOUN = String.raw`breach(?:es)?|security incident(?:s)?|data incident(?:s)?|incident(?:s)?|unauthor(?:i[sz]ed) (?:access|disclosure(?:s)?)`;
 const BREACH_RX = new RegExp(
-  String.raw`[^.\n]*?\b(?:(?:${BREACH_NOUN})\b[^.\n]*?\b(?:notify|notification|inform|report|disclose)|(?:notify|notification|inform|report|disclose)\b[^.\n]*?\b(?:${BREACH_NOUN}))\b[^.\n]*\.`,
+  String.raw`(?<![^.\n])[^.\n]*?\b(?:(?:${BREACH_NOUN})\b[^.\n]*?\b(?:notify|notification|inform|report|disclose)|(?:notify|notification|inform|report|disclose)\b[^.\n]*?\b(?:${BREACH_NOUN}))\b[^.\n]*\.`,
   "i",
 );
 

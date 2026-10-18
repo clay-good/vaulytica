@@ -25,7 +25,7 @@ const SUBP_RX = /\b(?:sub[- ]?processor|subcontractor)s?\b/i;
 // bare-digit anchor dropped it to null. Bounded by the sentence and by parens
 // so no unrelated parenthetical is consumed; a plain "30 days" still matches.
 const NOTICE_RX =
-  /\b(?:no less than |at least |minimum |with )?(?:[^.()\d\n]*?\()?(\d{1,3})\)?\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
+  /\b(?:no less than |at least |minimum |with )?(?:[^.()\d\n]{0,60}?\()?(\d{1,3})\)?\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
 
 /**
  * The Art. 28(4) flow-down, however the drafter words it.

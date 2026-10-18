@@ -81,7 +81,7 @@ const FREQUENCY_RX = new RegExp(
 // a bare-digit anchor dropped it to null. Bounded by the sentence and by parens
 // so no unrelated parenthetical is consumed; a plain "30 days" still matches.
 const NOTICE_RX =
-  /\b(?:upon |with )?(?:no less than |at least |minimum |no fewer than )?(?:[^.()\d\n]*?\()?(\d{1,3})\)?\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
+  /\b(?:upon |with )?(?:no less than |at least |minimum |no fewer than )?(?:[^.()\d\n]{0,60}?\()?(\d{1,3})\)?\s+(?:business days?|calendar days?|days?)['’]?\s+(?:prior )?(?:written )?notice\b/i;
 
 const METHOD_RX: { rx: RegExp; method: AuditMethod }[] = [
   { rx: /\bonsite\b|\bon[- ]site\b|\bon premises\b/i, method: "onsite" },

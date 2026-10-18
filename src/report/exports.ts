@@ -556,7 +556,7 @@ function calendarLabel(raw: string): string | undefined {
   const text = raw
     .replace(/\s+/g, " ")
     .trim()
-    .replace(/[.;,:]+$/, "");
+    .replace(/(?<![.;,:])[.;,:]+$/, "");
   if (text.length < 3) return undefined;
   const capped = truncate(text, 60).replace(/\s*…$/, "…");
   return capped.charAt(0).toUpperCase() + capped.slice(1);

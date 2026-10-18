@@ -29,6 +29,7 @@ import {
   type Rule,
 } from "../../src/engine/index.js";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
+import { extractAllV3 } from "../../src/extract/v3/index.js";
 
 const RULES: readonly Rule[] = [
   ...LAUNCH_RULES,
@@ -90,6 +91,31 @@ describe("every rule is linear on a long run of one character", () => {
       }
       expect(slow).toEqual([]);
     }, 300_000);
+  }
+});
+
+/**
+ * The v3 extractors (breach timing, insurance, subprocessors, audit rights …)
+ * sit outside `extractAll`, so `fuzz-boundary` never timed them. The breach
+ * reader's leading `[^.\n]*?` rescanned a period-free sentence from every
+ * position: 204 ms at 20,000 characters on any run, now 0.07 ms.
+ */
+describe("the v3 extractors are linear on a long run of one character", () => {
+  for (const [name, ch] of RUNS) {
+    it(`${name} runs`, () => {
+      const time = (n: number): number => {
+        const ctx = buildContext(["Terms", sentence(ch.repeat(n))]);
+        const t0 = performance.now();
+        extractAllV3(ctx.tree, { parties: [] });
+        return performance.now() - t0;
+      };
+      time(2_000);
+      const tSmall = time(2_000);
+      const tBig = time(20_000);
+      expect(superLinear(tSmall, tBig), `${tSmall.toFixed(1)}ms -> ${tBig.toFixed(0)}ms`).toBe(
+        false,
+      );
+    }, 120_000);
   }
 });
 

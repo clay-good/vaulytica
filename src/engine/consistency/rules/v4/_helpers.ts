@@ -104,7 +104,7 @@ function canonicalReps(parties: ReadonlyArray<Party>): Map<string, Party> {
 }
 
 function stripTrailingPunctuation(s: string): string {
-  return s.replace(/[\s,.;:]+$/, "");
+  return s.replace(/(?<![\s,.;:])[\s,.;:]+$/, "");
 }
 
 /**

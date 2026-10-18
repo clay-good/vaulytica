@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.936.0] — 2026-10-18
+
+### Security
+- **The census reached the surfaces 9.935.0 had not: the cross-document
+  consistency engine, every report renderer and the CLI's bundle paths.**
+  Running all 17 test bundles through `analyze --consistency` with every text
+  and binary format collected 436 regexes neither earlier census had seen; six
+  were super-linear on runs a document can carry:
+  - `extract/v3/breach-timing.ts`: a leading `[^.\n]*?` rescanned a
+    period-free sentence from every position, on **every** kind of run: 204 ms
+    at 20,000 characters, now 0.07 ms. It now starts only at a sentence
+    boundary, `(?<![^.\n])`, which is exact (a match from mid-sentence implies
+    one from the sentence start, which is leftmost).
+  - Two more trailing-punctuation trims (`report/exports.ts`, the consistency
+    helpers), with the same exact `(?<![…])` fix as 9.935.0.
+  - The notice-period readers in `extract/v3/insurance.ts` (twice),
+    `subprocessor.ts` and `audit-rights.ts`. They skip spelled words before a
+    parenthesized numeral ("thirty (30) days"), and the skip was unbounded; it
+    is now `{0,60}`. That one is **not** an exact equivalence, so it was
+    measured: every document's full `extractAllV3` output, with every finding
+    and every party, defined term and obligation, is identical to HEAD's over
+    the corpus (9,443 lines).
+
+### Added
+- `rule-scaling.test.ts` now times the v3 extractors as well, at 2,000 and
+  20,000 characters. With the old breach reader restored it fails on digit,
+  comma, lower and upper runs.
+
 ## [9.935.0] — 2026-10-17
 
 ### Security
