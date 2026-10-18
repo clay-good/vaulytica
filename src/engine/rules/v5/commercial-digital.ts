@@ -572,7 +572,7 @@ const OEM = pack("oem-agreement", C, [
       // before the party name, and "own" between the possessive and the
       // noun. Both forms of the possessive (a pronoun or a named party) now
       // take the optional "own".
-      /(rebrand|white[- ]?label|under\s+(?:the\s+)?[A-Za-z]+['’]?s?\s+(?:own\s+)?(brand|name|label)|remove\s+(the\s+)?(supplier['’]?s?\s+)?marks|brand[^.;]{0,50}?\bwith\s+its\s+own\s+(?:marks|name|brand)|(?:its|their|[A-Za-z]+['’]s)\s+own\s+(?:brand|marks|name|label))/i,
+      /(rebrand|white[- ]?label|under\s+(?:the\s+)?[A-Za-z]+['’]?s?\s+(?:own\s+)?(brand|name|label)|remove\s+(the\s+)?(supplier['’]?s?\s+)?marks|brand[^.;]{0,50}?\bwith\s+its\s+own\s+(?:marks|name|brand)|(?:its|their|(?<![A-Za-z])[A-Za-z]+['’]s)\s+own\s+(?:brand|marks|name|label))/i,
     ],
     all: true,
     why: "An OEM license is a license to make the supplier's product disappear into someone else's. Whether the OEM may remove marks, and whether the supplier may be identified at all, is the core of the deal.",

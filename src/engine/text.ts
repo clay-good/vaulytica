@@ -86,5 +86,5 @@ export function truncateQuote(text: string, limit: number): string {
   const lastSpace = body.lastIndexOf(" ");
   if (lastSpace < 0 || body.length - lastSpace > 24) return hard;
   // Trailing punctuation before an ellipsis reads as a typo ("due,…").
-  return `${body.slice(0, lastSpace).replace(/[\s,;:.]+$/, "")}…`;
+  return `${body.slice(0, lastSpace).replace(/(?<![\s,;:.])[\s,;:.]+$/, "")}…`;
 }

@@ -23,9 +23,9 @@ const ADVISOR = pack("advisor-agreement", "equity", [
     name: "The amount of equity",
     cite: practice("advisor-equity-amount", "a number of shares or a percentage"),
     pat: [
-      /\b\d[\d,]*\s+shares\b/i,
+      /(?<!\d)(?<!\d,)\b\d[\d,]*\s+shares\b/i,
       /\b(options?|shares|restricted\s+stock|equity|warrants?)\b[^.]{0,160}?\d+(\.\d+)?\s?(%|percent)/i,
-      /\d+(\.\d+)?\s?(%|percent)\b[^.]{0,120}?\b(fully[-\s]diluted|outstanding\s+shares|capital\s+stock|equity)\b/i,
+      /(?<!\d)\d+(\.\d+)?\s?(%|percent)\b[^.]{0,120}?\b(fully[-\s]diluted|outstanding\s+shares|capital\s+stock|equity)\b/i,
     ],
     why: "Equity is the advisor's pay. A promise of 'an equity grant' with no number of shares or percentage is a promise to agree later, and a percentage with no statement of what it is a percentage of is nearly as open.",
     fix: "State the grant as a number of shares, or as a percentage of the company's fully diluted capitalization on a named date, and say whether it is an option or restricted stock.",

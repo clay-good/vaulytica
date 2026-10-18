@@ -309,7 +309,10 @@ const QDRO = pack("qdro", C, [
     name: "Amount or percentage and valuation date",
     cite: usc("29", "1056", "ERISA § 206(d)(3)(C)(ii) — amount or percentage of benefits"),
     pat: [
-      new RegExp(String.raw`(percentage|amount|\d+%|(?:${CURRENCY_MARK}|${AMOUNT_IN_WORDS}))`, "i"),
+      new RegExp(
+        String.raw`(percentage|amount|(?<!\d)\d+%|(?:${CURRENCY_MARK}|${AMOUNT_IN_WORDS}))`,
+        "i",
+      ),
       new RegExp(
         `(valuation\\s+date|as\\s+of\\s+${DATE_SHAPE}|account\\s+balance\\s+as\\s+of|manner\\s+in\\s+which\\s+the\\s+amount)`,
         "i",

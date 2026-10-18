@@ -678,7 +678,7 @@ const REFERRAL_RULES: Rule[] = [
       "State the fee as a flat amount or a percentage of the referred contract's value, the event that triggers payment, and the payment schedule and any clawback on refund / cancellation.",
     present_patterns: [
       /(referral|finder.?s?)\s+fee/i,
-      /\d+\s*%|\bpercent\b|percentage\s+of/i,
+      /(?<!\d)\d+\s*%|\bpercent\b|percentage\s+of/i,
       /(paid|payable)[\s\S]{0,40}(within|upon|after)\s+\d/is,
       /commission\s+(of|rate|schedule)/i,
     ],

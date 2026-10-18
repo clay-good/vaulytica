@@ -63,7 +63,7 @@ export const rule: Rule = {
  */
 function nonRenewalNoticeDays(text: string): number | null {
   const noticeMatch = text.match(
-    /(\d+)\s*(?:-?day-?\(?s?\)?)\s*(?:prior\s+(?:written\s+)?)?(?:written\s+)?notice|(?:prior|written)\s+notice\s+(?:of\s+)?(?:at\s+least\s+)?(\d+)\s*days?|(\d+)\s*days?\s*(?:prior|before|in\s+advance)/i,
+    /(?<!\d)(\d+)\s*(?:-?day-?\(?s?\)?)\s*(?:prior\s+(?:written\s+)?)?(?:written\s+)?notice|(?:prior|written)\s+notice\s+(?:of\s+)?(?:at\s+least\s+)?(\d+)\s*days?|(?<!\d)(\d+)\s*days?\s*(?:prior|before|in\s+advance)/i,
   );
   if (!noticeMatch) return null;
   // The notice must govern non-renewal, not a different termination path in

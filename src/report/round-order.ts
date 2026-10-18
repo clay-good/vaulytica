@@ -18,7 +18,7 @@ export const ROUND_ARTIFACT = /\.coherence\.json$/i;
 
 /** The numbers in a file name, leading zeros dropped: the key round order is read from. */
 function roundKey(name: string): string {
-  return (name.match(/\d+/g) ?? []).map((d) => String(Number(d))).join(".");
+  return (name.match(/(?<!\d)\d+/g) ?? []).map((d) => String(Number(d))).join(".");
 }
 
 export type RoundOrder<T> = { ok: true; items: T[] } | { ok: false; reason: string };

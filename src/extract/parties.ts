@@ -687,7 +687,7 @@ const FOREIGN_SUFFIX_TAIL = new RegExp(
   // trailing period, so the stored name is "Delta Logistiek B.V" while the list
   // spells `B\.V\.` — an exact match never fired and the B.V. party stayed
   // split in two.
-  String.raw`[\s,]+(?:${FOREIGN_ENTITY_SUFFIX.replace(/\\\./g, String.raw`\.?`)})\.?$`,
+  String.raw`(?<![\s,])[\s,]+(?:${FOREIGN_ENTITY_SUFFIX.replace(/\\\./g, String.raw`\.?`)})\.?$`,
   "i",
 );
 

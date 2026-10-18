@@ -34,7 +34,7 @@
 
 const WORD = /[a-z]+/g;
 /** A compound written UNBROKEN — no whitespace around its hyphen. */
-const COMPOUND = /[a-z]+-[a-z]+/g;
+const COMPOUND = /(?<![a-z])[a-z]+-[a-z]+/g;
 
 /**
  * Every whole word of `text`, lowercased.
@@ -51,8 +51,8 @@ export function documentVocabulary(text: string): ReadonlySet<string> {
   // pattern needs WHITESPACE after the hyphen, which is what a line break
   // leaves and what an ordinary compound ("third-party") never has.
   const lower = text
-    .replace(/[A-Za-z]+-\s+[A-Za-z]+/g, " ")
-    .replace(/[A-Za-z]+-(?=\s|$)/g, " ")
+    .replace(/(?<![A-Za-z])[A-Za-z]+-\s+[A-Za-z]+/g, " ")
+    .replace(/(?<![A-Za-z])[A-Za-z]+-(?=\s|$)/g, " ")
     .toLowerCase();
   WORD.lastIndex = 0;
   for (let m = WORD.exec(lower); m !== null; m = WORD.exec(lower)) out.add(m[0]);

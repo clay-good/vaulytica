@@ -79,7 +79,7 @@ export const rule: Rule = {
 function parseLeafInt(label: string | undefined): number | null {
   if (!label) return null;
   // Strip leading text (e.g., "Section 4.2" → "4.2").
-  const m = label.match(/(\d+(?:\.\d+)*)/);
+  const m = label.match(/((?<!\d)\d+(?:\.\d+)*)/);
   if (!m) return null;
   const parts = m[1]!.split(".");
   const last = parts[parts.length - 1]!;

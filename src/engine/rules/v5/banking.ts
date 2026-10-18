@@ -462,7 +462,7 @@ const DACA = pack("deposit-account-control-agreement", C, [
     ),
     pat: [
       /terminat/i,
-      /(\d+\s*\)?\s*days['’]?\s+(prior\s+)?(written\s+)?notice|successor|transfer\s+the\s+account|closes?\s+the\s+account)/i,
+      /((?<!\d)\d+\s*\)?\s*days['’]?\s+(prior\s+)?(written\s+)?notice|successor|transfer\s+the\s+account|closes?\s+the\s+account)/i,
     ],
     why: "If the bank can resign or close the account on short notice, the secured party can lose perfection between the notice and the replacement account's DACA.",
     fix: "Require advance notice of termination or account closure to the secured party, and require the customer to establish a replacement account under a new control agreement before the old one closes.",

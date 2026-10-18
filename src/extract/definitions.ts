@@ -2158,7 +2158,7 @@ function detectCircularDefinitions(entries: DefinitionEntry[]): string[][] {
 /** Trim a captured reference/scope label and strip trailing sentence punctuation. */
 function cleanRef(raw: string | undefined): string | undefined {
   if (!raw) return undefined;
-  const v = raw.trim().replace(/[.,;:]+$/, "");
+  const v = raw.trim().replace(/(?<![.,;:])[.,;:]+$/, "");
   return v || undefined;
 }
 
@@ -2681,7 +2681,7 @@ function escapeRegExp(s: string): string {
 const isShouted = (word: string): boolean => /[A-Z]/.test(word) && word === word.toUpperCase();
 
 function regularPlural(term: string): string | null {
-  const m = /^(.*?)(\S+)$/.exec(term);
+  const m = /^(.*?)(?<!\S)(\S+)$/.exec(term);
   if (!m) return null;
   const [, head, last] = m as unknown as [string, string, string];
   if (/s$/i.test(last)) return null;
@@ -2705,7 +2705,7 @@ function regularPlural(term: string): string | null {
  * simple rule applies.
  */
 function regularSingular(term: string): string | null {
-  const m = /^(.*?)(\S+)$/.exec(term);
+  const m = /^(.*?)(?<!\S)(\S+)$/.exec(term);
   if (!m) return null;
   const [, head, last] = m as unknown as [string, string, string];
   let singularLast: string | null = null;

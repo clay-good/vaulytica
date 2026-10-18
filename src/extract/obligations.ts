@@ -379,7 +379,7 @@ export function extractObligations(tree: DocumentTree, parties: Party[]): Obliga
         // | shall | operate as a waiver` — the opposite of the note. Where the
         // shortening would drop a leading No/Neither/None, the subject is kept
         // as written. Short negated subjects ("No person") always kept it.
-        const negatedSubject = subjectForObligor.trim().replace(/[\s,;:]+$/, "");
+        const negatedSubject = subjectForObligor.trim().replace(/(?<![\s,;:])[\s,;:]+$/, "");
         // Only a subject that is ONE noun phrase: with a comma or semicolon in
         // it, the "subject" spans a clause boundary and the negation belongs to
         // an earlier clause ("Neither Party may assign … without consent, which
@@ -612,7 +612,7 @@ function protasisObligor(
   if (!p) return undefined;
   let inner = p[0]
     .replace(/^\s*(?:if|when|unless|should|in\s+the\s+event|where)\s+/i, "")
-    .replace(/[,\s]+$/, "");
+    .replace(/(?<![,\s])[,\s]+$/, "");
   MODAL_RE.lastIndex = 0;
   const m = MODAL_RE.exec(inner);
   if (m) inner = inner.slice(0, m.index).trim();

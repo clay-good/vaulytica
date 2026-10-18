@@ -42,7 +42,7 @@ export const rule: Rule = {
     // instances. A decimal point is the only period these clauses contain.
     const lines = allMatches(
       ctx,
-      /[A-Z](?:[^.]|\.(?=\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d))*\./,
+      /(?<![A-Z])[A-Z](?:[^.]|\.(?=\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d))*\./,
     );
     if (lines.length === 0) return null;
     // Only the parties that BEAR the agreement. The extractor also records
@@ -165,7 +165,7 @@ export const rule: Rule = {
       // one-sided. Credit each party named in the joint subject.
       const subject = before.slice(Math.max(0, best.at - 60));
       const credited = new Set<string>([best.key]);
-      if (/\bjointly\b/.test(subject) || /\w+\s+and\s+\w+/.test(subject)) {
+      if (/\bjointly\b/.test(subject) || /\b\w+\s+and\s+\w+/.test(subject)) {
         for (const p of parties) {
           const key = p.name.toLowerCase();
           for (const surface of [key, ...(p.role ? [p.role.toLowerCase()] : [])]) {

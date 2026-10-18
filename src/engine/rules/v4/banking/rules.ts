@@ -141,7 +141,7 @@ const PROMISSORY_NOTE_RULES: Rule[] = [
       "Add 'Interest' specifying the rate (fixed / variable / index), compounding, and a savings clause limiting interest to the highest lawful rate.",
     present_patterns: [
       /(interest\s+rate|rate\s+of\s+interest)/i,
-      /\d+(\.\d+)?\s*(%|percent)/i,
+      /(?<!\d)\d+(\.\d+)?\s*(%|percent)/i,
       /(highest\s+lawful\s+rate|maximum\s+lawful\s+rate|usury\s+savings)/i,
     ],
   }),

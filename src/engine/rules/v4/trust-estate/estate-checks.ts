@@ -319,7 +319,7 @@ const WORD_FRACTION_RE =
 // sixteenths ("1/10 to A and 9/10 to B") must read the full fraction. A
 // single-digit capture (`\d`) truncated "9/10" to "9/1" (900%), turning a
 // clean 100% split into a 1000%-sum false positive.
-const EXPLICIT_FRACTION_RE = /(\d+)\s*\/\s*(\d+)/g;
+const EXPLICIT_FRACTION_RE = /((?<!\d)\d+)\s*\/\s*(\d+)/g;
 
 const NUMERATOR_WORDS: Record<string, number> = {
   one: 1,

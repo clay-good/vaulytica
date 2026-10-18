@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.935.0] — 2026-10-17
+
+### Security
+- 🚨 **Twenty-six super-linear regexes in the rules, extractors and ingest, on
+  runs of characters a document can carry**, each measured, plus four unpinned
+  digit alternatives anchored the same way as a precaution (STRUCT-015's label
+  reader, round ordering, `SECTION_NUMBER`, the estate fraction reader). `fuzz-boundary` drove long
+  adversarial runs through `extractAll` and nothing else, so the 1,936 rules
+  were never asked. Asked, the worst shape was an alternative that *starts*
+  with a bare `\d+` and then needs a suffix (`%`, `per annum`,
+  `days … notice`, `years`): on a run of digits it retried from every digit.
+  BNK-003 went **26 ms → 2,827 ms** for ten times the input. A full SLA
+  analysis took 0.2 s at 20,000 digits and 0.9 s at 40,000, and a paste may be
+  20,000,000 characters. Others: trailing-punctuation trims (`[,;:.]+$`),
+  word-then-suffix patterns (`\w+\s+and\s+\w+`, `[a-z]+-[a-z]+` in
+  `ingest/hyphenation.ts`, which runs over every document), the foreign-entity
+  suffix trim in `parties.ts`, a sentence scanner in RISK-002, and the
+  last-token split in `definitions.ts`.
+- **Every fix lets a match start only where a run begins**: `(?<!\d)`,
+  `(?<![,;:.])`, `\b`, `(?<![A-Z])`, `(?<!\S)`. Each is exact, not a
+  heuristic. A match that fails from the first character of a run fails from
+  every later one, since the quantifier can end at the same places with the
+  same suffix, and a match that succeeds from the first character is already
+  the leftmost. So no result can change. **Measured, not assumed**: every
+  finding with its excerpt, every party, defined term and obligation over the
+  corpus (9,041 lines) is identical to HEAD's; goldens differ only in the
+  version stamp. No rule's output changed, so no rule version moved.
+- How they were found: `RegExp.prototype.exec` was intercepted while the
+  product ran the 363 specimens (10,231 distinct regexes) and while every rule's
+  `check` ran directly (another 1,481 that the product's routing never reaches),
+  and each regex was then timed on 15 kinds of run at 2,000 and 20,000
+  characters. Runs of whitespace were set aside after checking that ingest folds
+  them to one space, so a regex quadratic only on spaces cannot be reached. Where
+  a digit alternative was already pinned by `^`, `\b`, a literal, or a bounded
+  lazy prefix, it was left alone.
+
+### Added
+- `tests/integration/rule-scaling.test.ts`: every rule, on the five run classes
+  that survive ingest, at 1,000 and 10,000 characters (warmed, then timed). It
+  fails when the large run is over 150 ms **and** more than 25× the small one,
+  with one retry. ~40 s. With EQT-011's original pattern restored it fails:
+  4.3 ms → 469 ms.
+
 ## [9.934.0] — 2026-10-17
 
 ### Fixed

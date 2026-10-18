@@ -59,7 +59,7 @@ const COLUMNS = pack(PLAYBOOK, C, [
     cite: practice("mca-specified-percentage", "the share of sales the funder is buying"),
     pat: [
       /\b(specified|purchased|holdback|remittance|retrieval)\s+(percentage|rate)\b/i,
-      /\d+(\.\d+)?\s?(%|percent)\s+of\s+[\w\s'’]{0,60}?\b(receipts|receivables|revenues?|sales|deposits)\b/i,
+      /(?<!\d)\d+(\.\d+)?\s?(%|percent)\s+of\s+[\w\s'’]{0,60}?\b(receipts|receivables|revenues?|sales|deposits)\b/i,
     ],
     why: "The percentage of receipts is the price term of the deal: it sets how fast the purchased amount is delivered and is the figure a fixed payment is reconciled against. An agreement that states only a daily dollar amount has no share of sales to reconcile to.",
     fix: "State the percentage of the merchant's receipts that the funder is purchasing, and how any fixed payment was estimated from it.",

@@ -92,7 +92,7 @@ const INFOSEC = pack("information-security-policy", C, [
     ),
     pat: [
       /(logging|audit\s+log|monitor)/i,
-      /(retain|retention|siem|alert|\d+\s+(days|months|year))/i,
+      /(retain|retention|siem|alert|(?<!\d)\d+\s+(days|months|year))/i,
     ],
     why: "Without logs, an incident cannot be scoped, and short retention is the reason many investigations cannot establish what was taken. The retention period is the single most consequential number in the policy.",
     fix: "State what is logged, where logs are centralized, the retention period, the monitoring and alerting expectations, and log-integrity protections.",

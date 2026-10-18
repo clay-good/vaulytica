@@ -120,7 +120,7 @@ const DO = pack("do-policy", C, [
     cite: practice("do-runoff", "change of control and run-off coverage in D&O policies"),
     pat: [
       /(change\s+(in|of)\s+control|transaction|merger)/i,
-      /(run-?off|tail|extended\s+reporting\s+period|discovery\s+period|\d+\s*\)?\s*years)/i,
+      /(run-?off|tail|extended\s+reporting\s+period|discovery\s+period|(?<!\d)\d+\s*\)?\s*years)/i,
     ],
     why: "On a change of control the policy typically converts to run-off for claims arising from pre-closing acts. Negotiating the run-off length and premium after signing is far more expensive than before.",
     fix: "Confirm the change-of-control provision, the run-off period available, and the premium formula, and negotiate a six-year tail option at a pre-agreed rate.",

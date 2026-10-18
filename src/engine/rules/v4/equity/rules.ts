@@ -280,7 +280,7 @@ const CONVERTIBLE_NOTE_RULES: Rule[] = [
       "Add 'Interest shall accrue on the unpaid principal at a rate of [X]% per annum, compounded annually, until paid in full or converted'.",
     present_patterns: [
       /interest\s+(rate|(?:shall|will|must)|accrues?|of\s+\d)/i,
-      /\d+(\.\d+)?\s*%\s*per\s+annum/i,
+      /(?<!\d)\d+(\.\d+)?\s*%\s*per\s+annum/i,
     ],
   }),
   language({

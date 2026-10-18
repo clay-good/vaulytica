@@ -48,7 +48,7 @@ const SERVICE_LEVEL = pack("service-level-agreement", "commercial", [
     name: "Service credit schedule",
     cite: practice("sla-credits", "the credit owed when the commitment is missed"),
     pat: [
-      /\bcredits?\b[\s\S]{0,200}?\d+(\.\d+)?\s?(%|percent)|\d+(\.\d+)?\s?(%|percent)[\s\S]{0,120}?\bcredits?\b/i,
+      /\bcredits?\b[\s\S]{0,200}?\d+(\.\d+)?\s?(%|percent)|(?<!\d)\d+(\.\d+)?\s?(%|percent)[\s\S]{0,120}?\bcredits?\b/i,
     ],
     why: "A service level with no stated consequence is a target, not a commitment. The credit schedule is the remedy the customer actually receives, and it is the first thing either side looks for when availability falls short.",
     fix: "Add a schedule that ties each band of availability to a credit, stated as a percentage of the fees for the affected period.",

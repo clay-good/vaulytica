@@ -357,7 +357,7 @@ function truncateExcerpt(text: string): string {
   const lastSpace = hard.lastIndexOf(" ");
   const body = lastSpace > 200 ? hard.slice(0, lastSpace) : hard;
   // Trailing punctuation before an ellipsis reads as a typo ("due,…").
-  return `${body.replace(/[\s,;:.]+$/, "")}…`;
+  return `${body.replace(/(?<![\s,;:.])[\s,;:.]+$/, "")}…`;
 }
 
 export function buildFixListCsv(run: EngineRun, currency?: CitationCurrency): string {

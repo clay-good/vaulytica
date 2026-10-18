@@ -76,7 +76,7 @@ export const rule: Rule = {
     // as its tail "030" (30%). And: "one-half of 2% per month" is 1% a month: the captured figure is what the
     // rate is a FRACTION OF, not the rate. Read as 2%, it asserted "~24.0%"
     // usury on a 12% loan. No assertion rather than a wrong one.
-    const rateAt = /\d+(?:\.\d+)?\s*(?:%|per\s?cent)/i.exec(hit.match[0])?.index ?? 0;
+    const rateAt = /(?<!\d)\d+(?:\.\d+)?\s*(?:%|per\s?cent)/i.exec(hit.match[0])?.index ?? 0;
     if (
       /\b(?:halves|half|thirds?|quarters?|fourths?|fifths?|tenths?|hundredths?)\s{1,3}of\s{1,3}$/i.test(
         hit.match[0].slice(Math.max(0, rateAt - 24), rateAt),

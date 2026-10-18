@@ -16,7 +16,7 @@ function normalizeEntry(text: string): string {
     .toLowerCase()
     .replace(/[\u2010-\u2015]/g, "-")
     .replace(/[\s\u00a0]+/g, " ")
-    .replace(/[.:;,]+$/, "")
+    .replace(/(?<![.:;,])[.:;,]+$/, "")
     .trim();
 }
 

@@ -63,7 +63,7 @@ const TOC_SHORT_PARAGRAPH = 160;
  * normally.
  */
 const SECTION_LOCATOR = /\b(?:Section|Clause)\s+\d+(?:\.\d+)*\b/g;
-const SECTION_NUMBER = /\d+(?:\.\d+)+|\d+/g;
+const SECTION_NUMBER = /(?<!\d)\d+(?:\.\d+)+|(?<!\d)\d+/g;
 const TOC_MIN_SECTION_ENTRIES = 3;
 
 function isLocatorIndex(text: string): boolean {
@@ -465,7 +465,7 @@ export function matchedSentence(text: string, match: { 0: string; index?: number
   const LEAD = 60;
   const cut = excerptWindow(base, anchor, Math.min(anchor, LEAD), 280 - Math.min(anchor, LEAD));
   const head = base.startsWith(cut) ? "" : "…";
-  return `${head}${cut.replace(/[\s,;:]+$/, "")}…`;
+  return `${head}${cut.replace(/(?<![\s,;:])[\s,;:]+$/, "")}…`;
 }
 
 /** Returns true if any classified paragraph belongs to `category`. */
