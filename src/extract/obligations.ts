@@ -166,7 +166,14 @@ function invertNegation(cl: { subject: string; predicate: string; modal: string 
 function endAtSecondDeadline(trigger: string | undefined): string | undefined {
   if (!trigger || !/^within\b/i.test(trigger)) return trigger;
   const m = /\s+and\s+(?=(?:a|an|the|each|all|any|its|their)\s[^,;.]*?\bwithin\b)/i.exec(trigger);
-  return m ? trigger.slice(0, m.index) : trigger;
+  if (m) return trigger.slice(0, m.index);
+  // …and where a second DUTY begins, its subject left out because it is the
+  // same party: "Licensee shall cure the defect within thirty (30) days and
+  // shall not ship non-conforming Licensed Products". The deadline ran to the
+  // end of the clause, so the second duty sat in the trigger column, and the
+  // negative covenant it states was missing from the ledger and from OBLI-005.
+  const duty = /\s+and\s+(?=(?:shall|will|must|may|agrees\s+to)\s+(?:not\s+)?[a-z])/i.exec(trigger);
+  return duty ? trigger.slice(0, duty.index) : trigger;
 }
 
 /**

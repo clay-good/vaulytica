@@ -1360,6 +1360,28 @@ describe("extractObligations — a website development agreement", () => {
     );
   });
 
+  it("ends a deadline where a second duty of the same party begins", () => {
+    // The subject of the second duty is left out because it is the same party,
+    // and the deadline ran on to swallow it: the negative covenant sat in the
+    // trigger column and never reached the ledger as a duty.
+    const [o] = rows(
+      "Licensee shall cure the failure within thirty (30) days and shall not ship non-conforming products after that period.",
+    );
+    expect(o!.trigger).toBe("within thirty (30) days");
+    expect(o!.action).toBe(
+      "cure the failure and shall not ship non-conforming products after that period",
+    );
+  });
+
+  it("keeps a modal inside a condition with the condition", () => {
+    // Only a deadline is cut: "may" in a fronted condition states when the duty
+    // arises, and stays there.
+    const [o] = rows(
+      "Before the Association may levy a fine, it shall give the Owner notice and a hearing.",
+    );
+    expect(o!.trigger).toBe("Before the Association may levy a fine");
+  });
+
   it("reads 'further warrants' as the warrantor's", () => {
     const [o] = rows(
       "Developer further warrants that the Website will meet the Web Content Accessibility Guidelines 2.1 Level AA at launch.",

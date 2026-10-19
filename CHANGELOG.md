@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.942.0] — 2026-10-19
+
+### Fixed
+- **A deadline swallowed the second duty in its sentence.** "Licensee shall cure
+  the failure within thirty (30) days and shall not ship non-conforming
+  products" put everything after "within" in the obligations ledger's trigger
+  column. The second duty never became a duty, and the negative covenant it
+  states was missing from the ledger and from OBLI-005. A "within" deadline now
+  ends where " and shall / will / must / may <verb>" opens a second duty of the
+  same party, and that duty goes back into the action. 20 rows on 17 specimens
+  changed, every one a deadline that now reads only as the deadline. Three
+  negative-covenant lists gained the covenant they were missing:
+  - "shall not ship non-conforming Licensed Products" (trademark license)
+  - "will not unreasonably withhold clearance" (internship)
+  - "will not accept a Referral for a prospect already in the pipeline"
+    (referral agreement)
+
+  Conditions are untouched: "Before the Association may levy a fine" is when a
+  duty arises, not a second duty, and stays the trigger. Goldens and every
+  other finding are unchanged.
+
 ## [9.941.0] — 2026-10-19
 
 ### Fixed
