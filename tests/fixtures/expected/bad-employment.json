@@ -261,18 +261,18 @@
     },
     {
       "elapsed_ms": 0,
-      "finding_id": "IPDATA-001-s1-0",
-      "fired": true,
+      "fired": false,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0"
+      "rule_version": "1.19.0"
     },
     {
       "elapsed_ms": 0,
-      "fired": false,
+      "finding_id": "IPDATA-002-s5-634",
+      "fired": true,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -963,40 +963,23 @@
       "title": "Out-of-state choice-of-law on California-based party"
     },
     {
-      "description": "The contract does not allocate ownership of intellectual property.",
-      "document_position": 0,
+      "description": "An IP assignment is present but pre-existing IP is not expressly carved out.",
+      "document_position": 634,
       "excerpt": {
-        "end_offset": 0,
-        "section_id": "s1",
-        "section_label": "Employment Agreement",
-        "start_offset": 0,
-        "text": "(no IP-ownership clause)"
+        "end_offset": 647,
+        "section_id": "s5",
+        "section_label": "4. Intellectual Property",
+        "start_offset": 634,
+        "text": "All work product created by Employee in the course of employment is hereby assigned to Employer as a work for hire."
       },
-      "explanation": "Without an IP-ownership clause, default copyright and patent rules apply. A work an employee prepares within the scope of employment is a work made for hire owned by the employer (17 U.S.C. §§ 101, 201(b)); copyright in a contractor's work vests in the contractor unless a written work-for-hire agreement covers an enumerated category, or the rights are assigned in writing.",
-      "id": "IPDATA-001-s1-0",
-      "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
-      "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0",
+      "explanation": "Without an explicit carve-out, a broad assignment can sweep in the assigning party's pre-existing IP. Modern drafting carves out 'Background IP' or 'Pre-existing IP' to scope the assignment.",
+      "id": "IPDATA-002-s5-634",
+      "recommendation": "Add a pre-existing-IP carve-out: list or describe what each party brings, state that it stays with its owner, and grant the other party only the licence it needs to use the deliverable. A bare assignment of everything created can sweep in tools the assignor uses on every engagement.",
+      "rule_id": "IPDATA-002",
+      "rule_version": "1.5.0",
       "severity": "warning",
-      "source_citations": [
-        {
-          "id": "stat-17-usc-101",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "17 U.S.C. § 101 — Definitions (work made for hire)",
-          "source_url": "https://www.law.cornell.edu/uscode/text/17/101"
-        },
-        {
-          "id": "stat-17-usc-201",
-          "license": "Public domain (US government work)",
-          "license_url": "https://www.usa.gov/government-works",
-          "retrieved_at": "2026-05-11T00:00:00Z",
-          "source": "17 U.S.C. § 201",
-          "source_url": "https://www.law.cornell.edu/uscode/text/17/201"
-        }
-      ],
-      "title": "No IP-ownership clause detected"
+      "source_citations": [],
+      "title": "Pre-existing IP carve-out not stated"
     },
     {
       "description": "For a period of twelve (12) months following termination of employment for any reason, Employee shall not directly or indirectly compete with Employer within the State of California or any other state where Employer conducts business.",
@@ -1259,11 +1242,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "74b0662aff8c4c24054139d3c4b17862c4b160b20024368afe0c593ee579be2d",
+  "result_hash": "cf860b4befde6803f3fd75bad43772e427b18e07f00f8e01f0cc66f7343fd709",
   "source_file": {
     "name": "bad-employment.docx",
     "sha256": "44e689f2fe4e8767866844995363dda962260fd37d54469e6d0fdf443136013c",
     "size_bytes": 9495
   },
-  "version": "9.951.0"
+  "version": "9.952.0"
 }

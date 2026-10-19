@@ -955,7 +955,7 @@ const WFH_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-037",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Backup assignment clause",
     description:
       "Work-for-hire agreement must include a backup assignment in case the work-for-hire designation fails.",
@@ -968,7 +968,7 @@ const WFH_RULES: Rule[] = [
     recommendation:
       "Add 'Backup Assignment' assigning all right, title, and interest to client in the event any portion is not a work for hire.",
     present_patterns: [
-      /(to\s+the\s+extent|in\s+the\s+event).{0,40}(not\s+a\s+work\s+for\s+hire|fails\s+to\s+qualify)/is,
+      /(to\s+the\s+extent|in\s+the\s+event).{0,40}(not\s+a\s+work[-\s]+(?:made[-\s]+)?for[-\s]+hire|fails\s+to\s+qualify)/is,
       /(hereby\s+assigns?|assignment)/i,
     ],
     // Express-denial guard: the "to the extent … not a work for hire" framing

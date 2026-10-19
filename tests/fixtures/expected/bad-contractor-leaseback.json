@@ -260,7 +260,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0"
+      "rule_version": "1.19.0"
     },
     {
       "elapsed_ms": 0,
@@ -268,7 +268,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -874,7 +874,7 @@
       "id": "IPDATA-002-s4-855",
       "recommendation": "Add a pre-existing-IP carve-out: list or describe what each party brings, state that it stays with its owner, and grant the other party only the licence it needs to use the deliverable. A bare assignment of everything created can sweep in tools the assignor uses on every engagement.",
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Pre-existing IP carve-out not stated"
@@ -1042,11 +1042,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "fe856695ef686c6a94d761415a0278c1674bb44aa69900c11b51affead21c9a6",
+  "result_hash": "5bf9d12278fd5f6fb60fe857d8d333729e324f31b98efa289c9a2658b0553e25",
   "source_file": {
     "name": "bad-contractor-leaseback.docx",
     "sha256": "82496f664a3abe77b7ed03c7c77b47c9ffbd8c5f883389cb761b7ba68b31f98d",
     "size_bytes": 9466
   },
-  "version": "9.951.0"
+  "version": "9.952.0"
 }

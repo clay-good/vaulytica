@@ -266,14 +266,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0"
+      "rule_version": "1.19.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -978,7 +978,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0",
+      "rule_version": "1.19.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1133,11 +1133,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 1). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\", \"salary\".",
-  "result_hash": "25b7b03d404978ae2a46739255ed0cccdf3b511bbd35df2bb6f5df07a45571a6",
+  "result_hash": "21b1e65664f2f7f03f8a160312e52d04b7b2c53e620b13cefd785aea9e5c3831",
   "source_file": {
     "name": "bad-employment-trap.docx",
     "sha256": "c0ef11cc8a800daead332bf1bc265f96d72af1c51953958734b1bf18c4058b2a",
     "size_bytes": 9352
   },
-  "version": "9.951.0"
+  "version": "9.952.0"
 }

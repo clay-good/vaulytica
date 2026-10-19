@@ -13,6 +13,10 @@
  *             subcontract's identification of its parties, all "missing".
  *             Recognizers wrote `subcontract`, `sublicens`, `sublease`.
  *
+ *   WORK-FOR-HIRE  "work made for hire" → "work-for-hire" (9.952.0). IPDATA-001
+ *             told a software development agreement it had no IP-ownership
+ *             clause; five recognizers wrote the phrase with spaces only.
+ *
  * Fixed by a codemod over recognizer source only (the AST-driven
  * `recognizerSources`), so no rule's name or advice text changed. The
  * rewrite also exposed STRUCT-009 reading "sub-contract" as a lower-case use
@@ -32,6 +36,12 @@ export const withoutNonHyphen = (t: string): string => t.replace(/\b([Nn])on-([a
 /** "subcontractor" → "sub-contractor", and the same for licence, processor, lease, let. */
 export const withSubHyphen = (t: string): string =>
   t.replace(/\b([Ss])ub(licen[sc]\w*|contract\w*|process\w*|lease\w*|let\w*)\b/g, "$1ub-$2");
+
+/** "work made for hire" / "work for hire" → "work-for-hire". */
+export const asWorkForHire = (t: string): string =>
+  t
+    .replace(/\bwork made for hire\b/g, "work-for-hire")
+    .replace(/\bwork for hire\b/g, "work-for-hire");
 
 async function movedBy(
   mutate: (t: string) => string,
@@ -68,6 +78,12 @@ describe("a compound spelled the other way", () => {
   it('reads "sub-contractor" as "subcontractor"', async () => {
     const { moved, probed } = await movedBy(withSubHyphen);
     expect(probed, "no specimen writes a sub- compound").toBeGreaterThan(40);
+    expect(moved).toEqual([]);
+  }, 1_800_000);
+
+  it('reads "work-for-hire" as "work made for hire"', async () => {
+    const { moved, probed } = await movedBy(asWorkForHire);
+    expect(probed, "no specimen states a work-for-hire term").toBeGreaterThan(3);
     expect(moved).toEqual([]);
   }, 1_800_000);
 

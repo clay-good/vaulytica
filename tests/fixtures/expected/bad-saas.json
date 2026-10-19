@@ -266,14 +266,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0"
+      "rule_version": "1.19.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -1030,7 +1030,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0",
+      "rule_version": "1.19.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1316,11 +1316,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "38b92543eb7b0567c7b2e82f5442b7e086487bdbafb50488e64ef7495b0a71c1",
+  "result_hash": "1c79f67bd211398c468d772b9b6c8eb1f30fe0fd796832096053a797ea7fc83a",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.951.0"
+  "version": "9.952.0"
 }

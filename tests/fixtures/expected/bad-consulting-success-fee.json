@@ -261,7 +261,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0"
+      "rule_version": "1.19.0"
     },
     {
       "elapsed_ms": 0,
@@ -269,7 +269,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -897,7 +897,7 @@
       "id": "IPDATA-002-s5-1278",
       "recommendation": "Add a pre-existing-IP carve-out: list or describe what each party brings, state that it stays with its owner, and grant the other party only the licence it needs to use the deliverable. A bare assignment of everything created can sweep in tools the assignor uses on every engagement.",
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0",
+      "rule_version": "1.5.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Pre-existing IP carve-out not stated"
@@ -1121,11 +1121,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "dcd1c0908f0416e9b7a9b3bcf7a342f38a65b92cf07dbd2847b9c0bff611a50f",
+  "result_hash": "c339560c6e078771220cb35f28cb19910711f6bb32bbb0eaa4b8b37752c35b02",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.951.0"
+  "version": "9.952.0"
 }

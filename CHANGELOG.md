@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.952.0] — 2026-10-19
+
+### Fixed
+- **"work-for-hire", hyphenated.** Five recognizers wrote "work made for
+  hire" with spaces only, so IPDATA-001 told a software development agreement
+  that it had no IP-ownership clause. Each now reads the hyphenated and the
+  shorter "work for hire" forms (IPDATA-001, IPDATA-002, COMM-022, COMM-180,
+  IPL-037). `compound-spelling.test.ts` holds the rewrite; it fails on 9.951.0.
+- **Two fixture reports corrected by it.** `bad-consulting` and
+  `bad-employment` say "shall be work for hire owned exclusively by Customer"
+  and "is hereby assigned to Employer as a work for hire". IPDATA-001 read
+  only "work made for hire", so both reports said "No IP-ownership clause
+  detected" about documents that have one. They now report the clause present,
+  and IPDATA-002 notes that it carves out no pre-existing IP, which it does not.
+  These two expected outputs are the only ones that moved.
+- **Measured, nothing to fix:** "e-mail", "co-operate", "set off" for
+  "set-off" and "setoff".
+
 ## [9.951.0] — 2026-10-19
 
 ### Fixed

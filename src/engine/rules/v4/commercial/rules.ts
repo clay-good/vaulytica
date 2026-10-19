@@ -995,6 +995,7 @@ const MARKETING_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-022",
+    version: "1.1.0",
     name: "Ownership of deliverables / work product",
     description:
       "A marketing services agreement should state who owns the creative deliverables and work product.",
@@ -1012,7 +1013,7 @@ const MARKETING_RULES: Rule[] = [
     recommendation:
       "Add an 'Ownership' clause assigning the deliverables (or a work-made-for-hire recital plus a backstop assignment) to the client on payment, and warranting that third-party materials are licensed for the intended use.",
     present_patterns: [
-      /works?\s+(made\s+)?for\s+hire/i,
+      /works?[-\s]+(made[-\s]+)?for[-\s]+hire/i,
       /(assign\w*|own\w*|vest\w*)\s+.{0,50}(deliverables?|work\s+product|all\s+(right|title)|materials)/is,
       /(deliverables?|work\s+product)\s+.{0,50}(owned\s+by|(?:shall|will|must)\s+be\s+owned|belong|are\s+owned|vest)/is,
       /intellectual\s+property\s+.{0,30}(assign|owned|vest|belong)/is,

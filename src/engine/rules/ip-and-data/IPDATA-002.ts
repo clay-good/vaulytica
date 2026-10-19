@@ -24,7 +24,7 @@ const CARVE_OUT =
 
 export const rule: Rule = {
   id: "IPDATA-002",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Pre-existing IP carve-out",
   category: "ip-and-data",
   default_severity: "warning",
@@ -33,7 +33,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\b(?:hereby\s+)?assigns?\b[\s\S]{0,200}intellectual\s+property|\b(?:works?\s+made\s+for\s+hire)\b/i,
+      /\b(?:hereby\s+)?assigns?\b[\s\S]{0,200}intellectual\s+property|\b(?:works?[-\s]+(?:made[-\s]+)?for[-\s]+hire)\b/i,
     );
     if (!hit) return null;
     // The carve-out is named many ways. The classic invention-assignment

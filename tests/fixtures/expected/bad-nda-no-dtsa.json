@@ -261,14 +261,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0"
+      "rule_version": "1.19.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -873,7 +873,7 @@
       "id": "IPDATA-001-s1-0",
       "recommendation": "Add an IP-ownership clause: state who owns what is created under this contract, assign it expressly (a work-made-for-hire recital alone does not carry every category), and carve out each party's pre-existing material with a licence to use it as incorporated.",
       "rule_id": "IPDATA-001",
-      "rule_version": "1.18.0",
+      "rule_version": "1.19.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1040,11 +1040,11 @@
   "playbook_id": "unilateral-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected unilateral-nda (score 1). Title matched: \"one-way nda\", \"one-way non-disclosure\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"the Receiving Party\", \"the Disclosing Party\", \"shall not disclose\".",
-  "result_hash": "e72063386b1f3311972ed2356a692290d87646bc939f0cbc1bc24617c66d13f1",
+  "result_hash": "8f127eba415987102bba50f782a15d6b17fb936e7bbd6efbe94e930f5b8d0939",
   "source_file": {
     "name": "bad-nda-no-dtsa.docx",
     "sha256": "6843694916dfef439851e84aca5bf213e35090b1a39f2b027f1e56d6382f2c29",
     "size_bytes": 9006
   },
-  "version": "9.951.0"
+  "version": "9.952.0"
 }

@@ -1169,13 +1169,14 @@ const INFLUENCER = pack("influencer-agreement", C, [
   },
   {
     id: "COMM-180",
+    ver: "1.1.0",
     name: "Content ownership and usage license",
     cite: practice(
       "influencer-ip",
       "content ownership and whitelisting rights in creator agreements",
     ),
     pat: [
-      /(ownership\s+of\s+the\s+content|work\s+made\s+for\s+hire|creator\s+retains)/i,
+      /(ownership\s+of\s+the\s+content|work[-\s]+(?:made[-\s]+)?for[-\s]+hire|creator\s+retains)/i,
       /(licen[cs]e\s+to\s+(use|repost)|usage\s+rights|whitelist|paid\s+amplification)/i,
     ],
     why: "Brands routinely amplify creator content as paid media without having bought the right to. Usage term, territory, media, and whether the creator's likeness travels with the content are all separate grants.",
