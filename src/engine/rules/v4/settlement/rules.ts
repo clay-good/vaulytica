@@ -131,7 +131,7 @@ const RELEASE_RULES: Rule[] = [
   }),
   presence({
     id: "SET-003",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "California § 1542 waiver (if applicable)",
     description:
       "California releases of unknown claims require a specific § 1542 waiver with the statutory text.",
@@ -144,7 +144,7 @@ const RELEASE_RULES: Rule[] = [
     recommendation:
       "If California law applies, add a § 1542 waiver quoting the statutory text and an express waiver.",
     present_patterns: [
-      /section\s+1542/i,
+      /(?:section|sec\.)\s+1542/i,
       /(unknown\s+claims|do\s+not\s+know\s+or\s+suspect)/i,
       /(waiv(es?|e|ed|ing)).{0,40}(1542|known\s+or\s+unknown)/is,
     ],
@@ -344,7 +344,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Tax allocation / IRS Form 1099 / W-2 treatment",
     description:
       "Settlement of employment / personal-injury / contract claims should allocate payment among taxable categories.",
@@ -362,7 +362,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
       "Add 'Tax Treatment' allocating among physical-injury (§ 104), wages (W-2), non-wage (1099), attorney fees (1099-MISC / 1099-NEC), and interest.",
     present_patterns: [
       /(1099|w.?2|w2|form\s+1099|tax\s+(allocation|treatment))/i,
-      /(internal\s+revenue\s+code|irc\s+§|section\s+104)/i,
+      /(internal\s+revenue\s+code|irc\s+§|(?:section|sec\.)\s+104)/i,
     ],
     // The categories this rule allocates among — § 104 physical injury, W-2
     // wages, emotional distress — are an INDIVIDUAL's. Two companies settling
@@ -375,7 +375,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "SET-010",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Section 162(q) — Harvey Weinstein tax limitation (sexual harassment claims)",
     description:
       "IRC § 162(q) disallows deduction of settlements subject to nondisclosure for sexual harassment / abuse.",
@@ -393,7 +393,7 @@ const SETTLEMENT_AGREEMENT_RULES: Rule[] = [
     recommendation:
       "If applicable, add a § 162(q) recital acknowledging that the payor will not deduct amounts covered by nondisclosure for sexual-harassment / abuse claims.",
     present_patterns: [
-      /section\s+162.?q/i,
+      /(?:section|sec\.)\s+162.?q/i,
       /(harvey\s+weinstein|tcja|tax\s+cuts\s+and\s+jobs\s+act).{0,80}(harassment|abuse)/is,
       /no\s+deduction.{0,80}(harassment|abuse)/is,
     ],

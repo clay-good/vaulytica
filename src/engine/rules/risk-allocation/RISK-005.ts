@@ -52,7 +52,7 @@ import { truncateQuote } from "../../text.js";
 // of liability does not apply to …"), and "the limitation of liability set
 // forth herein" all lack the negator and still match.
 const LIMITATION_OF_LIABILITY = new RegExp(
-  String.raw`\b(?:neither|no)\s+(?:party|of\s+the\s+parties)(?:['’]s)?\s+(?:[\w-]+\s+){0,3}?liabilit(?:y|ies)\b[^.]{0,160}?\b(?:shall|will|must|may)\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,160}?\b(?<!\bnot\s)(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b(?:[^.]|\.(?=\d)){0,60}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will|must)\s+be|(?:shall|will|must)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)){0,120}?\bliable\b(?:[^.]|\.(?=\d)){0,80}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:maximum|total|cumulative|aggregate)\s+liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)){0,120}?\b(?:is|are|shall\s+be|will\s+be)\s+(?<!\bnot\s)(?:limited\s+to|capped\s+at|no\s+(?:more|greater)\s+than|${CURRENCY_MARK}|${AMOUNT_IN_WORDS}|the\s+(?:purchase\s+price|fees?|premium|amounts?|total|greater|lesser|aggregate))\b`,
+  String.raw`\b(?:neither|no)\s+(?:party|of\s+the\s+parties)(?:['’]s)?\s+(?:[\w-]+\s+){0,3}?liabilit(?:y|ies)\b[^.]{0,160}?\b(?:shall|will|must|may)\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+not\s+exceed\b|\bliabilit(?:y|ies)\b[^.]{0,200}?\b(?:shall|will|must)\s+be\s+no\s+(?:more|greater)\s+than\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,160}?\b(?<!\bnot\s)(?:capped|limited)\s+(?:at|to)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b[^.]{0,140}?\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,80}?\bexceed\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,120}?\b(?:aggregate|total|cumulative|maximum)\s+damages\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,60}?\bexceed\b|\bliabilit(?:y|ies)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,80}?\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,40}?\bexceed\b|\b(?:neither\s+(?:party|of\s+the\s+parties)\s+(?:shall|will|must)\s+be|(?:shall|will|must)\s+not\s+be)\s+liable\b[^.]{0,70}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:in\s+no\s+event|under\s+no\s+circumstances)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,120}?\bliable\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,80}?\b(?:more\s+than|in\s+excess\s+of|exceeding)\b|\b(?:maximum|total|cumulative|aggregate)\s+liabilit(?:y|ies)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,120}?\b(?:is|are|shall\s+be|will\s+be)\s+(?<!\bnot\s)(?:limited\s+to|capped\s+at|no\s+(?:more|greater)\s+than|${CURRENCY_MARK}|${AMOUNT_IN_WORDS}|the\s+(?:purchase\s+price|fees?|premium|amounts?|total|greater|lesser|aggregate))\b`,
   "i",
 );
 
@@ -67,7 +67,7 @@ const LIABILITY_LABEL =
 /** A heading: short, and every word of four or more letters capitalized. */
 const isHeadingLine = (line: string): boolean => {
   const words = line
-    .replace(/^\s*(?:(?:article|section|clause)\s+)?[\dIVX]*(?:\.\d+)*\.?\s*/i, "")
+    .replace(/^\s*(?:(?:article|(?:section|sec\.)|clause)\s+)?[\dIVX]*(?:\.\d+)*\.?\s*/i, "")
     .replace(/[.:]\s*$/, "");
   return words.length <= 60 && !/[.;:]/.test(words) && !/\b[a-z][a-z]{3,}\b/.test(words);
 };
@@ -91,7 +91,7 @@ const labelLine = (text: string, index: number): string => {
 /** RISK-005 — Limitation of liability present (warning). */
 export const rule: Rule = {
   id: "RISK-005",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Limitation of liability present",
   category: "risk-allocation",
   default_severity: "warning",

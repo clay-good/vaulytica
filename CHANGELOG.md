@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.953.0] — 2026-10-19
+
+### Fixed
+- **"Sec. 5" was not "Section 5".** Rewriting each cross-reference in the
+  corpus as "Sec. N" moved findings on 25 specimens. Three were false
+  CRITICALs: MNA-031 found no appraisal-rights clause in a merger agreement
+  citing "Sec. 262 of the DGCL", MNA-025 no purchase-price allocation, and
+  COMM-025 no remedies clause. There were two causes:
+  - **The word.** About 69 recognizers wrote "section" before a number with
+    no room for the abbreviation. An AST-driven codemod over recognizer source
+    made them read `(?:section|sec\.)`, and three it missed (an escape before
+    the word hid it) were caught by an independent static guard and fixed by
+    hand. On the way, the cross-reference reader and its statute filter came
+    to disagree: "Sec. 423" of the Code read as a broken internal reference
+    until the filter learned the abbreviation too.
+  - **The dot.** 24 sentence windows, written `(?:[^.]|\.(?=\d))`, ended at
+    the abbreviation's period. They now step over a period that follows one of
+    `ABBREV_BEFORE_NUMBER` ("Sec", "No", "Art", the months) when a number comes
+    next. That is the list `src/extract/walk.ts` already keeps, and the
+    alternatives stay disjoint, so `rule-scaling` is unchanged.
+
+  64 rule versions bumped; shared helpers changed as well.
+  `section-abbreviation.test.ts` holds the rewrite and a static guard, and
+  both fail on 9.952.0.
+- **Declared, not fixed:** RISK-014, FIN-005 and RISK-016 each keep a bespoke
+  window, a character class that admits no period at all, and still miss one
+  "Sec." reference each. The test lists them.
+- The unmodified corpus is identical before and after.
+
 ## [9.952.0] — 2026-10-19
 
 ### Fixed

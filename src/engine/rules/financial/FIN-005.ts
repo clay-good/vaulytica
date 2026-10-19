@@ -64,7 +64,7 @@ const PAYMENT_TERMS = new RegExp(
     // fees set out in Exhibit A. Contractor shall deliver a status report on
     // the first day of each month" as a payment term. The decimal point is the
     // only period this clause ever contains.
-    `\\b${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:pay|remit)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bon\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    `\\b${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:pay|remit)\\b(?:[^.;]|\\.(?=\\d)|(?<=\\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\\.(?=\\s+\\d)){0,80}?\\bon\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     // A PURCHASE AGREEMENT states its payment term as an EVENT, not a
     // day-count: "At the Closing, Buyer shall pay the Purchase Price … by wire
     // transfer of immediately available funds". That names the moment payment
@@ -73,8 +73,8 @@ const PAYMENT_TERMS = new RegExp(
     // subject, so none of the branches above (which lead on the verb) can see
     // it. Bounded to one sentence and to the pay/remit/deliver verbs so an
     // unrelated "at the Closing" sentence is not read as a payment term.
-    `\\bat\\s+(?:the\\s+)?closing\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\b${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:pay|remit|deliver|wire)\\b`,
-    `\\b${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:pay|remit|wire)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bat\\s+(?:the\\s+)?closing\\b`,
+    `\\bat\\s+(?:the\\s+)?closing\\b(?:[^.;]|\\.(?=\\d)|(?<=\\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\\.(?=\\s+\\d)){0,80}?\\b${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:pay|remit|deliver|wire)\\b`,
+    `\\b${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:pay|remit|wire)\\b(?:[^.;]|\\.(?=\\d)|(?<=\\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\\.(?=\\s+\\d)){0,80}?\\bat\\s+(?:the\\s+)?closing\\b`,
     `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+|working\\s+)?days?`,
     `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%§]{0,40}?(?:is|are|(?:shall|will)\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|not?\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+|working\\s+)?days?`,
     `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|not?\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+|working\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
@@ -108,7 +108,7 @@ const PAYMENT_TERMS = new RegExp(
     // following month". The digits-only slot read neither the word nor the
     // parenthetical, so a management fee with a stated monthly due date
     // warned that no payment term was stated.
-    `\\b(?:due|payable|paid)\\s+(?:(?:[^.;]|\\.(?=\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
+    `\\b(?:due|payable|paid)\\s+(?:(?:[^.;]|\\.(?=\\d)|(?<=\\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\\.(?=\\s+\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?the\\s+(?:[a-z]+|\\d{1,2}(?:st|nd|rd|th))\\s*(?:\\(\\d{1,2}(?:st|nd|rd|th)?\\)\\s*)?(?:day\\s+)?of\\s+(?:each|every|the)\\b`,
     `\\b(?:due|payable|paid)\\s+(?:monthly|quarterly|annually|weekly|bi-?weekly|semi-?annually)\\b`,
     `\\b(?:monthly|quarterly|annually)\\s+in\\s+(?:advance|arrears)\\b`,
     // "payable on a monthly basis" — the cadence carries an "on a … basis"
@@ -155,7 +155,7 @@ const PAYMENT_TERMS = new RegExp(
     // January 31 and $425,000.00 on June 30 of each year" is the same
     // sponsorship fee as "$425,000", and only one of the two was read as a
     // payment term (v1.5.1).
-    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:(?:[^.;]|\\.(?=\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,?\\s+\\d{4})?|(?:the\\s+|this\\s+)?\\d{1,2}(?:st|nd|rd|th)?\\s+(?:day\\s+of\\s+|of\\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\\.?,?\\s+\\d{4}|\\d{1,2}[/.]\\d{1,2}[/.]\\d{2,4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
+    `\\b(?:due|payable|paid)\\s+(?:and\\s+payable\\s+)?(?:in\\s+(?:advance|arrears)\\s+)?(?:(?:[^.;]|\\.(?=\\d)|(?<=\\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\\.(?=\\s+\\d)){0,40}?\\s+)?on\\s+(?:or\\s+before\\s+)?(?:(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\\.?\\s+\\d{1,2}(?:st|nd|rd|th)?(?:,?\\s+\\d{4})?|(?:the\\s+|this\\s+)?\\d{1,2}(?:st|nd|rd|th)?\\s+(?:day\\s+of\\s+|of\\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\\.?,?\\s+\\d{4}|\\d{1,2}[/.]\\d{1,2}[/.]\\d{2,4}|the\\s+(?:Maturity|Effective|Closing)\\s+Date\\b|each\\s+anniversary\\b)`,
     // An M&A or real-estate purchase price states its term as the CLOSING
     // event, not an interval or a fixed date: "the Purchase Price … payable in
     // cash at the Closing", "the balance is due and payable at closing". The
@@ -216,7 +216,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

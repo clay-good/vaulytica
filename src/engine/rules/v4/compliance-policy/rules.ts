@@ -110,7 +110,7 @@ const CODE_OF_CONDUCT_RULES: Rule[] = [
   }),
   presence({
     id: "POL-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Reporting violations + non-retaliation",
     description: "Code must establish a confidential reporting channel and prohibit retaliation.",
     citation: whistleblowerLaw(),
@@ -503,7 +503,7 @@ const INSIDER_TRADING_RULES: Rule[] = [
     present_patterns: [
       /(blackout\s+period|trading\s+window|window\s+period)/i,
       /(pre.?clearance|pre.?approval|trading\s+window)/i,
-      /(section\s+16|insider|director|officer)/i,
+      /((?:section|sec\.)\s+16|insider|director|officer)/i,
     ],
     require_all_present: true,
   }),

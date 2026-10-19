@@ -54,7 +54,7 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const NET_LEASE_RULES: Rule[] = [
   presence({
     id: "RE-001",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Triple-net (NNN) cost allocation stated",
     description:
       "Net lease must specify which expenses (real estate taxes, insurance, CAM / operating expenses) pass through to tenant.",
@@ -292,7 +292,7 @@ const NET_LEASE_RULES: Rule[] = [
 const PSA_RULES: Rule[] = [
   presence({
     id: "RE-009",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Property description / legal description",
     description: "PSA must include a legal description of the property (Statute of Frauds).",
     citation: statuteOfFrauds(),
@@ -325,7 +325,7 @@ const PSA_RULES: Rule[] = [
       /\blegally\s+described\s+as\b|\bmore\s+particularly\s+described\s+as\s+follows\b/i,
       // The description's own forms: lot-and-block, plat reference, the public
       // land survey, and metes and bounds.
-      /\bLot\s+\w+[^.]{0,80}?\bBlock\s+\w+|\bplat\s+book\b|\bmetes\s+and\s+bounds\b|\bSection\s+\d+,\s*Township\s+\d+|\bdeed\s+book\s+\d+/i,
+      /\bLot\s+\w+[^.]{0,80}?\bBlock\s+\w+|\bplat\s+book\b|\bmetes\s+and\s+bounds\b|\b(?:Section|Sec\.)\s+\d+,\s*Township\s+\d+|\bdeed\s+book\s+\d+/i,
     ],
   }),
   presence({
@@ -457,7 +457,7 @@ const PSA_RULES: Rule[] = [
       "Many sellers structure as forward / reverse § 1031 exchanges; buyer cooperation is the standard.",
     recommendation:
       "Add 'Section 1031 Exchange' with mutual cooperation and a no-cost-to-cooperating-party limit.",
-    present_patterns: [/(section\s+1031|like.kind\s+exchange|1031\s+exchange)/i],
+    present_patterns: [/((?:section|sec\.)\s+1031|like.kind\s+exchange|1031\s+exchange)/i],
     default_severity: "warning",
   }),
   presence({

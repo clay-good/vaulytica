@@ -18,6 +18,9 @@ const SAVINGS =
  */
 export function isUsurySavingsClause(paragraph: string, matchIndex: number): boolean {
   const rest = paragraph.slice(matchIndex);
-  const sentence = /^(?:[^.]|\.(?=\d))*/.exec(rest)?.[0] ?? rest;
+  const sentence =
+    /^(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d))*/.exec(
+      rest,
+    )?.[0] ?? rest;
   return SAVINGS.test(sentence);
 }

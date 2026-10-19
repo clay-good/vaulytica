@@ -368,7 +368,7 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
 const ARB_DEMAND = pack("arbitration-demand", C, [
   {
     id: "SET-123",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Arbitration clause quoted and located",
     cite: standardForm(
       "AAA Commercial Arbitration Rules",
@@ -377,7 +377,7 @@ const ARB_DEMAND = pack("arbitration-demand", C, [
     ),
     pat: [
       /(arbitration\s+(clause|provision|agreement))/i,
-      /((?:section|clause)\s+\d|§|quoted|provides\s+as\s+follows|attached)/i,
+      /((?:(?:section|sec\.)|clause)\s+\d|§|quoted|provides\s+as\s+follows|attached)/i,
     ],
     // `all: true`. The check is named for two things, quoted AND located, and
     // the locator pillar is `section \d` — which every contract satisfies with

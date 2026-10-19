@@ -48,7 +48,7 @@ const GDPR_ARTICLE_REF = /^Articles?\s+\d/i;
  * those to resolve against, and three references into the ICO's text were
  * reported as references the addendum broke.
  */
-const FORM_SECTION_REF = /^(?:Sections?|Clauses?|§)\s*\d/i;
+const FORM_SECTION_REF = /^(?:Sections?|Secs?\.|Clauses?|§)\s*\d/i;
 
 /**
  * The same reasoning for a set of STANDARD CONTRACTUAL CLAUSES, which
@@ -80,7 +80,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-007",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Cross-reference resolution",
   category: "structural",
   default_severity: "warning",

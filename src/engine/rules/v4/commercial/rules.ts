@@ -80,7 +80,7 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-002",
-    version: "1.2.0",
+    version: "1.4.0",
     name: "Delivery schedule / lead time",
     description:
       "A supply agreement should state delivery timing — a schedule, lead time, or Incoterms delivery point.",
@@ -272,7 +272,7 @@ const MANUFACTURING_SUPPLY_RULES: Rule[] = [
       // sit in ONE sentence, so an unrelated "adequate remedy at law" recital
       // elsewhere in the paragraph cannot stand in for the clause.
       // `\.(?=\d)` is the repo's idiom for a decimal point inside a figure.
-      /\bremed(?:y|ies)\b(?:[^.]|\.(?=\d)){0,90}\b(?:repair|replac\w+|refund|credit)\w*|\b(?:repair|replac\w+|refund|credit)\w*(?:[^.]|\.(?=\d)){0,90}\bremed(?:y|ies)\b/i,
+      /\bremed(?:y|ies)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,90}\b(?:repair|replac\w+|refund|credit)\w*|\b(?:repair|replac\w+|refund|credit)\w*(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,90}\bremed(?:y|ies)\b/i,
     ],
   }),
   presence({
@@ -705,7 +705,7 @@ const REFERRAL_RULES: Rule[] = [
     recommendation:
       "Add a RESPA-compliance clause confirming the fee is for services actually performed (or fits a § 8(c) safe harbor), with the required affiliated-business-arrangement disclosure where applicable.",
     present_patterns: [
-      /\brespa\b|12\s+u\.?s\.?c\.?\s+§?\s*2607|section\s+8/i,
+      /\brespa\b|12\s+u\.?s\.?c\.?\s+§?\s*2607|(?:section|sec\.)\s+8/i,
       /services\s+actually\s+(performed|rendered)/i,
       /affiliated\s+business\s+(arrangement|disclosure)/i,
       /reasonable\s+(market\s+)?value\s+of\s+.{0,20}services/is,

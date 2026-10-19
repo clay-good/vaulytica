@@ -105,7 +105,7 @@ const CONSEQUENCE = String.raw`continues?\s+(?:to\s+apply|in\s+(?:full\s+force|f
  * never reached and the clause reads as absent. A period followed by a DIGIT
  * is a decimal or a subsection number, never the end of a sentence.
  */
-const SAME_SENTENCE = String.raw`(?:[^.]|\.(?=\d))`;
+const SAME_SENTENCE = String.raw`(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d))`;
 
 const EFFECT_OF_TERMINATION = new RegExp(
   String.raw`\b(?:effect|consequences)\s+of\s+termination\b` +
@@ -258,7 +258,7 @@ const EFFECT_OF_TERMINATION = new RegExp(
 /** TERM-005 — Effect of termination clause present (warning). */
 export const rule: Rule = {
   id: "TERM-005",
-  version: "1.25.0",
+  version: "1.26.0",
   name: "Effect of termination clause",
   category: "termination",
   default_severity: "warning",

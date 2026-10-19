@@ -34,7 +34,7 @@ const TYPICAL = [
  * and a bare `[^.;\n]` stopped at the "8.1".
  */
 const EXCEPTION_CLAUSE =
-  /\b(?:except\s+for|excluding|other\s+than|(?:do|does|shall|will|must)\s+not\s+apply\s+to)\b(?:[^.;\n]|\.(?=\d)){0,400}/i;
+  /\b(?:except\s+for|excluding|other\s+than|(?:do|does|shall|will|must)\s+not\s+apply\s+to)\b(?:[^.;\n]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,400}/i;
 
 /**
  * The section anchor, plus the first exception clause that follows it.
@@ -123,7 +123,7 @@ function sectionMatch(
 /** RISK-006 — LoL exceptions list (info). */
 export const rule: Rule = {
   id: "RISK-006",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "LoL exceptions list",
   category: "risk-allocation",
   default_severity: "info",

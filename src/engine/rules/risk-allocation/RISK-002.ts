@@ -5,7 +5,7 @@ import { truncateQuote } from "../../text.js";
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-002",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Indemnity mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -42,7 +42,7 @@ export const rule: Rule = {
     // instances. A decimal point is the only period these clauses contain.
     const lines = allMatches(
       ctx,
-      /(?<=(?:^|\.(?!\d))(?:[^.A-Z]|\.(?=\d))*)[A-Z](?:[^.]|\.(?=\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d))*\./,
+      /(?<=(?:^|\.(?!\d))(?:[^.A-Z]|\.(?=\d))*)[A-Z](?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d))*\b(?:indemnif|INDEMNIF)(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d))*\./,
     );
     if (lines.length === 0) return null;
     // Only the parties that BEAR the agreement. The extractor also records

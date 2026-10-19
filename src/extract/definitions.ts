@@ -321,7 +321,7 @@ const DEFINITION_TRAILING_PARENTHETICAL =
  * the DPA`, which the participle-only verb list missed.
  */
 const DEFINITION_MEANING_TAIL =
-  /\b(?:shall\s+|will\s+)?(?:each\s+)?ha(?:ve|s)\s+the\s+(?:respective\s+|same\s+)?meanings?\s+(?:given|set\s+forth|set\s+out|ascribed|assigned|specified|defined|stated|as\s+(?:in|set|used|defined|given|ascribed|specified|that))\b(?:[^.;]|\.(?=\d))*/g;
+  /\b(?:shall\s+|will\s+)?(?:each\s+)?ha(?:ve|s)\s+the\s+(?:respective\s+|same\s+)?meanings?\s+(?:given|set\s+forth|set\s+out|ascribed|assigned|specified|defined|stated|as\s+(?:in|set|used|defined|given|ascribed|specified|that))\b(?:[^.;]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d))*/g;
 
 /**
  * The derivative-form convention: `"Processing" means …, and "Process" and
@@ -430,7 +430,7 @@ const FIELD_BLOCK_PREFIX = /^\s*(?:[A-Z][^\s]*\s+){0,8}$/;
 
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
-  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annexure|Annex|Attachment|Section|Article)\s+[A-Z0-9][\w.()-]*)/i;
+  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annexure|Annex|Attachment|(?:Section|Sec\.)|Article)\s+[A-Z0-9][\w.()-]*)/i;
 
 /** A scope-gating prefix that confines a definition to a section/clause. */
 const DEFINITION_SCOPE =
@@ -947,7 +947,7 @@ const TITLE_CASE_LEADING_STOPWORDS = new Set([
  */
 function clauseHeadingEnd(text: string): number {
   const m =
-    /^\s*(?:(?:article|section|clause)\s+)?\d+(?:\.\d+)*\.?\s+([^.;:]{1,60})(?:[.:](?=\s|$)|$)/i.exec(
+    /^\s*(?:(?:article|(?:section|sec\.)|clause)\s+)?\d+(?:\.\d+)*\.?\s+([^.;:]{1,60})(?:[.:](?=\s|$)|$)/i.exec(
       text,
     );
   if (!m || /\b[a-z][a-z]{3,}\b/.test(m[1]!)) return -1;

@@ -39,7 +39,7 @@ const REVOLVER = pack("revolving-credit-agreement", C, [
   },
   {
     id: "BNK-102",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Interest rate, benchmark, and replacement waterfall",
     cite: {
       ...usc("12", "5801", "Adjustable Interest Rate (LIBOR) Act — benchmark replacement"),
@@ -254,7 +254,7 @@ const FORBEARANCE = pack("forbearance-agreement", C, [
     ),
     pat: [
       /(existing\s+defaults?|specified\s+defaults?)/i,
-      /(acknowledg|schedule|listed|(?:section|clause)\s+\d+\.\d+\s+of\s+the\s+(credit|loan)\s+agreement)/i,
+      /(acknowledg|schedule|listed|(?:(?:section|sec\.)|clause)\s+\d+\.\d+\s+of\s+the\s+(credit|loan)\s+agreement)/i,
     ],
     why: "A forbearance that does not identify the defaults it covers can be read to reach later ones, and the borrower's acknowledgment is the lender's protection against a later dispute about whether default occurred at all.",
     fix: "List each existing default by provision and have the borrower acknowledge that each has occurred and is continuing.",

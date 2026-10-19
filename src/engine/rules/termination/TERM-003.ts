@@ -17,7 +17,7 @@ function countConvenienceGrantees(text: string): number {
 /** TERM-003 — Termination asymmetry (warning). */
 export const rule: Rule = {
   id: "TERM-003",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Termination asymmetry",
   category: "termination",
   default_severity: "warning",
@@ -46,7 +46,7 @@ export const rule: Rule = {
     // `\.(?=\d)` is the repo's idiom for a decimal point inside a figure.
     const mutual = firstParagraphMatch(
       ctx,
-      /\beither\s+party\s+may\s+terminate(?:[^.]|\.(?=\d)){0,160}\bfor\s+convenience\b/i,
+      /\beither\s+party\s+may\s+terminate(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,160}\bfor\s+convenience\b/i,
     );
     if (!oneSided || mutual) return null;
     // A reciprocal right is often granted as two symmetric sentences ("Company

@@ -180,7 +180,7 @@ const SAFE_RULES: Rule[] = [
   }),
   language({
     id: "EQT-008",
-    version: "1.2.0",
+    version: "1.5.0",
     name: "Interest-bearing SAFE language",
     description:
       "A SAFE is not a debt instrument; interest accrual is inconsistent with the YC SAFE form.",
@@ -560,7 +560,7 @@ const OPTION_GRANT_RULES: Rule[] = [
       "If aggregate FMV of stock with respect to which ISOs are exercisable for the first time in any calendar year exceeds $100K, the excess converts to NSO treatment.",
     recommendation:
       "Add an acknowledgment that ISOs in excess of the § 422(d) $100K annual limit are treated as NSOs.",
-    present_patterns: [/\$100,?000/i, /section\s+422\s*\(d\)/i, /100,?000.{0,40}limit/is],
+    present_patterns: [/\$100,?000/i, /(?:section|sec\.)\s+422\s*\(d\)/i, /100,?000.{0,40}limit/is],
     default_severity: "warning",
   }),
   presence({
@@ -762,7 +762,7 @@ const RSU_RULES: Rule[] = [
       "Add a recital that an 83(b) election is not available with respect to the Units because no property is transferred at grant.",
     present_patterns: [
       /83\s*\(\s*b\s*\).{0,80}not\s+(available|applicable)/is,
-      /no\s+(section\s+)?83\s*\(\s*b\s*\)\s+election/i,
+      /no\s+((?:section|sec\.)\s+)?83\s*\(\s*b\s*\)\s+election/i,
     ],
     default_severity: "warning",
   }),
@@ -967,7 +967,7 @@ const RSPA_RULES: Rule[] = [
 const ELECTION_83B_RULES: Rule[] = [
   presence({
     id: "EQT-043",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Election cites § 83(b)",
     description: "§ 83(b) election must reference IRC § 83(b).",
     citation: irc("83(b)"),
@@ -989,7 +989,7 @@ const ELECTION_83B_RULES: Rule[] = [
     // spellings kept here carry operative text the title does not — the word
     // "Section", or the name of the Code.
     present_patterns: [
-      /section\s+83\s*\(\s*b\s*\)/i,
+      /(?:section|sec\.)\s+83\s*\(\s*b\s*\)/i,
       /83\s*\(\s*b\s*\)\s+of\s+the\s+internal\s+revenue\s+code/i,
     ],
   }),
@@ -1538,7 +1538,10 @@ const ROFR_RULES: Rule[] = [
       "DGCL § 202(a) makes transfer restrictions enforceable only against parties with notice — typically requiring a legend on the certificate or notation on the book-entry record.",
     recommendation:
       "Add 'Legend on Certificates / Book-Entry Notation' requiring conspicuous notation per DGCL § 202.",
-    present_patterns: [/section\s+202/i, /(legend|notation).{0,80}(transfer|restrictions)/is],
+    present_patterns: [
+      /(?:section|sec\.)\s+202/i,
+      /(legend|notation).{0,80}(transfer|restrictions)/is,
+    ],
     default_severity: "warning",
   }),
 ];

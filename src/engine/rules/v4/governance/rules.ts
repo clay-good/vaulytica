@@ -76,7 +76,7 @@ const STOCKHOLDER_CONSENT_CONTEXT: readonly RegExp[] = [
   /written\s+consent\s+of\s+(?:the\s+)?(?:stock|share)holders/is,
   /undersigned[^.]{0,60}\b(?:stock|share)holders\b/is,
   /holders?\s+of[^.]{0,40}(?:outstanding\s+)?(?:stock|shares)\b/is,
-  /\bsection\s+228\b/i,
+  /\b(?:section|sec\.)\s+228\b/i,
 ];
 
 // The mirror of STOCKHOLDER_CONSENT_CONTEXT. GOV-045 requires a UNANIMOUS-
@@ -89,7 +89,7 @@ const BOARD_CONSENT_CONTEXT: readonly RegExp[] = [
   /(?:board(?:\s+of\s+directors)?|directors)['’]?\s+(?:written\s+)?consent/is,
   /written\s+consent\s+of\s+(?:the\s+)?(?:board(?:\s+of\s+directors)?|directors)\b/is,
   /undersigned[^.]{0,60}\b(?:directors|members\s+of\s+the\s+board)\b/is,
-  /\bsection\s+141\s*\(?f\)?/i,
+  /\b(?:section|sec\.)\s+141\s*\(?f\)?/i,
 ];
 const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
   buildV4LanguageRule({ ...s, category: CATEGORY });
@@ -104,7 +104,7 @@ const compound = (s: Omit<V4CompoundSpec, "category">): Rule =>
 const BYLAWS_RULES: Rule[] = [
   presence({
     id: "GOV-001",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Bylaws adoption / amendment authority stated",
     description:
       "Bylaws must state who may adopt and amend them (board, stockholders, or both) per DGCL § 109 / MBCA § 10.20.",
@@ -337,7 +337,11 @@ const BYLAWS_RULES: Rule[] = [
       "DGCL § 220 inspection rights are statutory, but bylaws commonly restate them, specify the demand procedure, and limit inspection of confidential materials.",
     recommendation:
       "Add an 'Inspection of Books and Records' section restating the § 220 demand procedure (proper purpose, sworn statement) and the corporation's reasonable confidentiality limits.",
-    present_patterns: [/books?\s+and\s+records/i, /section\s+220/i, /right\s+to\s+inspect/i],
+    present_patterns: [
+      /books?\s+and\s+records/i,
+      /(?:section|sec\.)\s+220/i,
+      /right\s+to\s+inspect/i,
+    ],
     default_severity: "warning",
   }),
 ];
@@ -651,7 +655,7 @@ const CHARTER_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-028",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Director-exculpation clause (DGCL § 102(b)(7))",
     description:
       "Charter should include the optional § 102(b)(7) director-exculpation clause; absent it, directors are exposed to monetary liability for breaches of fiduciary duty of care.",
@@ -664,7 +668,7 @@ const CHARTER_RULES: Rule[] = [
     recommendation:
       "Add the standard § 102(b)(7) clause exculpating directors (and, per the 2022 amendment, certain officers) to the fullest extent permitted.",
     present_patterns: [
-      /section\s+102\s*\(b\)\s*\(7\)/i,
+      /(?:section|sec\.)\s+102\s*\(b\)\s*\(7\)/i,
       /eliminat(e|ed|ing)\s+.{0,40}liability\s+of\s+(a\s+)?director/is,
       // A qualifier commonly sits between "director" and the verb —
       // "a director OF THE CORPORATION shall not be personally liable" — so an
@@ -1030,7 +1034,7 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-044",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "In-lieu-of-meeting recital",
     description: "The consent should recite that it is in lieu of a meeting (DGCL §§ 141(f), 228).",
     citation: dgcl("228"),
@@ -1054,12 +1058,12 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
       // by unanimous written consent" was told at CRITICAL that it never
       // recites its authority to act without a meeting. Tied to a DGCL mention
       // so a bylaw's own section numbering cannot satisfy it.
-      /(?:\bsection|§)\s*(?:141\s*\(\s*f\s*\)|228)\s+of\s+the\s+(?:Delaware\s+)?General\s+Corporation\s+Law\b|\b(?:DGCL|Delaware\s+General\s+Corporation\s+Law)\s+(?:section|§)\s*(?:141\s*\(\s*f\s*\)|228)\b/i,
+      /(?:\bsection|§)\s*(?:141\s*\(\s*f\s*\)|228)\s+of\s+the\s+(?:Delaware\s+)?General\s+Corporation\s+Law\b|\b(?:DGCL|Delaware\s+General\s+Corporation\s+Law)\s+(?:(?:section|sec\.)|§)\s*(?:141\s*\(\s*f\s*\)|228)\b/i,
     ],
   }),
   presence({
     id: "GOV-045",
-    version: "1.2.0",
+    version: "1.3.0",
     applicable_if: BOARD_CONSENT_CONTEXT,
     name: "Unanimous-consent statement (board consents only)",
     description: "DGCL § 141(f) board consents must be unanimous.",
@@ -1082,7 +1086,7 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-046",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Stockholder consent — minimum-vote threshold recital",
     applicable_if: STOCKHOLDER_CONSENT_CONTEXT,
     description:
@@ -1118,7 +1122,7 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-048",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Notice to non-signing stockholders (DGCL § 228(e))",
     applicable_if: STOCKHOLDER_CONSENT_CONTEXT,
     description:
@@ -1134,7 +1138,7 @@ const WRITTEN_CONSENT_RULES: Rule[] = [
       "Add a closing recital directing the secretary to deliver notice to non-consenting stockholders under § 228(e).",
     present_patterns: [
       /notice.{0,40}non.?consenting\s+stockholders?/is,
-      /section\s+228\s*\(?e\)?/i,
+      /(?:section|sec\.)\s+228\s*\(?e\)?/i,
     ],
   }),
   presence({
@@ -1530,7 +1534,7 @@ const PARTNERSHIP_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-069",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Tax matters / partnership representative",
     description:
       "BBA partnership-audit rules require designation of a Partnership Representative (IRC § 6223).",
@@ -1546,7 +1550,7 @@ const PARTNERSHIP_RULES: Rule[] = [
     present_patterns: [
       /partnership\s+representative/i,
       /tax\s+matters\s+partner/i,
-      /section\s+6223/i,
+      /(?:section|sec\.)\s+6223/i,
     ],
     denied_if: expressDenial(String.raw`partnership\s+representative|tax\s+matters\s+partner`),
     // A WARNING, not critical: the omission is not a defect in the agreement —
@@ -1598,7 +1602,7 @@ const PARTNERSHIP_RULES: Rule[] = [
 const NONPROFIT_RULES: Rule[] = [
   presence({
     id: "GOV-071",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "501(c)(3) exempt purpose recital",
     description:
       "Nonprofit bylaws should recite the § 501(c)(3) exempt purposes (charitable, religious, educational, scientific, etc.).",
@@ -1625,7 +1629,7 @@ const NONPROFIT_RULES: Rule[] = [
     // the meaning of Section 501(c)(3)", "of the Internal Revenue Code" —
     // which a title never says.
     present_patterns: [
-      /(?:within\s+the\s+meaning\s+of|described\s+in|under|pursuant\s+to)\s+(?:Section\s+)?501\s*\(?c\)?\s*\(?3\)?/i,
+      /(?:within\s+the\s+meaning\s+of|described\s+in|under|pursuant\s+to)\s+(?:(?:Section|Sec\.)\s+)?501\s*\(?c\)?\s*\(?3\)?/i,
       /501\s*\(?c\)?\s*\(?3\)?\s*\)?\s+of\s+the\s+Internal\s+Revenue\s+Code/i,
       /(?:tax.exempt|exempt)\s+purposes?/i,
       /organi[sz]ed\s+(?:and\s+operated\s+)?exclusively\s+for[^.]{0,80}?(?:charitable|religious|educational|scientific|literary)/i,
@@ -1722,7 +1726,7 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   presence({
     id: "GOV-077",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Member vs. non-member structure",
     description: "Bylaws should specify whether the nonprofit has voting members.",
     citation: govPractice(
@@ -1743,7 +1747,7 @@ const NONPROFIT_RULES: Rule[] = [
       // the membership structure; the "shall have" -only form missed "has".
       /(?:the\s+)?corporation\s+(?:shall\s+have|has|will\s+have|does\s+not\s+have)\s+(?:no\s+)?members/i,
       /members?\s+of\s+the\s+corporation/i,
-      /(?:^|\n)\s*(?:(?:section|clause)\s+[\d.]+\.?\s*)?no\s+members\b/i,
+      /(?:^|\n)\s*(?:(?:(?:section|sec\.)|clause)\s+[\d.]+\.?\s*)?no\s+members\b/i,
     ],
     default_severity: "warning",
   }),
@@ -1789,14 +1793,14 @@ const NONPROFIT_RULES: Rule[] = [
   }),
   compound({
     id: "GOV-080",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Three-pillar 501(c)(3) charter recitals present (inurement + political + dissolution)",
     description:
       "The § 501(c)(3) organizational test (Treas. Reg. § 1.501(c)(3)-1(b)) looks to the articles: an exempt-purpose limitation, no non-exempt powers, and a dissolution-to-exempt-organization clause. Inurement / political prohibitions are operational requirements customarily recited alongside them.",
     citation: irc("501(c)(3)", "Three organizational-test pillars"),
     playbooks: [GOV_PLAYBOOK_NONPROFIT],
     required_patterns: [
-      /(charitable|religious|educational|scientific).{0,40}(purpose|under\s+section\s+501)/is,
+      /(charitable|religious|educational|scientific).{0,40}(purpose|under\s+(?:section|sec\.)\s+501)/is,
       /(inure|political\s+campaign|no\s+substantial\s+part)/i,
       /dissolution.{0,200}(exempt|501)/is,
     ],

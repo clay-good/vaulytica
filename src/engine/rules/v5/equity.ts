@@ -36,7 +36,7 @@ const PLAN = pack("equity-incentive-plan", C, [
     ],
     why: "§ 422 conditions ISO treatment on a ten-year maximum term, the $100,000 first-exercisable limit, and a five-year term and 110% exercise price for 10% shareholders. A plan that omits them cannot grant valid ISOs.",
     fix: "State the ISO limits: ten-year maximum term, the $100,000 per-calendar-year first-exercisable limit, and the 10%-shareholder five-year / 110% rules.",
-    when: [/(incentive\s+stock\s+option|\bisos?\b|section\s+422)/i],
+    when: [/(incentive\s+stock\s+option|\bisos?\b|(?:section|sec\.)\s+422)/i],
     sev: "critical",
   },
   {
@@ -85,7 +85,7 @@ const PLAN = pack("equity-incentive-plan", C, [
     // stockholder-approval trigger are distinct pillars, and `amend` alone is
     // in every amendment clause. The check could not fire on any realistic
     // document.
-    ver: "1.2.0",
+    ver: "1.5.0",
     name: "Amendment and stockholder-approval triggers",
     cite: irs("26 U.S.C. § 422(b)(1)", "incentive stock options — plan approval by shareholders"),
     pat: [
@@ -119,7 +119,7 @@ const ESPP = pack("employee-stock-purchase-plan", C, [
     name: "Section 423 qualification election",
     cite: irs("26 U.S.C. § 423", "employee stock purchase plans"),
     pat: [
-      /section\s+423|§\s*423/i,
+      /(?:section|sec\.)\s+423|§\s*423/i,
       /(qualif(y|ied)|intended\s+to\s+(qualify|be)|non-?423\s+component)/i,
     ],
     why: "Only a § 423 plan gives participants the deferral and capital-gain treatment the ESPP is sold on. A plan that does not state the intent, or that mixes a non-423 component without segregating it, risks the qualification for everyone.",
@@ -374,7 +374,7 @@ const SECONDARY = pack("secondary-stock-transfer", C, [
     name: "Securities-law exemption relied on",
     cite: usc("15", "77d", "Securities Act § 4 — exempted transactions"),
     pat: [
-      /(rule\s+144|section\s+4\(a\)\(7\)|4\(a\)\(1\)|4\(a\)\(1½\)|regulation\s+d)/i,
+      /(rule\s+144|(?:section|sec\.)\s+4\(a\)\(7\)|4\(a\)\(1\)|4\(a\)\(1½\)|regulation\s+d)/i,
       /(exempt|not\s+been\s+registered|private\s+resale)/i,
     ],
     why: "A resale of restricted securities needs its own exemption. § 4(a)(7), Rule 144, and the § 4(a)(1½) practice each carry different conditions, and getting it wrong creates rescission rights.",

@@ -14,7 +14,7 @@ import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.j
 function clauseIndex(ctx: RuleContext): (offset: number) => string | undefined {
   const marks: { start: number; clause: string }[] = [];
   const NUMBER =
-    /^\s*(?:(?:ARTICLE|Article|SECTION|Section|CLAUSE|Clause)\s+)?(\d{1,3}|[IVXLC]+\b)(?:\.\d+)*\.?\s+\S/;
+    /^\s*(?:(?:ARTICLE|Article|(?:SECTION|SEC\.)|(?:Section|Sec\.)|CLAUSE|Clause)\s+)?(\d{1,3}|[IVXLC]+\b)(?:\.\d+)*\.?\s+\S/;
   let current: string | undefined;
   forEachSection(ctx.tree, (s) => {
     const h = NUMBER.exec(s.heading ?? "");
@@ -39,7 +39,7 @@ function clauseIndex(ctx: RuleContext): (offset: number) => string | undefined {
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",

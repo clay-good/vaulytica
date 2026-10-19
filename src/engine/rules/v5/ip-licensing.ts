@@ -41,7 +41,7 @@ const PATENT_ASSIGNMENT = pack("patent-assignment", C, [
     id: "IPL-103",
     // 1.0.1 — written as a synonym OR, but the USPTO addressee and the recordation authorization are distinct pillars; `authoriz` alone is satisfied by "authorized representatives". The check could not
     // fire on any realistic document.
-    ver: "1.1.0",
+    ver: "1.3.0",
     name: "Recordation authorization to the USPTO",
     cite: cfr("37", "3.11", "Recording of assignments and other documents affecting title"),
     pat: [
@@ -127,12 +127,14 @@ const TRADEMARK_ASSIGNMENT = pack("trademark-assignment", C, [
       "Lanham Act § 10(a)(1) — restriction on assignment of intent-to-use applications",
     ),
     pat: [
-      /(intent-?to-?use|section\s+1\(b\)|1\(b\)\s+application)/i,
+      /(intent-?to-?use|(?:section|sec\.)\s+1\(b\)|1\(b\)\s+application)/i,
       /(ongoing\s+and\s+existing\s+business|successor\s+to\s+the\s+business|statement\s+of\s+use|not\s+assignable)/i,
     ],
     why: "An intent-to-use application may not be assigned before an amendment or statement of use, except to a successor to the ongoing business to which the mark pertains. A defective assignment voids the application.",
     fix: "Identify any intent-to-use applications and either exclude them or recite that the assignee is the successor to the ongoing and existing business to which the mark pertains.",
-    when: [/(intent-?to-?use|section\s+1\(b\)|1\(b\)\s+application|allegation\s+of\s+use)/i],
+    when: [
+      /(intent-?to-?use|(?:section|sec\.)\s+1\(b\)|1\(b\)\s+application|allegation\s+of\s+use)/i,
+    ],
     sev: "critical",
   },
   {
@@ -500,7 +502,7 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
       "Bankruptcy Code § 365(n) — rejection of a contract under which the debtor is a licensor of intellectual property",
     ),
     pat: [
-      /365\(n\)|section\s+365/i,
+      /365\(n\)|(?:section|sec\.)\s+365/i,
       /(bankrupt|supplementary\s+agreement|elect\s+to\s+retain|embodiment\s+of\s+the\s+intellectual\s+property)/i,
     ],
     why: "§ 365(n) lets a licensee retain its rights after rejection and demand embodiments of the IP — but the escrow must be characterized as a supplementary agreement to the license for the election to reach the deposit.",

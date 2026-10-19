@@ -74,7 +74,7 @@ const OPERATIVE_INDEMNITY = new RegExp(
   "i",
 );
 
-const CLAUSE_NUMBER = /^\s*(?:(?:article|section|clause)\s+)?(\d+(?:\.\d+)*)\.?\s+\S/i;
+const CLAUSE_NUMBER = /^\s*(?:(?:article|(?:section|sec\.)|clause)\s+)?(\d+(?:\.\d+)*)\.?\s+\S/i;
 // "Notice" only as "Notice and …" / "Notice of …": a general "Notices;
 // Counterparts" clause is not the claims procedure.
 const PROCEDURE_TITLE =
@@ -84,7 +84,8 @@ const PROCEDURE_TITLE =
  * "Indemnification Procedure", or a heading line's own text.
  */
 const clauseTitle = (p: string): string =>
-  /^\s*(?:(?:article|section|clause)\s+)?[\d.]*\s*([^.]{0,80})(?:\.|$)/i.exec(p)?.[1] ?? "";
+  /^\s*(?:(?:article|(?:section|sec\.)|clause)\s+)?[\d.]*\s*([^.]{0,80})(?:\.|$)/i.exec(p)?.[1] ??
+  "";
 
 /**
  * The indemnity paragraph and the paragraphs that belong to it: its own
@@ -109,7 +110,7 @@ function clauseRun(paras: string[], start: number): string[] {
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.10.0",
+  version: "1.11.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",

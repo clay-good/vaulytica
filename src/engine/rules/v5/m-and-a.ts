@@ -31,7 +31,7 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.3.0",
     name: "Purchase price and working-capital adjustment",
     cite: practice("working-capital", "working capital adjustments in private acquisitions"),
     pat: [
@@ -47,7 +47,7 @@ const MIPA = pack("membership-interest-purchase-agreement", C, [
     cite: irs("Rev. Rul. 99-6", "federal tax treatment of the purchase of all interests in an LLC"),
     pat: [
       /(tax\s+treatment|for\s+(federal\s+)?(income\s+)?tax\s+purposes)/i,
-      /(section\s+754|338\(h\)\(10\)|336\(e\)|purchase\s+price\s+allocation|rev\.?\s*rul\.?\s*99-6)/i,
+      /((?:section|sec\.)\s+754|338\(h\)\(10\)|336\(e\)|purchase\s+price\s+allocation|rev\.?\s*rul\.?\s*99-6)/i,
     ],
     why: "Buying all LLC interests is treated as an asset purchase for the buyer under Rev. Rul. 99-6, which changes basis, allocation, and the seller's character of gain. Buying some interests raises a § 754 election.",
     fix: "State the intended tax treatment, any § 754, § 338(h)(10), or § 336(e) election, and the purchase price allocation procedure and its binding effect.",
@@ -281,7 +281,7 @@ const SUBSCRIPTION = pack("subscription-agreement", C, [
     name: "Exemption relied on",
     cite: cfr("17", "230.506", "Regulation D — Rule 506 exemption for limited offers and sales"),
     pat: [
-      /(rule\s+506|regulation\s+d|section\s+4\(a\)\(2\))/i,
+      /(rule\s+506|regulation\s+d|(?:section|sec\.)\s+4\(a\)\(2\))/i,
       /(exempt(ion)?|not\s+been\s+registered\s+under\s+the\s+securities\s+act)/i,
     ],
     why: "The exemption drives everything else: whether general solicitation is permitted, whether non-accredited investors may participate, what disclosure is required, and what Form D filing is due.",

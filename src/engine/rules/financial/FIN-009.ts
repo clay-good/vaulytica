@@ -27,7 +27,7 @@ import { isUsurySavingsClause } from "./_usury-savings.js";
  */
 export const rule: Rule = {
   id: "FIN-009",
-  version: "1.11.0",
+  version: "1.12.0",
   name: "Late fee exceeds typical 18%/year threshold",
   category: "financial",
   default_severity: "warning",
@@ -69,7 +69,7 @@ export const rule: Rule = {
       // amount between the trigger and the rate, and a plain `[^.]` window
       // dies at the cents — the same late fee written "$50" was read and the
       // one written "$50.00" was not (v1.6.1).
-      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)){0,80}?(?<![\d.,])(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:(?:per|an?)\s+(month|year|annum|day)\b|monthly|annually|daily)?/i,
+      /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge))|(?<!net\s)(?<!bears\s)(?<!bearing\s)interest(?=\s+(?:at\b|on\b|thereon\b|accrues?\b|shall\s+accrue\b|will\s+accrue\b|is\s+charged\b|of\s+\d))|finance\s+charge)[:\s](?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,80}?(?<![\d.,])(\d+(?:\.\d+)?)\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*(?:(?:per|an?)\s+(month|year|annum|day)\b|monthly|annually|daily)?/i,
     );
     if (!hit) return null;
     // v1.10.0 — the rate group carries `(?<![\d.,])`, so "1,030%" is not read
@@ -130,7 +130,7 @@ export const rule: Rule = {
       // stated period — a note asking the drafter to fix the one thing the
       // statute fixed for them.
       const flatFee =
-        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)){0,120}?\d+(?:\.\d+)?\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*of\s+(?:the\s+|any\s+|each\s+|such\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+instal?lment|instal?lment|balance|amount\s+due|rental\s+payment)\b/i.test(
+        /\b(?:late\s+(?:fee|charge|payment\s+(?:fee|charge)))(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,120}?\d+(?:\.\d+)?\s*(?:%|per\s?cent(?:um)?\b)\s*\)?,?\s*of\s+(?:the\s+|any\s+|each\s+|such\s+)?(?:overdue|past[- ]due|outstanding|unpaid|invoice|invoiced|monthly\s+rent|base\s+rent|rent\b|monthly\s+instal?lment|instal?lment|balance|amount\s+due|rental\s+payment)\b/i.test(
           hit.text,
         );
 

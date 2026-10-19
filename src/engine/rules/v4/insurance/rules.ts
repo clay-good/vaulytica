@@ -179,7 +179,7 @@ const ENDORSEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "INS-008",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Coverage being modified identified",
     description: "Endorsement must identify the coverage / policy provisions being modified.",
     citation: stateInsCode(),
@@ -195,7 +195,7 @@ const ENDORSEMENT_RULES: Rule[] = [
       /(this\s+endorsement\s+modifies|amends?|changes?\s+the\s+policy)/i,
       // A policy section is numbered with a ROMAN numeral — "Section II — Who
       // Is An Insured is amended" — as often as with a digit.
-      /\b(?:section|clause|paragraph|provision)\s+(?:\w*\d|[IVXLC]{1,6}\b)/i,
+      /\b(?:(?:section|sec\.)|clause|paragraph|provision)\s+(?:\w*\d|[IVXLC]{1,6}\b)/i,
     ],
     // Both pillars. The locator alone — "Section 1" — is carried by every
     // document, so an endorsement that identifies nothing it modifies passed

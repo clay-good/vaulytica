@@ -170,11 +170,11 @@ const AUP = pack("acceptable-use-policy", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "NLRA § 7 protected-activity savings clause",
     cite: usc("29", "157", "National Labor Relations Act § 7 — rights of employees"),
     pat: [
-      /(section\s+7|nlra|national\s+labou?r\s+relations|protected[-\s]+(concerted\s+)?activity)/i,
+      /((?:section|sec\.)\s+7|nlra|national\s+labou?r\s+relations|protected[-\s]+(concerted\s+)?activity)/i,
       /(nothing\s+in\s+this\s+policy|(?:shall|will|must)\s+not\s+be\s+(construed|interpreted)\s+to\s+(prohibit|restrict)|wages,?\s+hours,?\s+(and|or)\s+(other\s+)?(terms|working\s+conditions))/i,
     ],
     why: "The Board's Stericycle standard treats a work rule as presumptively unlawful if a reasonable employee could read it to chill § 7 activity. A savings clause does not cure every rule, but its absence is a standing exposure for confidentiality and communications rules.",

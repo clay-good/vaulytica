@@ -61,7 +61,7 @@ const compound = (s: Omit<V4CompoundSpec, "category">): Rule =>
 const LOI_TERM_SHEET_RULES: Rule[] = [
   compound({
     id: "MNA-001",
-    version: "1.1.0",
+    version: "1.3.0",
     name: "Binding vs non-binding clause clearly demarcated",
     description:
       "LOIs must clearly demarcate binding (confidentiality, exclusivity, expenses, governing law) from non-binding (price, structure) provisions.",
@@ -614,7 +614,7 @@ const APA_RULES: Rule[] = [
       // so an APA that allocates the price "in accordance with § 1060 of the
       // Internal Revenue Code" was told it had no allocation clause. (This
       // repo has met the same shape before: `\b` can never match before `§`.)
-      /(?:section|§)\s*1060|form\s+8594/i,
+      /(?:(?:section|sec\.)|§)\s*1060|form\s+8594/i,
     ],
   }),
   presence({
@@ -741,7 +741,7 @@ const MERGER_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-031",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "Appraisal rights notice (DGCL § 262)",
     description: "Stockholders must be advised of appraisal rights under DGCL § 262.",
     citation: dgcl("262"),
@@ -752,7 +752,7 @@ const MERGER_RULES: Rule[] = [
       "DGCL § 262 entitles dissenting stockholders to appraisal in qualifying mergers. The notice obligation is statutory and the agreement should restate it.",
     recommendation:
       "Add 'Appraisal Rights' describing dissenters' rights under DGCL § 262 and the notice mechanics.",
-    present_patterns: [/((?:section|§§?)\s*262|appraisal\s+rights|dissenters)/i],
+    present_patterns: [/((?:(?:section|sec\.)|§§?)\s*262|appraisal\s+rights|dissenters)/i],
     denied_if: expressDenial(String.raw`appraisal\s+rights?|dissenters?.?\s+rights?`),
     denied_title: "Appraisal rights expressly denied",
     denied_description:
@@ -933,7 +933,7 @@ const MERGER_RULES: Rule[] = [
 const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   presence({
     id: "MNA-039",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Disclosure-schedule introduction / general notes",
     description:
       "Disclosure schedules should have an introduction reciting which reps they qualify and the scope rules (cross-section qualification, immateriality).",
@@ -955,7 +955,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
       // reported a well-drafted set of schedules, whose first three
       // paragraphs are exactly that, as having no introduction at all — at
       // `critical`.
-      /general\s+(notes|provisions|preamble)|delivered\s+(?:by|to)?\s*[^.]{0,80}?\bpursuant\s+to\b|section\s+numbers?\b[^.]{0,80}?\bcorrespond|deemed\s+disclosed/i,
+      /general\s+(notes|provisions|preamble)|delivered\s+(?:by|to)?\s*[^.]{0,80}?\bpursuant\s+to\b|(?:section|sec\.)\s+numbers?\b[^.]{0,80}?\bcorrespond|deemed\s+disclosed/i,
     ],
     require_all_present: true,
   }),
@@ -1058,7 +1058,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
   }),
   presence({
     id: "MNA-043",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Section-numbered references to SPA reps",
     description: "Disclosure schedules should be organized by SPA representation section number.",
     citation: dealPoints("ds-numbering", "Section-numbering practice"),
@@ -1074,7 +1074,7 @@ const DISCLOSURE_SCHEDULE_RULES: Rule[] = [
     // representations numbers itself "Schedule 3.12", and that is the
     // organization the rule is looking for.
     present_patterns: [
-      /\b(?:section|clause)\s+\d+\.\d/i,
+      /\b(?:(?:section|sec\.)|clause)\s+\d+\.\d/i,
       /\b(?:schedule|annexure|annex|appendix|exhibit)\s+\d+\.\d/i,
     ],
   }),
@@ -1736,7 +1736,7 @@ const EARNOUT_RULES: Rule[] = [
     explanation:
       "Deferred earnout payments without stated interest can trigger IRC § 483 / § 1274 imputed-interest treatment; the parties typically allocate the interest component.",
     recommendation: "Add 'Tax Treatment' addressing imputed interest under IRC § 483 / § 1274.",
-    present_patterns: [/(section\s+483|section\s+1274|imputed\s+interest)/i],
+    present_patterns: [/((?:section|sec\.)\s+483|(?:section|sec\.)\s+1274|imputed\s+interest)/i],
     default_severity: "warning",
   }),
 ];

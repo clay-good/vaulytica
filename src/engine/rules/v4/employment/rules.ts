@@ -72,7 +72,7 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
     // ("and"), but the patterns were a synonym OR: title, duties, and the reporting line are distinct pillars, and `(title|position|role)` alone is satisfied by the "Title: ____" line of a signature block.
     // The check could not fire on a document that carried nothing but
     // execution boilerplate.
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Title, duties, and reporting line",
     description:
       "Executive agreement must state title, duties, and reporting line (CEO / Board / supervising executive).",
@@ -126,11 +126,14 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
       "Severance, deferred bonuses, and certain equity grants implicate § 409A. Violation triggers 20% additional tax + interest on the executive — a § 409A compliance recital is universal in modern agreements.",
     recommendation:
       "Add 'Section 409A' with a compliance recital, the 6-month delay for specified employees, and reformation authority.",
-    present_patterns: [/(section\s+409a|\b409a\b)/i, /(specified\s+employee|six.month\s+delay)/i],
+    present_patterns: [
+      /((?:section|sec\.)\s+409a|\b409a\b)/i,
+      /(specified\s+employee|six.month\s+delay)/i,
+    ],
   }),
   presence({
     id: "EMP-004",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "§ 280G parachute-payment treatment",
     description:
       "Executive agreement with change-of-control benefits should address IRC § 280G parachute-payment treatment.",
@@ -141,7 +144,10 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
     explanation:
       "If change-in-control payments equal or exceed 3 times the executive's base amount, the portion above 1 times the base amount is an excess parachute payment: non-deductible to the company and subject to a 20% excise tax on the executive (IRC §§ 280G, 4999). Standard pattern: 'best-net' (cap or full-pay, whichever is better after tax) or stockholder vote (private company).",
     recommendation: "Add 'Section 280G' with best-net or cleansing-vote treatment.",
-    present_patterns: [/(section\s+280g|\b280g\b)/i, /(parachute\s+payment|excise\s+tax)/i],
+    present_patterns: [
+      /((?:section|sec\.)\s+280g|\b280g\b)/i,
+      /(parachute\s+payment|excise\s+tax)/i,
+    ],
   }),
   presence({
     id: "EMP-005",
@@ -185,7 +191,7 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-007",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Clawback policy reference (Dodd-Frank § 954)",
     description:
       "Listed-issuer executive agreements should reference the clawback policy (Exchange Act § 10D; SEC Rule 10D-1).",
@@ -197,7 +203,7 @@ const EXEC_EMPLOYMENT_RULES: Rule[] = [
       "Under Exchange Act § 10D and Rule 10D-1 (17 C.F.R. § 240.10D-1), listed issuers must adopt clawback policies (2023+); executive agreements typically incorporate the policy by reference.",
     recommendation:
       "Add 'Clawback' incorporating the company's Rule 10D-1 / Dodd-Frank § 954 clawback policy.",
-    present_patterns: [/clawback/i, /(section\s+954|rule\s+10d.1)/i],
+    present_patterns: [/clawback/i, /((?:section|sec\.)\s+954|rule\s+10d.1)/i],
     default_severity: "warning",
   }),
   presence({
@@ -487,7 +493,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   language({
     id: "EMP-020",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "McLaren Macomb — overbroad confidentiality / non-disparagement",
     description:
       "NLRB McLaren Macomb (Feb. 21, 2023) held that offering severance terms that broadly restrict Section 7 rights violates NLRA § 8(a)(1).",
@@ -517,7 +523,7 @@ const SEPARATION_RULES: Rule[] = [
       // The carve-out must reach § 7 / protected activity, not merely name a
       // government agency: under McLaren Macomb an agency-only carve-out is
       // still arguably too narrow, so that form keeps firing.
-      /\b(?:except|provided)\s+(?:that\s+)?\b[^.]{0,160}(?:section\s+7|\bnlra\b|\bnlrb\b|protected\s+(?:concerted\s+)?activity)/i,
+      /\b(?:except|provided)\s+(?:that\s+)?\b[^.]{0,160}(?:(?:section|sec\.)\s+7|\bnlra\b|\bnlrb\b|protected\s+(?:concerted\s+)?activity)/i,
     ],
     bad_title: "Overbroad confidentiality / non-disparagement flagged",
     bad_description:
@@ -597,7 +603,7 @@ const SEPARATION_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-023",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "California — § 1542 waiver (if applicable)",
     description:
       "California separations should include the § 1542 waiver to release unknown claims.",
@@ -612,7 +618,10 @@ const SEPARATION_RULES: Rule[] = [
     explanation:
       "For California employees, releases do not cover unknown claims unless § 1542 is specifically waived.",
     recommendation: "If California law applies, add a § 1542 waiver with the statutory text.",
-    present_patterns: [/section\s+1542/i, /(unknown\s+claims|do\s+not\s+know\s+or\s+suspect)/is],
+    present_patterns: [
+      /(?:section|sec\.)\s+1542/i,
+      /(unknown\s+claims|do\s+not\s+know\s+or\s+suspect)/is,
+    ],
     // § 1542 is a California statute; a separation under another state's law is
     // not missing it. Gate on a California connection, matching SET-003.
     applicable_if: [/california/i, /\bcal\.\s*(?:civ|civil|lab|labou?r|code)/i, /,\s*CA\s+\d{5}/],
@@ -963,7 +972,7 @@ const PIIA_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-035",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "California § 2870 carve-out (where applicable)",
     description:
       "California PIIAs must carve out the § 2870 exception (no assignment of inventions developed on employee's own time without employer resources).",
@@ -976,7 +985,7 @@ const PIIA_RULES: Rule[] = [
     recommendation:
       "If California law applies, add the § 2870 carve-out language verbatim or by reference.",
     present_patterns: [
-      /section\s+2870/i,
+      /(?:section|sec\.)\s+2870/i,
       /labou?r\s+code.{0,40}2870/is,
       /own\s+time.{0,40}without.{0,40}employer.{0,40}(equipment|facilities)/is,
     ],

@@ -21,7 +21,7 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 // Indian and South African drafting an Annexure, and a reference to either
 // resolved to nothing at all — see `src/extract/attachment-kinds.ts`.
 const REF_RE = new RegExp(
-  `(?<![A-Za-z0-9_])(Section|Sections|Clause|Clauses|Article|Articles|${ATTACHMENT_KIND}|§§?)\\s+([0-9]+(?:\\.[0-9]+)*[A-Za-z]?(?:\\([a-z]\\))?|[IVXLCDM]+)(?![A-Za-z])`,
+  `(?<![A-Za-z0-9_])((?:Section|Sec\\.)|(?:Sections|Secs?\\.)|Clause|Clauses|Article|Articles|${ATTACHMENT_KIND}|§§?)\\s+([0-9]+(?:\\.[0-9]+)*[A-Za-z]?(?:\\([a-z]\\))?|[IVXLCDM]+)(?![A-Za-z])`,
   "gi",
 );
 
@@ -326,7 +326,7 @@ const STATUTE_LETTERED_LABEL = /^\d{1,4}[A-Z]$/;
 // bare letter-suffixed reference with no statutory context anywhere still
 // reports as an unresolved internal reference.
 const STATUTE_LABEL_DECLARATION =
-  /(?<![A-Za-z0-9_])(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
+  /(?<![A-Za-z0-9_])(?:(?:[Ss]ections?|[Ss]ecs?\.)|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?[A-Z][^.;,]*?\b(?:Code|Acts?|Laws?|Regulations?|Rules?)\b/g;
 
 /**
  * The same declaration written the other way round: the code NAMED FIRST.
@@ -341,7 +341,7 @@ const STATUTE_LABEL_DECLARATION =
  * 2031.300" reported that sibling as a reference to a section no demand has.
  */
 const STATUTE_LABEL_DECLARATION_LEADING =
-  /\b(?:[A-Z][\w.'’]*\s+){0,5}(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+Annotated|\s+Ann\.?)?(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?\s*,?\s+(?:[Ss]ections?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*/g;
+  /\b(?:[A-Z][\w.'’]*\s+){0,5}(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)(?:\s+Annotated|\s+Ann\.?)?(?:\s+of\s+(?:[A-Za-z][\w.]*\s+){0,3}[A-Za-z][\w.]*)?\s*,?\s+(?:(?:[Ss]ections?|[Ss]ecs?\.)|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*/g;
 
 // A statute the document abbreviates — "the Delaware General Corporation Law
 // (the 'DGCL')", "the Delaware Revised Uniform Limited Partnership Act
@@ -401,7 +401,7 @@ const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2
 // the same citation was statutory when written "Section" and a defect when
 // written "Article".
 const STATUTE_ACRONYM_CITE =
-  /(?<![A-Za-z0-9_])(?:Sections?|Clauses?|Articles?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
+  /(?<![A-Za-z0-9_])(?:Sections?|Secs?\.|Clauses?|Articles?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
 
 // Statute acronyms so ubiquitous they are cited bare, without a local
 // definition — Delaware corporate law and the UCC head every M&A and secured-
@@ -498,7 +498,7 @@ const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
 // in the body failed too. Exactly the defect the ARTICLE comment above
 // describes, left unfixed for the sibling keyword.
 const LEADING_SECTION_ROMAN_RE =
-  /^\s*(?:SECTION|Section|CLAUSE|Clause)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
+  /^\s*(?:(?:SECTION|SEC\.)|(?:Section|Sec\.)|CLAUSE|Clause)\s+([IVXLCDM]+|\d+)\s*(?:[—–-]|$)/;
 
 export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): CrossRef[] {
   const refs: CrossRef[] = [];

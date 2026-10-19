@@ -63,7 +63,7 @@ const IP_ASSIGNMENT_RULES: Rule[] = [
     // ("and"), but the patterns were a synonym OR: the assignor and the assignee are distinct pillars, and `(party|parties)` alone is satisfied by the word "parties" in any recital.
     // The check could not fire on a document that carried nothing but
     // execution boilerplate.
-    version: "1.0.1",
+    version: "1.1.0",
     name: "Assignor / assignee identified",
     description: "IP assignment must identify assignor and assignee with full legal names.",
     citation: iplPractice(
@@ -321,7 +321,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Patent marking obligation — 35 U.S.C. § 287",
     description:
       "Licensee should be required to mark licensed products with patent number(s) per 35 U.S.C. § 287 to preserve damages.",
@@ -342,7 +342,7 @@ const PATENT_LICENSE_RULES: Rule[] = [
       // words between "with" and "patent number(s)"; "patent number" must still
       // actually appear, so a document with no marking clause is unaffected.
       /(patent\s+marking|\bmark\w*\b.{0,40}?with\s+(?:[a-z]+\s+){0,4}patent\s+numbers?)/i,
-      /(35\s+u\.?s\.?c\.?\s+§?\s*287|section\s+287)/i,
+      /(35\s+u\.?s\.?c\.?\s+§?\s*287|(?:section|sec\.)\s+287)/i,
       /virtual\s+marking/i,
     ],
     default_severity: "warning",
@@ -568,7 +568,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-021",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Rights granted — reproduction / distribution / display / performance / derivative",
     description: "Copyright license must specify which 17 U.S.C. § 106 rights are granted.",
     citation: copyrightAct("106", "Exclusive rights"),
@@ -595,7 +595,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
       // mean "names the reproduction right AND at least one other § 106 right
       // (or cites the section)", which is what an enumerated grant looks like.
       /(reproduc\w+|\bprint\b|\bpublish\w*|\bcopies\b)/i,
-      /(distribut\w+|publicly\s+(?:display|perform)\w*|display\w*|perform\w*|derivative\s+works?|section\s+106|17\s+u\.?s\.?c\.?\s+§?\s*106)/i,
+      /(distribut\w+|publicly\s+(?:display|perform)\w*|display\w*|perform\w*|derivative\s+works?|(?:section|sec\.)\s+106|17\s+u\.?s\.?c\.?\s+§?\s*106)/i,
     ],
     require_all_present: true,
   }),
@@ -652,7 +652,7 @@ const COPYRIGHT_LICENSE_RULES: Rule[] = [
     recommendation:
       "Add 'Statutory Termination' acknowledging § 203 and addressing notice / pre-termination consequences (e.g., derivative works prepared before termination may continue under the original grant per § 203(b)(1)).",
     present_patterns: [
-      /(section\s+203|17\s+u\.?s\.?c\.?\s+§?\s*203)/i,
+      /((?:section|sec\.)\s+203|17\s+u\.?s\.?c\.?\s+§?\s*203)/i,
       /termination\s+of\s+(transfers?|grants?)/i,
       /(35|thirty.five|forty)\s+years?/i,
     ],
@@ -935,7 +935,7 @@ const OSS_COMPLIANCE_RULES: Rule[] = [
 const WFH_RULES: Rule[] = [
   presence({
     id: "IPL-036",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "§ 101 specially-commissioned-category recital",
     description:
       "Work-for-hire agreement must fall within one of the nine 17 U.S.C. § 101 categories for specially commissioned works.",
@@ -948,7 +948,7 @@ const WFH_RULES: Rule[] = [
     recommendation:
       "Recite the § 101 category (or, if none applies, restructure as an assignment) and include both a work-for-hire recital and a backup assignment.",
     present_patterns: [
-      /(work\s+made\s+for\s+hire|work.?for.?hire|17\s+u\.?s\.?c\.?\s+§?\s*101|section\s+101)/i,
+      /(work\s+made\s+for\s+hire|work.?for.?hire|17\s+u\.?s\.?c\.?\s+§?\s*101|(?:section|sec\.)\s+101)/i,
       /(motion\s+picture|audiovisual|collective\s+work|translation|supplementary|compilation|instructional\s+text|test|atlas)/i,
     ],
     require_all_present: true,
@@ -986,7 +986,7 @@ const WFH_RULES: Rule[] = [
   }),
   presence({
     id: "IPL-038",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "DTSA / 18 U.S.C. § 1833(b) notice",
     description:
       "Work-for-hire agreements with confidentiality obligations must include the DTSA whistleblower notice.",
@@ -1000,7 +1000,7 @@ const WFH_RULES: Rule[] = [
     recommendation:
       "Add 'DTSA Notice' / 'Immunity' reciting that an individual will not be held criminally / civilly liable for disclosure of a trade secret made in confidence to a government official solely for the purpose of reporting or investigating a violation of law.",
     present_patterns: [
-      /(18\s+u\.?s\.?c\.?\s+§?\s*1833|section\s+1833|defend\s+trade\s+secrets\s+act|dtsa)/i,
+      /(18\s+u\.?s\.?c\.?\s+§?\s*1833|(?:section|sec\.)\s+1833|defend\s+trade\s+secrets\s+act|dtsa)/i,
       // "immunity" alone was too weak and, in "no whistleblower immunity", the
       // negator sits two words upstream of it — a genuine DTSA notice always
       // cites the Act (branch above) or says "whistleblower", so bare

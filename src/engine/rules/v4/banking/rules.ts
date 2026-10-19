@@ -92,7 +92,7 @@ const language = (s: Omit<V4LanguageSpec, "category">): Rule =>
 const PROMISSORY_NOTE_RULES: Rule[] = [
   presence({
     id: "BNK-001",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Maker, payee, and principal amount",
     description: "Promissory note must identify maker, payee, and principal amount.",
     citation: ucc("3-104", "Negotiable instrument requirements"),
@@ -1054,7 +1054,7 @@ const SUBORDINATION_RULES: Rule[] = [
     recommendation:
       "Add 'Bankruptcy' expressly invoking § 510(a) and providing for senior plan-support / 363-sale cooperation.",
     present_patterns: [
-      /(section\s+510|§\s*510|11\s+u\.?s\.?c\.?\s+§?\s*510)/i,
+      /((?:section|sec\.)\s+510|§\s*510|11\s+u\.?s\.?c\.?\s+§?\s*510)/i,
       /(bankruptcy|chapter\s+11)/i,
     ],
     default_severity: "warning",

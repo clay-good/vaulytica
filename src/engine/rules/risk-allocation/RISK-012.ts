@@ -5,7 +5,7 @@ import { truncateQuote } from "../../text.js";
 /** RISK-012 — IP indemnity scope (info). */
 export const rule: Rule = {
   id: "RISK-012",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "IP indemnity scope",
   category: "risk-allocation",
   default_severity: "info",
@@ -29,7 +29,7 @@ export const rule: Rule = {
       // specimens), which is a co-occurrence, not an indemnity. An IP indemnity
       // states both halves in ONE sentence. `\.(?=\d)` is the repo's idiom for
       // a decimal point inside a figure.
-      /\b(?:ip|intellectual\s+property)\s+indemnif|\binfring(?:e|ement)\b(?:[^.]|\.(?=\d)){0,140}\bindemnif|\bindemnif\w+(?:[^.]|\.(?=\d)){0,140}\binfring(?:e|ement|ing)\b/i,
+      /\b(?:ip|intellectual\s+property)\s+indemnif|\binfring(?:e|ement)\b(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,140}\bindemnif|\bindemnif\w+(?:[^.]|\.(?=\d)|(?<=\b(?:No|Nos|Art|Arts|Sec|Secs|Fig|Ex|Sch|Ch|Para|Paras|Pt|Vol|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec))\.(?=\s+\d)){0,140}\binfring(?:e|ement|ing)\b/i,
     );
     if (!hit) return null;
     // Negated-detector guard: an IP-indemnity DISCLAIMER — "Vendor does NOT

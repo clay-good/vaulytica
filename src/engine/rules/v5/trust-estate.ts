@@ -100,11 +100,11 @@ const IRREVOCABLE = pack("irrevocable-trust", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Grantor-trust powers and tax reimbursement",
     cite: irs("26 U.S.C. §§ 671-679", "grantor trust rules"),
     pat: [
-      /(grantor[-\s]+trust|section\s+67[1-9]|substitut(e|ion)\s+of\s+(assets|property)|non-?adverse\s+party)/i,
+      /(grantor[-\s]+trust|(?:section|sec\.)\s+67[1-9]|substitut(e|ion)\s+of\s+(assets|property)|non-?adverse\s+party)/i,
       /(reimburse|pay\s+the\s+income\s+tax|discretion\s+of\s+(an\s+)?independent\s+trustee)/i,
     ],
     why: "Intentional grantor-trust status lets the settlor pay the trust's income tax as an additional tax-free gift, but a mandatory reimbursement right causes estate inclusion. Discretionary reimbursement by an independent trustee is the safe form.",
@@ -247,12 +247,12 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
   },
   {
     id: "EST-416",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Amended provisions restated in full",
     cite: practice("restatement", "restating amended provisions in full"),
     pat: [
       /(is\s+(hereby\s+)?(amended|deleted|restated)|(?:shall|will|must)\s+read\s+as\s+follows)/i,
-      /(in\s+its\s+entirety|article\s+\w+|(?:section|clause)\s+\d)/i,
+      /(in\s+its\s+entirety|article\s+\w+|(?:(?:section|sec\.)|clause)\s+\d)/i,
     ],
     // `all: true`. The locator pillar is `section \d`, which every instrument
     // satisfies, so an amendment that restates nothing passed the column
