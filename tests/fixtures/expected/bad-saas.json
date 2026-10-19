@@ -424,7 +424,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "PERS-004",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -537,7 +537,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -1269,7 +1269,7 @@
       "id": "RISK-011-s5-0",
       "recommendation": "Add the missing element to the indemnity clause: how and when the indemnified party must give notice of a claim, which party controls the defense, and whether a settlement needs the other party's consent.",
       "rule_id": "RISK-011",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1316,11 +1316,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "91a85bd5291ea2121f9bdc082c28aedd057fd8909e8fd264ad2bead78b0fcd7f",
+  "result_hash": "a311e3c04a51ac9289a3b264d12b645375df52d9058b33914324d65fd237eb68",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.943.0"
+  "version": "9.944.0"
 }

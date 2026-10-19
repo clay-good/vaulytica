@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.944.0] — 2026-10-19
+
+### Fixed
+- **"three (3) calendar months" and "notice in writing".** Two more phrasings
+  were rewritten across the corpus and diffed, and each moved a few specimens:
+  - EQT-025 told an option grant at `critical` that it had no post-termination
+    exercise window, because "remains exercisable for three (3) calendar
+    months after the termination date" did not fit its pattern.
+  - PERS-004 lost a non-solicit's stated duration.
+  - RISK-011 reported the indemnity-claim notice missing on five specimens
+    that require "notice in writing".
+
+  Each reads both forms now (versions bumped), and `period-phrasing.test.ts`
+  holds both rewrites at zero.
+- **Measured, nothing to fix:** "days" capitalized as "Days" moved nothing.
+  "Business Days" in capitals draws STRUCT-006's undefined-term warning, which
+  is right for a capitalized term the document never defines.
+
 ## [9.943.0] — 2026-10-19
 
 ### Fixed

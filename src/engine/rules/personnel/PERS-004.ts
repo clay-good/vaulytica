@@ -7,12 +7,12 @@ const NARROWED =
   /\bdirectly\s+involved\b|\binvolved\s+in\s+(?:performing|providing|receiving|the\s+(?:services|engagement|project))\b|\bwho\s+(?:performed|provided|worked\s+on)\b|\bassigned\s+to\s+(?:perform|provide|the\s+(?:services|engagement|project))\b/i;
 /** For a stated period. */
 const BOUNDED =
-  /\b(?:\w+\s+\()?\d+\)?\s+(?:months?|years?)\b|\b(?:one|two|six|twelve|eighteen|twenty-four)\)?\s+months?\b|\bone\)?\s+year\b/i;
+  /\b(?:\w+\s+\()?\d+\)?\s+(?:calendar\s+)?(?:months?|years?)\b|\b(?:one|two|six|twelve|eighteen|twenty-four)\)?\s+(?:calendar\s+)?months?\b|\bone\)?\s+year\b/i;
 
 /** PERS-004 — Anti-poaching language (warning). */
 export const rule: Rule = {
   id: "PERS-004",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Anti-poaching / no-hire between parties",
   category: "personnel",
   default_severity: "warning",

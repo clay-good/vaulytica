@@ -22,7 +22,7 @@ const PROCEDURE = [
     "notice",
     // The claim word can come first: "… any third-party claim that the Work
     // infringes …, provided that Client promptly notifies Contractor".
-    /prompt(?:ly)?\s+notice|written\s+notice|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b|\b(?:claim|demand|action|proceeding|suit)\b[^.]{0,160}?\bprompt(?:ly)?\s+notif(?:y|ies|ied)\b|\b(?:indemnified|indemnitee)\b[^.]{0,60}?\bnotif(?:y|ies)\b[^.;,]{0,60}?\bprompt(?:ly)?\b/i,
+    /prompt(?:ly)?\s+notice|written\s+notice|notice\s+in\s+writing|\bnotice\s+of\s+(?:any|the|such|each)\b|\bnotif(?:y|ies|ied)\b[^.]{0,80}?\b(?:claim|demand|action|proceeding|suit)\b|\b(?:claim|demand|action|proceeding|suit)\b[^.]{0,160}?\bprompt(?:ly)?\s+notif(?:y|ies|ied)\b|\b(?:indemnified|indemnitee)\b[^.]{0,60}?\bnotif(?:y|ies)\b[^.;,]{0,60}?\bprompt(?:ly)?\b/i,
   ],
   // "defense control" must be tied to the defense/claim — a bare "sole control"
   // matched an unrelated clause ("sole control over its own systems") and
@@ -109,7 +109,7 @@ function clauseRun(paras: string[], start: number): string[] {
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",

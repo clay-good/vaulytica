@@ -19,6 +19,14 @@
  * ⚠️ "business days" is deliberately NOT folded the same way: it is a
  * different unit, and a rule that compares the count with a threshold would
  * misjudge "20 business days" as 20 days.
+ *
+ * Two more, added in 9.944.0, each of which moved a few specimens:
+ *
+ *   MONTHS    "three (3) months" → "three (3) calendar months". EQT-025 told
+ *             an option grant at `critical` that it had no post-termination
+ *             exercise window; PERS-004 lost a non-solicit's duration.
+ *   WRITING   "written notice" → "notice in writing". RISK-011 reported the
+ *             indemnity-claim notice missing on five specimens that give it.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -37,6 +45,14 @@ export const asNotLaterThan = (t: string): string =>
     /\bwithin(\s+(?:[a-z-]+\s+\(\d{1,3}\)|\d{1,3})\s+(?:business\s+)?days\s+(?:after|following|of)\b)/g,
     "not later than$1",
   );
+
+/** "three (3) months" → "three (3) calendar months". */
+export const asCalendarMonths = (t: string): string =>
+  t.replace(/(\d{1,3}\)?)\s+months\b/g, "$1 calendar months");
+
+/** "written notice" → "notice in writing". */
+export const asNoticeInWriting = (t: string): string =>
+  t.replace(/\bwritten notice\b/g, "notice in writing");
 
 async function movedBy(
   mutate: (t: string) => string,
@@ -73,6 +89,18 @@ describe("a deadline phrased another way", () => {
   it('reads "not later than" as "within"', async () => {
     const { moved, probed } = await movedBy(asNotLaterThan);
     expect(probed, "no specimen writes a within-N-days deadline").toBeGreaterThan(100);
+    expect(moved).toEqual([]);
+  }, 1_800_000);
+
+  it('reads "calendar months" as months', async () => {
+    const { moved, probed } = await movedBy(asCalendarMonths);
+    expect(probed, "no specimen states a period in months").toBeGreaterThan(50);
+    expect(moved).toEqual([]);
+  }, 1_800_000);
+
+  it('reads "notice in writing" as written notice', async () => {
+    const { moved, probed } = await movedBy(asNoticeInWriting);
+    expect(probed, "no specimen requires written notice").toBeGreaterThan(100);
     expect(moved).toEqual([]);
   }, 1_800_000);
 
