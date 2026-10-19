@@ -1321,6 +1321,43 @@ function shoutedTextOf(ctx: RuleContext): string {
   return shouted.join("\n");
 }
 
+/**
+ * An AMENDMENT of a named instrument, and nothing broader: its own title says
+ * "Amendment", and its body ratifies the instrument it changes ("except as
+ * amended by this Amendment, the Agreement remains in full force and effect").
+ *
+ * The router reads an amendment's title whole, so "First Amendment to Credit
+ * Agreement" runs under the credit-agreement family — and every presence check
+ * in that family then reported the instrument's clauses as missing from a
+ * two-page document that by design restates none of them: six CRITICAL
+ * findings ("Interest rate / margin clause missing", "Events of default …
+ * missing") on a credit amendment, two on an amendment to a securities
+ * purchase agreement.
+ *
+ * Narrower than {@link amendsParentAgreement} on purpose. That one is also true
+ * of a statement of work issued under an MSA or a DPA that forms part of one,
+ * and those carry content of their own that their checks must still read. A
+ * title alone would catch an "Amendment and Restatement Agreement", which is
+ * the whole instrument again and is excluded by name; the ratification alone
+ * would catch a severability clause ("all other provisions shall remain in
+ * full force"). Both are needed.
+ */
+export function amendsNamedParent(ctx: RuleContext): boolean {
+  const first = ctx.tree.sections[0];
+  const head = [
+    first?.heading ?? "",
+    ctx.tree.sections[1]?.heading ?? "",
+    first?.paragraphs[0]?.runs.map((r) => r.text).join(" ") ?? "",
+  ]
+    .join(" ")
+    .slice(0, 300);
+  return (
+    /\bamendment\b/i.test(head) &&
+    !/\bamendment\s+(?:and|&)\s+restatement\b/i.test(head) &&
+    RATIFIES_PARENT.test(documentTextOf(ctx))
+  );
+}
+
 export function amendsParentAgreement(ctx: RuleContext): boolean {
   const text = documentTextOf(ctx);
   const named = isAllCaps(text)

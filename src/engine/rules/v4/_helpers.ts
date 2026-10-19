@@ -20,7 +20,13 @@ import type { Finding, Rule, RuleContext, Severity } from "../../finding.js";
 import type { SourceCitation } from "../../../dkb/types.js";
 import { makeFinding } from "../../finding.js";
 import { forEachParagraph } from "../../../extract/walk.js";
-import { distributeListModal, findDenial, isNonOperative, isTableOfContents } from "../_helpers.js";
+import {
+  amendsNamedParent,
+  distributeListModal,
+  findDenial,
+  isNonOperative,
+  isTableOfContents,
+} from "../_helpers.js";
 import type { DocPosition } from "../../../extract/types.js";
 import type { Section } from "../../../ingest/types.js";
 import { isLegendLine } from "../../../extract/legends.js";
@@ -261,6 +267,10 @@ export function buildV4PresenceRule(spec: V4PresenceSpec): Rule {
         ? spec.present_patterns.every(reads)
         : spec.present_patterns.some(reads);
       if (present) return null;
+      // An amendment restates none of the instrument it amends, so its absence
+      // is not the instrument's. A family that IS an amendment (a trust
+      // amendment) keeps its checks: they are about the amendment itself.
+      if (amendsNamedParent(ctx) && !/amendment/.test(ctx.playbook.id)) return null;
       return makeFinding({
         rule: this as Rule,
         title: spec.missing_title,

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.949.0] — 2026-10-19
+
+### Fixed
+- **An amendment is no longer held to the checklist of the instrument it
+  amends.** "First Amendment to Credit Agreement" routes to the credit
+  agreement family, by design, since an amendment is named for what it amends.
+  Every presence check in that family then reported the instrument's clauses
+  missing from a two-page document that restates none of them. A credit
+  amendment drew six CRITICAL findings ("Interest rate / margin clause
+  missing", "Events of default … missing"), and an amendment to a securities
+  purchase agreement drew two. That closes the gap 9.948.0 recorded.
+
+  The shared presence factory, which builds every v4 and v5 presence rule, now
+  stands down on its absence finding when two things are both true. The
+  document's own title says "Amendment", and its body ratifies the instrument
+  it changes ("except as amended …, the Agreement remains in full force and
+  effect"). Each condition alone is too wide, and a test proves each one is
+  needed:
+  - An "Amendment and Restatement Agreement" is the whole instrument again,
+    and is still checked.
+  - A document titled "Amendment" that ratifies nothing is still checked.
+  - A full agreement whose severability clause says "all other provisions
+    shall remain in full force" is still checked.
+
+  Families that are amendments themselves (`trust-amendment`) keep their
+  checks, and an express denial still fires. Launch rules already deferred to
+  a parent on their own. Amendments to an employment agreement, an MSA and a
+  lease were clean before and are unchanged.
+- No finding moves on the unmodified corpus: it holds no amendment to a v4 or
+  v5 instrument. The change is in the factory, so individual rule versions are
+  not bumped; the engine version records it.
+
 ## [9.948.0] — 2026-10-19
 
 ### Fixed
