@@ -136,7 +136,10 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
     // EVIDENCE of a signed writing as well as the words: an agreement that
     // closes "IN WITNESS WHEREOF, the parties have executed this Agreement"
     // over two "/s/" blocks is a signed writing, and never says "signed".
-    ver: "1.0.2",
+    //
+    // 1.1.0 — the numeral can come FIRST: "a term of 3 (three) years" is the
+    // same term as "three (3) years", and read as no term at all.
+    ver: "1.1.0",
     name: "Written, signed agreement with a one-year minimum term",
     cite: cfr(
       "42",
@@ -144,7 +147,7 @@ const MEDICAL_DIRECTOR = pack("medical-director-agreement", C, [
       "Anti-Kickback Statute safe harbor — personal services and management contracts",
     ),
     pat: [
-      /(term\s+of\s+(at\s+least\s+)?one\s+year|one\s+\(?1\)?\s+year|twelve\s+(?:\(?12\)?\s+)?months|\bterm\b[^.]{0,60}?(?:\(?(?:[2-9]|[1-9]\d+)\)?|two|three|four|five|six|seven|eight|nine|ten)\s+years?\b|\bterm\b[^.]{0,60}?(?:\(?(?:1[2-9]|[2-9]\d|\d{3,})\)?|eighteen|twenty[-\s]four|thirty[-\s]six)\s+months?\b)/i,
+      /(term\s+of\s+(at\s+least\s+)?one\s+year|one\s+\(?1\)?\s+year|1\s*\(one\)\s+year|twelve\s+(?:\(?12\)?\s+)?months|12\s*\(twelve\)\s+months|\bterm\b[^.]{0,60}?(?:\(?(?:[2-9]|[1-9]\d+)\)?|two|three|four|five|six|seven|eight|nine|ten)\)?\s+years?\b|\bterm\b[^.]{0,60}?(?:\(?(?:1[2-9]|[2-9]\d|\d{3,})\)?|eighteen|twenty[-\s]four|thirty[-\s]six)\)?\s+months?\b)/i,
       /(signed|in\s+writing|written\s+agreement|executed|in\s+witness\s+whereof|\/s\/)/i,
     ],
     all: true,

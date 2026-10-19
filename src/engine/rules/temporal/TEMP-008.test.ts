@@ -79,3 +79,16 @@ describe("TEMP-008 — a count it cannot read whole is not read in part", () => 
     expect(f?.title).toBe("Cure period: 30 days");
   });
 });
+
+// The numeral can come first, with the words as the check. `PERIOD_COUNT` read
+// "30" and stopped at "(thirty)", so the cure period was not found at all.
+describe("TEMP-008 — the numeral before the words", () => {
+  it.each([
+    ["30 (thirty) days", "Cure period: 30 days"],
+    ["45 (forty-five) days", "Cure period: 45 days"],
+    ["10 (ten) business days", "Cure period: 10 business days"],
+  ])("reads %s", (period, title) => {
+    const f = TEMP_008.check(doc(`Licensee may cure any breach within ${period} after notice.`));
+    expect(f?.title).toBe(title);
+  });
+});

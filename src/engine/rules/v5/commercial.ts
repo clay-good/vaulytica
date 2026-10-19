@@ -779,11 +779,13 @@ const TEAMING = pack("teaming-agreement", C, [
   },
   {
     id: "COMM-153",
+    // 1.1.0 — reads "per cent", the UK and Commonwealth spelling, as well as "percent".
+    ver: "1.1.0",
     name: "Workshare and scope commitment",
     cite: cfr("48", "9.603", "FAR — policy on contractor team arrangements"),
     pat: [
       /(workshare|work\s+share|scope\s+of\s+work\s+to\s+be\s+performed\s+by)/i,
-      /(percent(age)?|statement\s+of\s+work|the\s+subcontract\s+scope)/i,
+      /(per\s?cent(age)?|statement\s+of\s+work|the\s+subcontract\s+scope)/i,
     ],
     why: "Most teaming agreements fail as unenforceable agreements to negotiate precisely because the subcontract scope is left for later. A defined workshare with an attached SOW is what makes the promise specific enough to enforce.",
     fix: "Attach the subcontractor's statement of work and state the workshare percentage or defined scope the prime commits to subcontract on award.",

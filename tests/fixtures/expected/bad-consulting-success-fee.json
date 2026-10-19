@@ -226,7 +226,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -420,7 +420,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -455,7 +455,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -878,7 +878,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1121,11 +1121,11 @@
   "playbook_id": "consulting-agreement",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected consulting-agreement (score 0.9). Title matched: \"advisory agreement\". Distinguishing phrases: \"advisory services\", \"deliverables\", \"independent contractor\".",
-  "result_hash": "c8ddb35bef8e71fd698973e9ecc89c637c1ff461de3ddf2a015eae5f9e3462ba",
+  "result_hash": "e515686304cac7dbb329e2ee00d7e1b685e3ddad0b94a5701b70101cdbaf6bf7",
   "source_file": {
     "name": "bad-consulting-success-fee.docx",
     "sha256": "6bc505eb0c1641cda4c3466a62f0b3eead258e2dc3a385e792e79f4a717ad6a5",
     "size_bytes": 9729
   },
-  "version": "9.940.0"
+  "version": "9.941.0"
 }

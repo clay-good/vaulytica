@@ -183,8 +183,11 @@ function endAtSecondDeadline(trigger: string | undefined): string | undefined {
  */
 const INTERRUPTER = String.raw`(?:,\s*(?:after|in|at|for|with|without|despite|by|through|acting|using|on)\s[^,;.]{1,40},(?!\s*(?:and|or|but)\b)${CLAUSE_CHAR}+)?`;
 
+// The parenthetical after a "within" count holds the words as readily as the
+// digits: "within 5 (five) business days" is a deadline, and read as none it
+// left the window inside the action.
 const TRIGGER_RE = new RegExp(
-  String.raw`\b(upon\s${CLAUSE_CHAR}+|if,\s*(?:after|in|at|for|with|within|during|before|on|by)\s[^,;.]{1,60},${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s(?!due\s+of\b)${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\(\d+\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
+  String.raw`\b(upon\s${CLAUSE_CHAR}+|if,\s*(?:after|in|at|for|with|within|during|before|on|by)\s[^,;.]{1,60},${CLAUSE_CHAR}+|if\s${CLAUSE_CHAR}+${INTERRUPTER}|(?<!\bas\s)when\s(?!due\s+of\b)${CLAUSE_CHAR}+|promptly\s+after\s${CLAUSE_CHAR}+|within\s+(?:\d+|\w+(?:[-\s]\w+)?)\s*(?:\([\w\s-]{1,30}\)\s*)?(?:business\s+)?(?:hours?|days?|weeks?|months?|years?)\b${CLAUSE_CHAR}*)`,
   "i",
 );
 
@@ -1078,7 +1081,7 @@ function frontedTrigger(subject: string): string | undefined {
 }
 
 const TEMPORAL_ADVERBIAL =
-  /^(?:at\s+the\s+(?:end|expiration|expiry|termination|conclusion|beginning|start)\s+of|for\s+(?:a\s+period\s+of\s+)?[\w-]+(?:\s+\(\d{1,3}\))?\s+(?:business\s+|calendar\s+)?(?:days?|weeks?|months?|years?)\b|on|upon|after|before|following|during|until|beginning|commencing|promptly|immediately|no\s+later\s+than|not\s+later\s+than)\b/i;
+  /^(?:at\s+the\s+(?:end|expiration|expiry|termination|conclusion|beginning|start)\s+of|for\s+(?:a\s+period\s+of\s+)?[\w-]+(?:\s+\([\w\s-]{1,30}\))?\s+(?:business\s+|calendar\s+)?(?:days?|weeks?|months?|years?)\b|on|upon|after|before|following|during|until|beginning|commencing|promptly|immediately|no\s+later\s+than|not\s+later\s+than)\b/i;
 
 function stripFrontedAdverbial(subject: string): string {
   if (!FRONTED_ADVERBIAL.test(subject.trimStart())) return subject;

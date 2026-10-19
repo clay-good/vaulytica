@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.941.0] — 2026-10-19
+
+### Fixed
+- **"30 (thirty) days" read as no period at all.** Drafting puts the words and
+  the numeral side by side so each checks the other. The tool read "thirty (30)
+  days", "30 days" and "thirty days", but not the numeral first, "30 (thirty)
+  days", which much drafting outside the US uses. Rewriting the specimen corpus
+  that way moved 23 rules on 90 of 220 specimens. Cure periods, notice periods
+  and payment terms went unread, and nine moves were a false CRITICAL "missing"
+  finding:
+  - EMP-015 and EMP-016 told two separation agreements they had no OWBPA
+    21-day consideration or 7-day revocation period.
+  - DISC-001 and DISC-012 told three discovery requests they stated no response
+    deadline.
+  - SET-019, RE-018 and HC-108 said a cease-and-desist letter, a ground lease
+    and a medical directorship lacked a deadline or term they state.
+
+  The shared `PERIOD_COUNT` now reads the numeral-first form whole, and so does
+  each rule that kept its own copy of the parenthetical: FIN-005, EMP-015,
+  EMP-016, EMP-025, EMP-041, RE-018, SET-012, HC-108, PERS-004 and PERS-009 (each
+  version bumped). So do the obligations ledger's "within N days" deadline, the
+  audit-rights year window, and the venue extractor. The venue extractor admits
+  a spelled count in the parenthetical, but only a number word: "(a)" still
+  ends the clause. `parenthetical-numeral.test.ts` adds the rewrite as a third
+  corpus relation; it fails on 9.940.0 and holds at zero now. Findings on the
+  unmodified corpus are byte-identical before and after.
+- **"per cent", the UK and Commonwealth spelling, was not a percentage to
+  seven rules.** The percentage extractor always read it, but BNK-008, COMM-015,
+  COMM-153, BUY-001, SOL-004, SLA-001 and SLA-003 each wrote their own
+  `percent`. Rewriting the corpus that way moved seven specimens, three of them
+  into a false CRITICAL: BNK-008 told a UK facility agreement it had no
+  interest-rate clause. Each now reads both spellings (versions bumped), and
+  `percent-word-form.test.ts` holds a second relation at zero.
+- **Measured clean, nothing to fix:** "$1.5 million", "$1.5M", "$250 thousand",
+  "US$" and "$10,000 (Ten Thousand Dollars)" each moved no finding against the
+  corpus's own spellings.
+
 ## [9.940.0] — 2026-10-18
 
 ### Fixed

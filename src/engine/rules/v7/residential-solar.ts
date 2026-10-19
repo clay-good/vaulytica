@@ -87,11 +87,13 @@ const COLUMNS = pack(PLAYBOOK, C, [
   },
   {
     id: "SOL-004",
+    // 1.1.0 — reads "per cent", the UK and Commonwealth spelling, as well as "percent".
+    ver: "1.1.0",
     name: "Whether the price rises, and by how much each year",
     cite: practice("solar-escalator", "the annual escalator, or a statement that there is none"),
     pat: [
       /\bescalat\w+/i,
-      /\bincreas\w+\s+by\s+\d+(\.\d+)?\s?(%|percent)/i,
+      /\bincreas\w+\s+by\s+\d+(\.\d+)?\s?(%|per\s?cent)/i,
       /\b(will|shall|must|does)\s+not\s+increase\b|\bfixed\s+(price|rate|payment)\b|\bno\s+(annual\s+)?(increase|escalat\w+)\b/i,
     ],
     why: "Over a term of twenty years or more, a small annual increase compounds: at 2.9% a year the price in year 25 is nearly double the price in year one. The homeowner needs the rate, or a statement that the price is fixed, to compare the contract with the utility bill it replaces.",

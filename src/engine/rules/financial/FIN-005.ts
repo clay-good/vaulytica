@@ -13,6 +13,10 @@ import {
 // so listing the bare ten ("forty") before it would match only "forty" and
 // strand "-five (45) days", making "due within forty-five (45) days" read as
 // having no payment term (v1.4.2).
+//
+// The parenthetical is read with the same table (1.7.0), because the numeral
+// can come first: "payable within 30 (thirty) days" told 41 specimens they
+// had no payment term.
 const NUM_WORDS =
   "(?:\\d{1,3}|(?:twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)-(?:one|two|three|four|five|six|seven|eight|nine)|zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|one\\s+hundred|hundred)";
 // Capture the common formulations of payment terms. Each branch is
@@ -70,9 +74,9 @@ const PAYMENT_TERMS = new RegExp(
     // unrelated "at the Closing" sentence is not read as a payment term.
     `\\bat\\s+(?:the\\s+)?closing\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\b(?:shall|will|must)${MODAL_QUALIFIER}(?:pay|remit|deliver|wire)\\b`,
     `\\b(?:shall|will|must)${MODAL_QUALIFIER}(?:pay|remit|wire)\\b(?:[^.;]|\\.(?=\\d)){0,80}?\\bat\\s+(?:the\\s+)?closing\\b`,
-    `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
-    `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%§]{0,40}?(?:is|are|(?:shall|will)\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
-    `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
+    `\\bpayment\\s+terms?\\s*[:–-]\\s*${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:payment|invoice|invoices|amount[s]?\\s+(?:due|owed|owing|(?:you|he|she|they|it)\\s+owes?)|balance|fees?|royalt(?:y|ies))\\s+[\\s\\w,%§]{0,40}?(?:is|are|(?:shall|will)\\s+be|must\\s+be|to\\s+be)?\\s*(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+|made\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:due\\s+(?:and\\s+payable\\s+)?|payable\\s+|paid\\s+)(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:of|from|after)\\s+(?:the\\s+)?(?:invoice|receipt)`,
     // The verb is not always "pay": a funder "shall FUND each conforming
     // draw within fifteen (15) business days", a lender "shall ADVANCE", an
     // escrow agent "shall DISBURSE", an employer "shall REIMBURSE". Each is a
@@ -92,7 +96,7 @@ const PAYMENT_TERMS = new RegExp(
     // upon completion and monitoring of each visit, within forty-five (45)
     // days after receipt of a proper invoice" is a plainly stated payment
     // term, and one hyphen stopped the branch from reaching it.
-    `\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|fund|advance|disburse|reimburse)\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|fund|advance|disburse|reimburse)\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // A recurring charge states its term as a DUE DATE, not an interval from
     // an invoice: "Base Rent: $20,000 per month, payable in advance on the
     // first of each month" is a payment term, and every branch above is
@@ -114,13 +118,13 @@ const PAYMENT_TERMS = new RegExp(
     `\\b(?:due|amounts?\\s+(?:are|is)\\s+due)\\s+(?:and\\s+payable\\s+)?upon\\s+(?:receipt|presentation)\\b`,
     // A SPELLED "Net" window — "payable net sixty (60) days" — that the
     // digits-only "Net 30" branch above never saw.
-    `\\bnet\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?days?\\b`,
+    `\\bnet\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\)\\s*)?days?\\b`,
     // Active voice with "remit" — "Customer will remit payment within fifteen
     // (15) business days" — a sibling of the "shall pay … within N days" branch.
-    `\\b(?:remit|make)\\s+(?:payment|remittance)\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’]{0,120}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
+    `\\b(?:remit|make)\\s+(?:payment|remittance)\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’]{0,120}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?`,
     // "Payment shall be made within thirty days following the end of each
     // month" — a period-relative window the invoice-anchored branches missed.
-    `\\b(?:payment|pay|paid|payable)\\b[\\s\\w,]{0,40}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:following|after)\\s+(?:the\\s+end\\s+of\\s+)?(?:each|the|every)\\b`,
+    `\\b(?:payment|pay|paid|payable)\\b[\\s\\w,]{0,40}?(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\s+(?:following|after)\\s+(?:the\\s+end\\s+of\\s+)?(?:each|the|every)\\b`,
     // A purchase-price schedule is a payment term: "payable as follows:
     // (a) $41,000 … within three (3) business days …" / "payable in twelve
     // (12) equal monthly installments". Tight anchors only — FIN-005's
@@ -169,7 +173,7 @@ const PAYMENT_TERMS = new RegExp(
     // right from the verb, so a plainly stated payment term was reported as
     // none. Same window and same character class as the "shall pay … within"
     // branch, read the other way.
-    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|remit)\\b`,
+    `\\b(?:within|no\\s+later\\s+than)\\s+${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\))?\\s*(?:business\\s+|calendar\\s+)?days?\\b[\\s\\w,()${CURRENCY_GLYPHS}."'“”’\\-/:;&%–—]{0,160}?\\b(?:shall|will|must|agrees\\s+to)${MODAL_QUALIFIER}(?:pay|remit)\\b`,
     // A subscription states its payment term with "billed", not with
     // "due"/"payable"/"paid" — "Subscription fees are billed in advance,
     // monthly or annually", "you will be charged monthly". Every branch above
@@ -183,13 +187,13 @@ const PAYMENT_TERMS = new RegExp(
     // The cadence-word branch below needs "monthly"/"quarterly"; the due-date
     // branches above need an ordinal day of a recurring period. Between them
     // an assessment schedule as plain as this read as no payment term at all.
-    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?instal?lments\\s+(?:due|payable)\\s+on\\b`,
+    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\)\\s*)?)?(?:equal\\s+)?instal?lments\\s+(?:due|payable)\\s+on\\b`,
     `\\bpayable\\s+as\\s+follows\\b`,
     // The installment count is optional: a lease states "annual base rent …
     // payable in equal monthly installments" with no number, and that cadence
     // + "installments" is a payment term as much as "in twelve (12) … monthly
     // installments". A cadence word is still required, so this stays tight.
-    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(\\d{1,3}\\)\\s*)?)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+instal?lments\\b`,
+    `\\bpayable\\s+in\\s+(?:${NUM_WORDS}\\s*(?:\\(${NUM_WORDS}\\)\\s*)?)?(?:equal\\s+)?(?:monthly|quarterly|weekly|annual|semi-?annual)\\s+instal?lments\\b`,
     // An employment agreement states its payment term as the payroll cadence:
     // "payable in accordance with the Company's regular payroll practices". The
     // salary / bonus / severance is paid on the normal payroll cycle, which is
@@ -211,7 +215,7 @@ const ANY_PAYMENT = /\b(fee|payment|invoice|amount\s+due|payable)\b/i;
 /** FIN-005 — Payment terms presence and parseability (warning). */
 export const rule: Rule = {
   id: "FIN-005",
-  version: "1.6.0",
+  version: "1.7.0",
   name: "Payment terms presence and parseability",
   category: "financial",
   default_severity: "warning",

@@ -1,5 +1,6 @@
 import type { DocumentTree } from "../ingest/types.js";
 import type { JurisdictionReference } from "./types.js";
+import { PERIOD_COUNT } from "./counts.js";
 import { forEachParagraph, posInParagraph } from "./walk.js";
 
 /**
@@ -318,7 +319,7 @@ const VENUE_FALLBACK_FORUM = new RegExp(
 );
 
 const VENUE = new RegExp(
-  String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\([0-9]+\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:exclusively\s+|solely\s+|only\s+|proper(?:ly)?\s+)*(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
+  String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue|jurisdiction\s+and\s+venue|sole\s+and\s+exclusive\s+(?:venue|jurisdiction|forum))\b(?:\((?:[0-9]+|${PERIOD_COUNT})\)|[^.;)]){0,80}?(?:shall\s+(?:be|lie)|is|lies|shall\s+rest|will\s+be)\s+(?:exclusively\s+|solely\s+|only\s+|proper(?:ly)?\s+)*(?:in|with|within)?\s*(?:any\s+|the\s+|a\s+)?(?:state\s+(?:and|or)\s+federal\s+|federal\s+(?:and|or)\s+state\s+|state\s+|federal\s+)?(?:${COURT_NAME})?courts?\s+(?:located\s+(?:in|within)\s+|sitting\s+(?:in|within)\s+|for\s+the\s+(?:[A-Z][\w.]*\s+){0,3}District\s+of\s+|for\s+|of\s+|in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|\s+and\b|$)`,
   "gi",
 );
 /**
@@ -377,7 +378,10 @@ const VENUE_COURTS_FIRST = new RegExp(
 // carried the bare `[^.;)]` window until an audit found it failing on
 // "Venue for any dispute not resolved within thirty (30) days shall be in
 // Franklin County, Ohio", which its own comment names as its target shape.
-const RUNUP = String.raw`(?:\([0-9]+\)|[^.;)])`;
+// The count can be the words in the parenthetical, too: "within 30 (thirty)
+// days" is the same day count. Only a NUMBER word is admitted, never any
+// word, so a list marker such as "(a)" or "(ii)" still ends the run-up.
+const RUNUP = String.raw`(?:\((?:[0-9]+|${PERIOD_COUNT})\)|[^.;)])`;
 const VENUE_SIMPLE = new RegExp(
   String.raw`\b(?:venue|forum|exclusive\s+jurisdiction|exclusive\s+venue)\b${RUNUP}{0,80}?\s+(?:shall\s+(?:be|lie)|is|lies|will\s+be)\s+(?:proper\s+)?(?:in\s+|within\s+)?${CIVIL_DIVISION_OF}([A-Z][A-Za-z\s&-]+?)(?=[.,;)]|$)`,
   "gi",

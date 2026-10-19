@@ -23,11 +23,13 @@ const SUM = String.raw`(?:(?:${CURRENCY_TOKEN})\s?\d|${AMOUNT_IN_WORDS})`;
 const SERVICE_LEVEL = pack("service-level-agreement", "commercial", [
   {
     id: "SLA-001",
+    // 1.1.0 — reads "per cent", the UK and Commonwealth spelling, as well as "percent".
+    ver: "1.1.0",
     name: "Uptime commitment and measurement window",
     cite: practice("sla-uptime", "an availability percentage and the period it is measured over"),
     all: true,
     pat: [
-      /(\b(availab\w+|up-?time)\b[\s\S]{0,200}?\d{2,3}(\.\d+)?\s?(%|percent)|\d{2,3}(\.\d+)?\s?(%|percent)[\s\S]{0,200}?\b(availab\w+|up-?time)\b)/i,
+      /(\b(availab\w+|up-?time)\b[\s\S]{0,200}?\d{2,3}(\.\d+)?\s?(%|per\s?cent)|\d{2,3}(\.\d+)?\s?(%|per\s?cent)[\s\S]{0,200}?\b(availab\w+|up-?time)\b)/i,
       /\b(calendar\s+(month|quarter|year)|(each|per|every|any|a\s+given)\s+(month|quarter|year)|monthly|quarterly|measurement\s+period|billing\s+(period|cycle|month))\b/i,
     ],
     why: "An availability figure means nothing without the period it is measured over: 99.9% of a month allows about 43 minutes of downtime, and 99.9% of a year allows almost nine hours in one outage. A commitment with no number, or a number with no window, cannot be measured or missed.",
@@ -45,10 +47,12 @@ const SERVICE_LEVEL = pack("service-level-agreement", "commercial", [
   },
   {
     id: "SLA-003",
+    // 1.1.0 — reads "per cent", the UK and Commonwealth spelling, as well as "percent".
+    ver: "1.1.0",
     name: "Service credit schedule",
     cite: practice("sla-credits", "the credit owed when the commitment is missed"),
     pat: [
-      /\bcredits?\b[\s\S]{0,200}?\d+(\.\d+)?\s?(%|percent)|(?<!\d)\d+(\.\d+)?\s?(%|percent)[\s\S]{0,120}?\bcredits?\b/i,
+      /\bcredits?\b[\s\S]{0,200}?\d+(\.\d+)?\s?(%|per\s?cent)|(?<!\d)\d+(\.\d+)?\s?(%|per\s?cent)[\s\S]{0,120}?\bcredits?\b/i,
     ],
     why: "A service level with no stated consequence is a target, not a commitment. The credit schedule is the remedy the customer actually receives, and it is the first thing either side looks for when availability falls short.",
     fix: "Add a schedule that ties each band of availability to a credit, stated as a percentage of the fees for the affected period.",

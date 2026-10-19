@@ -552,6 +552,25 @@ describe("interpretation-form governing law", () => {
     expect(control.map((r) => r.raw_text)).toEqual(["Ohio"]);
     expect(withParenthetical.map((r) => r.raw_text)).toEqual(["Ohio"]);
   });
+
+  it("reads the parenthetical when it holds the words, and a list marker still ends the run-up", () => {
+    // "within 30 (thirty) days" is the same day count with the numeral first. Only
+    // a number word is admitted as a unit: "(a)" is an enumerator, not a count.
+    const venues = (text: string) =>
+      extractJurisdictions(buildTree(["Venue", text]))
+        .filter((r) => r.clause_kind === "venue")
+        .map((r) => r.raw_text);
+    expect(
+      venues(
+        "Venue for any dispute not resolved within 30 (thirty) days shall be in Franklin County, Ohio.",
+      ),
+    ).toEqual(["Ohio"]);
+    expect(
+      venues(
+        "Venue for any dispute (a) not resolved by the parties shall be in Franklin County, Ohio.",
+      ),
+    ).toEqual([]);
+  });
 });
 
 describe("the conjoined governing-law-and-forum sentence", () => {

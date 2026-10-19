@@ -58,8 +58,16 @@ const WORDS = `(?:${HUNDREDS}|${SMALL})`;
  * engine walks forward to "030" — a 30-day one. `(?<![\d.,])` leaves those
  * unread, which is the honest outcome; a count this pattern cannot read whole
  * it must not read in part.
+ *
+ * The numeral can also come FIRST, with the words as the check: "within 30
+ * (thirty) days" is how many drafters outside the US write it. Read as a bare
+ * "30" followed by a parenthetical, it left the noun out of reach: 23 rules
+ * moved on 90 specimens — cure windows, notice periods, OWBPA's 21 and 7 days
+ * — and nine of the moves were a CRITICAL "missing" finding. Found by the third
+ * rewrite in `parenthetical-numeral.test.ts`; {@link countValue} already
+ * reads the digits first, so the value is unchanged.
  */
-export const PERIOD_COUNT = `(?:\\b(?:${WORDS})\\s*\\(\\s*\\d{1,3}\\s*\\)|\\b(?:${WORDS})|\\(\\s*\\d{1,3}\\s*\\)|(?<![\\d.,])\\d{1,3})`;
+export const PERIOD_COUNT = `(?:\\b(?:${WORDS})\\s*\\(\\s*\\d{1,3}\\s*\\)|(?<![\\d.,])\\d{1,3}\\s*\\(\\s*(?:${WORDS})\\s*\\)|\\b(?:${WORDS})|\\(\\s*\\d{1,3}\\s*\\)|(?<![\\d.,])\\d{1,3})`;
 
 /**
  * The number words, in ONE place.

@@ -225,7 +225,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -416,7 +416,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "PERS-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -451,7 +451,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1041,11 +1041,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "3747a80e694ff1da5bc7950586e2213cc496e93bdfbcdd0b5c8d28bdd3178e96",
+  "result_hash": "caa3584cb1e8734eb5d904047008abc043b3c824fe184ed218b348617229a28e",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.940.0"
+  "version": "9.941.0"
 }

@@ -65,6 +65,8 @@ const OPEN_ENDED = languageRule({
 const COLUMNS = pack(PLAYBOOK, C, [
   {
     id: "BUY-001",
+    // 1.1.0 — reads "per cent", the UK and Commonwealth spelling, as well as "percent".
+    ver: "1.1.0",
     name: "Compensation as a specific amount or rate",
     cite: settlement(
       "amount-or-rate",
@@ -72,7 +74,7 @@ const COLUMNS = pack(PLAYBOOK, C, [
     ),
     pat: [
       new RegExp(
-        String.raw`\b(compensation|commission|fee)s?\b[^.]{0,200}?(\d+(\.\d+)?\s?(%|percent)|(?:${CURRENCY_TOKEN})\s?\d|${AMOUNT_IN_WORDS}|\bflat\s+fee\b|\bper\s+hour\b|\bhourly\b)`,
+        String.raw`\b(compensation|commission|fee)s?\b[^.]{0,200}?(\d+(\.\d+)?\s?(%|per\s?cent)|(?:${CURRENCY_TOKEN})\s?\d|${AMOUNT_IN_WORDS}|\bflat\s+fee\b|\bper\s+hour\b|\bhourly\b)`,
         "i",
       ),
     ],

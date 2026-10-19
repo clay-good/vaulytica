@@ -226,7 +226,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -419,7 +419,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -454,7 +454,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -875,7 +875,7 @@
       "id": "FIN-005-s1-0",
       "recommendation": "Add a payment term stating when payment is due — \"Net 30\", \"payable within thirty (30) days of invoice\" — with the trigger (invoice date or receipt), the method, and what happens to a disputed amount.",
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0",
+      "rule_version": "1.7.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No payment-term clause detected"
@@ -1087,11 +1087,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Distinguishing phrases: \"SOW\", \"Deliverables\".",
-  "result_hash": "16a1fcaf2fb933cf61e8c2efbb577a1484696694213f1b22d417097b02c7e473",
+  "result_hash": "3f10bfddf52546fa569ea529c384769d155dbd8bc8d6a68569c8abdeea684433",
   "source_file": {
     "name": "bad-msa-mfn.docx",
     "sha256": "6c82de5ccf5a22064c5da0ad551848546762dc4f0b2fecf127a52f93798fe73d",
     "size_bytes": 9672
   },
-  "version": "9.940.0"
+  "version": "9.941.0"
 }

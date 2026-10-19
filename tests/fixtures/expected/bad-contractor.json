@@ -226,7 +226,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.6.0"
+      "rule_version": "1.7.0"
     },
     {
       "elapsed_ms": 0,
@@ -419,7 +419,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-004",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -457,7 +457,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -1222,11 +1222,11 @@
   "playbook_id": "independent-contractor",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected independent-contractor (score 1). Title matched: \"independent contractor\", \"contractor agreement\". Distinguishing phrases: \"independent contractor\", \"Contractor shall\".",
-  "result_hash": "7ea9649bb2c1be368354a9efd4f2c4e2cbd3153caabfe8a5e3352a08dd72d73e",
+  "result_hash": "4a81099b6bc4575527d9221607dbbe93394f93860ce0bc0fa52daf05c49faf73",
   "source_file": {
     "name": "bad-contractor.docx",
     "sha256": "7a40a2e53d068557d47cf7690838b907085994f596a0c6e2380b8ac2607543df",
     "size_bytes": 9303
   },
-  "version": "9.940.0"
+  "version": "9.941.0"
 }

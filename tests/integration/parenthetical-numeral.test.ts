@@ -20,6 +20,16 @@
  * real document uses and no hand-typed fixture does — and it is guarded the
  * same way: a static sweep for the blind spelling, and the corpus relation
  * that found it.
+ *
+ * The convention also runs the other way round: "30 (thirty) days", the
+ * numeral first and the words as the check, which is how much drafting outside
+ * the US writes it. Rewriting the corpus that way moved 23 rules on 90
+ * specimens, nine of them into a CRITICAL "missing" finding — EMP-015 and
+ * EMP-016 told a separation agreement it had no OWBPA consideration or
+ * revocation period, DISC-001 told a discovery request it stated no response
+ * deadline. Each recognizer had a digits-only parenthetical, `\(\d{1,3}\)`,
+ * or none, so "(thirty)" ended the match; the shared `PERIOD_COUNT` and each
+ * local copy now read either order. The third rewrite below holds it.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -82,6 +92,37 @@ const spelledThenNumeric = (s: string): string =>
     WORDS[Number(d)] ? `${WORDS[Number(d)]} (${d})` : m,
   );
 
+const NUMBER_WORD = new Set([
+  ...Object.values(WORDS).flatMap((w) => w.split(/[- ]/)),
+  "thirteen",
+  "sixteen",
+  "seventeen",
+  "eighteen",
+  "nineteen",
+  "forty",
+  "fifty",
+  "seventy",
+  "eighty",
+  "hundred",
+  "and",
+]);
+
+/** "thirty (30) days" → "30 (thirty) days": the numeral first, words as the check. */
+const numericThenSpelled = (s: string): string =>
+  s.replace(
+    /\b([a-z]+(?:[- ][a-z]+){0,3})\s+\((\d{1,3})\)(?=\s+(?:days?|business\s+days?|months?|years?)\b)/gi,
+    (m, w: string, d: string) => {
+      // Only the words that ARE the count move; "within thirty" keeps its
+      // "within". Words sit at the even indices, separators between them.
+      const tokens = w.split(/([- ])/);
+      let first = tokens.length + 1;
+      while (first >= 2 && NUMBER_WORD.has(tokens[first - 2]!.toLowerCase())) first -= 2;
+      while (first < tokens.length && tokens[first]!.toLowerCase() === "and") first += 2;
+      if (first >= tokens.length) return m;
+      return `${tokens.slice(0, first).join("")}${d} (${tokens.slice(first).join("")})`;
+    },
+  );
+
 /** And back: "thirty (30) days" → "30 days". Has always held. */
 const numericOnly = (s: string): string =>
   s.replace(/\b[a-z-]+\s+\((\d{1,3})\)(?=\s+(?:days?|business\s+days?|months?|years?)\b)/gi, "$1");
@@ -119,7 +160,7 @@ describe("the parenthetical numeral", () => {
     let probed = 0;
     for (const name of readdirSync(dir).filter((f) => f.endsWith(".txt"))) {
       const text = readFileSync(join(dir, name), "utf8");
-      for (const mutate of [spelledThenNumeric, numericOnly]) {
+      for (const mutate of [spelledThenNumeric, numericOnly, numericThenSpelled]) {
         const mutated = mutate(text);
         if (mutated === text) continue;
         probed++;
@@ -136,5 +177,5 @@ describe("the parenthetical numeral", () => {
     }
     expect(probed).toBeGreaterThan(150);
     expect(broken).toEqual([]);
-  }, 300_000);
+  }, 600_000);
 });

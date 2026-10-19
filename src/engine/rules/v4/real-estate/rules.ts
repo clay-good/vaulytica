@@ -487,7 +487,7 @@ const PSA_RULES: Rule[] = [
 const GROUND_LEASE_RULES: Rule[] = [
   presence({
     id: "RE-018",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Long-term term stated (49 / 50 / 99 years)",
     description: "Ground lease should state a long-term term (typically 49, 50, or 99 years).",
     citation: rePractice(
@@ -504,7 +504,7 @@ const GROUND_LEASE_RULES: Rule[] = [
     // Tolerate the spelled-then-parenthetical form a lease actually writes:
     // "a term of ninety-nine (99) years". The "(99)" between the number and
     // "years" defeated the adjacent match.
-    present_patterns: [/(49|50|99|forty.nine|fifty|ninety.nine)\s*(?:\(\s*\d{1,3}\s*\)\s*)?years/i],
+    present_patterns: [/(49|50|99|forty.nine|fifty|ninety.nine)\s*(?:\([\w\s-]{1,30}\)\s*)?years/i],
   }),
   presence({
     id: "RE-019",

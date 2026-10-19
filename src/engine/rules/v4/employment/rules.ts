@@ -370,7 +370,7 @@ const OFFER_LETTER_RULES: Rule[] = [
 const SEPARATION_RULES: Rule[] = [
   presence({
     id: "EMP-015",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "OWBPA / ADEA waiver — 21 / 45-day consideration period",
     description:
       "Separation agreements with employees 40+ must give 21 days (or 45 days for group terminations) to consider the ADEA waiver.",
@@ -389,13 +389,13 @@ const SEPARATION_RULES: Rule[] = [
       // A short bounded window after "days" also tolerates the equally common
       // "days within which to consider" / "days in which to review" phrasing;
       // the day-count anchor keeps the match specific to a consideration clause.
-      /(21|twenty.one|45|forty.five)\s*(?:\(\s*\d{1,2}\s*\)\s*)?days?\b[^.]{0,30}?\b(?:to\s+)?(consider|review)/is,
+      /(21|twenty.one|45|forty.five)\s*(?:\([\w\s-]{1,30}\)\s*)?days?\b[^.]{0,30}?\b(?:to\s+)?(consider|review)/is,
       /consideration\s+period/i,
     ],
   }),
   presence({
     id: "EMP-016",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "OWBPA — 7-day revocation period",
     description: "ADEA waivers must give a 7-day revocation period after signing (§ 626(f)(1)(G)).",
     citation: owbpa(),
@@ -408,8 +408,8 @@ const SEPARATION_RULES: Rule[] = [
     present_patterns: [
       // Same spelled-then-parenthetical form: "seven (7) days", "revoke it
       // within seven (7) days after signing".
-      /(7|seven)\s*(?:\(\s*\d\s*\)\s*)?days?\s+(to\s+|after\s+|in\s+which\s+to\s+|within\s+which\s+to\s+)?(revoke|rescind)/i,
-      /(revoke|rescind).{0,40}within\s+(7|seven)\s*(?:\(\s*\d\s*\)\s*)?days?/i,
+      /(7|seven)\s*(?:\([\w\s-]{1,30}\)\s*)?days?\s+(to\s+|after\s+|in\s+which\s+to\s+|within\s+which\s+to\s+)?(revoke|rescind)/i,
+      /(revoke|rescind).{0,40}within\s+(7|seven)\s*(?:\([\w\s-]{1,30}\)\s*)?days?/i,
       /revocation\s+period/i,
     ],
     denied_if: expressDenial(
@@ -667,7 +667,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-025",
-    version: "1.6.0",
+    version: "1.7.0",
     name: "Non-compete duration stated",
     description: "Where permitted, non-compete duration must be stated.",
     citation: stateNonCompete(),
@@ -699,7 +699,7 @@ const EMP_RESTRICTIVE_COVENANT_RULES: Rule[] = [
         String.raw`\b(?:during|for)\s+(?:the\s+)?(?:a\s+period\s+of\s+)?${PERIOD_COUNT}\s*(?:months?|years?)\b${CLAUSE_GAP}{0,160}?\b(?:shall|will|must|agrees?|covenants?)\s+not\b`,
         "is",
       ),
-      /(?:twelve|eighteen|twenty-four|six|nine)\s+\(\d{1,2}\)\s+months?[^.]{0,60}(?:(?:shall|will|must)\s+not|restrict)/is,
+      /(?:twelve|eighteen|twenty-four|six|nine|12|18|24|6|9)\s+\([\w\s-]{1,30}\)\s+months?[^.]{0,60}(?:(?:shall|will|must)\s+not|restrict)/is,
       // The duration SPELLED OUT with no numeral at all — "for five years
       // after leaving the Company he will not work for any competitor". Every
       // branch above requires digits somewhere: the two bare-digit forms, the
@@ -1110,7 +1110,7 @@ const PIP_RULES: Rule[] = [
   }),
   presence({
     id: "EMP-041",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Duration and review schedule (30 / 60 / 90 days)",
     description: "PIP must specify duration and review schedule.",
     citation: empPractice(
@@ -1130,7 +1130,7 @@ const PIP_RULES: Rule[] = [
       // actually writes: "a period of ninety (90) days", "within the ninety
       // (90) day period". The numeric-only "(90)" and the singular "day" both
       // defeated the old adjacent "(30|60|90) days" match.
-      /(30|60|90|thirty|sixty|ninety)\s*(?:\(\s*\d{1,3}\s*\)\s*)?days?/i,
+      /(30|60|90|thirty|sixty|ninety)\s*(?:\([\w\s-]{1,30}\)\s*)?days?/i,
       /(weekly|bi-?weekly|every\s+(?:two|other)\s+weeks?)\s+(check.in|review|meeting)/i,
       /(check.in|review|meet).{0,30}(weekly|bi-?weekly|every\s+(?:two|other)\s+weeks?)/i,
     ],

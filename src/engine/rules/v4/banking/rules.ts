@@ -298,7 +298,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-008",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "Interest rate / margin / floor",
     description:
       "Loan agreement must state the interest rate / margin / floor (SOFR / prime / fixed).",
@@ -319,7 +319,7 @@ const LOAN_AGREEMENT_RULES: Rule[] = [
       // "fixed", so recognize it: "fixed rate of eight percent (8.0%) per
       // annum" / "interest at 8% per annum".
       /fixed\s+(?:interest\s+)?rate/i,
-      /(?:percent|%|interest\s+rate|rate\s+of)[^.]{0,25}?(?:per\s+(?:annum|year)|a\s+year|annually)/i,
+      /(?:per\s?cent|%|interest\s+rate|rate\s+of)[^.]{0,25}?(?:per\s+(?:annum|year)|a\s+year|annually)/i,
     ],
   }),
   presence({

@@ -67,7 +67,7 @@ const AUDIT_RX = new RegExp(
 // "twelve (12) month" form is incidental. A sub-annual window (per quarter, per
 // month) is left vague rather than normalized, and a spelled count other than
 // once/twice ("two times") is not read.
-const YEAR_WINDOW = String.raw`(?:year|calendar\s+year|annum|(?:twelve|12)(?:\s*\(\d{1,2}\))?[-\s]months?(?:\s+period)?)`;
+const YEAR_WINDOW = String.raw`(?:year|calendar\s+year|annum|(?:twelve|12)(?:\s*\([\w\s-]{1,30}\))?[-\s]months?(?:\s+period)?)`;
 const FREQUENCY_RX = new RegExp(
   String.raw`\b(?:once|twice|(\d{1,2})\s*times?)\s+(?:per|a|in\s+any|every)\s+${YEAR_WINDOW}\b` +
     String.raw`|\b(?:once|twice)\s+annually\b` +
