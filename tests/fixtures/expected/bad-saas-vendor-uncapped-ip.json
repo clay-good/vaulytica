@@ -225,7 +225,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -467,7 +467,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "RISK-002",
-      "rule_version": "1.4.0"
+      "rule_version": "1.5.0"
     },
     {
       "elapsed_ms": 0,
@@ -531,7 +531,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-011",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -561,14 +561,14 @@
       "fired": true,
       "ran": true,
       "rule_id": "RISK-015",
-      "rule_version": "1.10.0"
+      "rule_version": "1.11.0"
     },
     {
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
       "rule_id": "RISK-016",
-      "rule_version": "1.7.0"
+      "rule_version": "1.8.0"
     },
     {
       "elapsed_ms": 0,
@@ -897,7 +897,7 @@
       "id": "RISK-015-s2-193",
       "recommendation": "Either subject indemnification to a per-claim and aggregate cap, or confirm the carve-out is a deliberate trade for higher pricing / different insurance.",
       "rule_id": "RISK-015",
-      "rule_version": "1.10.0",
+      "rule_version": "1.11.0",
       "severity": "warning",
       "source_citations": [],
       "title": "Indemnification without aggregate cap"
@@ -1056,7 +1056,7 @@
       "id": "RISK-011-s2-0",
       "recommendation": "Add the missing element to the indemnity clause: how and when the indemnified party must give notice of a claim, which party controls the defense, and whether a settlement needs the other party's consent.",
       "rule_id": "RISK-011",
-      "rule_version": "1.9.0",
+      "rule_version": "1.10.0",
       "severity": "info",
       "source_citations": [],
       "title": "Indemnity procedural elements missing: notice, defense control, settlement consent"
@@ -1120,11 +1120,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "755130da617d1e49ec1b922b545e2ab0f15f5b005d47e352ef09abca38cd7b44",
+  "result_hash": "ae2b28b36072c291d0a5489c2d57b28d12292dda82f78cc4446c46baa3269e5a",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.945.0"
+  "version": "9.946.0"
 }

@@ -1061,6 +1061,7 @@ export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,|(?:\s+(?!not\b|ne
  * | `is obligated to` | 30 |
  * | `undertakes to` | 36 |
  * | `covenants to` | 36 |
+ * | `is obliged to` (the UK form) | 26 RISK-011, 25 OBLI-002 (fixed 9.946.0) |
  *
  * The same four rules every time. Four scattered edits per new synonym is how a
  * list that exists four times ends up disagreeing with itself, which is what
@@ -1075,7 +1076,7 @@ export const MODAL_QUALIFIER = String.raw`(?:,\s*[^.;]{0,60}?,|(?:\s+(?!not\b|ne
  *
  * A rule needing more (RISK-011's `hereby`) composes: `(?:${OBLIGATION_MODAL}|hereby)`.
  */
-export const OBLIGATION_MODAL = String.raw`(?:shall|will|must|(?:is|are)\s+(?:required|obligated)\s+to|agrees?\s+to|undertakes?\s+to|covenants?\s+(?:and\s+agrees?\s+)?to)`;
+export const OBLIGATION_MODAL = String.raw`(?:shall|will|must|(?:is|are)\s+(?:required|obligated|obliged)\s+to|agrees?\s+to|undertakes?\s+to|covenants?\s+(?:and\s+agrees?\s+)?to)`;
 
 export { PAGE_FURNITURE };
 

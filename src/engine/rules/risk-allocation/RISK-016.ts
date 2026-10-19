@@ -22,7 +22,7 @@ import {
  */
 export const rule: Rule = {
   id: "RISK-016",
-  version: "1.7.0",
+  version: "1.8.0",
   name: "Insurance requirement without coverage minimum",
   category: "risk-allocation",
   default_severity: "warning",

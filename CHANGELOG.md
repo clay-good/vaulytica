@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.946.0] — 2026-10-19
+
+### Fixed
+- **"is obliged to", the English form of "is obligated to", was not a duty.**
+  The shared obligation vocabulary (`OBLIGATION_MODAL`) and the obligations
+  extractor both stopped at "obligated". Rewriting each positive "shall" in
+  the corpus as "is obliged to" moved these:
+  - RISK-011 lost the indemnity-claim notice on 26 specimens.
+  - The extractor missed the duty on 25 (OBLI-002).
+  - RISK-015 lost 8 indemnities and RISK-016 lost 6.
+  - FIN-005 told 21 specimens they had no payment term.
+
+  Both now read it. FIN-005, RISK-002, GOV-140 and RE-028 kept private
+  `shall|will|must` lists, and now read the shared vocabulary (versions
+  bumped), so the next synonym is one change in one place. A unit test pins
+  every duty form to that vocabulary; it fails on 9.945.0.
+- On the unmodified corpus, no finding moved. The ledger gains four rows of the
+  form "Neither Party is obliged to fund the other", which matches how it
+  already lists "Neither party is obligated to negotiate". Whether a denial of
+  duty belongs in the ledger is a separate question, and it is not changed
+  here.
+- **Measured, nothing to fix:** dates written "3rd June 2026", across 341
+  specimens.
+
 ## [9.945.0] — 2026-10-19
 
 ### Fixed

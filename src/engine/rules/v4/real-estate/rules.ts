@@ -13,7 +13,7 @@
  */
 
 import type { Rule } from "../../../finding.js";
-import { MODAL_QUALIFIER } from "../../_helpers.js";
+import { MODAL_QUALIFIER, OBLIGATION_MODAL } from "../../_helpers.js";
 import {
   buildV4PresenceRule,
   expressDenial,
@@ -706,7 +706,7 @@ const EASEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "RE-028",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Maintenance and repair allocation",
     description: "Easement should allocate maintenance and repair costs.",
     citation: easementLaw(),
@@ -729,11 +729,11 @@ const EASEMENT_RULES: Rule[] = [
     present_patterns: [
       /maintenance\s+(?:and|or)\s+(?:repair|restoration|upkeep)/i,
       new RegExp(
-        `(?:shall|must|will|agrees?\\s+to)${MODAL_QUALIFIER}maintain\\b[^.]{0,60}\\b(?:easement|premises|property|area|improvements|surface|facilit(?:y|ies)|lines?|pipelines?|mains?|roads?|driveways?|utilit(?:y|ies)|systems?|structures?|equipment)`,
+        `${OBLIGATION_MODAL}${MODAL_QUALIFIER}maintain\\b[^.]{0,60}\\b(?:easement|premises|property|area|improvements|surface|facilit(?:y|ies)|lines?|pipelines?|mains?|roads?|driveways?|utilit(?:y|ies)|systems?|structures?|equipment)`,
         "i",
       ),
       new RegExp(
-        `(?:shall|must|will|agrees?\\s+to)${MODAL_QUALIFIER}(?:maintain|keep|repair)\\b[^.]{0,80}?\\bin\\s+good\\s+(?:repair|condition|order|working\\s+order)`,
+        `${OBLIGATION_MODAL}${MODAL_QUALIFIER}(?:maintain|keep|repair)\\b[^.]{0,80}?\\bin\\s+good\\s+(?:repair|condition|order|working\\s+order)`,
         "i",
       ),
     ],

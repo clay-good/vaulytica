@@ -60,6 +60,9 @@ const MODALS = [
   "are responsible for",
   "is obligated to",
   "are obligated to",
+  // The English form of the same duty: "the Supplier is obliged to deliver".
+  "is obliged to",
+  "are obliged to",
   "undertakes to",
   // A covenant IS a binding promise, so "covenants to <verb>" is always a
   // substantive obligation. The multi-verb "covenants and agrees to" form is

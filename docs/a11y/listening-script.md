@@ -51,7 +51,7 @@ pages and the second page starts straight into data, the row is not marked.
 ### 3. Obligor · Modal · Action · Trigger / Qualifier
 
 - Heading row marked in the XML: **yes**
-- Body rows: 5
+- Body rows: 6
 - Move into the first body row. Expect to hear “**Obligor, the parties**” or the equivalent in your reader's phrasing.
 - [ ] Column name announced with the value
 - [ ] If it spans a page break, the heading row repeats

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   GOVERNING_LAW_PRESENT,
+  OBLIGATION_MODAL,
   allMatches,
   enclosingSentence,
   firstParagraphMatch,
@@ -853,5 +854,30 @@ describe("matchedSentence", () => {
     expect(got.endsWith("…")).toBe(true);
     expect(got.length).toBeLessThan(310);
     expect(text.includes(got.slice(0, -1))).toBe(true);
+  });
+});
+
+// Every duty form that takes a bare infinitive, in both numbers. The extractor
+// read "is obliged to" — the English form of "is obligated to" — and the
+// shared rule vocabulary did not, so RISK-011 lost the indemnity notice on 26
+// specimens and RISK-015 eight indemnities when a corpus said it that way.
+describe("OBLIGATION_MODAL", () => {
+  const modal = new RegExp(`^${OBLIGATION_MODAL}$`, "i");
+  it.each([
+    "shall",
+    "will",
+    "must",
+    "is required to",
+    "are required to",
+    "is obligated to",
+    "are obligated to",
+    "is obliged to",
+    "are obliged to",
+    "agrees to",
+    "undertakes to",
+    "covenants to",
+    "covenants and agrees to",
+  ])("reads %s", (form) => {
+    expect(modal.test(form)).toBe(true);
   });
 });

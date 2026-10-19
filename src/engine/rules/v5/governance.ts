@@ -6,7 +6,7 @@
 import type { Rule } from "../../finding.js";
 import { pack } from "./_pack.js";
 import { agency, cfr, expressDenial, irs, practice, uniformAct } from "./_helpers.js";
-import { MODAL_QUALIFIER } from "../_helpers.js";
+import { MODAL_QUALIFIER, OBLIGATION_MODAL } from "../_helpers.js";
 import { dgcl } from "../v4/governance/_helpers.js";
 import { CURRENCY_MARK } from "../../../extract/amounts.js";
 
@@ -567,12 +567,13 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
   },
   {
     id: "GOV-140",
+    ver: "1.1.0",
     name: "Mandatory indemnification on success on the merits",
     cite: dgcl("145(c)"),
     pat: [
       /success(?:ful)?[^.;]{0,60}?(?:on\s+the\s+merits|or\s+otherwise)/i,
       new RegExp(
-        `(?:(?:shall|will)|must|is\\s+entitled\\s+to\\s+be)${MODAL_QUALIFIER}indemnif\\w+`,
+        `(?:${OBLIGATION_MODAL}|is\\s+entitled\\s+to\\s+be)${MODAL_QUALIFIER}indemnif\\w+`,
         "i",
       ),
     ],

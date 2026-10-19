@@ -109,7 +109,7 @@ function clauseRun(paras: string[], start: number): string[] {
 /** RISK-011 — Indemnity procedure clause present (info). */
 export const rule: Rule = {
   id: "RISK-011",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Indemnity procedure clause",
   category: "risk-allocation",
   default_severity: "info",

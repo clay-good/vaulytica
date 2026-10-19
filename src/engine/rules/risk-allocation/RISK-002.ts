@@ -1,11 +1,11 @@
 import type { Rule, RuleContext, Finding } from "../../finding.js";
-import { emit, allMatches, topPosition } from "../_helpers.js";
+import { emit, allMatches, OBLIGATION_MODAL, topPosition } from "../_helpers.js";
 import { truncateQuote } from "../../text.js";
 
 /** RISK-002 — Indemnity mutuality (warning). */
 export const rule: Rule = {
   id: "RISK-002",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Indemnity mutuality",
   category: "risk-allocation",
   default_severity: "warning",
@@ -147,7 +147,7 @@ export const rule: Rule = {
           const key = p.name.toLowerCase();
           for (const surface of [key, ...(p.role ? [p.role.toLowerCase()] : [])]) {
             const re = new RegExp(
-              `\\b${surface.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b[^.]{0,40}?\\b(?:shall|will|must|agrees?\\s+to)\\b`,
+              `\\b${surface.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b[^.]{0,40}?\\b${OBLIGATION_MODAL}\\b`,
               "g",
             );
             let m: RegExpExecArray | null;
