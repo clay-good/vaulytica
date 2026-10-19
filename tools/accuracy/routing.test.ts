@@ -166,7 +166,9 @@ describe("the label table, against the router", () => {
    * away before the measurement that found them was published.
    *
    * Pinned so a label that stops reaching its type shows up here, and so a
-   * title that starts reaching it is noticed and the list shortened.
+   * title that starts reaching it is noticed and the list shortened. The
+   * "SECURITIES PURCHASE AGREEMENT" came off at 9.948.0, when
+   * `subscription-agreement` took the name.
    */
   const UNREACHED_WITHOUT_A_BODY = [
     "cash incentive award",
@@ -177,7 +179,6 @@ describe("the label table, against the router", () => {
     "lease",
     "license agreement",
     "restricted stock award agreement",
-    "securities purchase agreement",
     "separation agreement",
     "stock option agreement",
     "subscription agreement",

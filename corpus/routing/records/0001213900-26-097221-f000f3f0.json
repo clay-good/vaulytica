@@ -1,9 +1,9 @@
 {
   "accession": "0001213900-26-097221",
   "exhibit_url": "https://www.sec.gov/Archives/edgar/data/1838987/000121390026097221/ea030447901ex10-1.htm",
-  "retrieved_at": "2026-10-18",
+  "retrieved_at": "2026-10-19",
   "text_sha256": "f000f3f0f0360a3e5c8df627dadd5598e78e596a3377394d7fafb370f6ffdd16",
   "title": "FORM OF SECURITIES PURCHASE AGREEMENT",
   "label": "securities purchase agreement",
-  "observed_route": "form-d-narrative"
+  "observed_route": "subscription-agreement"
 }

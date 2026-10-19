@@ -1,9 +1,9 @@
 {
   "accession": "0001104659-26-105542",
   "exhibit_url": "https://www.sec.gov/Archives/edgar/data/1895249/000110465926105542/tm2624767d1_ex10-1.htm",
-  "retrieved_at": "2026-10-18",
+  "retrieved_at": "2026-10-19",
   "text_sha256": "90ba993bb502f3ba6b5b1761e64453207a7c54464ac0d7954816064f99bacd0b",
   "title": "Securities Purchase Agreement",
   "label": "securities purchase agreement",
-  "observed_route": "advisor-agreement"
+  "observed_route": "subscription-agreement"
 }

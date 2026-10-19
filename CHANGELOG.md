@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.948.0] — 2026-10-19
+
+### Fixed
+- **A public company's "Securities Purchase Agreement" had no type, so it
+  routed on its body words.** On the EDGAR sample, 8 of the 13 so titled went
+  to `form-d-narrative` (on "Rule 506" and "accredited investor"), 3 to the
+  employment family (on "at-will" and "salary"), 1 to `advisor-agreement`, and
+  1 fell back. `subscription-agreement` now claims the name. Its seven checks
+  cover what such an agreement contains: accredited-investor status, the
+  exemption relied on, investment intent, the restrictive legend, bad-actor
+  representations, risk acknowledgment, and acceptance of funds.
+  `venture-stock-purchase-agreement`, the NVCA instrument, was not given the
+  name: its restated-certificate and investors'-rights checks would not apply.
+- **Re-measured, with the owner's approval.** The 13 exhibits were fetched
+  from EDGAR again, at one request every 1.5 seconds, with the owner's contact
+  in the User-Agent. Each extracted text hashed to its record's, so these
+  were the same documents the sample routed. All 13 now reach an accepted
+  type. Across the 187 exhibits the catalog has a type for, accepted routes
+  went from 119 (64%) to 132 (71%) and wrong ones from 37 (20%) to 25 (13%).
+  ⚠️ The 13 records were measured on 9.948.0, and the other 314 stand as
+  measured on 9.940.0, whose text is not held.
+- **A known cost, stated:** an "Amendment No. 1 to Securities Purchase
+  Agreement" now routes to `subscription-agreement` too, and is held to its
+  checklist. Two of the sample's 140 untyped exhibits are such amendments; one
+  had fallen back and the other already went to `security-agreement`. Every
+  family has this gap: an amendment is routed to the instrument it amends and
+  checked as if it were that instrument. It is recorded as its own piece of
+  work, not patched for this one name.
+
 ## [9.947.0] — 2026-10-19
 
 ### Fixed

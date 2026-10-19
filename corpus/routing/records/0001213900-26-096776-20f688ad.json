@@ -1,9 +1,9 @@
 {
   "accession": "0001213900-26-096776",
   "exhibit_url": "https://www.sec.gov/Archives/edgar/data/1734750/000121390026096776/ea030434301ex10-1.htm",
-  "retrieved_at": "2026-10-18",
+  "retrieved_at": "2026-10-19",
   "text_sha256": "20f688ad7c2b3e7b642ad24833fb40e47d94b59aa62f25b22aab08ffe28c72a1",
   "title": "SECURITIES PURCHASE AGREEMENT, DATED AUGUST 31, 2026, BY AND BETWEEN CORVEX, INC. AND EACH PURCHASER LISTED ON THE SIGNATURE PAGES THEREIN",
   "label": "securities purchase agreement",
-  "observed_route": "employment-at-will-us"
+  "observed_route": "subscription-agreement"
 }

@@ -1,9 +1,9 @@
 {
   "accession": "0001193125-26-380436",
   "exhibit_url": "https://www.sec.gov/Archives/edgar/data/1111741/000119312526380436/dynr-ex10_4.htm",
-  "retrieved_at": "2026-10-18",
+  "retrieved_at": "2026-10-19",
   "text_sha256": "c318166298a67b5e4b01538b60992638c6c4691d2ae17aa5b8acd103cb49bb6c",
   "title": "SECURITIES PURCHASE AGREEMENT",
   "label": "securities purchase agreement",
-  "observed_route": "form-d-narrative"
+  "observed_route": "subscription-agreement"
 }

@@ -2,7 +2,7 @@
   "schema_version": 1,
   "corpus_version": "v0.0.0-seed",
   "dkb_version": "v2026-10-18-local",
-  "engine_version": "9.947.0",
+  "engine_version": "9.948.0",
   "catalog": {
     "rules": 1936,
     "playbooks": 286
@@ -44,16 +44,16 @@
     "n": 327,
     "counts": {
       "exact": 101,
-      "acceptable": 18,
-      "wrong": 37,
-      "fallback": 31,
+      "acceptable": 31,
+      "wrong": 25,
+      "fallback": 30,
       "no_family": 140
     },
     "shares": {
       "exact": 0.308868501529052,
-      "acceptable": 0.05504587155963303,
-      "wrong": 0.11314984709480122,
-      "fallback": 0.09480122324159021,
+      "acceptable": 0.09480122324159021,
+      "wrong": 0.0764525993883792,
+      "fallback": 0.09174311926605505,
       "no_family": 0.42813455657492355
     },
     "per_family": [
@@ -414,9 +414,9 @@
         "n": 13,
         "counts": {
           "exact": 0,
-          "acceptable": 0,
-          "wrong": 12,
-          "fallback": 1,
+          "acceptable": 13,
+          "wrong": 0,
+          "fallback": 0,
           "no_family": 0
         }
       },
@@ -455,5 +455,5 @@
   "notes": [
     "No real annotated documents yet. The accuracy harness is verified by unit tests; the ground-truth corpus (spec-v5 Step 68) and attorney annotations (Step 70) are human-gated and pending. No headline precision/recall number is published until real documents land — by design, this is the dishonesty v5 exists to break."
   ],
-  "scoreboard_hash": "c5ad622169736cce8e534d5a93ff6ab90b144dac2310681fb384ac8de4ad7b4a"
+  "scoreboard_hash": "1f889a953c2243044ea1f92550d0587a6ca1c9a3f492c0c49b1bdb0ed3f29a38"
 }
