@@ -26,7 +26,7 @@ const TERM_RE = new RegExp(
   "i",
 );
 const NOTICE_RE = new RegExp(
-  String.raw`\b(${PERIOD_COUNT})\s+days?\s+(?:prior\s+)?(?:written\s+)?notice\b`,
+  String.raw`\b(${PERIOD_COUNT})\s+(?:calendar\s+)?days?\s+(?:prior\s+)?(?:written\s+)?notice\b`,
   "i",
 );
 const AUTO_RENEW_RE =
@@ -34,7 +34,7 @@ const AUTO_RENEW_RE =
 
 export const rule: Rule = {
   id: "TEMP-003",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Deadline-to-term inconsistency",
   category: "temporal",
   default_severity: "warning",

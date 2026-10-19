@@ -104,15 +104,16 @@ const PILOT = pack("pilot-evaluation-agreement", "commercial", [
   },
   {
     id: "PILOT-002",
+    ver: "1.1.0",
     name: "Length of the pilot",
     cite: practice("pilot-length", "a stated start and end"),
     pat: [
       new RegExp(
-        String.raw`\b(pilot|evaluation|trial)\s+(period|term)\b[\s\S]{0,200}?${PERIOD_COUNT}\s+(days?|weeks?|months?)\b`,
+        String.raw`\b(pilot|evaluation|trial)\s+(period|term)\b[\s\S]{0,200}?${PERIOD_COUNT}\s+(?:calendar\s+)?(days?|weeks?|months?)\b`,
         "i",
       ),
       new RegExp(
-        String.raw`\bfor\s+(a\s+period\s+of\s+)?${PERIOD_COUNT}\s+(days?|weeks?|months?)\b`,
+        String.raw`\bfor\s+(a\s+period\s+of\s+)?${PERIOD_COUNT}\s+(?:calendar\s+)?(days?|weeks?|months?)\b`,
         "i",
       ),
       new RegExp(

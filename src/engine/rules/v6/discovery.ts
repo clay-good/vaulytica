@@ -29,13 +29,13 @@ const RFP = pack("document-requests", C, [
     // and contains none of respond/response/answer, so the deadline pillar
     // missed it and the check fired at `critical` on a request that had
     // stated its deadline.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Response deadline stated",
     cite: frcp("34(b)(2)(A)", "producing documents — time to respond"),
     pat: [
       /(respond|response|answer|produce|production)/i,
       new RegExp(
-        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*days|no\s+later\s+than`,
+        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|not?\s+later\s+than`,
         "i",
       ),
     ],
@@ -170,12 +170,13 @@ const ROGS = pack("interrogatories", C, [
   },
   {
     id: "DISC-008",
+    ver: "1.1.0",
     name: "Response deadline stated",
     cite: frcp("33(b)(2)", "interrogatories — time to respond"),
     pat: [
       /(respond|answer)/i,
       new RegExp(
-        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*days`,
+        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days`,
         "i",
       ),
     ],
@@ -251,12 +252,12 @@ const RFA = pack("requests-for-admission", C, [
     // `deemed admitted` / `admitted if you fail` / `automatically admitted`.
     // A well-drafted first set of requests was told at `critical` that it
     // stated no deadline and no consequence, in a paragraph that stated both.
-    ver: "1.2.0",
+    ver: "1.3.0",
     name: "Response deadline and the deemed-admitted consequence",
     cite: frcp("36(a)(3)", "requests for admission — time to respond and the effect of failing to"),
     pat: [
       new RegExp(
-        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*days`,
+        String.raw`30\s*\)?\s*days|thirty\s+(?:\(?30\)?\s+)?days|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days`,
         "i",
       ),
       /(deemed[-\s]+admitted|admitted\s+if\s+(you\s+)?(fail|do\s+not)|automatically\s+admitted|(?:matter|request)s?\s+(?:is|are)\s+admitted\s+unless)/i,
@@ -404,13 +405,13 @@ const RESPONSES = pack("discovery-responses", C, [
     // created before January 1, 2026" is a relevant-period bound, not a
     // production date, and the first pillar is satisfied by every discovery
     // response ever written.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Production completion date",
     cite: frcp("34(b)(2)(B)", "responding to document requests — time for production"),
     pat: [
       /(produc(e|tion))/i,
       new RegExp(
-        `((?:by|on\\s+or\\s+before|no[t]?\\s+later\\s+than)\\s+${DATE_SHAPE}|on\\s+a\\s+rolling\\s+basis|complete[d]?\\s+by|within\\s+${PERIOD_COUNT}\\s*days\\s+of)`,
+        `((?:by|on\\s+or\\s+before|no[t]?\\s+later\\s+than)\\s+${DATE_SHAPE}|on\\s+a\\s+rolling\\s+basis|complete[d]?\\s+by|within\\s+${PERIOD_COUNT}\\s*(?:calendar\\s+)?days\\s+of)`,
         "i",
       ),
     ],

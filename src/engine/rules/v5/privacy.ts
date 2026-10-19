@@ -393,6 +393,7 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
   },
   {
     id: "PRV-123",
+    ver: "1.1.0",
     name: "Destruction or return at the end of the purpose",
     cite: practice(
       "dsa-destruction",
@@ -401,7 +402,7 @@ const DATA_SHARING = pack("data-sharing-agreement", C, [
     pat: [
       /(destroy|destruction|return\s+the\s+data)/i,
       new RegExp(
-        String.raw`(upon\s+(completion|termination|the\s+end)|certif|within\s+${PERIOD_COUNT}\s*days|retain)`,
+        String.raw`(upon\s+(completion|termination|the\s+end)|certif|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|retain)`,
         "i",
       ),
     ],

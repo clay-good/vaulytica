@@ -57,8 +57,9 @@ const DAYS = `(${PERIOD_COUNT})[-\\s](?:business\\s+|calendar\\s+|working\\s+)?d
  */
 // The count carries a qualifier as often as not — "within ten (10) BUSINESS
 // days", "within thirty (30) CALENDAR days" — and 41 corpus specimens write a
-// deadline that way.
-const FAILS_TO_CURE = `(?:fail(?:s|ed|ing)?\\s+to|does\\s+not|do\\s+not)\\s+(?:cure|remedy|correct)\\b[^.]{0,40}?\\bwithin\\s+(${PERIOD_COUNT})[-\\s](?:business\\s+|calendar\\s+|working\\s+)?days?`;
+// deadline that way. The deadline itself reads "no later than" as readily as
+// "within".
+const FAILS_TO_CURE = `(?:fail(?:s|ed|ing)?\\s+to|does\\s+not|do\\s+not)\\s+(?:cure|remedy|correct)\\b[^.]{0,40}?\\b(?:within|not?\\s+later\\s+than)\\s+(${PERIOD_COUNT})[-\\s](?:business\\s+|calendar\\s+|working\\s+)?days?`;
 
 export const CURE_PERIOD = new RegExp(
   `\\b(?:${CURE_TRIGGER})[\\s\\S]{0,80}?${DAYS}|${DAYS}\\b[\\s\\S]{0,20}?(?:${REVERSED_ANCHOR})|${FAILS_TO_CURE}`,

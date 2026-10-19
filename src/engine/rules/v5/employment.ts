@@ -121,6 +121,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
   },
   {
     id: "EMP-108",
+    ver: "1.1.0",
     name: "Opt-out mechanism and consideration",
     cite: practice(
       "arbitration-consideration",
@@ -129,7 +130,7 @@ const ARBITRATION = pack("arbitration-agreement-employment", C, [
     pat: [
       /(opt\s?-?out|decline\s+to\s+(participate|be\s+bound))/i,
       new RegExp(
-        String.raw`(within\s+${PERIOD_COUNT}\s*days|consideration|continued\s+employment|no\s+(adverse|retaliat))`,
+        String.raw`(within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|consideration|continued\s+employment|no\s+(adverse|retaliat))`,
         "i",
       ),
     ],
@@ -189,6 +190,7 @@ const COMMISSION = pack("commission-plan", C, [
   },
   {
     id: "EMP-112",
+    ver: "1.1.0",
     name: "Unilateral modification of quotas and rates",
     cite: practice(
       "commission-modification",
@@ -197,7 +199,7 @@ const COMMISSION = pack("commission-plan", C, [
     pat: [
       /(modify|change|amend|revise)\s+(the\s+)?(plan|quota|rate)/i,
       new RegExp(
-        String.raw`(prospective(ly)?|upon\s+${PERIOD_COUNT}\s*days['’]?\s+notice|at\s+any\s+time|in\s+its\s+(sole\s+)?discretion)`,
+        String.raw`(prospective(ly)?|upon\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days['’]?\s+notice|at\s+any\s+time|in\s+its\s+(sole\s+)?discretion)`,
         "i",
       ),
     ],
@@ -221,12 +223,13 @@ const COMMISSION = pack("commission-plan", C, [
   },
   {
     id: "EMP-114",
+    ver: "1.1.0",
     name: "Dispute and reconciliation procedure",
     cite: practice("commission-reconciliation", "commission statements and dispute procedures"),
     pat: [
       /(commission\s+statement|reconcil|report\s+of\s+commissions)/i,
       new RegExp(
-        String.raw`(dispute|object|within\s+${PERIOD_COUNT}\s*days\s+of\s+receipt|inquir)`,
+        String.raw`(dispute|object|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+of\s+receipt|inquir)`,
         "i",
       ),
     ],
@@ -436,12 +439,13 @@ const REMOTE = pack("remote-work-agreement", C, [
   },
   {
     id: "EMP-129",
+    ver: "1.1.0",
     name: "Revocation and return-to-office rights",
     cite: practice("remote-revocation", "revocability of telework arrangements"),
     pat: [
       /(revoke|discontinue|terminate\s+(this\s+)?(arrangement|agreement))/i,
       new RegExp(
-        String.raw`(at\s+any\s+time|upon\s+${PERIOD_COUNT}\s*days['’]?\s+notice|return\s+to\s+the\s+office|in\s+its\s+discretion)`,
+        String.raw`(at\s+any\s+time|upon\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days['’]?\s+notice|return\s+to\s+the\s+office|in\s+its\s+discretion)`,
         "i",
       ),
     ],

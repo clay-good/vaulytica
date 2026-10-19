@@ -299,7 +299,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     id: "HC-118",
     // 1.1.0 — an express disclaimer of this column is now reported as a
     // disclaimer rather than read as compliance (`v5/_pack.ts`, `denied`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Publication rights and sponsor review window",
     cite: agency(
       "ICMJE",
@@ -309,7 +309,7 @@ const CTA = pack("clinical-trial-agreement", C, [
     pat: [
       /publi(sh|cation)/i,
       new RegExp(
-        String.raw`(review|${PERIOD_COUNT}\s*days\s+(prior|before)|delay|multicenter|primary\s+publication|(?:shall|will|must)\s+not\s+(prohibit|prevent))`,
+        String.raw`(review|${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+(prior|before)|delay|multicenter|primary\s+publication|(?:shall|will|must)\s+not\s+(prohibit|prevent))`,
         "i",
       ),
     ],
@@ -362,7 +362,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     id: "HC-121",
     // 1.0.1 — written as a synonym OR, but the fee schedule and the amendment notice are distinct pillars; `amend` alone is in every amendment clause. The check could not
     // fire on any realistic document.
-    ver: "1.0.1",
+    ver: "1.1.0",
     name: "Fee schedule attached and amendment notice",
     cite: practice(
       "fee-schedule",
@@ -371,7 +371,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     pat: [
       /fee\s+schedule/i,
       new RegExp(
-        String.raw`(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|${PERIOD_COUNT}\s*days['’]?\s+(prior\s+)?notice)`,
+        String.raw`(attached|exhibit|amend|change|notice\s+of\s+(any\s+)?(rate|fee)\s+change|${PERIOD_COUNT}\s*(?:calendar\s+)?days['’]?\s+(prior\s+)?notice)`,
         "i",
       ),
     ],
@@ -385,7 +385,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Clean-claim definition and prompt-pay deadline",
     cite: stateLaw(
       "prompt-pay",
@@ -395,7 +395,7 @@ const PAYER = pack("payer-provider-agreement", C, [
     pat: [
       /clean[-\s]+claim/i,
       new RegExp(
-        String.raw`(within\s+${PERIOD_COUNT}\s*days|prompt[-\s]+pay|interest\s+(on|(?:shall|will|must)\s+accrue)|adjudicat)`,
+        String.raw`(within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|prompt[-\s]+pay|interest\s+(on|(?:shall|will|must)\s+accrue)|adjudicat)`,
         "i",
       ),
     ],
@@ -446,12 +446,13 @@ const PAYER = pack("payer-provider-agreement", C, [
   },
   {
     id: "HC-126",
+    ver: "1.1.0",
     name: "Termination notice and continuity of care",
     cite: usc("42", "300gg-113", "No Surprises Act — continuity of care"),
     pat: [
       /terminat/i,
       new RegExp(
-        String.raw`(continuity\s+of\s+care|transition(al)?\s+care|continuing\s+care\s+patient|${PERIOD_COUNT}\s*days['’]?\s+notice|90\s*\)?\s*days)`,
+        String.raw`(continuity\s+of\s+care|transition(al)?\s+care|continuing\s+care\s+patient|${PERIOD_COUNT}\s*(?:calendar\s+)?days['’]?\s+notice|90\s*\)?\s*days)`,
         "i",
       ),
     ],

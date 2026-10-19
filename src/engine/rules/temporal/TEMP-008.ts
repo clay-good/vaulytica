@@ -5,7 +5,7 @@ import { CURE_PERIOD, curePeriodDays, curePeriodUnit, isUnusualCurePeriod } from
 /** TEMP-008 — Cure period present (info). */
 export const rule: Rule = {
   id: "TEMP-008",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Cure period present",
   category: "temporal",
   default_severity: "info",

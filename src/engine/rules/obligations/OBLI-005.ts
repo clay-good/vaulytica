@@ -44,9 +44,11 @@ import { emit, excerptWindow } from "../_helpers.js";
  * cured", "if the parties cannot agree, JAMS appoints a neutral arbitrator".
  */
 const NEG_MODAL = /\b(?:not|prohibited)\b/i;
-const NEG_ACTION = /^not\b/i;
+// "shall, not later than ten days after recording, send a copy" is a deadline,
+// not a prohibition: the "not" belongs to "later than".
+const NEG_ACTION = /^not\b(?!\s+(?:later|earlier)\s+than\b)/i;
 const NEG_PHRASE =
-  /\b(?:shall\s+not|may\s+not|must\s+not|(?:is|are)\s+not\s+permitted\s+to|(?:is|are)\s+prohibited\s+from|will\s+not)\b/i;
+  /\b(?:shall\s+not|may\s+not|must\s+not|(?:is|are)\s+not\s+permitted\s+to|(?:is|are)\s+prohibited\s+from|will\s+not)\b(?!\s+(?:later|earlier)\s+than\b)/i;
 
 /**
  * 🚨 **A negative covenant has a PARTY who must not do something.** "Sections
@@ -142,7 +144,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",

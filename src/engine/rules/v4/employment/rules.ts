@@ -370,7 +370,7 @@ const OFFER_LETTER_RULES: Rule[] = [
 const SEPARATION_RULES: Rule[] = [
   presence({
     id: "EMP-015",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "OWBPA / ADEA waiver — 21 / 45-day consideration period",
     description:
       "Separation agreements with employees 40+ must give 21 days (or 45 days for group terminations) to consider the ADEA waiver.",
@@ -389,13 +389,13 @@ const SEPARATION_RULES: Rule[] = [
       // A short bounded window after "days" also tolerates the equally common
       // "days within which to consider" / "days in which to review" phrasing;
       // the day-count anchor keeps the match specific to a consideration clause.
-      /(21|twenty.one|45|forty.five)\s*(?:\([\w\s-]{1,30}\)\s*)?days?\b[^.]{0,30}?\b(?:to\s+)?(consider|review)/is,
+      /(21|twenty.one|45|forty.five)\s*(?:\([\w\s-]{1,30}\)\s*)?(?:calendar\s+)?days?\b[^.]{0,30}?\b(?:to\s+)?(consider|review)/is,
       /consideration\s+period/i,
     ],
   }),
   presence({
     id: "EMP-016",
-    version: "1.3.0",
+    version: "1.4.0",
     name: "OWBPA — 7-day revocation period",
     description: "ADEA waivers must give a 7-day revocation period after signing (§ 626(f)(1)(G)).",
     citation: owbpa(),
@@ -408,8 +408,8 @@ const SEPARATION_RULES: Rule[] = [
     present_patterns: [
       // Same spelled-then-parenthetical form: "seven (7) days", "revoke it
       // within seven (7) days after signing".
-      /(7|seven)\s*(?:\([\w\s-]{1,30}\)\s*)?days?\s+(to\s+|after\s+|in\s+which\s+to\s+|within\s+which\s+to\s+)?(revoke|rescind)/i,
-      /(revoke|rescind).{0,40}within\s+(7|seven)\s*(?:\([\w\s-]{1,30}\)\s*)?days?/i,
+      /(7|seven)\s*(?:\([\w\s-]{1,30}\)\s*)?(?:calendar\s+)?days?\s+(to\s+|after\s+|in\s+which\s+to\s+|within\s+which\s+to\s+)?(revoke|rescind)/i,
+      /(revoke|rescind).{0,40}(?:within|not?\s+later\s+than)\s+(7|seven)\s*(?:\([\w\s-]{1,30}\)\s*)?(?:calendar\s+)?days?/i,
       /revocation\s+period/i,
     ],
     denied_if: expressDenial(

@@ -194,7 +194,7 @@ export const ADDENDA_RULES: Rule[] = [
   }),
   presenceSec({
     id: "ADDENDA-004",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Incident-response notification window",
     description:
       "Vendor Security Addendum must specify a notification window for security incidents.",
@@ -208,7 +208,7 @@ export const ADDENDA_RULES: Rule[] = [
       "Specify a window: e.g., 'Vendor shall notify Customer within 48 hours of confirming a security incident affecting Customer Data.'",
     present_patterns: [
       new RegExp(
-        String.raw`(within\s+${PERIOD_COUNT}\s+(?:hours?|days?)|no\s+later\s+than\s+${PERIOD_COUNT}\s+(?:hours?|days?))\b[^.]{0,160}(?:incident|breach|notif)`,
+        String.raw`(within\s+${PERIOD_COUNT}\s+(?:hours?|days?)|not?\s+later\s+than\s+${PERIOD_COUNT}\s+(?:hours?|days?))\b[^.]{0,160}(?:incident|breach|notif)`,
         "i",
       ),
       // The window is as often written "in no EVENT later than forty-eight

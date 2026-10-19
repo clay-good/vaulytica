@@ -5,7 +5,7 @@ import { survivalListGaps } from "./TEMP-007.js";
 /** TEMP-006 — Survival clause present (info). */
 export const rule: Rule = {
   id: "TEMP-006",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Survival clause present",
   category: "temporal",
   default_severity: "info",
@@ -21,7 +21,7 @@ export const rule: Rule = {
       // "termination". The reversed branch is limited to "survive/survives"
       // (not the participle) so "the surviving spouse … upon termination" —
       // an unrelated person surviving — does not read as clause survival.
-      /\b(?:survive|survives|surviving)\b[\s\S]{0,40}\b(?:termination|expiration|expiry)\b|\b(?:termination|expiration|expiry)\b[\s\S]{0,80}\b(?:survives?)\b/i,
+      /\b(?:survive|survives|surviving)\b[\s\S]{0,60}\b(?:termination|expiration|expiry)\b|\b(?:termination|expiration|expiry)\b[\s\S]{0,80}\b(?:survives?)\b/i,
     );
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;

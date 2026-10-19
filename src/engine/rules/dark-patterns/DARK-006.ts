@@ -20,7 +20,7 @@ import { PERIOD_COUNT } from "../../../extract/counts.js";
  */
 export const rule: Rule = {
   id: "DARK-006",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Asymmetric pre-suit notice / cure window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -36,7 +36,7 @@ export const rule: Rule = {
     const hit = firstParagraphMatch(
       ctx,
       new RegExp(
-        String.raw`\b(Customer|Licensee|Recipient|Tenant|Employee|Contractor|Consumer|User|Buyer|Purchaser)\s+(?:shall|must|will)\s+(?:(?:provide|give|deliver|furnish)\s+[^.]{0,80}?\bnotice\b|notif(?:y|ies|ied))\b[^.]{0,80}\b(?:before|prior\s+to|at\s+least\s+${PERIOD_COUNT}\s*days?\s+(?:before|prior))[^.]{0,80}\b(?:suit|claim|action|arbitration|complaint|litigation)`,
+        String.raw`\b(Customer|Licensee|Recipient|Tenant|Employee|Contractor|Consumer|User|Buyer|Purchaser)\s+(?:shall|must|will)\s+(?:(?:provide|give|deliver|furnish)\s+[^.]{0,80}?\bnotice\b|notif(?:y|ies|ied))\b[^.]{0,80}\b(?:before|prior\s+to|at\s+least\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days?\s+(?:before|prior))[^.]{0,80}\b(?:suit|claim|action|arbitration|complaint|litigation)`,
         "i",
       ),
     );

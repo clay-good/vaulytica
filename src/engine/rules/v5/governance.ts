@@ -483,11 +483,12 @@ const GRANT = pack("grant-agreement", C, [
   },
   {
     id: "GOV-135",
+    ver: "1.1.0",
     name: "Narrative and financial reporting deadlines",
     cite: cfr("2", "200.329", "Uniform Guidance — monitoring and reporting program performance"),
     pat: [
       /report(ing|s)?/i,
-      /(due\s+(no\s+later\s+than|within)|annual|interim|final\s+report|days\s+after)/i,
+      /(due\s+(not?\s+later\s+than|within)|annual|interim|final\s+report|days\s+after)/i,
     ],
     why: "Late or missing reports are the most common cause of suspension and of ineligibility for future awards. The deadlines and the content have to be in the agreement, not only in a portal.",
     fix: "State the narrative and financial report deadlines, their required content, and the consequence of late submission.",
@@ -581,6 +582,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
   },
   {
     id: "GOV-141",
+    ver: "1.1.0",
     name: "Advancement of expenses before final disposition",
     cite: dgcl("145(e)"),
     pat: [
@@ -589,7 +591,7 @@ const DO_INDEMNIFICATION = pack("director-indemnification-agreement", C, [
       // "within twenty (20) days after receipt of a written request" — which
       // a `\w+ days` window does not span. The check reported the advancement
       // clause missing, at `critical`, on the paragraph that grants it.
-      /(?:in\s+advance\s+of|prior\s+to|before)\s+(?:the\s+)?final\s+disposition|within\s+[\w\s()-]{1,30}?days/i,
+      /(?:in\s+advance\s+of|prior\s+to|before)\s+(?:the\s+)?final\s+disposition|(?:within|not?\s+later\s+than)\s+[\w\s()-]{1,30}?days/i,
     ],
     all: true,
     why: "Advancement is the term that decides whether the protection is real: defense costs are incurred for years before any determination of entitlement, and a director who must fund them personally is unprotected in the only period that matters. § 145(e) authorizes advancement in advance of the final disposition of the proceeding.",

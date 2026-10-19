@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.943.0] — 2026-10-19
+
+### Fixed
+- **"30 calendar days" read as no period.** 45 recognizers wrote the count
+  straight against "days", and seven more had local copies of it. Rewriting the
+  corpus's periods as "calendar days" moved findings on dozens of specimens.
+  TERM-001 lost the convenience-termination notice on 30, and TEMP-005 and
+  DARK-002 lost the renewal-notice window. EMP-015 and EMP-016 told two
+  separation agreements at `critical` that they had no OWBPA periods, and
+  PRV-039, EQT-048 and EQT-068 reported windows missing that are there. Every
+  one now admits "calendar". TEMP-006's survive-to-expiration window grew from
+  40 to 60 characters, which "survive until sixty (60) calendar days after the
+  expiration" needs.
+- **"not later than" was not "no later than".** Fifteen recognizers accepted
+  only "no later than". FIN-005 told 36 specimens they had no payment term,
+  the cure period went unread on 23, and SET-019, GOV-141 and EMP-016 each
+  reported a deadline missing at `critical`. OBLI-005 also counted "you must,
+  not later than 10 days after recording, send a copy" as a prohibition. The
+  "not" there belongs to "later than", and that is now checked.
+- About 55 rule versions were bumped, one for each rule whose recognizer changed.
+  `period-phrasing.test.ts` holds both rewrites at zero; both fail on 9.942.0.
+  Findings on the unmodified corpus are identical before and after.
+- **Left alone, on purpose:** "business days" is a different unit, and a rule
+  that compares the count with a threshold would misjudge "20 business days"
+  as 20 days. "Payable within a 30-day period" still reads as no payment term
+  to FIN-005; that phrasing is not how a payment term is written.
+
 ## [9.942.0] — 2026-10-19
 
 ### Fixed

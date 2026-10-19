@@ -457,7 +457,7 @@ export const BAA_RULES: Rule[] = [
 
   language({
     id: "BAA-020",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Breach notification looser than 60 days",
     description:
       "Flags breach-notice timing that exceeds the 60-day outer bound or shifts the trigger to a later event.",
@@ -483,7 +483,7 @@ export const BAA_RULES: Rule[] = [
       // calendar days: 45 business days is nine weeks (63 days) wherever it
       // starts, while 43–44 can land either side of 60, so they assert nothing.
       // It also reads "forty-five (45) business days".
-      /\b(within|no\s+later\s+than)\s+(?:[a-z-]+\s*\(\s*)?(?<![\d.,])(4[5-9]|[5-9]\d|[1-9]\d{2})\)?\s*(business|working)\s+days?\b.{0,80}(breach|notif)/is,
+      /\b(within|not?\s+later\s+than)\s+(?:[a-z-]+\s*\(\s*)?(?<![\d.,])(4[5-9]|[5-9]\d|[1-9]\d{2})\)?\s*(business|working)\s+days?\b.{0,80}(breach|notif)/is,
     ],
     default_severity: "critical",
   }),

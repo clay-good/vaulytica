@@ -440,7 +440,7 @@ const DEMAND_LETTER_RULES: Rule[] = [
   }),
   presence({
     id: "SET-012",
-    version: "1.4.0",
+    version: "1.5.0",
     name: "Specific demand and response deadline",
     description:
       "Demand letter must state the specific demand (amount / action) and a response deadline.",
@@ -458,11 +458,11 @@ const DEMAND_LETTER_RULES: Rule[] = [
       "State the specific relief sought (dollar amount, cure action) and a response deadline (typically 14–30 days).",
     present_patterns: [
       new RegExp(
-        String.raw`(respond|reply|cure).{0,40}within\s+${PERIOD_COUNT}\s+(days?|business\s+days?)`,
+        String.raw`(respond|reply|cure).{0,40}within\s+${PERIOD_COUNT}\s+(?:calendar\s+)?(days?|business\s+days?)`,
         "i",
       ),
       new RegExp(
-        String.raw`(${PERIOD_COUNT})\s+(days?|business\s+days?).{0,40}(respond|cure|comply)`,
+        String.raw`(${PERIOD_COUNT})\s+(?:calendar\s+)?(days?|business\s+days?).{0,40}(respond|cure|comply)`,
         "i",
       ),
       new RegExp(
@@ -641,7 +641,7 @@ const CEASE_DESIST_RULES: Rule[] = [
   }),
   presence({
     id: "SET-019",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Response deadline",
     description: "C&D must state a response deadline.",
     citation: settlePractice(
@@ -657,14 +657,14 @@ const CEASE_DESIST_RULES: Rule[] = [
     recommendation: "Add 'Response Required by [date]' — typically 7–14 days for IP C&Ds.",
     present_patterns: [
       new RegExp(
-        String.raw`(respond|reply|confirm).{0,40}within\s+${PERIOD_COUNT}\s+(days?|business\s+days?)`,
+        String.raw`(respond|reply|confirm).{0,40}(?:within|not?\s+later\s+than)\s+${PERIOD_COUNT}\s+(?:calendar\s+)?(days?|business\s+days?)`,
         "i",
       ),
-      /(by|no\s+later\s+than)\s+\d/i,
+      /(by|not?\s+later\s+than)\s+\d/i,
       // A date that leads with its month: "Response Required by March 15,
       // 2026" is the rule's own advice with the date filled in, and "by" was
       // only read when a digit came next (v1.2.0).
-      /(?:by|no\s+later\s+than|on\s+or\s+before)\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}\b/i,
+      /(?:by|not?\s+later\s+than|on\s+or\s+before)\s+(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+\d{1,2}\b/i,
       // The demand-letter deadline anchor — "within ten (10) days of the date
       // of this letter" — uses a spelled-then-parenthetical count and pins the
       // window to the letter, not to a respond/reply verb.

@@ -71,12 +71,13 @@ const DESIGN_BUILD = pack("design-build-agreement", C, [
   },
   {
     id: "CON-105",
+    ver: "1.1.0",
     name: "Design review and owner approval rights",
     cite: practice("design-review", "owner design review in design-build agreements"),
     pat: [
       /(design\s+review|submittal|review\s+of\s+the\s+(design|documents))/i,
       new RegExp(
-        String.raw`(approv|comment|(?:shall|will|must)\s+not\s+relieve|within\s+${PERIOD_COUNT}\s*days)`,
+        String.raw`(approv|comment|(?:shall|will|must)\s+not\s+relieve|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days)`,
         "i",
       ),
     ],
@@ -273,6 +274,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
   },
   {
     id: "CON-117",
+    ver: "1.1.0",
     name: "Service method and deadline recital",
     cite: stateLaw(
       "lien-notice-service",
@@ -282,7 +284,7 @@ const PRELIEN = pack("preliminary-lien-notice", C, [
     pat: [
       /(serv(e|ed|ice)|mail(ed)?|deliver)/i,
       new RegExp(
-        String.raw`(certified\s+mail|return\s+receipt|within\s+${PERIOD_COUNT}\s*days|20\s*\)?\s*days|proof\s+of\s+service)`,
+        String.raw`(certified\s+mail|return\s+receipt|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|20\s*\)?\s*days|proof\s+of\s+service)`,
         "i",
       ),
     ],

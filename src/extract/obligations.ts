@@ -208,7 +208,7 @@ const TRIGGER_RE = new RegExp(
  * the list running on past it, the deadline stays in the action it belongs to.
  */
 const NEXT_INSTALLMENT = new RegExp(
-  String.raw`\s(?:and|,)\s+(?:(?:${CURRENCY_TOKEN})\s?\d[\d,.]*|${AMOUNT_IN_WORDS})\s+(?:within|on\s+or\s+before|no\s+later\s+than|by)\b`,
+  String.raw`\s(?:and|,)\s+(?:(?:${CURRENCY_TOKEN})\s?\d[\d,.]*|${AMOUNT_IN_WORDS})\s+(?:within|on\s+or\s+before|not?\s+later\s+than|by)\b`,
 );
 
 function listItemFree(predicate: string, m: RegExpExecArray | null): string | undefined {

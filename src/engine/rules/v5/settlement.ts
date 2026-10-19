@@ -82,7 +82,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
   },
   {
     id: "SET-105",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Vacatur or satisfaction on performance",
     cite: practice("satisfaction-of-judgment", "satisfaction and vacatur of stipulated judgments"),
     pat: [
@@ -92,7 +92,7 @@ const CONSENT_JUDGMENT = pack("consent-judgment", C, [
       // have maintained compliance for twenty-four (24) consecutive months".
       /(satisfaction\s+of\s+judgment|satisfied|vacat|(?:move|motion)\s+to\s+terminate|terminat\w+[^.;]{0,80}?(?:consent\s+(?:judgment|decree)|this\s+Decree))/i,
       new RegExp(
-        String.raw`(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledge?ment)|within\s+${PERIOD_COUNT}\s*days)`,
+        String.raw`(upon\s+(full\s+)?payment|file\s+(a\s+)?(satisfaction|acknowledge?ment)|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days)`,
         "i",
       ),
     ],
@@ -278,12 +278,13 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
   },
   {
     id: "SET-117",
+    ver: "1.1.0",
     name: "Designation and de-designation procedure",
     cite: frcp("26(c)", "protective orders — procedure"),
     pat: [
       /designat/i,
       new RegExp(
-        String.raw`(stamp|legend|at\s+the\s+time\s+of\s+production|within\s+${PERIOD_COUNT}\s*days|de-?designat|withdraw\s+(a\s+)?designation)`,
+        String.raw`(stamp|legend|at\s+the\s+time\s+of\s+production|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|de-?designat|withdraw\s+(a\s+)?designation)`,
         "i",
       ),
     ],
@@ -349,12 +350,13 @@ const PROTECTIVE_ORDER = pack("protective-order-stipulated", C, [
   },
   {
     id: "SET-122",
+    ver: "1.1.0",
     name: "Post-litigation return or destruction",
     cite: practice("po-return", "return or destruction obligations at the end of litigation"),
     pat: [
       /(return\s+or\s+destroy|destruction)/i,
       new RegExp(
-        String.raw`(within\s+${PERIOD_COUNT}\s*days\s+(of|after)\s+(the\s+)?(final|conclusion|termination)|certif)`,
+        String.raw`(within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+(of|after)\s+(the\s+)?(final|conclusion|termination)|certif)`,
         "i",
       ),
     ],

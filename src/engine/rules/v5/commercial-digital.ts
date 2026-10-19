@@ -142,12 +142,13 @@ const API_TERMS = pack("api-terms", C, [
   },
   {
     id: "COMM-209",
+    ver: "1.1.0",
     name: "Deprecation and breaking-change notice period",
     cite: practice("api-deprecation", "deprecation policies in API terms"),
     pat: [
       /(deprecat|sunset|end\s+of\s+life)/i,
       new RegExp(
-        String.raw`(${PERIOD_COUNT}\s+(days|months)['’]?\s+notice|advance\s+notice|notice\s+period)`,
+        String.raw`(${PERIOD_COUNT}\s+(?:calendar\s+)?(days|months)['’]?\s+notice|advance\s+notice|notice\s+period)`,
         "i",
       ),
     ],
@@ -508,7 +509,7 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Advance renewal and price-increase notice",
     cite: stateLaw(
       "automatic-renewal",
@@ -518,7 +519,7 @@ const AUTO_RENEWAL = pack("auto-renewal-terms", C, [
     pat: [
       /(reminder|notice\s+(before|prior\s+to)\s+(the\s+)?renewal|renewal\s+notice)/i,
       new RegExp(
-        String.raw`(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|${PERIOD_COUNT}\s*days\s+before)`,
+        String.raw`(price[-\s]+(increase|change)|amount\s+of\s+the\s+charge|${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+before)`,
         "i",
       ),
     ],
@@ -638,7 +639,7 @@ const OEM = pack("oem-agreement", C, [
 const VENUE = pack("venue-rental-agreement", C, [
   {
     id: "COMM-243",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Cancellation and attrition fee schedule",
     cite: practice("venue-attrition", "attrition and cancellation damages in venue contracts"),
     pat: [
@@ -650,7 +651,7 @@ const VENUE = pack("venue-rental-agreement", C, [
       // to require exactly that, and reported it missing.
       /(cancel(l)?ation\s+(fee|schedule|charges)|liquidated\s+damages)/i,
       new RegExp(
-        String.raw`cancel\w*[^.;]{0,140}?\b(?:more\s+than|within|between)\s+${PERIOD_COUNT}\s*days?\b`,
+        String.raw`cancel\w*[^.;]{0,140}?\b(?:more\s+than|within|between)\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days?\b`,
         "i",
       ),
       /cancel\w*[^.;]{0,120}?\b(?:forfeits?|owes?|(?:shall|will|must)\s+pay)\b/i,

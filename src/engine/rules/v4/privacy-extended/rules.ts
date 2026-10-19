@@ -860,7 +860,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-039",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Timing — 72 hour notification (GDPR Art. 33) + state thresholds",
     description:
       "Notification template must address GDPR Art. 33 72-hour timing and applicable state-specific thresholds.",
@@ -875,7 +875,7 @@ const INCIDENT_NOTIFICATION_RULES: Rule[] = [
     present_patterns: [
       /((?:72|seventy[-\s]two)\s*\)?\s*hours?|without\s+undue\s+delay)/i,
       /(art\.?\s*33|article\s+33)/i,
-      /((?:60|sixty)\s*\)?\s*days?|expedient|practicable)/i,
+      /((?:60|sixty)\s*\)?[-\s]*(?:calendar\s+)?days?|expedient|practicable)/i,
     ],
   }),
   presence({

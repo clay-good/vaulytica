@@ -82,12 +82,13 @@ const REVOLVER = pack("revolving-credit-agreement", C, [
   },
   {
     id: "BNK-105",
+    ver: "1.1.0",
     name: "Events of default and cure rights",
     cite: practice("events-of-default", "event of default architecture and equity cure rights"),
     pat: [
       /event\s+of\s+default/i,
       new RegExp(
-        String.raw`(cure\s+period|grace\s+period|${PERIOD_COUNT}\s*days\s+after\s+(notice|the\s+earlier)|equity\s+cure|cross-?default)`,
+        String.raw`(cure\s+period|grace\s+period|${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+after\s+(notice|the\s+earlier)|equity\s+cure|cross-?default)`,
         "i",
       ),
     ],
@@ -560,12 +561,13 @@ const CREDIT_CARD = pack("credit-card-agreement", C, [
   },
   {
     id: "BNK-138",
+    ver: "1.1.0",
     name: "Arbitration clause and opt-out mechanics",
     cite: usc("9", "2", "Federal Arbitration Act — validity of arbitration agreements"),
     pat: [
       /arbitrat/i,
       new RegExp(
-        String.raw`(opt\s?-?out|reject\s+(this\s+)?(arbitration|provision)|within\s+${PERIOD_COUNT}\s*days|class\s+action\s+waiver)`,
+        String.raw`(opt\s?-?out|reject\s+(this\s+)?(arbitration|provision)|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|class\s+action\s+waiver)`,
         "i",
       ),
     ],

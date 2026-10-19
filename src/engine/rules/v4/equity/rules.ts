@@ -1054,7 +1054,7 @@ const ELECTION_83B_RULES: Rule[] = [
   }),
   compound({
     id: "EQT-048",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "30-day filing notice + copy to employer",
     description:
       "Treas. Reg. § 1.83-2 requires filing with the IRS within 30 days (§ 1.83-2(c)) and a copy to the service recipient (§ 1.83-2(d)).",
@@ -1064,7 +1064,7 @@ const ELECTION_83B_RULES: Rule[] = [
       // The deadline is written "thirty (30) days", "thirty days", or the
       // digits-only "30 days" the IRS model election uses; requiring the word
       // "thirty" dropped the last (most common) form.
-      /(?:\bthirty\b(?:\s*\(?\s*30\s*\)?)?|\b30\b)\s+days/i,
+      /(?:\bthirty\b(?:\s*\(?\s*30\s*\)?)?|\b30\b)\s+(?:calendar\s+)?days/i,
       // "IRS Service Center", but also the spelled-out "Internal Revenue
       // Service Center" (one "service") and "… Office"; the old pattern needed a
       // second literal "service" after the full name, so the spelled form missed.
@@ -1485,7 +1485,7 @@ const ROFR_RULES: Rule[] = [
   }),
   presence({
     id: "EQT-068",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Notice and election windows",
     description: "ROFR / co-sale need clear notice and election windows.",
     citation: nvca("rofr-mechanics", "ROFR / Co-Sale — Mechanics"),
@@ -1496,7 +1496,10 @@ const ROFR_RULES: Rule[] = [
       "Mechanics typically: 15 days for company election, 10 days for investor election, with a 60-day sale window if neither exercises.",
     recommendation: "Add explicit notice / election windows for each tier.",
     present_patterns: [
-      new RegExp(String.raw`(${PERIOD_COUNT})\s*(day|business\s+day)s?\s+(after|to\s+elect)`, "i"),
+      new RegExp(
+        String.raw`(${PERIOD_COUNT})\s*(day|business\s+day|calendar\s+day)s?\s+(after|to\s+elect)`,
+        "i",
+      ),
       /notice\s+of\s+(intended\s+)?transfer/i,
     ],
     default_severity: "warning",

@@ -6,7 +6,7 @@ import { AUTO_RENEWAL_CITATIONS, AUTO_RENEWAL_LAW } from "../_auto-renewal-law.j
 /** TEMP-005 — Auto-renewal notice window unusual (warning). */
 export const rule: Rule = {
   id: "TEMP-005",
-  version: "1.4.0",
+  version: "1.5.0",
   name: "Auto-renewal notice window unusual",
   category: "temporal",
   default_severity: "warning",
@@ -23,7 +23,7 @@ export const rule: Rule = {
       // alongside "automatically renews" — sibling rules TEMP-004 / TEMP-011
       // already read the hyphen.
       new RegExp(
-        String.raw`(?:auto(?:matic)?(?:ally)?[\s-]+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?(${PERIOD_COUNT})\s+days`,
+        String.raw`(?:auto(?:matic)?(?:ally)?[\s-]+(?:renew|renewal|extend)|non[- ]renewal)[\s\S]{0,200}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days`,
         "i",
       ),
     );

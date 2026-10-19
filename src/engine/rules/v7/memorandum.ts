@@ -62,11 +62,12 @@ const MEMORANDUM = pack("memorandum-of-understanding", "commercial", [
   },
   {
     id: "MOU-005",
+    ver: "1.1.0",
     name: "How long it runs, and how either party ends it",
     cite: practice("mou-term", "a start, an end, and a way out"),
     pat: [
       new RegExp(
-        String.raw`\b(term|period|duration|effective|runs?|remains?\s+in\s+effect|expires?|ends?|until|through)\b[^.]{0,120}?(${DATE_SHAPE}|${PERIOD_COUNT}\s+(days?|months?|years?))`,
+        String.raw`\b(term|period|duration|effective|runs?|remains?\s+in\s+effect|expires?|ends?|until|through)\b[^.]{0,120}?(${DATE_SHAPE}|${PERIOD_COUNT}\s+(?:calendar\s+)?(days?|months?|years?))`,
         "i",
       ),
       /\b(either|any)\s+party\s+may\s+(end|terminate|withdraw\s+from)\b/i,

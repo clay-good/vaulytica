@@ -821,7 +821,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   language({
     id: "DPA-027",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Breach notice timing stricter than 'undue delay'",
     description:
       "Flags fixed breach-notice deadlines that exceed regulator expectations (e.g., > 72 hours from controller awareness, > 5 days from processor awareness).",
@@ -845,8 +845,8 @@ export const DPA_GDPR_RULES: Rule[] = [
     // v1.0.0 digit-only patterns dodged those only because they used the
     // spelled/parenthesized form.
     bad_patterns: [
-      /(?:notif\w+|notification|report(?:s|ed|ing)?|inform|disclos\w+)\b[^.]{0,80}\bbreach\b[^.]{0,80}\b(?:within|no\s+later\s+than)\s+(?:[a-z]+[-\s]+)?\(?(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\)?\s+(?:business\s+|calendar\s+|working\s+)?days?\b/is,
-      /\b(?:within|no\s+later\s+than)\s+(?:[a-z]+[-\s]+)?\(?(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\)?\s+(?:business\s+|calendar\s+|working\s+)?days?\b[^.]{0,80}(?:notif\w+|notification|report(?:s|ed|ing)?|inform|disclos\w+)[^.]{0,40}breach/is,
+      /(?:notif\w+|notification|report(?:s|ed|ing)?|inform|disclos\w+)\b[^.]{0,80}\bbreach\b[^.]{0,80}\b(?:within|not?\s+later\s+than)\s+(?:[a-z]+[-\s]+)?\(?(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\)?\s+(?:business\s+|calendar\s+|working\s+)?days?\b/is,
+      /\b(?:within|not?\s+later\s+than)\s+(?:[a-z]+[-\s]+)?\(?(?:1[0-9]|2[0-9]|3[0-9]|[4-9][0-9]|[1-9][0-9]{2,})\)?\s+(?:business\s+|calendar\s+|working\s+)?days?\b[^.]{0,80}(?:notif\w+|notification|report(?:s|ed|ing)?|inform|disclos\w+)[^.]{0,40}breach/is,
     ],
   }),
 

@@ -30,12 +30,13 @@ const DO = pack("do-policy", C, [
   },
   {
     id: "INS-102",
+    ver: "1.1.0",
     name: "Claims-made-and-reported trigger and notice",
     cite: practice("claims-made", "claims-made-and-reported triggers and notice conditions"),
     pat: [
       /claims?[- ]made/i,
       new RegExp(
-        String.raw`(reported\s+(to\s+the\s+insurer\s+)?during|notice\s+(of\s+(a\s+)?claim)|as\s+soon\s+as\s+practicable|within\s+${PERIOD_COUNT}\s*days\s+of)`,
+        String.raw`(reported\s+(to\s+the\s+insurer\s+)?during|notice\s+(of\s+(a\s+)?claim)|as\s+soon\s+as\s+practicable|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+of)`,
         "i",
       ),
     ],
@@ -101,13 +102,13 @@ const DO = pack("do-policy", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Defense-cost treatment",
     cite: practice("defense-costs", "duty to defend versus duty to advance in D&O policies"),
     pat: [
       /defen(se|ce)[-\s]+costs?/i,
       new RegExp(
-        String.raw`(duty\s+to\s+defend|advance|within\s+${PERIOD_COUNT}\s*days|allocation|reimburse)`,
+        String.raw`(duty\s+to\s+defend|advance|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|allocation|reimburse)`,
         "i",
       ),
     ],

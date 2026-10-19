@@ -106,6 +106,7 @@ const COLUMNS = pack(PLAYBOOK, C, [
   },
   {
     id: "BUY-005",
+    ver: "1.1.0",
     name: "The date the agreement ends",
     cite: practice("buyer-rep-term", "a stated end date"),
     pat: [
@@ -113,7 +114,10 @@ const COLUMNS = pack(PLAYBOOK, C, [
         String.raw`\b(ends?|expires?|terminates?|termination\s+date)\b[^.]{0,80}?${DATE_SHAPE}`,
         "i",
       ),
-      new RegExp(String.raw`\b(term|period)\b[^.]{0,120}?${PERIOD_COUNT}\s+(days?|months?)\b`, "i"),
+      new RegExp(
+        String.raw`\b(term|period)\b[^.]{0,120}?${PERIOD_COUNT}\s+(?:calendar\s+)?(days?|months?)\b`,
+        "i",
+      ),
     ],
     why: "A buyer who signs an exclusive agreement owes the broker compensation on any purchase made while it runs, including one the buyer finds alone. The end date is what limits that.",
     fix: "State the date the agreement ends, or its length in days or months from signing, and how either party may end it early.",

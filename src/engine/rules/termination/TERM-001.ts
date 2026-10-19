@@ -19,7 +19,7 @@ const CONVENIENCE =
 // days' notice"); `PERIOD_COUNT` reads all three spellings. It must be a
 // termination NOTICE period (followed by "notice") so an unrelated invoice
 // deadline in the same paragraph is not grabbed.
-const NOTICE = `(${PERIOD_COUNT})\\s+days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice`;
+const NOTICE = `(${PERIOD_COUNT})\\s+(?:calendar\\s+)?days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice`;
 // The notice period is stated in EITHER order: trigger-first ("terminate for
 // convenience upon thirty (30) days' notice") and, just as often, count-first
 // ("Upon thirty (30) days' notice, either party may terminate for convenience").
@@ -35,7 +35,7 @@ const CONVENIENCE_NOTICE = new RegExp(
 /** TERM-001 — Termination for convenience present (info). */
 export const rule: Rule = {
   id: "TERM-001",
-  version: "1.2.0",
+  version: "1.3.0",
   name: "Termination for convenience present",
   category: "termination",
   default_severity: "info",

@@ -311,12 +311,13 @@ const JDA = pack("joint-development-agreement", C, [
   },
   {
     id: "IPL-120",
+    ver: "1.1.0",
     name: "Publication review and delay period",
     cite: practice("publication-review", "publication review windows in research collaborations"),
     pat: [
       /publi(sh|cation)/i,
       new RegExp(
-        String.raw`(review|delay|${PERIOD_COUNT}\s*days\s+(prior|before)|remove\s+confidential|defer\s+publication)`,
+        String.raw`(review|delay|${PERIOD_COUNT}\s*(?:calendar\s+)?days\s+(prior|before)|remove\s+confidential|defer\s+publication)`,
         "i",
       ),
     ],
@@ -471,6 +472,7 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
   },
   {
     id: "IPL-131",
+    ver: "1.1.0",
     name: "Release conditions and dispute procedure",
     cite: practice(
       "escrow-release",
@@ -479,7 +481,7 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
     pat: [
       /release\s+(condition|event)/i,
       new RegExp(
-        String.raw`(bankrupt|insolven|ceases?\s+to\s+(support|do\s+business)|material\s+breach|dispute|objection\s+within\s+${PERIOD_COUNT}\s*days)`,
+        String.raw`(bankrupt|insolven|ceases?\s+to\s+(support|do\s+business)|material\s+breach|dispute|objection\s+within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days)`,
         "i",
       ),
     ],

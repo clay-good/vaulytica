@@ -913,7 +913,7 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
     // Also accepts the HYPHENATED spelling of the compound this rule's own
     // name hyphenates — the ordinary spelling when it is used as an
     // adjective (`v5/title-vacuity.test.ts`).
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Payment and prompt-payment flow-down",
     cite: cfr(
       "48",
@@ -923,7 +923,7 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
     pat: [
       /(prompt[-\s]+payment|accelerated\s+payment)/i,
       new RegExp(
-        String.raw`(52\.232|payment\s+within\s+${PERIOD_COUNT}\s*days|pay\s+when\s+paid|pay\s+if\s+paid)`,
+        String.raw`(52\.232|payment\s+within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|pay\s+when\s+paid|pay\s+if\s+paid)`,
         "i",
       ),
     ],

@@ -66,6 +66,7 @@ const INFOSEC = pack("information-security-policy", C, [
   },
   {
     id: "POL-104",
+    ver: "1.1.0",
     name: "Vulnerability and patch management",
     cite: agency(
       "NIST",
@@ -75,7 +76,7 @@ const INFOSEC = pack("information-security-policy", C, [
     pat: [
       /(vulnerabilit|patch)/i,
       new RegExp(
-        String.raw`(scan|remediat|severity|critical|within\s+${PERIOD_COUNT}\s*days|sla)`,
+        String.raw`(scan|remediat|severity|critical|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|sla)`,
         "i",
       ),
     ],
@@ -503,6 +504,7 @@ const IRP = pack("security-incident-response-plan", C, [
   },
   {
     id: "POL-132",
+    ver: "1.1.0",
     name: "Post-incident review and plan update",
     cite: agency(
       "NIST",
@@ -512,7 +514,7 @@ const IRP = pack("security-incident-response-plan", C, [
     pat: [
       /(post-?incident|lessons\s+learned|after-?action)/i,
       new RegExp(
-        String.raw`(review|within\s+${PERIOD_COUNT}\s*days|update\s+the\s+plan|corrective\s+action|root\s+cause)`,
+        String.raw`(review|within\s+${PERIOD_COUNT}\s*(?:calendar\s+)?days|update\s+the\s+plan|corrective\s+action|root\s+cause)`,
         "i",
       ),
     ],

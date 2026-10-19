@@ -417,7 +417,7 @@ const DISTRIBUTION_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-011",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Term and termination — good cause and notice",
     description:
       "A distribution agreement should state the term and a termination standard with a notice / cure period.",
@@ -439,7 +439,7 @@ const DISTRIBUTION_RULES: Rule[] = [
       /(notice|cure)\s+period/i,
       // v1.1.0 — the count in any spelling: "five days' prior written notice".
       new RegExp(
-        String.raw`(?:${PERIOD_COUNT})\s*days.{0,20}(notice|prior\s+written\s+notice)`,
+        String.raw`(?:${PERIOD_COUNT})\s*(?:calendar\s+)?days.{0,20}(notice|prior\s+written\s+notice)`,
         "is",
       ),
       /\bterm\s+of\s+(this\s+)?agreement\b/i,
