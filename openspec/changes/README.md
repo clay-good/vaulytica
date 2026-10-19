@@ -95,3 +95,41 @@ was re-scoped to tracker-attributed counts. A five-item market gap scan found
 four candidates already shipped (STRUCT-007/008/015/013/016/018, FIN-001, and
 the critical-dates register with `.ics` export) — checked before speccing, so
 no redundant changes were added.
+
+## Wave 4 — 2026-10-19 expansion ("more useful, same scope")
+
+Eight additive changes written after reading the product at 9.953.0 (waves
+1–3 are built; the only open tasks are the ladder rungs and bands in
+`add-negotiation-ladder-playbooks` and one deadline-computation item) and a
+web pass over what attorneys' proofreading and review tools check, what the
+malpractice record says goes wrong at execution and disclosure, and which
+statutes fix a document's words or form. Every change passes the §3 filter as
+written: deterministic, presence-only where it scans, advisory, no server, hash
+namespaced or render-side. None drafts language, none renders a legal
+conclusion, and none changes an existing `result_hash` except the two rule
+packs, whose corpus impact is measured and listed before merge. Legal
+authorities named in a proposal were read at a primary or official source on
+2026-10-19 unless the task list says the build must read them (the mandated
+texts and the state readability statutes), in which case no text enters the
+DKB from a secondary source.
+
+| # | Change | One-line intent | Value |
+|---|--------|-----------------|-------|
+| 28 | [add-redaction-integrity-scan](add-redaction-integrity-scan/proposal.md) | `HANDOFF-006…008`: a filled rectangle over a PDF's text layer, black-on-black Word highlighting, and an SEC exhibit with `[***]` markers but no first-page omission statement (17 C.F.R. § 229.601(b)(10)(iv)); masked, presence-only, under `delivery_hash` | The one document never uploaded to a cloud checker |
+| 29 | [add-redline-two-sided-analysis](add-redline-two-sided-analysis/proposal.md) | One tracked-changes DOCX becomes the two readings `compare` needs (all rejected vs all accepted), with each introduced finding attributed to the revision's author | The question a redline exists to answer |
+| 30 | [add-executed-copy-conformity](add-executed-copy-conformity/proposal.md) | Signed copy vs final draft with an execution allowance (filled blocks, dates, furniture) and an OCR-honest verdict; closing-set table with `conformity_hash` | The wrong-version malpractice class |
+| 31 | [add-mandated-text-conformance](add-mandated-text-conformance/proposal.md) | A provenance-gated `mandated_texts` table and `TEXT-*` rules: present-but-altered redline, superseded version (pre-2019 Civ. Code § 1542), form not met (10-pt bold Holder Rule notice), disclaimer conspicuousness | Generalizes the Texas exact-wording mechanism |
+| 32 | [add-proofreading-pack](add-proofreading-pack/proposal.md) | `PROOF-001…007`: unpaired punctuation, weekday–date mismatch, repeated words, in-document party drift, cross-reference title mismatch, enumeration gaps, non-conforming standard phrases | Parity with Deal Proof / Litera Check, deterministically |
+| 33 | [add-contract-abstract-inventory](add-contract-abstract-inventory/proposal.md) | One row per agreement (type, parties, term, renewal, law, caps, assignment) as `abstract-*` and `inventory-*` exports with section provenance and `inventory_hash` | The first table every diligence builds by hand |
+| 34 | [add-readability-measure](add-readability-measure/proposal.md) | Flesch reading ease under the NAIC model act's counting rules, render-side; `READ-*` findings only under an asserted state standard or NY GOL § 5-702 | The one quality the law measures with a formula |
+| 35 | [add-project-config-file](add-project-config-file/proposal.md) | `vaulytica.config.json` for the CLI, Action and MCP server: playbook, types by glob, gates, profiles; flags win; every applied file is named in the run | Three surfaces, one set of team settings |
+
+Changes 29 and 30 both add to one new `version-comparison` capability spec; whichever lands second merges into it rather than re-adding. Suggested order: 35 first (small, unblocks the others' CLI ergonomics), then
+28 and 33 (render-side, zero churn), 29 and 30 (comparison surface), 32 and 31
+(rule packs that move goldens; land each with its measured corpus impact, 31
+with a scheduled DKB rebuild), 34 last. Checked before speccing, so not
+re-specced: defined-term reporting, numbering gaps, cross-reference
+resolution, placeholder detection, signature-block parity, tracked-change and
+hidden-text notices, Bates and privilege-log reconciliation, and the Texas
+exact-wording rules all exist; the deadlines calendar's "mentioned dates"
+question is a product decision recorded in the frontier, not a change.

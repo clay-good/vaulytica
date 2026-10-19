@@ -1,0 +1,12 @@
+# Tasks
+
+- [ ] 1. Fixtures first: a PDF with a black rect over text (post-text paint order), one with the rect painted before the text, one with an unapplied `/Redact` annotation, one with a `Square` annotation with interior color, one image-only scan; a DOCX with black-on-black highlight, white-on-white, run shading, and a theme-color run without a theme part. Each fixture's hidden string is a sentinel no other fixture uses, so the masking grep is unambiguous.
+- [ ] 2. `src/delivery/container.ts`: PDF operator walk (CTM, fill color, pending path, paint order) producing `RedactionFact[]`; bound the walk and report `inspectable: false` per page past it. Measure cost over the PDF specimens before choosing the bound.
+- [ ] 3. `src/delivery/container.ts`: DOCX run-property read for color/highlight/shading with the Word highlight-name table and theme resolution; `inspectable: false` for unresolved theme colors.
+- [ ] 4. `src/delivery/types.ts` `RedactionFact`; `src/delivery/handoff.ts` `HANDOFF-006`, `HANDOFF-007`, `HANDOFF-008` with messages, severities (006 and 007 critical, 008 warning), and citations (the container element; 17 C.F.R. § 229.601(b)(10)(iv) for 008, with `retrieved_at`).
+- [ ] 5. `HANDOFF-008` scope: the SEC-exhibit family list (derived from the EDGAR sample's accepted routes) and the `--sec-exhibit` assertion registered in `REGISTERED_ASSERTION_GATES`; legend-element detection on the first page.
+- [ ] 6. Masking: extend the masking assertions in `src/delivery/delivery.test.ts` to grep every serialized export for every fixture's sentinel; the masked shape is the only representation.
+- [ ] 7. Renderers and reach: tab card, CLI summary and `--fail-on-delivery`, JSON, DOCX, HTML, SARIF, bundle card; MCP `analyze_document` `include: ["delivery"]` (new); write a delivery reach test over those surfaces (break it on purpose once) and add the rules to `honesty-caveat-reach.test.ts`'s list.
+- [ ] 8. Narrow the production-QA scope statement to "image-layer redactions and OCR'd scans are not checked"; add a `known-limits` ledger entry for the image-only class with a plain sentence.
+- [ ] 9. Docs: `reference.md` delivery table rows for 006–008, `threat-model.md` one paragraph, site "Clean to send" copy; the `/known-limits` page regenerates and its guard passes.
+- [ ] 10. Full gate green: typecheck, lint, format:check, tests, build, the privacy e2e, and the delivery format-invariance relation re-run with the new fixtures.
