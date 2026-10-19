@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.945.0] — 2026-10-19
+
+### Fixed
+- **"Notice of thirty (30) days" was no notice period to TERM-001.** The rule
+  read the count first ("thirty (30) days' prior written notice"). It did not
+  read the noun first, "upon prior written notice of thirty (30) days", which
+  is how much English drafting puts it. Rewriting the corpus that way lost the
+  convenience-termination notice on 31 specimens. Either order is read now,
+  with "not less than" or "at least" between them (TERM-001 1.4.0), and
+  `period-phrasing.test.ts` holds the rewrite.
+- **Declared, not fixed:** in that rewrite, "after written notice of seven (7)
+  days and an opportunity to cure" brings the count within reach of the cure
+  recognizer. The original "seven (7) days' written notice and an opportunity
+  to cure" states the same seven-day window, and the recognizer misses it.
+  Widening that reach would also move a patent licence's cure period from its
+  breach clause to a milestone clause, so the three moves are listed in the
+  test rather than repaired here.
+- **Measured, nothing to fix:** "$5000" without a thousands separator, and
+  "10.00%" for "10%".
+
+### Changed
+- **`rule-scaling.test.ts` judges a slow rule by the fastest of three
+  samples.** At a load average near 20, one retry still blamed FIN-005
+  (4.3 → 220 ms) and then TERM-003 (2.9 → 224 ms) for super-linear time, and
+  both were linear when measured alone. A planted quadratic pattern still
+  fails it (6.5 → 216 ms).
+
 ## [9.944.0] — 2026-10-19
 
 ### Fixed

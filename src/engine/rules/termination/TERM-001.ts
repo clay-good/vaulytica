@@ -19,7 +19,13 @@ const CONVENIENCE =
 // days' notice"); `PERIOD_COUNT` reads all three spellings. It must be a
 // termination NOTICE period (followed by "notice") so an unrelated invoice
 // deadline in the same paragraph is not grabbed.
-const NOTICE = `(${PERIOD_COUNT})\\s+(?:calendar\\s+)?days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice`;
+//
+// The noun can also come FIRST — "upon written notice of thirty (30) days",
+// the order much English drafting uses — and 31 specimens lost the notice
+// period when rewritten that way. Either order is one capturing group.
+const NOTICE =
+  `(?:(${PERIOD_COUNT})\\s+(?:calendar\\s+)?days?['’]?\\s*(?:(?:prior|written|advance|business|calendar)\\s+){0,4}notice` +
+  `|notice\\s+of\\s+(?:not\\s+less\\s+than\\s+|at\\s+least\\s+)?(${PERIOD_COUNT})\\s+(?:calendar\\s+)?days?\\b)`;
 // The notice period is stated in EITHER order: trigger-first ("terminate for
 // convenience upon thirty (30) days' notice") and, just as often, count-first
 // ("Upon thirty (30) days' notice, either party may terminate for convenience").
@@ -35,7 +41,7 @@ const CONVENIENCE_NOTICE = new RegExp(
 /** TERM-001 — Termination for convenience present (info). */
 export const rule: Rule = {
   id: "TERM-001",
-  version: "1.3.0",
+  version: "1.4.0",
   name: "Termination for convenience present",
   category: "termination",
   default_severity: "info",
@@ -45,7 +51,7 @@ export const rule: Rule = {
     const hit = firstParagraphMatch(ctx, CONVENIENCE_NOTICE);
     if (!hit) return null;
     if (isPresenceDisclaimed(hit.text, hit.match.index)) return null;
-    const days = countValue(hit.match[1] ?? hit.match[2] ?? "");
+    const days = countValue(hit.match.slice(1).find((g) => g !== undefined) ?? "");
     return emit(ctx, rule, {
       title: `Termination for convenience: ${days} days' notice`,
       description: matchedSentence(hit.text, hit.match),

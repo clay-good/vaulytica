@@ -27,6 +27,21 @@
  *             exercise window; PERS-004 lost a non-solicit's duration.
  *   WRITING   "written notice" → "notice in writing". RISK-011 reported the
  *             indemnity-claim notice missing on five specimens that give it.
+ *
+ * And one word ORDER, added in 9.945.0:
+ *
+ *   NOTICE OF "thirty (30) days' prior written notice" → "prior written notice
+ *             of thirty (30) days". TERM-001 read only the count-first order
+ *             and lost the convenience-termination notice on 31 specimens.
+ *
+ * ⚠️ Three moves from that rewrite are declared, not fixed, because the
+ * REWRITTEN text is the one read better. "After seven (7) days' written notice
+ * and an opportunity to cure" states a seven-day cure window; the cure
+ * recognizer allows twenty characters between the count and "opportunity to
+ * cure", so it misses it in the original order and reads it once "notice of"
+ * moves the count closer. Widening that window would also move a patent
+ * licence's cure period from its breach clause to a milestone clause, which is
+ * a different question from this relation's.
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -53,6 +68,27 @@ export const asCalendarMonths = (t: string): string =>
 /** "written notice" → "notice in writing". */
 export const asNoticeInWriting = (t: string): string =>
   t.replace(/\bwritten notice\b/g, "notice in writing");
+
+const NUMBER_WORD =
+  "one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|and";
+
+/** "thirty (30) days' prior written notice" → "prior written notice of thirty (30) days". */
+export const asNoticeOf = (t: string): string =>
+  t.replace(
+    new RegExp(
+      `\\b((?:(?:${NUMBER_WORD})[- ])*(?:${NUMBER_WORD})\\s+\\(\\d{1,3}\\)|\\d{1,3})\\s+days['’]?\\s+((?:prior\\s+|advance\\s+)?(?:written\\s+)?)notice\\b`,
+      "gi",
+    ),
+    (_m, n: string, q: string) => `${q}notice of ${n} days`,
+  );
+
+/** The rewritten order reads a cure window the original misses; see above. */
+const NOTICE_OF_DECLARED = [
+  "construction-contract.txt: gained TEMP-009",
+  "design-build.txt: gained TEMP-009",
+  "patent-license.txt: lost TEMP-008",
+  "patent-license.txt: gained TEMP-009",
+];
 
 async function movedBy(
   mutate: (t: string) => string,
@@ -104,7 +140,16 @@ describe("a deadline phrased another way", () => {
     expect(moved).toEqual([]);
   }, 1_800_000);
 
+  it('reads "notice of thirty (30) days" as thirty days\' notice', async () => {
+    const { moved, probed } = await movedBy(asNoticeOf);
+    expect(probed, "no specimen states a notice period count-first").toBeGreaterThan(50);
+    expect(moved).toEqual(NOTICE_OF_DECLARED);
+  }, 1_800_000);
+
   it("rewrites only the deadline", () => {
+    expect(asNoticeOf("upon one hundred eighty (180) days' prior written notice")).toBe(
+      "upon prior written notice of one hundred eighty (180) days",
+    );
     expect(asCalendarDays("within thirty (30) days after notice")).toBe(
       "within thirty (30) calendar days after notice",
     );

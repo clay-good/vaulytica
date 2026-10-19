@@ -87,10 +87,15 @@ describe("every rule is linear on a long run of one character", () => {
         const tSmall = check(rule, small);
         const tBig = check(rule, big);
         if (superLinear(tSmall, tBig)) {
-          // One retry before blaming the rule: a single sample can be the machine.
-          check(rule, small);
-          const s2 = check(rule, small);
-          const b2 = check(rule, big);
+          // Before blaming the rule, the FASTEST of three samples at each size:
+          // a single slow sample is the machine. Measured 2026-10-19 at load
+          // ~20, a single retry still blamed FIN-005 (4.3 → 220 ms) and then
+          // TERM-003 (2.9 → 224 ms), both linear in isolation (~30 ms at 10k,
+          // ~60 ms at 20k). A super-linear pattern is slow on every sample.
+          const fastest = (ctx: ReturnType<typeof buildContext>): number =>
+            Math.min(check(rule, ctx), check(rule, ctx), check(rule, ctx));
+          const s2 = fastest(small);
+          const b2 = fastest(big);
           if (superLinear(s2, b2))
             slow.push(`${rule.id}: ${s2.toFixed(1)}ms -> ${b2.toFixed(0)}ms`);
         }
