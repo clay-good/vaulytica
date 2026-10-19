@@ -161,6 +161,7 @@ describe("CLI stream contract (machine formats own stdout)", () => {
       "diff",
       "compare",
       "verify", // no machine format: human receipt text only
+      "init", // no machine format: writes vaulytica.config.json, prints one human line
       ...Object.keys(COHERENCE_IMPORTS),
     ]);
     const missing = dispatchedCommands().filter((c) => !covered.has(c));

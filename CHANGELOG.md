@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **A project configuration file, `vaulytica.config.json`**
+  (add-project-config-file). A team that keeps contracts in a repository can
+  set its playbook, a document type per folder (by glob), the gate, the
+  formats, the deadline profile and the other analyze settings once, instead of
+  repeating them in the Action, the shell and the agent. `analyze` and the MCP
+  server read the nearest file at or above the input and stop at the
+  repository root. `vaulytica init` writes an example.
+  - **A typed flag always wins**, and an unknown key is an error, so a typo
+    cannot switch a gate off.
+  - **No run applies a file silently.** Each one says on stderr which file it
+    read, which keys took effect and which a flag overrode. The JSON and
+    `brief-json` reports carry the same in a `config` block, with the file's
+    SHA-256 and a path relative to the input.
+  - **The file enters no hash.** A report produced under a file equals the
+    report the equivalent flags produce, plus the `config` block, and it still
+    verifies.
+  - `playbook_file` and `extends` are refused when they resolve outside the
+    file's folder, including through a symlink.
+  - The MCP server applies `document_types`, `playbook`, `playbook_file` and
+    `related` to a path under an allowed folder, and a tool's own
+    `document_type` or `related` argument wins.
+  - `docs/config.schema.json` is generated from the Zod schema and held equal
+    to it by a test.
+- **Declared, not built:** `related` applies when the analyzed folder is, or
+  sits inside, a related folder. A parent folder holding several deal rooms is
+  still one run. The CLI applies the file to `analyze` only.
+- The command count is 35 with `init`.
+
 ## [9.953.0] — 2026-10-19
 
 ### Fixed

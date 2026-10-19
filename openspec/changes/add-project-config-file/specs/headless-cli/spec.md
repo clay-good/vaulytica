@@ -22,7 +22,7 @@ The CLI and MCP server SHALL discover `vaulytica.config.json` upward from the in
 
 #### Scenario: Folder of DPAs
 
-- **WHEN** the file maps `vendors/**/dpa-*.docx` to `gdpr-dpa` and `deal-rooms/*` to related
+- **WHEN** the file maps `vendors/**/dpa-*.docx` to `dpa-controller-processor` and `deal-rooms/*` to related
 - **THEN** each matching DPA is analyzed as that type and each deal-room folder runs the cross-document rules, and the per-document provenance names the file
 
 ### Requirement: Paths resolve inside the config's directory

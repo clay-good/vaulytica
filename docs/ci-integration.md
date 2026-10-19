@@ -130,12 +130,69 @@ node bin/vaulytica.mjs diff team-v1.json team-v2.json --exit-code
 node bin/vaulytica.mjs verify report.json original.txt
 ```
 
-Those four are not the whole surface: the dispatcher exposes **34** commands in
-all — the four above plus `posture-review`, `compare-coherence`, and the 28
+Those four are not the whole surface: the dispatcher exposes **35** commands in
+all — the four above plus `init`, `posture-review`, `compare-coherence`, and the 28
 `coherence-*` reads of the document-free posture family (`coherence-trend`,
 `coherence-arc`, `coherence-matrix`, …). `node bin/vaulytica.mjs --help` prints the
 current list; the [reference's command table](reference.md#headless-api--cli)
 documents each one's flags and exit codes.
+
+### Configuration file
+
+A repository can pin its settings once, in `vaulytica.config.json`, instead of
+repeating them in the Action, the shell and the agent. `analyze` and the MCP
+server read the nearest one at or above the input, and stop at the repository
+root (the first folder holding `.git`), so a stray file in a home folder never
+reaches a project. Write an example with:
+
+```bash
+node bin/vaulytica.mjs init
+```
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/clay-good/vaulytica/main/docs/config.schema.json",
+  "fail_on": "critical",
+  "formats": ["sarif"],
+  "playbook_file": "legal/team-playbook.json",
+  "document_types": { "vendors/**/dpa-*.docx": "dpa-controller-processor" },
+  "related": ["deal-rooms/*"],
+  "exclude": ["drafts/**"]
+}
+```
+
+| Key | Stands for |
+| --- | --- |
+| `playbook`, `playbook_file` | `--playbook`, `--playbook-file` |
+| `document_types` | a document type per file, by glob; a typed `--playbook` names one type for every input and wins |
+| `related` | folders (globs) whose documents are one deal: analyzing one of them runs the cross-document checks, as `--consistency` would |
+| `exclude` | files (globs) never analyzed; the run says how many |
+| `fail_on`, `formats`, `out` | `--fail-on`, `--format`, `--out` |
+| `deadline_profile`, `service_method`, `court`, `regime`, `state`, `estate_checks` | the flags of the same names |
+| `delivery`, `consistency` | `--delivery`, `--consistency` |
+| `extends` | one base file inside the same folder, one level deep; the file's own keys replace the base's |
+
+The rules, each because the alternative fails silently:
+
+- **A typed flag always wins.** The file is a default, never an override.
+- **An unknown key is an error** (exit 1, naming it), so `"fail-on"` for
+  `"fail_on"` cannot quietly switch a gate off.
+- **A run never applies a file silently.** Every run that read one prints
+  `vaulytica: config <path> applied: … ; overridden by flags: …` on stderr, and
+  the JSON and `brief-json` reports carry a `config` block with the same lists
+  and the file's SHA-256. The path is relative to the input, never absolute.
+- **Paths and globs are relative to the file**, and `playbook_file` and
+  `extends` are refused when they resolve outside its folder.
+- **The file enters no hash.** The settings it selects reach `result_hash`
+  exactly as the matching flags do, so a report produced under a file equals the
+  one the equivalent flags produce, plus the `config` block.
+
+The Action runs the same CLI in your workspace, so a file at the root of your
+repository applies to it too; an Action input is a typed flag and wins. The MCP
+server honours the keys that shape what is analyzed (`document_types`,
+`playbook`, `playbook_file`, `related`) for a `path` under an allowed folder,
+never above it, and names the file in its result. `docs/config.schema.json` is
+the schema, for editor autocomplete.
 
 ### Cross-document checks on a folder
 

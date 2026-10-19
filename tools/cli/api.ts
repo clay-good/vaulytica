@@ -611,9 +611,15 @@ export async function* analyzeEach(
   opts: AnalyzeFileOptions & {
     /** A file larger than this is yielded as an error, unread. */
     maxFileBytes?: (file: string) => number;
+    /**
+     * A per-file document type, ahead of `playbookId` (a project
+     * configuration's `document_types`). Undefined for a file falls back to
+     * `playbookId`, then to detection.
+     */
+    playbookFor?: (file: string) => string | undefined;
   } = {},
 ): AsyncGenerator<{ file: string; result: AnalyzeResult } | { file: string; error: unknown }> {
-  const { maxFileBytes, ...analyzeOpts } = opts;
+  const { maxFileBytes, playbookFor, ...analyzeOpts } = opts;
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   for (const file of files) {
     try {
@@ -623,7 +629,8 @@ export async function* analyzeEach(
           `larger than the ${limit.toLocaleString("en-US")} bytes this surface reads for that file type`,
         );
       }
-      yield { file, result: await analyzeFile(file, { ...analyzeOpts, deps }) };
+      const playbookId = playbookFor?.(file) ?? analyzeOpts.playbookId;
+      yield { file, result: await analyzeFile(file, { ...analyzeOpts, playbookId, deps }) };
     } catch (error) {
       yield { file, error };
     }
@@ -656,6 +663,8 @@ export async function analyzeFolder(
     maxFileBytes?: (file: string) => number;
     /** Analyze byte-identical files once; the copies are listed in `duplicates`. */
     dedupe?: boolean;
+    /** A per-file document type; see {@link analyzeEach}. */
+    playbookFor?: (file: string) => string | undefined;
   } = {},
 ): Promise<FolderAnalysis> {
   const { onDocument, limits, dedupe, ...analyzeOpts } = opts;
@@ -837,7 +846,14 @@ export async function exportArtifacts(
   path: string,
   formats: readonly ExportFormat[],
   outDir: string,
-  opts: { overwrite?: boolean; playbookId?: string; deps?: AccuracyDeps; dkbDir?: string } = {},
+  opts: {
+    overwrite?: boolean;
+    playbookId?: string;
+    deps?: AccuracyDeps;
+    dkbDir?: string;
+    /** The project configuration that shaped this run, recorded in the JSON formats. */
+    config?: import("./config.js").ConfigProvenance;
+  } = {},
 ): Promise<ExportResult> {
   for (const f of formats) {
     if (!(EXPORT_FORMATS as readonly string[]).includes(f)) {
@@ -890,7 +906,7 @@ export async function exportArtifacts(
         ? await renderDocxReport(r, deps.dkb)
         : f === "docx-comments"
           ? renderReviewedDocx(await readFile(path), r).bytes
-          : await renderFormat(f, r, deps.dkb, definitions);
+          : await renderFormat(f, r, deps.dkb, definitions, undefined, opts.config);
     await writeFile(target(f), content);
     out.written.push({ format: f, path: target(f) });
   }

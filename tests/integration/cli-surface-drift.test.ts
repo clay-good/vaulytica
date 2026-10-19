@@ -109,9 +109,9 @@ describe("CLI surface drift", () => {
     const count = dispatcherCommands().length;
     // The README spells it, the CI doc uses digits; both must track the source.
     expect(readme, `README's command count is not ${count}`).toContain(
-      "One dispatcher, thirty-four commands",
+      "One dispatcher, thirty-five commands",
     );
-    expect(count).toBe(34);
+    expect(count).toBe(35);
     expect(ciDoc, `docs/ci-integration.md's command count is not ${count}`).toMatch(
       new RegExp(`\\*\\*${count}\\*\\* commands`),
     );

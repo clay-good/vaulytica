@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vaulytica.com/config.schema.json",
+  "title": "Vaulytica project configuration",
+  "description": "vaulytica.config.json: defaults for vaulytica analyze, the GitHub Action and the local MCP server. The Zod schema in tools/cli/config.ts is authoritative; this file mirrors it for editor autocomplete. A typed flag always wins over a value here, and an unknown key is an error.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "$comment": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "extends": {
+      "type": "string",
+      "minLength": 1
+    },
+    "playbook": {
+      "type": "string",
+      "minLength": 1
+    },
+    "playbook_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "document_types": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "exclude": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "fail_on": {
+      "type": "string",
+      "enum": [
+        "critical",
+        "warning",
+        "info"
+      ]
+    },
+    "formats": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "json",
+          "sarif",
+          "html",
+          "md",
+          "csv",
+          "docx",
+          "docx-comments",
+          "bundle-json",
+          "bundle-docx",
+          "bundle-zip",
+          "checklist-md",
+          "checklist-csv",
+          "dates-md",
+          "dates-ics",
+          "obligations-csv",
+          "deadlines-ics",
+          "posture-md",
+          "posture-csv",
+          "posture-sheet",
+          "definitions-csv",
+          "brief-json",
+          "triage-md",
+          "triage-json"
+        ]
+      }
+    },
+    "out": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deadline_profile": {
+      "type": "string",
+      "enum": [
+        "cal-ccp-12",
+        "frcp-6"
+      ]
+    },
+    "service_method": {
+      "type": "string",
+      "enum": [
+        "electronic",
+        "mail",
+        "clerk",
+        "other-consented",
+        "personal"
+      ]
+    },
+    "court": {
+      "type": "string",
+      "enum": [
+        "ca9-appellate",
+        "cal-rules-8.204",
+        "frap-default"
+      ]
+    },
+    "regime": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "ccpa",
+          "gdpr",
+          "gdpr-13",
+          "gdpr-14",
+          "co",
+          "va",
+          "tx",
+          "or"
+        ]
+      }
+    },
+    "estate_checks": {
+      "type": "boolean"
+    },
+    "state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "delivery": {
+      "type": "boolean"
+    },
+    "consistency": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

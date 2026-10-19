@@ -949,7 +949,7 @@ Every Thrust-B change is render-side or additive (zero `result_hash` churn); eve
 
 ### CLI cheat sheet
 
-One dispatcher, thirty-four commands — `analyze`, `diff`, `compare`, `compare-coherence`, `posture-review`, `coherence-trend`, `coherence-shift-trend`, `coherence-arc`, `coherence-exposure`, `coherence-persistence`, `coherence-breadth`, `coherence-recurrence`, `coherence-volatility`, `coherence-synchrony`, `coherence-settling`, `coherence-onset`, `coherence-latency`, `coherence-concurrency`, `coherence-relapse`, `coherence-tenure`, `coherence-affinity`, `coherence-recovery-affinity`, `coherence-opposition`, `coherence-precedence`, `coherence-concession`, `coherence-recovery-order`, `coherence-weak-front`, `coherence-cadence`, `coherence-duration`, `coherence-durability`, `coherence-chain`, `coherence-recovery-chain`, `coherence-matrix`, `verify` — over the parity-proven engine (`npm run cli -- <command>`):
+One dispatcher, thirty-five commands — `analyze`, `diff`, `compare`, `compare-coherence`, `posture-review`, `coherence-trend`, `coherence-shift-trend`, `coherence-arc`, `coherence-exposure`, `coherence-persistence`, `coherence-breadth`, `coherence-recurrence`, `coherence-volatility`, `coherence-synchrony`, `coherence-settling`, `coherence-onset`, `coherence-latency`, `coherence-concurrency`, `coherence-relapse`, `coherence-tenure`, `coherence-affinity`, `coherence-recovery-affinity`, `coherence-opposition`, `coherence-precedence`, `coherence-concession`, `coherence-recovery-order`, `coherence-weak-front`, `coherence-cadence`, `coherence-duration`, `coherence-durability`, `coherence-chain`, `coherence-recovery-chain`, `coherence-matrix`, `verify`, `init` — over the parity-proven engine (`npm run cli -- <command>`):
 
 ```
 # analyze: one file, print SARIF to stdout
@@ -1113,6 +1113,11 @@ npm run cli -- analyze ./contracts --format triage-md,html --out reports/
 # every command prints its own usage
 npm run cli -- analyze --help
 
+# pin the team's settings once, in a project config file at the repository root;
+# analyze and the MCP server read it, and a typed flag always wins (ci-integration.md)
+npm run cli -- init
+npm run cli -- init --force
+
 # production QA over a production set (a directory or .zip, not per-document analysis): Bates +
 # privilege-log (.csv) reconciliation + a pre-production sweep; the gate exits 2 on a Bates gap
 # (also in the browser: drop a privilege-log .csv alongside a document bundle)
@@ -1262,6 +1267,8 @@ claude mcp add --scope user vaulytica -- node ~/vaulytica/bin/vaulytica.mjs mcp
 ```
 
 The repository also commits a `.mcp.json` for people working inside the clone. Design and rationale: [`spec-v48.md`](spec-v48.md).
+
+**A project configuration.** A `vaulytica.config.json` inside an allowed folder, at or above the document, sets its type (`document_types` by glob, or `playbook`), a team playbook (`playbook_file`) and which folders are one deal (`related`). A result it shaped carries `config`, naming the file and the keys applied; a `document_type` or `related` argument wins and is listed as overridden. `text` input reads no configuration. The format is in [`ci-integration.md`](ci-integration.md#configuration-file).
 
 ### Drop it into CI — GitHub Action
 

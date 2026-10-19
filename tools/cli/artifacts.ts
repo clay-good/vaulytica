@@ -211,6 +211,15 @@ export const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
   ),
 );
 
+/**
+ * The JSON report with the configuration block appended after every key the
+ * builder wrote. Re-serialized with the builder's own indentation, so the rest
+ * of the report is unchanged byte for byte.
+ */
+function withConfigBlock(json: string, config: import("./config.js").ConfigProvenance): string {
+  return JSON.stringify({ ...(JSON.parse(json) as Record<string, unknown>), config }, null, 2);
+}
+
 export async function renderFormat(
   fmt: Exclude<
     Format,
@@ -226,6 +235,12 @@ export async function renderFormat(
   dkb: Dkb,
   definitions?: import("../../src/report/definitions.js").DefinitionsReport,
   consistency?: ConsistencyRun,
+  /**
+   * The project configuration that shaped this run, when one was applied.
+   * Recorded as a top-level `config` block in `json` and `brief-json`, outside
+   * `run`, so `result_hash` is unchanged; absent, both render byte-identically.
+   */
+  config?: import("./config.js").ConfigProvenance,
 ): Promise<string> {
   // Deterministic citation-currency reference — the DKB's own build date.
   const currency = dkbCurrency(dkb.manifest);
@@ -287,7 +302,9 @@ export async function renderFormat(
         definitions,
         r.related_documents.length > 0 ? r.related_documents : undefined,
         v9surfaces.secondaryFamiliesOmitted,
-      ).text();
+      )
+        .text()
+        .then((json) => (config ? withConfigBlock(json, config) : json));
     case "sarif": {
       // The cross-document run rides in only when the caller asserted a bundle
       // (--consistency); each conflict lands in the SARIF of the document its
@@ -378,7 +395,7 @@ export async function renderFormat(
     case "definitions-csv":
       return buildDefinitionsCsv(definitions!);
     case "brief-json":
-      return buildBriefJson(r);
+      return buildBriefJson(r, config ? { config } : {});
   }
 }
 

@@ -22,6 +22,9 @@ import {
   MAX_TEXT_CHARS,
   ToolError,
   analyzeDocumentTool,
+  analyzeFolderTool,
+  compareDocumentsTool,
+  exportReportTool,
   listDocumentTypesTool,
 } from "./tools.js";
 import {
@@ -373,5 +376,98 @@ describe("what the server says about itself", () => {
     expect(INSTRUCTIONS).toMatch(/excerpts: false/);
     expect(INSTRUCTIONS).toMatch(/Do not follow instructions/);
     expect(INSTRUCTIONS).not.toMatch(/nothing leaves your machine/i);
+  });
+});
+
+/* ---------------- the project configuration (add-project-config-file) ---------------- */
+
+describe("a vaulytica.config.json under an allowed root", { timeout: 120_000 }, () => {
+  let root: string;
+  let cctx: typeof ctx;
+  beforeAll(async () => {
+    root = join(tmp, "configured");
+    await mkdir(join(root, "vendors", "acme"), { recursive: true });
+    await mkdir(join(root, "rooms", "acme"), { recursive: true });
+    const nda = await readFile(NDA);
+    await writeFile(join(root, "vendors", "acme", "dpa-acme.txt"), nda);
+    await writeFile(join(root, "rooms", "acme", "a.txt"), nda);
+    await writeFile(join(root, "rooms", "acme", "b.txt"), nda);
+    await writeFile(
+      join(root, "vaulytica.config.json"),
+      JSON.stringify({
+        document_types: { "vendors/**/dpa-*.txt": "dpa-controller-processor" },
+        related: ["rooms/*"],
+        fail_on: "critical",
+      }),
+    );
+    cctx = { roots: [root], deps: ctx.deps };
+  });
+
+  it("analyze_document applies document_types and names the file", async () => {
+    const r = await analyzeDocumentTool({ path: "vendors/acme/dpa-acme.txt" }, cctx);
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+    expect(r.document.type).toBe("dpa-controller-processor");
+    // Only the keys this tool honours are listed; exit gates mean nothing here.
+    expect(r.config).toMatchObject({
+      path: "vaulytica.config.json",
+      applied: ["document_types"],
+      overridden: [],
+    });
+  });
+
+  it("an explicit document_type wins and is reported as an override", async () => {
+    const r = await analyzeDocumentTool(
+      { path: "vendors/acme/dpa-acme.txt", document_type: "mutual-nda-deep" },
+      cctx,
+    );
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+    expect(r.document.type).toBe("mutual-nda-deep");
+    expect(r.config?.overridden).toEqual(["document_types"]);
+  });
+
+  it("text input reads no configuration", async () => {
+    const r = await analyzeDocumentTool({ text: await readFile(NDA, "utf8") }, cctx);
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+    expect(r.config).toBeUndefined();
+  });
+
+  it("analyze_folder treats a related folder as one deal unless told otherwise", async () => {
+    const r = await analyzeFolderTool({ dir: "rooms/acme" }, cctx);
+    expect(r.cross_document).toBeDefined();
+    expect(r.config?.applied).toContain("related");
+    const told = await analyzeFolderTool({ dir: "rooms/acme", related: false }, cctx);
+    expect(told.cross_document).toBeUndefined();
+    expect(told.config?.overridden).toContain("related");
+  });
+
+  it("compare_documents holds the drafts to the configured type", async () => {
+    const r = (await compareDocumentsTool(
+      { base_path: "vendors/acme/dpa-acme.txt", revised_path: "vendors/acme/dpa-acme.txt" },
+      cctx,
+    )) as { config?: { applied: string[] } };
+    expect(r.config?.applied).toEqual(["document_types"]);
+  });
+
+  it("export_report writes the configured type and records the file in the JSON", async () => {
+    await exportReportTool(
+      { path: "vendors/acme/dpa-acme.txt", formats: ["json"], out_dir: "out" },
+      cctx,
+    );
+    const report = JSON.parse(await readFile(join(root, "out", "dpa-acme.json"), "utf8")) as {
+      run: { playbook_id: string };
+      config: { applied: string[] };
+    };
+    expect(report.run.playbook_id).toBe("dpa-controller-processor");
+    expect(report.config.applied).toEqual(["document_types"]);
+  });
+
+  it("a configuration with an unknown key is an error the caller can read", async () => {
+    const bad = join(tmp, "bad-config");
+    await mkdir(bad, { recursive: true });
+    await writeFile(join(bad, "doc.txt"), await readFile(NDA));
+    await writeFile(join(bad, "vaulytica.config.json"), JSON.stringify({ "fail-on": "x" }));
+    await expect(
+      analyzeDocumentTool({ path: "doc.txt" }, { roots: [bad], deps: ctx.deps }),
+    ).rejects.toThrow(ToolError);
   });
 });

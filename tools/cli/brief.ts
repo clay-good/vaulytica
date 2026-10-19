@@ -98,6 +98,8 @@ export type Brief = {
    * never called. Absent when the run used a custom playbook.
    */
   report_url?: string;
+  /** The project configuration that shaped this run, when one was applied. */
+  config?: import("./config.js").ConfigProvenance;
 };
 
 /**
@@ -145,6 +147,8 @@ export function buildBrief(
     excerpts?: boolean;
     /** Carry the secondary families' findings, not only their ids and counts. */
     secondaryFindings?: boolean;
+    /** Record the project configuration that shaped this run. */
+    config?: import("./config.js").ConfigProvenance;
   } = {},
 ): Brief {
   const excerpts = opts.excerpts ?? true;
@@ -199,6 +203,7 @@ export function buildBrief(
     dkb_version: run.dkb_version,
     engine_version: run.version,
     ...(reportLinkForRun(run) ? { report_url: reportLinkForRun(run)! } : {}),
+    ...(opts.config ? { config: opts.config } : {}),
   };
 }
 

@@ -6,8 +6,22 @@
  * answers it as an `isError` result.
  */
 
-import { stat } from "node:fs/promises";
-import { extname } from "node:path";
+import { readFile, stat } from "node:fs/promises";
+import { dirname, extname, sep } from "node:path";
+import {
+  parseCustomPlaybookJson,
+  type CustomPlaybook,
+} from "../../src/playbooks/custom-playbook.js";
+import {
+  ConfigError,
+  discoverConfig,
+  documentTypeFor,
+  isRelated,
+  namedTypeIds,
+  provenance,
+  type ConfigProvenance,
+  type LoadedConfig,
+} from "../cli/config.js";
 import {
   EXPORT_FORMATS,
   FolderTooLargeError,
@@ -127,6 +141,101 @@ async function assertReadableSize(real: string, shown: string): Promise<void> {
   }
 }
 
+/* ---------------- the project configuration ---------------- */
+
+/**
+ * What a `vaulytica.config.json` contributes to one call (add-project-config-file).
+ * The server honours the keys that shape WHAT is analyzed — `document_types`,
+ * `playbook`, `playbook_file` and `related`. Exit gates, formats and output
+ * folders belong to a command line and have no meaning here.
+ */
+type Applied = {
+  playbookId?: string;
+  customPlaybook?: CustomPlaybook;
+  playbookFor?: (file: string) => string | undefined;
+  related?: boolean;
+  config?: ConfigProvenance;
+};
+
+/**
+ * The configuration for a path under an allowed root: the nearest file at or
+ * above it, never above the root. `explicitType` and `explicitRelated` are the
+ * caller's own arguments, which win.
+ */
+async function projectConfig(
+  real: string,
+  ctx: Context,
+  explicit: { type?: string; related?: boolean } = {},
+  /**
+   * Which keys this tool can honour. Provenance lists only those, so a result
+   * never claims a key shaped it when the tool had no use for it.
+   */
+  honours: { playbookFile?: boolean; related?: boolean } = { playbookFile: true },
+): Promise<Applied> {
+  const root = ctx.roots.find((r) => real === r || real.startsWith(r.endsWith(sep) ? r : r + sep));
+  if (root === undefined) return {};
+  const start = (await stat(real)).isDirectory() ? real : dirname(real);
+  let config: LoadedConfig | null;
+  try {
+    config = await discoverConfig(start, root);
+  } catch (e) {
+    if (e instanceof ConfigError) throw new ToolError(e.message.replaceAll(root, "<root>"));
+    throw e;
+  }
+  if (config === null) return {};
+  for (const id of namedTypeIds(config)) {
+    if (!(await isDocumentType(id))) {
+      throw new ToolError(
+        `${shownInRoots(config.path, ctx.roots)}: "${id}" is not a document type id. Find one with list_document_types.`,
+      );
+    }
+  }
+  const v = config.values;
+  const applied: string[] = [];
+  const overridden: string[] = [];
+  const out: Applied = {};
+
+  if (v.document_types !== undefined || v.playbook !== undefined) {
+    const keys = [
+      ...(v.document_types !== undefined ? ["document_types"] : []),
+      ...(v.playbook !== undefined ? ["playbook"] : []),
+    ];
+    if (explicit.type !== undefined) overridden.push(...keys);
+    else {
+      applied.push(...keys);
+      if (v.playbook !== undefined) out.playbookId = v.playbook;
+      if (v.document_types !== undefined) {
+        out.playbookFor = (file) => documentTypeFor(config, file);
+      }
+    }
+  }
+  if (v.playbook_file !== undefined && honours.playbookFile) {
+    const text = await readFile(v.playbook_file, "utf8").catch(() => null);
+    const parsed = text === null ? null : parseCustomPlaybookJson(text);
+    if (parsed === null || !parsed.ok) {
+      throw new ToolError(
+        `${shownInRoots(config.path, ctx.roots)}: playbook_file ${shownInRoots(v.playbook_file, ctx.roots)} ` +
+          (parsed === null
+            ? "cannot be read"
+            : `is not a valid playbook: ${parsed.errors.join("; ")}`),
+      );
+    }
+    out.customPlaybook = parsed.playbook;
+    applied.push("playbook_file");
+  }
+  if (v.related !== undefined && honours.related) {
+    if (explicit.related !== undefined) overridden.push("related");
+    else {
+      applied.push("related");
+      if (isRelated(config, real)) out.related = true;
+    }
+  }
+  if (applied.length + overridden.length > 0) {
+    out.config = provenance(config, root, applied, overridden);
+  }
+  return out;
+}
+
 /* ---------------- analyze_document ---------------- */
 
 export type AnalyzeDocumentArgs = {
@@ -141,7 +250,7 @@ export type AnalyzeDocumentArgs = {
 };
 
 export type AnalyzeDocumentResult =
-  | (Brief & { findings_total: number; next_cursor?: string })
+  | (Brief & { findings_total: number; next_cursor?: string; config?: ConfigProvenance })
   | { not_analyzed: string; document: { name: string } };
 
 export async function analyzeDocumentTool(
@@ -159,7 +268,12 @@ export async function analyzeDocumentTool(
       `"${args.document_type}" is not a document type id. Find one with list_document_types.`,
     );
   }
-  const opts = { deps: ctx.deps, playbookId: args.document_type, secondaryFamilies: true };
+  let opts: Parameters<typeof analyzeDocument>[1] = {
+    deps: ctx.deps,
+    playbookId: args.document_type,
+    secondaryFamilies: true,
+  };
+  let applied: Applied = {};
 
   let input: Parameters<typeof analyzeDocument>[0];
   let name: string;
@@ -173,6 +287,13 @@ export async function analyzeDocumentTool(
     await assertReadableSize(real, args.path);
     input = { path: real };
     name = args.path;
+    // Text arrives with no location, so only a path reads a project configuration.
+    applied = await projectConfig(real, ctx, { type: args.document_type });
+    opts = {
+      ...opts,
+      playbookId: args.document_type ?? applied.playbookFor?.(real) ?? applied.playbookId,
+      ...(applied.customPlaybook ? { customPlaybook: applied.customPlaybook } : {}),
+    };
   } else {
     if (args.text!.length > MAX_TEXT_CHARS) {
       throw new ToolError(
@@ -251,6 +372,7 @@ export async function analyzeDocumentTool(
     ...(end < stream.length
       ? { next_cursor: encodeCursor({ sha: result.run.source_file.sha256, offset: end }) }
       : {}),
+    ...(applied.config ? { config: applied.config } : {}),
   };
 }
 
@@ -344,6 +466,8 @@ export type FolderResult = {
   spot_check?: Triage["spot_check"];
   slot_questions?: typeof SLOT_QUESTION;
   cross_document?: { result_hash: string; findings: unknown[] } | { not_run: string };
+  /** The project configuration that shaped this call, when one was found. */
+  config?: ConfigProvenance;
   notes?: { order: string; rows: string; not_legal_advice: string };
 };
 
@@ -368,12 +492,22 @@ export async function analyzeFolderTool(
   // each can be handed straight back to analyze_document.
   const anchor = typeof target === "string" ? target : target[0]!;
   const root = ctx.roots.find((r) => anchor === r || anchor.startsWith(r));
+  const applied = await projectConfig(
+    anchor,
+    ctx,
+    { related: args.related },
+    { playbookFile: true, related: true },
+  );
+  const related = args.related ?? applied.related ?? false;
 
   let result: Awaited<ReturnType<typeof triageFolder>>;
   try {
     result = await triageFolder(target, {
       deps: ctx.deps,
       root,
+      ...(applied.playbookId ? { playbookId: applied.playbookId } : {}),
+      ...(applied.playbookFor ? { playbookFor: applied.playbookFor } : {}),
+      ...(applied.customPlaybook ? { customPlaybook: applied.customPlaybook } : {}),
       limits: { maxFiles: MAX_FOLDER_FILES, maxDepth: MAX_FOLDER_DEPTH },
       // One oversized file becomes a not-read row, not a stalled server.
       maxFileBytes: sizeLimit,
@@ -402,6 +536,7 @@ export async function analyzeFolderTool(
   const page = matched.slice(offset, end).map(folderRow);
   const next = end < matched.length ? { next_cursor: encodeCursor({ offset: end }) } : {};
   if (offset > 0) return { triage_hash: triage.triage_hash, rows: page, ...next };
+  const config = applied.config ? { config: applied.config } : {};
 
   return {
     triage_hash: triage.triage_hash,
@@ -418,7 +553,7 @@ export async function analyzeFolderTool(
     systemic_total: triage.systemic.length,
     spot_check: triage.spot_check,
     slot_questions: SLOT_QUESTION,
-    ...(args.related ? { cross_document: await crossDocument(folder, ctx) } : {}),
+    ...(related ? { cross_document: await crossDocument(folder, ctx) } : {}),
     notes: {
       order: triage.statements.tiers,
       rows:
@@ -427,6 +562,7 @@ export async function analyzeFolderTool(
         "document with analyze_document before acting on its row.",
       not_legal_advice: NOT_LEGAL_ADVICE_BUNDLE,
     },
+    ...config,
     ...next,
   };
 }
@@ -500,17 +636,26 @@ export async function compareDocumentsTool(args: CompareDocumentsArgs, ctx: Cont
       `"${args.document_type}" is not a document type id. Find one with list_document_types.`,
     );
   }
+  // The base draft's location decides the project configuration: the revision
+  // is held to the base's type anyway.
+  const applied =
+    "path" in base ? await projectConfig(base.path, ctx, { type: args.document_type }) : {};
   try {
     // The two drafts are one document by construction, so the revision is held
     // to the base draft's type: a heavy rewrite must not turn every
     // type-specific check into "fixed".
-    return buildComparisonBrief(
+    const brief = buildComparisonBrief(
       await compareFiles(base, revised, {
         deps: ctx.deps,
-        playbookId: args.document_type,
+        playbookId:
+          args.document_type ??
+          ("path" in base ? applied.playbookFor?.(base.path) : undefined) ??
+          applied.playbookId,
+        ...(applied.customPlaybook ? { customPlaybook: applied.customPlaybook } : {}),
         pinType: true,
       }),
     );
+    return applied.config ? { ...brief, config: applied.config } : brief;
   } catch (e) {
     // A side that could not be read is the caller's to fix, and arrives as a sentence.
     throw new ToolError(e instanceof Error ? e.message : String(e));
@@ -563,10 +708,15 @@ export async function exportReportTool(
   await assertReadableSize(path, args.path);
   const outDir = await resolveNewInRoots(args.out_dir, ctx.roots);
   if (args.formats.length === 0) throw new ToolError("Pass at least one format.");
+  // The writer takes a document type, not a team playbook: `playbook_file`
+  // shapes analyze_document and analyze_folder, not the exported files.
+  const applied = await projectConfig(path, ctx, {}, { playbookFile: false });
   try {
     const r = await exportArtifacts(path, args.formats as ExportFormat[], outDir, {
       deps: ctx.deps,
       overwrite: args.overwrite ?? false,
+      playbookId: applied.playbookFor?.(path) ?? applied.playbookId,
+      ...(applied.config ? { config: applied.config } : {}),
     });
     return {
       ...r,

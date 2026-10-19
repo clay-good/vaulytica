@@ -214,10 +214,26 @@ import {
   buildTriageMarkdown,
   ruleCatalog,
   analyzeFile,
+  isDocumentType,
   loadAccuracyDeps,
   runProductionQa,
   type AnalyzeResult,
 } from "./api.js";
+import {
+  CONFIG_FILE_NAME,
+  EXAMPLE_CONFIG,
+  discoverConfig,
+  discoveryStart,
+  documentTypeFor,
+  isExcluded,
+  isRelated,
+  namedTypeIds,
+  provenance,
+  provenanceLine,
+  type ConfigKey,
+  type ConfigProvenance,
+  type LoadedConfig,
+} from "./config.js";
 import { runConsistency } from "../../src/engine/consistency/runner.js";
 import { ALL_CONSISTENCY_RULES } from "../../src/engine/consistency/rules/index.js";
 import type { ConsistencyDocument, ConsistencyRun } from "../../src/engine/consistency/types.js";
@@ -381,7 +397,7 @@ const FORMAT_REQUIRES_FLAG: Partial<Record<Format, { flag: string; surface: stri
   "definitions-csv": { flag: "--definitions", surface: "defined-terms report" },
 };
 
-type Args = {
+export type Args = {
   target: string;
   playbook?: string;
   formats: Format[];
@@ -451,6 +467,12 @@ type Args = {
   estateChecks?: boolean;
   /** add-estate-planning-pack — normalized `us-xx` state for the formalities overlay. */
   estateState?: string;
+  /** add-project-config-file — the discovered configuration, when one applied. */
+  config?: LoadedConfig;
+  /** add-project-config-file — what the run records about it. */
+  configProvenance?: ConfigProvenance;
+  /** add-project-config-file — `--playbook` was typed, so `document_types` stands down. */
+  playbookFromFlag?: boolean;
 };
 
 /** Build the filing activation from parsed args, or undefined when no `--court`. */
@@ -776,8 +798,128 @@ function worstSeverity(r: AnalyzeResult): Severity | null {
   return worst;
 }
 
-export async function runAnalyze(argv: string[]): Promise<void> {
+/**
+ * The flags a configuration key stands for, so the file is validated by the
+ * same parser the command line is: one set of messages, one set of rules.
+ */
+function configFlags(v: LoadedConfig["values"]): string[] {
+  const flags: string[] = [];
+  if (v.playbook !== undefined) flags.push("--playbook", v.playbook);
+  if (v.playbook_file !== undefined) flags.push("--playbook-file", v.playbook_file);
+  if (v.fail_on !== undefined) flags.push("--fail-on", v.fail_on);
+  if (v.formats !== undefined) flags.push("--format", v.formats.join(","));
+  if (v.out !== undefined) flags.push("--out", v.out);
+  if (v.deadline_profile !== undefined) flags.push("--deadline-profile", v.deadline_profile);
+  if (v.service_method !== undefined) flags.push("--service-method", v.service_method);
+  if (v.court !== undefined) flags.push("--court", v.court);
+  if (v.regime !== undefined) flags.push("--regime", v.regime.join(","));
+  if (v.state !== undefined) flags.push("--state", v.state);
+  if (v.estate_checks) flags.push("--estate-checks");
+  if (v.delivery) flags.push("--delivery");
+  if (v.consistency) flags.push("--consistency");
+  return flags;
+}
+
+/**
+ * Apply the nearest `vaulytica.config.json` to parsed arguments
+ * (add-project-config-file). A typed flag always wins; every key the file sets
+ * is recorded as applied or as overridden, and the run says so on stderr.
+ */
+async function applyProjectConfig(args: Args, typed: readonly string[]): Promise<void> {
+  const start = await discoveryStart(args.target, process.cwd());
+  // A ConfigError's message names the file and the key; `main` prints it.
+  const config: LoadedConfig | null = await discoverConfig(start);
+  if (config === null) return;
+  const v = config.values;
+
+  let fromFile: Args;
+  try {
+    fromFile = parseArgs([args.target, ...configFlags(v)]);
+  } catch (e) {
+    throw new Error(`${config.path}: ${e instanceof Error ? e.message : String(e)}`, {
+      cause: e,
+    });
+  }
+  for (const id of namedTypeIds(config)) {
+    if (!(await isDocumentType(id))) {
+      throw new Error(
+        `${config.path}: "${id}" is not a document type id (list them with the MCP list_document_types tool, or see docs/reference.md)`,
+      );
+    }
+  }
+
+  const applied: ConfigKey[] = [];
+  const overridden: ConfigKey[] = [];
+  const keys = Object.keys(v) as ConfigKey[];
+  const typedFlag = (flag: string): boolean => typed.includes(flag);
+  /** Copy one field from the file unless the matching flag was typed. */
+  const take = <K extends keyof Args>(key: ConfigKey, flag: string, field: K): void => {
+    if (!keys.includes(key)) return;
+    if (typedFlag(flag)) overridden.push(key);
+    else {
+      args[field] = fromFile[field];
+      applied.push(key);
+    }
+  };
+  take("playbook", "--playbook", "playbook");
+  take("playbook_file", "--playbook-file", "playbookFile");
+  take("fail_on", "--fail-on", "failOn");
+  take("out", "--out", "out");
+  take("deadline_profile", "--deadline-profile", "deadlineProfile");
+  take("service_method", "--service-method", "serviceMethod");
+  take("court", "--court", "court");
+  take("regime", "--regime", "regimes");
+  take("state", "--state", "estateState");
+  // A boolean the file sets to false is the default either way; the flag can
+  // only switch it on, so a typed flag over `false` is still an override.
+  take("estate_checks", "--estate-checks", "estateChecks");
+  take("delivery", "--delivery", "delivery");
+  take("consistency", "--consistency", "consistency");
+  if (keys.includes("formats")) {
+    // `--consistency-only` drops every per-document format, so it overrides too.
+    if (args.formatExplicit || args.consistencyOnly) overridden.push("formats");
+    else {
+      args.formats = fromFile.formats;
+      applied.push("formats");
+    }
+  }
+  if (keys.includes("document_types")) {
+    // An explicit `--playbook` names one type for every input; the globs stand down.
+    if (typedFlag("--playbook")) overridden.push("document_types");
+    else applied.push("document_types");
+  }
+  if (keys.includes("exclude")) applied.push("exclude");
+  if (keys.includes("related")) {
+    applied.push("related");
+    if (
+      !args.consistency &&
+      !args.consistencyOnly &&
+      args.target !== "-" &&
+      isRelated(config, resolve(args.target))
+    ) {
+      args.consistency = true;
+    }
+  }
+
+  args.config = config;
+  args.playbookFromFlag = typedFlag("--playbook");
+  args.configProvenance = provenance(config, start, applied, overridden);
+  process.stderr.write(provenanceLine(args.configProvenance));
+}
+
+/**
+ * `analyze`'s arguments as the run will use them: the typed flags, then the
+ * nearest project configuration below them. Exported so the precedence of
+ * every key can be tested without a process per case.
+ */
+export async function resolveAnalyzeArgs(argv: string[]): Promise<Args> {
   const args = parseArgs(argv);
+  await applyProjectConfig(args, argv.slice(1));
+  return args;
+}
+
+export async function runAnalyze(argv: string[]): Promise<void> {
+  const args = await resolveAnalyzeArgs(argv);
   const isZip =
     !args.productionQa &&
     args.target.toLowerCase().endsWith(".zip") &&
@@ -990,10 +1132,32 @@ async function analyzeTarget(
   // CONTAINS and will otherwise report a document missing that the user
   // supplied under an extension this tool does not read.
   const skippedInputs: Array<{ file: string; reason: string }> = [...zipSkipped];
-  const inputs = await resolveInputs(args.target, { asText: args.asText }, skippedInputs);
+  let inputs = await resolveInputs(args.target, { asText: args.asText }, skippedInputs);
+  // add-project-config-file — `exclude` globs, matched against the path a
+  // reader is shown (an archive member under the archive's name), relative to
+  // the configuration file. Said, never silent.
+  if (args.config?.values.exclude?.length) {
+    const cfg = args.config;
+    const kept = inputs.filter((f) => !isExcluded(cfg, resolve(label(f))));
+    if (kept.length < inputs.length) {
+      process.stderr.write(
+        `vaulytica: ${inputs.length - kept.length} file(s) not analyzed: excluded by ${args.configProvenance!.path}\n`,
+      );
+    }
+    inputs = kept;
+  }
   // Dotfiles and dot-folders are accounted for (spec-v52 §1) and said once —
   // but kept out of `skippedInputs`, which feeds the bundle's `rejected` list:
   // a `.DS_Store` on one machine must not change an artifact's bytes.
+  // The project's own configuration file is the tool's, not a document the
+  // user forgot to convert; listing it as skipped would also put it in a
+  // bundle's `rejected` list, so a repository with one would write different
+  // bytes than the same documents without it.
+  skippedInputs.splice(
+    0,
+    skippedInputs.length,
+    ...skippedInputs.filter((sk) => basename(sk.file) !== CONFIG_FILE_NAME),
+  );
   const hidden = skippedInputs.filter((sk) => sk.reason === SKIPPED_HIDDEN);
   if (hidden.length > 0) {
     skippedInputs.splice(
@@ -1245,6 +1409,13 @@ async function analyzeTarget(
     // The product surface scans composite documents the way the browser
     // does. Off by default in the API for cost (see AssertedPackOptions).
     secondaryFamilies: true,
+    // add-project-config-file — `document_types` names a type per file; a
+    // typed `--playbook` names one for all of them and wins.
+    ...(args.config?.values.document_types && !args.playbookFromFlag
+      ? {
+          playbookFor: (f: string) => documentTypeFor(args.config!, resolve(label(f))),
+        }
+      : {}),
   })) {
     const file = item.file;
     if ("error" in item) {
@@ -1525,7 +1696,14 @@ async function analyzeTarget(
         );
         continue;
       }
-      const content = await renderFormat(fmt, r, deps.dkb, definitions);
+      const content = await renderFormat(
+        fmt,
+        r,
+        deps.dkb,
+        definitions,
+        undefined,
+        args.configProvenance,
+      );
       if (args.out) {
         await mkdir(args.out, { recursive: true });
         const outName = stems.get(file)! + FORMAT_EXT[fmt];
@@ -1697,6 +1875,7 @@ async function analyzeTarget(
       deps.dkb,
       d.definitions,
       consistency ?? undefined,
+      args.configProvenance,
     );
     await mkdir(args.out!, { recursive: true });
     await writeUnder(args.out!, stems.get(d.file)! + FORMAT_EXT[d.fmt], content);
@@ -2068,6 +2247,31 @@ function isSavedReportShape(v: Record<string, unknown>): boolean {
   );
 }
 
+/**
+ * `vaulytica init` (add-project-config-file): write an example
+ * `vaulytica.config.json` into the working directory. Never replaces one
+ * without `--force` — a team's settings are not something to lose to a typo.
+ */
+export async function runInit(argv: string[]): Promise<void> {
+  let force = false;
+  for (const flag of argv) {
+    if (flag === "--force") force = true;
+    else throw new Error(`unknown argument "${flag}" (usage: vaulytica init [--force])`);
+  }
+  const path = join(process.cwd(), CONFIG_FILE_NAME);
+  if (!force && (await stat(path).catch(() => null))) {
+    process.stderr.write(
+      `vaulytica: ${CONFIG_FILE_NAME} already exists here; pass --force to replace it\n`,
+    );
+    process.exitCode = 1;
+    return;
+  }
+  await writeFile(path, EXAMPLE_CONFIG);
+  process.stdout.write(
+    `wrote ${CONFIG_FILE_NAME}. Every analyze run under this folder now applies it and says so on stderr.\n`,
+  );
+}
+
 /** Exported so  can drive the real command. */
 export async function runVerify(argv: string[]): Promise<void> {
   // Sequential parse so a `--playbook <id>` placed *before* the positionals
@@ -2284,6 +2488,13 @@ ${usageFormatLines()}
   coherence-matrix <r1.coherence.json> <r2.coherence.json> [<r3…> …]
                           [--format markdown|json] [--fail-on-blackout-round]
   verify  <report.json|certificate.json> <original> [--playbook <id>] [--dkb <dir>] [--as-text]
+  init    [--force]       Write an example vaulytica.config.json here.
+
+Project configuration: analyze reads the nearest vaulytica.config.json at or
+above its input (stopping at the repository root) for default playbooks,
+document types by glob, gates and formats. A typed flag always wins, an
+unknown key is an error, and every run that applies a file names it on stderr
+and in the JSON report's config block.
 
 Agent surface: \`vaulytica mcp [--root <dir>]…\` starts a Model Context
 Protocol server over stdio for a coding agent (local only; see docs/reference.md).
@@ -2420,6 +2631,8 @@ async function main(): Promise<void> {
       return runCoherenceMatrix(rest);
     case "verify":
       return runVerify(rest);
+    case "init":
+      return runInit(rest);
     case undefined:
     case "--help":
     case "-h":
@@ -2428,7 +2641,7 @@ async function main(): Promise<void> {
       return;
     default:
       throw new Error(
-        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | coherence-cadence | coherence-duration | coherence-durability | coherence-chain | coherence-recovery-chain | coherence-matrix | verify)`,
+        `unknown command "${command}" (expected: analyze | diff | compare | compare-coherence | coherence-trend | coherence-shift-trend | coherence-arc | coherence-exposure | coherence-persistence | coherence-breadth | coherence-recurrence | coherence-volatility | coherence-synchrony | coherence-settling | coherence-onset | coherence-latency | coherence-concurrency | coherence-relapse | coherence-tenure | coherence-affinity | coherence-recovery-affinity | coherence-opposition | coherence-precedence | coherence-concession | coherence-recovery-order | coherence-weak-front | coherence-cadence | coherence-duration | coherence-durability | coherence-chain | coherence-recovery-chain | coherence-matrix | verify | init)`,
       );
   }
 }
