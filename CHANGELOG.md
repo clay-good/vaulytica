@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.950.0] — 2026-10-19
+
+### Fixed
+- **"Apr. 14, 2026": an abbreviated month ended the sentence.** Rewriting
+  every "Month D, YYYY" in the corpus with the month abbreviated moved
+  findings on six specimens:
+  - **The party extractor** read a preamble's lead-in only up to the first
+    period followed by a space. "This Cohabitation Agreement is made as of
+    Apr. 14, 2026 between Devon Achebe … and Priya Venkataraman" therefore
+    named nobody, and a cohabitation agreement, a prenuptial agreement and a
+    marital settlement agreement drew STRUCT-001 "No parties identified". A
+    month abbreviation's period before a day number is now inside the sentence.
+  - **FIN-005** read a due date ("due and payable on Sept. 15, 2028") only
+    with the month spelled out (FIN-005 1.10.0).
+  - **MNA-116** read a bill of sale's execution date ("as of Oct. 20, 2026")
+    only without the period (MNA-116 1.2.0).
+
+  `month-abbreviation.test.ts` holds the rewrite at zero; it fails on 9.949.0.
+
 ## [9.949.0] — 2026-10-19
 
 ### Fixed

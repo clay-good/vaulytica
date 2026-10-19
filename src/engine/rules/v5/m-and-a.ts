@@ -237,7 +237,7 @@ const BILL_OF_SALE = pack("bill-of-sale", C, [
   },
   {
     id: "MNA-116",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Effective time and further assurances",
     cite: practice("bos-effective", "effective time and further assurances in a bill of sale"),
     pat: [
@@ -246,7 +246,7 @@ const BILL_OF_SALE = pack("bill-of-sale", C, [
       // adjacent "effective as of" / "as of the closing" forms could not
       // read. Conjoining the two pillars without this would have reported a
       // dated instrument as undated.
-      /(effective\s+(as\s+of|time)|as\s+of\s+(?:the\s+closing|[A-Z][a-z]+\s+\d|\d)|dated)/i,
+      /(effective\s+(as\s+of|time)|as\s+of\s+(?:the\s+closing|[A-Z][a-z]+\.?\s+\d|\d)|dated)/i,
       /(further\s+assurances?|execute\s+(and\s+deliver\s+)?such)/i,
     ],
     // Both halves, as the rationale requires: certain assets "need SEPARATE

@@ -1563,3 +1563,17 @@ describe("extractParties — a labelled party line", () => {
     );
   });
 });
+
+describe("a preamble dated with an abbreviated month", () => {
+  it("reads the parties after 'made as of Apr. 14, 2026 between'", () => {
+    // The abbreviation's period ended the preamble's lead-in, and the parties
+    // after it were never read.
+    const names = extractParties(
+      buildTree([
+        "Cohabitation Agreement",
+        'This Cohabitation Agreement is made as of Apr. 14, 2026 between Devon Achebe, residing at 88 Beech Row, Columbus, Ohio, and Priya Venkataraman, residing at 412 Sycamore Lane, Columbus, Ohio (each a "Party").',
+      ]),
+    ).map((p) => p.name);
+    expect(names).toEqual(expect.arrayContaining(["Devon Achebe", "Priya Venkataraman"]));
+  });
+});

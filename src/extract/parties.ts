@@ -408,7 +408,10 @@ const PREAMBLE_LEADIN_BEFORE_NAME = new RegExp(
   "i",
 );
 
-const SAME_SENTENCE = String.raw`(?:[^.;\n]|\.(?!\s))`;
+// A month's abbreviation period is inside the sentence too: "made as of Apr.
+// 14, 2026 between …" ended the preamble's lead-in at "Apr.", and three
+// family-law agreements were reported as naming no parties at all.
+const SAME_SENTENCE = String.raw`(?:[^.;\n]|\.(?!\s)|(?<=\b(?:Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sept?|Oct|Nov|Dec))\.(?=\s+\d))`;
 /**
  * How much front matter the preamble window covers when the paragraph count
  * is small — about a page, which is where a preamble lives in any layout.
