@@ -131,7 +131,7 @@ const ENDORSEMENT_RX = /\b((?:CG|CA|CU|CP|CR|IL|WC)(?:\s*\d{2}){2,4})\b/g;
 // up to the numeral's open paren, bounded by the sentence and by parens so it
 // never reaches an unrelated parenthetical; a plain "30 days" still matches.
 const NOTICE_RX =
-  /\b(?:[^.()\d\n]{0,60}?\()?(\d{1,3})\)?\s+days?['’]?\s+(?:prior )?(?:written )?notice of (?:cancellation|non[- ]renewal)/i;
+  /\b(?:[^.()\d\n]{0,60}?\()?(\d{1,3})\)?\s+days?['’]?\s+(?:prior )?(?:written )?notice of (?:cancellation|non[- ]?renewal)/i;
 
 // The same "word (numeral) days ... notice" shape with no "of cancellation"
 // tail, for use only inside a sentence already known to be about cancellation.

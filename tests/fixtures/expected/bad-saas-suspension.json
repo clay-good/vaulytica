@@ -100,7 +100,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -278,7 +278,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-003",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -327,7 +327,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.2.1"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -362,7 +362,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -405,7 +405,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "PERS-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -454,7 +454,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -639,7 +639,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-009",
-      "rule_version": "1.12.0"
+      "rule_version": "1.13.0"
     },
     {
       "elapsed_ms": 0,
@@ -745,7 +745,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -896,7 +896,7 @@
       "id": "DARK-002-s5-1175",
       "recommendation": "Move the cancellation window and the renewal date into the same paragraph as the renewal itself, make the window no shorter than the notice you are able to give, and send a reminder before it opens. A window that closes months before renewal is the term most often litigated as unfair.",
       "rule_id": "DARK-002",
-      "rule_version": "1.8.0",
+      "rule_version": "1.9.0",
       "severity": "warning",
       "source_citations": [
         {
@@ -1188,11 +1188,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.7,
   "playbook_match_reasoning": "Selected saas-customer (score 0.7). Title matched: \"subscription agreement\". Distinguishing phrases: \"Subscription Term\", \"uptime\".",
-  "result_hash": "55cb46c55abb476624ef42a3ae7cae79fad13decbe5b5fc406b516efa68397e7",
+  "result_hash": "0b832edb355ec608eb8f39bbaf5f025a283dff1096c666a42cd5367ccb207414",
   "source_file": {
     "name": "bad-saas-suspension.docx",
     "sha256": "9afd9de44c9b6a123f62c53a81c06b34ec7a515c4e5519fc63b2bc69223ac49b",
     "size_bytes": 9437
   },
-  "version": "9.950.0"
+  "version": "9.951.0"
 }

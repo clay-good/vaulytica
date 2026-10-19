@@ -45,7 +45,7 @@ const GRANT_CLAUSE =
 
 export const rule: Rule = {
   id: "IPDATA-010",
-  version: "1.2.1",
+  version: "1.3.0",
   name: "Perpetual / irrevocable license overreach",
   category: "ip-and-data",
   default_severity: "warning",
@@ -105,14 +105,14 @@ function evaluate(ctx: RuleContext, hit: ParagraphHit): Finding | null {
   // guards keep a favorable "non-perpetual, non-transferable, non-
   // sublicensable" grant from being read as overreach.
   const MODIFIERS = [
-    /(?<!non[- ])\bperpetual\b/i,
-    /(?<!non[- ])\birrevocable\b/i,
+    /(?<!non[- ]?)\bperpetual\b/i,
+    /(?<!non[- ]?)\birrevocable\b/i,
     /\broyalty[- ]free\b/i,
     /\bworldwide\b/i,
-    /(?<!non[- ])\bsublicen(?:[cs]e|sable|sed)\b/i,
-    /(?<!non[- ])\btransferable\b/i,
+    /(?<!non[- ]?)\bsub-?licen(?:[cs]e|sable|sed)\b/i,
+    /(?<!non[- ]?)\btransferable\b/i,
     /\bfully\s+paid[- ]up\b/i,
-    /(?<!non[- ])\bunrestricted\b/i,
+    /(?<!non[- ]?)\bunrestricted\b/i,
     /\bin\s+perpetuity\b/i,
   ];
   const matched = MODIFIERS.filter((re) => re.test(clause));

@@ -83,7 +83,7 @@ const INSTRUMENT_SUBJECT = new RegExp(
   // "This insurance does not apply to …" is a coverage exclusion, not a
   // party's covenant; an endorsement's exclusions read as negative covenants
   // once written "shall not apply".
-  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|insurance|coverage|act\b|statute|law|(?:(?:initial|renewal|sublease|lease|option)\s+)?(?:term|period)\b|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
+  String.raw`^(?:if\s+|when\s+|where\s+|unless\s+)?(?:this\s+|these\s+|the\s+)?(?:sections?|articles?|clauses?|paragraphs?|subsections?|provisions?|limitations?|exclusions?|waivers?|restrictions?|caps?|insurance|coverage|act\b|statute|law|(?:(?:initial|renewal|sub-?lease|lease|option)\s+)?(?:term|period)\b|${ATTACHMENT_KIND_PLURAL}|${INSTRUMENT_NOUN})\b`,
   "i",
 );
 
@@ -144,7 +144,7 @@ function clauseSnippet(raw: string): string {
 /** OBLI-005 — Negative covenants list (info). */
 export const rule: Rule = {
   id: "OBLI-005",
-  version: "1.9.0",
+  version: "1.10.0",
   name: "Negative covenants list",
   category: "obligations",
   default_severity: "info",

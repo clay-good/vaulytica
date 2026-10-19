@@ -103,10 +103,11 @@ const HIPAA_DUA = pack("hipaa-data-use-agreement", "privacy", [
   },
   {
     id: "DUA-006",
+    ver: "1.1.0",
     name: "Agents held to the same restrictions",
     cite: item("C)(4", "agents agree to the same restrictions and conditions"),
     pat: [
-      /\b(agents?|subcontractors?)\b[^.]{0,240}?\b(same|equivalent|no\s+less\s+(restrictive|protective))\b[^.]{0,80}?\b(restrictions?|conditions?|terms|obligations|requirements)\b/i,
+      /\b(agents?|sub-?contractors?)\b[^.]{0,240}?\b(same|equivalent|no\s+less\s+(restrictive|protective))\b[^.]{0,80}?\b(restrictions?|conditions?|terms|obligations|requirements)\b/i,
     ],
     why: "The recipient must ensure that any agent to whom it provides the limited data set agrees to the same restrictions and conditions that apply to the recipient. Without that, the data leaves the agreement the first time it is handed to a contractor or collaborator.",
     fix: "Add the recipient's agreement to ensure that any agents to whom it provides the limited data set agree to the same restrictions and conditions that apply to the recipient.",

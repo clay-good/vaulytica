@@ -519,7 +519,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-015",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "Subprocessor prior written authorisation (Art. 28(2))",
     description:
       "Processor must obtain prior specific or general written authorisation before engaging a subprocessor.",
@@ -535,7 +535,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     // general written authorization for Processor to engage …") as the Art.
     // 28(2) prohibition form — the grant form satisfies the same requirement.
     present_patterns: [
-      /(prior\s+(specific\s+or\s+general\s+)?written\s+authori[sz]ation|(specific\s+or\s+)?general\s+written\s+authori[sz]ation|authori[sz]ation\s+of\s+(the\s+)?controller).*?(processor|subprocessor)/is,
+      /(prior\s+(specific\s+or\s+general\s+)?written\s+authori[sz]ation|(specific\s+or\s+)?general\s+written\s+authori[sz]ation|authori[sz]ation\s+of\s+(the\s+)?controller).*?(processor|sub-?processor)/is,
     ],
     denied_if: expressDenial(
       String.raw`prior\s+written\s+authorisation|prior\s+written\s+authori[sz]ation|prior\s+(?:written\s+)?consent`,

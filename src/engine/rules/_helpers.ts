@@ -984,7 +984,7 @@ const INCORPORATED_INTO_PARENT =
   // level annex — each opens on its own name, and requiring the bare noun
   // immediately after "This" saw none of them. The capitalized run keeps the
   // test on a document that calls itself the exhibit.
-  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annexure|Annex|Appendix|Attachment)\b[^.]{0,80}?(?:\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)|\bforms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Subcontract|Sub-Contract|Sublease|Order|Note|Plan|Policy)s?\b/;
+  /\bThis\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Exhibit|Schedule|Annexure|Annex|Appendix|Attachment)\b[^.]{0,80}?(?:\b(?:is|are)\s+(?:hereby\s+)?(?:attached\s+to\s+and\s+)?(?:incorporated\s+(?:into|in)\b|attached\s+to\s+and\s+(?:made\s+)?(?:a\s+)?part\s+of\b|(?:made\s+)?(?:a\s+)?part\s+of\b|forms?\s+(?:a\s+)?part\s+of\b)|\bforms?\s+(?:a\s+)?part\s+of\b)[^.]{0,80}?\bthe\s+(?:[A-Z][\w&.-]*\s+){0,5}(?:Agreement|Lease|Contract|Sub-?contract|Sub-Contract|Sub-?lease|Order|Note|Plan|Policy)s?\b/;
 
 /**
  * The same recital, in a document that IS separately signed.
@@ -1093,7 +1093,7 @@ export function isIncorporatedExhibit(ctx: RuleContext): boolean {
  * same words in the body are a cross-reference to some other exhibit.
  */
 const EXHIBIT_HEADED_TO_PARENT =
-  /^\s*(?:exhibit|schedule|annexure|annex|appendix|attachment)\s+\w[\w.-]{0,6}\s+to\s+(?:the\s+|that\s+certain\s+)?\S[^.\n]{0,120}?\b(?:agreement|contract|subcontract|lease|sublease|licen[sc]e|order|terms|policy|plan|indenture|msa|sow)\b/i;
+  /^\s*(?:exhibit|schedule|annexure|annex|appendix|attachment)\s+\w[\w.-]{0,6}\s+to\s+(?:the\s+|that\s+certain\s+)?\S[^.\n]{0,120}?\b(?:agreement|contract|sub-?contract|lease|sub-?lease|licen[sc]e|order|terms|policy|plan|indenture|msa|sow)\b/i;
 
 /** How many opening lines may carry the exhibit heading (a legend can sit above it). */
 const EXHIBIT_HEADING_LINES = 3;
@@ -1252,7 +1252,7 @@ const NAMED_AS_A_PROVISION =
  * vocabulary. Accepting the role alone stood down its undefined-term check.
  */
 const ASSUMES_PARENT_OBLIGATIONS =
-  /\bassum(?:e|es|ed|ing|ption\s+of)\b[^.;]{0,140}?\bobligations\s+of\s+the\s+(?:tenant|lessee|sublessee|landlord|lessor|borrower|obligor|debtor|maker|seller|purchaser|buyer|contractor|subcontractor|licensee|licensor|franchisee|assignor|transferor|member|partner|employer)\b[^.;]{0,80}?\bunder\s+the\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Lease|Sublease|Agreement|Contract|Note|Indenture|Mortgage|Plan)\b|\bas\s+if\s+\w[^.;]{0,80}?\bwere\s+(?:the\s+)?(?:an\s+)?original\s+(?:tenant|lessee|borrower|party|signatory|contractor|licensee|member|partner)\b/;
+  /\bassum(?:e|es|ed|ing|ption\s+of)\b[^.;]{0,140}?\bobligations\s+of\s+the\s+(?:tenant|lessee|sublessee|landlord|lessor|borrower|obligor|debtor|maker|seller|purchaser|buyer|contractor|sub-?contractor|licensee|licensor|franchisee|assignor|transferor|member|partner|employer)\b[^.;]{0,80}?\bunder\s+the\s+(?:[A-Z][\w&.-]*\s+){0,4}(?:Lease|Sub-?lease|Agreement|Contract|Note|Indenture|Mortgage|Plan)\b|\bas\s+if\s+\w[^.;]{0,80}?\bwere\s+(?:the\s+)?(?:an\s+)?original\s+(?:tenant|lessee|borrower|party|signatory|contractor|licensee|member|partner)\b/;
 
 export function borrowsParentVocabulary(ctx: Pick<RuleContext, "tree">): boolean {
   const text = documentTextOf(ctx);

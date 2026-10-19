@@ -306,6 +306,7 @@ export const TRANSFER_RULES: Rule[] = [
   }),
   presence({
     id: "TRANSFER-009",
+    version: "1.1.0",
     name: "SCC Clause 16 — Non-Compliance with the Clauses",
     description: "SCC Clause 16 (Non-Compliance with the Clauses and Termination) must be present.",
     citation: "EU SCCs Clause 16",
@@ -313,7 +314,7 @@ export const TRANSFER_RULES: Rule[] = [
     missing_description: "No reference to SCC Clause 16 was found.",
     explanation: "Clause 16 governs the parties' rights when the SCCs become untenable.",
     recommendation: "Include the full Clause 16 text unmodified.",
-    present_patterns: [/(clause\s*16\b|non[- ]compliance\s+with\s+(?:the\s+)?clauses)/i],
+    present_patterns: [/(clause\s*16\b|non[- ]?compliance\s+with\s+(?:the\s+)?clauses)/i],
     default_severity: "warning",
   }),
   presence({

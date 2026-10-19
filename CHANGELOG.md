@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.951.0] — 2026-10-19
+
+### Fixed
+- **A compound spelled with or without its hyphen.** Both spellings are in
+  ordinary use, and recognizers had been written with one only:
+  - **"nonrenewal" for "non-renewal".** TEMP-005 and DARK-002 lost the
+    renewal-notice window on five specimens.
+  - **"sub-contractor" for "subcontractor"** (and sub-license,
+    sub-processor, sub-lease). Four false CRITICALs: BAA-018 and USDPA-010/018
+    reported the subcontractor flow-down missing, and CON-008 reported a
+    construction subcontract's parties missing.
+
+  Fixed by a codemod over recognizer source only, driven by the AST walk the
+  static guards already share (`recognizerSources`), so no rule name or
+  advice text changed. It touched 49 recognizers in 29 files, and 34 rule
+  versions were bumped; shared helpers in `rules/_helpers.ts` changed too.
+  A static guard in `compound-spelling.test.ts` caught five the first pass
+  missed (`sublicen[cs]e`), and now fails on any recognizer that writes
+  `sub…` or `non-` one way only. Two corpus relations hold the rewrites at
+  zero; both fail on 9.950.0.
+- **STRUCT-009 read half of a hyphenated compound as a use of a defined
+  term.** "Sub-contract" was reported as a lower-case "Contract". A word
+  joined by a hyphen on either side is no longer counted (STRUCT-009 1.13.0).
+- **Measured, nothing to fix:** dates written "the 14th day of April, 2026",
+  across 341 specimens.
+- The unmodified corpus is identical before and after.
+
 ## [9.950.0] — 2026-10-19
 
 ### Fixed

@@ -210,10 +210,11 @@ const ROOMMATE = pack("roommate-agreement", "real-estate", [
   },
   {
     id: "ROOM-004",
+    ver: "1.1.0",
     name: "Finding a replacement",
     cite: practice("roommate-replacement", "who finds one, and who approves"),
     pat: [
-      /\b(replacement|substitute|new)\s+(roommate|tenant|occupant|subtenant|housemate)\b|\bsublet\w*|\bsubleas\w+|\bfind\w*\s+(a\s+)?(replacement|someone\s+to\s+take)/i,
+      /\b(replacement|substitute|new)\s+(roommate|tenant|occupant|subtenant|housemate)\b|\bsub-?let\w*|\bsubleas\w+|\bfind\w*\s+(a\s+)?(replacement|someone\s+to\s+take)/i,
     ],
     why: "A replacement has to be acceptable to the people who stay and, under most leases, approved by the landlord. A document that requires a replacement without saying who approves one invites a stranger or a vacancy.",
     fix: "Say who is responsible for finding a replacement, that the remaining people must approve the person, and that the landlord's consent is required where the lease calls for it.",

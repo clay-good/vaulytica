@@ -32,7 +32,7 @@ import type { DocPosition } from "../../../extract/types.js";
 // where multiple branches share a `(?:to\s+)?solicit` tail.
 const NON_SOLICIT_KEYWORD = /\b(?:solicit|no[- ]hire|no[- ]poach)\b/i;
 const NON_SOLICIT_NEGATIVES = [
-  /\bnon[- ]solicit(?:ation)?\b/i,
+  /\bnon[- ]?solicit(?:ation)?\b/i,
   // "is not PERMITTED TO solicit" is the same prohibition as "shall not
   // solicit", and PERS-002 already admits the plain-language form by name for
   // exactly this reason. PERS-009 did not, so a franchise agreement's
@@ -89,7 +89,7 @@ function durationToMonths(amount: string, unit: string): number | null {
 
 export const rule: Rule = {
   id: "PERS-009",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Long non-solicit duration",
   category: "personnel",
   default_severity: "warning",

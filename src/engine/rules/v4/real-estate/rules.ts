@@ -604,7 +604,7 @@ const GROUND_LEASE_RULES: Rule[] = [
   }),
   presence({
     id: "RE-023",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Assignment and subletting",
     description: "Ground lease should address assignment / subletting consent.",
     citation: rePractice(
@@ -620,7 +620,7 @@ const GROUND_LEASE_RULES: Rule[] = [
     recommendation:
       "Add 'Assignment and Subletting' with a consent standard and permitted-assignment carve-outs.",
     present_patterns: [
-      /assign(ment)?\s+(and|or)\s+sublet/i,
+      /assign(ment)?\s+(and|or)\s+sub-?let/i,
       /transfer.{0,40}leasehold/is,
       // A section headed "ASSIGNMENT AND TRANSFER" grants the two rights in
       // separate sentences — "Tenant MAY ASSIGN this Lease, without Landlord's

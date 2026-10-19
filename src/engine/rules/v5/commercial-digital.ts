@@ -222,10 +222,11 @@ const DATA_LICENSE = pack("data-license-agreement", C, [
   },
   {
     id: "COMM-215",
+    ver: "1.1.0",
     name: "Redistribution and sublicensing",
     cite: practice("data-redistribution", "redistribution controls in data licenses"),
     pat: [
-      /(redistribut|resell|sublicen[cs]e)/i,
+      /(redistribut|resell|sub-?licen[cs]e)/i,
       /(may\s+not|(?:shall|will|must)\s+not|prohibited|only\s+with\s+(the\s+)?prior\s+written)/i,
     ],
     why: "A dataset's value collapses if a licensee can pass it on. Redistribution controls also carry the licensor's own upstream obligations to its sources.",

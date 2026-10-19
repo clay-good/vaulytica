@@ -443,7 +443,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   language({
     id: "MSA-010",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "New York Gen. Oblig. § 5-322.1 anti-indemnity flag",
     description:
       "Flags a broad indemnification for negligence in a construction-related MSA governed by New York law — void per N.Y. Gen. Oblig. § 5-322.1.",
@@ -457,7 +457,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Narrow the indemnity to the indemnitor's own negligence (or its share under comparative-negligence apportionment).",
     bad_patterns: [
       /(?:indemnif\w+\s+(?:and\s+hold\s+harmless\s+)?).{0,200}(?:against\s+all\s+claims|for\s+any\s+and\s+all\s+(?:claims|losses))[^.]{0,200}(?:including|even\s+(?:if|though)|regardless\s+of)[^.]{0,80}(?:negligence|fault)\s+of\s+(?:the\s+)?indemnitee/is,
-      /indemnif\w+.{0,160}(?:contractor|subcontractor|construction).{0,160}negligence\s+of\s+(?:the\s+)?(?:owner|indemnitee)/is,
+      /indemnif\w+.{0,160}(?:contractor|sub-?contractor|construction).{0,160}negligence\s+of\s+(?:the\s+)?(?:owner|indemnitee)/is,
       // Real broad-form indemnities name the party ("negligence of Customer")
       // or use the "in whole or in part" hallmark, not the literal word
       // "indemnitee", so the patterns above missed the canonical clause. NY
@@ -576,6 +576,7 @@ export const MSA_DEEP_RULES: Rule[] = [
   }),
   presence({
     id: "MSA-014",
+    version: "1.1.0",
     name: "Compliance-with-laws + non-infringement warranties",
     description: "MSA must include compliance-with-laws and non-infringement warranties.",
     citation: "Commercial drafting baseline — compliance/non-infringement",
@@ -586,7 +587,7 @@ export const MSA_DEEP_RULES: Rule[] = [
       "Add: services and deliverables (a) comply with applicable laws and (b) do not infringe any third-party IP rights.",
     present_patterns: [
       /(?:comply|compliance).{0,40}(?:applicable\s+laws|laws\s+and\s+regulations)/i,
-      /(?:do\s+not\s+(?:infringe|violate)|non[- ]infring\w+)/i,
+      /(?:do\s+not\s+(?:infringe|violate)|non[- ]?infring\w+)/i,
     ],
     default_severity: "warning",
   }),

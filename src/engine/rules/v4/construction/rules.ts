@@ -183,6 +183,7 @@ const CONSTRUCTION_CONTRACT_RULES: Rule[] = [
 const SUBCONTRACTOR_RULES: Rule[] = [
   presence({
     id: "CON-008",
+    version: "1.1.0",
     name: "General contractor / subcontractor / project identified",
     description:
       "Subcontractor agreement must identify the general contractor, subcontractor, and underlying project.",
@@ -200,7 +201,7 @@ const SUBCONTRACTOR_RULES: Rule[] = [
       "Add 'Parties' identifying general contractor, subcontractor, and the prime / underlying project.",
     present_patterns: [
       /(general\s+contractor|contractor)/i,
-      /(subcontractor)/i,
+      /(sub-?contractor)/i,
       /(project|prime\s+contract|underlying)/i,
     ],
     require_all_present: true,
@@ -346,7 +347,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
   }),
   presence({
     id: "CON-015",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Identified claimant + property + project",
     description:
       "Lien waiver must identify the claimant, the property / project, and the through-date / payment amount.",
@@ -360,7 +361,7 @@ const LIEN_WAIVER_RULES: Rule[] = [
     recommendation:
       "Add 'Claimant', 'Customer', 'Owner', 'Property / Project', 'Through Date', and 'Amount' fields.",
     present_patterns: [
-      /(claimant|undersigned|subcontractor)/i,
+      /(claimant|undersigned|sub-?contractor)/i,
       /(property|project|job)/i,
       new RegExp(
         String.raw`(through\s+(the\s+)?date|payment\s+amount|amount\s+of\s+${CURRENCY_MARK})`,

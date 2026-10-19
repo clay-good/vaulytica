@@ -99,7 +99,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "DARK-002",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -276,7 +276,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-003",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -329,7 +329,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "IPDATA-010",
-      "rule_version": "1.2.1"
+      "rule_version": "1.3.0"
     },
     {
       "elapsed_ms": 0,
@@ -365,7 +365,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "OBLI-005",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -407,7 +407,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "PERS-002",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -456,7 +456,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "PERS-009",
-      "rule_version": "1.8.0"
+      "rule_version": "1.9.0"
     },
     {
       "elapsed_ms": 0,
@@ -640,7 +640,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-009",
-      "rule_version": "1.12.0"
+      "rule_version": "1.13.0"
     },
     {
       "elapsed_ms": 0,
@@ -745,7 +745,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "TEMP-005",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -959,7 +959,7 @@
       "id": "IPDATA-010-s3-598",
       "recommendation": "Narrow the license to what the vendor actually needs. For Feedback, a non-exclusive, non-transferable license to use Feedback for the limited purpose of improving the Service, ending when the arrangement ends, is the standard balanced position. Strike 'sublicensable' and 'transferable' unless the use case genuinely requires sharing the grant with third parties.",
       "rule_id": "IPDATA-010",
-      "rule_version": "1.2.1",
+      "rule_version": "1.3.0",
       "severity": "warning",
       "source_citations": [],
       "title": "License grant is perpetual / irrevocable / royalty-free / sublicensable"
@@ -1134,11 +1134,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "aefaae92064d255152d0df7999641389bb106cf9c191b6d4f9607d40fc864642",
+  "result_hash": "463f0a282ec43716539d3af9e7b86cda7f8fcb57e0e9ccb8b3407378031f8326",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.950.0"
+  "version": "9.951.0"
 }

@@ -340,11 +340,12 @@ const JDA = pack("joint-development-agreement", C, [
 const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
   {
     id: "IPL-122",
+    ver: "1.1.0",
     name: "Licensed patents and field of use",
     cite: practice("license-scope", "field-of-use and territory scoping in university licenses"),
     pat: [
       /licensed\s+(patents?|technology|products?)/i,
-      /(field\s+of\s+use|territory|exclusive|non-?exclusive|sublicen[cs]e)/i,
+      /(field\s+of\s+use|territory|exclusive|non-?exclusive|sub-?licen[cs]e)/i,
     ],
     why: "University licenses are almost always field-limited, and the field definition determines what the licensee can build and what the university can license to the next company.",
     fix: "Define the licensed patents, the licensed products, the field of use, the territory, and the exclusivity and sublicensing rights.",
@@ -391,6 +392,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
   },
   {
     id: "IPL-126",
+    ver: "1.1.0",
     name: "Royalties, sublicense income, and reporting",
     cite: practice(
       "royalty-reporting",
@@ -398,7 +400,7 @@ const TECH_TRANSFER = pack("technology-transfer-agreement", C, [
     ),
     pat: [
       /(royalt|licen[cs]e\s+fee|milestone\s+payment)/i,
-      /(sublicen[cs]e\s+(income|revenue)|net\s+sales|report|minimum\s+annual)/i,
+      /(sub-?licen[cs]e\s+(income|revenue)|net\s+sales|report|minimum\s+annual)/i,
     ],
     why: "Net sales definitions and sublicense income sharing are where the economics actually live, and university templates often define net sales more broadly than a licensee expects.",
     fix: "Define net sales with its permitted deductions, state the royalty rate, sublicense income share, minimum annual royalties, and the reporting and payment schedule.",
@@ -507,11 +509,12 @@ const ESCROW = pack("source-code-escrow-agreement", C, [
   },
   {
     id: "IPL-133",
+    ver: "1.1.0",
     name: "License scope after release",
     cite: practice("post-release-license", "license scope following an escrow release"),
     pat: [
       /(upon\s+release|after\s+(the\s+)?release|following\s+release)/i,
-      /(licen[cs]e\s+to\s+(use|modify|maintain)|internal\s+(use|purposes)|may\s+not\s+(distribute|sublicen[cs]e))/i,
+      /(licen[cs]e\s+to\s+(use|modify|maintain)|internal\s+(use|purposes)|may\s+not\s+(distribute|sub-?licen[cs]e))/i,
     ],
     why: "A release without a license to modify and maintain gives the beneficiary code it cannot lawfully use. The scope also needs limits so the escrow does not become a backdoor source license.",
     fix: "Grant a post-release license to use, modify, and maintain the software for the beneficiary's internal purposes, with express limits on distribution and competitive use.",

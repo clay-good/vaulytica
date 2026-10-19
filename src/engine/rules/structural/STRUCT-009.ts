@@ -5,7 +5,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
 /** STRUCT-009 — Defined-term capitalization consistency (info). */
 export const rule: Rule = {
   id: "STRUCT-009",
-  version: "1.12.0",
+  version: "1.13.0",
   name: "Defined-term capitalization consistency",
   category: "structural",
   default_severity: "info",
@@ -30,7 +30,10 @@ export const rule: Rule = {
       forEachParagraph(ctx.tree, (p) => {
         if (foundLower) return;
         if (p.paragraph.id === def.defined_at.paragraph_id) return;
-        const re = new RegExp(`\\b${escape(lower)}\\b`, "g");
+        // Half of a hyphenated compound is not a use of the term: "sub-contract"
+        // does not mention a defined "Contract", and reading it as a lowercase
+        // use reported an inconsistency the document does not have.
+        const re = new RegExp(`(?<![\\w-])${escape(lower)}(?![\\w-])`, "g");
         const text = p.text;
         let m: RegExpExecArray | null;
         while ((m = re.exec(text)) !== null) {
@@ -125,7 +128,7 @@ export function isStatutoryIdiomUse(
   // a lowercase use of a defined "Company" — every agreement that defines
   // "Company" also recites at least one party's entity type this way.
   if (lower === "company" || lower === "corporation" || lower === "partnership") {
-    return /\b(?:limited\s+liability|joint\s+stock|professional|nonprofit|non-profit|limited|general|holding)\s+$/i.test(
+    return /\b(?:limited\s+liability|joint\s+stock|professional|nonprofit|non-?profit|limited|general|holding)\s+$/i.test(
       text.slice(Math.max(0, index - 24), index),
     );
   }

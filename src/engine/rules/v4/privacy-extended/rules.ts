@@ -430,6 +430,7 @@ const ROPA_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-018",
+    version: "1.1.0",
     name: "Recipients — Art. 30(1)(d)",
     description: "ROPA must enumerate categories of recipients.",
     citation: gdprArt("30", "Recipients"),
@@ -442,7 +443,7 @@ const ROPA_RULES: Rule[] = [
       "Add 'Categories of Recipients' enumerating processors, joint controllers, third-country recipients, and any law-enforcement / regulator disclosures.",
     present_patterns: [
       /recipients?/i,
-      /(processors?|subprocessors?|joint\s+controllers?)/i,
+      /(processors?|sub-?processors?|joint\s+controllers?)/i,
       /(third\s+countr|international\s+organi[sz]ation)/i,
     ],
   }),
@@ -739,6 +740,7 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
   }),
   presence({
     id: "PRV-033",
+    version: "1.1.0",
     name: "Subprocessor / fourth-party disclosure",
     description: "VSQ must list material subprocessors / fourth parties and their function.",
     citation: gdprArt("28", "Subprocessor disclosure"),
@@ -749,7 +751,10 @@ const VENDOR_QUESTIONNAIRE_RULES: Rule[] = [
       "GDPR Art. 28(2)–(4) require controller authorization of subprocessors and contractual flow-down. Customers expect a current list with function and location.",
     recommendation:
       "Add 'Subprocessors' listing each material subprocessor, function, and location, with a process for change notification.",
-    present_patterns: [/(subprocessors?|sub.processors?|fourth.?part(y|ies))/i, /(list|register)/i],
+    present_patterns: [
+      /(sub-?processors?|sub.processors?|fourth.?part(y|ies))/i,
+      /(list|register)/i,
+    ],
     default_severity: "warning",
   }),
 ];

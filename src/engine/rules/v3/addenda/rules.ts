@@ -522,6 +522,7 @@ export const ADDENDA_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presenceEula({
     id: "ADDENDA-017",
+    version: "1.2.0",
     name: "License grant scope + prohibited uses",
     description: "EULA must include an explicit license grant scope and prohibited-uses clause.",
     citation: "EU Digital Content Directive 2019/770",
@@ -532,8 +533,8 @@ export const ADDENDA_RULES: Rule[] = [
     recommendation:
       "State the grant ('non-exclusive, non-transferable, revocable license to use the Software'); enumerate prohibited uses (reverse engineer, sublicense, competitive benchmarking).",
     present_patterns: [
-      /(non[- ]exclusive|non[- ]transferable|revocable)\s+licen[cs]e/i,
-      /(?:may\s+not|(?:shall|will|must)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sublicen[cs]e)/i,
+      /(non[- ]?exclusive|non[- ]?transferable|revocable)\s+licen[cs]e/i,
+      /(?:may\s+not|(?:shall|will|must)\s+not|prohibited\s+from)\s+(?:reverse\s+engineer|decompile|disassemble|sub-?licen[cs]e)/i,
     ],
     default_severity: "warning",
   }),

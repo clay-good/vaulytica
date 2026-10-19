@@ -4,7 +4,7 @@ import { emit, firstUnnegatedParagraphMatch, hitExcerpt, matchedSentence } from 
 /** PERS-002 — Non-solicit present (info). */
 export const rule: Rule = {
   id: "PERS-002",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Non-solicit present",
   category: "personnel",
   default_severity: "info",
@@ -27,7 +27,7 @@ export const rule: Rule = {
       // would also match "not REQUIRED to solicit", which says the opposite.
       // procurement clause ("shall not solicit bids from vendors") is not
       // misread as a personnel non-solicit.
-      /\bnon[- ]solicit(?:ation)?\b|\bnot\s+(?:to\s+|permitted\s+to\s+)?(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?|clients?|personnel|staff)\b/i,
+      /\bnon[- ]?solicit(?:ation)?\b|\bnot\s+(?:to\s+|permitted\s+to\s+)?(?:solicit|induce|encourage|persuade|recruit)\b[^.;\n]{0,80}\b(?:employees?|customers?|clients?|personnel|staff)\b/i,
     );
     if (!hit) return null;
     return emit(ctx, rule, {

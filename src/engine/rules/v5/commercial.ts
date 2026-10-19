@@ -780,12 +780,12 @@ const TEAMING = pack("teaming-agreement", C, [
   {
     id: "COMM-153",
     // 1.1.0 — reads "per cent", the UK and Commonwealth spelling, as well as "percent".
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Workshare and scope commitment",
     cite: cfr("48", "9.603", "FAR — policy on contractor team arrangements"),
     pat: [
       /(workshare|work\s+share|scope\s+of\s+work\s+to\s+be\s+performed\s+by)/i,
-      /(per\s?cent(age)?|statement\s+of\s+work|the\s+subcontract\s+scope)/i,
+      /(per\s?cent(age)?|statement\s+of\s+work|the\s+sub-?contract\s+scope)/i,
     ],
     why: "Most teaming agreements fail as unenforceable agreements to negotiate precisely because the subcontract scope is left for later. A defined workshare with an attached SOW is what makes the promise specific enough to enforce.",
     fix: "Attach the subcontractor's statement of work and state the workshare percentage or defined scope the prime commits to subcontract on award.",
@@ -898,11 +898,11 @@ const FLOWDOWN = pack("far-subcontract-flowdown", C, [
   },
   {
     id: "COMM-161",
-    ver: "1.1.0",
+    ver: "1.2.0",
     name: "Small-business and socioeconomic clauses",
     cite: cfr("48", "52.219-8", "FAR — utilization of small business concerns"),
     pat: [
-      /(52\.219|small\s+business\s+(subcontracting|concerns))/i,
+      /(52\.219|small\s+business\s+(sub-?contracting|concerns))/i,
       /(52\.222-26|equal\s+opportunity|affirmative\s+action)/i,
     ],
     why: "FAR 52.219-8 is among the handful of clauses required in subcontracts above threshold regardless of commerciality. Executive Order 14173 (January 21, 2025) revoked E.O. 11246, and FAR 52.222-26 (Equal Opportunity) is no longer required. Omitted flow-downs are a recurring finding in prime contractor audits.",

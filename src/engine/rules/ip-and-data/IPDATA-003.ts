@@ -5,7 +5,7 @@ import { truncateQuote } from "../../text.js";
 /** IPDATA-003 — License grant scope (info). */
 export const rule: Rule = {
   id: "IPDATA-003",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "License grant scope",
   category: "ip-and-data",
   default_severity: "info",
@@ -15,7 +15,7 @@ export const rule: Rule = {
   check(ctx: RuleContext): Finding | null {
     const hit = firstParagraphMatch(
       ctx,
-      /\bgrants?\s+(?:to\s+\w+\s+)?a\s+(?:non[- ]exclusive|exclusive|royalty[- ]free|perpetual|worldwide|sublicensable)[\s\S]{0,200}\blicen[cs]e\b/i,
+      /\bgrants?\s+(?:to\s+\w+\s+)?a\s+(?:non[- ]?exclusive|exclusive|royalty[- ]free|perpetual|worldwide|sub-?licensable)[\s\S]{0,200}\blicen[cs]e\b/i,
     );
     if (!hit) return null;
     // Negated-detector guard: a no-license clause reuses the same "grants a

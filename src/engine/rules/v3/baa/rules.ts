@@ -138,7 +138,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-005",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subcontractor flow-down",
     description:
       "BA must ensure subcontractors that handle PHI agree in writing to the same restrictions and conditions.",
@@ -151,7 +151,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add a 'Subcontractors' clause requiring written agreements imposing the same restrictions on any subcontractor handling PHI.",
     present_patterns: [
-      /(subcontractor|sub[- ]processor).*?(same restrictions|same conditions|written contract|agree)/is,
+      /(sub-?contractor|sub[- ]processor).*?(same restrictions|same conditions|written contract|agree)/is,
     ],
     denied_if: expressDenial(String.raw`subcontractors?|sub.?processors?`),
     denied_title: "Subcontractor flow-down expressly disclaimed",
@@ -421,7 +421,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-018",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subcontractor flow-down for Security Rule",
     description:
       "BA must ensure subcontractors handling ePHI agree to the Security Rule restrictions.",
@@ -434,7 +434,7 @@ export const BAA_RULES: Rule[] = [
     recommendation:
       "Add: 'Business Associate shall ensure that any subcontractor that creates, receives, maintains, or transmits ePHI on behalf of Business Associate agrees in writing to comply with applicable Security Rule requirements.'",
     present_patterns: [
-      /(subcontractor|sub[- ]processor).*?(security\s+rule|safeguards|same\s+(restrictions|conditions))/is,
+      /(sub-?contractor|sub[- ]processor).*?(security\s+rule|safeguards|same\s+(restrictions|conditions))/is,
     ],
   }),
 
@@ -810,7 +810,7 @@ export const BAA_RULES: Rule[] = [
 
   presence({
     id: "BAA-035",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Subprocessor / vendor disclosure",
     description:
       "BAA should require BA to disclose subprocessors / downstream vendors that handle PHI.",
@@ -825,7 +825,7 @@ export const BAA_RULES: Rule[] = [
       // The disclosure is as often a NOTICE OF EACH ENGAGEMENT as a standing
       // list — "shall give Business Associate notice of each such engagement"
       // is how a downstream BAA states it, and there is no list to find.
-      /(list\s+of\s+subprocessors|list\s+of\s+subcontractors|subprocessor.{0,60}(disclos|maintain.*list))/is,
+      /(list\s+of\s+sub-?processors|list\s+of\s+sub-?contractors|sub-?processor.{0,60}(disclos|maintain.*list))/is,
       /\bsub[- ]?(?:processor|contractor)[^.]{0,120}?\b(?:notice|notify|inform|disclos)/i,
       /\b(?:notice|notify|inform|disclos)\w*[^.]{0,120}?\bsub[- ]?(?:processor|contractor)/i,
     ],

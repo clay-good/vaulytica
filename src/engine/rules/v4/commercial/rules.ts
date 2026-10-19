@@ -1171,6 +1171,7 @@ const MARKETING_RULES: Rule[] = [
   }),
   presence({
     id: "COMM-037",
+    version: "1.1.0",
     name: "Subcontractor and influencer responsibility (flow-down)",
     description:
       "Where the Agency engages subcontractors or influencers, the agreement should make the Agency responsible for them and flow down its obligations.",
@@ -1180,7 +1181,7 @@ const MARKETING_RULES: Rule[] = [
     // freelancers, or influencers — a fully in-house agency need not address
     // flow-down.
     applicable_if: [
-      /subcontractor|sub.?contract\w*|freelanc\w*|influencer|third.?party\s+(vendor|provider|contractor)/i,
+      /sub-?contractor|sub.?contract\w*|freelanc\w*|influencer|third.?party\s+(vendor|provider|contractor)/i,
     ],
     missing_title: "Subcontractor / influencer flow-down clause missing",
     missing_description:
@@ -1190,10 +1191,10 @@ const MARKETING_RULES: Rule[] = [
     recommendation:
       "Add a clause making the Agency responsible for its subcontractors and influencers and requiring it to bind them in writing to the material obligations (FTC disclosure, confidentiality, IP assignment, compliance).",
     present_patterns: [
-      /(remain\w*|be)\s+(fully\s+)?responsible\s+for[\s\S]{0,40}(subcontractor|influencer|freelanc|third.?party)/is,
+      /(remain\w*|be)\s+(fully\s+)?responsible\s+for[\s\S]{0,40}(sub-?contractor|influencer|freelanc|third.?party)/is,
       /flow(ed|s)?[\s-]?down|pass(ed|es)?[\s-]?through/i,
-      /(bind|require)[\s\S]{0,40}(subcontractor|influencer)[\s\S]{0,40}(same|equivalent|written)/is,
-      /(subcontractor|influencer)s?[\s\S]{0,40}((?:shall|will|must)\s+)?(comply|be\s+bound|agree)/is,
+      /(bind|require)[\s\S]{0,40}(sub-?contractor|influencer)[\s\S]{0,40}(same|equivalent|written)/is,
+      /(sub-?contractor|influencer)s?[\s\S]{0,40}((?:shall|will|must)\s+)?(comply|be\s+bound|agree)/is,
     ],
   }),
 ];

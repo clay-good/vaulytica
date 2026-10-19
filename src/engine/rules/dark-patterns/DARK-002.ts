@@ -39,7 +39,7 @@ function clauseIndex(ctx: RuleContext): (offset: number) => string | undefined {
 /** DARK-002 — Auto-renewal with hidden notice window (warning). */
 export const rule: Rule = {
   id: "DARK-002",
-  version: "1.8.0",
+  version: "1.9.0",
   name: "Auto-renewal with hidden notice window",
   category: "dark-patterns",
   default_severity: "warning",
@@ -88,7 +88,7 @@ export const rule: Rule = {
       // included, but only when it links the day-count to renewal, so a general
       // cancellation-notice day-count elsewhere is not mistaken for it.
       new RegExp(
-        String.raw`\bnon[- ]renewal\b[^.;\n]{0,200}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days|notice\s+of\s+non[- ]renewal[^.;\n]{0,80}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days|(?:cancel(?:lation)?|opt[- ]?out)\b[^.;\n]{0,80}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days\b[^.;\n]{0,30}?(?:before|prior\s+to|in\s+advance\s+of)[^.;\n]{0,20}?(?:renewal|renew|the\s+next\s+term)`,
+        String.raw`\bnon[- ]?renewal\b[^.;\n]{0,200}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days|notice\s+of\s+non[- ]?renewal[^.;\n]{0,80}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days|(?:cancel(?:lation)?|opt[- ]?out)\b[^.;\n]{0,80}?(${PERIOD_COUNT})\s+(?:calendar\s+)?days\b[^.;\n]{0,30}?(?:before|prior\s+to|in\s+advance\s+of)[^.;\n]{0,20}?(?:renewal|renew|the\s+next\s+term)`,
         "i",
       ),
     );

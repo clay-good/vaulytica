@@ -300,7 +300,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-010",
-    version: "1.2.0",
+    version: "1.3.0",
     name: "CCPA: subcontractor flow-down",
     description:
       "CCPA service-provider must require subcontractors to meet the same CCPA obligations.",
@@ -313,9 +313,9 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation:
       "Add a subcontractor flow-down requiring the same restrictions as in this Agreement.",
     present_patterns: [
-      /(subcontractor|sub[- ]processor).{0,200}(same\s+(restrictions|obligations|provisions)|equivalent)/is,
+      /(sub-?contractor|sub[- ]processor).{0,200}(same\s+(restrictions|obligations|provisions)|equivalent)/is,
       // "binds the subcontractor to terms at least as protective as this Addendum".
-      /(subcontractor|sub[- ]processor)[^.]{0,200}\bat\s+least\s+as\s+(?:protective|restrictive|stringent)\b/i,
+      /(sub-?contractor|sub[- ]processor)[^.]{0,200}\bat\s+least\s+as\s+(?:protective|restrictive|stringent)\b/i,
     ],
     denied_if: expressDenial(String.raw`subcontractors?|subprocessors?`),
     denied_title: "Subcontractor flow-down expressly disclaimed",
@@ -505,6 +505,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
   }),
   presence({
     id: "USDPA-018",
+    version: "1.1.0",
     name: "Multi-state: subcontractor written contract",
     description: "Processor must engage subcontractors only pursuant to a written contract.",
     citation: "Va. Code § 59.1-579 / Colo. Rev. Stat. § 6-1-1305 / similar",
@@ -515,7 +516,7 @@ export const DPA_US_STATE_RULES: Rule[] = [
     recommendation:
       "Add: 'Processor shall engage any subcontractor only pursuant to a written contract requiring the subcontractor to meet the obligations of Processor under this Agreement.'",
     present_patterns: [
-      /(subcontractor|sub[- ]processor).{0,200}(written\s+contract|written\s+agreement|same\s+obligations)/is,
+      /(sub-?contractor|sub[- ]processor).{0,200}(written\s+contract|written\s+agreement|same\s+obligations)/is,
     ],
   }),
   presence({

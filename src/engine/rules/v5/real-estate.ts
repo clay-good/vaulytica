@@ -70,10 +70,11 @@ const SUBLEASE = pack("sublease-agreement", C, [
   },
   {
     id: "RE-105",
+    ver: "1.1.0",
     name: "Surrender condition and holdover",
     cite: practice("sublease-surrender", "surrender and holdover in subleases"),
     pat: [
-      /(surrender|return\s+the\s+(subleased\s+)?premises)/i,
+      /(surrender|return\s+the\s+(sub-?leased\s+)?premises)/i,
       /(holdover|hold\s+over|restore|remove\s+(the\s+)?(alterations|improvements))/i,
     ],
     why: "A subtenant that holds over exposes the sublandlord to prime-lease holdover rent — commonly 150% to 200% of rent plus consequential damages. The indemnity for that exposure is the sublandlord's key protection.",

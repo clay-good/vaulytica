@@ -18,7 +18,7 @@ import { truncate } from "../../engine/text.js";
 /** How much of the clause the §57 page carries as its evidence. */
 const EXCERPT_LIMIT = 600;
 
-const SUBP_RX = /\b(?:sub[- ]?processor|subcontractor)s?\b/i;
+const SUBP_RX = /\b(?:sub[- ]?processor|sub-?contractor)s?\b/i;
 
 // `(?:[^.()\d\n]*?\()?` reads the "word (numeral)" form — "thirty (30) days'
 // prior written notice" — whose parenthesized numeral is authoritative; a
