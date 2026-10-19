@@ -228,7 +228,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "FIN-005",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -814,7 +814,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.16.0"
+      "rule_version": "1.17.0"
     },
     {
       "elapsed_ms": 0,
@@ -1184,7 +1184,7 @@
       "id": "TERM-002-s1-0",
       "recommendation": "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
       "rule_id": "TERM-002",
-      "rule_version": "1.16.0",
+      "rule_version": "1.17.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1295,11 +1295,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "1daffbafc79a19cbbe419e8268a82b0c71a1790e3156117d758a728a39248723",
+  "result_hash": "5af0e4e8aa3b7db6412fa591da12f9016861576a54e8b79facff83dc6215e973",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.946.0"
+  "version": "9.947.0"
 }

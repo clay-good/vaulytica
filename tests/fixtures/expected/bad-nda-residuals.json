@@ -225,7 +225,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "FIN-005",
-      "rule_version": "1.9.0"
+      "rule_version": "1.10.0"
     },
     {
       "elapsed_ms": 0,
@@ -805,7 +805,7 @@
       "fired": true,
       "ran": true,
       "rule_id": "TERM-002",
-      "rule_version": "1.16.0"
+      "rule_version": "1.17.0"
     },
     {
       "elapsed_ms": 0,
@@ -966,7 +966,7 @@
       "id": "TERM-002-s1-0",
       "recommendation": "Add a termination-for-cause clause: what counts as a material breach, the cure period (30 days is the norm), who may terminate, and whether insolvency or a change of control is an immediate-termination event.",
       "rule_id": "TERM-002",
-      "rule_version": "1.16.0",
+      "rule_version": "1.17.0",
       "severity": "warning",
       "source_citations": [],
       "title": "No termination-for-cause clause detected"
@@ -1041,11 +1041,11 @@
   "playbook_id": "mutual-nda",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected mutual-nda (score 1). Title matched: \"mutual non-disclosure\", \"mutual non-disclosure agreement\". Required clauses present: \"confidentiality-obligation\". Distinguishing phrases: \"Discloser\".",
-  "result_hash": "89b29ef9e3458850bc9f46db6352611653f9c2a655acb9e3753f2c9094c422d3",
+  "result_hash": "d2e70f0ff52026604d358370bc9771d4b881dbc903b97e7c115baa473287c8c8",
   "source_file": {
     "name": "bad-nda-residuals.docx",
     "sha256": "622200c84f9ee83eb9c5de968c4b2521039686489a1ccd0a460a268f812b7e12",
     "size_bytes": 9443
   },
-  "version": "9.946.0"
+  "version": "9.947.0"
 }

@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.947.0] — 2026-10-19
+
+### Fixed
+- **Three English drafting forms, each found by rewriting the corpus:**
+  - **"working days"**, the English name for business days. FIN-005 lost the
+    payment term on five specimens, because it read business and calendar days
+    but not working days (FIN-005 1.9.0).
+  - **"terminate immediately on:"** where US drafting writes "upon:". TERM-002
+    told a medical directorship it had no termination-for-cause clause above
+    the list of immediate triggers it states (TERM-002 1.16.0).
+  - **"effective forthwith"** for "effective immediately". EST-034 told a power
+    of attorney at `critical` that it never says when it takes effect
+    (EST-034 1.1.0).
+
+  `period-phrasing.test.ts` holds the first; unit tests hold the other two.
+  All three fail on 9.946.0.
+- **Measured, nothing to fix:** "prior to" → "before"; renaming the defined
+  party "Customer" → "Client" and "Provider" → "Supplier". The Client rename
+  moves one MSA between `msa-customer-deep` and `msa-vendor-deep`, which the
+  routing labels already treat as equally right.
+
 ## [9.946.0] — 2026-10-19
 
 ### Fixed

@@ -448,3 +448,17 @@ describe("TERM-002 — 'just cause' is a for-cause path", () => {
     ).toBeNull();
   });
 });
+
+describe("TERM-002 — the immediate-termination list after 'on'", () => {
+  it("reads 'terminate immediately on:' as 'upon:'", () => {
+    // "on" is the plain-English and English-drafting form of "upon"; the list of
+    // immediate triggers was read only after "upon".
+    expect(
+      TERM_002.check(
+        doc(
+          "Hospital may terminate this Agreement immediately on: (a) suspension or revocation of Medical Director's license; (b) exclusion from a federal health care program.",
+        ),
+      ),
+    ).toBeNull();
+  });
+});

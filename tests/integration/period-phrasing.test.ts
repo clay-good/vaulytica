@@ -34,6 +34,9 @@
  *             of thirty (30) days". TERM-001 read only the count-first order
  *             and lost the convenience-termination notice on 31 specimens.
  *
+ *   WORKING   "business days" → "working days", the English name for the same
+ *             unit (9.947.0). FIN-005 lost the payment term on five specimens.
+ *
  * ⚠️ Three moves from that rewrite are declared, not fixed, because the
  * REWRITTEN text is the one read better. "After seven (7) days' written notice
  * and an opportunity to cure" states a seven-day cure window; the cure
@@ -81,6 +84,10 @@ export const asNoticeOf = (t: string): string =>
     ),
     (_m, n: string, q: string) => `${q}notice of ${n} days`,
   );
+
+/** "ten (10) business days" → "ten (10) working days". */
+export const asWorkingDays = (t: string): string =>
+  t.replace(/\bbusiness day(s?)\b/g, "working day$1");
 
 /** The rewritten order reads a cure window the original misses; see above. */
 const NOTICE_OF_DECLARED = [
@@ -144,6 +151,12 @@ describe("a deadline phrased another way", () => {
     const { moved, probed } = await movedBy(asNoticeOf);
     expect(probed, "no specimen states a notice period count-first").toBeGreaterThan(50);
     expect(moved).toEqual(NOTICE_OF_DECLARED);
+  }, 1_800_000);
+
+  it('reads "working days" as business days', async () => {
+    const { moved, probed } = await movedBy(asWorkingDays);
+    expect(probed, "no specimen counts business days").toBeGreaterThan(50);
+    expect(moved).toEqual([]);
   }, 1_800_000);
 
   it("rewrites only the deadline", () => {

@@ -165,6 +165,18 @@ describe("EST-034 — 'is effective immediately upon execution' (v1.1.0)", () =>
     expect(run.findings.map((f) => f.rule_id)).not.toContain("EST-034");
   });
 
+  it("reads 'effective forthwith', the English form (v1.1.0)", async () => {
+    const ctx = withPb(
+      buildContext([
+        "Effectiveness",
+        "This power of attorney is effective forthwith on my execution of it.",
+      ]),
+      POA_PB_LOCAL,
+    );
+    const run = await runEngine({ rules: TRUST_ESTATE_RULES, ctx, source_file: SRC });
+    expect(run.findings.map((f) => f.rule_id)).not.toContain("EST-034");
+  });
+
   it("still fires when effectiveness is never addressed", async () => {
     const ctx = withPb(
       buildContext(["Appointment", "I appoint my brother as my attorney-in-fact."]),

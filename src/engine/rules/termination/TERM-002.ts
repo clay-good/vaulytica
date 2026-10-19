@@ -55,7 +55,7 @@ const FOR_CAUSE = new RegExp(
   //
   // The enumeration is what distinguishes this from a convenience clause:
   // "terminate immediately upon written notice" carries no list.
-  String.raw`${TERMINATE}[^.]{0,60}\b(?:immediately|forthwith|at\s+once)\b[^.]{0,60}?\bupon\b[^.:]{0,30}?:` +
+  String.raw`${TERMINATE}[^.]{0,60}\b(?:immediately|forthwith|at\s+once)\b[^.]{0,60}?\b(?:upon|on)\b[^.:]{0,30}?:` +
     "|" +
     // The same enumeration written INLINE, with "for" and commas instead of
     // "upon" and a colon: "Plan may terminate immediately FOR Provider's loss
@@ -179,7 +179,7 @@ const FOR_CAUSE = new RegExp(
 /** TERM-002 — Termination for cause present (warning). */
 export const rule: Rule = {
   id: "TERM-002",
-  version: "1.16.0",
+  version: "1.17.0",
   name: "Termination for cause present",
   category: "termination",
   default_severity: "warning",
