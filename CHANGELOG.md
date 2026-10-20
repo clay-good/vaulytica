@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.962.0] — 2026-10-20
+
+### Fixed
+- **PROOF-005 1.0.1: a heading must start with a capital, as written.** The
+  two patterns that read a run-in or heading-only title used the `/i` flag,
+  which turns the `[A-Z]` anchor into "any letter". `inert-case-anchor`
+  caught it in CI.
+  - The local gate missed it: that guard lists files with `git ls-files`,
+    and the rule was not yet tracked when the gate ran. So did every other
+    guard that lists files that way.
+  - The whole suite was re-run with the file staged. Nothing else moved.
+  - Lesson: stage new files (`git add`) before running the gate.
+
 ## [9.961.0] — 2026-10-20
 
 ### Added

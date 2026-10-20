@@ -9,10 +9,10 @@ const TITLE_AFTER =
   /^\s?(?:\([a-z0-9]{1,4}\)){0,4}\s?\(\s?["“]?([A-Z][A-Za-z ,&'’-]{2,60}?)["”]?\s?\)/;
 /** A run-in heading: "7. Confidentiality. Each party shall …". */
 const RUN_IN =
-  /^\s*(?:(?:section|article)\s+)?(?:[\dIVX]+(?:\.\d+)*\.?\s+)?([A-Z][A-Za-z ,&'’-]{2,60}?)\.\s/i;
+  /^\s*(?:(?:[Ss]ection|SECTION|[Aa]rticle|ARTICLE)\s+)?(?:[\dIVX]+(?:\.\d+)*\.?\s+)?([A-Z][A-Za-z ,&'’-]{2,60}?)\.\s/;
 /** A paragraph that is only a numbered heading: "7. Indemnification". */
 const HEADING_ONLY =
-  /^\s*(?:(?:section|article)\s+)?[\dIVX]+(?:\.\d+)*\.?\s+([A-Z][A-Za-z ,&'’-]{2,60}?)\.?\s*$/i;
+  /^\s*(?:(?:[Ss]ection|SECTION|[Aa]rticle|ARTICLE)\s+)?[\dIVX]+(?:\.\d+)*\.?\s+([A-Z][A-Za-z ,&'’-]{2,60}?)\.?\s*$/;
 const SMALL = new Set(["and", "of", "the", "or", "for", "to", "in", "on", "a", "an"]);
 
 /** The words that carry a title, cut to a stem so "Confidential" meets "Confidentiality". */
@@ -34,7 +34,7 @@ export function titlesAgree(written: string, heading: string): boolean {
 /** PROOF-005 — Cross-reference title mismatch (warning). */
 export const rule: Rule = {
   id: "PROOF-005",
-  version: "1.0.0",
+  version: "1.0.1",
   name: "Cross-reference title mismatch",
   category: "proofreading",
   default_severity: "warning",
