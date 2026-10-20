@@ -92,8 +92,12 @@ test("v3 BAA flow makes zero non-asset network requests", async ({ page }) => {
   const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(FIXTURE);
 
+  // The downloads sit in one collapsed section (simplify-result-downloads).
+  const downloadFold = page.locator('[data-role="download-fold"] > summary');
+  await downloadFold.waitFor({ state: "visible", timeout: 60_000 });
+  await downloadFold.click();
   const downloadButton = page.locator('[data-role="docx-download"]');
-  await downloadButton.waitFor({ state: "visible", timeout: 60_000 });
+  await downloadButton.waitFor({ state: "visible" });
 
   // Belt-and-suspenders: download the DOCX and confirm it is a valid
   // OOXML zip. The v3 report path is where the new sections (matrix,

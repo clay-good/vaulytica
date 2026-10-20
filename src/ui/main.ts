@@ -283,6 +283,7 @@ function renderCompleteState(
     fixlist_csv_blob: Blob;
     obligations_csv_blob: Blob;
     deadlines_ics_blob: Blob;
+    deadlines_dated: boolean;
     sarif_blob: Blob;
     html_blob: Blob;
     v3_detection: import("./pipeline.js").PipelineResult["v3_detection"];
@@ -341,19 +342,20 @@ function renderCompleteState(
     counts: countsBySeverity(result.run),
     docx_blob: result.docx_blob,
     json_blob: result.json_blob,
-    docx_filename: `${stem}-vaulytica.docx`,
+    docx_filename: `${stem} - review.docx`,
     json_filename: `${stem}-vaulytica.json`,
     exports: {
       fixlist_md_blob: result.fixlist_md_blob,
       fixlist_csv_blob: result.fixlist_csv_blob,
       obligations_csv_blob: result.obligations_csv_blob,
       deadlines_ics_blob: result.deadlines_ics_blob,
+      deadlines_dated: result.deadlines_dated,
       sarif_blob: result.sarif_blob,
       html_blob: result.html_blob,
       fixlist_md_filename: `${stem}-vaulytica-fixlist.md`,
       fixlist_csv_filename: `${stem}-vaulytica-fixlist.csv`,
       obligations_csv_filename: `${stem}-vaulytica-obligations.csv`,
-      deadlines_ics_filename: `${stem}-vaulytica-deadlines.ics`,
+      deadlines_ics_filename: `${stem} - dates.ics`,
       sarif_filename: `${stem}-vaulytica.sarif.json`,
       html_filename: `${stem}-vaulytica-report.html`,
       // spec-v9 Thrust C — critical-dates calendar / register, present only when non-empty.
@@ -375,7 +377,7 @@ function renderCompleteState(
       negotiation_sheet_filename: `${stem}-vaulytica-negotiation-sheet.html`,
       // add-word-comment-export — the reviewed copy of the uploaded DOCX.
       reviewed_docx_blob: result.reviewed_docx_blob,
-      reviewed_docx_filename: `${stem}.reviewed.docx`,
+      reviewed_docx_filename: `${stem} - with comments.docx`,
       // add-court-certification-receipt — the verification certificate.
       certificate_docx_blob: result.certificate_docx_blob,
       certificate_json_blob: result.certificate_json_blob,

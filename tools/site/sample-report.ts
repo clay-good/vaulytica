@@ -81,7 +81,12 @@ function siteCss(root: string): string {
 /** Analyze the sample fixture and write the decorated page. */
 export async function writeSampleReport(root: string, outFile: string): Promise<void> {
   const deps = await loadAccuracyDeps();
-  const r = await analyzeFile(resolve(root, SAMPLE_SOURCE), { deps, sourceName: SAMPLE_NAME });
+  const r = await analyzeFile(resolve(root, SAMPLE_SOURCE), {
+    deps,
+    sourceName: SAMPLE_NAME,
+    // The tab scans every uploaded file before it is sent; so does the sample.
+    delivery: true,
+  });
   const model = buildResultsModel({
     run: r.run,
     abstract: await abstractOf(SAMPLE_NAME, r),

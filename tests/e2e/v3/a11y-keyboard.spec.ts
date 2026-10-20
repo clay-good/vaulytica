@@ -93,7 +93,7 @@ test("v3 compliance-frame chip row is keyboard-operable", async ({ page }) => {
   // Wait for the complete-state DOM (chip row is rendered alongside
   // the download button); the row may still be `hidden` if the
   // playbook has no default frames, so check visibility, not just count.
-  await page.locator('[data-role="docx-download"]').waitFor({
+  await page.locator('[data-role="download-fold"] > summary').waitFor({
     state: "visible",
     timeout: 60_000,
   });

@@ -26,6 +26,11 @@ for (const width of [1280, 360]) {
     const downloads: string[] = [];
     page.on("download", (d) => downloads.push(d.suggestedFilename()));
 
+    // A save goes through the file picker where the browser has one; take the
+    // plain download path so the saved bytes can be read.
+    await page.addInitScript(() => {
+      delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+    });
     await page.goto("/");
     await page.locator('[data-role="paste-open"]').click();
     await page.locator("#paste-text").fill(readFileSync(NDA, "utf8"));
@@ -64,6 +69,32 @@ for (const width of [1280, 360]) {
     await expect(terms).toContainText("Not found in the text");
 
     expect(downloads, "nothing is saved without a click").toEqual([]);
+
+    // simplify-result-downloads: one collapsed section; opened, at most three
+    // named files before "Other formats" is opened. Pasted text has no Word
+    // file to comment on, so the report leads and nothing is shown disabled.
+    await page.locator('[data-role="download-fold"] > summary').click();
+    const fold = page.locator('[data-role="download-fold"]');
+    const upFront = await fold
+      .locator("button")
+      .evaluateAll((els) =>
+        els.filter((e) => (e as HTMLElement).checkVisibility()).map((e) => e.textContent!.trim()),
+      );
+    expect(upFront.length).toBeLessThanOrEqual(3);
+    expect(upFront[0]).toBe("Report (.docx)");
+    expect(upFront).not.toContain("Your draft with comments (.docx)");
+    await expect(fold.locator("button[disabled]")).toHaveCount(0);
+    expect(downloads, "opening the section saves nothing").toEqual([]);
+
+    // The same click twice saves the same file: same name, same bytes.
+    const report = page.locator('[data-role="docx-download"]');
+    const saves: Buffer[] = [];
+    for (let i = 0; i < 2; i++) {
+      const [d] = await Promise.all([page.waitForEvent("download"), report.click()]);
+      expect(d.suggestedFilename()).toBe("pasted-text - review.docx");
+      saves.push(readFileSync((await d.path())!));
+    }
+    expect(saves[0]!.equals(saves[1]!)).toBe(true);
     expect(external, "expected zero cross-origin requests").toEqual([]);
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

@@ -121,8 +121,8 @@ describe("renderState", () => {
     const json = select<HTMLButtonElement>(dz, "json-download")!;
     expect(docx.tagName).toBe("BUTTON");
     expect(json.tagName).toBe("BUTTON");
-    expect(docx.textContent).toMatch(/Download report \(Word\)/);
-    expect(json.textContent).toMatch(/Download structured data \(JSON\)/);
+    expect(docx.textContent).toMatch(/Report \(\.docx\)/);
+    expect(json.textContent).toMatch(/Structured data \(JSON\)/);
     expect(select(dz, "download-status")).not.toBeNull();
     expect(select(dz, "counts")!.textContent).toMatch(/2/);
     expect(select(dz, "counts")!.textContent).toMatch(/5/);
@@ -426,7 +426,7 @@ describe("renderState", () => {
     expect(select(dz, "export-fixlist-md")!.textContent).toMatch(/Fix list \(Markdown\)/);
     expect(select(dz, "export-fixlist-csv")).not.toBeNull();
     expect(select(dz, "export-obligations-csv")).not.toBeNull();
-    expect(select(dz, "export-deadlines-ics")!.textContent).toMatch(/Deadlines/);
+    expect(select(dz, "export-deadlines-ics")!.textContent).toMatch(/Dates for your calendar/);
     expect(select(dz, "export-html")!.textContent).toMatch(/HTML report/);
     expect(select(dz, "export-sarif")!.textContent).toMatch(/SARIF/);
   });

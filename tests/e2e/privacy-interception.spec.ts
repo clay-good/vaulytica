@@ -76,7 +76,9 @@ async function analyze(page: Page, file: string): Promise<void> {
   await expect(page.locator("#dropzone")).toBeVisible();
   const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(file);
-  await page.locator('[data-role="docx-download"]').waitFor({ state: "visible", timeout: 60_000 });
+  await page
+    .locator('[data-role="download-fold"] > summary')
+    .waitFor({ state: "visible", timeout: 60_000 });
 }
 
 test("DOCX analysis: same-origin GETs only, no request bodies", async ({ page }) => {

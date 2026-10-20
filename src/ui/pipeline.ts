@@ -99,6 +99,7 @@ import {
   fixListCsvBlob,
   obligationsCsvBlob,
   deadlinesIcsBlob,
+  collectDeadlines,
 } from "../report/exports.js";
 import {
   missingCompanions,
@@ -337,6 +338,12 @@ export type PipelineResult = {
   fixlist_csv_blob: Blob;
   obligations_csv_blob: Blob;
   deadlines_ics_blob: Blob;
+  /**
+   * Whether the calendar holds at least one dated entry (simplify-result-
+   * downloads). Without one it is only "verify manually" reminders, and the
+   * tab lists it under Other formats rather than as one of the three files.
+   */
+  deadlines_dated: boolean;
   /**
    * v8 Thrust C reach formats (Steps 141–142). Built from the same run so
    * the complete-state can offer the machine-readable SARIF (for CI / code
@@ -918,6 +925,7 @@ export async function runReport(
   const fixlist_csv_blob = fixListCsvBlob(run, dkbCurrency(prepared.dkb.manifest));
   const obligations_csv_blob = obligationsCsvBlob(prepared.extracted);
   const deadlines_ics_blob = deadlinesIcsBlob(prepared.extracted);
+  const deadlines_dated = collectDeadlines(prepared.extracted).events.length > 0;
   // v8 Steps 141–142 — SARIF (machine-readable) + standalone HTML (print-clean),
   // now carrying the v9 surfaces (HANDOFF-*/DATE-* results · the three sections).
   const sarif_blob = sarifBlob(
@@ -1003,6 +1011,7 @@ export async function runReport(
     fixlist_csv_blob,
     obligations_csv_blob,
     deadlines_ics_blob,
+    deadlines_dated,
     sarif_blob,
     html_blob,
     ...(reviewed_docx_blob ? { reviewed_docx_blob } : {}),

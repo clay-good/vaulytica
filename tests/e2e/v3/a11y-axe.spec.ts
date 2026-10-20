@@ -76,7 +76,7 @@ test("v3 complete-state (post-analysis) has zero axe violations", async ({ page 
   // <details>, and counts are all rendered.
   const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(BAA_FIXTURE);
-  await page.locator('[data-role="docx-download"]').waitFor({
+  await page.locator('[data-role="download-fold"] > summary').waitFor({
     state: "visible",
     timeout: 60_000,
   });

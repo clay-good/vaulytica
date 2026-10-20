@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.970.0] — 2026-10-20
+
+### Changed
+- **One Download section instead of sixteen buttons**
+  (simplify-result-downloads). Below the results page, a collapsed
+  "Download" holds at most three named files, each with a line saying what
+  it is for:
+  - your draft with comments (.docx uploads only);
+  - the Word report;
+  - dates for your calendar (only when the calendar holds a dated entry).
+
+  Every other export sits under "Other formats", grouped as Spreadsheets
+  and Records and data. Nothing was removed from the tab, the CLI, the
+  Action or the MCP server. For PDF or pasted text, the draft with comments
+  is not offered at all, in place of a disabled button.
+- **One calendar up front.** Measured over the 363 specimens: the
+  deadlines calendar holds a dated entry in 352 of them, 847 events. The
+  critical-dates register's calendar holds one in 16, 18 events, and all but
+  one of its dates are in the deadlines file too. The deadlines file is the
+  one offered; the register's stays under Other formats.
+- **Filenames:** `<name> - review.docx`, `<name> - with comments.docx` and
+  `<name> - dates.ics`. The bytes are unchanged.
+- `/sample-report` now runs the delivery scan as the tab does, so it raises
+  the same 26 things the tab does for the same file (it said 25).
+
 ## [9.969.0] — 2026-10-20
 
 ### Changed

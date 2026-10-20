@@ -58,6 +58,11 @@ export type DropzoneState =
         fixlist_csv_blob: Blob;
         obligations_csv_blob: Blob;
         deadlines_ics_blob: Blob;
+        /**
+         * The calendar holds a dated entry. Optional / back-compat: absent
+         * reads as true, so a hand-built state keeps its calendar up front.
+         */
+        deadlines_dated?: boolean;
         sarif_blob: Blob;
         html_blob: Blob;
         fixlist_md_filename: string;
@@ -764,29 +769,54 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       </div>
     </details>
     <p class="results-note" data-role="results-note">This page is not saved. Download to keep a copy.</p>
-    <button class="btn btn-primary" type="button" data-role="docx-download">Download report (Word)</button>
-    <button class="btn-link" type="button" data-role="json-download">Download structured data (JSON)</button>
-    <div class="export-row" data-role="export-row" role="group" aria-label="Export findings to action" hidden>
-      <span class="export-row-label">Export:</span>
-      <button class="btn-link" type="button" data-role="export-fixlist-md">Fix list (Markdown)</button>
-      <button class="btn-link" type="button" data-role="export-fixlist-csv">Fix list (CSV)</button>
-      <button class="btn-link" type="button" data-role="export-obligations-csv">Obligations (CSV)</button>
-      <button class="btn-link" type="button" data-role="export-deadlines-ics">Deadlines (.ics)</button>
-      <button class="btn-link" type="button" data-role="export-closing-checklist-md" hidden>Closing checklist (Markdown)</button>
-      <button class="btn-link" type="button" data-role="export-closing-checklist-csv" hidden>Closing checklist (CSV)</button>
-      <button class="btn-link" type="button" data-role="export-critical-dates-ics" hidden>Critical dates (.ics)</button>
-      <button class="btn-link" type="button" data-role="export-critical-dates-md" hidden>Critical dates (Markdown)</button>
-      <button class="btn-link" type="button" data-role="export-negotiation-sheet" hidden>Negotiation sheet (HTML)</button>
-      <button class="btn-link" type="button" data-role="export-negotiation-md" hidden>Negotiation posture (Markdown)</button>
-      <button class="btn-link" type="button" data-role="export-negotiation-csv" hidden>Negotiation posture (CSV)</button>
-      <button class="btn-link" type="button" data-role="export-html">HTML report</button>
-      <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
-      <button class="btn-link" type="button" data-role="export-reviewed-docx">Reviewed copy (.docx)</button>
-      <button class="btn-link" type="button" data-role="export-certificate-docx">Verification certificate (Word)</button>
-      <button class="btn-link" type="button" data-role="export-certificate-json">Verification certificate (JSON)</button>
-      <button class="btn-link" type="button" data-role="export-definitions-csv">Definitions report (CSV)</button>
-      <button class="btn-link" type="button" data-role="export-definitions-json">Definitions report (JSON)</button>
-    </div>
+    <details class="results-fold download-fold" data-role="download-fold">
+      <summary>Download</summary>
+      <ul class="download-primary" data-role="download-primary">
+        <li data-role="download-item-reviewed" hidden>
+          <button class="btn-link download-name" type="button" data-role="export-reviewed-docx">Your draft with comments (.docx)</button>
+          <span class="download-why">Each item above as a Word comment on its clause. Your text is unchanged.</span>
+        </li>
+        <li>
+          <button class="btn-link download-name" type="button" data-role="docx-download">Report (.docx)</button>
+          <span class="download-why">The full report in Word, for the file or a colleague.</span>
+        </li>
+        <li data-role="download-item-calendar" hidden>
+          <span data-role="calendar-slot"></span>
+          <span class="download-why">The dates and deadlines the document states.</span>
+        </li>
+      </ul>
+      <details class="results-fold other-formats" data-role="other-formats">
+        <summary>Other formats</summary>
+        <div class="other-formats-group">
+          <div class="other-formats-label">Spreadsheets</div>
+          <div class="export-row" data-role="export-row" role="group" aria-label="Spreadsheets" hidden>
+            <button class="btn-link" type="button" data-role="export-fixlist-csv">Fix list (CSV)</button>
+            <button class="btn-link" type="button" data-role="export-obligations-csv">Obligations (CSV)</button>
+            <button class="btn-link" type="button" data-role="export-closing-checklist-csv" hidden>Closing checklist (CSV)</button>
+            <button class="btn-link" type="button" data-role="export-negotiation-csv" hidden>Negotiation posture (CSV)</button>
+            <button class="btn-link" type="button" data-role="export-definitions-csv">Definitions report (CSV)</button>
+          </div>
+        </div>
+        <div class="other-formats-group">
+          <div class="other-formats-label">Records and data</div>
+          <div class="export-row" data-role="records-row" role="group" aria-label="Records and data">
+            <button class="btn-link" type="button" data-role="json-download">Structured data (JSON)</button>
+            <button class="btn-link" type="button" data-role="export-html">HTML report</button>
+            <button class="btn-link" type="button" data-role="export-fixlist-md">Fix list (Markdown)</button>
+            <button class="btn-link" type="button" data-role="export-deadlines-ics">Dates (.ics)</button>
+            <button class="btn-link" type="button" data-role="export-closing-checklist-md" hidden>Closing checklist (Markdown)</button>
+            <button class="btn-link" type="button" data-role="export-critical-dates-ics" hidden>Critical dates (.ics)</button>
+            <button class="btn-link" type="button" data-role="export-critical-dates-md" hidden>Critical dates (Markdown)</button>
+            <button class="btn-link" type="button" data-role="export-negotiation-sheet" hidden>Negotiation sheet (HTML)</button>
+            <button class="btn-link" type="button" data-role="export-negotiation-md" hidden>Negotiation posture (Markdown)</button>
+            <button class="btn-link" type="button" data-role="export-certificate-docx">Verification certificate (Word)</button>
+            <button class="btn-link" type="button" data-role="export-certificate-json">Verification certificate (JSON)</button>
+            <button class="btn-link" type="button" data-role="export-definitions-json">Definitions report (JSON)</button>
+            <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
+          </div>
+        </div>
+      </details>
+    </details>
     <div class="compare-row" data-role="compare-row" hidden>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
       <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text" data-role="compare-input" hidden aria-hidden="true" tabindex="-1" />
@@ -909,6 +939,15 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       e.stopPropagation();
       void saveBlob(state.json_blob, state.json_filename, status);
     });
+    if (!state.exports) {
+      // No exports (a hand-built state): only the report and the JSON exist.
+      for (const b of dz.querySelectorAll<HTMLElement>(
+        '[data-role="records-row"] [data-role^="export-"]',
+      )) {
+        b.hidden = true;
+      }
+      select<HTMLElement>(dz, "export-row")!.parentElement!.hidden = true;
+    }
     if (state.exports) {
       const ex = state.exports;
       select(dz, "export-row")!.removeAttribute("hidden");
@@ -977,9 +1016,6 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       }
       wire("export-html", ex.html_blob, ex.html_filename);
       wire("export-sarif", ex.sarif_blob, ex.sarif_filename);
-      // Reviewed copy: enabled only for DOCX uploads; for PDF/paste the
-      // button stays visible but disabled, saying why (there is no
-      // original Word container to annotate).
       if (ex.certificate_docx_blob && ex.certificate_docx_filename) {
         wire("export-certificate-docx", ex.certificate_docx_blob, ex.certificate_docx_filename);
       } else {
@@ -1000,13 +1036,21 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       } else {
         select<HTMLButtonElement>(dz, "export-definitions-json")!.setAttribute("hidden", "");
       }
-      const reviewedBtn = select<HTMLButtonElement>(dz, "export-reviewed-docx")!;
+      // simplify-result-downloads — the draft with comments exists only for a
+      // DOCX upload; for PDF or pasted text it is not offered at all, so the
+      // Word report leads.
       if (ex.reviewed_docx_blob && ex.reviewed_docx_filename) {
+        select<HTMLElement>(dz, "download-item-reviewed")!.hidden = false;
         wire("export-reviewed-docx", ex.reviewed_docx_blob, ex.reviewed_docx_filename);
-      } else {
-        reviewedBtn.disabled = true;
-        reviewedBtn.title =
-          "Available for DOCX uploads only — PDF and pasted text have no original Word container to annotate.";
+      }
+      // The calendar is one of the three files only when it holds a dated
+      // entry; otherwise it stays under Other formats.
+      if (ex.deadlines_dated !== false) {
+        const cal = select<HTMLButtonElement>(dz, "export-deadlines-ics")!;
+        cal.textContent = "Dates for your calendar (.ics)";
+        cal.classList.add("download-name");
+        select<HTMLElement>(dz, "calendar-slot")!.replaceWith(cal);
+        select<HTMLElement>(dz, "download-item-calendar")!.hidden = false;
       }
     }
     if (state.on_compare) {

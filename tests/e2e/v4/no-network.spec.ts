@@ -165,6 +165,8 @@ test("v4 multi-doc drop makes zero non-asset network requests", async ({ page })
   try {
     await bundleButton.waitFor({ state: "visible", timeout: 60_000 });
   } catch {
+    // The single-document downloads sit in one collapsed section.
+    await page.locator('[data-role="download-fold"] > summary').click();
     await docxButton.waitFor({ state: "visible", timeout: 60_000 });
     downloadButton = docxButton;
   }

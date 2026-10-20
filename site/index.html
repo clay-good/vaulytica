@@ -732,6 +732,55 @@
         color: var(--muted);
         margin-bottom: 6px;
       }
+      /* The Download section (simplify-result-downloads): at most three named
+         files, each with one line saying what it is for. */
+      .download-primary {
+        list-style: none;
+        margin: 0 0 6px;
+        padding: 0;
+        display: grid;
+        gap: 10px;
+      }
+      .download-primary li {
+        display: grid;
+        gap: 2px;
+      }
+      .download-primary li[hidden] {
+        display: none;
+      }
+      .download-primary .download-name {
+        justify-self: start;
+        color: var(--link);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: left;
+      }
+      .download-why {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .other-formats {
+        margin-top: 10px;
+      }
+      .other-formats-group {
+        margin: 6px 0 10px;
+      }
+      .export-row[hidden] {
+        display: none;
+      }
+      .other-formats-group[hidden] {
+        display: none;
+      }
+      .other-formats-label {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .other-formats .export-row {
+        justify-content: flex-start;
+        text-align: left;
+      }
       .results-note {
         margin: 10px 0;
         font-size: 13px;
@@ -745,10 +794,8 @@
         .result-actions,
         .results-adjust,
         .results-note,
-        .export-row,
-        .compare-row,
-        [data-role="docx-download"],
-        [data-role="json-download"] {
+        .download-fold,
+        .compare-row {
           display: none !important;
         }
       }

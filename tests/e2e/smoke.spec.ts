@@ -59,8 +59,12 @@ test("drop-zone → analyze → DOCX download path is intact", async ({ page }, 
   const fileInput = page.locator('#dropzone input[type="file"]:not([webkitdirectory])');
   await fileInput.setInputFiles(FIXTURE);
 
+  // The downloads sit in one collapsed section (simplify-result-downloads).
+  const downloadFold = page.locator('[data-role="download-fold"] > summary');
+  await downloadFold.waitFor({ state: "visible", timeout: 60_000 });
+  await downloadFold.click();
   const downloadButton = page.locator('[data-role="docx-download"]');
-  await downloadButton.waitFor({ state: "visible", timeout: 60_000 });
+  await downloadButton.waitFor({ state: "visible" });
 
   const [download] = await Promise.all([page.waitForEvent("download"), downloadButton.click()]);
   const path = await download.path();
@@ -112,7 +116,9 @@ test("paste text → analyze → report, with nothing sent anywhere (spec-v50 §
   await page.locator("#paste-text").fill(readFileSync(SAMPLE, "utf8"));
   await page.locator('[data-role="paste-submit"]').click();
 
-  await page.locator('[data-role="docx-download"]').waitFor({ state: "visible", timeout: 60_000 });
+  await page
+    .locator('[data-role="download-fold"] > summary')
+    .waitFor({ state: "visible", timeout: 60_000 });
   // The report names the text the way the command line would.
   await expect(page.locator("#dropzone")).toContainText("pasted-text.txt");
   await expect(panel).toBeHidden();
