@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.967.0] — 2026-10-20
+
+### Added
+- **The Action gates a counterparty's redline.** `command: compare` takes
+  `redline: their-markup.docx` in place of `base` and `revised`. The step
+  fails on what their tracked changes introduced. Passing both forms is an
+  error. `ci-integration.md` has the example
+  (add-redline-two-sided-analysis task 7).
+- **The rejected reading holds on real documents.**
+  `redline-reading-invariance` takes eight specimens as DOCX (the same
+  renderer as the DOCX invariance test) and marks every run as a tracked
+  change.
+  - Marked as deletions, the rejected reading reports exactly the plain
+    DOCX's findings and word count, and the accepted reading reads nothing.
+  - Marked as insertions, the two swap.
+  - Breaking the rewrite's `w:delText` rename fails all eight.
+
 ## [9.966.0] — 2026-10-20
 
 ### Added

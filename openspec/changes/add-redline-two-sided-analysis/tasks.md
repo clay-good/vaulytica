@@ -6,7 +6,7 @@
 - [x] 4. `tools/cli/api.ts` `compareRedline(path, opts)` over `compareFiles` with `pinType`; `compare --redline`; the no-tracked-changes refusal; `MAX_COUNT` notice carried.
 - [x] 5. Attribution: `collectRevisions` with spans; overlap join; `revision_authors` on the comparison's introduced/resolved entries; author column in `compare-docx.ts`; Markdown summary column.
 - [ ] 6. Browser: the comparison affordance on a result whose ingest notice reports tracked changes; the Word deliverable; hashes identical to the CLI on the same bytes (cross-surface parity test extended).
-- [ ] 7. MCP `compare_documents` `redline_path`; Action `redline` input; `ci-integration.md` example "gate a counterparty redline on a pull request".
+- [x] 7. MCP `compare_documents` `redline_path`; Action `redline` input; `ci-integration.md` example "gate a counterparty redline on a pull request".
 - [ ] 8. Format-invariance relation for the rejected reading (same five transforms); reach and honesty-caveat tests extended.
 - [ ] 9. Docs: `reference.md` ingest table row for redlines updated to say both readings are available; the "About this input" notice links to the comparison.
 - [ ] 10. Full gate green.
@@ -18,4 +18,5 @@
   - The rewrite is `indexOf`-based. A malformed part stays linear: an unclosed element ends the scan rather than being searched for again.
   - The CLI refuses a file with no tracked changes, and a file that is not a DOCX.
 - 9.966.0 shipped task 5. Attribution is by text containment: a finding names the authors of the insertions (introduced) or deletions (resolved) its quoted paragraph contains. An absence finding names no one. Changes under 12 characters are not used. The comparison DOCX lists authors per finding rather than in a table column, because the report renders findings as blocks, not a table.
-- Open: task 1's Word round-trip; task 6 (browser); the Action `redline` input and the `ci-integration.md` example (rest of task 7); task 8 (format-invariance for the rejected reading); task 9's notice link.
+- 9.967.0 finished task 7 (the Action `redline` input and the `ci-integration.md` example). Toward task 8, it added a different relation from the one the task names: every run of eight specimens is marked deleted or inserted, and the rejected or accepted reading must then report the plain DOCX's findings. A mutation of the rewrite fails all eight. The five format transforms over a redline are still open.
+- Open: task 1's Word round-trip; task 6 (browser); task 8's five transforms; task 9's notice link.

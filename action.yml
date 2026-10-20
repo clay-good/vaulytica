@@ -22,6 +22,10 @@ inputs:
     description: "compare: the revised document."
     required: false
     default: ""
+  redline:
+    description: "compare: one Word redline (.docx) in place of base and revised — its draft with every tracked change rejected is compared against every change accepted, so the gate fails on what the markup introduced."
+    required: false
+    default: ""
   format:
     description: "Output format(s). analyze: comma list of json,sarif,html,md,csv,docx,docx-comments,bundle-json,bundle-docx,bundle-zip,checklist-md,checklist-csv,dates-md,dates-ics,obligations-csv,deadlines-ics,posture-md,posture-csv,posture-sheet,definitions-csv,brief-json,triage-md,triage-json,abstract-json,abstract-csv,inventory-csv,inventory-json (default sarif) — the checklist-* formats need the closing checklist and the dates-* formats need the critical-dates register, both of which the CLI computes only when asserted. `docx` is the full attorney-facing report and `docx-comments` a commented copy of the input; both are binary and need `out-dir`. The `bundle-*` values write one consolidated artifact for the whole set (implies the cross-document run, needs 2+ inputs and `out-dir`). compare: json|markdown (default markdown). Leave empty to take each command's default."
     required: false
@@ -109,6 +113,7 @@ runs:
         FILES: ${{ inputs.files }}
         BASE: ${{ inputs.base }}
         REVISED: ${{ inputs.revised }}
+        REDLINE: ${{ inputs.redline }}
         FORMAT: ${{ inputs.format }}
         FAIL_ON: ${{ inputs.fail-on }}
         PLAYBOOK: ${{ inputs.playbook }}
@@ -128,11 +133,18 @@ runs:
         set -euo pipefail
         args=("$CMD")
         if [ "$CMD" = "compare" ]; then
-          if [ -z "$BASE" ] || [ -z "$REVISED" ]; then
-            echo "::error::compare requires both 'base' and 'revised' inputs" >&2
+          if [ -n "${REDLINE:-}" ]; then
+            if [ -n "$BASE" ] || [ -n "$REVISED" ]; then
+              echo "::error::compare takes either 'redline' or 'base' and 'revised', not both" >&2
+              exit 1
+            fi
+            args+=(--redline "$REDLINE")
+          elif [ -z "$BASE" ] || [ -z "$REVISED" ]; then
+            echo "::error::compare requires both 'base' and 'revised' inputs, or 'redline'" >&2
             exit 1
+          else
+            args+=("$BASE" "$REVISED")
           fi
-          args+=("$BASE" "$REVISED")
         else
           if [ -z "$FILES" ]; then
             echo "::error::analyze requires the 'files' input" >&2

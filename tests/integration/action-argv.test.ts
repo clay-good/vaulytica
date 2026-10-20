@@ -48,6 +48,7 @@ function argv(inputs: Record<string, string>): string {
     FILES: "",
     BASE: "",
     REVISED: "",
+    REDLINE: "",
     FORMAT: "",
     FAIL_ON: "",
     PLAYBOOK: "",
@@ -156,6 +157,13 @@ describe("the Action composes the argv it advertises", () => {
       OUT: "out",
     });
     expect(line).toBe("compare a.docx b.docx");
+  });
+
+  it("sends a redline to compare as --redline, alone", () => {
+    expect(argv({ CMD: "compare", REDLINE: "markup.docx", FAIL_ON: "warning" })).toBe(
+      "compare --redline markup.docx --fail-on warning",
+    );
+    expect(() => argv({ CMD: "compare", REDLINE: "markup.docx", BASE: "a.docx" })).toThrow();
   });
 
   it("leaves compare's format alone so each command applies its own default", () => {
