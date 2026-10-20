@@ -480,6 +480,20 @@
       "elapsed_ms": 0,
       "fired": false,
       "ran": true,
+      "rule_id": "PROOF-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
+      "rule_id": "PROOF-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
       "rule_id": "RISK-001",
       "rule_version": "1.5.0"
     },
@@ -1141,11 +1155,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 0.9,
   "playbook_match_reasoning": "Selected saas-customer (score 0.9). Required clauses present: \"indemnification\". Distinguishing phrases: \"Customer Data\", \"uptime\", \"the platform\". Negative features penalized: \"Premises\".",
-  "result_hash": "28863bdc851e92c715a06b751d5ed58840a2244a5cb4255d29126cfcaa36eea7",
+  "result_hash": "e673d9f49904034d4e46a22500a23d1b591badd87720b35d718c483f04a151f4",
   "source_file": {
     "name": "bad-saas-vendor-uncapped-ip.docx",
     "sha256": "8ae94b74fdbe0bc441724e390612c07a1fd3fdc05bf782e829c1e4dda8a69083",
     "size_bytes": 9337
   },
-  "version": "9.960.0"
+  "version": "9.961.0"
 }

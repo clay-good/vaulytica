@@ -478,6 +478,20 @@
     {
       "elapsed_ms": 0,
       "fired": false,
+      "ran": true,
+      "rule_id": "PROOF-005",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
+      "ran": true,
+      "rule_id": "PROOF-006",
+      "rule_version": "1.0.0"
+    },
+    {
+      "elapsed_ms": 0,
+      "fired": false,
       "ran": false,
       "rule_id": "RISK-001",
       "rule_version": "1.5.0"
@@ -1029,11 +1043,11 @@
   "playbook_id": "employment-at-will-us",
   "playbook_match_confidence": 0.8,
   "playbook_match_reasoning": "Selected employment-at-will-us (score 0.8). Title matched: \"employment agreement\". Distinguishing phrases: \"at-will\".",
-  "result_hash": "05d21c57254265b97e920193a11352a72bed3c152388f17e51809e2566c68aae",
+  "result_hash": "8515eb0a7210812a5e4a00a935f0e647df749957a94e2a515e0cbaa37c1842c9",
   "source_file": {
     "name": "bad-employment-choice-of-law.docx",
     "sha256": "432c209852332e09cdc68eec7a183f61c5da1fa8aafe36b92e3b8bf6fd2e6c26",
     "size_bytes": 9227
   },
-  "version": "9.960.0"
+  "version": "9.961.0"
 }

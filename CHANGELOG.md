@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.961.0] — 2026-10-20
+
+### Added
+- **Two more proofreading checks.** The launch set is now 126 rules and the
+  catalog 1,941.
+  - `PROOF-005` (warning) flags a cross-reference whose stated title is not
+    the heading of the section it cites: "subject to Section 7
+    (Confidentiality)" where Section 7 is "Indemnification". It quotes both
+    titles. A heading counts in three forms: a heading line, a numbered
+    paragraph that is only a heading, or a run-in heading ("7.
+    Indemnification. Vendor shall…"). Titles sharing a word ("Confidential
+    Information" and "Confidentiality") agree.
+  - `PROOF-006` (info) flags a list that skips a place: "(a) … (b) … (d)",
+    "(i) (ii) (iv)" or "(A) (B) (D)". It reads the enumerators in document
+    order rather than paragraph by paragraph. A list with one paragraph per
+    item and a list run into one sentence are then the same list, and the
+    paragraph breaks a paste moves cannot move it. After "(h)", "(i)" is the
+    next letter.
+- **Measured before shipping.**
+  - PROOF-006 first drew five hits in the specimens. All five were
+    references, not items: a citation ("1010.410(e) and (f)"), a range ("(a)
+    through (d)") and a reference noun ("Exclusion (k)"). It now skips all
+    three and draws none, on the specimens, both clean deal rooms, and every
+    format rewrite. The capitals sweep then found one more: a clause set in
+    capitals writes its own "(c)" as "(C)", so an uppercase enumerator
+    inside capitalized text that continues a lowercase list is read as that
+    list's next item. Reference nouns include every attachment kind
+    (`ATTACHMENT_KIND_PLURAL`).
+  - In a mutation that relabels each specimen's "(c)" as "(d)", it catches
+    87 of 88.
+  - No specimen writes a titled cross-reference, so PROOF-005 is held by
+    synthetic documents.
+  - `tests/integration/proofreading-corpus.test.ts` now pins all five rules
+    at zero, over the specimens and both clean deal rooms.
+
 ## [9.960.0] — 2026-10-19
 
 ### Added

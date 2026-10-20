@@ -10,6 +10,16 @@ import { buildContext } from "../../_test-fixtures.js";
 import { rule as PROOF_001, unpairedMarks, unpairedParagraphs } from "./PROOF-001.js";
 import { rule as PROOF_002, weekdayMismatches } from "./PROOF-002.js";
 import { rule as PROOF_003, repeatedWords } from "./PROOF-003.js";
+import { rule as PROOF_005, titlesAgree } from "./PROOF-005.js";
+import { rule as PROOF_006, enumerationGaps } from "./PROOF-006.js";
+import { ingestPaste } from "../../../ingest/paste.js";
+import { extractAll } from "../../../extract/index.js";
+import type { RuleContext } from "../../finding.js";
+
+async function pasted(text: string): Promise<RuleContext> {
+  const { tree } = await ingestPaste(text);
+  return { ...buildContext(["Agreement"]), tree, extracted: extractAll(tree) };
+}
 
 const doc = (line: string) =>
   buildContext(["Services Agreement", "The parties agree as follows.", line]);
@@ -131,5 +141,78 @@ describe("PROOF-003 — repeated word", () => {
     "See clauses (b) b and the theory.",
   ])("stays silent on %s", (line) => {
     expect(repeatedWords(line)).toEqual([]);
+  });
+});
+
+describe("PROOF-005 — cross-reference title mismatch", () => {
+  const doc = (title: string, runIn: boolean) =>
+    runIn
+      ? `SERVICES AGREEMENT\n\n1. Services. Vendor shall perform the Services.\n\n7. Indemnification. Vendor shall indemnify Customer.\n\n8. Confidentiality. Each party shall keep the other's information confidential, subject to Section 7 (${title}).\n`
+      : `SERVICES AGREEMENT\n\n1. Services\n\nVendor shall perform the Services.\n\n7. Indemnification\n\nVendor shall indemnify Customer.\n\n8. Confidentiality\n\nEach party shall keep the other's information confidential, subject to Section 7 (${title}).\n`;
+
+  it.each([false, true])("quotes both titles (run-in heading: %s)", async (runIn) => {
+    const f = PROOF_005.check(await pasted(doc("Confidentiality", runIn)));
+    expect(f?.severity).toBe("warning");
+    expect(f?.description).toBe(
+      'The document cites Section 7 as "Confidentiality", and the heading of Section 7 is "Indemnification".',
+    );
+  });
+
+  it.each([false, true])(
+    "stays silent when the titles agree (run-in heading: %s)",
+    async (runIn) => {
+      expect(PROOF_005.check(await pasted(doc("Indemnification", runIn)))).toBeNull();
+      expect(PROOF_005.check(await pasted(doc("Indemnities", runIn)))).toBeNull();
+    },
+  );
+
+  it("reads a shared word as the same title, and a lowercase aside as no title", async () => {
+    expect(titlesAgree("Confidential Information", "Confidentiality")).toBe(true);
+    expect(titlesAgree("Fees and Payment", "Payment Terms")).toBe(true);
+    expect(titlesAgree("Confidentiality", "Indemnification")).toBe(false);
+    expect(PROOF_005.check(await pasted(doc("as amended", false)))).toBeNull();
+  });
+});
+
+describe("PROOF-006 — enumeration out of sequence", () => {
+  it("names the item a list skips, across paragraphs too", () => {
+    expect(enumerationGaps("Vendor shall (a) deliver, (b) install and (d) train.")).toEqual([
+      { at: 42, length: 3, detail: '"(d)" follows "(b)"' },
+    ]);
+    expect(enumerationGaps("(a) Deliver.\n(b) Install.\n(d) Train.")[0]?.detail).toBe(
+      '"(d)" follows "(b)"',
+    );
+    expect(enumerationGaps("each of (i) cost, (ii) time and (iv) scope")[0]?.detail).toBe(
+      '"(iv)" follows "(ii)"',
+    );
+    expect(enumerationGaps("(A) one; (B) two; (D) four")[0]?.detail).toBe('"(D)" follows "(B)"');
+  });
+
+  it("reports through the rule, at the item", () => {
+    const f = PROOF_006.check(
+      doc("Vendor shall (a) deliver the goods, (b) install them and (d) train staff."),
+    );
+    expect(f?.severity).toBe("info");
+    expect(f?.description).toBe('"(d)" follows "(b)".');
+    expect(f?.excerpt.text).toMatch(/\(d\) train/);
+  });
+
+  it.each([
+    "Vendor shall (a) deliver, (b) install and (c) train.",
+    // After (h), (i) is the next letter; elsewhere it opens a roman list.
+    "(f) six (g) seven (h) eight (i) nine (j) ten",
+    "(a) Deliver: (i) the goods, (ii) the manuals; (b) install.",
+    // References, measured on the corpus: a citation, a reference noun, a range.
+    "as required by 31 C.F.R. 1010.410(e) and (f).",
+    "If any of (a) through (d) occurs, the Guarantor is liable.",
+    "subject to Exclusion (k) and clauses (b) and (e)",
+    // A clause set in capitals capitalizes its own enumerator.
+    "(a) the lease; (b) the deed; (C) ANY FINANCING OR GUARANTY QUESTION; (d) taxes",
+    // An attachment noun makes it a reference.
+    "as set out in Annex (b) and Appendix (d)",
+    // A new list starts again at (a).
+    "(a) one (b) two. Then: (a) one (b) two (c) three",
+  ])("stays silent on %s", (text) => {
+    expect(enumerationGaps(text)).toEqual([]);
   });
 });
