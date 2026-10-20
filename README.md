@@ -83,7 +83,7 @@ Any other agent host takes the same command in its own config:
 }
 ```
 
-The server reads only the folder it was started in (add `--root <dir>` for others) and opens no network connection. Keep in mind that whatever it returns goes to your agent and its model provider, including quoted excerpts; ask for `excerpts: false` to leave those out. The [reference](docs/reference.md#for-a-coding-agent--the-local-mcp-server) lists the seven tools.
+The server reads only the folder it was started in (add `--root <dir>` for others) and opens no network connection. Keep in mind that whatever it returns goes to your agent and its model provider, including quoted excerpts; ask for `excerpts: false` to leave those out. The [reference](docs/reference.md#for-a-coding-agent--the-local-mcp-server) lists the eight tools.
 
 ## Learn more
 

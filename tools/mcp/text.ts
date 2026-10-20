@@ -26,6 +26,12 @@ export const ANALYZE_DOCUMENT = [
   "A long result is truncated with `next_cursor`; call again with the same input and `cursor` for the rest. Always read `caveats`: it says when no type matched, when text could not be read, and when a rule could not run. `not_analyzed` means the file was not checked at all.",
 ].join(" ");
 
+export const ABSTRACT_DOCUMENT = [
+  "Extracted text, not a legal summary, and a blank cell means nothing was read there, not that the document is silent.",
+  "Returns one document's abstract: its type, title, parties with roles, effective date, auto-renewal, governing law, forum, liability cap, and the sentence on assignment, each with the section it was read from.",
+  "Same input as analyze_document: exactly one of `path` (under an allowed folder) or `text`, and an optional `document_type`. The assignment cell quotes the document; pass `excerpts: false` to withhold it.",
+].join(" ");
+
 export const LIST_DOCUMENT_TYPES = [
   "Lists the document types the rule catalog names, as `id` and `name`, 50 per page. A document of a type not listed gets only a small generic rule set.",
   "With `query`, returns the types whose id, name, group or summary contain every word, and adds each summary. Use an `id` as `document_type` in analyze_document.",

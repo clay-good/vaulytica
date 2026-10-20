@@ -32,6 +32,7 @@ import { parseRoots } from "./roots.js";
 import {
   EXPORT_FORMATS,
   ToolError,
+  abstractDocumentTool,
   analyzeDocumentTool,
   analyzeFolderTool,
   compareDocumentsTool,
@@ -41,6 +42,7 @@ import {
   listDocumentTypesTool,
 } from "./tools.js";
 import {
+  ABSTRACT_DOCUMENT,
   ANALYZE_DOCUMENT,
   ANALYZE_FOLDER,
   COMPARE_DOCUMENTS,
@@ -125,6 +127,35 @@ async function main(): Promise<void> {
         annotations: READ_ONLY,
       },
       (args) => answer(async () => analyzeDocumentTool(args, { roots, deps: await deps })),
+    );
+
+    server.registerTool(
+      "abstract_document",
+      {
+        title: "Abstract one legal document",
+        description: ABSTRACT_DOCUMENT,
+        inputSchema: z.object({
+          path: z
+            .string()
+            .optional()
+            .describe("A .docx, .pdf, .txt or .md file under an allowed root."),
+          text: z.string().optional().describe("The document's text, instead of a path."),
+          filename: z
+            .string()
+            .optional()
+            .describe("With `text`: the name to record. Default pasted-text.txt."),
+          document_type: z
+            .string()
+            .optional()
+            .describe("A document-type id, to skip auto-detection."),
+          excerpts: z
+            .boolean()
+            .optional()
+            .describe("false: withhold the quoted assignment sentence."),
+        }),
+        annotations: READ_ONLY,
+      },
+      (args) => answer(async () => abstractDocumentTool(args, { roots, deps: await deps })),
     );
 
     server.registerTool(

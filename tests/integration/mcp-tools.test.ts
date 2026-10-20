@@ -428,7 +428,7 @@ describe("every tool description", () => {
     const descriptions = Object.entries(TEXT).filter(
       ([name, value]) => typeof value === "string" && name !== "INSTRUCTIONS",
     ) as Array<[string, string]>;
-    expect(descriptions.length).toBe(7);
+    expect(descriptions.length).toBe(8);
     for (const [name, d] of descriptions) {
       expect(d.length, name).toBeLessThanOrEqual(TEXT.MAX_DESCRIPTION_CHARS);
     }

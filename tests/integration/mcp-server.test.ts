@@ -103,6 +103,7 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
       expect(client.getInstructions()).toMatch(/deterministic rule engine/);
       const { tools } = await client.listTools();
       expect(tools.map((t) => t.name).sort()).toEqual([
+        "abstract_document",
         "analyze_document",
         "analyze_folder",
         "compare_documents",
@@ -135,6 +136,21 @@ describe("the MCP server over stdio", { timeout: 180_000 }, () => {
       expect(text.length).toBeLessThanOrEqual(8 * 1024);
       // Returned once, as text: `structuredContent` would double every budget.
       expect(analyzed.structuredContent).toBeUndefined();
+
+      // The abstract carries the run's own hash, and withholds the one quoted
+      // cell when asked to.
+      const abstracted = await client.callTool({
+        name: "abstract_document",
+        arguments: { path: NDA, excerpts: false },
+      });
+      const abs = JSON.parse((abstracted.content as Array<{ text: string }>)[0]!.text) as {
+        result_hash: string;
+        statement: string;
+        assignment?: { value: string };
+      };
+      expect(abs.result_hash).toBe(direct.run.result_hash);
+      expect(abs.statement).toMatch(/not a legal summary/);
+      if (abs.assignment) expect(abs.assignment.value).toMatch(/^present \(quoted text withheld/);
 
       const listed = await client.callTool({
         name: "list_document_types",

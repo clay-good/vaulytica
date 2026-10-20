@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.958.0] — 2026-10-19
+
+### Added
+- **An agent can read the abstract.** The local MCP server's new
+  `abstract_document` tool returns one document's inventory row: type,
+  parties, effective date, renewal, governing law, forum, cap and the
+  assignment sentence, each with its section. It is read-only and takes the
+  same input as `analyze_document`; the two tools now share one input path.
+  `excerpts: false` withholds the one cell that quotes the document.
+  `export_report` writes `abstract-json` and `abstract-csv`. That makes eight
+  tools.
+
 ## [9.957.0] — 2026-10-19
 
 ### Added

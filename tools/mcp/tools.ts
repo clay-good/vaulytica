@@ -6,6 +6,9 @@
  * answers it as an `isError` result.
  */
 
+import { buildDocumentAbstract, type DocumentAbstract } from "../../src/report/abstract.js";
+import { ABSTRACT_STATEMENT } from "../../src/report/disclaimers.js";
+import { titleCorpus } from "../../src/playbooks/matcher.js";
 import { readFile, stat } from "node:fs/promises";
 import { dirname, extname, sep } from "node:path";
 import {
@@ -253,14 +256,22 @@ export type AnalyzeDocumentResult =
   | (Brief & { findings_total: number; next_cursor?: string; config?: ConfigProvenance })
   | { not_analyzed: string; document: { name: string } };
 
-export async function analyzeDocumentTool(
-  args: AnalyzeDocumentArgs,
+/**
+ * The input half every per-document tool shares: exactly one of `path` or
+ * `text`, a known type id, a path inside an allowed root and of a type this
+ * tool reads, the project configuration for a path, and the analysis itself.
+ * A file that could not be checked comes back as `not_analyzed`.
+ */
+async function analyzeInput(
+  args: Pick<AnalyzeDocumentArgs, "path" | "text" | "filename" | "document_type">,
   ctx: Context,
-): Promise<AnalyzeDocumentResult> {
+): Promise<
+  | { result: Awaited<ReturnType<typeof analyzeDocument>>; name: string; applied: Applied }
+  | { not_analyzed: string; document: { name: string } }
+> {
   if ((args.path === undefined) === (args.text === undefined)) {
     throw new ToolError("Pass exactly one of `path` or `text`.");
   }
-  const from = decodeCursor(args.cursor);
   // An unknown id is not an error to the engine — it falls back to detection,
   // and the caller would read the result as the type it asked for.
   if (args.document_type !== undefined && !(await isDocumentType(args.document_type))) {
@@ -316,7 +327,17 @@ export async function analyzeDocumentTool(
 
   const unread = notAnalyzedReason(result, name);
   if (unread) return { not_analyzed: unread, document: { name } };
+  return { result, name, applied };
+}
 
+export async function analyzeDocumentTool(
+  args: AnalyzeDocumentArgs,
+  ctx: Context,
+): Promise<AnalyzeDocumentResult> {
+  const from = decodeCursor(args.cursor);
+  const input = await analyzeInput(args, ctx);
+  if ("not_analyzed" in input) return input;
+  const { result, applied } = input;
   if (from.sha !== undefined && from.sha !== result.run.source_file.sha256) {
     throw new ToolError(
       "The document changed since that cursor was issued. Call again without `cursor`.",
@@ -694,6 +715,46 @@ export async function explainRuleTool(args: { rule_id: string }, ctx: Context) {
     );
   }
   return rule;
+}
+
+/* ---------------- abstract_document ---------------- */
+
+export type AbstractDocumentArgs = Pick<
+  AnalyzeDocumentArgs,
+  "path" | "text" | "filename" | "document_type" | "excerpts"
+>;
+
+/**
+ * One document's abstract (add-contract-abstract-inventory): type, parties,
+ * effective date, renewal, law, forum, cap and assignment, each with the
+ * section it was read from, and a blank where nothing was read. Read-only, with
+ * the same input rules as analyze_document. `excerpts: false` withholds the
+ * one cell that quotes the document (the assignment sentence), the same
+ * promise analyze_document makes about quoted text.
+ */
+export async function abstractDocumentTool(
+  args: AbstractDocumentArgs,
+  ctx: Context,
+): Promise<
+  (DocumentAbstract & { statement: string }) | { not_analyzed: string; document: { name: string } }
+> {
+  const input = await analyzeInput(args, ctx);
+  if ("not_analyzed" in input) return input;
+  const { result, name } = input;
+  const abstract = await buildDocumentAbstract({
+    file: name,
+    tree: result.ingest.tree,
+    run: result.run,
+    playbookName: result.playbook.name,
+    title: titleCorpus(result.ingest.tree, name).split("\n")[0]!.trim().slice(0, 160),
+  });
+  if (args.excerpts === false && abstract.assignment) {
+    abstract.assignment = {
+      value: "present (quoted text withheld: excerpts false)",
+      ...(abstract.assignment.section ? { section: abstract.assignment.section } : {}),
+    };
+  }
+  return { statement: ABSTRACT_STATEMENT, ...abstract };
 }
 
 /* ---------------- export_report ---------------- */

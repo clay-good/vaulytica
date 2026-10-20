@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,936 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.957.0` · `MIT`
+`1,936 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.958.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1261,6 +1261,7 @@ node bin/vaulytica.mjs mcp --root /path/to/contracts
 | Tool                     | Takes                                                                                             | Returns                                                                                                                           |
 | ------------------------ | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `analyze_document`       | `path` or `text` (+ `filename`); `document_type`, `min_severity`, `include`, `excerpts`, `cursor` | the compact report; past 40,000 characters, a page and a `next_cursor`                                                            |
+| `abstract_document`      | `path` or `text` (+ `filename`); `document_type`, `excerpts`                                      | one row of the inventory: type, parties, dates, law, forum, cap, the assignment sentence, each with its section                   |
 | `list_document_types`    | `query`, `limit`, `cursor`                                                                        | `id` and name, 50 per page; summaries when `query` is given                                                                       |
 | `analyze_folder`         | `dir` (a folder or `.zip`) or `paths[]`; `related`, `cursor`                                      | the triage page: every file in a tier, systemic rules, and a spot check                                                           |
 | `compare_documents`      | `base_path` or `base_text`; `revised_path` or `revised_text`; `document_type`                     | one round of a drafting loop: `fixed`, `introduced`, `remaining`, `no_longer_present`, `removed`, and the hashes                  |

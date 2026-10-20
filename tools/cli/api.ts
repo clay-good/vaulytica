@@ -832,6 +832,8 @@ export const EXPORT_FORMATS = [
   "obligations-csv",
   "deadlines-ics",
   "definitions-csv",
+  "abstract-json",
+  "abstract-csv",
 ] as const satisfies readonly Format[];
 export type ExportFormat = (typeof EXPORT_FORMATS)[number];
 
