@@ -26,6 +26,7 @@ import { countRevisions } from "../../src/ingest/docx-notices.js";
 import { collectRevisionTexts } from "../../src/ingest/docx-revisions.js";
 import { inflateOoxmlParts } from "../../src/ingest/ooxml.js";
 import { attributeRevisions } from "../../src/report/redline-attribution.js";
+import { checkConformity, type Conformity } from "../../src/report/conformity.js";
 import { ingestPdfBuffer } from "../../src/ingest/pdf.js";
 import type { IngestResult } from "../../src/ingest/types.js";
 import { flattenText } from "../../src/ingest/types.js";
@@ -879,6 +880,34 @@ export async function compareRedline(
   const xml = inflateOoxmlParts(bytes, new Set(["word/document.xml"]))["word/document.xml"] ?? "";
   const revision_authors = attributeRevisions(result.comparison, collectRevisionTexts(xml));
   return { ...result, revision_authors };
+}
+
+/** A pair `compareExecuted` cannot check, with the reason. */
+export class ExecutedRefusedError extends Error {}
+
+/**
+ * Check a signed copy against the final draft (add-executed-copy-conformity):
+ * the comparison of the two, plus the conformity verdict with what execution
+ * fills in set aside. The signed copy is held to the final's type. An
+ * image-only scan has no text to compare headless; the browser runs OCR on it.
+ */
+export async function compareExecuted(
+  finalPath: string,
+  signedPath: string,
+  opts: Omit<Parameters<typeof compareFiles>[2], "pinType"> = {},
+): Promise<FileComparison & { conformity: Conformity }> {
+  const result = await compareFiles(
+    { path: finalPath },
+    { path: signedPath },
+    { ...opts, pinType: true },
+  );
+  if (result.revised.ingest.word_count === 0) {
+    throw new ExecutedRefusedError(
+      `${basename(signedPath)} has no text layer, so there is nothing to compare here. It looks like an image-only scan: the browser can read it with OCR, which this command does not run.`,
+    );
+  }
+  const conformity = await checkConformity(result.base.ingest.tree, result.revised.ingest.tree);
+  return { ...result, conformity };
 }
 
 /**

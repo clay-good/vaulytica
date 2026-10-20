@@ -36,7 +36,14 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { compareFiles, compareRedline, RedlineRefusedError } from "./api.js";
+import {
+  compareExecuted,
+  compareFiles,
+  compareRedline,
+  ExecutedRefusedError,
+  RedlineRefusedError,
+} from "./api.js";
+import { conformityLine, type Conformity } from "../../src/report/conformity.js";
 import { buildComparisonBrief, comparisonBriefMarkdown } from "./comparison-brief.js";
 import {
   buildComparisonJsonObject,
@@ -56,6 +63,10 @@ type CompareArgs = {
   revised: string;
   /** `--redline <file.docx>`: the two readings of one redline, in place of two files. */
   redline?: string;
+  /** `--executed`: the revised file is the SIGNED copy of the base, the final draft. */
+  executed: boolean;
+  /** `--fail-on-nonconformity`: exit 2 when the signed copy differs outside the allowance. */
+  failOnNonconformity: boolean;
   playbook?: string;
   /** spec-v11 — a custom playbook file whose positions drive `--posture`. */
   playbookFile?: string;
@@ -96,6 +107,8 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     confirmPairing: false,
     posture: false,
     failOnRegression: false,
+    executed: false,
+    failOnNonconformity: false,
   };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i]!;
@@ -139,6 +152,12 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
       case "--redline":
         args.redline = requireValue(flag, argv[++i]);
         break;
+      case "--executed":
+        args.executed = true;
+        break;
+      case "--fail-on-nonconformity":
+        args.failOnNonconformity = true;
+        break;
       default:
         if (flag.startsWith("--")) throw new Error(`unknown flag "${flag}"`);
         positional.push(flag);
@@ -151,8 +170,14 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
   }
   if (args.redline === undefined && positional.length !== 2) {
     throw new Error(
-      "usage: compare <base> <revised> | --redline <file.docx> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
+      "usage: compare <base> <revised> | --redline <file.docx> | --executed <final> <signed> [--fail-on-nonconformity] [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
     );
+  }
+  if (args.executed && args.redline !== undefined) {
+    throw new Error("--executed compares a final with its signed copy; it does not take --redline");
+  }
+  if (args.failOnNonconformity && !args.executed) {
+    throw new Error("--fail-on-nonconformity requires --executed <final> <signed>");
   }
   if (args.posture && !args.playbookFile) {
     throw new Error("--posture requires --playbook-file <path>");
@@ -179,6 +204,8 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     ...(args.out ? { out: args.out } : {}),
     ...(args.failOn ? { failOn: args.failOn } : {}),
     failOnRegression: args.failOnRegression!,
+    executed: args.executed!,
+    failOnNonconformity: args.failOnNonconformity!,
     confirmPairing: args.confirmPairing!,
     // `--dkb` was parsed into `args` and then dropped here, so a run that pinned
     // an explicit DKB directory silently used the default one instead — the
@@ -317,6 +344,33 @@ export function formatCompareMarkdown(
   return lines.join("\n") + "\n";
 }
 
+/** The signed copy against the final, as the section a reviewer reads first. */
+export function formatConformityMarkdown(c: Conformity): string {
+  const lines: string[] = ["# Signed copy against the final", "", `**${conformityLine(c)}**`, ""];
+  lines.push(`- Conformity hash: \`${c.conformity_hash}\``);
+  if (c.signature_blocks.final !== c.signature_blocks.executed) {
+    lines.push(
+      `- Signature blocks: ${c.signature_blocks.final} in the final, ${c.signature_blocks.executed} in the signed copy.`,
+    );
+  }
+  lines.push("");
+  const { removed, added, changed } = c.differences;
+  if (removed.length + added.length + changed.length > 0) {
+    lines.push("## Differences outside the execution allowance", "");
+    for (const pair of changed) lines.push(`- **Changed:** ${renderWordDiff(pair)}`);
+    for (const r of removed) lines.push(`- **In the final only:** ${r.text}`);
+    for (const a of added) lines.push(`- **In the signed copy only:** ${a.text}`);
+    lines.push("");
+  }
+  if (c.set_aside.length > 0) {
+    lines.push("## Set aside as execution", "");
+    for (const s of c.set_aside)
+      lines.push(`- ${s.side === "final" ? "Final" : "Signed"} · ${s.reason}: ${s.text}`);
+    lines.push("");
+  }
+  return lines.join("\n") + "\n";
+}
+
 /** Inline redline of a rewritten clause: ~~removed~~ / **added** Markdown. */
 function renderWordDiff(pair: ClauseDiff["changed"][number]): string {
   if (!pair.word_diff) return `"${pair.base.text}" → "${pair.revised.text}"`;
@@ -364,17 +418,20 @@ export async function runCompare(argv: string[]): Promise<void> {
     confirmPairing: args.confirmPairing,
     dkbDir: args.dkb,
   };
-  let fileComparison: Awaited<ReturnType<typeof compareFiles>>;
+  let fileComparison: Awaited<ReturnType<typeof compareFiles>> & { conformity?: Conformity };
   try {
     fileComparison = args.redline
       ? await compareRedline(args.redline, compareOpts)
-      : await compareFiles({ path: args.base }, { path: args.revised }, compareOpts);
+      : args.executed
+        ? await compareExecuted(args.base, args.revised, compareOpts)
+        : await compareFiles({ path: args.base }, { path: args.revised }, compareOpts);
   } catch (e) {
-    if (!(e instanceof RedlineRefusedError)) throw e;
+    if (!(e instanceof RedlineRefusedError) && !(e instanceof ExecutedRefusedError)) throw e;
     process.stderr.write(`${e.message}\n`);
     process.exitCode = 1;
     return;
   }
+  const { conformity } = fileComparison;
   const {
     comparison: cmp,
     clause_diff: clauseDiff,
@@ -401,12 +458,14 @@ export async function runCompare(argv: string[]): Promise<void> {
           ...(fileComparison.revision_authors
             ? { revision_authors: fileComparison.revision_authors }
             : {}),
+          ...(conformity ? { conformity } : {}),
         },
         null,
         2,
       ) + "\n",
     );
   } else {
+    if (conformity) process.stdout.write(formatConformityMarkdown(conformity));
     process.stdout.write(
       formatCompareMarkdown(
         cmp,
@@ -416,6 +475,13 @@ export async function runCompare(argv: string[]): Promise<void> {
         fileComparison.revision_authors,
       ),
     );
+  }
+
+  if (args.failOnNonconformity && conformity && conformity.verdict !== "identical") {
+    process.stderr.write(
+      `\n✗ the signed copy differs from the final outside the execution allowance (--fail-on-nonconformity)\n`,
+    );
+    process.exitCode = 2;
   }
 
   if (args.failOn && introducedBreaches(cmp.delta.counts.introduced, args.failOn)) {

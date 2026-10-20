@@ -2473,6 +2473,10 @@ ${usageFormatLines()}
                           [--format json|markdown]
                           [--fail-on critical|warning|info] [--fail-on-regression]
                           [--confirm-pairing] [--dkb <dir>]
+  compare --executed <final> <signed> [--fail-on-nonconformity] [the same flags]
+                          The signed copy against the final draft: what remains
+                          once execution's fills (signature lines, dates in
+                          blanks, legends) are set aside, with a verdict.
   compare --redline <file.docx> [the same flags]
                           Both readings of one Word redline: every tracked
                           change rejected (the draft as it stood) against every

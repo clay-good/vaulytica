@@ -2,6 +2,40 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.968.0] — 2026-10-20
+
+### Added
+- **`compare --executed final.docx signed.pdf`: does the signed copy match
+  the final?** The clause redline between the two, with the differences
+  execution is supposed to introduce set aside and listed:
+  - signature-block lines (`By:`, `Name:`, `Date:`, `/s/`, initials,
+    witness and notary lines, and a signature rule joined with what is
+    printed under it);
+  - a printed name under the signature block;
+  - a blank the final left (`____`, `[●]`, `[DATE]`) filled in with nothing
+    else changed;
+  - an EXECUTION VERSION or FINAL legend.
+
+  A verdict line ("Identical to the final outside the execution allowance",
+  or N differences) and a `conformity_hash` cover it, apart from every
+  `result_hash`. `--fail-on-nonconformity` exits 2 on any difference.
+  An image-only scan is refused: the CLI runs no OCR, and the browser does
+  (add-executed-copy-conformity, slice A).
+- **Hardened against what it sets aside.**
+  - A blank filled with operative words ("which Client waives") is a
+    difference, not a fill.
+  - An added signatory is caught by counting the signature blocks on each
+    side, since every line of a new block is an allowance on its own.
+  - An entry the final itself carries (the party name over its signature)
+    is compared, not set aside.
+- **Measured over the corpus** (`conformity-corpus`):
+  - Every specimen, executed (a legend added, its rules signed, its blanks
+    filled), comes back identical.
+  - A changed dollar figure is caught in all 209 specimens that have one.
+  - The relation found 19 false differences before the allowance knew their
+    signature-block shapes: a rule joined with a notary block, a form's rule
+    with its label below, a line merged into the signed one.
+
 ## [9.967.0] — 2026-10-20
 
 ### Added

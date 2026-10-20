@@ -421,9 +421,25 @@ function setDiff(base: Clause[], revised: Clause[]): ClauseDiff {
  * Compute the clause-level diff between two document trees. Pure and
  * deterministic; outside the comparison `result_hash`.
  */
-export function buildClauseDiff(base: DocumentTree, revised: DocumentTree): ClauseDiff {
-  const baseClauses = flattenClauses(base);
-  const revisedClauses = flattenClauses(revised);
+export function buildClauseDiff(
+  base: DocumentTree,
+  revised: DocumentTree,
+  opts: {
+    /**
+     * Leave a clause out before aligning, so it is neither diffed nor paired
+     * with a clause it does not correspond to (the executed-copy allowance).
+     * Absent, every clause is compared — the plain comparison.
+     */
+    exclude?: (clause: Clause, side: "base" | "revised", index: number) => boolean;
+  } = {},
+): ClauseDiff {
+  const { exclude } = opts;
+  const baseClauses = exclude
+    ? flattenClauses(base).filter((c, i) => !exclude(c, "base", i))
+    : flattenClauses(base);
+  const revisedClauses = exclude
+    ? flattenClauses(revised).filter((c, i) => !exclude(c, "revised", i))
+    : flattenClauses(revised);
 
   if ((baseClauses.length + 1) * (revisedClauses.length + 1) > MAX_CLAUSE_DIFF_CELLS) {
     return setDiff(baseClauses, revisedClauses);
