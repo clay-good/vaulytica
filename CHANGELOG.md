@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.957.0] — 2026-10-19
+
+### Added
+- **The inventory names how each agreement treats assignment.** The new
+  `assignment` column quotes the sentence that says whether the instrument
+  itself may be assigned: the one that restricts it, if there is one, else
+  the one that mentions it. It carries its section. `change_of_control` reads
+  `mentioned` when that sentence names a change of control, a merger, or a
+  sale of substantially all assets.
+  - **Quoted, not classified, on purpose.** A prototype classifier was
+    measured first and misread exactly the cases the column exists for. It
+    read "Neither party may assign … without the other's prior written
+    consent, except to a successor" as freely assignable, and took a
+    one-sided "Buyer may assign to an affiliate" for the rule. The sentence
+    is the fact; a label would have been a confident wrong one.
+  - **Reach over the 363 specimens:** assignment 63 (57 of them the
+    restricting rule), change of control 8. Documents with no assignment
+    clause (policies, wills, notices) are blank.
+
 ## [9.956.0] — 2026-10-19
 
 ### Added

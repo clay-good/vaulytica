@@ -27,6 +27,8 @@ This Supply Agreement (this "Agreement") is made as of June 3, 2026 between Acme
 
 12.1 Governing Law. This Agreement is governed by the laws of the State of New York, without regard to its conflict of laws principles.
 
+12.3 Assignment. Buyer may assign this Agreement to an affiliate on notice. Neither party may otherwise assign this Agreement without the other's prior written consent, except to a successor in a merger or a sale of substantially all of its assets.
+
 12.2 Venue. Any dispute arising out of this Agreement shall be brought exclusively in the state or federal courts located in New York County, New York.
 `;
 
@@ -60,6 +62,11 @@ describe("the abstract of one document", () => {
     expect(a.effective_date).toEqual({ value: "2026-06-03" });
     expect(a.governing_law).toEqual({ value: "New York", section: "§ 12.1" });
     expect(a.forum?.section).toBe("§ 12.2");
+    // The sentence that RESTRICTS assignment, quoted — not the one-sided
+    // permission before it, and not a label.
+    expect(a.assignment?.value).toMatch(/^Neither party may otherwise assign this Agreement/);
+    expect(a.assignment?.section).toBe("§ 12.3");
+    expect(a.change_of_control?.value).toBe("mentioned");
     expect(a.result_hash).toMatch(/^[0-9a-f]{64}$/);
   });
 
@@ -68,6 +75,7 @@ describe("the abstract of one document", () => {
     expect(a.effective_date).toBeUndefined();
     expect(a.governing_law).toBeUndefined();
     expect(a.renewal).toBeUndefined();
+    expect(a.assignment).toBeUndefined();
   });
 });
 

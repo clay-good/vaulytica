@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,936 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.956.0` · `MIT`
+`1,936 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.957.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1226,9 +1226,10 @@ npm run citation:check -- --reachability   # + network sweep
 | `renewal` | the auto-renewal clause as TEMP-004 reads it; blank when none was found |
 | `governing_law`, `forum` | as the jurisdiction extractor reads them, each with its `_section` |
 | `liability_cap` | capped, uncapped, or no cap clause found, as the liability rules read it |
+| `assignment`, `change_of_control` | the sentence that says whether the instrument may be assigned, quoted (not classified), and `mentioned` when it names a change of control, a merger or a sale of substantially all assets |
 | `word_count`, `result_hash` | the size, and the run's own hash |
 
-A blank cell means the extractor found nothing, not that the document is silent. The CSV's second line says so, and counts how many rows fill each column, so a column that is rarely filled is visible as such. A section is the document's heading where it has one, else the clause number its paragraph starts with (`§ 12.1`). The file carries its own `inventory_hash` over the rows, with paths relative to the folder, independent of every `result_hash` and of the date it was run. Measured over the 363 specimens: parties fill 342 rows, governing law 222, effective date 202, forum 159, liability cap 103, renewal 23. A term-end column is not included, because the critical-dates register resolves a term's end on 4 of the 363 specimens.
+A blank cell means the extractor found nothing, not that the document is silent. The CSV's second line says so, and counts how many rows fill each column, so a column that is rarely filled is visible as such. A section is the document's heading where it has one, else the clause number its paragraph starts with (`§ 12.1`). The file carries its own `inventory_hash` over the rows, with paths relative to the folder, independent of every `result_hash` and of the date it was run. Measured over the 363 specimens: parties fill 342 rows, governing law 222, effective date 202, forum 159, liability cap 103, assignment 63, renewal 23, change of control 8. A term-end column is not included, because the critical-dates register resolves a term's end on 4 of the 363 specimens.
 
 ### A folder at a time — the triage page
 
