@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.966.0] — 2026-10-20
+
+### Added
+- **A redline comparison names who made each change.** In `compare
+  --redline`, a finding is attributed to the authors of the tracked changes
+  its quoted text contains:
+  - an introduced finding, to the insertions;
+  - a resolved finding, to the deletions in the rejected reading.
+
+  The Markdown appends "(tracked change by …)", the Word report adds a
+  "Tracked change by" line, the JSON carries `revision_authors`, and the MCP
+  `compare_documents` result lists them (add-redline-two-sided-analysis
+  task 5).
+- **On the fixture:**
+  - The uncapped indemnity (RISK-015) names Opposing Counsel.
+  - "No limitation-of-liability clause" (RISK-005) names no one. It is about
+    an absence and quotes nothing a revision wrote. Which deletion caused an
+    absence is not something the text says, and guessing would put a name to
+    a conclusion.
+- **Render-side only.** Attribution enters no hash. A revision shorter than
+  12 characters ("60", "the") matches too much to name anyone and is not
+  used.
+
 ## [9.965.0] — 2026-10-20
 
 ### Added

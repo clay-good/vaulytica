@@ -4,7 +4,7 @@
 import { describe, expect, it } from "vitest";
 import { buildDocx, documentXml, REDLINE } from "../delivery/_fixtures.js";
 import { ingestDocxBuffer } from "./docx.js";
-import { rejectedDocumentXml } from "./docx-revisions.js";
+import { collectRevisionTexts, rejectedDocumentXml } from "./docx-revisions.js";
 import type { DocumentTree } from "./types.js";
 
 const text = (tree: DocumentTree): string => {
@@ -77,5 +77,32 @@ describe("rejectedDocumentXml", () => {
     const t = performance.now();
     rejectedDocumentXml(open);
     expect(performance.now() - t).toBeLessThan(2_000);
+  });
+});
+
+describe("collectRevisionTexts", () => {
+  it("reads each change's kind, author and text, and skips the empty markers", () => {
+    const revs = collectRevisionTexts(REDLINE);
+    expect(revs).toContainEqual({
+      kind: "insertion",
+      author: "Opposing Counsel",
+      text: "Supplier shall indemnify Buyer against all losses without limit.",
+    });
+    expect(revs).toContainEqual({
+      kind: "deletion",
+      author: "Opposing Counsel",
+      text: "Each party's total liability is capped at the fees paid in the prior twelve months.",
+    });
+    // The move counts on both sides; the paragraph-mark marker carries no text.
+    expect(
+      revs.filter((r) => r.text === "Notices are effective on receipt.").map((r) => r.kind),
+    ).toEqual(["insertion", "deletion"]);
+    expect(revs.every((r) => r.text.trim().length > 0)).toBe(true);
+  });
+
+  it("decodes entities and keeps an authorless change without an author", () => {
+    expect(collectRevisionTexts('<w:ins w:id="1"><w:r><w:t>A &amp; B</w:t></w:r></w:ins>')).toEqual(
+      [{ kind: "insertion", text: "A & B" }],
+    );
   });
 });

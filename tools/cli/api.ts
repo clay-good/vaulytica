@@ -23,6 +23,9 @@ import { unzipSync, strFromU8 } from "fflate";
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { ingestDocxBuffer } from "../../src/ingest/docx.js";
 import { countRevisions } from "../../src/ingest/docx-notices.js";
+import { collectRevisionTexts } from "../../src/ingest/docx-revisions.js";
+import { inflateOoxmlParts } from "../../src/ingest/ooxml.js";
+import { attributeRevisions } from "../../src/report/redline-attribution.js";
 import { ingestPdfBuffer } from "../../src/ingest/pdf.js";
 import type { IngestResult } from "../../src/ingest/types.js";
 import { flattenText } from "../../src/ingest/types.js";
@@ -768,6 +771,12 @@ export type FileComparison = {
   clause_diff: ClauseDiff;
   /** Set when `pinType` held the revision to the base draft's document type. */
   pinned_type?: string;
+  /**
+   * `compareRedline` only: finding id → the authors of the tracked changes its
+   * quoted text contains. Render-side, outside every hash; a finding about an
+   * absence has none (see `redline-attribution.ts`).
+   */
+  revision_authors?: Record<string, string[]>;
   posture_movement?: PostureMovement;
   base: AnalyzeResult;
   revised: AnalyzeResult;
@@ -854,18 +863,22 @@ export async function compareRedline(
       `--redline reads a Word redline (.docx); ${basename(path)} is not one. To compare two versions, pass both files.`,
     );
   }
-  const counts = countRevisions(toArrayBuffer(await readFile(path)));
+  const bytes = toArrayBuffer(await readFile(path));
+  const counts = countRevisions(bytes);
   if (counts.insertions + counts.deletions + counts.moves === 0) {
     throw new RedlineRefusedError(
       `${basename(path)} has no tracked changes, so both of its readings are the same document. To compare two versions, pass both files.`,
     );
   }
   const name = basename(path);
-  return compareFiles(
+  const result = await compareFiles(
     { path, revisions: "rejected", sourceName: `${name}#rejected` },
     { path, revisions: "accepted", sourceName: `${name}#accepted` },
     { ...opts, pinType: true },
   );
+  const xml = inflateOoxmlParts(bytes, new Set(["word/document.xml"]))["word/document.xml"] ?? "";
+  const revision_authors = attributeRevisions(result.comparison, collectRevisionTexts(xml));
+  return { ...result, revision_authors };
 }
 
 /**

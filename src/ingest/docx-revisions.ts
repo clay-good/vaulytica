@@ -124,3 +124,69 @@ export function withRevisionsRejected(bytes: ArrayBuffer): ArrayBuffer {
     zipped.byteOffset + zipped.byteLength,
   ) as ArrayBuffer;
 }
+
+/** One tracked change: what kind, who made it, and the text it carries. */
+export type RevisionText = {
+  kind: "insertion" | "deletion";
+  author?: string;
+  text: string;
+};
+
+/** Revisions read past this are not attributed; the comparison itself is unaffected. */
+export const MAX_REVISIONS = 5000;
+
+const KINDS = [
+  ["w:ins", "insertion"],
+  ["w:moveTo", "insertion"],
+  ["w:del", "deletion"],
+  ["w:moveFrom", "deletion"],
+] as const;
+
+/** The text runs inside one element's body: `w:t` and `w:delText`. */
+function bodyText(body: string): string {
+  let out = "";
+  for (const m of body.matchAll(
+    /<w:(?:t|delText)(?:\s[^>]{0,200})?>([^<]{0,10000})<\/w:(?:t|delText)>/g,
+  )) {
+    out += m[1];
+  }
+  return out
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
+/**
+ * Every tracked change in `word/document.xml` with the text it inserts or
+ * deletes and its `w:author`, for attribution. A self-closing marker carries
+ * no text and is skipped. The same forward-only `indexOf` scan as the
+ * rewrite above, so a malformed part stays linear.
+ */
+export function collectRevisionTexts(xml: string): RevisionText[] {
+  const out: RevisionText[] = [];
+  for (const [tag, kind] of KINDS) {
+    const open = `<${tag}`;
+    const close = `</${tag}>`;
+    let at = 0;
+    while (out.length < MAX_REVISIONS) {
+      const start = xml.indexOf(open, at);
+      if (start < 0) break;
+      const next = xml[start + open.length];
+      const tagEnd = xml.indexOf(">", start);
+      if (tagEnd < 0) break;
+      at = tagEnd + 1;
+      if (next !== " " && next !== ">" && next !== "/") continue;
+      if (xml[tagEnd - 1] === "/") continue;
+      const end = xml.indexOf(close, tagEnd);
+      if (end < 0) break;
+      const head = xml.slice(start, tagEnd);
+      const author = /\bw:author="([^"]{0,200})"/.exec(head)?.[1];
+      const text = bodyText(xml.slice(tagEnd + 1, end));
+      if (text.trim()) out.push({ kind, ...(author ? { author } : {}), text });
+      at = end + close.length;
+    }
+  }
+  return out;
+}

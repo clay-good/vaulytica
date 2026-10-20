@@ -34,6 +34,15 @@ describe("compare --redline", () => {
     // and an indemnity with no cap.
     const introduced = r.comparison.delta.introduced.map((f) => f.rule_id);
     expect(introduced).toEqual(expect.arrayContaining(["RISK-005", "RISK-015"]));
+    // The uncapped indemnity quotes the inserted sentence, so it names the
+    // author who inserted it. "No limitation-of-liability clause" is about an
+    // absence, quotes nothing a revision wrote, and names no one.
+    const byRule = (rule: string): string[] | undefined => {
+      const f = r.comparison.delta.introduced.find((x) => x.rule_id === rule);
+      return f ? r.revision_authors?.[f.id] : undefined;
+    };
+    expect(byRule("RISK-015")).toEqual(["Opposing Counsel"]);
+    expect(byRule("RISK-005")).toBeUndefined();
     // The clause redline is the markup. A sentence rewritten this heavily is
     // a clause removed and a clause added, not a "changed" pair; either way
     // the cap is on the rejected side only and the indemnity on the accepted.

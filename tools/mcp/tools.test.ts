@@ -516,9 +516,13 @@ describe("compare_documents redline_path", () => {
   it("compares a redline's rejected and accepted readings", async () => {
     const path = join(tmp, "markup.docx");
     await writeFile(path, Buffer.from(redlineDocx()));
-    const r = (await compareDocumentsTool({ redline_path: path }, ctx)) as {
+    const r = (await compareDocumentsTool({ redline_path: path }, ctx)) as unknown as {
       introduced: Array<{ rule_id: string }>;
+      revision_authors: Array<{ rule_id: string; authors: string[] }>;
     };
+    expect(r.revision_authors).toContainEqual(
+      expect.objectContaining({ rule_id: "RISK-015", authors: ["Opposing Counsel"] }),
+    );
     expect(r.introduced.map((f) => f.rule_id)).toEqual(
       expect.arrayContaining(["RISK-005", "RISK-015"]),
     );

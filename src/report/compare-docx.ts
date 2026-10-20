@@ -70,6 +70,8 @@ export async function buildComparisonDocx(
   cmp: Comparison,
   clauseDiff?: ClauseDiff,
   postureMovement?: PostureMovement,
+  /** A redline's attribution: finding id → the authors of the changes it quotes. */
+  authors?: Record<string, string[]>,
 ): Promise<Blob> {
   const children: (Paragraph | Table)[] = [
     ...renderCover(cmp),
@@ -79,11 +81,13 @@ export async function buildComparisonDocx(
       "Resolved",
       "Findings that fired on the base version and are absent on the revised version — these edits fixed an issue.",
       cmp.delta.resolved,
+      authors,
     ),
     ...renderBucket(
       "Introduced",
       "Findings absent on the base version that fired on the revised version — these edits created an issue.",
       cmp.delta.introduced,
+      authors,
     ),
     ...renderUnchangedBucket(cmp.delta.unchanged),
     ...renderClauseDeltaAppendix(cmp.delta.unchanged),
@@ -330,7 +334,12 @@ function renderPostureMovementSection(pm: PostureMovement | undefined): (Paragra
 // Buckets
 // ---------------------------------------------------------------------------
 
-function renderBucket(heading: string, blurb: string, findings: Finding[]): (Paragraph | Table)[] {
+function renderBucket(
+  heading: string,
+  blurb: string,
+  findings: Finding[],
+  authors?: Record<string, string[]>,
+): (Paragraph | Table)[] {
   const out: (Paragraph | Table)[] = [
     h1(`${heading} (${findings.length})`),
     para({ text: blurb, italics: true }),
@@ -340,7 +349,11 @@ function renderBucket(heading: string, blurb: string, findings: Finding[]): (Par
     out.push(pageBreak());
     return out;
   }
-  for (const f of findings) out.push(...renderFinding(f));
+  for (const f of findings) {
+    out.push(...renderFinding(f));
+    const by = authors?.[f.id];
+    if (by?.length) out.push(para({ text: `Tracked change by: ${by.join(", ")}`, italics: true }));
+  }
   out.push(pageBreak());
   return out;
 }

@@ -759,13 +759,20 @@ async function compareRedlineTool(args: CompareDocumentsArgs, path: string, ctx:
   await assertReadableSize(real, path);
   const applied = await projectConfig(real, ctx, { type: args.document_type });
   try {
-    const brief = buildComparisonBrief(
-      await compareRedline(real, {
-        deps: ctx.deps,
-        playbookId: args.document_type ?? applied.playbookFor?.(real) ?? applied.playbookId,
-        ...(applied.customPlaybook ? { customPlaybook: applied.customPlaybook } : {}),
-      }),
-    );
+    const compared = await compareRedline(real, {
+      deps: ctx.deps,
+      playbookId: args.document_type ?? applied.playbookFor?.(real) ?? applied.playbookId,
+      ...(applied.customPlaybook ? { customPlaybook: applied.customPlaybook } : {}),
+    });
+    // Who made the change each finding quotes; an absence names no one.
+    const revision_authors = [
+      ...compared.comparison.delta.introduced,
+      ...compared.comparison.delta.resolved,
+    ].flatMap((f) => {
+      const authors = compared.revision_authors?.[f.id];
+      return authors ? [{ rule_id: f.rule_id, title: f.title, authors }] : [];
+    });
+    const brief = { ...buildComparisonBrief(compared), revision_authors };
     return applied.config ? { ...brief, config: applied.config } : brief;
   } catch (e) {
     throw new ToolError(e instanceof Error ? e.message : String(e));

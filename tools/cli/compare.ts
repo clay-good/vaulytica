@@ -262,7 +262,11 @@ export function formatCompareMarkdown(
   postureMovement?: PostureMovement,
   /** The round's sections (fixed / introduced / remaining …), already rendered. */
   round?: string,
+  /** A redline's attribution: finding id → the authors of the changes it quotes. */
+  authors?: Record<string, string[]>,
 ): string {
+  const by = (id: string): string =>
+    authors?.[id]?.length ? ` _(tracked change by ${authors[id]!.join(", ")})_` : "";
   const { resolved, introduced, unchanged } = cmp.delta.counts;
   const lines: string[] = [];
   lines.push(`# Comparison: ${cmp.base.name} → ${cmp.revised.name}`);
@@ -286,7 +290,7 @@ export function formatCompareMarkdown(
     lines.push("### Introduced findings");
     lines.push("");
     for (const f of cmp.delta.introduced) {
-      lines.push(`- **[${f.severity.toUpperCase()}] ${f.rule_id}** — ${f.title}`);
+      lines.push(`- **[${f.severity.toUpperCase()}] ${f.rule_id}** — ${f.title}${by(f.id)}`);
     }
     lines.push("");
   }
@@ -381,12 +385,26 @@ export async function runCompare(argv: string[]): Promise<void> {
     // The comparison as the artifact a reviewer circulates, not a terminal
     // dump. Same builder the browser's compare view downloads; it was the last
     // report builder with no headless caller.
-    const blob = await buildComparisonDocx(cmp, clauseDiff, postureMovement);
+    const blob = await buildComparisonDocx(
+      cmp,
+      clauseDiff,
+      postureMovement,
+      fileComparison.revision_authors,
+    );
     await writeFile(args.out!, Buffer.from(await blob.arrayBuffer()));
     process.stderr.write(`wrote comparison report → ${args.out}\n`);
   } else if (args.format === "json") {
     process.stdout.write(
-      JSON.stringify(buildComparisonJsonObject(cmp, clauseDiff, postureMovement), null, 2) + "\n",
+      JSON.stringify(
+        {
+          ...buildComparisonJsonObject(cmp, clauseDiff, postureMovement),
+          ...(fileComparison.revision_authors
+            ? { revision_authors: fileComparison.revision_authors }
+            : {}),
+        },
+        null,
+        2,
+      ) + "\n",
     );
   } else {
     process.stdout.write(
@@ -395,6 +413,7 @@ export async function runCompare(argv: string[]): Promise<void> {
         clauseDiff,
         postureMovement,
         comparisonBriefMarkdown(buildComparisonBrief(fileComparison)),
+        fileComparison.revision_authors,
       ),
     );
   }
