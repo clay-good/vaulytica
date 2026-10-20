@@ -138,3 +138,20 @@ resolution, placeholder detection, signature-block parity, tracked-change and
 hidden-text notices, Bates and privilege-log reconciliation, and the Texas
 exact-wording rules all exist; the deadlines calendar's "mentioned dates"
 question is a product decision recorded in the frontier, not a change.
+
+## Wave 5 — 2026-10-20 the page is the deliverable
+
+Three render-side changes, written after reading the result screen at 9.965.0.
+Today the tab shows a count, about fifteen panels and up to twenty download
+buttons, and the findings themselves appear only inside the Word report. On ten
+specimen contracts the engine returns 4–17 findings, 1–9 of them actionable,
+which is short enough to show on one screen. None of these changes moves a hash,
+drafts language, or removes an export.
+
+| #   | Change                                                                                                       | One-line intent                                                                                                                                 | Value                             |
+| --- | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| 36  | [add-results-page](add-results-page/proposal.md)                                                             | The result is a page: "N things to raise before you sign," rows that open to quote, reason and source, key terms with sections, the rest folded | The answer without opening a file |
+| 37  | [simplify-result-downloads](simplify-result-downloads/proposal.md)                                           | One collapsed Download section: draft with comments, Word report, one calendar file; every other format under "Other formats"                   | Twenty choices become three       |
+| 38  | [extend-results-page-to-bundles-and-comparisons](extend-results-page-to-bundles-and-comparisons/proposal.md) | The same page for folders, revised drafts and deal rounds, with one `isActionable` count everywhere                                             | One way to read every result      |
+
+Order: 36, then 37, then 38.
