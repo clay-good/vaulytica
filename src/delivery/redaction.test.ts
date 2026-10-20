@@ -220,3 +220,76 @@ describe("the masking invariant", () => {
     expect("redactions" in facts).toBe(false);
   });
 });
+
+describe("HANDOFF-007 — theme colors", () => {
+  const THEME =
+    '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:themeElements><a:clrScheme name="Office">' +
+    '<a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1>' +
+    '<a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>' +
+    '<a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2>' +
+    '<a:accent1><a:srgbClr val="4472C4"/></a:accent1>' +
+    "</a:clrScheme></a:themeElements></a:theme>";
+  const themed = (theme: string | undefined, ...paragraphs: string[]): ArrayBuffer =>
+    buildDocx({ document: documentXml(paragraphs.join("")), ...(theme ? { theme } : {}) });
+  const facts = (bytes: ArrayBuffer) => readContainer(bytes, "docx", "");
+
+  it("reads white-on-white written as a theme color with no hex", () => {
+    const f = facts(
+      themed(
+        THEME,
+        para(
+          run("", "The fee is ") + run('<w:color w:themeColor="background1"/>', "TAMBRIEL 3301"),
+        ),
+      ),
+    );
+    expect(f.redactions?.map((r) => r.reason)).toEqual(["white text on the white page"]);
+    expect(JSON.stringify(f)).not.toContain("TAMBRIEL");
+  });
+
+  it("reads theme text on theme shading of the same slot", () => {
+    const f = facts(
+      themed(
+        THEME,
+        para(
+          run(
+            '<w:color w:val="000000" w:themeColor="text1"/><w:shd w:val="clear" w:color="auto" w:fill="000000" w:themeFill="text1"/>',
+            "TAMBRIEL 3302",
+          ),
+        ),
+      ),
+    );
+    expect(f.redactions).toHaveLength(1);
+  });
+
+  it("paints the theme color, not the stated fallback, as Word does", () => {
+    // Stated black, themed background1 (white): on the white page it is invisible.
+    const f = facts(
+      themed(
+        THEME,
+        para(run('<w:color w:val="000000" w:themeColor="background1"/>', "TAMBRIEL 3303")),
+      ),
+    );
+    expect(f.redactions).toHaveLength(1);
+  });
+
+  it("does not guess a tinted theme color, or one with no theme to read, and says so", () => {
+    const tinted = facts(
+      themed(THEME, para(run('<w:color w:themeColor="text1" w:themeTint="80"/>', "TAMBRIEL 3304"))),
+    );
+    expect(tinted.redactions).toBeUndefined();
+    expect(tinted.note).toMatch(/1 run uses a theme color .* not checked for text hidden by color/);
+    const noTheme = facts(
+      themed(undefined, para(run('<w:color w:themeColor="background1"/>', "TAMBRIEL 3305"))),
+    );
+    expect(noTheme.redactions).toBeUndefined();
+    expect(noTheme.note).toMatch(/theme color/);
+  });
+
+  it("leaves ordinary theme-colored text alone", () => {
+    const f = facts(
+      themed(THEME, para(run('<w:color w:themeColor="accent1"/>', "Visible heading"))),
+    );
+    expect(f.redactions).toBeUndefined();
+    expect(f.note ?? "").not.toMatch(/theme color/);
+  });
+});

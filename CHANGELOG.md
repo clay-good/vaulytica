@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.976.0] — 2026-10-20
+
+### Added
+- **Text hidden by a Word theme color** (add-redaction-integrity-scan,
+  task 3). `HANDOFF-007` now reads a run's theme color and shading through
+  the file's own theme, as Word paints them: white-on-white written as
+  "Background 1" with no color value is found. A tinted theme color with no
+  stated value, or one the file's theme does not define, is not guessed;
+  the scan's note says how many runs it could not check.
+
 ## [9.975.0] — 2026-10-20
 
 ### Added

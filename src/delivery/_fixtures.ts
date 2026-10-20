@@ -37,6 +37,8 @@ export type DocxParts = {
   comments?: string;
   core?: string;
   app?: string;
+  /** `word/theme/theme1.xml`. */
+  theme?: string;
 };
 
 /** Assemble a DOCX `ArrayBuffer` from raw OOXML part strings. */
@@ -50,6 +52,7 @@ export function buildDocx(parts: DocxParts): ArrayBuffer {
   if (parts.comments !== undefined) files["word/comments.xml"] = strToU8(parts.comments);
   if (parts.core !== undefined) files["docProps/core.xml"] = strToU8(parts.core);
   if (parts.app !== undefined) files["docProps/app.xml"] = strToU8(parts.app);
+  if (parts.theme !== undefined) files["word/theme/theme1.xml"] = strToU8(parts.theme);
   const zipped = zipSync(files);
   return zipped.buffer.slice(
     zipped.byteOffset,

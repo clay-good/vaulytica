@@ -111,6 +111,7 @@ const DOCX_PARTS = new Set([
   "word/comments.xml",
   "docProps/core.xml",
   "docProps/app.xml",
+  "word/theme/theme1.xml",
 ]);
 
 /**
@@ -164,21 +165,29 @@ function readDocx(bytes: ArrayBuffer, text: string): ContainerFacts {
   const comments = parts["word/comments.xml"] ?? "";
   const core = parts["docProps/core.xml"] ?? "";
   const app = parts["docProps/app.xml"] ?? "";
+  const theme = parseTheme(parts["word/theme/theme1.xml"] ?? "");
 
   const sensitive = scanSensitive(text);
   const revisions = parseRevisions(document);
   const commentFacts = parseComments(comments);
   const hidden = parseHidden(document);
   const metadata = parseDocxMetadata(core, app);
-  const redactions = parseDocxRedactions(document);
+  const { facts: redactions, unresolved } = parseDocxRedactions(document, theme);
   return {
     source: "docx",
     inspectable: true,
-    note: withScanReach(text, undefined, sensitive, {
-      "tracked changes": revisions.length,
-      comments: commentFacts.length,
-      "hidden content": hidden.length,
-    }),
+    note: withScanReach(
+      text,
+      unresolved > 0
+        ? `${unresolved} run${unresolved === 1 ? " uses a theme color" : "s use theme colors"} the file's theme does not resolve, so ${unresolved === 1 ? "it was" : "they were"} not checked for text hidden by color.`
+        : undefined,
+      sensitive,
+      {
+        "tracked changes": revisions.length,
+        comments: commentFacts.length,
+        "hidden content": hidden.length,
+      },
+    ),
     revisions,
     comments: commentFacts,
     hidden,
@@ -249,8 +258,77 @@ function isDark(hex: string): boolean {
  * Consecutive covered runs in one paragraph are one redaction. Walked with
  * `indexOf`, so the scan is linear in the part however it is nested.
  */
-function parseDocxRedactions(xml: string): RedactionFact[] {
+/**
+ * The theme's color scheme (`a:clrScheme`), by slot: `dk1`, `lt1`, `accent1`….
+ * A system color is read by the `lastClr` Word saved with it.
+ */
+function parseTheme(xml: string): Map<string, string> {
+  const out = new Map<string, string>();
+  const slot =
+    /<a:(dk1|lt1|dk2|lt2|accent[1-6]|hlink|folHlink)>\s{0,20}<a:(?:srgbClr\b[^>]{0,100}?\bval="([0-9A-Fa-f]{6})"|sysClr\b[^>]{0,200}?\blastClr="([0-9A-Fa-f]{6})")/g;
+  for (const m of xml.matchAll(slot)) out.set(m[1]!, (m[2] ?? m[3]!).toUpperCase());
+  return out;
+}
+
+/** `w:themeColor` / `w:themeFill` names → the scheme slot they paint with (ECMA-376 § 17.18.97). */
+const THEME_SLOT: Record<string, string> = {
+  text1: "dk1",
+  dark1: "dk1",
+  background1: "lt1",
+  light1: "lt1",
+  text2: "dk2",
+  dark2: "dk2",
+  background2: "lt2",
+  light2: "lt2",
+  accent1: "accent1",
+  accent2: "accent2",
+  accent3: "accent3",
+  accent4: "accent4",
+  accent5: "accent5",
+  accent6: "accent6",
+  hyperlink: "hlink",
+  followedHyperlink: "folHlink",
+};
+
+const ATTR_PATTERNS = new Map<string, RegExp>();
+/** `w:<name>="…"`, compiled once per attribute name. */
+function attrPattern(name: string): RegExp {
+  let re = ATTR_PATTERNS.get(name);
+  if (!re) ATTR_PATTERNS.set(name, (re = new RegExp(`\\bw:${name}="([^"]{1,40})"`)));
+  return re;
+}
+
+/**
+ * A color element's value: its theme color when the theme resolves it and no
+ * tint or shade changes it (that is what Word paints), else its stated hex.
+ * `unresolved` when it names a theme color and neither gives a value.
+ */
+function colorOf(
+  element: string | undefined,
+  valueAttr: "val" | "fill",
+  themeAttr: "themeColor" | "themeFill",
+  theme: ReadonlyMap<string, string>,
+): { hex?: string; unresolved?: boolean } {
+  if (!element) return {};
+  const attr = (name: string): string | undefined => attrPattern(name).exec(element)?.[1];
+  const stated = hexOf(attr(valueAttr));
+  const themed = attr(themeAttr);
+  if (!themed) return stated ? { hex: stated } : {};
+  // `w:color` tints with `w:themeTint`/`w:themeShade`; `w:shd` with `w:themeFillTint`/`w:themeFillShade`.
+  const prefix = themeAttr === "themeColor" ? "theme" : "themeFill";
+  const altered =
+    attrPattern(`${prefix}Tint`).test(element) || attrPattern(`${prefix}Shade`).test(element);
+  const resolved = altered ? undefined : theme.get(THEME_SLOT[themed] ?? "");
+  if (resolved) return { hex: resolved };
+  return stated ? { hex: stated } : { unresolved: true };
+}
+
+function parseDocxRedactions(
+  xml: string,
+  theme: ReadonlyMap<string, string> = new Map(),
+): { facts: RedactionFact[]; unresolved: number } {
   const facts: RedactionFact[] = [];
+  let unresolved = 0;
   let paragraph = 0;
   const pOpen = /<w:p[\s>]/g;
   let po: RegExpExecArray | null;
@@ -263,7 +341,8 @@ function parseDocxRedactions(xml: string): RedactionFact[] {
     const p = xml.slice(pStart, pEnd);
     const pPrEnd = p.indexOf("</w:pPr>");
     const pPr = pPrEnd >= 0 ? p.slice(0, pPrEnd) : "";
-    const paraFill = hexOf(/<w:shd\b[^>]{0,300}?\bw:fill="([^"]{1,12})"/.exec(pPr)?.[1]);
+    const paraShd = colorOf(/<w:shd\b[^>]{0,300}>/.exec(pPr)?.[0], "fill", "themeFill", theme);
+    const paraFill = paraShd.hex;
 
     let run: { reason: string; shape: string } | undefined;
     const flush = (): void => {
@@ -291,13 +370,29 @@ function parseDocxRedactions(xml: string): RedactionFact[] {
         .join("");
       const highlightName = /<w:highlight\b[^>]{0,100}?\bw:val="([A-Za-z]{1,20})"/.exec(rPr)?.[1];
       const highlight = highlightName ? HIGHLIGHT_RGB[highlightName] : undefined;
-      const runFill = hexOf(/<w:shd\b[^>]{0,300}?\bw:fill="([^"]{1,12})"/.exec(rPr)?.[1]);
+      const runShd = colorOf(/<w:shd\b[^>]{0,300}>/.exec(rPr)?.[0], "fill", "themeFill", theme);
+      const runFill = runShd.hex;
       const background = highlight ?? runFill ?? paraFill;
-      const colorVal = /<w:color\b[^>]{0,200}?\bw:val="([^"]{1,12})"/.exec(rPr)?.[1];
+      const textColor = colorOf(
+        /<w:color\b[^>]{0,300}>/.exec(rPr)?.[0],
+        "val",
+        "themeColor",
+        theme,
+      );
+      // A theme color neither the theme nor the run resolves: not guessed.
+      if (
+        text.length > 0 &&
+        (textColor.unresolved ||
+          (highlight === undefined && (runShd.unresolved || (!runShd.hex && paraShd.unresolved))))
+      ) {
+        unresolved += 1;
+        flush();
+        continue;
+      }
       // Word draws `auto` text white on dark SHADING, not on a dark highlight:
       // black highlighting over automatic text is the redaction this exists for.
       const shading = runFill ?? paraFill;
-      const color = hexOf(colorVal) ?? (shading && isDark(shading) ? "FFFFFF" : "000000");
+      const color = textColor.hex ?? (shading && isDark(shading) ? "FFFFFF" : "000000");
       const covered = color === (background ?? "FFFFFF");
       if (!covered || text.length === 0) {
         if (text.length > 0) flush();
@@ -317,7 +412,7 @@ function parseDocxRedactions(xml: string): RedactionFact[] {
     }
     flush();
   }
-  return facts;
+  return { facts, unresolved };
 }
 
 const TAG_AUTHOR = /\bw:author="([^"]{0,200})"/;
