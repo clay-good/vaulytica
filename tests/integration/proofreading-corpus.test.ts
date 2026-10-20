@@ -14,6 +14,7 @@ import { rule as PROOF_002 } from "../../src/engine/rules/proofreading/PROOF-002
 import { rule as PROOF_003 } from "../../src/engine/rules/proofreading/PROOF-003.js";
 import { rule as PROOF_005 } from "../../src/engine/rules/proofreading/PROOF-005.js";
 import { rule as PROOF_006 } from "../../src/engine/rules/proofreading/PROOF-006.js";
+import { rule as PROOF_007 } from "../../src/engine/rules/proofreading/PROOF-007.js";
 import { extractAll } from "../../src/extract/index.js";
 import type { RuleContext } from "../../src/engine/finding.js";
 
@@ -22,7 +23,7 @@ const DIR = join(ROOT, "tests", "fixtures", "specimens");
 const ROOMS = ["clean-deal-room", "clean-deal-room-phi"].map((d) =>
   join(ROOT, "tests", "golden", "v4", "bundles", d),
 );
-const RULES = [PROOF_001, PROOF_002, PROOF_003, PROOF_005, PROOF_006];
+const RULES = [PROOF_001, PROOF_002, PROOF_003, PROOF_005, PROOF_006, PROOF_007];
 
 describe("the proofreading pack over the specimen corpus", () => {
   it("fires on no specimen", async () => {

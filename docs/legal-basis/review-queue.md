@@ -6,8 +6,8 @@
 > prioritized first tranche of rules for a licensed reviewer to sign into
 > [`ledger.json`](ledger.json); the workflow lives in [`README.md`](README.md).
 
-- **Engine:** `9.962.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1941 single-document rules
-- **Signed:** 0 of 1941 · **Queued (unreviewed, top 100):** 100
+- **Engine:** `9.963.0` · **Corpus:** `v0.0.0-seed` (empty) · **Catalog:** 1942 single-document rules
+- **Signed:** 0 of 1942 · **Queued (unreviewed, top 100):** 100
 
 ## Ranking
 

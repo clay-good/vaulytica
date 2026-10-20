@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.963.0] — 2026-10-20
+
+### Added
+- **`PROOF-007` (info): a standard phrase written two ways.** It covers
+  twelve boilerplate phrases a document tends to repeat. An occurrence
+  spelled differently from the document's own most common form is reported:
+  one "including without limitations" among "including, without limitation",
+  or "in it's sole discretion" among "in its sole discretion".
+  - **The reference is the document's own form, never a style the tool
+    prefers.** A form counts only if it occurs at least twice and more than
+    any other. A document that writes each form once draws nothing.
+  - **Only spelling differences are compared:** a comma, "it's", a plural,
+    a space. "Sole discretion" and "reasonable discretion" are different
+    promises, not two spellings of one.
+  - **Not counted as differences:** case, spacing and the apostrophe's
+    shape, so a clause set in capitals, a hard wrap or Word's curly quotes
+    move nothing.
+  - **Measured on the corpus:**
+    - None of the specimens, the clean deal rooms or the format rewrites
+      draw it.
+    - The specimens repeat these phrases rarely: one phrase occurs three
+      times in one document, and changing one occurrence is caught.
+- **The launch set is now 127 rules and the catalog 1,942.**
+
 ## [9.962.0] — 2026-10-20
 
 ### Fixed

@@ -12,6 +12,7 @@ import { rule as PROOF_002, weekdayMismatches } from "./PROOF-002.js";
 import { rule as PROOF_003, repeatedWords } from "./PROOF-003.js";
 import { rule as PROOF_005, titlesAgree } from "./PROOF-005.js";
 import { rule as PROOF_006, enumerationGaps } from "./PROOF-006.js";
+import { rule as PROOF_007, nonconformingPhrases } from "./PROOF-007.js";
 import { ingestPaste } from "../../../ingest/paste.js";
 import { extractAll } from "../../../extract/index.js";
 import type { RuleContext } from "../../finding.js";
@@ -214,5 +215,58 @@ describe("PROOF-006 — enumeration out of sequence", () => {
     "(a) one (b) two. Then: (a) one (b) two (c) three",
   ])("stays silent on %s", (text) => {
     expect(enumerationGaps(text)).toEqual([]);
+  });
+});
+
+describe("PROOF-007 — non-conforming standard phrase", () => {
+  it("reports the one occurrence that differs from the document's majority", () => {
+    const f = PROOF_007.check(
+      buildContext([
+        "Services Agreement",
+        "Vendor shall provide the Services, including, without limitation, hosting.",
+        "Customer shall pay all Fees, including, without limitation, taxes.",
+        "Vendor may use subcontractors, including without limitations its affiliates.",
+      ]),
+    );
+    expect(f?.severity).toBe("info");
+    expect(f?.description).toBe(
+      'The document writes "including without limitations" where it otherwise writes "including, without limitation".',
+    );
+    expect(f?.excerpt.text).toMatch(/^Vendor may use subcontractors/);
+  });
+
+  it.each([
+    [
+      "it\u2019s apostrophe",
+      ["in its sole discretion", "in its sole discretion", "in it's sole discretion"],
+    ],
+    [
+      "a plural dropped",
+      [
+        "using commercially reasonable efforts",
+        "using commercially reasonable efforts",
+        "using commercially reasonable effort",
+      ],
+    ],
+  ])("catches %s", (_label, texts) => {
+    expect(nonconformingPhrases(texts)).toHaveLength(1);
+  });
+
+  it.each([
+    // Each form once: the document has no majority, so no reference.
+    [["including, without limitation", "including without limitation"]],
+    // A different word is a different promise, not a spelling.
+    [["in its sole discretion", "in its sole discretion", "in its reasonable discretion"]],
+    // Case, spacing and the apostrophe's shape are not spellings.
+    [
+      [
+        "INCLUDING, WITHOUT LIMITATION",
+        "including, without limitation",
+        "Including,  without limitation",
+      ],
+    ],
+    [["in it\u2019s sole discretion", "in it's sole discretion", "in it's sole discretion"]],
+  ])("stays silent on %j", (texts) => {
+    expect(nonconformingPhrases(texts)).toEqual([]);
   });
 });

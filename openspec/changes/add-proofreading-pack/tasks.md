@@ -13,4 +13,5 @@
 
 - 9.960.0 shipped slice A: PROOF-001/002/003. Measured over the specimens first. The only false hits were caption ")" columns, bare enumerators, multi-paragraph quotations, and repeats of a capitalized word that ingest produced by joining lines with a space. The corpus count is pinned at 0 in `tests/integration/proofreading-corpus.test.ts`. PROOF-002 does its own UTC arithmetic, not `deriveDate`. It covers "Weekday, Month D, YYYY" and "Weekday D Month YYYY". A date with no year is not yet reported (still in task 2's scope).
 - 9.961.0 shipped PROOF-005 (titled cross-reference against the cited heading, run-in or not) and PROOF-006 (enumerator gaps read in document order, so paragraph breaks cannot move it). The corpus pin now covers five rules and both clean deal rooms.
-- Next: PROOF-004 (party-name drift), PROOF-007 (non-conforming phrase), then task 6's static guards over the new sources.
+- 9.963.0 shipped PROOF-007. The document's majority form is the reference; only spelling-level variants are compared.
+- Next: PROOF-004 (party-name drift), then task 6's static guards over the new sources.
