@@ -142,6 +142,10 @@ node bin/vaulytica.mjs analyze msa.docx --playbook-file team.json --posture \\
 node bin/vaulytica.mjs analyze msa.docx --checklist --critical-dates \\
   --format checklist-md,dates-ics --out ./out
 
+# after closing: every signed copy against its final, paired by title; fail on
+# any difference outside the execution allowance, unpaired file or tie
+node bin/vaulytica.mjs compare --executed-set ./closing/final ./closing/signed --fail-on-nonconformity
+
 # diff two custom playbooks · re-derive a saved report's hash
 node bin/vaulytica.mjs diff team-v1.json team-v2.json --exit-code
 node bin/vaulytica.mjs verify report.json original.txt

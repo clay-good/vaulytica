@@ -16,7 +16,7 @@
  */
 
 import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
-import { dirname, extname, basename, join } from "node:path";
+import { dirname, extname, basename, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { unzipSync, strFromU8 } from "fflate";
 
@@ -27,6 +27,15 @@ import { collectRevisionTexts } from "../../src/ingest/docx-revisions.js";
 import { inflateOoxmlParts } from "../../src/ingest/ooxml.js";
 import { attributeRevisions } from "../../src/report/redline-attribution.js";
 import { checkConformity, type Conformity } from "../../src/report/conformity.js";
+import {
+  buildClosingSet,
+  pairClosingSet,
+  pairingTitle,
+  type ClosingRow,
+  type ClosingSet,
+} from "../../src/report/closing-set.js";
+import { titleCorpus } from "../../src/playbooks/matcher.js";
+import { walkDir } from "./inputs.js";
 import { ingestPdfBuffer } from "../../src/ingest/pdf.js";
 import type { IngestResult } from "../../src/ingest/types.js";
 import { flattenText } from "../../src/ingest/types.js";
@@ -908,6 +917,59 @@ export async function compareExecuted(
   }
   const conformity = await checkConformity(result.base.ingest.tree, result.revised.ingest.tree);
   return { ...result, conformity };
+}
+
+/**
+ * Check a closing set (add-executed-copy-conformity): every final draft in one
+ * folder against its signed copy in the other, paired by the document's own
+ * title. A pair the CLI cannot compare (an image-only scan) is a row that says
+ * so; unpaired files and tied titles are listed, never guessed. Paths are
+ * relative to each folder, with `/`, so the set's `conformity_hash` is the
+ * same on any machine.
+ */
+export async function compareExecutedSet(
+  finalDir: string,
+  signedDir: string,
+  opts: Omit<NonNullable<Parameters<typeof compareFiles>[2]>, "pinType"> = {},
+): Promise<ClosingSet> {
+  const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
+  const side = async (dir: string) => {
+    const { files } = await walkDir(dir);
+    return Promise.all(
+      files.map(async (path) => {
+        const file = relative(dir, path).split(sep).join("/");
+        const ingest = await ingestByExtension(path, await readFile(path));
+        return { path, file, title: pairingTitle(titleCorpus(ingest.tree, basename(path))) };
+      }),
+    );
+  };
+  const [finals, signed] = await Promise.all([side(finalDir), side(signedDir)]);
+  const { pairs, unpaired, ties } = pairClosingSet(finals, signed);
+  const pathOf = new Map([
+    ...finals.map((f) => [`final:${f.file}`, f.path] as const),
+    ...signed.map((f) => [`signed:${f.file}`, f.path] as const),
+  ]);
+  const rows: ClosingRow[] = [];
+  for (const p of pairs) {
+    const base = { title: p.title, final: p.final, signed: p.signed };
+    try {
+      const { conformity } = await compareExecuted(
+        pathOf.get(`final:${p.final}`)!,
+        pathOf.get(`signed:${p.signed}`)!,
+        { ...opts, deps },
+      );
+      rows.push({
+        ...base,
+        verdict: conformity.verdict,
+        difference_count: conformity.difference_count,
+        conformity_hash: conformity.conformity_hash,
+      });
+    } catch (e) {
+      if (!(e instanceof ExecutedRefusedError)) throw e;
+      rows.push({ ...base, verdict: "unreadable", reason: "no text layer (image-only scan)" });
+    }
+  }
+  return buildClosingSet(rows, unpaired, ties);
 }
 
 /**

@@ -2477,6 +2477,11 @@ ${usageFormatLines()}
                           The signed copy against the final draft: what remains
                           once execution's fills (signature lines, dates in
                           blanks, legends) are set aside, with a verdict.
+  compare --executed-set <final-dir> <signed-dir> [--fail-on-nonconformity]
+                          [--format json|markdown]
+                          A closing set: each final against its signed copy,
+                          paired by the document's own title; unpaired files
+                          and tied titles are listed, never guessed.
   compare --redline <file.docx> [the same flags]
                           Both readings of one Word redline: every tracked
                           change rejected (the draft as it stood) against every

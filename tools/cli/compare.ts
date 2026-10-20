@@ -12,6 +12,11 @@
  *       [--playbook <id>] [--format json|markdown] \
  *       [--fail-on critical|warning|info] [--confirm-pairing]
  *   tsx tools/cli/run.ts compare --redline counterparty-markup.docx [same flags]
+ *   tsx tools/cli/run.ts compare --executed-set ./final ./signed [--fail-on-nonconformity]
+ *
+ * `--executed-set` checks a closing set: each final in the first folder
+ * against its signed copy in the second, paired by the document's own title
+ * (add-executed-copy-conformity). Unpaired files and tied titles are listed.
  *
  * `--redline` compares the two readings of one Word redline: every tracked
  * change rejected (the draft as it stood) against every change accepted (the
@@ -38,11 +43,13 @@
 import { readFile, writeFile } from "node:fs/promises";
 import {
   compareExecuted,
+  compareExecutedSet,
   compareFiles,
   compareRedline,
   ExecutedRefusedError,
   RedlineRefusedError,
 } from "./api.js";
+import { closingSetConforms, closingSetMarkdown } from "../../src/report/closing-set.js";
 import { conformityLine, type Conformity } from "../../src/report/conformity.js";
 import { buildComparisonBrief, comparisonBriefMarkdown } from "./comparison-brief.js";
 import {
@@ -65,6 +72,8 @@ type CompareArgs = {
   redline?: string;
   /** `--executed`: the revised file is the SIGNED copy of the base, the final draft. */
   executed: boolean;
+  /** `--executed-set <finalDir> <signedDir>`: a closing set, paired by title. */
+  executedSet: boolean;
   /** `--fail-on-nonconformity`: exit 2 when the signed copy differs outside the allowance. */
   failOnNonconformity: boolean;
   playbook?: string;
@@ -108,6 +117,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     posture: false,
     failOnRegression: false,
     executed: false,
+    executedSet: false,
     failOnNonconformity: false,
   };
   for (let i = 0; i < argv.length; i++) {
@@ -155,6 +165,9 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
       case "--executed":
         args.executed = true;
         break;
+      case "--executed-set":
+        args.executedSet = true;
+        break;
       case "--fail-on-nonconformity":
         args.failOnNonconformity = true;
         break;
@@ -170,14 +183,31 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
   }
   if (args.redline === undefined && positional.length !== 2) {
     throw new Error(
-      "usage: compare <base> <revised> | --redline <file.docx> | --executed <final> <signed> [--fail-on-nonconformity] [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
+      "usage: compare <base> <revised> | --redline <file.docx> | --executed <final> <signed> | --executed-set <final-dir> <signed-dir> [--fail-on-nonconformity] [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
     );
   }
   if (args.executed && args.redline !== undefined) {
     throw new Error("--executed compares a final with its signed copy; it does not take --redline");
   }
-  if (args.failOnNonconformity && !args.executed) {
-    throw new Error("--fail-on-nonconformity requires --executed <final> <signed>");
+  if (args.executedSet) {
+    if (args.executed || args.redline !== undefined) {
+      throw new Error(
+        "--executed-set takes two folders; it does not combine with --executed or --redline",
+      );
+    }
+    if (args.format === "docx") {
+      throw new Error("--executed-set writes markdown or json");
+    }
+    if (args.posture || args.failOn || args.failOnRegression) {
+      throw new Error(
+        "--executed-set checks conformity only; --posture, --fail-on and --fail-on-regression do not apply",
+      );
+    }
+  }
+  if (args.failOnNonconformity && !args.executed && !args.executedSet) {
+    throw new Error(
+      "--fail-on-nonconformity requires --executed <final> <signed> or --executed-set <final-dir> <signed-dir>",
+    );
   }
   if (args.posture && !args.playbookFile) {
     throw new Error("--posture requires --playbook-file <path>");
@@ -205,6 +235,7 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     ...(args.failOn ? { failOn: args.failOn } : {}),
     failOnRegression: args.failOnRegression!,
     executed: args.executed!,
+    executedSet: args.executedSet!,
     failOnNonconformity: args.failOnNonconformity!,
     confirmPairing: args.confirmPairing!,
     // `--dkb` was parsed into `args` and then dropped here, so a run that pinned
@@ -418,6 +449,19 @@ export async function runCompare(argv: string[]): Promise<void> {
     confirmPairing: args.confirmPairing,
     dkbDir: args.dkb,
   };
+  if (args.executedSet) {
+    const set = await compareExecutedSet(args.base, args.revised, compareOpts);
+    process.stdout.write(
+      args.format === "json" ? JSON.stringify(set, null, 2) + "\n" : closingSetMarkdown(set),
+    );
+    if (args.failOnNonconformity && !closingSetConforms(set)) {
+      process.stderr.write(
+        `\n✗ the closing set has a difference, an unpaired file, a tie or an unreadable copy (--fail-on-nonconformity)\n`,
+      );
+      process.exitCode = 2;
+    }
+    return;
+  }
   let fileComparison: Awaited<ReturnType<typeof compareFiles>> & { conformity?: Conformity };
   try {
     fileComparison = args.redline

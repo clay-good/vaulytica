@@ -124,10 +124,10 @@ DKB from a secondary source.
 | 34  | [add-readability-measure](add-readability-measure/proposal.md)                 | Flesch reading ease under the NAIC model act's counting rules, render-side; `READ-*` findings only under an asserted state standard or NY GOL § 5-702                                                                                                        | The one quality the law measures with a formula          |
 | 35  | [add-project-config-file](add-project-config-file/proposal.md)                 | `vaulytica.config.json` for the CLI, Action and MCP server: playbook, types by glob, gates, profiles; flags win; every applied file is named in the run                                                                                                      | Three surfaces, one set of team settings                 |
 
-Status at 9.973.0:
+Status at 9.974.0:
 
 - **Built:** 32 (all seven `PROOF-*` rules; the date-with-no-year half of PROOF-002 was measured and declined, see its tasks), 33 (CLI, MCP and the tab, byte-identical) and 35.
-- **Partly built:** 28 (slice A, the DOCX and annotation redactions), 29 (everything but the Word round-trip fixture and the format transforms: both readings in the CLI, the MCP server, the Action and the tab, with authors) and 30 (the allowance classifier, the clause-diff predicate and the metamorphic relations).
+- **Partly built:** 28 (slice A, the DOCX and annotation redactions), 29 (everything but the Word round-trip fixture and the format transforms: both readings in the CLI, the MCP server, the Action and the tab, with authors) and 30 (the allowance classifier, the clause-diff predicate, the metamorphic relations, `compare --executed` and `--executed-set`).
 
 Changes 29 and 30 both add to one new `version-comparison` capability spec; whichever lands second merges into it rather than re-adding. Suggested order: 35 first (small, unblocks the others' CLI ergonomics), then
 28 and 33 (render-side, zero churn), 29 and 30 (comparison surface), 32 and 31

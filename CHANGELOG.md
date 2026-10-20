@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.974.0] — 2026-10-20
+
+### Added
+- **`compare --executed-set <final-dir> <signed-dir>`: check a closing set**
+  (add-executed-copy-conformity, task 5). Each final is paired with its
+  signed copy by the document's own title, not the filename, so
+  `Scan_0041.pdf` still pairs and an "EXECUTION VERSION" legend above the
+  title does not hide it. One table: document, final, signed copy, and
+  whether it is identical outside the execution allowance. Files with no
+  counterpart and two files with one title are listed, never guessed. The
+  set carries its own `conformity_hash`. With `--fail-on-nonconformity` it
+  exits 2 on any difference, unpaired file, tie or unreadable copy.
+
+- A delivery reach test (add-redaction-integrity-scan, task 7): the
+  hidden-by-color finding is asserted on every surface that shows the
+  pre-disclosure scan, CLI and tab, with the covered words on none.
+
+### Security
+- vite updated to 8.3.4 (dev server only; the `launch-editor` advisories).
+  `npm audit`: 0 vulnerabilities.
+
 ## [9.973.0] — 2026-10-20
 
 ### Added
