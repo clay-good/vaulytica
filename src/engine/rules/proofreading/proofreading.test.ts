@@ -10,6 +10,7 @@ import { buildContext } from "../../_test-fixtures.js";
 import { rule as PROOF_001, unpairedMarks, unpairedParagraphs } from "./PROOF-001.js";
 import { rule as PROOF_002, weekdayMismatches } from "./PROOF-002.js";
 import { rule as PROOF_003, repeatedWords } from "./PROOF-003.js";
+import { rule as PROOF_004, partyNameDrift } from "./PROOF-004.js";
 import { rule as PROOF_005, titlesAgree } from "./PROOF-005.js";
 import { rule as PROOF_006, enumerationGaps } from "./PROOF-006.js";
 import { rule as PROOF_007, nonconformingPhrases } from "./PROOF-007.js";
@@ -268,5 +269,45 @@ describe("PROOF-007 — non-conforming standard phrase", () => {
     [["in it\u2019s sole discretion", "in it's sole discretion", "in it's sole discretion"]],
   ])("stays silent on %j", (texts) => {
     expect(nonconformingPhrases(texts)).toEqual([]);
+  });
+});
+
+describe("PROOF-004 — party name written two ways", () => {
+  const preamble =
+    'This Supply Agreement is made between Acme Components Corp., a Delaware corporation ("Supplier"), and Beta Devices LLC ("Buyer").';
+
+  it("reports two spellings of one corporate form, quoting both", async () => {
+    const f = PROOF_004.check(
+      await pasted(
+        `SUPPLY AGREEMENT\n\n${preamble}\n\n1. Supply. Supplier shall sell the Products.\n\nACME COMPONENTS CORPORATION\n\nBy: /s/ Jane Roe\n`,
+      ),
+    );
+    expect(f?.severity).toBe("warning");
+    expect(f?.description).toBe(
+      'The document names one party as "Acme Components Corp." and "ACME COMPONENTS CORPORATION".',
+    );
+  });
+
+  it.each([
+    // The short name every agreement defines.
+    ["Acme Components Corp.", "Acme Components shall deliver."],
+    // Case and punctuation are not spellings.
+    ["Acme Components Corp.", "ACME COMPONENTS CORP"],
+    ["Acme Components, Inc.", "Acme Components Inc."],
+    ["Beta Devices L.L.C.", "Beta Devices LLC"],
+    // Two different forms can be two entities: a parent and its subsidiary.
+    ["Acme Components, Inc.", "Acme Components LLC"],
+  ])("stays silent on %s / %s", (a, b) => {
+    expect(partyNameDrift([a], `${a} agrees.\n${b} agrees.`)).toEqual([]);
+  });
+
+  it("reads Inc./Incorporated, Co./Company and Ltd./Limited as one form each", () => {
+    for (const [a, b] of [
+      ["Acme Inc.", "Acme Incorporated"],
+      ["Acme Co.", "Acme Company"],
+      ["Acme Ltd.", "Acme Limited"],
+    ] as const) {
+      expect(partyNameDrift([a], `${a} agrees.\n${b} agrees.`)[0]?.forms).toEqual([a, b]);
+    }
   });
 });

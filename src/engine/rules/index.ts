@@ -36,6 +36,7 @@ import { rule as STRUCT_019 } from "./structural/STRUCT-019.js";
 import { rule as PROOF_001 } from "./proofreading/PROOF-001.js";
 import { rule as PROOF_002 } from "./proofreading/PROOF-002.js";
 import { rule as PROOF_003 } from "./proofreading/PROOF-003.js";
+import { rule as PROOF_004 } from "./proofreading/PROOF-004.js";
 import { rule as PROOF_005 } from "./proofreading/PROOF-005.js";
 import { rule as PROOF_006 } from "./proofreading/PROOF-006.js";
 import { rule as PROOF_007 } from "./proofreading/PROOF-007.js";
@@ -292,10 +293,11 @@ export const LAUNCH_RULES: readonly Rule[] = [
   DARK_013,
   DARK_014,
   DARK_015,
-  // Proofreading — 6
+  // Proofreading — 7
   PROOF_001,
   PROOF_002,
   PROOF_003,
+  PROOF_004,
   PROOF_005,
   PROOF_006,
   PROOF_007,

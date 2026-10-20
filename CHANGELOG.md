@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.964.0] — 2026-10-20
+
+### Added
+- **`PROOF-004` (warning): a party's name written two ways.** It reports a
+  party the document names with two spellings of one corporate form:
+  "Acme Components Corp." in the preamble and "ACME COMPONENTS CORPORATION"
+  over the signature, or "Inc." and "Incorporated".
+  - **Read from the text, not the party list.** The extractor keeps one name
+    per party, and the drift lives in the other places the name is written.
+  - **Not drift:**
+    - A short name ("Acme" for "Acme Corp.") is what an agreement defines,
+      and CROSS-PARTY-001 makes the same call across documents.
+    - Case and punctuation ("ACME CORP", "Acme, Inc.", "L.L.C.") are not
+      spellings.
+    - Two different forms are not compared. "Acme Holdings, Inc." and "Acme
+      Holdings LLC" are as often a parent and its subsidiary.
+  - **Measured on the corpus:**
+    - None of the specimens, both clean deal rooms or the format rewrites
+      draw it.
+    - The mutation that respells one occurrence of a party's form is caught
+      3 of 3. With different forms also allowed, it was 26 of 26, before
+      different forms were excluded.
+- **The proofreading pack's seven rules are all shipped.** The launch set is
+  now 128 rules and the catalog 1,943.
+
 ## [9.963.0] — 2026-10-20
 
 ### Added

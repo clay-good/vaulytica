@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,942 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.963.0` · `MIT`
+`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.964.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -33,7 +33,7 @@ flowchart LR
   C --> D[Extract facts<br/>parties · dates · amounts ·<br/>defs · obligations · jurisdictions]
   D --> E[Classify<br/>family + sub-domain<br/>TF-IDF feature table]
   E --> F[Select playbook<br/>built-in or your own]
-  F --> G[Run rules<br/>1,942 pure functions]
+  F --> G[Run rules<br/>1,943 pure functions]
   G --> H[Findings<br/>+ result_hash]
   H --> I[Report<br/>DOCX · JSON · SARIF · HTML ·<br/>fix-list · .ics · portfolio matrix]
   K[(Deterministic<br/>Knowledge Base)] --> G
@@ -74,25 +74,25 @@ Two or more documents trigger **bundle mode**: per-document reports _plus_ a por
 
 ## What it checks — rule cheat sheet
 
-The **always-on launch set** is 127 rules across eleven categories that apply to any agreement (the original v1 set of 112, plus v9 Thrust B's three execution-readiness reconciliations, six later dark-pattern additions, and six proofreading checks):
+The **always-on launch set** is 128 rules across eleven categories that apply to any agreement (the original v1 set of 112, plus v9 Thrust B's three execution-readiness reconciliations, six later dark-pattern additions, and seven proofreading checks):
 
-| Category        | Rules | Catches (examples)                                                                                                                                                                                                                                                                          |
-| --------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Structural      | 19    | missing signature block, unfilled `[placeholders]`, broken cross-refs, used-but-undefined terms; **v9:** a declared party with no signature line (`STRUCT-017`), a referenced exhibit not attached (`STRUCT-018`), a recited notarization with no notary block (`STRUCT-019`)               |
-| Risk allocation | 17    | uncapped liability, indemnity without a cap, one-way fee-shifting, missing limitation of liability                                                                                                                                                                                          |
-| Choice & venue  | 12    | no governing law, venue/law mismatch, out-of-state law on a CA employee, class-action waiver                                                                                                                                                                                                |
-| Temporal        | 12    | impossible dates, auto-renewal with a short notice window, survival silent on confidentiality/IP                                                                                                                                                                                            |
-| Financial       | 9     | word-vs-numeral amount mismatch, usurious late fees, currency drift                                                                                                                                                                                                                         |
-| Termination     | 9     | termination asymmetry, no effect-of-termination clause, termination tied to payment                                                                                                                                                                                                         |
-| IP & data       | 10    | no IP ownership clause, AI/model-training rights over customer data, cross-border transfer w/o safeguard                                                                                                                                                                                    |
-| Obligations     | 9     | sole-discretion language, MAC clause, residuals clause swallowing confidentiality                                                                                                                                                                                                           |
-| Dark patterns   | 15    | unilateral amendment by posting, hidden auto-renewal, browsewrap acceptance, waiver of non-waivable Article 9 protections                                                                                                                                                                   |
-| Personnel       | 9     | stay-or-pay/training-repayment clauses, IC misclassification signals, overlong non-solicits                                                                                                                                                                                                 |
-| Proofreading    | 6     | unpaired parentheses, brackets and quotation marks; a weekday the date does not fall on; a doubled word ("the the"); a cross-reference whose title is not the cited section's heading; a list that skips a letter; a standard phrase written differently from the document's own usual form |
+| Category        | Rules | Catches (examples)                                                                                                                                                                                                                                                                                                                             |
+| --------------- | ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Structural      | 19    | missing signature block, unfilled `[placeholders]`, broken cross-refs, used-but-undefined terms; **v9:** a declared party with no signature line (`STRUCT-017`), a referenced exhibit not attached (`STRUCT-018`), a recited notarization with no notary block (`STRUCT-019`)                                                                  |
+| Risk allocation | 17    | uncapped liability, indemnity without a cap, one-way fee-shifting, missing limitation of liability                                                                                                                                                                                                                                             |
+| Choice & venue  | 12    | no governing law, venue/law mismatch, out-of-state law on a CA employee, class-action waiver                                                                                                                                                                                                                                                   |
+| Temporal        | 12    | impossible dates, auto-renewal with a short notice window, survival silent on confidentiality/IP                                                                                                                                                                                                                                               |
+| Financial       | 9     | word-vs-numeral amount mismatch, usurious late fees, currency drift                                                                                                                                                                                                                                                                            |
+| Termination     | 9     | termination asymmetry, no effect-of-termination clause, termination tied to payment                                                                                                                                                                                                                                                            |
+| IP & data       | 10    | no IP ownership clause, AI/model-training rights over customer data, cross-border transfer w/o safeguard                                                                                                                                                                                                                                       |
+| Obligations     | 9     | sole-discretion language, MAC clause, residuals clause swallowing confidentiality                                                                                                                                                                                                                                                              |
+| Dark patterns   | 15    | unilateral amendment by posting, hidden auto-renewal, browsewrap acceptance, waiver of non-waivable Article 9 protections                                                                                                                                                                                                                      |
+| Personnel       | 9     | stay-or-pay/training-repayment clauses, IC misclassification signals, overlong non-solicits                                                                                                                                                                                                                                                    |
+| Proofreading    | 7     | unpaired parentheses, brackets and quotation marks; a weekday the date does not fall on; a doubled word ("the the"); a party named "Acme Corp." and "Acme Corporation"; a cross-reference whose title is not the cited section's heading; a list that skips a letter; a standard phrase written differently from the document's own usual form |
 
-On top of that, **v3 (+220 rules)** adds compliance-grade rule sets, **v4 (+771 rules)** adds 16 specialized sub-domains, **v5 (+621 rules)** goes deep on US practice inside those same sub-domains — 107 further American document families, from the purchase order and the franchise disclosure document to the QDRO, the WARN notice, and the stipulated protective order — and **v6 (+92 rules)** turns the same engine on the documents the _practice itself_ produces: engagement letters and fee agreements against the ABA Model Rules, discovery requests and responses against the FRCP, and pleadings against Rules 8, 9, 10, 11, and 38 — and **v7 (+111 rules)** names documents people bring that the catalog had no type for: the service level agreement, the pilot agreement and the roommate agreement, each checked against customary practice and cited as such, and the HIPAA limited-data-set data use agreement, checked against the seven terms 45 C.F.R. § 164.514(e)(4)(ii) requires, and the software development agreement, where a work-for-hire statement alone usually does not transfer the code (17 U.S.C. § 101), and the merchant cash advance, read for a confession of judgment and the terms that tie repayment to sales, and the residential solar lease or power purchase agreement, read for the three-business-day cancellation terms of a contract signed at home (16 C.F.R. § 429.1), and the training repayment agreement, with California's Bus. & Prof. Code § 16608 shown where the agreement names California law, and the buyer representation agreement, read for the compensation terms of the 2024 NAR settlement — cited as an industry settlement, not as law — and the startup advisor agreement, where an option with no stated price is checked against Treas. Reg. § 1.409A-1(b)(5). The full **1,942-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses. The contract every pack honors — how it gates its rules, reserves its namespace, and discloses its scope — is written down in [`verticals`](../docs/verticals.md); a document matching no known family is reported as unmatched, never given a confidently-wrong contract verdict.
+On top of that, **v3 (+220 rules)** adds compliance-grade rule sets, **v4 (+771 rules)** adds 16 specialized sub-domains, **v5 (+621 rules)** goes deep on US practice inside those same sub-domains — 107 further American document families, from the purchase order and the franchise disclosure document to the QDRO, the WARN notice, and the stipulated protective order — and **v6 (+92 rules)** turns the same engine on the documents the _practice itself_ produces: engagement letters and fee agreements against the ABA Model Rules, discovery requests and responses against the FRCP, and pleadings against Rules 8, 9, 10, 11, and 38 — and **v7 (+111 rules)** names documents people bring that the catalog had no type for: the service level agreement, the pilot agreement and the roommate agreement, each checked against customary practice and cited as such, and the HIPAA limited-data-set data use agreement, checked against the seven terms 45 C.F.R. § 164.514(e)(4)(ii) requires, and the software development agreement, where a work-for-hire statement alone usually does not transfer the code (17 U.S.C. § 101), and the merchant cash advance, read for a confession of judgment and the terms that tie repayment to sales, and the residential solar lease or power purchase agreement, read for the three-business-day cancellation terms of a contract signed at home (16 C.F.R. § 429.1), and the training repayment agreement, with California's Bus. & Prof. Code § 16608 shown where the agreement names California law, and the buyer representation agreement, read for the compensation terms of the 2024 NAR settlement — cited as an industry settlement, not as law — and the startup advisor agreement, where an option with no stated price is checked against Treas. Reg. § 1.409A-1(b)(5). The full **1,943-rule** catalog runs live, family-gated so a plain NDA is not flagged for missing GDPR clauses. The contract every pack honors — how it gates its rules, reserves its namespace, and discloses its scope — is written down in [`verticals`](../docs/verticals.md); a document matching no known family is reported as unmatched, never given a confidently-wrong contract verdict.
 
-Those 1,942 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **20 cross-document consistency rules** — defects no single-document scan can see because they live in the _relationship between_ documents:
+Those 1,943 are all **single-document** rules. Dropping a folder or `.zip` additionally runs **20 cross-document consistency rules** — defects no single-document scan can see because they live in the _relationship between_ documents:
 
 | Cross-doc check                                 | Catches                                                                                |
 | ----------------------------------------------- | -------------------------------------------------------------------------------------- |
@@ -1378,7 +1378,7 @@ The **measurement machinery is built and unit-tested** (`tools/accuracy/`, run w
 ```mermaid
 flowchart LR
   C[(corpus/<br/>real redacted docs<br/>+ gold annotations)] --> H[Accuracy harness]
-  R[(full engine<br/>1,942 rules · 286 playbooks)] --> H
+  R[(full engine<br/>1,943 rules · 286 playbooks)] --> H
   H --> M[TP / FP / FN / TN<br/>precision · recall · F1<br/>macro + micro]
   M --> S[SCOREBOARD.md + scoreboard.json<br/>reproducible SHA-256]
   K[Cohen's κ<br/>inter-annotator agreement] --> M
@@ -1435,7 +1435,7 @@ The `executed_at` timestamp is set to `""` before hashing, so the only things th
 
 ## Performance — the first-paint path is tiny on purpose
 
-A "runs-entirely-in-your-browser" tool ships its whole engine to the client. The trap is obvious: a 1,942-rule engine plus a PDF parser plus a DOCX writer is megabytes of JavaScript, and if it all loads up front the page is slow to paint on the exact phones the product promises to serve. Vaulytica avoids this by splitting the bundle along the **interaction** that needs each piece — nothing parser- or engine-related is on the critical render path. The page paints from ~17 KB gz of self-contained HTML+CSS; everything heavy waits for the file drop.
+A "runs-entirely-in-your-browser" tool ships its whole engine to the client. The trap is obvious: a 1,943-rule engine plus a PDF parser plus a DOCX writer is megabytes of JavaScript, and if it all loads up front the page is slow to paint on the exact phones the product promises to serve. Vaulytica avoids this by splitting the bundle along the **interaction** that needs each piece — nothing parser- or engine-related is on the critical render path. The page paints from ~17 KB gz of self-contained HTML+CSS; everything heavy waits for the file drop.
 
 ```mermaid
 flowchart LR
@@ -1444,7 +1444,7 @@ flowchart LR
   end
   M -. "import() on file drop" .-> DROP
   subgraph DROP["On file drop · lazy"]
-    P[pipeline · 1,942 rules<br/>268 KB gz]
+    P[pipeline · 1,943 rules<br/>268 KB gz]
     PDF[vendor-pdfjs · 146 KB gz<br/>PDF only]
     DOCXIN[vendor-mammoth · 126 KB gz<br/>DOCX only]
     Z[vendor-zod + decimal<br/>32 KB gz]
@@ -1461,7 +1461,7 @@ flowchart LR
 | -------------------------------------------------- | ------: | ------------------------------ | -------------------------------------------------------------------- |
 | `index.html` (inline CSS)                          | 17.1 KB | first paint                    | the page renders from this alone — no JS needed to see content       |
 | `main` + `rolldown-runtime`                        | 12.3 KB | first paint (preloaded)        | hydrates the drop zone; the _only_ JS on the FCP path                |
-| `pipeline` (1,942 rules + extract/classify/engine) |  268 KB | file drop                      | you don't need the engine until there's a document to run it on      |
+| `pipeline` (1,943 rules + extract/classify/engine) |  268 KB | file drop                      | you don't need the engine until there's a document to run it on      |
 | `vendor-pdfjs`                                     |  146 KB | dropping a **PDF**             | format-specific — a DOCX never loads it                              |
 | `vendor-mammoth`                                   |  126 KB | dropping a **DOCX**            | format-specific — a PDF never loads it                               |
 | `vendor-zod` + `vendor-decimal`                    |   32 KB | file drop                      | DKB validation + exact financial math, engine-only                   |
@@ -1596,7 +1596,7 @@ src/
   extract/     parties · dates · amounts · definitions · obligations ·
                jurisdictions · cross-refs · classifier
   dkb/         Deterministic Knowledge Base types, loader, model-clauses, state-overlays
-  engine/      pure rule runner + 1,942 rules + cross-document consistency
+  engine/      pure rule runner + 1,943 rules + cross-document consistency
   delivery/    v9 pre-disclosure scan — container read · HANDOFF-001…008 · masking · DeliveryReport
   playbooks/   built-in playbooks + bring-your-own schema/validator/interpreter
   report/      DOCX · JSON · SARIF · HTML · bundle · comparison · exports ·
