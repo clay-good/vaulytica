@@ -898,7 +898,7 @@ export class ExecutedRefusedError extends Error {}
  * Check a signed copy against the final draft (add-executed-copy-conformity):
  * the comparison of the two, plus the conformity verdict with what execution
  * fills in set aside. The signed copy is held to the final's type. An
- * image-only scan has no text to compare headless; the browser runs OCR on it.
+ * image-only scan has no text to compare, and no surface runs OCR, so it is refused.
  */
 export async function compareExecuted(
   finalPath: string,
@@ -912,7 +912,7 @@ export async function compareExecuted(
   );
   if (result.revised.ingest.word_count === 0) {
     throw new ExecutedRefusedError(
-      `${basename(signedPath)} has no text layer, so there is nothing to compare here. It looks like an image-only scan: the browser can read it with OCR, which this command does not run.`,
+      `${basename(signedPath)} has no text layer, so there is nothing to compare. It looks like an image-only scan, and no Vaulytica surface runs OCR: run OCR on it first (Acrobat, Preview or the scanner's software), then compare again.`,
     );
   }
   const conformity = await checkConformity(result.base.ingest.tree, result.revised.ingest.tree);

@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.977.0] — 2026-10-20
+
+### Fixed
+- **No surface claims to read a scanned page any more.** The browser does
+  not run OCR (its models would load from another server), but the
+  `/known-limits` page said scanned pages are read by OCR in the browser,
+  and `compare --executed` told a reader with an image-only signed copy that
+  the browser could read it. Both now say no surface runs OCR and to OCR
+  the scan first.
+
 ## [9.976.0] — 2026-10-20
 
 ### Added

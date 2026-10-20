@@ -1,7 +1,6 @@
 {
  "reads": {
   "max_document_mb": 50,
-  "max_ocr_pages": 500,
   "max_secondary_families": 4,
   "match_threshold": 0.5
  },

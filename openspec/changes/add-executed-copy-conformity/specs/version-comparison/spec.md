@@ -30,11 +30,11 @@ Given two folders, the product SHALL pair documents by normalized title, report 
 - **WHEN** the signed folder holds a document whose title matches nothing in the final folder
 - **THEN** the table lists it as unpaired and the exit code is non-zero under `--fail-on-nonconformity`
 
-### Requirement: Headless honesty about OCR
+### Requirement: Honesty about OCR
 
-The CLI SHALL refuse an image-only executed copy in this mode with a message that the browser performs OCR and the headless path does not.
+The product SHALL refuse an image-only executed copy in this mode with a message that no surface runs OCR and that the scan must be OCR'd before it can be compared. It SHALL NOT name a surface as able to read it. (Amended 2026-10-20: the browser does not run OCR either. Its models would load from a third-party server, which the privacy posture forbids, so `prepareDocument` ingests with `allowOcr: false`.)
 
-#### Scenario: Scanned PDF on the CLI
+#### Scenario: Scanned PDF
 
 - **WHEN** `compare --executed final.docx scan.pdf` runs and the PDF has no text layer
-- **THEN** the command exits 1 naming the browser as the surface that can read it
+- **THEN** the command exits 1, says no surface runs OCR, and says to OCR the scan first

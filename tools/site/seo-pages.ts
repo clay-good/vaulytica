@@ -875,7 +875,6 @@ export function renderSeoPage(page: SeoPage, counts: HeadlineCounts): string {
 export interface KnownLimitsData {
   readonly reads: {
     readonly max_document_mb: number;
-    readonly max_ocr_pages: number;
     readonly max_secondary_families: number;
     readonly match_threshold: number;
   };
@@ -946,7 +945,7 @@ export function renderKnownLimitsPage(d: KnownLimitsData): string {
         <h2>2. What it reads</h2>
         <ul class="plain">
           <li>English only, and United States law.</li>
-          <li>PDF, Word (.docx) and plain text, up to ${n(d.reads.max_document_mb)} MB. Scanned pages are read by OCR, up to ${n(d.reads.max_ocr_pages)} pages, in the browser only: the command line and the MCP server do not run OCR, and say so.</li>
+          <li>PDF, Word (.docx) and plain text, up to ${n(d.reads.max_document_mb)} MB. A scanned page with no text layer is not read: no surface runs OCR, because its models would load from another server. Run OCR on a scan first (Acrobat, Preview or your scanner's software) and the text it adds is read.</li>
           <li>A document is matched to one of ${n(d.self_measured.document_types)} document types when its score reaches ${d.reads.match_threshold}. A document that matches none gets a small generic rule set, and <strong>a short report on an unmatched document is not a clean bill</strong>.</li>
           <li>Up to ${n(d.reads.max_secondary_families)} more document types are detected from a document's vocabulary and checked as well. They are detected, not confirmed: an absence reported under one may be a clause the document was never supposed to carry.</li>
         </ul>

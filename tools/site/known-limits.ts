@@ -21,7 +21,7 @@ import {
   V6_RULES,
   V7_RULES,
 } from "../../src/engine/index.js";
-import { MAX_DOCUMENT_BYTES, MAX_OCR_PAGES } from "../../src/ingest/limits.js";
+import { MAX_DOCUMENT_BYTES } from "../../src/ingest/limits.js";
 import { MATCH_THRESHOLD } from "../../src/playbooks/types.js";
 import { MAX_SECONDARY_FAMILIES } from "../../src/ui/playbook-candidates.js";
 import { KNOWN_DEBT, debtCount, debtSentence } from "../../tests/integration/_known-debt.js";
@@ -38,7 +38,6 @@ export async function buildKnownLimits(root: string = process.cwd()): Promise<Kn
   return {
     reads: {
       max_document_mb: MAX_DOCUMENT_BYTES / 1024 / 1024,
-      max_ocr_pages: MAX_OCR_PAGES,
       max_secondary_families: MAX_SECONDARY_FAMILIES,
       match_threshold: MATCH_THRESHOLD,
     },
