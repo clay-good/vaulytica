@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.971.0` · `MIT`
+`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.972.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1228,6 +1228,8 @@ npm run citation:check -- --reachability   # + network sweep
 ### One row per agreement — the inventory
 
 `--format inventory-csv` (or `inventory-json`) writes `INVENTORY.csv` for a whole folder, glob or `.zip`: one row per agreement, with the facts a diligence table starts from, and one `not analyzed` row for each file that could not be read. `abstract-csv` and `abstract-json` write the same row for each document on its own.
+
+The browser tab writes the same files, byte for byte: a document's **Key terms (CSV)** and **(JSON)** under Download → Other formats, and a folder's **Contract inventory (.csv)** in its Download section, with the JSON under Other formats. The tab never reads a file whose type it does not support, so its `not analyzed` rows list only the files it rejected after reading (an oversized file, a damaged archive), where the CLI's also list the unsupported ones it skipped.
 
 | Column                                 | What it holds                                                                                                                                                                             |
 | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

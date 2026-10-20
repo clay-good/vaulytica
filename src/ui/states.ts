@@ -106,6 +106,10 @@ export type DropzoneState =
         definitions_json_blob?: Blob;
         definitions_csv_filename?: string;
         definitions_json_filename?: string;
+        abstract_csv_blob?: Blob;
+        abstract_json_blob?: Blob;
+        abstract_csv_filename?: string;
+        abstract_json_filename?: string;
       };
       /**
        * v3 family detection (spec-v3 §60). When `family === "unknown"`
@@ -445,6 +449,14 @@ export type DropzoneState =
        */
       bundle_zip_blob?: Blob;
       bundle_zip_filename?: string;
+      /**
+       * The inventory (add-contract-abstract-inventory): one row per document.
+       * Optional; omitting it hides the entry.
+       */
+      inventory_csv_blob?: Blob;
+      inventory_csv_filename?: string;
+      inventory_json_blob?: Blob;
+      inventory_json_filename?: string;
       /**
        * Per-doc v3 family labels (spec-v3 §60, LAUNCH row v3-o bundle
        * side). Optional; only documents whose family is non-"unknown"
@@ -803,6 +815,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
             <button class="btn-link" type="button" data-role="export-closing-checklist-csv" hidden>Closing checklist (CSV)</button>
             <button class="btn-link" type="button" data-role="export-negotiation-csv" hidden>Negotiation posture (CSV)</button>
             <button class="btn-link" type="button" data-role="export-definitions-csv">Definitions report (CSV)</button>
+            <button class="btn-link" type="button" data-role="export-abstract-csv">Key terms (CSV)</button>
           </div>
         </div>
         <div class="other-formats-group">
@@ -820,6 +833,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
             <button class="btn-link" type="button" data-role="export-certificate-docx">Verification certificate (Word)</button>
             <button class="btn-link" type="button" data-role="export-certificate-json">Verification certificate (JSON)</button>
             <button class="btn-link" type="button" data-role="export-definitions-json">Definitions report (JSON)</button>
+            <button class="btn-link" type="button" data-role="export-abstract-json">Key terms (JSON)</button>
             <button class="btn-link" type="button" data-role="export-sarif">SARIF</button>
           </div>
         </div>
@@ -904,6 +918,10 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
           <button class="btn-link download-name" type="button" data-role="bundle-zip-download">Everything (.zip)</button>
           <span class="download-why">The report, its data, and each document's fix list, dates and data.</span>
         </li>
+        <li data-role="download-item-inventory" hidden>
+          <button class="btn-link download-name" type="button" data-role="bundle-inventory-download">Contract inventory (.csv)</button>
+          <span class="download-why">One row per document: type, parties, dates, governing law, cap and assignment, each with its section.</span>
+        </li>
       </ul>
       <details class="results-fold other-formats" data-role="other-formats">
         <summary>Other formats</summary>
@@ -911,6 +929,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
           <div class="other-formats-label">Records and data</div>
           <div class="export-row" role="group" aria-label="Records and data">
             <button class="btn-link" type="button" data-role="bundle-json-download">Structured data (JSON)</button>
+            <button class="btn-link" type="button" data-role="bundle-inventory-json-download" hidden>Contract inventory (JSON)</button>
             <button class="btn-link" type="button" data-role="bundle-coherence-download" hidden>Save this round's coherence (.coherence.json)</button>
           </div>
         </div>
@@ -1136,6 +1155,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       } else {
         select<HTMLButtonElement>(dz, "export-definitions-json")!.setAttribute("hidden", "");
       }
+      if (ex.abstract_csv_blob && ex.abstract_csv_filename) {
+        wire("export-abstract-csv", ex.abstract_csv_blob, ex.abstract_csv_filename);
+      } else {
+        select<HTMLButtonElement>(dz, "export-abstract-csv")!.setAttribute("hidden", "");
+      }
+      if (ex.abstract_json_blob && ex.abstract_json_filename) {
+        wire("export-abstract-json", ex.abstract_json_blob, ex.abstract_json_filename);
+      } else {
+        select<HTMLButtonElement>(dz, "export-abstract-json")!.setAttribute("hidden", "");
+      }
       // simplify-result-downloads — the draft with comments exists only for a
       // DOCX upload; for PDF or pasted text it is not offered at all, so the
       // Word report leads.
@@ -1286,6 +1315,25 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       zipBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         void saveBlob(zipBlob, zipName, status);
+      });
+    }
+    if (state.inventory_csv_blob && state.inventory_csv_filename) {
+      const blob = state.inventory_csv_blob;
+      const name = state.inventory_csv_filename;
+      select<HTMLElement>(dz, "download-item-inventory")!.hidden = false;
+      select<HTMLButtonElement>(dz, "bundle-inventory-download")!.addEventListener("click", (e) => {
+        e.stopPropagation();
+        void saveBlob(blob, name, status);
+      });
+    }
+    if (state.inventory_json_blob && state.inventory_json_filename) {
+      const blob = state.inventory_json_blob;
+      const name = state.inventory_json_filename;
+      const btn = select<HTMLButtonElement>(dz, "bundle-inventory-json-download")!;
+      btn.removeAttribute("hidden");
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        void saveBlob(blob, name, status);
       });
     }
     if (state.coherence_json_blob && state.coherence_json_filename) {

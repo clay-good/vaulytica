@@ -22,6 +22,7 @@ import type { DocumentTree } from "../ingest/types.js";
 import { flattenText } from "../ingest/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import type { ExtractedData } from "../extract/types.js";
+import { titleCorpus } from "../playbooks/matcher.js";
 import { resolveAnchors } from "./critical-dates.js";
 import { ABSTRACT_STATEMENT } from "./disclaimers.js";
 import { csvField } from "./exports.js";
@@ -80,7 +81,11 @@ export async function buildDocumentAbstract(input: {
   tree: DocumentTree;
   run: EngineRun;
   playbookName: string;
-  title: string;
+  /**
+   * The row's title. Omitted, it is the document's own name as routing reads
+   * it — so the CLI and the browser, which both omit it, write the same row.
+   */
+  title?: string;
   /** The extraction already made for this tree, when the caller has it. */
   extracted?: ExtractedData;
 }): Promise<DocumentAbstract> {
@@ -153,7 +158,7 @@ export async function buildDocumentAbstract(input: {
     file: input.file,
     document_type: matched ? run.playbook_id : "unmatched",
     document_type_label: matched ? input.playbookName : "No type matched",
-    title: input.title,
+    title: input.title ?? titleCorpus(tree, input.file).split("\n")[0]!.trim().slice(0, 160),
     parties,
     ...(effective ? { effective_date: { value: effective } } : {}),
     ...(renewal ? { renewal } : {}),

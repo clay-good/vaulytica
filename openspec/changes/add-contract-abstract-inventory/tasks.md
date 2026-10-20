@@ -4,11 +4,11 @@
 - [x] 2. Assignment / change-of-control classifier: locate the clause with the existing clause locator; classify by bounded markers (consent, unreasonably withheld, freely, affiliate, merger / sale of substantially all assets); fixture reach test; no finding, projection only.
 - [x] 3. `src/report/abstract.ts`: projection with provenance, coverage line, `inventory_hash`; CSV writer through the shared formula-guarded writer; first-line disclaimer from `disclaimers.ts`.
 - [x] 4. Formats `abstract-json`, `abstract-csv`, `inventory-csv`, `inventory-json` in `artifacts.ts`; `--help` lists them; `export-reach.test.ts` extended.
-- [ ] 5. Browser: single-document export buttons; bundle view "Download inventory"; byte parity with the CLI.
+- [x] 5. Browser: single-document export buttons; bundle view "Download inventory"; byte parity with the CLI.
 - [x] 6. MCP: `export_report` formats; `abstract_document` tool with the same caps and `excerpts` semantics as `analyze_document`.
 - [x] 7. Determinism: report-reproducibility test renders the inventory twice; two-"today" metamorphic test confirms nothing relative to the clock enters it.
 - [x] 8. Docs: `reference.md` exports table, README exports sentence, `ci-integration.md` inventory example.
-- [ ] 9. Full gate green.
+- [x] 9. Full gate green.
 
 ## Progress — 9.956.0 (slice A)
 
@@ -30,3 +30,8 @@ Task 2, built differently from the proposal: the `assignment` cell QUOTES the se
 
 Task 6: the MCP server's `abstract_document` tool (read-only; same input rules as `analyze_document`, which now share one helper; `excerpts: false` withholds the quoted assignment sentence), and `abstract-json` / `abstract-csv` in `export_report`.
 
+## Progress — 9.972.0
+
+Task 5. A document's page offers **Key terms (CSV)** and **(JSON)** under Download → Other formats; a folder's offers **Contract inventory (.csv)** as its third up-front download, the JSON under Other formats. The tab had built every abstract with `title: ""`, so the row's title was blank; `title` is now optional in `buildDocumentAbstract` and defaults to the routing title, so the CLI and the tab compute it in one place. `abstract-cross-surface-parity.test.ts` runs the tab's pipeline and `analyze --out` on the same bytes and compares the four files as strings.
+
+One difference, kept: the tab drops a file of an unsupported type before planning, so its `not analyzed` rows hold only what it rejected after reading. The documents' rows are identical.

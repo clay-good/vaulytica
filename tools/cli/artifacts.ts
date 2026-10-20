@@ -46,7 +46,6 @@ import {
   buildInventoryCsv,
   buildInventoryJson,
 } from "../../src/report/abstract.js";
-import { titleCorpus } from "../../src/playbooks/matcher.js";
 
 export type Format =
   | "json"
@@ -241,7 +240,6 @@ export function abstractOf(file: string, r: AnalyzeResult) {
     tree: r.ingest.tree,
     run: r.run,
     playbookName: r.playbook.name,
-    title: titleCorpus(r.ingest.tree, file).split("\n")[0]!.trim().slice(0, 160),
   });
 }
 

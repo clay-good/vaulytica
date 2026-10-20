@@ -31,6 +31,10 @@ function exports(
     definitions_json_blob: b("dj"),
     definitions_csv_filename: "d.csv",
     definitions_json_filename: "d.json",
+    abstract_csv_blob: b("ac"),
+    abstract_json_blob: b("aj"),
+    abstract_csv_filename: "nda.abstract.csv",
+    abstract_json_filename: "nda.abstract.json",
     ...over,
   };
 }
@@ -117,6 +121,8 @@ describe("the Download section", () => {
       "export-certificate-json",
       "export-definitions-csv",
       "export-definitions-json",
+      "export-abstract-csv",
+      "export-abstract-json",
       "export-closing-checklist-md",
       "export-closing-checklist-csv",
       "export-critical-dates-ics",
@@ -131,5 +137,62 @@ describe("the Download section", () => {
       expect(fold.contains(el!), role).toBe(true);
       expect(el!.hidden, role).toBe(false);
     }
+  });
+
+  it("puts the key terms under Other formats, and hides them when not built", () => {
+    const dz = render(exports());
+    const csv = select(dz, "export-abstract-csv")!;
+    expect(select(dz, "other-formats")!.contains(csv)).toBe(true);
+    expect(upFront(dz)).not.toContain("export-abstract-csv");
+    const none = render(exports({ abstract_csv_blob: undefined, abstract_json_blob: undefined }));
+    expect(select(none, "export-abstract-csv")!.hidden).toBe(true);
+    expect(select(none, "export-abstract-json")!.hidden).toBe(true);
+  });
+});
+
+describe("the bundle's Download section", () => {
+  const bundle = (over: Record<string, unknown> = {}) => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "bundle-complete",
+      document_count: 2,
+      counts: { critical: 0, warning: 1, info: 0 },
+      cross_doc_findings: 0,
+      bundle_docx_blob: b("docx"),
+      bundle_json_blob: b("{}"),
+      bundle_docx_filename: "vaulytica-bundle.docx",
+      bundle_json_filename: "vaulytica-bundle.json",
+      ...over,
+    } as DropzoneState);
+    return dz;
+  };
+  const shown = (dz: HTMLElement) =>
+    Array.from(dz.querySelectorAll<HTMLElement>(".download-primary li"))
+      .filter((li) => !li.hidden)
+      .map((li) => li.querySelector("button")!.getAttribute("data-role")!);
+
+  it("offers the inventory up front, its JSON under Other formats", () => {
+    const dz = bundle({
+      bundle_zip_blob: b("zip"),
+      bundle_zip_filename: "vaulytica-bundle.zip",
+      inventory_csv_blob: b("csv"),
+      inventory_csv_filename: "vaulytica-inventory.csv",
+      inventory_json_blob: b("json"),
+      inventory_json_filename: "vaulytica-inventory.json",
+    });
+    expect(shown(dz)).toEqual([
+      "bundle-download",
+      "bundle-zip-download",
+      "bundle-inventory-download",
+    ]);
+    const json = select(dz, "bundle-inventory-json-download")!;
+    expect(json.hidden).toBe(false);
+    expect(select(dz, "other-formats")!.contains(json)).toBe(true);
+  });
+
+  it("hides both when no inventory was built", () => {
+    const dz = bundle();
+    expect(shown(dz)).toEqual(["bundle-download"]);
+    expect(select(dz, "bundle-inventory-json-download")!.hidden).toBe(true);
   });
 });

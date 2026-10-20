@@ -46,7 +46,7 @@ Point it at a folder to get one page that says which documents need a person fir
 npm run cli -- analyze ./contracts --format triage-md
 ```
 
-Or one row per agreement, the table a diligence starts from: type, parties, effective date, renewal, governing law, forum and cap, each with the section it was read from:
+Or one row per agreement, the table a diligence starts from: type, parties, effective date, renewal, governing law, forum and cap, each with the section it was read from (the tab offers the same file as "Contract inventory" when you drop a folder):
 
 ```bash
 npm run cli -- analyze ./contracts --format inventory-csv --out reports

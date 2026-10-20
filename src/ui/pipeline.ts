@@ -230,7 +230,12 @@ import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overl
 import type { Finding } from "../engine/finding.js";
 import { scanDelivery, type DeliveryReport } from "../delivery/index.js";
 import { flattenText } from "../ingest/types.js";
-import { buildDocumentAbstract } from "../report/abstract.js";
+import {
+  buildDocumentAbstract,
+  buildInventory,
+  buildInventoryCsv,
+  buildInventoryJson,
+} from "../report/abstract.js";
 import { reportLinkForFinding } from "../report/report-link.js";
 import {
   buildBundleResults,
@@ -372,6 +377,12 @@ export type PipelineResult = {
   /** Definitions report (add-defined-terms-report): CSV + JSON exports. */
   definitions_csv_blob: Blob;
   definitions_json_blob: Blob;
+  /**
+   * The key terms (add-contract-abstract-inventory): the CLI's `abstract-csv`
+   * and `abstract-json`, byte for byte.
+   */
+  abstract_csv_blob: Blob;
+  abstract_json_blob: Blob;
   /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
@@ -986,8 +997,12 @@ export async function runReport(
     tree: prepared.ingest.tree,
     run,
     playbookName: prepared.playbook.name,
-    title: "",
     extracted: prepared.extracted,
+  });
+  const abstractInventory = await buildInventory([abstract]);
+  const abstract_csv_blob = new Blob([buildInventoryCsv(abstractInventory)], { type: "text/csv" });
+  const abstract_json_blob = new Blob([buildInventoryJson(abstractInventory)], {
+    type: "application/json",
   });
   const results = renderResults(
     buildResultsModel({
@@ -1021,6 +1036,8 @@ export async function runReport(
     certificate_json_blob,
     definitions_csv_blob,
     definitions_json_blob,
+    abstract_csv_blob,
+    abstract_json_blob,
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,
@@ -1241,6 +1258,12 @@ export type BundlePipelineResult = {
   results: RenderedPage;
   bundle_docx_blob: Blob;
   bundle_json_blob: Blob;
+  /**
+   * The inventory (add-contract-abstract-inventory): one row per document and
+   * one per skipped file — the CLI's `inventory-csv` / `inventory-json`.
+   */
+  inventory_csv_blob: Blob;
+  inventory_json_blob: Blob;
   /**
    * Cross-document negotiation-posture coherence (spec-v12 Thrust B). Present
    * only when the active custom playbook defines `negotiation_positions` (so
@@ -1785,27 +1808,38 @@ export async function runBundleReport(
     include_per_document_exports: true,
   });
 
-  const results = buildBundleResults({
-    documents: await Promise.all(
-      documents.map(async (d) => ({
-        filename: d.filename,
-        model: buildResultsModel({
-          run: d.run,
-          abstract: await buildDocumentAbstract({
-            file: d.filename,
-            tree: d.ingest.tree,
-            run: d.run,
-            playbookName: d.playbook.name,
-            title: "",
-            extracted: d.extracted,
-          }),
-          delivery: d.delivery?.findings,
-          isSigner: signerTest(d.ingest.tree, d.extracted.parties),
-          reportUrl: (f) =>
-            reportLinkForFinding(d.run, f, { customPlaybook: Boolean(options.custom_playbook) }),
-        }),
-      })),
+  const abstracts = await Promise.all(
+    documents.map((d) =>
+      buildDocumentAbstract({
+        file: d.filename,
+        tree: d.ingest.tree,
+        run: d.run,
+        playbookName: d.playbook.name,
+        extracted: d.extracted,
+      }),
     ),
+  );
+  const inventory = await buildInventory(
+    abstracts,
+    prepared.rejected.map((r) => ({ file: r.filename, reason: r.reason })),
+  );
+  const inventory_csv_blob = new Blob([buildInventoryCsv(inventory)], { type: "text/csv" });
+  const inventory_json_blob = new Blob([buildInventoryJson(inventory)], {
+    type: "application/json",
+  });
+
+  const results = buildBundleResults({
+    documents: documents.map((d, i) => ({
+      filename: d.filename,
+      model: buildResultsModel({
+        run: d.run,
+        abstract: abstracts[i]!,
+        delivery: d.delivery?.findings,
+        isSigner: signerTest(d.ingest.tree, d.extracted.parties),
+        reportUrl: (f) =>
+          reportLinkForFinding(d.run, f, { customPlaybook: Boolean(options.custom_playbook) }),
+      }),
+    })),
     conflicts: consistency.findings,
   });
 
@@ -1817,6 +1851,8 @@ export async function runBundleReport(
     bundle_docx_blob,
     bundle_json_blob,
     bundle_zip_blob,
+    inventory_csv_blob,
+    inventory_json_blob,
     posture_coherence,
     production_qa,
   };

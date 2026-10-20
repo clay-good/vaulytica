@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.972.0] — 2026-10-20
+
+### Added
+- **Key terms and the contract inventory in the tab**
+  (add-contract-abstract-inventory, the last task). A document's Download →
+  Other formats now holds Key terms (CSV) and (JSON); a folder's Download
+  section offers Contract inventory (.csv) up front, its JSON under Other
+  formats. Each is the file `analyze --format abstract-csv` /
+  `inventory-csv` writes, byte for byte; a new cross-surface test runs both
+  on the same bytes and compares them.
+
+### Fixed
+- The tab built every key-terms row with a blank title. The title now
+  defaults to the document's routing title in one place, so the CLI and the
+  tab cannot compute it differently.
+
 ## [9.971.0] — 2026-10-20
 
 ### Changed

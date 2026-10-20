@@ -318,6 +318,8 @@ function renderCompleteState(
     certificate_json_blob: Blob;
     definitions_csv_blob: Blob;
     definitions_json_blob: Blob;
+    abstract_csv_blob: Blob;
+    abstract_json_blob: Blob;
   },
   countsBySeverity: (r: import("./pipeline.js").PipelineResult["run"]) => {
     critical: number;
@@ -394,6 +396,11 @@ function renderCompleteState(
       definitions_json_blob: result.definitions_json_blob,
       definitions_csv_filename: `${stem}-vaulytica-definitions.csv`,
       definitions_json_filename: `${stem}-vaulytica-definitions.json`,
+      // add-contract-abstract-inventory — the key terms, as the CLI writes them.
+      abstract_csv_blob: result.abstract_csv_blob,
+      abstract_json_blob: result.abstract_json_blob,
+      abstract_csv_filename: `${stem}.abstract.csv`,
+      abstract_json_filename: `${stem}.abstract.json`,
     },
     v3_family:
       result.v3_detection.family === "unknown"
@@ -857,6 +864,10 @@ async function renderBundleComplete(
     bundle_json_filename: "vaulytica-bundle.json",
     bundle_zip_blob: result.bundle_zip_blob,
     bundle_zip_filename: "vaulytica-bundle.zip",
+    inventory_csv_blob: result.inventory_csv_blob,
+    inventory_json_blob: result.inventory_json_blob,
+    inventory_csv_filename: "vaulytica-inventory.csv",
+    inventory_json_filename: "vaulytica-inventory.json",
     detected_families: detectedFamilies.length > 0 ? detectedFamilies : undefined,
     documents: documentSummaries,
     // spec-v12 Thrust B — cross-document posture coherence, present only when
