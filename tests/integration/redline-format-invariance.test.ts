@@ -101,7 +101,7 @@ async function rejectedReading(name: string, t?: Transform) {
   const plain = join(dir, `${stem}.docx`);
   const text = readFileSync(join(SPECIMENS, name), "utf8");
   await renderDocx(t?.text ? t.text(text) : text, plain);
-  let bytes = readFileSync(plain);
+  let bytes: Buffer = readFileSync(plain);
   if (t?.xml) bytes = rewriteXml(bytes, t.xml);
   const redline = join(dir, `${stem}.redline.docx`);
   writeFileSync(redline, markEveryRun(bytes, "del"));
