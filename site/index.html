@@ -503,6 +503,255 @@
         overflow: hidden;
         text-overflow: ellipsis;
       }
+      /* The results page (add-results-page): what to raise, why, and the key
+         terms. Left-aligned reading copy inside the centred drop zone; every
+         row wraps, so nothing scrolls sideways at 360 px. */
+      .results-page {
+        text-align: left;
+        margin: 6px 0 14px;
+      }
+      .results-type {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .results-headline {
+        margin: 2px 0 10px;
+        font-size: 24px;
+        line-height: 1.25;
+        color: var(--heading);
+      }
+      .results-clean {
+        margin: 0 0 12px;
+        font-size: 15px;
+      }
+      .results-group {
+        margin: 16px 0 6px;
+        font-size: 13px;
+        font-family: var(--font-sans);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .results-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 6px;
+      }
+      .result-row {
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--line);
+        border-radius: 8px;
+        background: var(--surface);
+      }
+      .result-row--critical {
+        border-left-color: var(--critical);
+      }
+      .result-row--warning {
+        border-left-color: var(--accent);
+      }
+      .result-row__toggle {
+        all: unset;
+        box-sizing: border-box;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 2px 10px;
+        position: relative;
+        padding: 10px 32px 10px 12px;
+        font-size: 15px;
+        line-height: 1.4;
+      }
+      .result-row__toggle:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .result-row__toggle::after {
+        content: "▸";
+        position: absolute;
+        top: 9px;
+        right: 12px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+      .result-row__toggle[aria-expanded="true"]::after {
+        content: "▾";
+      }
+      .result-row__sev {
+        flex: 0 0 auto;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        min-width: 8.5em;
+      }
+      .result-row--critical .result-row__sev {
+        color: var(--critical);
+      }
+      .result-row--warning .result-row__sev {
+        color: var(--accent);
+      }
+      .result-row__title {
+        flex: 1 1 14em;
+        color: var(--heading);
+        overflow-wrap: anywhere;
+      }
+      .result-row__section {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .result-row__detail {
+        padding: 0 12px 12px;
+        font-size: 15px;
+        overflow-wrap: anywhere;
+      }
+      .result-row__detail p {
+        margin: 6px 0;
+      }
+      .result-k {
+        font-weight: 600;
+        color: var(--heading);
+      }
+      .result-quote {
+        margin: 6px 0;
+        padding: 6px 10px;
+        border-left: 3px solid var(--accent);
+        background: var(--surface-2);
+        font-family: var(--font-serif);
+        white-space: pre-wrap;
+      }
+      .result-quote-at,
+      .result-source {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .result-rule {
+        font-family: var(--font-mono);
+      }
+      .result-evidence {
+        margin: 6px 0;
+        padding-left: 18px;
+        font-size: 14px;
+      }
+      .result-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px 16px;
+        align-items: baseline;
+        margin-top: 8px;
+      }
+      .result-actions .btn-link {
+        color: var(--link);
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .result-report {
+        font-size: 14px;
+      }
+      .result-copy-status {
+        min-height: 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .result-copy-box {
+        width: 100%;
+        min-height: 5em;
+        background: var(--surface-2);
+        color: var(--body);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        font: 14px/1.4 var(--font-sans);
+      }
+      .key-terms {
+        margin: 0;
+        display: grid;
+        gap: 4px;
+        font-size: 15px;
+      }
+      .key-term {
+        display: grid;
+        grid-template-columns: minmax(7.5em, max-content) 1fr;
+        gap: 2px 12px;
+        padding: 4px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .key-term dt {
+        color: var(--muted);
+      }
+      .key-term dd {
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px 10px;
+        overflow-wrap: anywhere;
+        min-width: 0;
+      }
+      .key-term__value--none {
+        color: var(--muted);
+        font-style: italic;
+      }
+      .key-term__section {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 480px) {
+        .key-term {
+          grid-template-columns: 1fr;
+        }
+      }
+      .results-fold {
+        display: block;
+        width: 100%;
+        text-align: left;
+        margin: 8px 0;
+        background: none;
+        border: 0;
+        border-top: 1px solid var(--line);
+        border-radius: 0;
+        padding: 10px 0 0;
+      }
+      .results-fold[hidden] {
+        display: none;
+      }
+      .results-fold > summary {
+        cursor: pointer;
+        font-size: 15px;
+        color: var(--heading);
+      }
+      .results-fold[open] > summary {
+        margin-bottom: 8px;
+      }
+      .results-adjust {
+        margin-top: 12px;
+      }
+      .results-adjust-label {
+        font-size: 13px;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .results-note {
+        margin: 10px 0;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      @media print {
+        .result-row__detail[hidden] {
+          display: block !important;
+        }
+        .result-row__toggle::after,
+        .result-actions,
+        .results-adjust,
+        .results-note,
+        .export-row,
+        .compare-row,
+        [data-role="docx-download"],
+        [data-role="json-download"] {
+          display: none !important;
+        }
+      }
       /* Counts on completion */
       .counts {
         display: flex;
@@ -2440,33 +2689,21 @@
       <section id="what-you-get" aria-labelledby="get-h2">
         <h2 id="get-h2">What you get back.</h2>
         <p class="section-lead">
-          Not a chatbot summary — a record you can act on, send to the other side, and defend.
-          <a href="/sample-report">See a real sample report →</a>
+          Not a chatbot summary — a short list of what to raise, each item showing its evidence.
+          <a href="/sample-report">See a real sample →</a>
         </p>
         <div class="grid grid-3">
           <div class="card">
-            <h3>A Word report</h3>
-            <p>Findings ranked by severity, each quoting the clause, its exact position, the rule, and the statute or practice source behind it.</p>
+            <h3>A page that says what to raise and why</h3>
+            <p>Each item opens to the clause it is about, the reason it matters, the rule's suggested change and its source. Nothing to download first.</p>
           </div>
           <div class="card">
-            <h3>Comments on your own draft</h3>
-            <p>Your .docx back with every finding attached as a Word comment on the clause it is about — ready to send.</p>
+            <h3>Your draft back with comments</h3>
+            <p>Drop a .docx and get it back with each item as a Word comment on its clause. Your text is unchanged.</p>
           </div>
           <div class="card">
-            <h3>Deadlines on your calendar</h3>
-            <p>Renewal, notice and cure dates the document states, as an .ics file for Google, Outlook or Apple Calendar.</p>
-          </div>
-          <div class="card">
-            <h3>Obligations and fix lists</h3>
-            <p>Who owes what, and what to fix before signing, as spreadsheets you can sort and share.</p>
-          </div>
-          <div class="card">
-            <h3>A whole-deal cross-check</h3>
-            <p>Drop up to four related documents and conflicts between them are flagged — different governing law, a BAA broader than its MSA.</p>
-          </div>
-          <div class="card">
-            <h3>Proof for the file</h3>
-            <p>An optional verification certificate with the input's SHA-256 and the result hash, for courts that require a no-AI certification.</p>
+            <h3>Everything else, if you want it</h3>
+            <p>A Word report, dates for your calendar, spreadsheets of obligations and fixes, and a verification certificate. Drop related documents together and conflicts between them are listed too.</p>
           </div>
         </div>
       </section>

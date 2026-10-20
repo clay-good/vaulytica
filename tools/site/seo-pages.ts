@@ -837,12 +837,11 @@ export function renderSeoPage(page: SeoPage, counts: HeadlineCounts): string {
       <section>
         <h2>What you get</h2>
         <div class="grid">
-          <div class="card"><h3>A Word report</h3><p>A findings index by severity, then each finding in full: the quoted clause, its position, the rule, and its source.</p></div>
-          <div class="card"><h3>Comments on your own draft</h3><p>Your .docx back with each finding attached as a Word comment on the clause it is about.</p></div>
-          <div class="card"><h3>Deadlines on your calendar</h3><p>Renewal, notice and cure dates the document states, as an .ics file.</p></div>
-          <div class="card"><h3>Obligations and fix lists</h3><p>Who owes what, and what to fix, as spreadsheets you can sort and share.</p></div>
+          <div class="card"><h3>A page that says what to raise and why</h3><p>Each item opens to the clause it is about, the reason, the rule's suggested change and its source.</p></div>
+          <div class="card"><h3>Your draft back with comments</h3><p>Drop a .docx and get it back with each item as a Word comment on its clause.</p></div>
+          <div class="card"><h3>Everything else, if you want it</h3><p>A Word report, dates for your calendar, and spreadsheets of obligations and fixes.</p></div>
         </div>
-        <p style="margin-top:20px"><a href="/sample-report">See a real sample report →</a></p>
+        <p style="margin-top:20px"><a href="/sample-report">See a real sample →</a></p>
       </section>
       <section>
         <h2>How it works</h2>

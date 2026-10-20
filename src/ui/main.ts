@@ -274,6 +274,7 @@ function renderCompleteState(
     match_reasoning: string;
     near_type?: string;
     run: import("./pipeline.js").PipelineResult["run"];
+    results: import("./pipeline.js").PipelineResult["results"];
     /** Carried so version comparison can build a clause-level redline of the base doc. */
     ingest: import("./pipeline.js").PipelineResult["ingest"];
     docx_blob: Blob;
@@ -329,6 +330,7 @@ function renderCompleteState(
   setState(dz, {
     kind: "complete",
     filename,
+    results: result.results,
     playbook_name: result.playbook.name,
     playbook_deprecation:
       result.playbook.deprecated === true

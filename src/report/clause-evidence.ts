@@ -40,7 +40,7 @@ export type ClauseEvidenceSummary = {
 };
 
 /** A finding carries quoted evidence when its excerpt has text and a real span. */
-function hasQuotedExcerpt(f: Finding): boolean {
+export function hasQuotedExcerpt(f: Pick<Finding, "excerpt">): boolean {
   return f.excerpt.text.trim().length > 0 && f.excerpt.end_offset > f.excerpt.start_offset;
 }
 

@@ -56,6 +56,8 @@ test("drop a BAA and the HIPAA compliance frame is on by default", async ({ page
   await page.locator(singleFileInput).setInputFiles(BAA);
   await page.locator('[data-role="docx-download"]').waitFor({ state: "visible", timeout: 60_000 });
 
+  // The chips live under "What this review covered" (add-results-page).
+  await page.locator('[data-role="covered-fold"] > summary').click();
   const chips = page.locator('[data-role="compliance-frame-chips"]');
   await expect(chips, "the frame row must render for a BAA").toBeVisible();
 

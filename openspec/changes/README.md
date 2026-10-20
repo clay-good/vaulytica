@@ -155,3 +155,5 @@ drafts language, or removes an export.
 | 38  | [extend-results-page-to-bundles-and-comparisons](extend-results-page-to-bundles-and-comparisons/proposal.md) | The same page for folders, revised drafts and deal rounds, with one `isActionable` count everywhere                                             | One way to read every result      |
 
 Order: 36, then 37, then 38.
+
+Status at 9.969.0: **Built:** 36.

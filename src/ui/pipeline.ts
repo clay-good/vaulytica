@@ -229,6 +229,14 @@ import { selectStateOverlays, type StateOverlayResult } from "../dkb/state-overl
 import type { Finding } from "../engine/finding.js";
 import { scanDelivery, type DeliveryReport } from "../delivery/index.js";
 import { flattenText } from "../ingest/types.js";
+import { buildDocumentAbstract } from "../report/abstract.js";
+import { reportLinkForFinding } from "../report/report-link.js";
+import {
+  buildResultsModel,
+  renderResults,
+  signerTest,
+  type RenderedResults,
+} from "./results-page.js";
 import { nearMissOf } from "../playbooks/types.js";
 
 export type PipelineProgress = {
@@ -307,6 +315,11 @@ export type PreparedDocument = {
 export type PipelineResult = {
   ingest: IngestResult;
   run: EngineRun;
+  /**
+   * The results page (add-results-page): what to raise, why, and the key
+   * terms — the model, and its markup rendered here in the lazy chunk.
+   */
+  results: RenderedResults;
   playbook: Playbook;
   match_reasoning: string;
   /** Unmatched only: the closest family's id, for the "what kind of document is this?" link. */
@@ -958,9 +971,29 @@ export async function runReport(
   const definitions_csv_blob = definitionsCsvBlob(definitionsReport);
   const definitions_json_blob = definitionsJsonBlob(definitionsReport);
 
+  const abstract = await buildDocumentAbstract({
+    file: run.source_file.name,
+    tree: prepared.ingest.tree,
+    run,
+    playbookName: prepared.playbook.name,
+    title: "",
+    extracted: prepared.extracted,
+  });
+  const results = renderResults(
+    buildResultsModel({
+      run,
+      abstract,
+      delivery: prepared.delivery?.findings,
+      isSigner: signerTest(prepared.ingest.tree, prepared.extracted.parties),
+      reportUrl: (f) =>
+        reportLinkForFinding(run, f, { customPlaybook: Boolean(options.custom_playbook) }),
+    }),
+  );
+
   return {
     ingest: prepared.ingest,
     run,
+    results,
     playbook: prepared.playbook,
     match_reasoning: prepared.match.reasoning,
     ...(prepared.match.near_type ? { near_type: prepared.match.near_type } : {}),

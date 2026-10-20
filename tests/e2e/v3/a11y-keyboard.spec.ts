@@ -98,6 +98,11 @@ test("v3 compliance-frame chip row is keyboard-operable", async ({ page }) => {
     timeout: 60_000,
   });
 
+  // The chips live under "What this review covered" (add-results-page); the
+  // fold's summary is itself a keyboard control.
+  const covered = page.locator('[data-role="covered-fold"] > summary');
+  await covered.focus();
+  await page.keyboard.press("Enter");
   const chipRow = page.locator('[data-role="compliance-frame-chips"]');
   const chipCount = await chipRow.locator('[role="switch"]').count();
   test.skip(chipCount === 0, "v3 BAA fixture resolved to a playbook with no compliance frames");

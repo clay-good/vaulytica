@@ -5,6 +5,8 @@
  */
 import { EMPTY_STATE_COPY, v3ErrorMessage } from "./v3/copy.js";
 import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
+import type { RenderedResults } from "./results-page.js";
+import { installPrintExpansion, wireResultsPage } from "./results-wire.js";
 
 export type DropzoneState =
   | { kind: "empty" }
@@ -29,6 +31,13 @@ export type DropzoneState =
        * the document, so they sit above the counts rather than among them.
        */
       input_warnings?: ReadonlyArray<string>;
+      /**
+       * The results page (add-results-page): "N things to raise before you
+       * sign", the rows, and the key terms. When present it leads the state and
+       * every other panel folds below it; optional so a hand-built state (a
+       * unit test) still renders the panels as before.
+       */
+      results?: RenderedResults;
       counts: { critical: number; warning: number; info: number };
       docx_blob: Blob;
       json_blob: Blob;
@@ -716,27 +725,45 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="complete-filename"></div>
     <div class="input-notice" data-role="input-notice" hidden></div>
     <div class="classification-notice" data-role="classification-notice" hidden></div>
-    <div class="scope-of-review" data-role="scope-of-review" hidden></div>
-    <div class="scope-of-review regime-coverage" data-role="regime-coverage" hidden></div>
-    <div class="v3-family-chip" data-role="v3-family" hidden></div>
-    <div class="delivery-section" data-role="delivery" hidden></div>
-    <div class="closing-checklist-section" data-role="closing-checklist" hidden></div>
-    <div class="critical-dates-section" data-role="critical-dates" hidden></div>
-    <div class="negotiation-section" data-role="negotiation" hidden></div>
-    <div class="counts" data-role="counts"></div>
-    <div class="review-coverage" data-role="review-coverage" hidden></div>
-    <div class="review-coverage" data-role="clause-evidence" hidden></div>
-    <div class="review-coverage" data-role="report-link" hidden></div>
     <div class="rule-errored" data-role="rule-errored" hidden></div>
-    <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
-    <div class="secondary-families" data-role="secondary-families" hidden></div>
-    <div class="jurisdiction-overlays" data-role="jurisdiction-overlays" hidden></div>
-    <div class="compliance-frame-chips" data-role="compliance-frame-chips" role="group" aria-label="Compliance frames" hidden></div>
-    <div class="dropzone-sub compliance-frame-hint" data-role="compliance-frame-hint" hidden></div>
-    <details class="playbook-disclosure">
-      <summary>Why this playbook?</summary>
-      <div data-role="reasoning"></div>
+    <section class="results-page" data-role="results-page" aria-label="What to raise" hidden></section>
+    <details class="results-fold" data-role="dates-fold" hidden>
+      <summary data-role="dates-fold-summary">Dates</summary>
+      <div class="critical-dates-section" data-role="critical-dates" hidden></div>
     </details>
+    <details class="results-fold" data-role="negotiation-fold" hidden>
+      <summary>Your playbook's positions</summary>
+      <div class="negotiation-section" data-role="negotiation" hidden></div>
+    </details>
+    <details class="results-fold" data-role="also-noted" hidden>
+      <summary data-role="also-noted-summary">Also noted</summary>
+      <div data-role="also-noted-list"></div>
+    </details>
+    <details class="results-fold" data-role="covered-fold">
+      <summary>What this review covered</summary>
+      <div class="v3-family-chip" data-role="v3-family" hidden></div>
+      <div class="counts" data-role="counts"></div>
+      <div class="scope-of-review" data-role="scope-of-review" hidden></div>
+      <div class="scope-of-review regime-coverage" data-role="regime-coverage" hidden></div>
+      <div class="delivery-section" data-role="delivery" hidden></div>
+      <div class="closing-checklist-section" data-role="closing-checklist" hidden></div>
+      <div class="review-coverage" data-role="review-coverage" hidden></div>
+      <div class="review-coverage" data-role="clause-evidence" hidden></div>
+      <div class="review-coverage" data-role="report-link" hidden></div>
+      <div class="playbook-provenance" data-role="playbook-provenance" hidden></div>
+      <div class="secondary-families" data-role="secondary-families" hidden></div>
+      <div class="jurisdiction-overlays" data-role="jurisdiction-overlays" hidden></div>
+      <details class="playbook-disclosure">
+        <summary>Why this playbook?</summary>
+        <div data-role="reasoning"></div>
+      </details>
+      <div class="results-adjust" data-role="results-adjust">
+        <div class="results-adjust-label">Adjust this review</div>
+        <div class="compliance-frame-chips" data-role="compliance-frame-chips" role="group" aria-label="Compliance frames" hidden></div>
+        <div class="dropzone-sub compliance-frame-hint" data-role="compliance-frame-hint" hidden></div>
+      </div>
+    </details>
+    <p class="results-note" data-role="results-note">This page is not saved. Download to keep a copy.</p>
     <button class="btn btn-primary" type="button" data-role="docx-download">Download report (Word)</button>
     <button class="btn-link" type="button" data-role="json-download">Download structured data (JSON)</button>
     <div class="export-row" data-role="export-row" role="group" aria-label="Export findings to action" hidden>
@@ -870,6 +897,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderClauseEvidence(dz, state.clause_evidence);
     renderJurisdictionOverlays(dz, state.jurisdiction_overlays);
     renderComplianceFrameChips(dz, state.v3_frames, state.on_frames_change);
+    renderResultsPage(dz, state.results);
     const docxBtn = select<HTMLButtonElement>(dz, "docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -1381,6 +1409,46 @@ function renderMultiDocCards(
  * so the UI just needs to enumerate them. Hidden when nothing was
  * rejected so the surface stays quiet for the common case.
  */
+/**
+ * The results page and its folds (add-results-page). The panels have already
+ * rendered into their folds; this fills the page, opens a fold only when it has
+ * content, and — with no results model (a hand-built state) — leaves "What this
+ * review covered" open so nothing is hidden that was shown before.
+ */
+function renderResultsPage(dz: HTMLElement, results: RenderedResults | undefined): void {
+  const showFold = (role: string, inner: string): void => {
+    const fold = select<HTMLElement>(dz, role);
+    const panel = select<HTMLElement>(dz, inner);
+    if (fold && panel) fold.hidden = panel.hidden;
+  };
+  showFold("dates-fold", "critical-dates");
+  showFold("negotiation-fold", "negotiation");
+  const dates = select<HTMLElement>(dz, "critical-dates");
+  const datesSummary = select<HTMLElement>(dz, "dates-fold-summary");
+  if (dates && datesSummary) {
+    const n = dates.querySelectorAll(".cd-card").length;
+    datesSummary.textContent = n > 0 ? `Dates (${n})` : "Dates";
+  }
+  const covered = select<HTMLDetailsElement>(dz, "covered-fold");
+  if (!results) {
+    if (covered) covered.open = true;
+    return;
+  }
+  installPrintExpansion();
+  const page = select<HTMLElement>(dz, "results-page")!;
+  page.innerHTML = results.page_html;
+  page.hidden = false;
+  wireResultsPage(page);
+  if (results.noted_count > 0) {
+    const noted = select<HTMLElement>(dz, "also-noted")!;
+    noted.hidden = false;
+    select(dz, "also-noted-summary")!.textContent = `Also noted (${results.noted_count})`;
+    const list = select<HTMLElement>(dz, "also-noted-list")!;
+    list.innerHTML = results.noted_html;
+    wireResultsPage(list);
+  }
+}
+
 function renderRejectedFiles(
   dz: HTMLElement,
   rejected: ReadonlyArray<{ filename: string; reason: string }> | undefined,

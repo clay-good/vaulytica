@@ -24,6 +24,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Window } from "happy-dom";
 import { renderState, type DropzoneState } from "../../src/ui/states.js";
+import { renderResults } from "../../src/ui/results-page.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const SITE_INDEX = join(__dirname, "..", "..", "site", "index.html");
@@ -107,6 +108,53 @@ const STATES: Array<{ name: string; state: DropzoneState }> = [
   {
     name: "analyzing",
     state: { kind: "analyzing", filename: LONG_NAME, dkb_version: "v2026-06-07-local" },
+  },
+  {
+    // add-results-page — the page itself, with unbroken strings in every field.
+    name: "complete-results-page",
+    state: {
+      kind: "complete",
+      filename: LONG_NAME,
+      playbook_name: "Mutual NDA",
+      counts: counts3,
+      docx_blob: blob("d"),
+      json_blob: blob("j"),
+      docx_filename: "report.docx",
+      json_filename: "report.json",
+      results: renderResults({
+        type_label: "Data Processing Agreement — Controller/Processor (GDPR Art. 28)",
+        headline: "12 things to raise before you sign",
+        delivery_rows: [
+          {
+            rule_id: "HANDOFF-001",
+            severity: "critical",
+            title: "Tracked changes remain in the file",
+            why: "Insertions and deletions travel with the document.",
+            sources: [],
+            evidence: ["w:ins by " + "A".repeat(90)],
+          },
+        ],
+        todo_rows: [
+          {
+            rule_id: "NDA-D-023",
+            severity: "warning",
+            title: "Successors-and-assigns/consent-to-assignment-missing-" + "x".repeat(80),
+            section: "§ 14.3(b)(ii) Assignment; Change of Control; Successors",
+            quote: "Q".repeat(400),
+            why: "W".repeat(300),
+            suggested: "Add: '" + "S".repeat(300) + "'",
+            sources: [{ name: "N".repeat(120), url: "https://example.com/" + "u".repeat(200) }],
+            report_url: "/report#rule=NDA-D-023",
+          },
+        ],
+        observations: [],
+        key_terms: [
+          { label: "Parties", value: "P".repeat(200) },
+          { label: "Governing law", value: "Delaware", section: "§ 12" },
+          { label: "Liability cap" },
+        ],
+      }),
+    },
   },
   {
     name: "complete",

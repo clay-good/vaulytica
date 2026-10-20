@@ -81,9 +81,11 @@ export async function buildDocumentAbstract(input: {
   run: EngineRun;
   playbookName: string;
   title: string;
+  /** The extraction already made for this tree, when the caller has it. */
+  extracted?: ExtractedData;
 }): Promise<DocumentAbstract> {
   const { tree, run } = input;
-  const extracted = extractAll(tree);
+  const extracted = input.extracted ?? extractAll(tree);
   const labelOf = sectionLabels(tree);
   const clauseOf = clauseNumbers(tree);
   // Where a cell was read: the section's heading when the document has one,

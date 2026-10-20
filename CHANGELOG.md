@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.969.0] — 2026-10-20
+
+### Changed
+- **The result is a page that says what to raise and why**
+  (add-results-page). The tab used to show a severity count, about fifteen
+  panels and every download; the findings themselves were only in the Word
+  report. Now it leads with "N things to raise before you sign": every
+  finding with a recommendation, plus the delivery scan's critical and
+  warning items under "Before you send this file". Each row opens in place
+  to show:
+  - the clause in quotation marks, only when the finding pinned real text;
+    an absence finding shows its placeholder under "Not in the document"
+    (all six rows on the legend NDA are this kind);
+  - why, and the rule's recommendation verbatim as "Suggested change", with
+    a Copy button;
+  - the source and the rule id, and "Not a problem? Tell us".
+- **Key terms** under the list: parties, effective date, governing law,
+  forum, liability cap, renewal and assignment, each with its section, and
+  "Not found in the text" for a blank. A name read only from a "By:" or
+  "Name:" line is listed as "Signed by", not as a party (333 of 1,131 party
+  entries across the specimens; no document is left without a party).
+- **Everything else is folded, nothing removed.** Dates, "Also noted",
+  your playbook's positions, and "What this review covered" (counts,
+  coverage, overlays, the compliance-frame chips under "Adjust this
+  review"). The input, unmatched-type and rule-error notices stay on top.
+  Printing opens every fold and row.
+- **The landing page and `/sample-report`.** "What you get back" is three
+  cards. The sample is now this page, built from the same model and markup,
+  shown with every item open.
+- Downloads are unchanged; `simplify-result-downloads` is next. No
+  `result_hash` changes beyond the version stamp.
+
 ## [9.968.0] — 2026-10-20
 
 ### Added

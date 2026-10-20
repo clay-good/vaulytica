@@ -268,6 +268,9 @@ export function bindDropzone(dz: HTMLElement, opts: DropzoneOptions): () => void
     // picker — otherwise macOS shows its NSOpenPanel ("Open" button)
     // on top of the download flow and the file never gets saved.
     if (target?.closest("a, button, summary, details, input, label")) return;
+    // The results page is text a reader selects and copies: a click in it is
+    // never a request for another file.
+    if (target?.closest(".results-page, .results-note, textarea")) return;
     onPick();
   };
   const onDragEnter = (e: DragEvent): void => {
