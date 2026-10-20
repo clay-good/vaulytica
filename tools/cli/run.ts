@@ -2473,6 +2473,10 @@ ${usageFormatLines()}
                           [--format json|markdown]
                           [--fail-on critical|warning|info] [--fail-on-regression]
                           [--confirm-pairing] [--dkb <dir>]
+  compare --redline <file.docx> [the same flags]
+                          Both readings of one Word redline: every tracked
+                          change rejected (the draft as it stood) against every
+                          change accepted (the draft the reviser wants).
   compare-coherence <base.coherence.json> <revised.coherence.json>
                           [--format markdown|json] [--fail-on-coherence-regression]
   posture-review <r1.coherence.json> <r2.coherence.json> [<r3…> …] [--format markdown|json]

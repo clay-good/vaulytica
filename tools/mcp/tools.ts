@@ -37,6 +37,7 @@ import {
   buildComparisonBrief,
   checkConsistency,
   compareFiles,
+  compareRedline,
   describeDocumentType,
   explainRule,
   generalChecksFor,
@@ -673,6 +674,8 @@ async function crossDocument(
 /* ---------------- compare_documents ---------------- */
 
 export type CompareDocumentsArgs = {
+  /** A DOCX redline, compared rejected-against-accepted, in place of the two sides. */
+  redline_path?: string;
   base_path?: string;
   base_text?: string;
   revised_path?: string;
@@ -703,6 +706,7 @@ async function side(
 }
 
 export async function compareDocumentsTool(args: CompareDocumentsArgs, ctx: Context) {
+  if (args.redline_path !== undefined) return compareRedlineTool(args, args.redline_path, ctx);
   const base = await side("base", args.base_path, args.base_text, ctx);
   const revised = await side("revised", args.revised_path, args.revised_text, ctx);
   if (args.document_type !== undefined && !(await isDocumentType(args.document_type))) {
@@ -732,6 +736,38 @@ export async function compareDocumentsTool(args: CompareDocumentsArgs, ctx: Cont
     return applied.config ? { ...brief, config: applied.config } : brief;
   } catch (e) {
     // A side that could not be read is the caller's to fix, and arrives as a sentence.
+    throw new ToolError(e instanceof Error ? e.message : String(e));
+  }
+}
+
+/** `compare_documents` over the two readings of one redline. */
+async function compareRedlineTool(args: CompareDocumentsArgs, path: string, ctx: Context) {
+  if (
+    args.base_path !== undefined ||
+    args.base_text !== undefined ||
+    args.revised_path !== undefined ||
+    args.revised_text !== undefined
+  ) {
+    throw new ToolError("Pass `redline_path` alone: a redline is both versions.");
+  }
+  if (args.document_type !== undefined && !(await isDocumentType(args.document_type))) {
+    throw new ToolError(
+      `"${args.document_type}" is not a document type id. Find one with list_document_types.`,
+    );
+  }
+  const real = await resolveInRoots(path, ctx.roots);
+  await assertReadableSize(real, path);
+  const applied = await projectConfig(real, ctx, { type: args.document_type });
+  try {
+    const brief = buildComparisonBrief(
+      await compareRedline(real, {
+        deps: ctx.deps,
+        playbookId: args.document_type ?? applied.playbookFor?.(real) ?? applied.playbookId,
+        ...(applied.customPlaybook ? { customPlaybook: applied.customPlaybook } : {}),
+      }),
+    );
+    return applied.config ? { ...brief, config: applied.config } : brief;
+  } catch (e) {
     throw new ToolError(e instanceof Error ? e.message : String(e));
   }
 }

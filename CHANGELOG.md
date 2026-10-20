@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.965.0] — 2026-10-20
+
+### Added
+- **`compare --redline`: both sides of one Word redline.** A counterparty's
+  markup is two drafts in one file.
+  - `compare --redline markup.docx` compares the draft with every tracked
+    change rejected (as it stood) against the draft with every change
+    accepted (what the reviser wants). The finding delta is what the markup
+    fixed, broke and removed.
+  - On the fixture, a redline that strikes the liability cap and adds an
+    uncapped indemnity introduces exactly RISK-005 (no limitation of
+    liability) and RISK-015 (indemnification without a cap).
+  - The MCP `compare_documents` tool takes `redline_path` alone for the same
+    comparison (add-redline-two-sided-analysis, slice A).
+- **The rejected reading.** `ingestDocxBuffer(bytes, { revisions:
+  "rejected" })` rewrites `word/document.xml` before mammoth reads it:
+  - an insertion or a move's destination is removed;
+  - a deletion or a move's origin is kept as ordinary text;
+  - the empty paragraph-mark markers are dropped.
+
+  Its notice says which reading it is. The default reading is unchanged,
+  and so is every existing hash. The two runs are named `#rejected` and
+  `#accepted`, since the name is inside `result_hash`. The revision is held
+  to the base draft's type.
+- **Refusals that say why.** A file with no tracked changes is refused,
+  since both of its readings are the same document. So is a file that is
+  not a DOCX. Each points to the two-file `compare`.
+
+### Fixed (before release)
+- The rewrite's own linear-time test caught a quadratic. Every unclosed
+  `<w:ins>` searched the rest of the part for a closing tag. Once one search
+  fails, every later one must, so the scan stops there.
+
 ## [9.964.0] — 2026-10-20
 
 ### Added

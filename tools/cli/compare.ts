@@ -11,6 +11,12 @@
  *   tsx tools/cli/run.ts compare base.docx revised.docx \
  *       [--playbook <id>] [--format json|markdown] \
  *       [--fail-on critical|warning|info] [--confirm-pairing]
+ *   tsx tools/cli/run.ts compare --redline counterparty-markup.docx [same flags]
+ *
+ * `--redline` compares the two readings of one Word redline: every tracked
+ * change rejected (the draft as it stood) against every change accepted (the
+ * draft the reviser wants), so the finding delta is what the markup fixed,
+ * broke and removed (add-redline-two-sided-analysis).
  *
  * `--fail-on <sev>` exits non-zero (code 2) when the *introduced* bucket holds
  * a finding at or above <sev> — the revision created new exposure. A
@@ -30,7 +36,7 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { compareFiles } from "./api.js";
+import { compareFiles, compareRedline, RedlineRefusedError } from "./api.js";
 import { buildComparisonBrief, comparisonBriefMarkdown } from "./comparison-brief.js";
 import {
   buildComparisonJsonObject,
@@ -48,6 +54,8 @@ const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info:
 type CompareArgs = {
   base: string;
   revised: string;
+  /** `--redline <file.docx>`: the two readings of one redline, in place of two files. */
+  redline?: string;
   playbook?: string;
   /** spec-v11 — a custom playbook file whose positions drive `--posture`. */
   playbookFile?: string;
@@ -128,14 +136,22 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
       case "--dkb":
         args.dkb = requireValue(flag, argv[++i]);
         break;
+      case "--redline":
+        args.redline = requireValue(flag, argv[++i]);
+        break;
       default:
         if (flag.startsWith("--")) throw new Error(`unknown flag "${flag}"`);
         positional.push(flag);
     }
   }
-  if (positional.length !== 2) {
+  if (args.redline !== undefined && positional.length > 0) {
     throw new Error(
-      "usage: compare <base> <revised> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
+      "--redline reads one file; pass either --redline <file.docx> or <base> <revised>",
+    );
+  }
+  if (args.redline === undefined && positional.length !== 2) {
+    throw new Error(
+      "usage: compare <base> <revised> | --redline <file.docx> [--playbook <id>] [--playbook-file <path>] [--posture] [--format json|markdown|docx] [--out <path>] [--fail-on <sev>] [--fail-on-regression] [--confirm-pairing] [--dkb <dir>]",
     );
   }
   if (args.posture && !args.playbookFile) {
@@ -153,8 +169,9 @@ export function parseCompareArgs(argv: string[]): CompareArgs {
     throw new Error("--out is only used by --format docx; the text formats go to stdout");
   }
   return {
-    base: positional[0]!,
-    revised: positional[1]!,
+    base: args.redline ?? positional[0]!,
+    revised: args.redline ?? positional[1]!,
+    ...(args.redline ? { redline: args.redline } : {}),
     ...(args.playbook ? { playbook: args.playbook } : {}),
     ...(args.playbookFile ? { playbookFile: args.playbookFile } : {}),
     posture: args.posture!,
@@ -336,17 +353,24 @@ export async function runCompare(argv: string[]): Promise<void> {
     }
   }
 
-  const fileComparison = await compareFiles(
-    { path: args.base },
-    { path: args.revised },
-    {
-      playbookId: args.playbook,
-      customPlaybook,
-      posture: args.posture,
-      confirmPairing: args.confirmPairing,
-      dkbDir: args.dkb,
-    },
-  );
+  const compareOpts = {
+    playbookId: args.playbook,
+    customPlaybook,
+    posture: args.posture,
+    confirmPairing: args.confirmPairing,
+    dkbDir: args.dkb,
+  };
+  let fileComparison: Awaited<ReturnType<typeof compareFiles>>;
+  try {
+    fileComparison = args.redline
+      ? await compareRedline(args.redline, compareOpts)
+      : await compareFiles({ path: args.base }, { path: args.revised }, compareOpts);
+  } catch (e) {
+    if (!(e instanceof RedlineRefusedError)) throw e;
+    process.stderr.write(`${e.message}\n`);
+    process.exitCode = 1;
+    return;
+  }
   const {
     comparison: cmp,
     clause_diff: clauseDiff,

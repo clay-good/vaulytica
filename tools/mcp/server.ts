@@ -215,6 +215,10 @@ async function main(): Promise<void> {
         title: "Compare two versions of a document",
         description: COMPARE_DOCUMENTS,
         inputSchema: z.object({
+          redline_path: z
+            .string()
+            .optional()
+            .describe("A Word redline (.docx): compares its rejected and accepted readings."),
           base_path: z.string().optional(),
           base_text: z.string().optional(),
           revised_path: z.string().optional(),

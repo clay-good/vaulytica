@@ -16,6 +16,7 @@ import { join } from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { analyzeFile, loadAccuracyDeps } from "../cli/api.js";
 import { parseRoots, resolveInRoots, resolveNewInRoots } from "./roots.js";
+import { redlineDocx } from "../../src/delivery/_fixtures.js";
 import {
   MAX_CONTAINER_BYTES,
   MAX_RESULT_CHARS,
@@ -508,5 +509,27 @@ describe('analyze_document include: ["delivery"]', () => {
     );
     if ("not_analyzed" in r) throw new Error(r.not_analyzed);
     expect(r.delivery).toBeUndefined();
+  });
+});
+
+describe("compare_documents redline_path", () => {
+  it("compares a redline's rejected and accepted readings", async () => {
+    const path = join(tmp, "markup.docx");
+    await writeFile(path, Buffer.from(redlineDocx()));
+    const r = (await compareDocumentsTool({ redline_path: path }, ctx)) as {
+      introduced: Array<{ rule_id: string }>;
+    };
+    expect(r.introduced.map((f) => f.rule_id)).toEqual(
+      expect.arrayContaining(["RISK-005", "RISK-015"]),
+    );
+  });
+
+  it("takes the redline alone, and refuses one with no tracked changes", async () => {
+    const path = join(tmp, "markup2.docx");
+    await writeFile(path, Buffer.from(redlineDocx()));
+    await expect(compareDocumentsTool({ redline_path: path, base_text: "x" }, ctx)).rejects.toThrow(
+      /alone/,
+    );
+    await expect(compareDocumentsTool({ redline_path: NDA }, ctx)).rejects.toThrow(/not one/);
   });
 });

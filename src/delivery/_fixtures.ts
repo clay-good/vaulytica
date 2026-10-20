@@ -117,3 +117,28 @@ export function authorlessRevisionDocx(): ArrayBuffer {
 export function notAZip(): ArrayBuffer {
   return strToU8("this is plainly not a zip archive").buffer as ArrayBuffer;
 }
+
+const run = (t: string) => `<w:r><w:t xml:space="preserve">${t}</w:t></w:r>`;
+const ins = (t: string) =>
+  `<w:ins w:id="1" w:author="Opposing Counsel" w:date="2026-10-01T00:00:00Z">${run(t)}</w:ins>`;
+const del = (t: string) =>
+  `<w:del w:id="2" w:author="Opposing Counsel" w:date="2026-10-01T00:00:00Z"><w:r><w:delText xml:space="preserve">${t}</w:delText></w:r></w:del>`;
+
+/**
+ * A supply agreement whose redline strikes the liability cap, adds an uncapped
+ * indemnity, lengthens a payment term and moves a sentence
+ * (add-redline-two-sided-analysis).
+ */
+export const REDLINE = documentXml(
+  `<w:p>${run("SUPPLY AGREEMENT")}</w:p>` +
+    `<w:p>${run("1. Liability. ")}${del("Each party's total liability is capped at the fees paid in the prior twelve months.")}${ins("Supplier shall indemnify Buyer against all losses without limit.")}</w:p>` +
+    `<w:p>${run("2. Payment. Buyer shall pay within ")}${del("thirty")}${ins("sixty")}${run(" days.")}</w:p>` +
+    // A move: the sentence leaves paragraph 3 and arrives in paragraph 4.
+    `<w:p>${run("3. Notices. ")}<w:moveFrom w:id="3" w:author="Opposing Counsel"><w:r><w:delText>Notices are effective on receipt.</w:delText></w:r></w:moveFrom></w:p>` +
+    `<w:p><w:pPr><w:rPr><w:ins w:id="4" w:author="Opposing Counsel"/></w:rPr></w:pPr>${run("4. General. ")}<w:moveTo w:id="5" w:author="Opposing Counsel">${run("Notices are effective on receipt.")}</w:moveTo></w:p>`,
+);
+
+/** {@link REDLINE} as a DOCX. */
+export function redlineDocx(): ArrayBuffer {
+  return buildDocx({ document: REDLINE });
+}

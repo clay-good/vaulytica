@@ -22,6 +22,7 @@ import { unzipSync, strFromU8 } from "fflate";
 
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { ingestDocxBuffer } from "../../src/ingest/docx.js";
+import { countRevisions } from "../../src/ingest/docx-notices.js";
 import { ingestPdfBuffer } from "../../src/ingest/pdf.js";
 import type { IngestResult } from "../../src/ingest/types.js";
 import { flattenText } from "../../src/ingest/types.js";
@@ -215,6 +216,7 @@ async function ingestByExtension(
   path: string,
   bytes: Buffer,
   asText = false,
+  revisions: "accepted" | "rejected" = "accepted",
 ): Promise<IngestResult> {
   const ext = extname(path).toLowerCase();
   if (asText) {
@@ -228,7 +230,7 @@ async function ingestByExtension(
   if (TEXT_EXT.has(ext)) return ingestPaste(bytes.toString("utf8"));
   if (ext === ".docx") {
     await ensureDomParser();
-    return ingestDocxBuffer(toArrayBuffer(bytes));
+    return ingestDocxBuffer(toArrayBuffer(bytes), { revisions });
   }
   if (ext === ".pdf") return ingestPdfBuffer(toArrayBuffer(bytes));
   // No silent fallback (fix-cli-input-type-honesty): decoding unknown bytes
@@ -298,6 +300,11 @@ export async function analyzeFile(
     sourceName?: string;
     /** `--delivery`: a CONTAINER scan; file-only, since pasted text has none. */
     delivery?: boolean;
+    /**
+     * Which reading of a DOCX redline to analyze. `rejected` is the draft
+     * before its tracked changes; the default is what every analysis reads.
+     */
+    revisions?: "accepted" | "rejected";
     /** `--sec-exhibit`: the document is an SEC exhibit, so HANDOFF-008 reads its omission legend. */
     secExhibit?: boolean;
     /**
@@ -327,7 +334,7 @@ export async function analyzeFile(
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
   const bytes = await readFile(path);
-  const ingest = await ingestByExtension(path, bytes, opts.asText);
+  const ingest = await ingestByExtension(path, bytes, opts.asText, opts.revisions);
   const result = await runIngested(
     ingest,
     opts.sourceName ?? basename(path),
@@ -592,16 +599,27 @@ export async function runProductionQa(
 type AnalyzeFileOptions = NonNullable<Parameters<typeof analyzeFile>[1]>;
 
 /** One document handed to the API: a file on disk, or text already in hand. */
-export type DocumentInput = { path: string } | { text: string; filename?: string };
+export type DocumentInput =
+  | {
+      path: string;
+      /** A DOCX redline's reading; see `analyzeFile`'s `revisions`. */
+      revisions?: "accepted" | "rejected";
+      /** The `source_file.name` to record, when it is not the path's own. */
+      sourceName?: string;
+    }
+  | { text: string; filename?: string };
 
 /** Analyze a {@link DocumentInput}. Text is named `pasted-text.txt` unless told otherwise. */
 export async function analyzeDocument(
   input: DocumentInput,
   opts: AnalyzeFileOptions = {},
 ): Promise<AnalyzeResult> {
-  return "path" in input
-    ? analyzeFile(input.path, opts)
-    : analyzeText(input.text, input.filename ?? "pasted-text.txt", opts);
+  if (!("path" in input)) return analyzeText(input.text, input.filename ?? "pasted-text.txt", opts);
+  return analyzeFile(input.path, {
+    ...opts,
+    ...(input.revisions ? { revisions: input.revisions } : {}),
+    ...(input.sourceName ? { sourceName: input.sourceName } : {}),
+  });
 }
 
 /**
@@ -809,6 +827,45 @@ export async function compareFiles(
     base: baseR,
     revised: revisedR,
   };
+}
+
+/** A file `compareRedline` cannot read as a redline, with the reason. */
+export class RedlineRefusedError extends Error {}
+
+/**
+ * Compare the two readings of one DOCX redline: every tracked change rejected
+ * (the draft as it stood) against every change accepted (the draft the
+ * reviser wants). The finding delta is what the markup fixed, broke and
+ * removed. It is {@link compareFiles} over the same bytes read twice, with
+ * the revision pinned to the base draft's type, since a redline is one
+ * document by construction. Each reading's name is suffixed (`#rejected`,
+ * `#accepted`) because the name is inside `result_hash` and the two runs
+ * must not collide.
+ *
+ * Refuses a file that is not a DOCX, or one with no tracked changes, since
+ * both readings of it are the same document.
+ */
+export async function compareRedline(
+  path: string,
+  opts: Omit<Parameters<typeof compareFiles>[2], "pinType"> = {},
+): Promise<FileComparison> {
+  if (extname(path).toLowerCase() !== ".docx") {
+    throw new RedlineRefusedError(
+      `--redline reads a Word redline (.docx); ${basename(path)} is not one. To compare two versions, pass both files.`,
+    );
+  }
+  const counts = countRevisions(toArrayBuffer(await readFile(path)));
+  if (counts.insertions + counts.deletions + counts.moves === 0) {
+    throw new RedlineRefusedError(
+      `${basename(path)} has no tracked changes, so both of its readings are the same document. To compare two versions, pass both files.`,
+    );
+  }
+  const name = basename(path);
+  return compareFiles(
+    { path, revisions: "rejected", sourceName: `${name}#rejected` },
+    { path, revisions: "accepted", sourceName: `${name}#accepted` },
+    { ...opts, pinType: true },
+  );
 }
 
 /**

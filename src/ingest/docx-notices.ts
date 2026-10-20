@@ -97,7 +97,10 @@ const plural = (n: number, noun: string): string =>
  * The notices a DOCX earns, in the order a reader needs them. Empty when the
  * document is an ordinary one.
  */
-export function docxNotices(counts: RevisionCounts): string[] {
+export function docxNotices(
+  counts: RevisionCounts,
+  reading: "accepted" | "rejected" = "accepted",
+): string[] {
   const notices: string[] = [];
   const { insertions, deletions, moves, hidden } = counts;
 
@@ -111,9 +114,13 @@ export function docxNotices(counts: RevisionCounts): string[] {
         ? " Deleted text was NOT analyzed, and struck-out terms will not be reported."
         : "";
     notices.push(
-      `This document has tracked changes (${parts.join(", ")}). It was analyzed as if every ` +
-        `change were ACCEPTED — inserted text is treated as agreed language.${deleted} ` +
-        `To review the other version, accept or reject the changes in Word first.`,
+      reading === "rejected"
+        ? `This document has tracked changes (${parts.join(", ")}). This is the reading with ` +
+            `every change REJECTED — the draft as it stood before the revisions. Inserted ` +
+            `text was NOT analyzed; deleted text was, as the draft had it.`
+        : `This document has tracked changes (${parts.join(", ")}). It was analyzed as if every ` +
+            `change were ACCEPTED — inserted text is treated as agreed language.${deleted} ` +
+            `To review the other version, accept or reject the changes in Word first.`,
     );
   }
 

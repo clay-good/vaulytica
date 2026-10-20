@@ -4,6 +4,7 @@ import { numberingLabels, paragraphKey } from "./docx-numbering.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
 import { countRevisions, docxNotices } from "./docx-notices.js";
+import { withRevisionsRejected } from "./docx-revisions.js";
 import { languageFields } from "./language.js";
 
 /**
@@ -69,13 +70,26 @@ async function loadMammoth(): Promise<MammothLike> {
   return (mod.default ?? mod) as MammothLike;
 }
 
-export async function ingestDocx(file: File): Promise<IngestResult> {
+/**
+ * Which reading of a redline to take. `accepted` is what mammoth reads and
+ * what every ingest has always returned; `rejected` is the draft as it stood
+ * before the tracked changes (docx-revisions.ts). A document without tracked
+ * changes reads the same either way.
+ */
+export type DocxReading = { revisions?: "accepted" | "rejected" };
+
+export async function ingestDocx(file: File, options: DocxReading = {}): Promise<IngestResult> {
   const buf = await file.arrayBuffer();
-  return ingestDocxBuffer(buf);
+  return ingestDocxBuffer(buf, options);
 }
 
-export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> {
-  assertDocumentBytes(buf.byteLength); // spec-v8 §7 — reject before parsing
+export async function ingestDocxBuffer(
+  source: ArrayBuffer,
+  options: DocxReading = {},
+): Promise<IngestResult> {
+  assertDocumentBytes(source.byteLength); // spec-v8 §7 — reject before parsing
+  const rejected = options.revisions === "rejected";
+  const buf = rejected ? withRevisionsRejected(source) : source;
   const warnings: string[] = [];
   const mammoth = await loadMammoth();
   // mammoth resolves to two builds: the browser build's `openZip` reads
@@ -101,9 +115,10 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
         })
       : undefined;
   const result = await mammoth.convertToHtml(input, transformDocument ? { transformDocument } : {});
-  // mammoth returns the ALL-CHANGES-ACCEPTED text of a redline, and emits
+  // mammoth returns the ALL-CHANGES-ACCEPTED text of a redline (unless the
+  // rejected reading was asked for, rewritten above), and emits
   // Word's hidden text as ordinary text, both silently. Say so.
-  warnings.push(...docxNotices(countRevisions(buf)));
+  warnings.push(...docxNotices(countRevisions(source), rejected ? "rejected" : "accepted"));
   for (const m of result.messages) {
     if (m.type === "warning" || m.type === "error") {
       warnings.push(`mammoth: ${m.message}`);
@@ -122,7 +137,7 @@ export async function ingestDocxBuffer(buf: ArrayBuffer): Promise<IngestResult> 
     source: "docx",
     word_count,
     ...language,
-    sha256: await sha256Hex(buf),
+    sha256: await sha256Hex(source),
     warnings,
   };
 }
