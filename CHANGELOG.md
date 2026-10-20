@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.975.0] — 2026-10-20
+
+### Added
+- **A box drawn over a PDF's text is a liftable redaction**
+  (add-redaction-integrity-scan, task 2). The pre-disclosure scan now reads
+  each page's drawing operations in order: a filled, opaque box painted
+  after the text it covers, or a filled Square annotation, hides words that
+  are still in the file, and `HANDOFF-006` reports the page and the covered
+  text's shape (`xxxxxxx ####`), never the text. A box painted before its
+  text (a table shading) and text painted over a box (a white heading on a
+  dark bar) are not redactions; translucent, blended and pattern fills are
+  not read. Pages it could not read are named in the scan's note.
+
 ## [9.974.0] — 2026-10-20
 
 ### Added

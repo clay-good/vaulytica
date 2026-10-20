@@ -545,8 +545,10 @@ letter `x`, every digit `#` — and its location, never the text, and a test
 greps every serialized delivery report for each fixture's hidden sentinel. The
 engine's own findings still quote the document as they always have, because
 the words are in it; that is precisely what the finding warns about.
-What is not checked is stated where the result is: a box drawn over a PDF's
-text layer, a redaction burned into an image, and an OCR'd scan.
+A box painted over a PDF's text is read from the page's drawing operations,
+in paint order, so a background box under its text is not one. What is not
+checked is stated where the result is: a redaction burned into an image, an
+OCR'd scan, and a box filled with a pattern, a translucent or a blended color.
 
 ### No corpus contamination
 

@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.974.0` · `MIT`
+`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.975.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -131,7 +131,7 @@ flowchart LR
 | `HANDOFF-003` | **hidden / non-printing** content (`w:vanish`, deleted-but-retained text)                                                                               | warning            | the recovered span       |
 | `HANDOFF-004` | **authoring metadata** (`core.xml`/`app.xml`, PDF Info) — flags a `Company`/`Template` naming an entity **absent from the parties** (cross-matter leak) | info → critical    | the metadata field       |
 | `HANDOFF-005` | **sensitive-data patterns** — SSN (structural), EIN, card (**Luhn**), routing (**ABA**), DOB, email/phone                                               | warning → critical | the **masked** span      |
-| `HANDOFF-006` | **liftable redaction (PDF)** — a redaction mark (`/Redact`) that was never applied; the text beneath is still in the file                               | critical           | the annotation           |
+| `HANDOFF-006` | **liftable redaction (PDF)** — a redaction mark (`/Redact`) never applied, or a filled box or Square annotation painted over text still in the file | critical           | the page and the **masked** shape |
 | `HANDOFF-007` | **hidden by color (DOCX)** — text painted in its own highlight or shading color, or white on the page; Save as PDF keeps it                             | critical           | the **masked** shape     |
 | `HANDOFF-008` | **SEC omission legend** — `[***]` markers without the first-page statement (17 C.F.R. § 229.601(b)(10)(iv)); SEC exhibits or `--sec-exhibit`            | warning            | the elements found       |
 

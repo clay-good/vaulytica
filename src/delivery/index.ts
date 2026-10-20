@@ -30,6 +30,7 @@ export { maskDigits, maskEmail, luhnValid, ssnStructurallyValid } from "./mask.j
 
 import type { ContainerSource, DeliveryReport } from "./types.js";
 import { readContainer } from "./container.js";
+import { readBoxesOverText } from "./pdf-paint.js";
 import { deriveHandoffFindings } from "./handoff.js";
 import { buildDeliveryReport } from "./report.js";
 import { SEC_EXHIBIT_FAMILIES } from "./sec-exhibit.js";
@@ -52,6 +53,21 @@ export async function scanDelivery(input: {
   secExhibit?: boolean;
 }): Promise<DeliveryReport> {
   const facts = readContainer(input.bytes, input.source, input.text);
+  // A filled box over text needs the PDF's drawing operations, which only
+  // pdf.js reads; the rest of the container read is synchronous byte work.
+  // Added only when something is found, so no other report's hash moves.
+  if (input.source === "pdf" && facts.inspectable) {
+    const painted = await readBoxesOverText(input.bytes);
+    if (painted.facts.length > 0) {
+      facts.redactions = [...(facts.redactions ?? []), ...painted.facts];
+    }
+    const unchecked = painted.unopened
+      ? "Filled boxes over text were not checked: the drawing reader could not open the file."
+      : painted.uninspectable.length > 0
+        ? `Filled boxes over text were not checked on ${painted.uninspectable.join(", ")}.`
+        : undefined;
+    if (unchecked) facts.note = `${facts.note ?? ""} ${unchecked}`.trim();
+  }
   const secExhibit =
     input.secExhibit === true ||
     (input.playbookId !== undefined && SEC_EXHIBIT_FAMILIES.has(input.playbookId));

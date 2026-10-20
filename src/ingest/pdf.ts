@@ -72,7 +72,7 @@ type PdfTextItem = {
   hasEOL?: boolean;
 };
 
-async function loadPdfJs(): Promise<PdfJsLike> {
+export async function loadPdfJs(): Promise<PdfJsLike> {
   const mod = (await import("pdfjs-dist/legacy/build/pdf.mjs")) as unknown as PdfJsLike & {
     default?: PdfJsLike;
   };

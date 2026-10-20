@@ -126,14 +126,29 @@ export function deriveHandoffFindings(
 
   const redactions = facts.redactions ?? [];
   const pdfMarks = redactions.filter((r) => r.kind === "pdf-redact-annotation");
-  if (pdfMarks.length > 0) {
+  const boxes = redactions.filter((r) => r.kind === "pdf-filled-box");
+  if (pdfMarks.length + boxes.length > 0) {
+    const parts = [
+      ...(pdfMarks.length > 0
+        ? [
+            `${pdfMarks.length} redaction mark${plural(pdfMarks.length)} ${pdfMarks.length === 1 ? "was" : "were"} never applied`,
+          ]
+        : []),
+      ...(boxes.length > 0
+        ? [`${boxes.length} filled box${boxes.length === 1 ? " is" : "es are"} drawn over text`]
+        : []),
+    ];
     findings.push({
       rule_id: "HANDOFF-006",
       severity: "critical",
       title: "A redaction can be lifted",
-      description: `${pdfMarks.length} redaction mark${plural(pdfMarks.length)} ${pdfMarks.length === 1 ? "was" : "were"} never applied: the box shows on screen and the text beneath it is still in the file.`,
-      count: pdfMarks.length,
-      evidence: pdfMarks.slice(0, 20).map((r) => `${r.location}: ${r.reason}`),
+      description: `${parts.join(", and ")}: the box shows on screen and the text beneath it is still in the file.`,
+      count: pdfMarks.length + boxes.length,
+      evidence: [
+        ...pdfMarks.map((r) => `${r.location}: ${r.reason}`),
+        // The covered text's SHAPE only — never the text (masking invariant).
+        ...boxes.map((r) => `${r.location}: ${r.reason} — ${r.masked_shape ?? ""}`),
+      ].slice(0, 20),
     });
   }
   const runs = redactions.filter((r) => r.kind === "docx-run");

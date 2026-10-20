@@ -74,9 +74,10 @@ export type RedactionFact = {
   /**
    * `docx-run` — a run whose text color equals its highlight or shading (black
    * on black, white on white); `pdf-redact-annotation` — an Acrobat "Mark for
-   * redaction" that was never applied.
+   * redaction" that was never applied; `pdf-filled-box` — a filled box painted
+   * over text that is still in the file.
    */
-  kind: "docx-run" | "pdf-redact-annotation";
+  kind: "docx-run" | "pdf-redact-annotation" | "pdf-filled-box";
   /** Why it reads as a redaction, e.g. "black text on black highlight". */
   reason: string;
   /** Where it is, e.g. "paragraph 12". */
