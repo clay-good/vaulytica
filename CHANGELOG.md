@@ -2,6 +2,49 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.956.0] — 2026-10-19
+
+### Added
+- **The inventory: one row per agreement (add-contract-abstract-inventory,
+  first slice).** `--format inventory-csv` (or `inventory-json`) writes
+  `INVENTORY.csv` for a folder, glob or `.zip`. Each agreement gets one row:
+  its type, title, parties with roles, effective date, auto-renewal, governing
+  law, forum, liability cap, word count and `result_hash`. Each file that
+  could not be read gets one `not analyzed` row with the reason.
+  `abstract-csv` and `abstract-json` write the same row for one document. The
+  GitHub Action's `format` accepts all four.
+  - **A blank is a blank.** The CSV's second line says the file is extracted
+    text, not a legal summary, and counts how many rows fill each column, so
+    a rarely filled column is visible as such.
+  - **Each cell names where it was read.** That is the section heading, or,
+    on a document with none, the clause number its paragraph starts with
+    (`§ 12.1`).
+  - **Its own hash.** `inventory_hash` covers the rows, with paths relative
+    to the folder, so the same folder gives the same inventory on any machine,
+    in any input order, on any date. Nothing enters a `result_hash`.
+  - **Every cell goes through the shared formula-injection guard**, because a
+    title or a party name is the document's own text.
+- **Measured before it shipped.** Over the 363 specimens, these columns are
+  filled: parties 342, governing law 222, effective date 202, forum 159,
+  liability cap 103, renewal 23. The effective date falls back to the date
+  the preamble says the document is made, which took it from 53 to 202. A
+  term-end column was measured at 4 of 363 and left out.
+- **Not yet built:** the assignment and change-of-control classifier with its
+  columns, the indemnity cap, and the browser and MCP surfaces. They are listed
+  in the change's task list.
+
+### Fixed
+- **The project configuration file failed on Windows.** The cross-OS matrix
+  went red on 9.954.0 at `cli-project-config.test.ts`: no `document_types`
+  glob matched, and the file's path printed as `../../../..`. The file was
+  located by its real path, which expands the Windows runner's
+  `C:\Users\RUNNER~1` temp folder to its long name, while every input path
+  stays as typed. So the two never shared a prefix. A folder named through a
+  symlink failed the same way on any OS, and that is how it is now tested.
+  Globs and printed paths use the path as found, and the real path is kept
+  only where it belongs: checking that `playbook_file` and `extends` stay
+  inside the folder, including through a link.
+
 ## [9.955.0] — 2026-10-19
 
 ### Added

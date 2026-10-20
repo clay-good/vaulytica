@@ -94,7 +94,11 @@
           "definitions-csv",
           "brief-json",
           "triage-md",
-          "triage-json"
+          "triage-json",
+          "abstract-json",
+          "abstract-csv",
+          "inventory-csv",
+          "inventory-json"
         ]
       }
     },

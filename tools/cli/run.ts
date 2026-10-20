@@ -206,6 +206,7 @@ import "./no-localstorage.js";
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, basename, extname, resolve } from "node:path";
+import { relativePath } from "./triage.js";
 
 import {
   analyzeEach,
@@ -257,6 +258,10 @@ import {
   FORMAT_EXT,
   MACHINE_FORMATS,
   WHOLE_RUN_FORMATS,
+  abstractOf,
+  buildInventory,
+  buildInventoryCsv,
+  buildInventoryJson,
   VALID_FORMATS,
   renderDocxReport,
   renderFormat,
@@ -1626,7 +1631,13 @@ async function analyzeTarget(
 
     for (const fmt of args.formats) {
       // One artifact for the whole run: built after every document is read.
-      if (fmt === "triage-md" || fmt === "triage-json") continue;
+      if (
+        fmt === "triage-md" ||
+        fmt === "triage-json" ||
+        fmt === "inventory-csv" ||
+        fmt === "inventory-json"
+      )
+        continue;
       // SARIF and HTML are the formats that carry the CROSS-document results,
       // and those are not known until every document has been read — so when a
       // bundle was asserted, their render is deferred to after the loop. Every
@@ -1808,7 +1819,39 @@ async function analyzeTarget(
         },
       },
     );
+    // The inventory (add-contract-abstract-inventory): one row per document,
+    // one `not analyzed` row per file that could not be read.
+    const inventoryFormats = wholeRunFormats.filter(
+      (f) => f === "inventory-csv" || f === "inventory-json",
+    );
+    if (inventoryFormats.length > 0) {
+      // Paths relative to the folder, with `/`, exactly as the triage page
+      // prints them: an absolute path would make `inventory_hash` differ by
+      // machine. A file skipped as unsupported is listed too, so the inventory
+      // accounts for every input it was given.
+      const root = walked ? (zip?.name ?? args.target) : undefined;
+      const rel = (f: string): string => relativePath(label(f), root);
+      const inventory = await buildInventory(
+        await Promise.all(unique.map((d) => abstractOf(rel(d.file), d.result))),
+        [
+          ...unreadable.map((u) => ({ file: rel(u.file), reason: u.reason })),
+          ...skippedInputs.map((sk) => ({ file: rel(sk.file), reason: sk.reason })),
+        ],
+      );
+      for (const fmt of inventoryFormats) {
+        const content =
+          fmt === "inventory-csv" ? buildInventoryCsv(inventory) : buildInventoryJson(inventory);
+        if (args.out) {
+          const name = `INVENTORY${FORMAT_EXT[fmt]}`;
+          await writeUnder(args.out, name, content);
+          human(`wrote inventory → ${name}\n`);
+        } else {
+          process.stdout.write(content);
+        }
+      }
+    }
     for (const fmt of wholeRunFormats) {
+      if (fmt === "inventory-csv" || fmt === "inventory-json") continue;
       const content = fmt === "triage-md" ? buildTriageMarkdown(triage) : buildTriageJson(triage);
       if (args.out) {
         const name = `TRIAGE${FORMAT_EXT[fmt]}`;

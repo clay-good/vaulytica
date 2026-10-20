@@ -28,6 +28,15 @@
  */
 export const KNOWN_LIMITS_URL = "https://vaulytica.com/known-limits";
 
+/**
+ * The first line of every abstract and inventory export
+ * (add-contract-abstract-inventory). A table of facts reads as a summary of
+ * the deal, and it is not one: it is what the extractor read, and a blank cell
+ * means the extractor found nothing, not that the document is silent.
+ */
+export const ABSTRACT_STATEMENT =
+  "Extracted text, not a legal summary: each cell is what Vaulytica read from the document, and a blank cell means it found nothing there, not that the document is silent.";
+
 /** The sentence that carries the link, appended to the not-legal-advice statement. */
 export const KNOWN_LIMITS_STATEMENT = `What this tool has not measured, and where it is known to be wrong, is published at ${KNOWN_LIMITS_URL}.`;
 

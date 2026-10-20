@@ -308,12 +308,20 @@ function reanchorGlobs(parsed: ProjectConfig, from: string, to: string): Project
 /** Load, validate and merge a discovered configuration file and its base. */
 export async function loadConfig(path: string): Promise<LoadedConfig> {
   const own = await readOne(path);
-  const dir = dirname(own.real);
-  const values: ProjectConfig = await resolvePaths(own.parsed, dir, dir, path);
+  // Two names for one folder, kept apart on purpose. `dir` is the path as it
+  // was found — the same space every input path is resolved in, so a glob
+  // matches and a printed path is relative to what the user typed. `realDir`
+  // is where the folder actually is, and the only thing a symlink check may
+  // compare against. Using the real path for both made Windows (whose runner
+  // temp folder is C:\\Users\\RUNNER~1, which realpath expands) match no glob and
+  // print the file's path as a climb out of the folder; so did any symlink.
+  const dir = dirname(resolve(path));
+  const realDir = dirname(own.real);
+  const values: ProjectConfig = await resolvePaths(own.parsed, dir, realDir, path);
   let base: LoadedConfig["extends"];
   let merged: ProjectConfig = values;
   if (values.extends !== undefined) {
-    const basePath = await contained("extends", values.extends, dir, dir, path);
+    const basePath = await contained("extends", values.extends, dir, realDir, path);
     if (!(await exists(basePath))) {
       throw new ConfigError(`${path}: extends "${values.extends}" does not exist`);
     }
@@ -324,18 +332,20 @@ export async function loadConfig(path: string): Promise<LoadedConfig> {
       );
     }
     const baseDir = dirname(b.real);
+    // Re-anchored between two REAL folders, so the prefix is the true one.
     const baseValues = reanchorGlobs(
-      await resolvePaths(b.parsed, baseDir, dir, basePath),
+      await resolvePaths(b.parsed, baseDir, realDir, basePath),
       baseDir,
-      dir,
+      realDir,
     );
     // The file's own keys replace its base's whole; nothing is merged inside a key.
     merged = { ...baseValues, ...values };
-    base = { path: b.real, sha256: b.sha256 };
+    // Printed relative to the input, so named in the same space as `dir`.
+    base = { path: resolve(dir, values.extends), sha256: b.sha256 };
   }
   const { $schema: _s, $comment: _c, extends: _e, ...rest } = merged;
   return {
-    path: own.real,
+    path: resolve(path),
     dir,
     sha256: own.sha256,
     ...(base ? { extends: base } : {}),

@@ -46,6 +46,12 @@ Point it at a folder to get one page that says which documents need a person fir
 npm run cli -- analyze ./contracts --format triage-md
 ```
 
+Or one row per agreement, the table a diligence starts from: type, parties, effective date, renewal, governing law, forum and cap, each with the section it was read from:
+
+```bash
+npm run cli -- analyze ./contracts --format inventory-csv --out reports
+```
+
 Pin your team's settings once, in a `vaulytica.config.json` at the root of the repository: the playbook, the document type for each folder, the gate, the formats. The command line, the GitHub Action and the agent server all read it, a flag you type always wins, and every run says which file it applied. `npm run cli -- init` writes an example; the [CI guide](docs/ci-integration.md#configuration-file) lists the keys.
 
 Or add it to a GitHub workflow:

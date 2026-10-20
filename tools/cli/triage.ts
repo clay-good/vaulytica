@@ -223,7 +223,7 @@ const TIER_2_CODES: ReadonlySet<IngestWarningCode> = new Set([
 const HIDDEN = /^hidden\b/;
 
 /** `label` relative to `root`, with `/` separators so a page hashes the same on every OS. */
-function relativePath(label: string, root: string | undefined): string {
+export function relativePath(label: string, root: string | undefined): string {
   let p = label;
   if (root !== undefined) {
     // Compared as resolved paths: `dir//sub` and `dir/sub` are one folder.

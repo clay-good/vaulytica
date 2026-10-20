@@ -40,6 +40,13 @@ import {
 import { buildNegotiationSheet } from "../../src/report/negotiation-sheet.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildDefinitionsMarkdown, buildDefinitionsCsv } from "../../src/report/definitions.js";
+import {
+  buildDocumentAbstract,
+  buildInventory,
+  buildInventoryCsv,
+  buildInventoryJson,
+} from "../../src/report/abstract.js";
+import { titleCorpus } from "../../src/playbooks/matcher.js";
 
 export type Format =
   | "json"
@@ -64,7 +71,11 @@ export type Format =
   | "definitions-csv"
   | "brief-json"
   | "triage-md"
-  | "triage-json";
+  | "triage-json"
+  | "abstract-json"
+  | "abstract-csv"
+  | "inventory-csv"
+  | "inventory-json";
 /**
  * Formats a machine consumes (`jq`, SARIF uploaders, spreadsheets). Stream
  * contract (fix-cli-json-purity): when any of these is selected, stdout
@@ -135,6 +146,14 @@ export const VALID_FORMATS = [
   // need a person first, and what to open to check the tool's work.
   "triage-md",
   "triage-json",
+  // The abstract (add-contract-abstract-inventory): one row of facts per
+  // document — type, parties, effective date, renewal, law, forum, cap — each
+  // with the section it was read from. Per document, and as ONE inventory
+  // for the whole run.
+  "abstract-json",
+  "abstract-csv",
+  "inventory-csv",
+  "inventory-json",
 ] as const;
 /**
  * Every format a PROGRAM parses — JSON, SARIF, CSV, iCalendar — and therefore
@@ -196,6 +215,11 @@ export const FORMAT_EXT: Record<Format, string> = {
   // Named for the run, not for a document: written as TRIAGE.md / TRIAGE.json.
   "triage-md": ".md",
   "triage-json": ".json",
+  "abstract-json": ".abstract.json",
+  "abstract-csv": ".abstract.csv",
+  // Named for the run: written as INVENTORY.csv / INVENTORY.json.
+  "inventory-csv": ".csv",
+  "inventory-json": ".json",
 };
 
 /**
@@ -203,7 +227,23 @@ export const FORMAT_EXT: Record<Format, string> = {
  * Unlike the bundle formats they can stream to stdout: a folder page is the
  * answer a bare `analyze <dir>` never had.
  */
-export const WHOLE_RUN_FORMATS: ReadonlySet<Format> = new Set(["triage-md", "triage-json"]);
+export const WHOLE_RUN_FORMATS: ReadonlySet<Format> = new Set([
+  "triage-md",
+  "triage-json",
+  "inventory-csv",
+  "inventory-json",
+]);
+
+/** The abstract of one analyzed document, as the CLI and the inventory both build it. */
+export function abstractOf(file: string, r: AnalyzeResult) {
+  return buildDocumentAbstract({
+    file,
+    tree: r.ingest.tree,
+    run: r.run,
+    playbookName: r.playbook.name,
+    title: titleCorpus(r.ingest.tree, file).split("\n")[0]!.trim().slice(0, 160),
+  });
+}
 
 export const MACHINE_FORMATS: ReadonlySet<Format> = new Set(
   VALID_FORMATS.filter(
@@ -230,6 +270,8 @@ export async function renderFormat(
     | "bundle-zip"
     | "triage-md"
     | "triage-json"
+    | "inventory-csv"
+    | "inventory-json"
   >,
   r: AnalyzeResult,
   dkb: Dkb,
@@ -396,8 +438,15 @@ export async function renderFormat(
       return buildDefinitionsCsv(definitions!);
     case "brief-json":
       return buildBriefJson(r, config ? { config } : {});
+    case "abstract-json":
+    case "abstract-csv": {
+      const inventory = await buildInventory([await abstractOf(r.run.source_file.name, r)]);
+      return fmt === "abstract-csv" ? buildInventoryCsv(inventory) : buildInventoryJson(inventory);
+    }
   }
 }
+
+export { buildInventory, buildInventoryCsv, buildInventoryJson };
 
 export type Dkb = AccuracyDeps["dkb"];
 

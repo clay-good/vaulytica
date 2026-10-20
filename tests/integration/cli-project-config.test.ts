@@ -16,6 +16,7 @@ import {
   readFileSync,
   realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -77,6 +78,26 @@ describe("a project configuration file, end to end", { timeout: 300_000 }, () =>
     // Relative to the input as given (here the folder), never absolute.
     expect(brief.config.path).toBe("vaulytica.config.json");
     expect(brief.config.applied).toEqual(["document_types", "exclude", "fail_on"]);
+  });
+
+  it("applies the same when the folder is named by a path that is not its real path", () => {
+    // Windows names the runner's temp folder C:\\Users\\RUNNER~1, and realpath
+    // expands it to the long name. The file was located by its REAL path and
+    // the inputs by the path as given, so no glob matched and the file's path
+    // printed as a climb out of the folder (the cross-OS matrix, 9.954.0). A
+    // symlink is the same condition on any OS: the folder is named here
+    // through a link, from another working directory.
+    const real = project("linked-real", CONFIG);
+    const link = join(tmp, "linked-alias");
+    symlinkSync(real, link, "junction");
+    const out = join(tmp, "linked-out");
+    const r = cli(tmp, "analyze", link, "--format", "brief-json", "--out", out);
+    expect(r.stderr).toContain("applied: document_types, exclude, fail_on");
+    const brief = JSON.parse(
+      readFileSync(join(out, "vendors", "acme", "dpa-acme.brief.json"), "utf8"),
+    ) as { document: { type: string }; config: { path: string } };
+    expect(brief.document.type).toBe("dpa-controller-processor");
+    expect(brief.config.path).toBe("vaulytica.config.json");
   });
 
   it("produces the report the equivalent flags produce, plus a config block", () => {
