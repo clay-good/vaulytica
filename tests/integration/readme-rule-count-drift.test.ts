@@ -46,6 +46,7 @@ const CATEGORY_PREFIX: Record<string, string> = {
   Obligations: "OBLI",
   "Dark patterns": "DARK",
   Personnel: "PERS",
+  Proofreading: "PROOF",
 };
 
 function countByPrefix(prefix: string): number {
@@ -54,7 +55,7 @@ function countByPrefix(prefix: string): number {
 
 describe("README rule counts", () => {
   it("quotes the live launch-set size", () => {
-    expect(readme).toContain(`is ${LAUNCH_RULES.length} rules across ten categories`);
+    expect(readme).toContain(`is ${LAUNCH_RULES.length} rules across eleven categories`);
   });
 
   it.each(Object.entries(CATEGORY_PREFIX))(
@@ -224,7 +225,7 @@ describe("landing-page rule counts", () => {
       V6_RULES.length +
       V7_RULES.length;
     expect(landing).toContain(
-      `${LAUNCH_RULES.length} rules at launch across ten categories — ${V3_RULES.length} more in v3, ` +
+      `${LAUNCH_RULES.length} rules at launch across eleven categories — ${V3_RULES.length} more in v3, ` +
         `${V4_RULES.length} more in v4, ${V5_RULES.length} more in v5, ${V6_RULES.length} more in v6, ${V7_RULES.length} more in v7 ` +
         `(${total.toLocaleString("en-US")} in`,
     );

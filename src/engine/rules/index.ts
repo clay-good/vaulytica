@@ -33,6 +33,9 @@ import { rule as STRUCT_016 } from "./structural/STRUCT-016.js";
 import { rule as STRUCT_017 } from "./structural/STRUCT-017.js";
 import { rule as STRUCT_018 } from "./structural/STRUCT-018.js";
 import { rule as STRUCT_019 } from "./structural/STRUCT-019.js";
+import { rule as PROOF_001 } from "./proofreading/PROOF-001.js";
+import { rule as PROOF_002 } from "./proofreading/PROOF-002.js";
+import { rule as PROOF_003 } from "./proofreading/PROOF-003.js";
 
 // Financial
 import { rule as FIN_001 } from "./financial/FIN-001.js";
@@ -286,4 +289,8 @@ export const LAUNCH_RULES: readonly Rule[] = [
   DARK_013,
   DARK_014,
   DARK_015,
+  // Proofreading — 3
+  PROOF_001,
+  PROOF_002,
+  PROOF_003,
 ];

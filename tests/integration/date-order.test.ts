@@ -59,20 +59,25 @@ const ordinalSuffix = (s: string): string =>
 
 /** "January 1, 2026" → "the 1st day of January, 2026" — how a deed dates itself. */
 const formalDayOf = (s: string): string =>
-  s.replace(new RegExp(`\\b(${MONTH})\\s+(\\d{1,2}),?\\s+(\\d{4})\\b`, "g"), (_m, mo, d, y) => {
-    const n = Number(d);
-    const suffix =
-      n % 100 >= 11 && n % 100 <= 13
-        ? "th"
-        : n % 10 === 1
-          ? "st"
-          : n % 10 === 2
-            ? "nd"
-            : n % 10 === 3
-              ? "rd"
-              : "th";
-    return `the ${d}${suffix} day of ${mo}, ${y}`;
-  });
+  // A date the document writes after "the" ("from the April 2, 2026 order")
+  // takes that article, or the rewrite itself writes "the the".
+  s.replace(
+    new RegExp(`\\b(?:([Tt]he)\\s+)?(${MONTH})\\s+(\\d{1,2}),?\\s+(\\d{4})\\b`, "g"),
+    (_m, the: string | undefined, mo, d, y) => {
+      const n = Number(d);
+      const suffix =
+        n % 100 >= 11 && n % 100 <= 13
+          ? "th"
+          : n % 10 === 1
+            ? "st"
+            : n % 10 === 2
+              ? "nd"
+              : n % 10 === 3
+                ? "rd"
+                : "th";
+      return `${the ?? "the"} ${d}${suffix} day of ${mo}, ${y}`;
+    },
+  );
 
 describe("a date written in another order", () => {
   it.each([

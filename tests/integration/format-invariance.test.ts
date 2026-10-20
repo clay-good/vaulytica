@@ -109,21 +109,24 @@ function hardWrap(text: string, width = 62): string {
 
 /**
  * The same text as Word writes it: paired curly quotes and curly apostrophes.
- * This one has always held — it is here so it keeps holding.
+ * Word chooses each quotation mark from the character before it — after the
+ * start of a line, a space or an opening bracket it opens, after anything else
+ * it closes — so a quotation that ends a line ('predecessor."') closes there.
+ * Alternating the marks instead, and reopening at every line, wrote an
+ * opening mark at the end of a quoted article, which no editor produces.
  */
 function smartQuotes(text: string): string {
-  let open = true;
   let out = "";
+  let prev = "\n";
   for (const ch of text) {
     if (ch === '"') {
-      out += open ? "\u201C" : "\u201D";
-      open = !open;
+      out += /[\s([{\u2014]/.test(prev) ? "\u201C" : "\u201D";
     } else if (ch === "'") {
       out += "\u2019";
     } else {
       out += ch;
-      if (ch === "\n") open = true;
     }
+    prev = ch;
   }
   return out;
 }

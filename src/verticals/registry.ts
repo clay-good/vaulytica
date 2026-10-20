@@ -40,6 +40,7 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   IPDATA: "launch",
   PERS: "launch",
   DARK: "launch",
+  PROOF: "launch",
   // v3 regulated / deep packs.
   BAA: "baa",
   DPA: "dpa-gdpr",

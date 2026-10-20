@@ -4,8 +4,8 @@ import { runEngine } from "../runner.js";
 import { buildContext } from "../_test-fixtures.js";
 
 describe("Launch rule registry", () => {
-  it("ships exactly 121 rules (80 launch + 38 post-1.0 + 3 v9 Thrust-B reconciliation)", () => {
-    expect(LAUNCH_RULES.length).toBe(121);
+  it("ships exactly 124 rules (80 launch + 38 post-1.0 + 3 v9 Thrust-B reconciliation + 3 proofreading)", () => {
+    expect(LAUNCH_RULES.length).toBe(124);
   });
 
   it("has unique rule ids", () => {
@@ -23,7 +23,7 @@ describe("Launch rule registry", () => {
   });
 
   it("ids belong to the documented categories", () => {
-    const prefix = /^(STRUCT|FIN|TEMP|OBLI|RISK|CHOICE|TERM|IPDATA|PERS|DARK)-\d{3}$/;
+    const prefix = /^(STRUCT|FIN|TEMP|OBLI|RISK|CHOICE|TERM|IPDATA|PERS|DARK|PROOF)-\d{3}$/;
     for (const r of LAUNCH_RULES) expect(r.id, r.id).toMatch(prefix);
   });
 
@@ -43,6 +43,7 @@ describe("Launch rule registry", () => {
       IPDATA: 10,
       PERS: 9,
       DARK: 15,
+      PROOF: 3,
     };
     const actual: Record<string, number> = {};
     for (const r of LAUNCH_RULES) {
@@ -55,7 +56,7 @@ describe("Launch rule registry", () => {
   });
 });
 
-describe("Engine + all 121 rules", () => {
+describe("Engine + all 124 rules", () => {
   it("runs end-to-end on a minimal context and is deterministic", async () => {
     const ctx = buildContext([
       "Agreement",
@@ -73,6 +74,6 @@ describe("Engine + all 121 rules", () => {
       source_file: { name: "demo.docx", sha256: "0".repeat(64), size_bytes: 100 },
     });
     expect(a.result_hash).toEqual(b.result_hash);
-    expect(a.execution_log.length).toBe(121);
+    expect(a.execution_log.length).toBe(124);
   });
 });

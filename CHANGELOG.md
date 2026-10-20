@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.960.0] — 2026-10-19
+
+### Added
+- **Proofreading, first three checks.** These are new always-on launch rules
+  in a new `PROOF` namespace (add-proofreading-pack slice A), bringing the
+  launch set from 121 to 124 rules and the catalog to 1,939.
+  - `PROOF-001` (warning) flags a paragraph whose parentheses, brackets,
+    braces or quotation marks do not pair.
+  - `PROOF-002` (info) flags a weekday the written date does not fall on
+    ("Monday, March 3, 2026" is a Tuesday). It is calendar arithmetic, with
+    no clock.
+  - `PROOF-003` (info) flags a doubled word ("the the").
+  - Each quotes only the document.
+- **The corpus count is pinned at zero by equality**
+  (`tests/integration/proofreading-corpus.test.ts`). No specimen, DOCX
+  fixture or golden gained a finding. Every exclusion is a false hit read in
+  the corpus:
+  - a caption's ")" column rule;
+  - a bare enumerator ("a)");
+  - a quotation running over paragraphs;
+  - a repeat whose second word is capitalized. Ingest joins a signature
+    block's columns and a schedule list's lines with a space, so "Witness
+    Witness", "Fee Schedule Schedule 4" and "Halloran HALLORAN" read as
+    repeats. Those were the only four hits before that condition.
+  The guard was shown to fail by removing that condition. The format
+  rewrites then found four more cases, and each is now handled:
+  - A caption's ")" stands apart from the text when a paste puts each line in
+    its own paragraph, so a ")" with space on both sides is never counted.
+  - A page number, header or hard wrap set mid-sentence splits one aside
+    across two paragraphs, so a mark left open at the end of one paragraph
+    pairs with a close at the start of the next.
+  - A quotation can end `."`, with the period first.
+  - A dimension's inch marks (`3" x 5"`) are units, not quotes.
+- **Two test rewrites wrote text no editor would.**
+  - The smart-quote rewrite reopened a quotation at every line, so it wrote
+    `predecessor.“`. It now picks each mark the way Word does, from the
+    character before it.
+  - The formal-date rewrite turned "from the April 2, 2026 order" into "from
+    the the 2nd day of April". It now absorbs the article. PROOF-003 caught
+    that doubled word in the test's own output.
+
 ## [9.959.0] — 2026-10-19
 
 ### Added
