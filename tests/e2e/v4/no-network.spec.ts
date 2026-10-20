@@ -161,15 +161,12 @@ test("v4 multi-doc drop makes zero non-asset network requests", async ({ page })
   const bundleButton = page.locator('[data-role="bundle-download"]');
   const docxButton = page.locator('[data-role="docx-download"]');
 
-  let downloadButton = bundleButton;
-  try {
-    await bundleButton.waitFor({ state: "visible", timeout: 60_000 });
-  } catch {
-    // The single-document downloads sit in one collapsed section.
-    await page.locator('[data-role="download-fold"] > summary').click();
-    await docxButton.waitFor({ state: "visible", timeout: 60_000 });
-    downloadButton = docxButton;
-  }
+  // Both results put their downloads in one collapsed section.
+  const fold = page.locator('[data-role="download-fold"] > summary');
+  await fold.waitFor({ state: "visible", timeout: 60_000 });
+  await fold.click();
+  const downloadButton = (await bundleButton.isVisible()) ? bundleButton : docxButton;
+  await downloadButton.waitFor({ state: "visible" });
 
   // Download the file and assert it is a valid OOXML zip. Belt-and-
   // suspenders: a regression that breaks the docx writer would manifest

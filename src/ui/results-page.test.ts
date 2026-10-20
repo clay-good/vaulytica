@@ -3,7 +3,12 @@ import type { Finding } from "../engine/finding.js";
 import type { DocumentAbstract } from "../report/abstract.js";
 import { LOOP_CLEAN_STATEMENT } from "../report/disclaimers.js";
 import {
+  buildBundleResults,
+  buildComparisonResults,
   buildResultsModel,
+  buildRoundResults,
+  buildTrendResults,
+  thingsToRaise,
   copyText,
   keyTermsOf,
   renderResults,
@@ -332,5 +337,129 @@ describe("the complete state", () => {
     renderState(dz, base);
     expect(select(dz, "results-page")!.hidden).toBe(true);
     expect((select(dz, "covered-fold") as HTMLDetailsElement).open).toBe(true);
+  });
+});
+
+describe("the same page for several documents, two versions and rounds", () => {
+  const model = (findings: Finding[]) =>
+    buildResultsModel({
+      run: { findings },
+      abstract: ABSTRACT,
+      isSigner: signers,
+      reportUrl: noLink,
+    });
+
+  it("a bundle counts its conflicts plus each document's own count, and nests each page", () => {
+    const a = model([
+      finding({ rule_id: "A-1", severity: "critical", recommendation: "x" }),
+      finding({ rule_id: "A-2", severity: "info" }),
+    ]);
+    const b = model([finding({ rule_id: "B-1", severity: "warning", recommendation: "y" })]);
+    const conflict = {
+      id: "c",
+      rule_id: "CROSS-001",
+      rule_version: "1.0.0",
+      severity: "warning" as const,
+      title: "Governing law differs",
+      description: "",
+      explanation: "The two name different states.",
+      recommendation: "Pick one.",
+      source_citations: [],
+      excerpts: [
+        {
+          doc_id: "1",
+          source_file_name: "msa.docx",
+          text: "laws of Delaware",
+          start_offset: 5,
+          end_offset: 21,
+        },
+        {
+          doc_id: "2",
+          source_file_name: "dpa.docx",
+          text: "laws of Ireland",
+          start_offset: 9,
+          end_offset: 24,
+          section_label: "§ 14",
+        },
+      ],
+    };
+    const out = buildBundleResults({
+      documents: [
+        { filename: "msa.docx", model: a },
+        { filename: "dpa.docx", model: b },
+      ],
+      conflicts: [conflict, { ...conflict, id: "d", recommendation: undefined }],
+    });
+    expect(out.count).toBe(1 + thingsToRaise(a) + thingsToRaise(b));
+    expect(out.page_html).toContain("3 things to raise across 2 documents");
+    expect(out.page_html).toContain(
+      'msa.docx</p><blockquote class="result-quote">“laws of Delaware”',
+    );
+    expect(out.page_html).toContain("dpa.docx · § 14");
+    expect(out.page_html).toContain(">1 to raise<");
+    expect(out.noted_count).toBe(1);
+    // Each nested page has its own ids, and claims none of the page's roles.
+    const ids = [...out.page_html.matchAll(/ id="([^"]+)"/g)].map((m) => m[1]);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(out.page_html.match(/data-role="results-headline"/g)!.length).toBe(1);
+  });
+
+  it("a comparison counts actionable findings and the revised file's delivery items", () => {
+    const f = (id: string, rec?: string) =>
+      finding({ rule_id: id, severity: "warning", ...(rec ? { recommendation: rec } : {}) });
+    const out = buildComparisonResults({
+      introduced: [f("N-1", "x"), f("N-2")],
+      unchanged: [{ finding: f("U-1", "y") }],
+      resolved: [f("R-1", "z")],
+      reportUrl: noLink,
+      delivery: [
+        {
+          rule_id: "HANDOFF-001",
+          severity: "critical",
+          title: "Tracked changes",
+          description: "",
+          evidence: [],
+        },
+        {
+          rule_id: "HANDOFF-004",
+          severity: "info",
+          title: "Author",
+          description: "",
+          evidence: [],
+        },
+      ],
+    });
+    expect([out.added, out.resolved, out.open]).toEqual([1, 1, 2]);
+    expect(out.page_html).toContain("The revision added 1, resolved 1, left 2 open");
+    expect(out.page_html).toContain("Before you send this file (1)");
+  });
+
+  it("rounds of a deal list the fronts that moved and fold the rest", () => {
+    const front = (dimension: string, floor_movement: string) => ({
+      dimension,
+      base_coherence: "aligned",
+      revised_coherence: "aligned",
+      base_floor: "ideal",
+      revised_floor: floor_movement === "unchanged" ? "ideal" : "acceptable",
+      floor_movement,
+      coherence_shift: "unchanged",
+    });
+    const two = buildRoundResults([
+      front("Liability cap", "regressed"),
+      front("Term", "unchanged"),
+    ]);
+    expect(two.page_html).toContain("Positions moved on 1 front");
+    expect(two.page_html).toContain(">Regressed<");
+    expect(two.page_html).toContain("Before: ideal (the package is aligned)");
+    expect(two.noted_count).toBe(1);
+    const trend = buildTrendResults(
+      ["r1.coherence.json", "r2.coherence.json"],
+      [
+        { dimension: "Cap", floors: ["ideal", null], trajectory: "steady-regression" },
+        { dimension: "Term", floors: ["ideal", "ideal"], trajectory: "flat" },
+      ],
+    );
+    expect(trend.page_html).toContain("Positions moved on 1 front across 2 rounds");
+    expect(trend.page_html).toContain("r2.coherence.json: not stated");
   });
 });

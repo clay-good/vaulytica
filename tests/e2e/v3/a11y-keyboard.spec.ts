@@ -133,10 +133,15 @@ test("multi-doc card download buttons are keyboard-operable", async ({ page }) =
 
   // Wait for bundle-complete; the per-doc cards land alongside the
   // consolidated download button.
-  await page.locator('[data-role="bundle-download"]').waitFor({
+  await page.locator('[data-role="download-fold"] > summary').waitFor({
     state: "visible",
     timeout: 60_000,
   });
+  // The cards sit under Download › Other formats; both headers are keyboard controls.
+  await page.locator('[data-role="download-fold"] > summary').focus();
+  await page.keyboard.press("Enter");
+  await page.locator('[data-role="other-formats"] > summary').focus();
+  await page.keyboard.press("Enter");
 
   const cards = page.locator('[data-role="multi-doc-card"]');
   await expect(cards).toHaveCount(2);

@@ -81,11 +81,14 @@ test("drop a DPA and an MSA and the cross-document consistency toggle is on", as
 
   await page.locator(singleFileInput).setInputFiles([DPA, MSA]);
 
-  // Bundle-complete: the consolidated download lands with the per-document
-  // cards and the cross-document controls.
+  // Bundle-complete: the results page leads; the cross-document controls sit
+  // under "What this review covered" and the per-document cards under
+  // Download › Other formats (extend-results-page-to-bundles-and-comparisons).
   await page
-    .locator('[data-role="bundle-download"]')
+    .locator('[data-role="download-fold"] > summary')
     .waitFor({ state: "visible", timeout: 120_000 });
+  await expect(page.locator('[data-role="results-headline"]')).toContainText("across 2 documents");
+  await page.locator('[data-role="covered-fold"] > summary').click();
 
   const toggle = page.locator('[data-role="cross-doc-toggle"]');
   await expect(toggle, "two documents must surface the consistency toggle").toBeVisible();
@@ -100,4 +103,8 @@ test("drop a DPA and an MSA and the cross-document consistency toggle is on", as
   // And both documents really were analyzed — the per-document cards are the
   // bundle's own evidence that this was a two-document run.
   await expect(page.locator('[data-role="multi-doc-card"]')).toHaveCount(2);
+  // The page's own rows: one per document.
+  await expect(
+    page.locator('[data-role="results-documents"] > li > [data-role="result-row"]'),
+  ).toHaveCount(2);
 });

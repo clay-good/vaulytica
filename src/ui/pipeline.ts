@@ -233,9 +233,11 @@ import { flattenText } from "../ingest/types.js";
 import { buildDocumentAbstract } from "../report/abstract.js";
 import { reportLinkForFinding } from "../report/report-link.js";
 import {
+  buildBundleResults,
   buildResultsModel,
   renderResults,
   signerTest,
+  type RenderedPage,
   type RenderedResults,
 } from "./results-page.js";
 import { nearMissOf } from "../playbooks/types.js";
@@ -1223,12 +1225,20 @@ export type BundlePerDocument = {
    * coherence. Additive — its own `posture_hash`, outside `run.result_hash`.
    */
   negotiation_posture?: NegotiationPosture;
+  /**
+   * The pre-disclosure scan this member would get dropped alone, so its row on
+   * the results page counts what its own page would (add-results-page). Feeds
+   * the page only: the bundle reports carry `production_deliveries` as before.
+   */
+  delivery?: DeliveryReport;
 };
 
 export type BundlePipelineResult = {
   documents: BundlePerDocument[];
   rejected: Array<{ filename: string; reason: string }>;
   consistency: ConsistencyRun;
+  /** The results page for the bundle (extend-results-page-to-bundles-and-comparisons). */
+  results: RenderedPage;
   bundle_docx_blob: Blob;
   bundle_json_blob: Blob;
   /**
@@ -1410,6 +1420,8 @@ export async function prepareBundle(
     // after ingest, since it needs the extracted text) still needs the raw
     // container. Skipped entirely for csv-free bundles, so they are unaffected.
     const deliveryBytes = privilege_log ? entry.bytes.slice(0) : undefined;
+    // And always for the member's own scan, which the results page reads.
+    const containerBytes = entry.bytes.slice(0);
     // OCR off — see the single-document note.
     const ingest: IngestResult = await ingestByKind(entry.kind, entry.bytes, { allowOcr: false });
 
@@ -1566,8 +1578,18 @@ export async function prepareBundle(
 
     const v3_detection = detectV3Family(extracted, bodyParts.join(" "));
 
+    // The same scan, with the same inputs, as a document dropped alone.
+    const delivery = await scanDelivery({
+      bytes: containerBytes,
+      source: entry.kind === "text" ? "paste" : entry.kind,
+      text: flattenText(ingest.tree),
+      parties: extracted.parties.map((p) => p.name),
+      playbookId: playbook.id,
+    });
+
     perDoc.push({
       filename: entry.filename,
+      delivery,
       run,
       playbook,
       match_reasoning: match.reasoning,
@@ -1763,10 +1785,35 @@ export async function runBundleReport(
     include_per_document_exports: true,
   });
 
+  const results = buildBundleResults({
+    documents: await Promise.all(
+      documents.map(async (d) => ({
+        filename: d.filename,
+        model: buildResultsModel({
+          run: d.run,
+          abstract: await buildDocumentAbstract({
+            file: d.filename,
+            tree: d.ingest.tree,
+            run: d.run,
+            playbookName: d.playbook.name,
+            title: "",
+            extracted: d.extracted,
+          }),
+          delivery: d.delivery?.findings,
+          isSigner: signerTest(d.ingest.tree, d.extracted.parties),
+          reportUrl: (f) =>
+            reportLinkForFinding(d.run, f, { customPlaybook: Boolean(options.custom_playbook) }),
+        }),
+      })),
+    ),
+    conflicts: consistency.findings,
+  });
+
   return {
     documents,
     rejected: prepared.rejected,
     consistency,
+    results,
     bundle_docx_blob,
     bundle_json_blob,
     bundle_zip_blob,

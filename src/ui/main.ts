@@ -26,7 +26,11 @@ import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
 import { bindRegimePanel } from "./regime-panel.js";
 import { bindEstatePanel, type EstateAssertion } from "./estate-panel.js";
 import type { RegimeId } from "../privacy/regime-data.js";
-import { reportLinkForRun, reportLinkForUnmatched } from "../report/report-link.js";
+import {
+  reportLinkForFinding,
+  reportLinkForRun,
+  reportLinkForUnmatched,
+} from "../report/report-link.js";
 
 /**
  * The user-supplied playbook currently loaded in the tab (spec-v6 Part II,
@@ -151,8 +155,10 @@ async function runRounds(dz: HTMLElement, files: File[]): Promise<void> {
       setState(dz, { kind: "error", message: trend.errors.join(" ") });
       return;
     }
+    const { buildTrendResults } = await import("./results-page.js");
     setState(dz, {
       kind: "coherence-trend-complete",
+      results: buildTrendResults(trend.names, trend.trajectory.fronts),
       round_names: trend.names,
       fronts: trend.trajectory.fronts.map((f) => ({
         dimension: f.dimension,
@@ -603,6 +609,7 @@ async function runComparison(
       buildClauseDiff,
       comparePosture,
     } = await import("../report/index.js");
+    const { buildComparisonResults } = await import("./results-page.js");
     const revisedRun = revised.run;
     // Clause-level redline (spec-v8 Part XVIII): a verbatim text diff of the two
     // documents, rendered into the DOCX/JSON and summarized in the UI. Outside
@@ -633,6 +640,17 @@ async function runComparison(
                 : "Mixed: equal findings resolved and introduced.";
       setState(dz, {
         kind: "comparison-complete",
+        results: buildComparisonResults({
+          introduced: cmp.delta.introduced,
+          unchanged: cmp.delta.unchanged,
+          resolved: cmp.delta.resolved,
+          delivery: revised.delivery?.findings,
+          // A resolved finding was the base draft's; the rest are the revision's.
+          reportUrl: (f) =>
+            reportLinkForFinding(cmp.delta.resolved.includes(f) ? baseRun : revisedRun, f, {
+              customPlaybook: Boolean(activeCustomPlaybook),
+            }),
+        }),
         base_filename: baseRun.source_file.name || baseDisplayName,
         revised_filename: revisedFile.name,
         verdict,
@@ -829,6 +847,7 @@ async function renderBundleComplete(
   });
   setState(dz, {
     kind: "bundle-complete",
+    results: result.results,
     document_count: result.documents.length,
     counts,
     cross_doc_findings: result.consistency.findings.length,
@@ -979,8 +998,10 @@ async function runBundleComparison(
     });
 
     const movementJson = buildCoherenceMovementJson(movement);
+    const { buildRoundResults } = await import("./results-page.js");
     setState(dz, {
       kind: "bundle-comparison-complete",
+      results: buildRoundResults(movement.fronts),
       base_document_count: baseDocumentCount,
       revised_document_count: revised.documents.length,
       coherence_movement: {

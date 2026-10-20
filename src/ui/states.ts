@@ -5,7 +5,7 @@
  */
 import { EMPTY_STATE_COPY, v3ErrorMessage } from "./v3/copy.js";
 import { cappedFamiliesNotice } from "../engine/secondary-family-notice.js";
-import type { RenderedResults } from "./results-page.js";
+import type { RenderedPage, RenderedResults } from "./results-page.js";
 import { installPrintExpansion, wireResultsPage } from "./results-wire.js";
 
 export type DropzoneState =
@@ -367,6 +367,8 @@ export type DropzoneState =
     }
   | {
       kind: "comparison-complete";
+      /** The page (extend-results-page-to-bundles-and-comparisons): added, open, resolved. */
+      results?: RenderedPage;
       base_filename: string;
       revised_filename: string;
       /** Plain-language headline verdict (net improvement / regression / …). */
@@ -425,6 +427,8 @@ export type DropzoneState =
     }
   | {
       kind: "bundle-complete";
+      /** The page: conflicts between the documents, then each document's own page. */
+      results?: RenderedPage;
       document_count: number;
       counts: { critical: number; warning: number; info: number };
       cross_doc_findings: number;
@@ -630,6 +634,8 @@ export type DropzoneState =
        * that a term became legally adequate or which document legally governs.
        */
       kind: "bundle-comparison-complete";
+      /** The page: one row per front that moved between the two rounds. */
+      results?: RenderedPage;
       base_document_count: number;
       revised_document_count: number;
       coherence_movement: {
@@ -675,6 +681,8 @@ export type DropzoneState =
        * whipsawed. Advisory, like every posture surface.
        */
       kind: "coherence-trend-complete";
+      /** The page: one row per front that did not hold flat. */
+      results?: RenderedPage;
       /** The rounds' file names, in the order the trajectory reads them. */
       round_names: ReadonlyArray<string>;
       fronts: ReadonlyArray<{
@@ -826,39 +834,92 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   "comparison-complete": `
     <div class="dropzone-title" data-role="comparison-title">Version comparison</div>
     <div class="dropzone-sub" data-role="comparison-versions"></div>
-    <div class="dropzone-sub comparison-verdict" data-role="comparison-verdict"></div>
-    <div class="comparison-counts" data-role="comparison-counts"></div>
-    <div class="dropzone-sub comparison-redline" data-role="comparison-redline" hidden></div>
-    <div class="negotiation-section" data-role="comparison-posture-movement" hidden></div>
     <div class="dropzone-sub comparison-dkb-warning" data-role="comparison-dkb-warning" hidden></div>
-    <button class="btn btn-primary" type="button" data-role="comparison-docx-download">Download comparison (Word)</button>
-    <button class="btn-link" type="button" data-role="comparison-json-download">Download comparison data (JSON)</button>
+    <section class="results-page" data-role="results-page" aria-label="What to raise" hidden></section>
+    <details class="results-fold" data-role="also-noted" hidden>
+      <summary data-role="also-noted-summary">Also noted</summary>
+      <div data-role="also-noted-list"></div>
+    </details>
+    <details class="results-fold" data-role="covered-fold">
+      <summary>What this comparison covered</summary>
+      <div class="dropzone-sub comparison-verdict" data-role="comparison-verdict"></div>
+      <div class="comparison-counts" data-role="comparison-counts"></div>
+      <div class="dropzone-sub comparison-redline" data-role="comparison-redline" hidden></div>
+      <div class="negotiation-section" data-role="comparison-posture-movement" hidden></div>
+    </details>
+    <p class="results-note" data-role="results-note">This page is not saved. Download to keep a copy.</p>
+    <details class="results-fold download-fold" data-role="download-fold">
+      <summary>Download</summary>
+      <ul class="download-primary">
+        <li>
+          <button class="btn-link download-name" type="button" data-role="comparison-docx-download">Comparison report (.docx)</button>
+          <span class="download-why">What the revision added, resolved and left open, with the clause redline.</span>
+        </li>
+      </ul>
+      <details class="results-fold other-formats" data-role="other-formats">
+        <summary>Other formats</summary>
+        <div class="export-row" role="group" aria-label="Records and data">
+          <button class="btn-link" type="button" data-role="comparison-json-download">Comparison data (JSON)</button>
+        </div>
+      </details>
+    </details>
     <button class="btn-link" type="button" data-role="comparison-reset">Analyze another document</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   "bundle-complete": `
     <div class="dropzone-title" data-role="bundle-title"></div>
-    <div class="counts" data-role="counts"></div>
-    <div class="review-coverage" data-role="review-coverage" hidden></div>
-    <div class="review-coverage" data-role="clause-evidence" hidden></div>
     <div class="rule-errored" data-role="rule-errored" hidden></div>
-    <label class="cross-doc-toggle" data-role="cross-doc-toggle" hidden>
-      <input type="checkbox" data-role="cross-doc-toggle-input" checked />
-      <span>Run cross-document consistency checks</span>
-    </label>
-    <div class="dropzone-sub" data-role="cross-doc-summary"></div>
-    <div class="dropzone-sub bundle-detected-families" data-role="bundle-detected-families" hidden></div>
-    <div class="bundle-rejected" data-role="bundle-rejected" hidden>
-      <div class="bundle-rejected-heading">Skipped</div>
-      <ul class="bundle-rejected-list" data-role="bundle-rejected-list" aria-label="Files skipped from this bundle"></ul>
-    </div>
-    <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
-    <div class="negotiation-section" data-role="bundle-posture-coherence" hidden></div>
-    <div class="negotiation-section" data-role="bundle-production-qa" hidden></div>
-    <button class="btn btn-primary" type="button" data-role="bundle-download">Download consolidated report (Word)</button>
-    <button class="btn-link" type="button" data-role="bundle-json-download">Download bundle data (JSON)</button>
-    <button class="btn-link" type="button" data-role="bundle-zip-download" hidden>Download everything (.zip)</button>
-    <button class="btn-link" type="button" data-role="bundle-coherence-download" hidden>Save this round's coherence (.coherence.json)</button>
+    <section class="results-page" data-role="results-page" aria-label="What to raise" hidden></section>
+    <details class="results-fold" data-role="also-noted" hidden>
+      <summary data-role="also-noted-summary">Also noted</summary>
+      <div data-role="also-noted-list"></div>
+    </details>
+    <details class="results-fold" data-role="covered-fold">
+      <summary>What this review covered</summary>
+      <div class="counts" data-role="counts"></div>
+      <div class="review-coverage" data-role="review-coverage" hidden></div>
+      <div class="review-coverage" data-role="clause-evidence" hidden></div>
+      <label class="cross-doc-toggle" data-role="cross-doc-toggle" hidden>
+        <input type="checkbox" data-role="cross-doc-toggle-input" checked />
+        <span>Run cross-document consistency checks</span>
+      </label>
+      <div class="dropzone-sub" data-role="cross-doc-summary"></div>
+      <div class="dropzone-sub bundle-detected-families" data-role="bundle-detected-families" hidden></div>
+      <div class="bundle-rejected" data-role="bundle-rejected" hidden>
+        <div class="bundle-rejected-heading">Skipped</div>
+        <ul class="bundle-rejected-list" data-role="bundle-rejected-list" aria-label="Files skipped from this bundle"></ul>
+      </div>
+      <div class="negotiation-section" data-role="bundle-posture-coherence" hidden></div>
+      <div class="negotiation-section" data-role="bundle-production-qa" hidden></div>
+    </details>
+    <p class="results-note" data-role="results-note">This page is not saved. Download to keep a copy.</p>
+    <details class="results-fold download-fold" data-role="download-fold">
+      <summary>Download</summary>
+      <ul class="download-primary">
+        <li>
+          <button class="btn-link download-name" type="button" data-role="bundle-download">Report (.docx)</button>
+          <span class="download-why">One Word report on every document and the conflicts between them.</span>
+        </li>
+        <li data-role="download-item-zip" hidden>
+          <button class="btn-link download-name" type="button" data-role="bundle-zip-download">Everything (.zip)</button>
+          <span class="download-why">The report, its data, and each document's fix list, dates and data.</span>
+        </li>
+      </ul>
+      <details class="results-fold other-formats" data-role="other-formats">
+        <summary>Other formats</summary>
+        <div class="other-formats-group">
+          <div class="other-formats-label">Records and data</div>
+          <div class="export-row" role="group" aria-label="Records and data">
+            <button class="btn-link" type="button" data-role="bundle-json-download">Structured data (JSON)</button>
+            <button class="btn-link" type="button" data-role="bundle-coherence-download" hidden>Save this round's coherence (.coherence.json)</button>
+          </div>
+        </div>
+        <div class="other-formats-group">
+          <div class="other-formats-label">Each document</div>
+          <ul class="multi-doc-cards" data-role="multi-doc-cards" aria-label="Per-document summary" hidden></ul>
+        </div>
+      </details>
+    </details>
     <div class="compare-row" data-role="bundle-compare-row" hidden>
       <button class="btn-link" type="button" data-role="bundle-compare-button">Compare a revised round…</button>
       <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text,.zip" multiple data-role="bundle-compare-input" hidden aria-hidden="true" tabindex="-1" />
@@ -868,9 +929,31 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
   "bundle-comparison-complete": `
     <div class="dropzone-title" data-role="bundle-comparison-title">Position drift across the package</div>
     <div class="dropzone-sub" data-role="bundle-comparison-rounds"></div>
-    <div class="negotiation-section" data-role="bundle-coherence-movement" hidden></div>
-    <button class="btn btn-primary" type="button" data-role="bundle-comparison-docx-download">Download two-round report (Word)</button>
-    <button class="btn-link" type="button" data-role="bundle-comparison-json-download">Download movement data (JSON)</button>
+    <section class="results-page" data-role="results-page" aria-label="What to raise" hidden></section>
+    <details class="results-fold" data-role="also-noted" hidden>
+      <summary data-role="also-noted-summary">Also noted</summary>
+      <div data-role="also-noted-list"></div>
+    </details>
+    <details class="results-fold" data-role="covered-fold">
+      <summary>Every front, in detail</summary>
+      <div class="negotiation-section" data-role="bundle-coherence-movement" hidden></div>
+    </details>
+    <p class="results-note" data-role="results-note">This page is not saved. Download to keep a copy.</p>
+    <details class="results-fold download-fold" data-role="download-fold">
+      <summary>Download</summary>
+      <ul class="download-primary">
+        <li>
+          <button class="btn-link download-name" type="button" data-role="bundle-comparison-docx-download">Two-round report (.docx)</button>
+          <span class="download-why">The revised round's report, with how each position moved since the last one.</span>
+        </li>
+      </ul>
+      <details class="results-fold other-formats" data-role="other-formats">
+        <summary>Other formats</summary>
+        <div class="export-row" role="group" aria-label="Records and data">
+          <button class="btn-link" type="button" data-role="bundle-comparison-json-download">Movement data (JSON)</button>
+        </div>
+      </details>
+    </details>
     <button class="btn-link" type="button" data-role="bundle-comparison-reset">Analyze another bundle</button>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
@@ -878,8 +961,25 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="trend-title"></div>
     <div class="dropzone-sub" data-role="trend-rounds"></div>
     <div class="dropzone-sub" data-role="trend-ladder-note" hidden></div>
-    <div class="negotiation-section" data-role="trend-fronts"></div>
-    <button class="btn-link" type="button" data-role="trend-json-download">Download trajectory data (JSON)</button>
+    <section class="results-page" data-role="results-page" aria-label="What to raise" hidden></section>
+    <details class="results-fold" data-role="also-noted" hidden>
+      <summary data-role="also-noted-summary">Also noted</summary>
+      <div data-role="also-noted-list"></div>
+    </details>
+    <details class="results-fold" data-role="covered-fold">
+      <summary>Every front, in detail</summary>
+      <div class="negotiation-section" data-role="trend-fronts"></div>
+    </details>
+    <p class="results-note" data-role="results-note">This page is not saved. Download to keep a copy.</p>
+    <details class="results-fold download-fold" data-role="download-fold">
+      <summary>Download</summary>
+      <ul class="download-primary">
+        <li>
+          <button class="btn-link download-name" type="button" data-role="trend-json-download">Trajectory data (JSON)</button>
+          <span class="download-why">Every front's position in every round, as data.</span>
+        </li>
+      </ul>
+    </details>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
   error: `
@@ -1092,6 +1192,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       redline.hidden = false;
     }
     renderPostureMovement(dz, state.posture_movement);
+    renderResultsPage(dz, state.results);
     const dkbWarn = select<HTMLElement>(dz, "comparison-dkb-warning")!;
     if (state.dkb_mismatch) {
       dkbWarn.hidden = false;
@@ -1165,6 +1266,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     renderMultiDocCards(dz, state.documents);
     renderPostureCoherence(dz, state.posture_coherence);
     renderProductionQa(dz, state.production_qa);
+    renderResultsPage(dz, state.results);
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-json-download")!;
     const status = select<HTMLElement>(dz, "download-status")!;
@@ -1180,7 +1282,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       const zipBlob = state.bundle_zip_blob;
       const zipName = state.bundle_zip_filename;
       const zipBtn = select<HTMLButtonElement>(dz, "bundle-zip-download")!;
-      zipBtn.removeAttribute("hidden");
+      select<HTMLElement>(dz, "download-item-zip")!.hidden = false;
       zipBtn.addEventListener("click", (e) => {
         e.stopPropagation();
         void saveBlob(zipBlob, zipName, status);
@@ -1224,6 +1326,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       `Baseline: ${state.base_document_count} document${state.base_document_count === 1 ? "" : "s"} → ` +
       `Revised: ${state.revised_document_count} document${state.revised_document_count === 1 ? "" : "s"}`;
     renderCoherenceMovement(dz, state.coherence_movement);
+    renderResultsPage(dz, state.results);
     const status = select<HTMLElement>(dz, "download-status")!;
     const docxBtn = select<HTMLButtonElement>(dz, "bundle-comparison-docx-download")!;
     const jsonBtn = select<HTMLButtonElement>(dz, "bundle-comparison-json-download")!;
@@ -1254,6 +1357,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     note.hidden = state.ladder_note === null;
     note.textContent = state.ladder_note ?? "";
     renderTrajectory(dz, state);
+    renderResultsPage(dz, state.results);
     const status = select<HTMLElement>(dz, "download-status")!;
     select<HTMLButtonElement>(dz, "trend-json-download")!.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -1459,7 +1563,7 @@ function renderMultiDocCards(
  * content, and — with no results model (a hand-built state) — leaves "What this
  * review covered" open so nothing is hidden that was shown before.
  */
-function renderResultsPage(dz: HTMLElement, results: RenderedResults | undefined): void {
+function renderResultsPage(dz: HTMLElement, results: RenderedPage | undefined): void {
   const showFold = (role: string, inner: string): void => {
     const fold = select<HTMLElement>(dz, role);
     const panel = select<HTMLElement>(dz, inner);
@@ -1479,7 +1583,8 @@ function renderResultsPage(dz: HTMLElement, results: RenderedResults | undefined
     return;
   }
   installPrintExpansion();
-  const page = select<HTMLElement>(dz, "results-page")!;
+  const page = select<HTMLElement>(dz, "results-page");
+  if (!page) return;
   page.innerHTML = results.page_html;
   page.hidden = false;
   wireResultsPage(page);

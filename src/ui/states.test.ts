@@ -965,7 +965,7 @@ describe("renderState", () => {
     expect(select<HTMLButtonElement>(dz, "bundle-download")!.tagName).toBe("BUTTON");
     expect(select<HTMLButtonElement>(dz, "bundle-json-download")!.tagName).toBe("BUTTON");
     // No bundle_zip_blob supplied → the "everything" link stays hidden.
-    expect(select(dz, "bundle-zip-download")!.hasAttribute("hidden")).toBe(true);
+    expect(select(dz, "download-item-zip")!.hasAttribute("hidden")).toBe(true);
     document.body.removeChild(dz);
   });
 
@@ -1293,8 +1293,8 @@ describe("renderState", () => {
       bundle_zip_filename: "vaulytica-bundle.zip",
     });
     const zip = select(dz, "bundle-zip-download")!;
-    expect(zip.hasAttribute("hidden")).toBe(false);
-    expect(zip.textContent).toMatch(/Download everything \(\.zip\)/);
+    expect(select(dz, "download-item-zip")!.hasAttribute("hidden")).toBe(false);
+    expect(zip.textContent).toMatch(/Everything \(\.zip\)/);
     document.body.removeChild(dz);
   });
 

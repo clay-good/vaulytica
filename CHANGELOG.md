@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.971.0] — 2026-10-20
+
+### Changed
+- **The same page for several documents, two versions, and rounds of a
+  deal** (extend-results-page-to-bundles-and-comparisons).
+  - **Several documents:** "N things to raise across M documents". The
+    conflicts between documents come first, each quoting both clauses.
+    Then one row per document, labeled with its own count, which opens to
+    that document's own page in place.
+  - **Two versions:** "The revision added N, resolved M, left K open",
+    grouped by Added by this revision, Still open and Resolved. The revised
+    file's metadata and tracked-change items count as open.
+  - **Rounds of a deal:** "Positions moved on N fronts", one row per front
+    that moved, opening to before and after (or each round's floor).
+- **One count everywhere.** A document raises the same number on its own
+  page, in its bundle row, and compared against itself. To make that true
+  for Word files, every bundle member now gets the pre-disclosure scan a
+  document dropped alone gets. That scan feeds the page only; the bundle
+  reports are unchanged.
+- Every panel these results showed is folded, not removed. Their downloads
+  follow the single-document pattern: at most three up front, the rest
+  (and each document's own files) under Other formats.
+
 ## [9.970.0] — 2026-10-20
 
 ### Changed
