@@ -152,6 +152,13 @@ export type DropzoneState =
        */
       on_compare?: (file: File) => void;
       /**
+       * add-redline-two-sided-analysis — present for a DOCX with tracked
+       * changes. Renders "Compare both sides of this redline", which compares
+       * the reading with every change rejected against the one with every
+       * change accepted.
+       */
+      on_compare_redline?: () => void;
+      /**
        * v6 Part II bring-your-own-playbook provenance (Step 92). Present only
        * when a user-supplied playbook drove this run. Renders a line under the
        * counts distinguishing "your standard flagged this" from the built-in
@@ -840,6 +847,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       </details>
     </details>
     <div class="compare-row" data-role="compare-row" hidden>
+      <button class="btn-link" type="button" data-role="compare-redline-button" hidden>Compare both sides of this redline</button>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
       <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text" data-role="compare-input" hidden aria-hidden="true" tabindex="-1" />
     </div>
@@ -1197,6 +1205,16 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         e.stopPropagation();
         const file = input.files?.[0];
         if (file) onCompare(file);
+      });
+    }
+    if (state.on_compare_redline) {
+      const onRedline = state.on_compare_redline;
+      select<HTMLElement>(dz, "compare-row")!.removeAttribute("hidden");
+      const btn = select<HTMLButtonElement>(dz, "compare-redline-button")!;
+      btn.removeAttribute("hidden");
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        onRedline();
       });
     }
   }

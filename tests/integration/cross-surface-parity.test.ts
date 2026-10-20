@@ -23,8 +23,11 @@ import { basename, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 
 import { PASTED_TEXT_NAME, pastedTextFile } from "../../src/ui/dropzone.js";
-import { prepareDocument, runReport } from "../../src/ui/pipeline.js";
-import { analyzeFile, loadAccuracyDeps } from "../../tools/cli/api.js";
+import { prepareDocument, runRedlineComparison, runReport } from "../../src/ui/pipeline.js";
+import { compareRuns } from "../../src/report/compare.js";
+import { attributeRevisions } from "../../src/report/redline-attribution.js";
+import { redlineDocx } from "../../src/delivery/_fixtures.js";
+import { analyzeFile, compareRedline, loadAccuracyDeps } from "../../tools/cli/api.js";
 import { resolveDkbDir } from "../../tools/dkb/resolve.js";
 
 const FIXTURE = join(
@@ -153,6 +156,30 @@ describe("cross-surface parity: browser pipeline vs CLI (same DOCX, same DKB)", 
     rmSync(dir, { recursive: true, force: true });
     expect(ui.run.source_file).toEqual(cli.run.source_file);
     expect(ui.run.result_hash).toBe(cli.run.result_hash);
+  });
+
+  it("a redline's two readings compare to the same hash on both surfaces", async () => {
+    // add-redline-two-sided-analysis task 6: the tab's "Compare both sides of
+    // this redline" is the CLI's `compare --redline` on the same bytes.
+    const bytes = redlineDocx();
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-redline-parity-"));
+    const onDisk = join(dir, "supply-redline.docx");
+    writeFileSync(onDisk, Buffer.from(bytes));
+    const cli = await compareRedline(onDisk);
+    rmSync(dir, { recursive: true, force: true });
+
+    const ui = await runRedlineComparison(
+      new File([bytes], "supply-redline.docx"),
+      {},
+      { dkb_base: "/x-dkb", playbook_base: "/x-playbooks" },
+    );
+    expect(ui.base.run.source_file).toEqual(cli.base.run.source_file);
+    expect(ui.base.run.result_hash).toBe(cli.base.run.result_hash);
+    expect(ui.revised.run.playbook_id).toBe(ui.base.run.playbook_id);
+    expect(ui.revised.run.result_hash).toBe(cli.revised.run.result_hash);
+    const cmp = await compareRuns(ui.base.run, ui.revised.run);
+    expect(cmp.result_hash).toBe(cli.comparison.result_hash);
+    expect(attributeRevisions(cmp, ui.revisions)).toEqual(cli.revision_authors);
   });
 
   it("would catch a CLI running a different DKB (the shipped defect)", async () => {

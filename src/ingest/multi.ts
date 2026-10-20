@@ -72,9 +72,10 @@ export function ingestByKind(
   kind: AcceptedKind,
   bytes: ArrayBuffer,
   pdf?: Parameters<typeof ingestPdfBuffer>[1],
+  docx?: Parameters<typeof ingestDocxBuffer>[1],
 ): Promise<IngestResult> {
   if (kind === "pdf") return ingestPdfBuffer(bytes, pdf);
-  if (kind === "docx") return ingestDocxBuffer(bytes);
+  if (kind === "docx") return ingestDocxBuffer(bytes, docx);
   return ingestPaste(decodeText(bytes));
 }
 

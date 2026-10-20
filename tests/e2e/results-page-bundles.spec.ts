@@ -5,8 +5,10 @@
  * click, nothing sent anywhere, and no sideways scroll.
  */
 import { test, expect, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { redlineDocx } from "../../src/delivery/_fixtures.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BUNDLE = join(__dirname, "sample-docs", "bundle");
@@ -101,4 +103,62 @@ test("a document compared against itself: nothing added or resolved, its own cou
   expect(seen.downloads, "nothing is saved without a click").toEqual([]);
   expect(seen.external, "expected zero cross-origin requests").toEqual([]);
   await noSidewaysScroll(page);
+});
+
+test("a Word redline compares both of its readings, and names who wrote the change", async ({
+  page,
+}, testInfo) => {
+  // add-redline-two-sided-analysis task 6: the tab's affordance on a DOCX
+  // with tracked changes is the CLI's `compare --redline` on the same bytes.
+  const seen = guard(page, testInfo.project.use.baseURL);
+  // Take the plain download path so the saved JSON can be read.
+  await page.addInitScript(() => {
+    delete (window as { showSaveFilePicker?: unknown }).showSaveFilePicker;
+  });
+  await page.goto("/");
+  await page.locator(singleFileInput).setInputFiles({
+    name: "supply-redline.docx",
+    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    buffer: Buffer.from(redlineDocx()),
+  });
+  const button = page.locator('[data-role="compare-redline-button"]');
+  await button.waitFor({ state: "visible", timeout: 60_000 });
+  await button.click();
+  await expect(page.locator("#dropzone")).toHaveAttribute("data-state", "comparison-complete", {
+    timeout: 60_000,
+  });
+  await expect(page.locator('[data-role="comparison-versions"]')).toHaveText(
+    "Base: supply-redline.docx (every change rejected) → Revised: supply-redline.docx (every change accepted)",
+  );
+  // Striking the liability cap is what the markup added.
+  await expect(page.locator('[data-role="results-headline"]')).toHaveText(
+    /^The revision added [1-9]\d*, resolved \d+, left \d+ open$/,
+  );
+
+  expect(seen.downloads, "nothing is saved without a click").toEqual([]);
+
+  // The comparison data names the author of the inserted, uncapped indemnity.
+  await page.locator('[data-role="download-fold"] > summary').click();
+  await page.locator('[data-role="other-formats"] > summary').click();
+  const [d] = await Promise.all([
+    page.waitForEvent("download"),
+    page.locator('[data-role="comparison-json-download"]').click(),
+  ]);
+  const json = JSON.parse(readFileSync((await d.path())!, "utf8")) as {
+    revision_authors?: Record<string, string[]>;
+  };
+  expect(Object.values(json.revision_authors ?? {}).flat()).toContain("Opposing Counsel");
+
+  expect(seen.external, "expected zero cross-origin requests").toEqual([]);
+  await noSidewaysScroll(page);
+});
+
+test("a document with no tracked changes offers no redline comparison", async ({ page }) => {
+  await page.goto("/");
+  await page.locator(singleFileInput).setInputFiles(DPA);
+  await page
+    .locator('[data-role="results-headline"]')
+    .waitFor({ state: "visible", timeout: 60_000 });
+  await expect(page.locator('[data-role="compare-button"]')).toBeVisible();
+  await expect(page.locator('[data-role="compare-redline-button"]')).toBeHidden();
 });

@@ -11,6 +11,9 @@
  */
 
 import { ingestByKind, type AcceptedKind } from "../ingest/multi.js";
+import { countRevisions } from "../ingest/docx-notices.js";
+import { collectRevisionTexts, type RevisionText } from "../ingest/docx-revisions.js";
+import { inflateOoxmlParts } from "../ingest/ooxml.js";
 import {
   classifyExtension,
   classifyDataMember,
@@ -384,6 +387,11 @@ export type PipelineResult = {
   abstract_csv_blob: Blob;
   abstract_json_blob: Blob;
   /**
+   * A DOCX with tracked changes (add-redline-two-sided-analysis): its two
+   * readings, every change rejected and every change accepted, can be compared.
+   */
+  tracked_changes: boolean;
+  /**
    * v3 family auto-detection (spec-v3.md §60, LAUNCH row v3-o). Always
    * computed alongside the v2 playbook match so the UI can surface
    * "we detected: BAA" as a suggestion. `family === "unknown"` when
@@ -585,6 +593,12 @@ export async function prepareDocument(
   kind: AcceptedKind,
   config: PipelineConfig = {},
   hooks: PipelineProgress = {},
+  /**
+   * Which reading of a DOCX redline to analyze, and a document type to hold
+   * it to — `compareRedline`'s two readings, as the CLI's `runIngested` takes
+   * them. The routing match is still computed and recorded either way.
+   */
+  reading: { revisions?: "accepted" | "rejected"; playbook_id?: string } = {},
 ): Promise<PreparedDocument> {
   const buffer = await file.arrayBuffer();
   const dkbPromise = ensureDkb(config.dkb_base ?? DEFAULT_DKB_BASE);
@@ -593,7 +607,12 @@ export async function prepareDocument(
   // third-party CDN, which the shipped connect-src 'self' CSP blocks —
   // so shipped OCR could never run; the ingest emits an honest
   // scanned-PDF warning instead of failing mid-analysis.
-  const ingest: IngestResult = await ingestByKind(kind, buffer, { allowOcr: false });
+  const ingest: IngestResult = await ingestByKind(
+    kind,
+    buffer,
+    { allowOcr: false },
+    reading.revisions ? { revisions: reading.revisions } : undefined,
+  );
 
   const dkb = await dkbPromise;
   hooks.onDkbLoaded?.(dkb.manifest.version);
@@ -639,7 +658,11 @@ export async function prepareDocument(
     title: titleSource,
     body_text: bodyText,
   });
-  const playbook = candidates.find((p) => p.id === match.playbook_id) ?? launchPlaybooks[0]!;
+  const pinned = reading.playbook_id
+    ? [...launchPlaybooks, ...extendedPlaybooks].find((p) => p.id === reading.playbook_id)
+    : undefined;
+  const playbook =
+    pinned ?? candidates.find((p) => p.id === match.playbook_id) ?? launchPlaybooks[0]!;
 
   // The matched family's normal pairings, resolved to display names. Computed
   // here because `companion_playbooks` holds playbook IDS and only the full
@@ -1038,6 +1061,9 @@ export async function runReport(
     definitions_json_blob,
     abstract_csv_blob,
     abstract_json_blob,
+    tracked_changes: prepared.original_docx_bytes
+      ? hasTrackedChanges(prepared.original_docx_bytes)
+      : false,
     v3_detection,
     v3_frames,
     custom_playbook: customProvenance,
@@ -1128,6 +1154,66 @@ export async function runPipeline(
   const prepared = await prepareDocument(file, kind, config, hooks);
   const report = await runReport(prepared, hooks, options);
   return { ...report, prepared };
+}
+
+/** A file the tab cannot read as a redline, with the reason (as the CLI's `RedlineRefusedError`). */
+export class RedlineRefusedError extends Error {}
+
+/** Whether a DOCX carries tracked changes, so its two readings differ. */
+export function hasTrackedChanges(bytes: ArrayBuffer): boolean {
+  const c = countRevisions(bytes);
+  return c.insertions + c.deletions + c.moves > 0;
+}
+
+/**
+ * The two readings of one DOCX redline (add-redline-two-sided-analysis):
+ * every tracked change rejected, the draft as it stood, and every change
+ * accepted, the draft the reviser wants. Mirrors the CLI's `compareRedline`
+ * — the same suffixed names (they are inside `result_hash`), the revision
+ * held to the rejected reading's type — so the comparison hashes the same on
+ * both surfaces. Also returns the revisions' texts and authors, for
+ * attribution.
+ */
+export async function runRedlineComparison(
+  file: File,
+  hooks: PipelineProgress = {},
+  config: PipelineConfig = {},
+  options: PipelineOptions = {},
+): Promise<{
+  base: PipelineResult;
+  revised: PipelineResult;
+  revisions: RevisionText[];
+}> {
+  if (!file.name.toLowerCase().endsWith(".docx")) {
+    throw new RedlineRefusedError(`${file.name} is not a Word redline (.docx).`);
+  }
+  const bytes = await file.arrayBuffer();
+  if (!hasTrackedChanges(bytes)) {
+    throw new RedlineRefusedError(
+      `${file.name} has no tracked changes, so both of its readings are the same document.`,
+    );
+  }
+  const reading = (suffix: string): File =>
+    new File([bytes], `${file.name}#${suffix}`, { type: file.type });
+  const run = async (
+    suffix: "rejected" | "accepted",
+    playbook_id?: string,
+  ): Promise<PipelineResult> =>
+    runReport(
+      await prepareDocument(reading(suffix), "docx", config, hooks, {
+        revisions: suffix,
+        ...(playbook_id ? { playbook_id } : {}),
+      }),
+      hooks,
+      options,
+    );
+  const base = await run("rejected");
+  let revised = await run("accepted");
+  if (revised.run.playbook_id !== base.run.playbook_id) {
+    revised = await run("accepted", base.run.playbook_id);
+  }
+  const xml = inflateOoxmlParts(bytes, new Set(["word/document.xml"]))["word/document.xml"] ?? "";
+  return { base, revised, revisions: collectRevisionTexts(xml) };
 }
 
 async function ensureDkb(base: string): Promise<DKB> {

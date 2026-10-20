@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.973.0] — 2026-10-20
+
+### Added
+- **Compare both sides of a redline in the tab**
+  (add-redline-two-sided-analysis, task 6). A Word file with tracked
+  changes now offers "Compare both sides of this redline": the draft with
+  every change rejected against the draft with every change accepted, on
+  the same comparison page as two files. The Word report and the JSON name
+  who made the tracked change each finding quotes. It is `compare --redline`
+  on the same bytes: both runs, the comparison hash and the authors match
+  the CLI's (cross-surface test), and an e2e drives it in the real tab.
+
+### Changed
+- The tracked-changes notice on a redline now points to both ways of
+  comparing its readings, instead of telling you to accept or reject the
+  changes in Word first.
+
 ## [9.972.0] — 2026-10-20
 
 ### Added

@@ -120,7 +120,8 @@ export function docxNotices(
             `text was NOT analyzed; deleted text was, as the draft had it.`
         : `This document has tracked changes (${parts.join(", ")}). It was analyzed as if every ` +
             `change were ACCEPTED — inserted text is treated as agreed language.${deleted} ` +
-            `To review the other version, accept or reject the changes in Word first.`,
+            `To see what the changes fixed and broke, compare both readings: "Compare both sides ` +
+            `of this redline" in the tab, or \`vaulytica compare --redline\`.`,
     );
   }
 

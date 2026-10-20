@@ -2562,3 +2562,34 @@ describe("the production-QA card's other branches", () => {
     document.body.removeChild(dz);
   });
 });
+
+describe("complete state: compare both sides of a redline", () => {
+  const complete = (over: Record<string, unknown> = {}) => {
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "markup.docx",
+      playbook_name: "Supply Agreement",
+      counts: { critical: 0, warning: 1, info: 0 },
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "markup.docx",
+      json_filename: "markup.json",
+      ...over,
+    } as Parameters<typeof renderState>[1]);
+    return dz;
+  };
+
+  it("offers the comparison only when the document has tracked changes", () => {
+    const onRedline = vi.fn();
+    const dz = complete({ on_compare_redline: onRedline });
+    const btn = select<HTMLButtonElement>(dz, "compare-redline-button")!;
+    expect(btn.hidden).toBe(false);
+    expect(select(dz, "compare-row")!.hidden).toBe(false);
+    btn.click();
+    expect(onRedline).toHaveBeenCalledOnce();
+
+    const plain = complete({ on_compare: () => {} });
+    expect(select(plain, "compare-redline-button")!.hidden).toBe(true);
+  });
+});

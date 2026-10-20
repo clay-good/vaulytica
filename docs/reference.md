@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.972.0` · `MIT`
+`1,943 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.973.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -61,7 +61,7 @@ A document does not always say what it looks like it says, and the analysis is o
 
 | What the file carries                      | Who sees it normally | What the engine reads                                             | What you are told                                                                         |
 | ------------------------------------------ | -------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **Tracked changes** (a redline)            | you, struck through  | the all-changes-**accepted** text; `compare --redline` reads both | the counts, that insertions are read as agreed language, and that deletions were not read |
+| **Tracked changes** (a redline)            | you, struck through  | the all-changes-**accepted** text; `compare --redline` and the tab's "Compare both sides of this redline" read both | the counts, that insertions are read as agreed language, and that deletions were not read |
 | **Hidden text** (`w:vanish`)               | nobody               | it **is** analyzed                                                | that a finding may quote text you cannot see, and how to reveal it                        |
 | **Reviewer comments** (DOCX)               | you, in Word         | nothing — mammoth drops the store                                 | the count, and that the position behind a clause never reached the report                 |
 | **PDF annotations** (sticky notes, markup) | you, in a viewer     | nothing — they are not in the text layer                          | the count, and to open the PDF to read them                                               |

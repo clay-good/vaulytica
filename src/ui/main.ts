@@ -245,7 +245,7 @@ async function runFile(dz: HTMLElement, file: File, kind: AcceptedKind): Promise
           estate_checks: activeEstate.checks || undefined,
           estate_state: activeEstate.state,
         });
-        renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun);
+        renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun, file);
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
         setState(dz, { kind: "error", message });
@@ -259,7 +259,16 @@ async function runFile(dz: HTMLElement, file: File, kind: AcceptedKind): Promise
       }
     };
 
-    renderCompleteState(dz, file.name, stem, result, countsBySeverity, result.v3_frames.on, rerun);
+    renderCompleteState(
+      dz,
+      file.name,
+      stem,
+      result,
+      countsBySeverity,
+      result.v3_frames.on,
+      rerun,
+      file,
+    );
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     setState(dz, { kind: "error", message });
@@ -283,6 +292,8 @@ function renderCompleteState(
     results: import("./pipeline.js").PipelineResult["results"];
     /** Carried so version comparison can build a clause-level redline of the base doc. */
     ingest: import("./pipeline.js").PipelineResult["ingest"];
+    /** A DOCX with tracked changes: its two readings can be compared. */
+    tracked_changes?: boolean;
     docx_blob: Blob;
     json_blob: Blob;
     fixlist_md_blob: Blob;
@@ -328,6 +339,8 @@ function renderCompleteState(
   },
   activeFrames: ReadonlyArray<string>,
   onFramesChange: (frames: ReadonlyArray<string>) => void,
+  /** The dropped file, for "Compare both sides of this redline". */
+  file?: File,
 ): void {
   // Links to the report page (spec-v53 §4). None while a custom playbook is
   // loaded: a reader's own rule and playbook ids are theirs.
@@ -564,7 +577,48 @@ function renderCompleteState(
         revisedFile,
       );
     },
+    ...(result.tracked_changes && file
+      ? { on_compare_redline: () => void runRedline(dz, file) }
+      : {}),
   });
+}
+
+/**
+ * The two readings of one Word redline (add-redline-two-sided-analysis): every
+ * tracked change rejected against every change accepted, the CLI's
+ * `compare --redline` on the same bytes. Each introduced or resolved finding
+ * names the authors of the changes it quotes, in the Word report and the JSON.
+ */
+async function runRedline(dz: HTMLElement, file: File): Promise<void> {
+  try {
+    setState(dz, { kind: "analyzing", filename: file.name });
+    const { runRedlineComparison } = await import("./pipeline.js");
+    const progress = createProgressBar(select(dz, "progress")!);
+    const ticker = createRuleTicker(select(dz, "ticker")!);
+    progress.reset();
+    const { base, revised, revisions } = await runRedlineComparison(
+      file,
+      {
+        onProgress: (fraction) => progress.set(fraction),
+        onRule: (rule) => ticker.push(rule.id, rule.name),
+      },
+      {},
+      { custom_playbook: activeCustomPlaybook ?? undefined },
+    );
+    await showComparison(dz, {
+      baseRun: base.run,
+      baseTree: base.ingest.tree,
+      basePosture: base.negotiation_posture,
+      revised,
+      baseName: `${file.name} (every change rejected)`,
+      revisedName: `${file.name} (every change accepted)`,
+      stem: `${baseFilename(file.name)}-redline`,
+      revisions,
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
 }
 
 /**
@@ -608,123 +662,171 @@ async function runComparison(
       { custom_playbook: activeCustomPlaybook ?? undefined },
     );
 
-    const {
-      compareRuns,
-      comparabilityOf,
-      buildComparisonDocx,
-      buildComparisonJson,
-      buildClauseDiff,
-      comparePosture,
-    } = await import("../report/index.js");
-    const { buildComparisonResults } = await import("./results-page.js");
-    const revisedRun = revised.run;
-    // Clause-level redline (spec-v8 Part XVIII): a verbatim text diff of the two
-    // documents, rendered into the DOCX/JSON and summarized in the UI. Outside
-    // the comparison result_hash.
-    const clauseDiff = buildClauseDiff(baseTree, revised.ingest.tree);
-    // Negotiation-posture movement (spec-v11): how each rung moved between the
-    // two drafts. Only when both were classified against the same positions.
-    const postureMovement =
-      basePosture && revised.negotiation_posture
-        ? await comparePosture(basePosture, revised.negotiation_posture)
-        : undefined;
-
-    const stem = `${baseFilename(baseRun.source_file.name)}-vs-${baseFilename(revisedFile.name)}`;
-    const build = async (confirmPairing: boolean): Promise<void> => {
-      const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
-      const docx = await buildComparisonDocx(cmp, clauseDiff, postureMovement);
-      const json = buildComparisonJson(cmp, clauseDiff, postureMovement);
-      const { resolved, introduced, unchanged } = cmp.delta.counts;
-      const verdict =
-        introduced.total === 0 && resolved.total === 0
-          ? "No change to the risk surface."
-          : introduced.critical > 0
-            ? "Read the introduced findings first — this revision created at least one critical finding."
-            : resolved.total > introduced.total
-              ? "Net improvement: more findings resolved than introduced."
-              : introduced.total > resolved.total
-                ? "Net regression: more findings introduced than resolved."
-                : "Mixed: equal findings resolved and introduced.";
-      setState(dz, {
-        kind: "comparison-complete",
-        results: buildComparisonResults({
-          introduced: cmp.delta.introduced,
-          unchanged: cmp.delta.unchanged,
-          resolved: cmp.delta.resolved,
-          delivery: revised.delivery?.findings,
-          // A resolved finding was the base draft's; the rest are the revision's.
-          reportUrl: (f) =>
-            reportLinkForFinding(cmp.delta.resolved.includes(f) ? baseRun : revisedRun, f, {
-              customPlaybook: Boolean(activeCustomPlaybook),
-            }),
-        }),
-        base_filename: baseRun.source_file.name || baseDisplayName,
-        revised_filename: revisedFile.name,
-        verdict,
-        counts: {
-          resolved,
-          introduced,
-          unchanged,
-          carried_clean_count: cmp.delta.carried_clean_count,
-        },
-        dkb_mismatch: cmp.dkb_mismatch,
-        clause_diff: {
-          added: clauseDiff.added.length,
-          removed: clauseDiff.removed.length,
-          changed: clauseDiff.changed.length,
-          renumbered: clauseDiff.renumbered.length,
-          truncated: clauseDiff.truncated,
-        },
-        posture_movement: postureMovement
-          ? {
-              counts: postureMovement.counts,
-              dimensions: postureMovement.dimensions.map((d) => ({
-                dimension: d.dimension,
-                base_tier: d.base_tier,
-                revised_tier: d.revised_tier,
-                movement: d.movement,
-              })),
-            }
-          : undefined,
-        docx_blob: docx,
-        json_blob: json,
-        docx_filename: `${stem}-comparison.docx`,
-        json_filename: `${stem}-comparison.json`,
-        on_reset: () => setState(dz, { kind: "empty" }),
-      });
-    };
-
-    const comparability = comparabilityOf(baseRun, revisedRun);
-    if (!comparability.comparable) {
-      setState(dz, {
-        kind: "error",
-        message: comparability.reason ?? "These documents are not comparable.",
-        action: {
-          label: "Compare anyway",
-          // This runs from a DOM handler LONG AFTER `runComparison` returned,
-          // so the try/catch below is no longer on the stack. Fire-and-forget
-          // here left a failing rebuild as an unhandled rejection: no error
-          // state, no feedback, the dropzone frozen on this very screen with
-          // the user's one recovery action apparently doing nothing. Every
-          // other async entry point in this file reports its own failures;
-          // this one has to do it explicitly.
-          on_click: () => {
-            void build(true).catch((err: unknown) => {
-              setState(dz, {
-                kind: "error",
-                message: err instanceof Error ? err.message : String(err),
-              });
-            });
-          },
-        },
-      });
-      return;
-    }
-    await build(false);
+    await showComparison(dz, {
+      baseRun,
+      baseTree,
+      basePosture,
+      revised,
+      baseName: baseRun.source_file.name || baseDisplayName,
+      revisedName: revisedFile.name,
+      stem: `${baseFilename(baseRun.source_file.name)}-vs-${baseFilename(revisedFile.name)}`,
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     setState(dz, { kind: "error", message });
   }
+}
+
+/**
+ * Render a comparison of two runs: the finding delta, the clause redline and,
+ * when both drafts carry one, the posture movement. Shared by "Compare a
+ * revised version…" and a redline's two readings. A cross-family pairing is
+ * refused with a "Compare anyway" action (spec-v6 §5).
+ */
+async function showComparison(
+  dz: HTMLElement,
+  input: {
+    baseRun: import("./pipeline.js").PipelineResult["run"];
+    baseTree: import("../ingest/types.js").DocumentTree;
+    basePosture: import("./pipeline.js").PipelineResult["negotiation_posture"];
+    revised: import("./pipeline.js").PipelineResult;
+    baseName: string;
+    revisedName: string;
+    stem: string;
+    /** A redline's tracked changes, for naming whose change a finding quotes. */
+    revisions?: readonly import("../ingest/docx-revisions.js").RevisionText[];
+  },
+): Promise<void> {
+  const { baseRun, baseTree, basePosture, revised, baseName, revisedName, stem, revisions } = input;
+  const { attributeRevisions } = await import("../report/redline-attribution.js");
+  const {
+    compareRuns,
+    comparabilityOf,
+    buildComparisonDocx,
+    buildComparisonJson,
+    buildComparisonJsonObject,
+    buildClauseDiff,
+    comparePosture,
+  } = await import("../report/index.js");
+  const { buildComparisonResults } = await import("./results-page.js");
+  const revisedRun = revised.run;
+  // Clause-level redline (spec-v8 Part XVIII): a verbatim text diff of the two
+  // documents, rendered into the DOCX/JSON and summarized in the UI. Outside
+  // the comparison result_hash.
+  const clauseDiff = buildClauseDiff(baseTree, revised.ingest.tree);
+  // Negotiation-posture movement (spec-v11): how each rung moved between the
+  // two drafts. Only when both were classified against the same positions.
+  const postureMovement =
+    basePosture && revised.negotiation_posture
+      ? await comparePosture(basePosture, revised.negotiation_posture)
+      : undefined;
+
+  const build = async (confirmPairing: boolean): Promise<void> => {
+    const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
+    const authors = revisions ? attributeRevisions(cmp, revisions) : undefined;
+    const docx = await buildComparisonDocx(cmp, clauseDiff, postureMovement, authors);
+    const json = authors
+      ? new Blob(
+          [
+            JSON.stringify(
+              {
+                ...buildComparisonJsonObject(cmp, clauseDiff, postureMovement),
+                revision_authors: authors,
+              },
+              null,
+              2,
+            ),
+          ],
+          { type: "application/json" },
+        )
+      : buildComparisonJson(cmp, clauseDiff, postureMovement);
+    const { resolved, introduced, unchanged } = cmp.delta.counts;
+    const verdict =
+      introduced.total === 0 && resolved.total === 0
+        ? "No change to the risk surface."
+        : introduced.critical > 0
+          ? "Read the introduced findings first — this revision created at least one critical finding."
+          : resolved.total > introduced.total
+            ? "Net improvement: more findings resolved than introduced."
+            : introduced.total > resolved.total
+              ? "Net regression: more findings introduced than resolved."
+              : "Mixed: equal findings resolved and introduced.";
+    setState(dz, {
+      kind: "comparison-complete",
+      results: buildComparisonResults({
+        introduced: cmp.delta.introduced,
+        unchanged: cmp.delta.unchanged,
+        resolved: cmp.delta.resolved,
+        delivery: revised.delivery?.findings,
+        // A resolved finding was the base draft's; the rest are the revision's.
+        reportUrl: (f) =>
+          reportLinkForFinding(cmp.delta.resolved.includes(f) ? baseRun : revisedRun, f, {
+            customPlaybook: Boolean(activeCustomPlaybook),
+          }),
+      }),
+      base_filename: baseName,
+      revised_filename: revisedName,
+      verdict,
+      counts: {
+        resolved,
+        introduced,
+        unchanged,
+        carried_clean_count: cmp.delta.carried_clean_count,
+      },
+      dkb_mismatch: cmp.dkb_mismatch,
+      clause_diff: {
+        added: clauseDiff.added.length,
+        removed: clauseDiff.removed.length,
+        changed: clauseDiff.changed.length,
+        renumbered: clauseDiff.renumbered.length,
+        truncated: clauseDiff.truncated,
+      },
+      posture_movement: postureMovement
+        ? {
+            counts: postureMovement.counts,
+            dimensions: postureMovement.dimensions.map((d) => ({
+              dimension: d.dimension,
+              base_tier: d.base_tier,
+              revised_tier: d.revised_tier,
+              movement: d.movement,
+            })),
+          }
+        : undefined,
+      docx_blob: docx,
+      json_blob: json,
+      docx_filename: `${stem}-comparison.docx`,
+      json_filename: `${stem}-comparison.json`,
+      on_reset: () => setState(dz, { kind: "empty" }),
+    });
+  };
+
+  const comparability = comparabilityOf(baseRun, revisedRun);
+  if (!comparability.comparable) {
+    setState(dz, {
+      kind: "error",
+      message: comparability.reason ?? "These documents are not comparable.",
+      action: {
+        label: "Compare anyway",
+        // This runs from a DOM handler LONG AFTER `runComparison` returned,
+        // so the try/catch below is no longer on the stack. Fire-and-forget
+        // here left a failing rebuild as an unhandled rejection: no error
+        // state, no feedback, the dropzone frozen on this very screen with
+        // the user's one recovery action apparently doing nothing. Every
+        // other async entry point in this file reports its own failures;
+        // this one has to do it explicitly.
+        on_click: () => {
+          void build(true).catch((err: unknown) => {
+            setState(dz, {
+              kind: "error",
+              message: err instanceof Error ? err.message : String(err),
+            });
+          });
+        },
+      },
+    });
+    return;
+  }
+  await build(false);
 }
 
 async function runBundle(
