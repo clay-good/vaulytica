@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,936 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.958.0` · `MIT`
+`1,936 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,400+ passing tests` · `v9.959.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1269,6 +1269,7 @@ node bin/vaulytica.mjs mcp --root /path/to/contracts
 | `explain_rule`           | `rule_id`                                                                                         | what the rule carries: name, version, severity, types, citations                                                                  |
 | `export_report`          | `path`, `formats[]`, `out_dir`, `overwrite`                                                       | writes the artifacts `analyze --out` writes; returns the paths                                                                    |
 
+- **Clean to send.** `analyze_document` with `include: ["delivery"]` adds the pre-disclosure scan (`HANDOFF-001…008`) for a file: what the container still carries, with redactions as masked shapes. `excerpts: false` drops its evidence lines.
 - **Both protocol eras.** It answers `initialize` (2025-11-25) and `server/discover` (2026-07-28).
 - **Allowed folders.** It reads only under `--root <dir>` (repeatable), else `VAULYTICA_MCP_ROOTS`, else the folder it was started in. Paths are resolved with `realpath`, so a symlink cannot reach outside.
 - **What the model sees.** The process opens no network connection, and a `path` is read locally. But a result reaches the agent and its model provider, including quoted excerpts; `excerpts: false` returns findings with offsets and no quoted text.

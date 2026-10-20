@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.959.0] — 2026-10-19
+
+### Added
+- **An agent can ask whether a file is clean to send.** On the MCP server,
+  `analyze_document` with `include: ["delivery"]` adds the pre-disclosure
+  scan for a file under an allowed folder. That covers tracked changes,
+  comments, hidden text, metadata, sensitive patterns and liftable
+  redactions, with the scan's own `delivery_hash`. This is the case
+  add-redaction-integrity-scan named: an agent linting a folder of redacted
+  productions. A redaction's evidence is its masked shape, never the words.
+  `excerpts: false` drops every evidence line, because a tracked change or a
+  comment quotes the document. Pasted text has no container, so it gets no
+  block.
+
 ## [9.958.0] — 2026-10-19
 
 ### Added

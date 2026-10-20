@@ -6,6 +6,7 @@
  * answers it as an `isError` result.
  */
 
+import type { DeliveryReport } from "../../src/delivery/types.js";
 import { buildDocumentAbstract, type DocumentAbstract } from "../../src/report/abstract.js";
 import { ABSTRACT_STATEMENT } from "../../src/report/disclaimers.js";
 import { titleCorpus } from "../../src/playbooks/matcher.js";
@@ -247,13 +248,18 @@ export type AnalyzeDocumentArgs = {
   filename?: string;
   document_type?: string;
   min_severity?: keyof typeof SEVERITY_RANK;
-  include?: ReadonlyArray<"secondary_findings">;
+  include?: ReadonlyArray<"secondary_findings" | "delivery">;
   excerpts?: boolean;
   cursor?: string;
 };
 
 export type AnalyzeDocumentResult =
-  | (Brief & { findings_total: number; next_cursor?: string; config?: ConfigProvenance })
+  | (Brief & {
+      findings_total: number;
+      next_cursor?: string;
+      config?: ConfigProvenance;
+      delivery?: DeliveryBlock;
+    })
   | { not_analyzed: string; document: { name: string } };
 
 /**
@@ -265,6 +271,7 @@ export type AnalyzeDocumentResult =
 async function analyzeInput(
   args: Pick<AnalyzeDocumentArgs, "path" | "text" | "filename" | "document_type">,
   ctx: Context,
+  extra: { delivery?: boolean } = {},
 ): Promise<
   | { result: Awaited<ReturnType<typeof analyzeDocument>>; name: string; applied: Applied }
   | { not_analyzed: string; document: { name: string } }
@@ -318,7 +325,11 @@ async function analyzeInput(
 
   let result: Awaited<ReturnType<typeof analyzeDocument>>;
   try {
-    result = await analyzeDocument(input, opts);
+    // The pre-disclosure scan reads a file's CONTAINER; pasted text has none.
+    result = await analyzeDocument(input, {
+      ...opts,
+      ...(extra.delivery && args.path !== undefined ? { delivery: true } : {}),
+    });
   } catch (e) {
     const reason = e instanceof Error ? e.message : String(e);
     // The file was not checked. Say so in a field no reader can take for a report.
@@ -335,7 +346,9 @@ export async function analyzeDocumentTool(
   ctx: Context,
 ): Promise<AnalyzeDocumentResult> {
   const from = decodeCursor(args.cursor);
-  const input = await analyzeInput(args, ctx);
+  const input = await analyzeInput(args, ctx, {
+    delivery: args.include?.includes("delivery") ?? false,
+  });
   if ("not_analyzed" in input) return input;
   const { result, applied } = input;
   if (from.sha !== undefined && from.sha !== result.run.source_file.sha256) {
@@ -345,6 +358,9 @@ export async function analyzeDocumentTool(
   }
 
   const wantSecondary = args.include?.includes("secondary_findings") ?? false;
+  const delivery = result.delivery
+    ? deliveryBlock(result.delivery, args.excerpts ?? true)
+    : undefined;
   const brief = buildBrief(result, {
     excerpts: args.excerpts ?? true,
     secondaryFindings: wantSecondary,
@@ -373,7 +389,7 @@ export async function analyzeDocumentTool(
   const budget = ctx.maxResultChars ?? MAX_RESULT_CHARS;
   // The envelope, plus room for `findings_total` and a cursor.
   let size =
-    JSON.stringify({ ...brief, findings: [], secondary_families: families }).length +
+    JSON.stringify({ ...brief, findings: [], secondary_families: families, delivery }).length +
     CURSOR_ALLOWANCE;
   let end = from.offset;
   while (end < stream.length) {
@@ -394,6 +410,43 @@ export async function analyzeDocumentTool(
       ? { next_cursor: encodeCursor({ sha: result.run.source_file.sha256, offset: end }) }
       : {}),
     ...(applied.config ? { config: applied.config } : {}),
+    ...(delivery ? { delivery } : {}),
+  };
+}
+
+/**
+ * The pre-disclosure scan as the agent sees it (add-redaction-integrity-scan):
+ * what the container still carries — tracked changes, comments, hidden text,
+ * metadata, sensitive patterns, liftable redactions — and the hash that pins
+ * it. A redaction's evidence is already its masked SHAPE. `excerpts: false`
+ * drops the evidence lines too, because a tracked change or a comment quotes
+ * the document.
+ */
+export type DeliveryBlock = {
+  summary: string;
+  inspectable: boolean;
+  findings: Array<{
+    rule_id: string;
+    severity: string;
+    title: string;
+    count: number;
+    evidence?: string[];
+  }>;
+  delivery_hash: string;
+};
+
+function deliveryBlock(d: DeliveryReport, excerpts: boolean): DeliveryBlock {
+  return {
+    summary: d.summary,
+    inspectable: d.inspectable,
+    findings: d.findings.map((f) => ({
+      rule_id: f.rule_id,
+      severity: f.severity,
+      title: f.title,
+      count: f.count,
+      ...(excerpts ? { evidence: f.evidence.slice(0, 10) } : {}),
+    })),
+    delivery_hash: d.delivery_hash,
   };
 }
 

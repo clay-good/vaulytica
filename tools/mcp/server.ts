@@ -117,7 +117,7 @@ async function main(): Promise<void> {
             .optional()
             .describe("A document-type id, to skip auto-detection."),
           min_severity: z.enum(["critical", "warning", "info"]).optional(),
-          include: z.array(z.enum(["secondary_findings"])).optional(),
+          include: z.array(z.enum(["secondary_findings", "delivery"])).optional(),
           excerpts: z
             .boolean()
             .optional()

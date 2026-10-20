@@ -18,7 +18,7 @@ Built: the DOCX read and `HANDOFF-007` (black/white-on-same, run and paragraph s
 Not yet built, and stated where the result is shown:
 - Task 1–2: the PDF operator walk (a filled rectangle painted over text, a `Square` annotation with interior color) and its fixtures.
 - Task 3: a theme color is read through `w:val` only; `w:themeColor` without one is not resolved.
-- Task 7: MCP `analyze_document` `include: ["delivery"]`, and a delivery reach test over every surface (renderers print HANDOFF findings generically, so the new ids reach JSON, HTML, DOCX and SARIF already).
+- Task 7: a delivery reach test over every surface (MCP `include: ["delivery"]` shipped in 9.959.0) (renderers print HANDOFF findings generically, so the new ids reach JSON, HTML, DOCX and SARIF already).
 - Task 8: a known-limits ledger row for the image-only class (the ledger holds specimen-measured debts; this class has none yet).
 - Task 9: site "Clean to send" copy.
 

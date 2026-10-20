@@ -471,3 +471,42 @@ describe("a vaulytica.config.json under an allowed root", { timeout: 120_000 }, 
     ).rejects.toThrow(ToolError);
   });
 });
+
+describe('analyze_document include: ["delivery"]', () => {
+  it("adds the pre-disclosure scan for a file, with a redaction as its masked shape", async () => {
+    const { buildDocx, documentXml } = await import("../../src/delivery/_fixtures.js");
+    const { writeFile } = await import("node:fs/promises");
+    const path = join(tmp, "redacted.docx");
+    const run = (rPr: string, t: string) =>
+      `<w:r><w:rPr>${rPr}</w:rPr><w:t xml:space="preserve">${t}</w:t></w:r>`;
+    await writeFile(
+      path,
+      Buffer.from(
+        buildDocx({
+          document: documentXml(
+            `<w:p>${run("", "MUTUAL NONDISCLOSURE AGREEMENT")}</w:p>` +
+              `<w:p>${run("", "The fee is ")}${run('<w:highlight w:val="black"/>', "VELTRANE 6620")}</w:p>`,
+          ),
+        }),
+      ),
+    );
+    const r = await analyzeDocumentTool({ path, include: ["delivery"] }, ctx);
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+    const d = r.delivery!;
+    expect(d.findings.map((f) => f.rule_id)).toContain("HANDOFF-007");
+    expect(d.delivery_hash).toMatch(/^[0-9a-f]{64}$/);
+    expect(JSON.stringify(d)).not.toContain("VELTRANE");
+    const quiet = await analyzeDocumentTool({ path, include: ["delivery"], excerpts: false }, ctx);
+    if ("not_analyzed" in quiet) throw new Error(quiet.not_analyzed);
+    expect(quiet.delivery!.findings.every((f) => f.evidence === undefined)).toBe(true);
+  });
+
+  it("adds nothing for pasted text, which has no container", async () => {
+    const r = await analyzeDocumentTool(
+      { text: "This Agreement is made between A and B.", include: ["delivery"] },
+      ctx,
+    );
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+    expect(r.delivery).toBeUndefined();
+  });
+});

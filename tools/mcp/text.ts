@@ -22,7 +22,7 @@ export const ANALYZE_DOCUMENT = [
   "Checks one legal document (a contract, policy, notice, will, filing) against the rules for its document type and returns a compact report: the detected type and why, severity counts, and each finding with its rule, explanation, recommendation, one citation, an excerpt, and offsets into the document text.",
   "Pass exactly one of `path` (a .docx, .pdf, .txt or .md file under an allowed folder — read locally) or `text` (with an optional `filename`).",
   "Quoted excerpts in the result reach the model. Pass `excerpts: false` to get offsets and no quoted document text.",
-  '`document_type` forces a type id from list_document_types instead of auto-detection. `min_severity` drops lower findings from the list (the counts stay whole). `include: ["secondary_findings"]` adds the findings of other document types detected from vocabulary — detected, not confirmed.',
+  '`document_type` forces a type id from list_document_types instead of auto-detection. `min_severity` drops lower findings from the list (the counts stay whole). `include: ["secondary_findings"]` adds the findings of other document types detected from vocabulary — detected, not confirmed; `"delivery"` (a path only) adds the pre-disclosure scan: tracked changes, comments, metadata, sensitive data and liftable redactions, the last as masked shapes.',
   "A long result is truncated with `next_cursor`; call again with the same input and `cursor` for the rest. Always read `caveats`: it says when no type matched, when text could not be read, and when a rule could not run. `not_analyzed` means the file was not checked at all.",
 ].join(" ");
 
