@@ -194,7 +194,7 @@
       "fired": false,
       "ran": false,
       "rule_id": "DARK-015",
-      "rule_version": "1.1.0"
+      "rule_version": "1.2.0"
     },
     {
       "elapsed_ms": 0,
@@ -317,7 +317,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "IPDATA-008",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -629,7 +629,7 @@
       "fired": false,
       "ran": true,
       "rule_id": "STRUCT-007",
-      "rule_version": "1.5.0"
+      "rule_version": "1.6.0"
     },
     {
       "elapsed_ms": 0,
@@ -1316,11 +1316,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"limitation-of-liability\", \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "66a5791e1082d80858a3ae4bbcb77f60135315aac9e636ed3c322732c354e47e",
+  "result_hash": "8af1b63d5a1c5cf55fb06fdda9583f582df0e8d7f31e359be86bfeda534dfe9a",
   "source_file": {
     "name": "bad-saas.docx",
     "sha256": "4928b2a6e8f024ae024b9b62a52601d8260e3d6a6d40a039b92e414286080976",
     "size_bytes": 9364
   },
-  "version": "9.953.0"
+  "version": "9.954.0"
 }

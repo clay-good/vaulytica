@@ -16,6 +16,12 @@
  *             of `ABBREV_BEFORE_NUMBER` ("Sec", "No", "Art", the months) when
  *             a number follows — the list `src/extract/walk.ts` already keeps.
  *
+ * And "Art. 30" is "Article 30" (9.954.0), the form GDPR drafting uses: a DPA
+ * citing "Art. 30" was told it had no records-of-processing clause (DPA-028),
+ * 26 recognizers wrote "article" before a number, and the cross-reference
+ * reader filed "Art. 5" under no namespace, so it was looked up as a SECTION
+ * and reported broken in documents that have an Article 5.
+ *
  * ⚠️ THREE moves are declared rather than fixed (and STRUCT-006 lists one more
  * undefined term on an operating agreement, which a rule-id relation does not
  * see). Each rule keeps a bespoke
@@ -34,11 +40,68 @@ const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 export const withSectionAbbreviated = (t: string): string =>
   t.replace(/(?<!^[ \t]*)\bSection (\d)/gm, "Sec. $1");
 
+/** "under Article 28" → "under Art. 28"; a heading at the start of a line is kept. */
+export const withArticleAbbreviated = (t: string): string =>
+  t.replace(/(?<!^[ \t]*)\bArticle (\d)/gm, "Art. $1");
+
 const DECLARED = [
   "legend-nda.txt: lost RISK-014",
   "relocation-agreement.txt: gained FIN-005",
   "venue-rental.txt: gained RISK-016",
 ];
+
+async function movedBy(
+  mutate: (t: string) => string,
+): Promise<{ moved: string[]; probed: number }> {
+  const deps = await loadAccuracyDeps({});
+  const moved: string[] = [];
+  let probed = 0;
+  for (const file of readdirSync(DIR)
+    .filter((f) => f.endsWith(".txt"))
+    .sort()) {
+    const text = readFileSync(join(DIR, file), "utf8");
+    const mutated = mutate(text);
+    if (mutated === text) continue;
+    probed++;
+    const before = await analyzeText(text, file, { deps });
+    const after = await analyzeText(mutated, file, { deps });
+    const ids = (r: typeof before): string[] =>
+      [...new Set(r.run.findings.map((f) => f.rule_id))].sort();
+    const lost = ids(before).filter((i) => !ids(after).includes(i));
+    const gained = ids(after).filter((i) => !ids(before).includes(i));
+    if (lost.length) moved.push(`${file}: lost ${lost.join(",")}`);
+    if (gained.length) moved.push(`${file}: gained ${gained.join(",")}`);
+  }
+  return { moved, probed };
+}
+
+describe("an article reference abbreviated", () => {
+  it("moves no finding", async () => {
+    const { moved, probed } = await movedBy(withArticleAbbreviated);
+    expect(probed, "no specimen cites an article").toBeGreaterThan(15);
+    expect(moved).toEqual([]);
+  }, 1_800_000);
+
+  it("no recognizer reads an article number after the word alone", () => {
+    const files = DOCUMENT_READING_ROOTS.flatMap((root) => sourceFiles(root)).filter(
+      (f) => !f.endsWith(".test.ts"),
+    );
+    const blind: string[] = [];
+    for (const file of files) {
+      for (const { line, text } of recognizerSources(file)) {
+        const readsNumber =
+          /articles?\??\)?\s*(?:\|[^)]*\))?\s*\\{1,2}s[*+?]?\s*(?:\\{1,2}d|\[0-9\]|\d|\()/i;
+        // `\bArt\.` counts: the escape before the word is not a letter.
+        const readsAbbrev = /(?:^|[^A-Za-z]|\\b)arts?\??\\{1,2}\./i;
+        if (readsNumber.test(text.replace(/\[Aa\]/g, "a")) && !readsAbbrev.test(text))
+          blind.push(`${file}:${line}  ${text.slice(0, 90)}`);
+      }
+    }
+    expect(blind, `write (?:article|art\\.) so "Art. 30" reads:\n  ${blind.join("\n  ")}`).toEqual(
+      [],
+    );
+  });
+});
 
 describe("a section reference abbreviated", () => {
   it("moves only the declared findings", async () => {

@@ -602,7 +602,7 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // qualifier is dropped before the numbers are split out, so a numeral inside
   // it ("(other than Section 2.3)") cannot be mistaken for a listed section.
   const LIST =
-    /\b(?:Sections?|Secs?\.|Clauses?|Articles?)\s+(\d+(?:\.\d+)*(?:\s*\([^()]{0,80}\))?(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*(?:\s*\([^()]{0,80}\))?)*)/gi;
+    /\b(?:Sections?|Secs?\.|Clauses?|Articles?|Arts?\.)\s+(\d+(?:\.\d+)*(?:\s*\([^()]{0,80}\))?(?:(?:\s*(?:,|and|&)\s*)+\d+(?:\.\d+)*(?:\s*\([^()]{0,80}\))?)*)/gi;
   // "Articles" belongs beside them. A long-form agreement divides itself into
   // Articles and its survival clause names them — "Articles 4, 6, 8 and 9
   // survive termination" — and a list that reads only Sections and Clauses
@@ -613,7 +613,7 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // only its first endpoint, so the sections in between were never
   // incorporated.
   const RANGE =
-    /\b(?:Sections?|Secs?\.|Clauses?|Articles?)\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
+    /\b(?:Sections?|Secs?\.|Clauses?|Articles?|Arts?\.)\s+(\d+)\s*(?:through|thru|to|[-–—])\s*(\d+)\b/gi;
   const nums = new Set<string>();
   LIST.lastIndex = 0;
   let m: RegExpExecArray | null;
@@ -667,7 +667,7 @@ export function expandSurvivalSectionRefs(ctx: RuleContext, survivalText: string
   // missing from a list that names it. A matching heading brings its section.
   forEachSection(ctx.tree, (s) => {
     const label =
-      /^\s*(?:(?:(?:Section|Sec\.)|Article|Clause)\s+)?(\d+(?:\.\d+){0,3})[.)]?\s+(?=[A-Z"\u201C(])/i.exec(
+      /^\s*(?:(?:(?:Section|Sec\.)|(?:Article|Art\.)|Clause)\s+)?(\d+(?:\.\d+){0,3})[.)]?\s+(?=[A-Z"\u201C(])/i.exec(
         s.heading ?? "",
       )?.[1];
     if (!label || !(nums.has(label) || [...nums].some((n) => label.startsWith(`${n}.`)))) return;

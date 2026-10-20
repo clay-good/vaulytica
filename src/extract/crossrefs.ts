@@ -21,7 +21,7 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 // Indian and South African drafting an Annexure, and a reference to either
 // resolved to nothing at all — see `src/extract/attachment-kinds.ts`.
 const REF_RE = new RegExp(
-  `(?<![A-Za-z0-9_])((?:Section|Sec\\.)|(?:Sections|Secs?\\.)|Clause|Clauses|Article|Articles|${ATTACHMENT_KIND}|§§?)\\s+([0-9]+(?:\\.[0-9]+)*[A-Za-z]?(?:\\([a-z]\\))?|[IVXLCDM]+)(?![A-Za-z])`,
+  `(?<![A-Za-z0-9_])((?:Section|Sec\\.)|(?:Sections|Secs?\\.)|Clause|Clauses|(?:Article|Art\\.)|(?:Articles|Arts?\\.)|${ATTACHMENT_KIND}|§§?)\\s+([0-9]+(?:\\.[0-9]+)*[A-Za-z]?(?:\\([a-z]\\))?|[IVXLCDM]+)(?![A-Za-z])`,
   "gi",
 );
 
@@ -295,7 +295,7 @@ const STATUTE_SUBSECTION_LABEL = /^\d{2,4}\([a-z]\)/;
  * "Chapter 11 of this Agreement" is not a statutory declaration.
  */
 const STATUTE_CHAPTER_DECLARATION =
-  /\b(?:Chapter|Title|Article|Division|Part)\s+[\w.-]+\s*,?\s+(?:of\s+(?:the\s+)?)?(?:[A-Z][\w.'’]*\s+){0,4}(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)\b(?:\s+Annotated)?/g;
+  /\b(?:Chapter|Title|(?:Article|Art\.)|Division|Part)\s+[\w.-]+\s*,?\s+(?:of\s+(?:the\s+)?)?(?:[A-Z][\w.'’]*\s+){0,4}(?:Statutes?|Code|Laws?|Acts?|Regulations?|Rules?)\b(?:\s+Annotated)?/g;
 
 const NAMES_A_CODE =
   /\b(?:Internal\s+Revenue\s+Code|Bankruptcy\s+Code|Uniform\s+Commercial\s+Code|Securities\s+Act|Exchange\s+Act|ERISA|U\.S\.C\.|C\.F\.R\.)\b/;
@@ -401,7 +401,7 @@ const EXTERNAL_ACRONYM_TAIL = /^(?:\(\d+[a-z]?\))*\s+of\s+(?:the\s+)?([A-Za-z]{2
 // the same citation was statutory when written "Section" and a defect when
 // written "Article".
 const STATUTE_ACRONYM_CITE =
-  /(?<![A-Za-z0-9_])(?:Sections?|Secs?\.|Clauses?|Articles?|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
+  /(?<![A-Za-z0-9_])(?:Sections?|Secs?\.|Clauses?|Articles?|Arts?\.|§§?)\s+(\d+(?:\.\d+)*[A-Za-z]?)(?:\([a-z0-9]+\))*\s+of\s+(?:the\s+)?([A-Z][A-Za-z]{1,10})\b/g;
 
 // Statute acronyms so ubiquitous they are cited bare, without a local
 // definition — Delaware corporate law and the UCC head every M&A and secured-
@@ -440,7 +440,7 @@ const LEADING_SECTION_RE =
 // subsection of every article reported as a broken reference to itself. This
 // captures that section number where it trails the article heading.
 const ARTICLE_THEN_SECTION_RE =
-  /^\s*(?:ARTICLE|Article)\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
+  /^\s*(?:(?:ARTICLE|ART\.)|(?:Article|Art\.))\s+[IVXLCDM\d]+\b[A-Za-z\s—–-]*?(?<![A-Za-z0-9_])(?:Section|SECTION|Sec\.?|SEC\.?|Clause|CLAUSE|§)\s+(\d+(?:\.\d+)*)\.\s+[A-Z]/;
 
 // Bylaws style writes the multi-level number with NO trailing period —
 // "7.1 Exclusive Forum. Unless …" — so LEADING_SECTION_RE never registered
@@ -488,7 +488,7 @@ const RUN_IN_SECTION_NO_PERIOD_RE =
 // label index (so "Article VII" elsewhere resolves) and is skipped as a
 // reference (so STRUCT-007 stops reporting every article heading in the
 // document as a broken cross-reference).
-const LEADING_ARTICLE_RE = /^\s*(?:ARTICLE|Article)\s+([IVXLCDM]+|\d+)\b/;
+const LEADING_ARTICLE_RE = /^\s*(?:(?:ARTICLE|ART\.)|(?:Article|Art\.))\s+([IVXLCDM]+|\d+)\b/;
 
 // The same shape for SECTION, which `LEADING_SECTION_RE` above cannot see: it
 // requires an ARABIC number followed by a period ("Section 2.1. Annual
@@ -683,9 +683,12 @@ export function extractCrossRefs(tree: DocumentTree, outline: SectionOutline): C
       // union contract, a policy, and most EU-style instruments use — and,
       // where the document also had a Section 9, it linked to the wrong
       // entity instead. The keyword is known here; pass it.
-      const namespace = /^Articles?$/i.test(keyword)
+      // The abbreviations name the same namespaces: "Art. 5" is Article 5, and
+      // read as a bare number it was looked up as a section and reported
+      // broken in a document that has an Article 5.
+      const namespace = /^(?:Articles?|Arts?\.)$/i.test(keyword)
         ? "article"
-        : /^(?:Sections?|Clauses?|§§?)$/i.test(keyword)
+        : /^(?:Sections?|Secs?\.|Clauses?|§§?)$/i.test(keyword)
           ? "section"
           : undefined;
       const normalized = isAttachment

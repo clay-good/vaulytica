@@ -599,6 +599,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
   }),
   presence({
     id: "BNK-020",
+    version: "1.1.0",
     name: "Remedies on default — UCC Part 6",
     description:
       "Security agreement must specify remedies on default (UCC Part 6 — sale, repossession, deficiency).",
@@ -613,7 +614,7 @@ const SECURITY_AGREEMENT_RULES: Rule[] = [
     present_patterns: [
       /(remed(y|ies)|default)/i,
       /(repossess|disposition|foreclosure|deficiency)/i,
-      /(commercially\s+reasonable|ucc|article\s+9)/i,
+      /(commercially\s+reasonable|ucc|(?:article|art\.)\s+9)/i,
     ],
   }),
 ];

@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [9.954.0] — 2026-10-19
 
 ### Added
 - **A project configuration file, `vaulytica.config.json`**
@@ -32,6 +32,18 @@ All notable changes to this project will be documented in this file. Format adap
   sits inside, a related folder. A parent folder holding several deal rooms is
   still one run. The CLI applies the file to `analyze` only.
 - The command count is 35 with `init`.
+
+### Fixed
+- **"Art. 30" was not "Article 30".** GDPR drafting abbreviates the article,
+  and rewriting the corpus's references that way moved three specimens. A DPA
+  citing "Art. 30" was told it had no records-of-processing clause (DPA-028).
+  26 recognizers wrote "article" before a number, and now read
+  `(?:article|art\.)`: 22 by the same AST-driven codemod as 9.953.0, and 4 by
+  hand after the static guard flagged them. The cross-reference reader filed
+  "Art. 5" under no namespace, so it looked the reference up as a section and
+  reported it broken in documents that have an Article 5. "Art." and "Sec."
+  now name their namespaces. 13 rule versions bumped. `section-abbreviation`
+  gains the relation and a guard, and both fail on 9.953.0.
 
 ## [9.953.0] — 2026-10-19
 

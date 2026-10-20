@@ -75,11 +75,11 @@ const WITHOUT_PROCESS =
  * compliant drafting.
  */
 const SAVED_BY_LAW =
-  /\b(?:except\s+as\s+(?:otherwise\s+)?(?:prohibited|required|provided)\s+by\s+(?:applicable\s+)?law|to\s+the\s+extent\s+(?:not\s+prohibited|permitted)\s+by\s+(?:applicable\s+)?law|subject\s+to\s+(?:the\s+requirements\s+of\s+)?(?:applicable\s+law|article\s+9|the\s+uniform\s+commercial\s+code)|as\s+permitted\s+by\s+(?:applicable\s+)?law|in\s+accordance\s+with\s+(?:applicable\s+law|article\s+9)|without\s+(?:a\s+)?breach\s+of\s+the\s+peace|article\s+9\s+of\s+the\s+uniform\s+commercial\s+code)\b/i;
+  /\b(?:except\s+as\s+(?:otherwise\s+)?(?:prohibited|required|provided)\s+by\s+(?:applicable\s+)?law|to\s+the\s+extent\s+(?:not\s+prohibited|permitted)\s+by\s+(?:applicable\s+)?law|subject\s+to\s+(?:the\s+requirements\s+of\s+)?(?:applicable\s+law|(?:article|art\.)\s+9|the\s+uniform\s+commercial\s+code)|as\s+permitted\s+by\s+(?:applicable\s+)?law|in\s+accordance\s+with\s+(?:applicable\s+law|(?:article|art\.)\s+9)|without\s+(?:a\s+)?breach\s+of\s+the\s+peace|(?:article|art\.)\s+9\s+of\s+the\s+uniform\s+commercial\s+code)\b/i;
 
 export const rule: Rule = {
   id: "DARK-015",
-  version: "1.1.0",
+  version: "1.2.0",
   name: "Waiver of non-waivable Article 9 debtor protections",
   category: "dark-patterns",
   default_severity: "critical",

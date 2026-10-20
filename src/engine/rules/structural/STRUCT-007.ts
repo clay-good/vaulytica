@@ -38,7 +38,7 @@ const ATTACHMENT_REF = new RegExp(`^(?:${ATTACHMENT_KIND})\\b`, "i");
 // references to Articles a register does not have.
 const NAMES_GDPR =
   /\b(?:general\s+data\s+protection\s+regulation|GDPR)\b|\bRegulation\s*\(EU\)\s*2016\/679\b/i;
-const GDPR_ARTICLE_REF = /^Articles?\s+\d/i;
+const GDPR_ARTICLE_REF = /^(?:Articles?|Arts?\.)\s+\d/i;
 
 /**
  * The same reasoning for a REGULATOR-ISSUED FORM adopted in full. An executed
@@ -80,7 +80,7 @@ function documentText(ctx: RuleContext): string {
 
 export const rule: Rule = {
   id: "STRUCT-007",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Cross-reference resolution",
   category: "structural",
   default_severity: "warning",

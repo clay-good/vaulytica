@@ -247,12 +247,12 @@ const TRUST_AMENDMENT = pack("trust-amendment", C, [
   },
   {
     id: "EST-416",
-    ver: "1.2.0",
+    ver: "1.3.0",
     name: "Amended provisions restated in full",
     cite: practice("restatement", "restating amended provisions in full"),
     pat: [
       /(is\s+(hereby\s+)?(amended|deleted|restated)|(?:shall|will|must)\s+read\s+as\s+follows)/i,
-      /(in\s+its\s+entirety|article\s+\w+|(?:(?:section|sec\.)|clause)\s+\d)/i,
+      /(in\s+its\s+entirety|(?:article|art\.)\s+\w+|(?:(?:section|sec\.)|clause)\s+\d)/i,
     ],
     // `all: true`. The locator pillar is `section \d`, which every instrument
     // satisfies, so an amendment that restates nothing passed the column

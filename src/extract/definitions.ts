@@ -430,7 +430,7 @@ const FIELD_BLOCK_PREFIX = /^\s*(?:[A-Z][^\s]*\s+){0,8}$/;
 
 /** A definition that points at an exhibit/schedule/section rather than stating its own text. */
 const DEFINITION_REFERENCE =
-  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annexure|Annex|Attachment|(?:Section|Sec\.)|Article)\s+[A-Z0-9][\w.()-]*)/i;
+  /\b(?:attached\s+(?:hereto\s+)?as|set\s+forth\s+in|described\s+in|defined\s+in|as\s+set\s+out\s+in|in)\s+((?:Exhibit|Schedule|Appendix|Annexure|Annex|Attachment|(?:Section|Sec\.)|(?:Article|Art\.))\s+[A-Z0-9][\w.()-]*)/i;
 
 /** A scope-gating prefix that confines a definition to a section/clause. */
 const DEFINITION_SCOPE =

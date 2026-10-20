@@ -280,7 +280,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-006",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Obligations and rights of the controller stated",
     description: "DPA must state the obligations and rights of the controller.",
     citation: "GDPR Art. 28(3) introductory",
@@ -309,7 +309,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       // "determine", so a complete DPA was told at CRITICAL that it does not
       // state them.
       /\bcontroller\s+(?:is|shall\s+be|will\s+be|must\s+be|remains)\s+(?:solely\s+)?responsible\s+for\b/i,
-      /\barticle\s*28\s*\(\s*4\s*\)/i,
+      /\b(?:article|art\.)\s*28\s*\(\s*4\s*\)/i,
       /\bsame\s+(?:data[- ]protection\s+)?obligations\b[^.]{0,160}?\b(?:principal|main|upstream|head)\s+(?:dpa|data\s+processing\s+agreement|contract|agreement)/is,
     ],
   }),
@@ -379,7 +379,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-009",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Article 32 security measures incorporated",
     description:
       "DPA must require the processor to take all measures required pursuant to Article 32.",
@@ -395,9 +395,9 @@ export const DPA_GDPR_RULES: Rule[] = [
     // TOMs phrase is not evidence of an Art. 32 security clause (the
     // missing-art32 fixture proves it — its only TOMs mention is in the DSR
     // clause).
-    present_patterns: [/article\s*32|technical\s+and\s+organisational\s+measures/i],
+    present_patterns: [/(?:article|art\.)\s*32|technical\s+and\s+organisational\s+measures/i],
     denied_if: expressDenial(
-      String.raw`(?:article\s+)?32\s+security|technical\s+and\s+organisational\s+measures|security\s+measures`,
+      String.raw`(?:(?:article|art\.)\s+)?32\s+security|technical\s+and\s+organisational\s+measures|security\s+measures`,
     ),
     denied_title: "Article 32 security measures expressly disclaimed",
     denied_description:
@@ -445,7 +445,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-012",
-    version: "1.1.0",
+    version: "1.2.0",
     name: "Assist controller with Articles 32–36 obligations",
     description:
       "Processor must assist the controller with Articles 32–36 obligations (security, breach, DPIA, prior consultation).",
@@ -457,7 +457,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "Add a clause obligating the processor to assist with Articles 32–36 obligations, taking into account the nature of processing and information available.",
     present_patterns: [
-      /(articles?\s*32.{0,8}(to|–|-)\s*36|articles?\s*33.{0,8}(to|–|-)\s*36|assist.*?(breach|security|DPIA))/i,
+      /((?:articles?|arts?\.)\s*32.{0,8}(to|–|-)\s*36|(?:articles?|arts?\.)\s*33.{0,8}(to|–|-)\s*36|assist.*?(breach|security|DPIA))/i,
     ],
     denied_if: expressDenial(
       String.raw`data\s+protection\s+impact\s+assessment|\bDPIA\b|breach\s+notification`,
@@ -855,6 +855,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-028",
+    version: "1.1.0",
     name: "Article 30 records of processing assistance",
     description:
       "Processor should assist controller with Art. 30 records of processing activities (RoPA).",
@@ -866,7 +867,7 @@ export const DPA_GDPR_RULES: Rule[] = [
       "Art. 30 requires records of processing activities; processors typically assist controllers by providing relevant information.",
     recommendation:
       "Add a clause obligating the processor to provide information needed for the controller's Art. 30 RoPA.",
-    present_patterns: [/(records\s+of\s+processing|article\s*30|RoPA)/i],
+    present_patterns: [/(records\s+of\s+processing|(?:article|art\.)\s*30|RoPA)/i],
     default_severity: "warning",
   }),
 
@@ -875,6 +876,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-029",
+    version: "1.1.0",
     name: "DPIA assistance (Art. 35)",
     description:
       "Processor should assist controller with Data Protection Impact Assessments under Art. 35.",
@@ -891,8 +893,8 @@ export const DPA_GDPR_RULES: Rule[] = [
     // number 35 told a DPA that quotes the Regulation that it omits the
     // assistance it promises.
     present_patterns: [
-      /(data\s+protection\s+impact\s+assessment|DPIA|article\s*35)/i,
-      /articles?\s*3[26]\s*(?:to|-|–|through)\s*3[56]/i,
+      /(data\s+protection\s+impact\s+assessment|DPIA|(?:article|art\.)\s*35)/i,
+      /(?:articles?|arts?\.)\s*3[26]\s*(?:to|-|–|through)\s*3[56]/i,
     ],
     default_severity: "warning",
   }),
@@ -902,6 +904,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-030",
+    version: "1.1.0",
     name: "Article 27 EU representative referenced (where applicable)",
     description: "Non-EU processors should reference their EU representative under Art. 27.",
     citation: "GDPR Art. 27",
@@ -912,7 +915,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     recommendation:
       "If processor is non-EU, designate and name an Art. 27 EU representative in the DPA.",
     present_patterns: [
-      /(article\s*27|EU\s+representative|representative\s+in\s+the\s+Union|representative\s+under\s+Article\s*27)/i,
+      /((?:article|art\.)\s*27|EU\s+representative|representative\s+in\s+the\s+Union|representative\s+under\s+(?:Article|Art\.)\s*27)/i,
     ],
     default_severity: "warning",
   }),
@@ -922,6 +925,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   // ────────────────────────────────────────────────────────────────
   presence({
     id: "DPA-031",
+    version: "1.1.0",
     name: "Article 37 DPO referenced (where applicable)",
     description:
       "Where required, the DPA should reference the Data Protection Officer under Art. 37.",
@@ -931,7 +935,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation:
       "Art. 37 requires a DPO in certain cases; modern DPAs reference contact details for the DPO.",
     recommendation: "Reference the DPO's contact information and Article 37 designation.",
-    present_patterns: [/(data\s+protection\s+officer|\bDPO\b|article\s*37)/i],
+    present_patterns: [/(data\s+protection\s+officer|\bDPO\b|(?:article|art\.)\s*37)/i],
     default_severity: "warning",
   }),
 
@@ -1270,6 +1274,7 @@ export const DPA_GDPR_RULES: Rule[] = [
   }),
   presence({
     id: "DPA-047",
+    version: "1.1.0",
     name: "Liability allocation",
     description: "DPA should allocate liability between Controller and Processor.",
     citation: "GDPR Art. 82",
@@ -1278,7 +1283,7 @@ export const DPA_GDPR_RULES: Rule[] = [
     explanation:
       "Art. 82 makes both Controller and Processor potentially liable; DPAs should allocate as between the parties.",
     recommendation: "Add a liability-allocation clause aligned with Article 82 GDPR.",
-    present_patterns: [/(liability|indemnif|article\s*82)/i],
+    present_patterns: [/(liability|indemnif|(?:article|art\.)\s*82)/i],
     default_severity: "warning",
   }),
   language({

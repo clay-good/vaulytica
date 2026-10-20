@@ -25,7 +25,7 @@ import { forEachParagraph } from "../../../extract/walk.js";
  */
 export const rule: Rule = {
   id: "IPDATA-008",
-  version: "1.5.0",
+  version: "1.6.0",
   name: "Cross-border data transfer without safeguard",
   category: "ip-and-data",
   default_severity: "warning",
@@ -40,7 +40,7 @@ export const rule: Rule = {
     const TRANSFER =
       /\b(?:transfer(?:red|s|ring)?\s+[^.]{0,60}?(?:to|outside|across\s+borders?)\s+(?:the\s+)?(?:EU|EEA|UK|United\s+Kingdom|United\s+States|US\b)|cross[-\s]?border\s+(?:transfer|processing|flow)|international\s+(?:data\s+)?transfer|(?:processed|process(?:es|ing))\s+(?:outside|in)\s+(?:the\s+)?(?:United\s+States|United\s+Kingdom|US\b|EU|EEA|UK|India|Philippines|third\s+countr)|outside\s+(?:the\s+)?(?:EEA|EU|UK|United\s+Kingdom))/i;
     const SAFEGUARD =
-      /\b(?:standard\s+contractual\s+clauses|SCCs?|binding\s+corporate\s+rules|BCRs?|adequacy\s+decision|data\s+privacy\s+framework|DPF|IDTA|article\s+46|chapter\s+v\s+of\s+the\s+gdpr)\b/i;
+      /\b(?:standard\s+contractual\s+clauses|SCCs?|binding\s+corporate\s+rules|BCRs?|adequacy\s+decision|data\s+privacy\s+framework|DPF|IDTA|(?:article|art\.)\s+46|chapter\s+v\s+of\s+the\s+gdpr)\b/i;
     // The transfer regex's leading branch ("transfer … to the United States")
     // is not data-specific, so it also matched a GOODS or FUNDS transfer — an
     // Article 46 accusation over a shipping or wire clause. Require a

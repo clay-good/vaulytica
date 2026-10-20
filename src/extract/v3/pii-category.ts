@@ -254,7 +254,7 @@ export const CATEGORY_CATALOG: CategoryDef[] = [
 ];
 
 const SPECIAL_FLAG_RX =
-  /\b(?:special categor(?:y|ies) of (?:personal )?data|sensitive personal information|article\s+9(?:\s+data)?)\b/i;
+  /\b(?:special categor(?:y|ies) of (?:personal )?data|sensitive personal information|(?:article|art\.)\s+9(?:\s+data)?)\b/i;
 
 export function extractDataCategories(tree: DocumentTree): DataCategory[] {
   const seen = new Set<string>();
