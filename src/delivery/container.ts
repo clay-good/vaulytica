@@ -17,6 +17,7 @@
  */
 
 import type {
+  RedactionFact,
   ContainerFacts,
   ContainerSource,
   MetadataFact,
@@ -169,6 +170,7 @@ function readDocx(bytes: ArrayBuffer, text: string): ContainerFacts {
   const commentFacts = parseComments(comments);
   const hidden = parseHidden(document);
   const metadata = parseDocxMetadata(core, app);
+  const redactions = parseDocxRedactions(document);
   return {
     source: "docx",
     inspectable: true,
@@ -182,7 +184,140 @@ function readDocx(bytes: ArrayBuffer, text: string): ContainerFacts {
     hidden,
     metadata,
     sensitive,
+    ...(redactions.length > 0 ? { redactions } : {}),
   };
+}
+
+/**
+ * Word's fixed highlight palette (`w:highlight w:val`), as the RGB it paints.
+ * ECMA-376 Part 1 § 17.18.40.
+ */
+const HIGHLIGHT_RGB: Record<string, string> = {
+  black: "000000",
+  white: "FFFFFF",
+  yellow: "FFFF00",
+  green: "00FF00",
+  cyan: "00FFFF",
+  magenta: "FF00FF",
+  blue: "0000FF",
+  red: "FF0000",
+  darkBlue: "000080",
+  darkCyan: "008080",
+  darkGreen: "008000",
+  darkMagenta: "800080",
+  darkRed: "800000",
+  darkYellow: "808000",
+  darkGray: "808080",
+  lightGray: "C0C0C0",
+};
+
+/** The covered text as its shape only: letters `x`, digits `#`, spacing kept. */
+export function maskShape(text: string): string {
+  return text.replace(/\p{L}/gu, "x").replace(/\p{N}/gu, "#");
+}
+
+/** A color attribute's hex, upper-case, or undefined for none / `auto`. */
+function hexOf(value: string | undefined): string | undefined {
+  if (!value || /^auto$/i.test(value)) return undefined;
+  return /^[0-9A-Fa-f]{6}$/.test(value) ? value.toUpperCase() : undefined;
+}
+
+/** True when a background is dark enough that Word draws `auto` text white. */
+function isDark(hex: string): boolean {
+  const n = parseInt(hex, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return 0.299 * r + 0.587 * g + 0.114 * b < 128;
+}
+
+/**
+ * Runs whose text is painted in its own background color — HANDOFF-007's
+ * facts (add-redaction-integrity-scan).
+ *
+ * Black highlighting over black text is how a redaction is "done" in Word
+ * before Save as PDF, and the words stay in the file: selectable, searchable,
+ * one copy-paste from the recipient. The effective background is the run's
+ * highlight, else its own shading, else its paragraph's shading, else the white
+ * page; the text color is the run's `w:color`, and `auto` is black except on
+ * dark SHADING, where Word draws it white and it is therefore visible. A dark
+ * HIGHLIGHT does not change automatic text, which is why black highlighting
+ * hides it.
+ * Exact color equality only — "nearly the same grey" is a judgment, and this
+ * reports a fact.
+ *
+ * Consecutive covered runs in one paragraph are one redaction. Walked with
+ * `indexOf`, so the scan is linear in the part however it is nested.
+ */
+function parseDocxRedactions(xml: string): RedactionFact[] {
+  const facts: RedactionFact[] = [];
+  let paragraph = 0;
+  const pOpen = /<w:p[\s>]/g;
+  let po: RegExpExecArray | null;
+  while ((po = pOpen.exec(xml)) !== null && facts.length < MAX_FACTS) {
+    const pStart = po.index;
+    const pEnd = xml.indexOf("</w:p>", pStart);
+    if (pEnd < 0) break;
+    pOpen.lastIndex = pEnd + 6;
+    paragraph++;
+    const p = xml.slice(pStart, pEnd);
+    const pPrEnd = p.indexOf("</w:pPr>");
+    const pPr = pPrEnd >= 0 ? p.slice(0, pPrEnd) : "";
+    const paraFill = hexOf(/<w:shd\b[^>]{0,300}?\bw:fill="([^"]{1,12})"/.exec(pPr)?.[1]);
+
+    let run: { reason: string; shape: string } | undefined;
+    const flush = (): void => {
+      if (run && /[x#]/.test(run.shape) && facts.length < MAX_FACTS) {
+        facts.push({
+          kind: "docx-run",
+          reason: run.reason,
+          location: `paragraph ${paragraph}`,
+          masked_shape: cut(run.shape.trim(), EXCERPT_LEN),
+        });
+      }
+      run = undefined;
+    };
+    const runOpen = /<w:r[\s>]/g;
+    let r: RegExpExecArray | null;
+    while ((r = runOpen.exec(p)) !== null) {
+      const rEnd = p.indexOf("</w:r>", r.index);
+      if (rEnd < 0) break;
+      const body = p.slice(r.index, rEnd);
+      runOpen.lastIndex = rEnd;
+      const rPrEnd = body.indexOf("</w:rPr>");
+      const rPr = rPrEnd >= 0 ? body.slice(0, rPrEnd) : "";
+      const text = [...body.matchAll(/<w:t\b[^>]{0,200}>([^<]{0,2000})<\/w:t>/g)]
+        .map((t) => t[1] ?? "")
+        .join("");
+      const highlightName = /<w:highlight\b[^>]{0,100}?\bw:val="([A-Za-z]{1,20})"/.exec(rPr)?.[1];
+      const highlight = highlightName ? HIGHLIGHT_RGB[highlightName] : undefined;
+      const runFill = hexOf(/<w:shd\b[^>]{0,300}?\bw:fill="([^"]{1,12})"/.exec(rPr)?.[1]);
+      const background = highlight ?? runFill ?? paraFill;
+      const colorVal = /<w:color\b[^>]{0,200}?\bw:val="([^"]{1,12})"/.exec(rPr)?.[1];
+      // Word draws `auto` text white on dark SHADING, not on a dark highlight:
+      // black highlighting over automatic text is the redaction this exists for.
+      const shading = runFill ?? paraFill;
+      const color = hexOf(colorVal) ?? (shading && isDark(shading) ? "FFFFFF" : "000000");
+      const covered = color === (background ?? "FFFFFF");
+      if (!covered || text.length === 0) {
+        if (text.length > 0) flush();
+        continue;
+      }
+      const reason =
+        background === undefined
+          ? "white text on the white page"
+          : highlight !== undefined
+            ? `text in its own highlight color (${highlightName})`
+            : `text in its own shading color (#${background})`;
+      if (run && run.reason === reason) run.shape += maskShape(text);
+      else {
+        flush();
+        run = { reason, shape: maskShape(text) };
+      }
+    }
+    flush();
+  }
+  return facts;
 }
 
 const TAG_AUTHOR = /\bw:author="([^"]{0,200})"/;
@@ -325,6 +460,7 @@ function readPdf(bytes: ArrayBuffer, text: string): ContainerFacts {
   );
   const metadata = parsePdfInfo(ascii);
   const comments = parsePdfAnnotations(ascii);
+  const redactions = parsePdfRedactAnnotations(ascii);
   const sensitive = scanSensitive(text);
   // The third bound in this pack, and the last one that was not said: the byte
   // window above. A PDF larger than MAX_PART_BYTES has its metadata and
@@ -349,7 +485,28 @@ function readPdf(bytes: ArrayBuffer, text: string): ContainerFacts {
     hidden: [],
     metadata,
     sensitive,
+    ...(redactions.length > 0 ? { redactions } : {}),
   };
+}
+
+/**
+ * Acrobat's "Mark for redaction" leaves a `/Redact` annotation and the words
+ * beneath it untouched until someone clicks Apply. One that survives into the
+ * delivered file is a redaction that was never made: the box shows on screen
+ * and the text layer still holds what it covers. Read from the uncompressed
+ * regions only, the same reach as the reviewer-annotation read above.
+ */
+function parsePdfRedactAnnotations(ascii: string): RedactionFact[] {
+  const facts: RedactionFact[] = [];
+  const re = /\/Subtype\s{0,8}\/Redact\b/g;
+  while (re.exec(ascii) !== null && facts.length < MAX_FACTS) {
+    facts.push({
+      kind: "pdf-redact-annotation",
+      reason: "a redaction mark that was never applied",
+      location: `annotation ${facts.length + 1}`,
+    });
+  }
+  return facts;
 }
 
 /** Reviewer markup/comment annotation subtypes we surface (spec-v9 §7). */

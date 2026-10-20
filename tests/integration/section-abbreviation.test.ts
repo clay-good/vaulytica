@@ -33,6 +33,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { analyzeText, loadAccuracyDeps } from "../../tools/cli/api.js";
 import { recognizerSources, sourceFiles, DOCUMENT_READING_ROOTS } from "./_recognizer-sources.js";
+import { KNOWN_DEBT } from "./_known-debt.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -44,11 +45,7 @@ export const withSectionAbbreviated = (t: string): string =>
 export const withArticleAbbreviated = (t: string): string =>
   t.replace(/(?<!^[ \t]*)\bArticle (\d)/gm, "Art. $1");
 
-const DECLARED = [
-  "legend-nda.txt: lost RISK-014",
-  "relocation-agreement.txt: gained FIN-005",
-  "venue-rental.txt: gained RISK-016",
-];
+const DECLARED = KNOWN_DEBT["section-abbreviation"].entries;
 
 async function movedBy(
   mutate: (t: string) => string,

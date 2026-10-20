@@ -536,6 +536,18 @@ greps every serialized finding to prove it. And the whole surface is
 never "this document is clean / safe to send." The honesty contract is v5's,
 restated for a new surface.
 
+### A redaction finding never reveals what was redacted
+
+`HANDOFF-006` and `HANDOFF-007` (add-redaction-integrity-scan) exist because
+the words under a box or a black highlight are still in the file. The finding
+must not become the second copy: it carries the covered text's SHAPE — every
+letter `x`, every digit `#` — and its location, never the text, and a test
+greps every serialized delivery report for each fixture's hidden sentinel. The
+engine's own findings still quote the document as they always have, because
+the words are in it; that is precisely what the finding warns about.
+What is not checked is stated where the result is: a box drawn over a PDF's
+text layer, a redaction burned into an image, and an OCR'd scan.
+
 ### No corpus contamination
 
 The adversarial-container fixtures are deterministic OOXML builders

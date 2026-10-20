@@ -10,6 +10,9 @@
  *   HANDOFF-003  hidden / non-printing content  (warning)
  *   HANDOFF-004  authoring metadata present     (info → warning → critical)
  *   HANDOFF-005  sensitive-data patterns         (warning → critical)
+ *   HANDOFF-006  liftable redaction, PDF         (critical)
+ *   HANDOFF-007  visual-only redaction, DOCX     (critical)
+ *   HANDOFF-008  omission markers, no SEC legend (warning; SEC exhibits only)
  */
 
 import type { ContainerFacts, HandoffFinding, MetadataFact } from "./types.js";
@@ -34,6 +37,12 @@ const ENTITY_FIELDS = new Set(["company", "manager", "template"]);
 export function deriveHandoffFindings(
   facts: ContainerFacts,
   parties: readonly string[] = [],
+  options: {
+    /** The flattened text the engine read; HANDOFF-008 reads its markers and first page. */
+    text?: string;
+    /** The document is an SEC exhibit: routed to a family filed on EDGAR, or asserted. */
+    secExhibit?: boolean;
+  } = {},
 ): HandoffFinding[] {
   const findings: HandoffFinding[] = [];
 
@@ -115,7 +124,81 @@ export function deriveHandoffFindings(
     });
   }
 
+  const redactions = facts.redactions ?? [];
+  const pdfMarks = redactions.filter((r) => r.kind === "pdf-redact-annotation");
+  if (pdfMarks.length > 0) {
+    findings.push({
+      rule_id: "HANDOFF-006",
+      severity: "critical",
+      title: "A redaction can be lifted",
+      description: `${pdfMarks.length} redaction mark${plural(pdfMarks.length)} ${pdfMarks.length === 1 ? "was" : "were"} never applied: the box shows on screen and the text beneath it is still in the file.`,
+      count: pdfMarks.length,
+      evidence: pdfMarks.slice(0, 20).map((r) => `${r.location}: ${r.reason}`),
+    });
+  }
+  const runs = redactions.filter((r) => r.kind === "docx-run");
+  if (runs.length > 0) {
+    findings.push({
+      rule_id: "HANDOFF-007",
+      severity: "critical",
+      title: "Text is hidden by color, not removed",
+      description: `${runs.length} span${plural(runs.length)} ${runs.length === 1 ? "is" : "are"} painted in ${runs.length === 1 ? "its" : "their"} own background color. A reader cannot see ${runs.length === 1 ? "it" : "them"}; anyone can select, search or copy ${runs.length === 1 ? "it" : "them"}, and Save as PDF keeps ${runs.length === 1 ? "it" : "them"}.`,
+      count: runs.length,
+      // The covered text's SHAPE only — never the text (masking invariant).
+      evidence: runs
+        .slice(0, 20)
+        .map((r) => `${r.location}: ${r.reason} — ${r.masked_shape ?? ""}`),
+    });
+  }
+
+  if (options.secExhibit && options.text) {
+    const legend = secOmissionLegend(options.text);
+    if (legend && legend.missing.length > 0) {
+      findings.push({
+        rule_id: "HANDOFF-008",
+        severity: "warning",
+        title: "Omission markers without a complete first-page statement",
+        description:
+          `The exhibit marks ${legend.markers} omission${plural(legend.markers)}, and its first page does not carry every element of the statement 17 C.F.R. § 229.601(b)(10)(iv) asks for (read 2026-10-19). ` +
+          "This says what the page contains, not whether the omitted information was material: that is the registrant's judgment.",
+        count: legend.markers,
+        evidence: [
+          `found: ${legend.found.length > 0 ? legend.found.join(", ") : "none"}`,
+          `not found: ${legend.missing.join(", ")}`,
+        ],
+      });
+    }
+  }
+
   return findings;
+}
+
+/**
+ * The omission markers an exhibit redacted under Reg. S-K Item 601(b)(10)(iv)
+ * uses — bracketed asterisks, a bracketed "redacted" / "omitted", or a line of
+ * asterisks alone — and which of the first-page statement's three elements
+ * the first page (its first 3,000 characters) carries. Undefined when there
+ * are no markers: nothing was omitted, so no statement is owed.
+ */
+function secOmissionLegend(
+  text: string,
+): { markers: number; found: string[]; missing: string[] } | undefined {
+  const markerRe =
+    /\[\s{0,3}\*{3,}\s{0,3}\]|\[\s{0,3}(?:redacted|omitted|information\s+omitted)\s{0,3}\]|^[ \t]{0,8}\*{3,}[ \t]{0,8}$/gim;
+  const markers = text.match(markerRe)?.length ?? 0;
+  if (markers === 0) return undefined;
+  const first = text.slice(0, 3000);
+  const elements: Array<[string, RegExp]> = [
+    ["a statement that information was omitted", /\b(?:omitted|excluded|redacted)\b/i],
+    ["that it is not material", /\bnot\s+material\b|\bimmaterial\b/i],
+    [
+      "that it is the kind treated as private or confidential",
+      /\bprivate\s+or\s+confidential\b|\bcompetitive\s+harm\b/i,
+    ],
+  ];
+  const found = elements.filter(([, re]) => re.test(first)).map(([name]) => name);
+  const missing = elements.filter(([, re]) => !re.test(first)).map(([name]) => name);
+  return { markers, found, missing };
 }
 
 function isCrossMatter(mf: MetadataFact, parties: readonly string[]): boolean {

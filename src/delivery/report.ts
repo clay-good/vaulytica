@@ -72,6 +72,14 @@ function labelFor(f: HandoffFinding): string {
       return f.count === 1 ? "metadata field" : "metadata fields";
     case "HANDOFF-005":
       return f.count === 1 ? "sensitive-data span" : "sensitive-data spans";
+    case "HANDOFF-006":
+      return f.count === 1 ? "liftable redaction" : "liftable redactions";
+    case "HANDOFF-007":
+      return f.count === 1 ? "span hidden by color" : "spans hidden by color";
+    case "HANDOFF-008":
+      return f.count === 1
+        ? "omission marker without its legend"
+        : "omission markers without their legend";
     default:
       return "item";
   }

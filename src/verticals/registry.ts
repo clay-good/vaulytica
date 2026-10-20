@@ -113,6 +113,10 @@ export const REGISTERED_ASSERTION_GATES: readonly string[] = [
   // playbook gating alone would change every existing will/trust hash, so the
   // pack runs only when the user asserts `--estate-checks`.
   "estate-checks",
+  // add-redaction-integrity-scan — HANDOFF-008 reads an SEC exhibit's
+  // omission legend; a document no SEC-exhibit type matched is in scope only
+  // when the user asserts `--sec-exhibit`.
+  "sec-exhibit",
 ];
 
 /** A pack's honesty-bounded statement of what it did and did not review. */

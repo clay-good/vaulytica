@@ -524,6 +524,19 @@ export const KNOWN_DEBT = {
     // §58 Insurance Summary and no other moved.
     entries: [],
   },
+  // section-abbreviation.test.ts — "Sec. N" for "Section N" (9.953.0)
+  "section-abbreviation": {
+    reason:
+      'On {n} specimens, writing a cross-reference as "Sec. 4" instead of "Section 4" changes a finding, because the rule reads the reference through a window that admits no period at all.',
+    // RISK-014, FIN-005 and RISK-016 each keep a bespoke character class such
+    // as `[\s\w,%§]{0,40}` between their anchors; the shared sentence idiom
+    // learned to step over "Sec." in 9.953.0 and these three do not use it.
+    entries: [
+      "legend-nda.txt: lost RISK-014",
+      "relocation-agreement.txt: gained FIN-005",
+      "venue-rental.txt: gained RISK-016",
+    ],
+  },
   // expected-defined-terms.test.ts — FALSE_ACCUSATIONS
   "expected-defined-terms": {
     reason:

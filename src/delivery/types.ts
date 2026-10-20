@@ -63,6 +63,29 @@ export type SensitiveFact = {
 };
 
 /**
+ * A redaction that hides words from a reader and leaves them in the file.
+ *
+ * Never the covered text: `masked_shape` is that text with every letter as `x`
+ * and every digit as `#`, whitespace kept, so a reviewer can see "a nine-digit
+ * number" or "two words" and the report reproduces nothing it was hiding. The
+ * masking assertions in `delivery.test.ts` grep every export for it.
+ */
+export type RedactionFact = {
+  /**
+   * `docx-run` — a run whose text color equals its highlight or shading (black
+   * on black, white on white); `pdf-redact-annotation` — an Acrobat "Mark for
+   * redaction" that was never applied.
+   */
+  kind: "docx-run" | "pdf-redact-annotation";
+  /** Why it reads as a redaction, e.g. "black text on black highlight". */
+  reason: string;
+  /** Where it is, e.g. "paragraph 12". */
+  location: string;
+  /** The covered text, masked. Absent when the carrier holds no text (an annotation). */
+  masked_shape?: string;
+};
+
+/**
  * The typed result of a container read. Every array is empty for an input that
  * carries no container to inspect (pasted text, an image-only scan) — and the
  * Delivery report says so honestly (§3 corollary 3), never asserting cleanliness.
@@ -83,6 +106,12 @@ export type ContainerFacts = {
   hidden: HiddenFact[];
   metadata: MetadataFact[];
   sensitive: SensitiveFact[];
+  /**
+   * Liftable redactions (add-redaction-integrity-scan). OPTIONAL and absent
+   * when there are none, so a document without one produces the byte-identical
+   * facts — and `delivery_hash` — it produced before the field existed.
+   */
+  redactions?: RedactionFact[];
 };
 
 /** Severity of a handoff finding. Mirrors the engine's three-tier scale. */
@@ -96,7 +125,7 @@ export type HandoffSeverity = "critical" | "warning" | "info";
  * attorney-gate (§3).
  */
 export type HandoffFinding = {
-  /** `HANDOFF-001`..`HANDOFF-005`. */
+  /** `HANDOFF-001`..`HANDOFF-008`. */
   rule_id: string;
   severity: HandoffSeverity;
   title: string;

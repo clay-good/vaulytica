@@ -635,6 +635,7 @@ export async function prepareDocument(
     source: kind === "text" ? "paste" : kind,
     text: flattenText(ingest.tree),
     parties: extracted.parties.map((p) => p.name),
+    playbookId: playbook.id,
   });
 
   return {

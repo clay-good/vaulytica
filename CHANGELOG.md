@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.955.0] — 2026-10-19
+
+### Added
+- **Redaction integrity, first slice (add-redaction-integrity-scan).** Three
+  pre-disclosure checks join `HANDOFF-001…005`, on the same container read and
+  under the same `delivery_hash`:
+  - **`HANDOFF-007` (critical): text hidden by color in a Word document.**
+    This covers black highlighting over black text, white text on the page,
+    and text in its own run or paragraph shading. The words stay in the file,
+    selectable and searchable, and Save as PDF keeps them. Automatic text
+    color counts as black on a highlight and white on dark shading, because
+    that is how Word paints it. Colors must be exactly equal; "nearly the same
+    grey" is not reported.
+  - **`HANDOFF-006` (critical): a PDF redaction mark that was never
+    applied.** An Acrobat `/Redact` annotation leaves the text beneath it
+    untouched until Apply is clicked.
+  - **`HANDOFF-008` (warning): an SEC exhibit marks omissions (`[***]`,
+    `[REDACTED]`, a line of asterisks) without the complete first-page
+    statement.** That statement is the one 17 C.F.R. § 229.601(b)(10)(iv) asks
+    for (read 2026-10-19). The finding names which of the three elements the
+    first page carries, and nothing about materiality. It is in scope for a
+    document routed to a type the EDGAR routing labels name (held equal to
+    them by a test), or one asserted with `--sec-exhibit`.
+
+  **The finding never contains what it found hidden.** It shows the covered
+  text's shape (`xxxxxxx ####`) and its location, and a test greps every
+  serialized delivery report for each fixture's sentinel. The engine's own
+  findings still quote the document as before, because the words are in it,
+  which is what the finding is warning about. A document with no redaction
+  produces the same delivery report and `delivery_hash` as before; the new
+  field is absent when empty. The production-QA sweep runs the new checks, and
+  its scope statement now names what is still not checked.
+- **Not yet built, stated in the scope statement and in the change's task
+  list:** a box drawn over a PDF's text layer (the operator walk), a `Square`
+  annotation with interior color, theme-only Word colors, a redaction burned
+  into an image, OCR'd scans, and MCP `include: ["delivery"]`.
+
+### Changed
+- **The known-limits page lists the three "Sec." moves 9.953.0 declared.**
+  They were declared in their test, and they are now on the published ledger,
+  which `section-abbreviation.test.ts` reads.
+
 ## [9.954.0] — 2026-10-19
 
 ### Added

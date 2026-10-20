@@ -32,6 +32,7 @@ import type { ContainerSource, DeliveryReport } from "./types.js";
 import { readContainer } from "./container.js";
 import { deriveHandoffFindings } from "./handoff.js";
 import { buildDeliveryReport } from "./report.js";
+import { SEC_EXHIBIT_FAMILIES } from "./sec-exhibit.js";
 
 /**
  * Top-level entry point: read the container, derive the handoff findings, and
@@ -45,8 +46,18 @@ export async function scanDelivery(input: {
   source: ContainerSource;
   text: string;
   parties?: readonly string[];
+  /** The type the document routed to; an SEC-exhibit type brings HANDOFF-008 into scope. */
+  playbookId?: string;
+  /** `--sec-exhibit`: the user asserts the document is an SEC exhibit. */
+  secExhibit?: boolean;
 }): Promise<DeliveryReport> {
   const facts = readContainer(input.bytes, input.source, input.text);
-  const findings = deriveHandoffFindings(facts, input.parties ?? []);
+  const secExhibit =
+    input.secExhibit === true ||
+    (input.playbookId !== undefined && SEC_EXHIBIT_FAMILIES.has(input.playbookId));
+  const findings = deriveHandoffFindings(facts, input.parties ?? [], {
+    text: input.text,
+    secExhibit,
+  });
   return buildDeliveryReport(facts, findings);
 }

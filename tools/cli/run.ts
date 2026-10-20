@@ -405,6 +405,8 @@ export type Args = {
   failOn?: Severity;
   /** spec-v9 Thrust A — run the pre-disclosure ("Clean to Send") scan. */
   delivery?: boolean;
+  /** add-redaction-integrity-scan — the document is an SEC exhibit (HANDOFF-008). */
+  secExhibit?: boolean;
   /** spec-v9 Thrust C — compute the critical-dates register. */
   criticalDates?: boolean;
   /** spec-v9 Thrust B — build the closing checklist. */
@@ -594,6 +596,9 @@ function parseArgs(argv: string[]): Args {
       }
       case "--delivery":
         args.delivery = true;
+        break;
+      case "--sec-exhibit":
+        args.secExhibit = true;
         break;
       case "--critical-dates":
         args.criticalDates = true;
@@ -1397,6 +1402,7 @@ async function analyzeTarget(
     deps,
     asText: args.asText,
     delivery: args.delivery,
+    ...(args.secExhibit ? { secExhibit: true } : {}),
     criticalDates: args.criticalDates,
     checklist: args.checklist,
     customPlaybook,
@@ -2398,7 +2404,7 @@ Commands:
   analyze <path|glob|dir> [--playbook <id>]
 ${usageFormatLines()}
                           [--out <dir>] [--fail-on critical|warning|info]
-                          [--delivery] [--critical-dates] [--checklist]
+                          [--delivery [--sec-exhibit]] [--critical-dates] [--checklist]
                           [--playbook-file <path>] [--posture] [--role <name>] [--deal-value <n>]
                           [--fail-on-divergence] [--dkb <dir>] [--as-text] [--certificate]
                           [--definitions]

@@ -298,6 +298,8 @@ export async function analyzeFile(
     sourceName?: string;
     /** `--delivery`: a CONTAINER scan; file-only, since pasted text has none. */
     delivery?: boolean;
+    /** `--sec-exhibit`: the document is an SEC exhibit, so HANDOFF-008 reads its omission legend. */
+    secExhibit?: boolean;
     /**
      * Filing-format-lint activation (`--court`). When set and the document
      * matches a filing playbook, the FILE pack runs against the profile's
@@ -344,6 +346,8 @@ export async function analyzeFile(
       bytes: toArrayBuffer(bytes),
       source: containerSource(path),
       text: flattenText(ingest.tree),
+      playbookId: result.playbook_id,
+      ...(opts.secExhibit ? { secExhibit: true } : {}),
     });
   }
   return applyAssertedPacks(out, ingest, opts);

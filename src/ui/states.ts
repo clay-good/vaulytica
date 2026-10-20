@@ -2052,7 +2052,7 @@ function renderProductionQa(
     ${warnings}
     ${sweep}
     ${body}
-    <div class="np-note">Bates numbering and privilege-log reconciliation, deterministically — read from the member filenames and the supplied log. It does not read in-page Bates stamps, check redaction integrity, or assess whether any privilege claim is valid. The full report (with scope of review) is in the Word and JSON downloads.</div>
+    <div class="np-note">Bates numbering and privilege-log reconciliation, deterministically — read from the member filenames and the supplied log. It does not read in-page Bates stamps, check redaction integrity beyond hidden-by-color Word text and unapplied PDF redaction marks, or assess whether any privilege claim is valid. The full report (with scope of review) is in the Word and JSON downloads.</div>
   `;
 }
 

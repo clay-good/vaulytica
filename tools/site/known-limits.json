@@ -58,6 +58,11 @@
    "sentence": "On 4 specimens, setting the warranty disclaimer in capital letters (as drafters do) moves a finding."
   },
   {
+   "id": "section-abbreviation",
+   "count": 3,
+   "sentence": "On 3 specimens, writing a cross-reference as \"Sec. 4\" instead of \"Section 4\" changes a finding, because the rule reads the reference through a window that admits no period at all."
+  },
+  {
    "id": "section-renamed-article",
    "count": 3,
    "sentence": "On 3 specimens that already have Articles, renaming every Section to an Article makes two numbering schemes collide, and a cross-reference finding appears that the original does not draw."
