@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.982.0] — 2026-10-20
+
+### Added
+- **The FTC Holder Rule notice, checked word for word**
+  (add-mandated-text-conformance, slice A). 16 C.F.R. § 433.2 fixes the
+  notice a consumer credit contract must carry, and its form ("in at least
+  ten point, bold face, type"). Read at eCFR on 2026-10-20.
+  - `TEXT-001`: the document carries the notice, but not its words: a
+    dropped "ALL … AND DEFENSES", a "SHALL" made "MAY". The finding names
+    the words that differ and the variant, (a) or (b), it is closest to.
+  - `TEXT-002`: a Word file sets the notice in regular type. Read only
+    where the file carries formatting; point size is not read yet.
+  Neither fires on a document without the notice; none of the 363
+  specimens draws either. The launch set is 130 rules, the catalog 1,945.
+
 ## [9.981.0] — 2026-10-20
 
 ### Fixed

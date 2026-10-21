@@ -41,6 +41,9 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   PERS: "launch",
   DARK: "launch",
   PROOF: "launch",
+  // Mandated text (add-mandated-text-conformance): ungated, because each rule
+  // fires only on a document that carries the prescribed passage.
+  TEXT: "launch",
   // v3 regulated / deep packs.
   BAA: "baa",
   DPA: "dpa-gdpr",
