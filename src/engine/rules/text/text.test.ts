@@ -115,3 +115,25 @@ describe("the mandated-text table", () => {
     }
   });
 });
+
+describe("the door-to-door cancellation statement, 16 C.F.R. § 429.1(a)", () => {
+  const STATEMENT =
+    "You, the buyer, may cancel this transaction at any time prior to midnight of the third business day after the date of this transaction. See the attached notice of cancellation form for an explanation of this right.";
+
+  it("is not held to its exact words, which the rule allows to vary", async () => {
+    const reworded = STATEMENT.replace("See the attached", "See the enclosed");
+    expect(TEXT_001.check(await pasted(contract(reworded)))).toBeNull();
+    expect(
+      TEXT_001.check(await pasted(contract(STATEMENT.replace("You, the buyer,", "You")))),
+    ).toBeNull();
+  });
+
+  it("is held to its bold face in a Word file", async () => {
+    const f = TEXT_002.check(await docx(STATEMENT, false));
+    expect(f?.title).toMatch(/door-to-door cancellation statement is not in bold face/);
+    expect(f?.description).toMatch(
+      /16 C\.F\.R\. § 429\.1\(a\) requires the notice in bold face type of a minimum size of 10 points/,
+    );
+    expect(TEXT_002.check(await docx(STATEMENT, true))).toBeNull();
+  });
+});

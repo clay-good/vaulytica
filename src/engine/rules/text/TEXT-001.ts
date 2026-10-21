@@ -38,6 +38,8 @@ export const rule: Rule = {
   dkb_citations: [],
   check(ctx: RuleContext): Finding | null {
     for (const row of MANDATED_TEXTS) {
+      // "Substantially the following form" permits other words.
+      if (row.wording !== "exact") continue;
       const m = findMandated(ctx, row);
       if (!m || m.exact) continue;
       return emit(ctx, rule, {

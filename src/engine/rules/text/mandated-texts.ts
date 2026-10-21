@@ -29,6 +29,13 @@ export type MandatedText = {
   retrieved_at: string;
   /** The version read (the amendment history the source prints). */
   version: string;
+  /**
+   * `exact`: the authority prescribes these words ("the following
+   * provision"), so different words are a defect. `substantially`: it
+   * prescribes "substantially the following form", so the words may vary and
+   * only the form is checked.
+   */
+  wording: "exact" | "substantially";
   variants: readonly MandatedVariant[];
   /** A form the authority requires of the passage. */
   form?: { bold?: boolean; min_points?: number; statement: string };
@@ -43,6 +50,7 @@ export const MANDATED_TEXTS: readonly MandatedText[] = [
       "https://www.ecfr.gov/api/versioner/v1/full/2026-10-01/title-16.xml?part=433&section=433.2",
     retrieved_at: "2026-10-20",
     version: "40 FR 53506, Nov. 18, 1975; 40 FR 58131, Dec. 15, 1975",
+    wording: "exact",
     variants: [
       {
         where: "§ 433.2(a)",
@@ -54,5 +62,30 @@ export const MANDATED_TEXTS: readonly MandatedText[] = [
       },
     ],
     form: { bold: true, min_points: 10, statement: "in at least ten point, bold face, type" },
+  },
+  {
+    id: "ftc-cooling-off-statement",
+    name: "door-to-door cancellation statement",
+    citation: "16 C.F.R. § 429.1(a)",
+    source_url:
+      "https://www.ecfr.gov/api/versioner/v1/full/2026-10-01/title-16.xml?part=429&section=429.1",
+    retrieved_at: "2026-10-20",
+    version:
+      "37 FR 22934, Oct. 26, 1972, as amended at 38 FR 30105, Nov. 1, 1973; 38 FR 31828, Nov. 19, 1973; 53 FR 45459, Nov. 10, 1988; 60 FR 54186, Oct. 20, 1995",
+    // "A statement in substantially the following form", and the rule itself
+    // tells the seller to alter the last sentence when the forms are not
+    // attached. The first sentence, which states the right, locates it.
+    wording: "substantially",
+    variants: [
+      {
+        where: "§ 429.1(a)",
+        text: "You, the buyer, may cancel this transaction at any time prior to midnight of the third business day after the date of this transaction.",
+      },
+    ],
+    form: {
+      bold: true,
+      min_points: 10,
+      statement: "in bold face type of a minimum size of 10 points",
+    },
   },
 ];

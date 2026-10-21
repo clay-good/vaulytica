@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.983.0] — 2026-10-20
+
+### Added
+- The door-to-door sale cancellation statement (16 C.F.R. § 429.1(a), read
+  at eCFR) joins the mandated-text table. The rule allows "substantially"
+  its words, so only its form is checked: `TEXT-002` reports a Word file
+  that sets it in regular type instead of the bold face the rule requires.
+
 ## [9.982.0] — 2026-10-20
 
 ### Added
