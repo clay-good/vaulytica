@@ -1,6 +1,7 @@
 import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./types.js";
 import { countWords, noTextWarning, normalize } from "./normalize.js";
 import { numberingLabels, paragraphKey } from "./docx-numbering.js";
+import { sizeResolver } from "./docx-sizes.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
 import { countRevisions, docxNotices } from "./docx-notices.js";
@@ -32,6 +33,9 @@ type MammothNode = {
   value?: string;
   children?: MammothNode[];
   numbering?: unknown;
+  /** A paragraph's or run's style; a run's own size in points (`w:sz`). */
+  styleId?: string | null;
+  fontSize?: number | null;
 };
 
 type MammothLike = {
@@ -103,17 +107,39 @@ export async function ingestDocxBuffer(
   // Word's automatic numbering, written into each numbered paragraph's text
   // as Word displays it, and the list flag dropped: see docx-numbering.ts.
   const labels = numberingLabels(buf);
-  const transformDocument =
-    labels.size > 0 && mammoth.transforms
-      ? mammoth.transforms.paragraph((p) => {
-          if (!p.numbering) return p;
+  // The smallest point size each paragraph is set in, when the file states it
+  // (docx-sizes.ts), keyed by its text as the tree will carry it.
+  const sizes = sizeResolver(buf);
+  const paragraphSizes = new Map<string, Array<number | undefined>>();
+  const recordSize = (p: MammothNode): void => {
+    const runs: MammothNode[] = [];
+    const walk = (n: MammothNode): void => {
+      if (n.type === "run") runs.push(n);
+      else for (const c of n.children ?? []) walk(c);
+    };
+    walk(p);
+    const set = runs.filter((r) => mammothText(r).trim());
+    if (set.length === 0) return;
+    const each = set.map((r) => sizes.size(r, p.styleId));
+    const min = each.every((x) => x !== undefined) ? Math.min(...(each as number[])) : undefined;
+    const key = paragraphKey(mammothText(p));
+    paragraphSizes.set(key, [...(paragraphSizes.get(key) ?? []), min]);
+  };
+  const transformDocument = mammoth.transforms
+    ? mammoth.transforms.paragraph((p) => {
+        let out = p;
+        if (labels.size > 0 && p.numbering) {
           const label = labels.get(paragraphKey(mammothText(p)))?.shift();
           const head = label ? firstText(p) : undefined;
-          if (!label || !head) return p;
-          head.value = `${label} ${head.value ?? ""}`;
-          return { ...p, numbering: null };
-        })
-      : undefined;
+          if (label && head) {
+            head.value = `${label} ${head.value ?? ""}`;
+            out = { ...p, numbering: null };
+          }
+        }
+        recordSize(out);
+        return out;
+      })
+    : undefined;
   const result = await mammoth.convertToHtml(input, transformDocument ? { transformDocument } : {});
   // mammoth returns the ALL-CHANGES-ACCEPTED text of a redline (unless the
   // rejected reading was asked for, rewritten above), and emits
@@ -127,6 +153,7 @@ export async function ingestDocxBuffer(
 
   const tree = parseDocxHtml(result.value);
   const normalized = normalize(tree);
+  attachSizes(normalized, paragraphSizes);
 
   const language = languageFields(normalized, warnings);
   const word_count = countWords(normalized);
@@ -140,6 +167,20 @@ export async function ingestDocxBuffer(
     sha256: await sha256Hex(source),
     warnings,
   };
+}
+
+/** Give each paragraph the smallest size it is set in, where the file states one. */
+function attachSizes(tree: DocumentTree, sizes: Map<string, Array<number | undefined>>): void {
+  const walk = (sections: Section[]): void => {
+    for (const s of sections) {
+      for (const p of s.paragraphs) {
+        const size = sizes.get(paragraphKey(p.runs.map((r) => r.text).join("")))?.shift();
+        if (size !== undefined) p.min_size_pt = size;
+      }
+      walk(s.children);
+    }
+  };
+  walk(tree.sections);
 }
 
 /**

@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.984.0] — 2026-10-20
+
+### Added
+- **A mandated notice set too small.** The Word ingest now reads the point
+  size each paragraph is set in, through the file's own styles and
+  defaults, and only where the file states one. `TEXT-002` reports the
+  Holder Rule notice or the cancellation statement below the ten points
+  its rule requires, and says when a file does not state the size.
+
 ## [9.983.0] — 2026-10-20
 
 ### Added

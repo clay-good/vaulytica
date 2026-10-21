@@ -23,18 +23,25 @@ async function pasted(text: string): Promise<RuleContext> {
   return { ...buildContext(["Agreement"]), tree, extracted: extractAll(tree) };
 }
 
-async function docx(notice: string, bold: boolean): Promise<RuleContext> {
-  const run = (t: string, b: boolean) =>
-    `<w:r>${b ? "<w:rPr><w:b/></w:rPr>" : ""}<w:t xml:space="preserve">${t}</w:t></w:r>`;
+async function docx(
+  notice: string,
+  bold: boolean,
+  opts: { halfPoints?: number; styles?: string } = {},
+): Promise<RuleContext> {
+  const run = (t: string, b: boolean, sz?: number) => {
+    const rPr = `${b ? "<w:b/>" : ""}${sz ? `<w:sz w:val="${sz}"/>` : ""}`;
+    return `<w:r>${rPr ? `<w:rPr>${rPr}</w:rPr>` : ""}<w:t xml:space="preserve">${t}</w:t></w:r>`;
+  };
   const { tree } = await ingestDocxBuffer(
     buildDocx({
       document: documentXml(
         [
           `<w:p>${run("RETAIL INSTALLMENT SALE CONTRACT", true)}</w:p>`,
           `<w:p>${run("Buyer agrees to pay the Amount Financed in 36 monthly payments.", false)}</w:p>`,
-          `<w:p>${run(notice, bold)}</w:p>`,
+          `<w:p>${run(notice, bold, opts.halfPoints)}</w:p>`,
         ].join(""),
       ),
+      ...(opts.styles ? { styles: opts.styles } : {}),
     }),
   );
   return { ...buildContext(["Agreement"]), tree, extracted: extractAll(tree) };
@@ -91,7 +98,8 @@ describe("TEXT-002 — the Holder Rule notice, not in bold face", () => {
     const f = TEXT_002.check(await docx(A!, false));
     expect(f?.rule_id).toBe("TEXT-002");
     expect(f?.description).toMatch(/ten point, bold face/);
-    expect(f?.description).toMatch(/point size was not checked/);
+    expect(f?.description).toMatch(/none of it is bold/);
+    expect(f?.description).toMatch(/point size is not stated in the file, so it was not checked/);
   });
 
   it("accepts the notice in bold", async () => {
@@ -130,10 +138,35 @@ describe("the door-to-door cancellation statement, 16 C.F.R. § 429.1(a)", () =>
 
   it("is held to its bold face in a Word file", async () => {
     const f = TEXT_002.check(await docx(STATEMENT, false));
-    expect(f?.title).toMatch(/door-to-door cancellation statement is not in bold face/);
+    expect(f?.title).toMatch(
+      /door-to-door cancellation statement is not in the required bold face/,
+    );
     expect(f?.description).toMatch(
       /16 C\.F\.R\. § 429\.1\(a\) requires the notice in bold face type of a minimum size of 10 points/,
     );
     expect(TEXT_002.check(await docx(STATEMENT, true))).toBeNull();
+  });
+});
+
+describe("TEXT-002 — the point size", () => {
+  const STYLES = (halfPoints: number) =>
+    `<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:sz w:val="${halfPoints}"/></w:rPr></w:rPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>`;
+
+  it("reports a bold notice set smaller than ten points", async () => {
+    const f = TEXT_002.check(await docx(A!, true, { halfPoints: 16 }));
+    expect(f?.title).toMatch(/not in the required size/);
+    expect(f?.description).toMatch(/it is set in 8-point type/);
+  });
+
+  it("reads the size from the document defaults when the run states none", async () => {
+    expect(TEXT_002.check(await docx(A!, true, { styles: STYLES(24) }))).toBeNull();
+    const small = TEXT_002.check(await docx(A!, true, { styles: STYLES(18) }));
+    expect(small?.description).toMatch(/9-point/);
+  });
+
+  it("says both when the notice is neither bold nor large enough", async () => {
+    const f = TEXT_002.check(await docx(A!, false, { halfPoints: 14 }));
+    expect(f?.title).toMatch(/bold face or size/);
+    expect(f?.description).toMatch(/none of it is bold, and it is set in 7-point type/);
   });
 });

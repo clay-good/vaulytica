@@ -52,6 +52,8 @@ export type MandatedMatch = {
   position: DocPosition;
   /** The runs the window covers, for the form check. */
   runs: ReadonlyArray<{ bold: boolean }>;
+  /** The smallest point size of the paragraph, where the file determines it. */
+  size_pt?: number;
 };
 
 /** The document's best match for a row, or undefined when no window comes near. */
@@ -106,6 +108,7 @@ export function findMandated(ctx: RuleContext, row: MandatedText): MandatedMatch
           text: p.text.slice(first.at, last.end + (p.text[last.end] === "." ? 1 : 0)),
           paragraphText: p.text,
           position: { section_id: p.section.id, paragraph_id: p.paragraph.id, start, end },
+          ...(p.paragraph.min_size_pt !== undefined ? { size_pt: p.paragraph.min_size_pt } : {}),
           runs: p.paragraph.runs
             .filter((r) => r.end > start && r.start < end && r.text.trim())
             .map((r) => ({ bold: r.formatting?.bold === true })),

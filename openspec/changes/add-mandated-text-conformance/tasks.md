@@ -24,3 +24,7 @@
 ## Progress — 9.983.0
 
 16 C.F.R. § 429.1(a), read at eCFR on 2026-10-20. Its statement is required "in substantially the following form", and the rule tells the seller to alter its last sentence when the forms are not attached, so a reworded statement is not a defect. The table gained `wording: "exact" | "substantially"`; `TEXT-001` reads only exact rows, and `TEXT-002` holds the statement to its bold face ("a minimum size of 10 points"; size not read). The first sentence, which states the right, locates it. The residential-solar rules that check the statement's presence are unchanged: they ask whether it is there, this asks how it is set. § 429.1(b)'s notice form and 18 U.S.C. § 1833(b)(3) (content elements, not words, and already checked as presence) are not in the table.
+
+## Progress — 9.984.0
+
+Task 5, the DOCX half: a paragraph carries `min_size_pt`, the smallest point size its text is set in, resolved as Word does (the run's own `w:sz`, its character style, its paragraph style through `basedOn`, the default paragraph style, the document defaults; `docx-sizes.ts`), and absent whenever a link is missing, so a size is reported only when the file states it. `TEXT-002` now reports a notice below the authority's minimum ("set in 8-point type"), and says when the size could not be read. `w:caps` and the PDF text item's size are not read yet; no row needs capitals.

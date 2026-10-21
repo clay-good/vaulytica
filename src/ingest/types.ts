@@ -30,6 +30,12 @@ export type Paragraph = {
   /** Stable id, e.g. `s2.p3`. */
   id: string;
   runs: Run[];
+  /**
+   * The smallest point size the paragraph's text is set in. DOCX only, and
+   * only where the file determines it (a run's own size, its styles, or the
+   * document defaults); absent otherwise.
+   */
+  min_size_pt?: number;
 };
 
 export type Section = {
