@@ -25,7 +25,7 @@ import type { DocumentTree } from "../ingest/types.js";
 import { sha256Hex } from "../ingest/hash.js";
 import { buildClauseDiff, flattenClauses, type Clause, type ClauseDiff } from "./clause-diff.js";
 
-export const CONFORMITY_VERSION = "1";
+export const CONFORMITY_VERSION = "2";
 
 /**
  * A signature-block line: the label a signer fills in, on its own line. Ingest
@@ -108,6 +108,41 @@ export type Conformity = {
   conformity_hash: string;
 };
 
+const RESEGMENTED = "the same words, split into paragraphs differently";
+
+/** Every heading and paragraph of a tree as a line, in document order. */
+function linesOf(tree: DocumentTree): string[] {
+  const out: string[] = [];
+  const walk = (sections: DocumentTree["sections"]): void => {
+    for (const s of sections) {
+      if (s.heading?.trim()) out.push(s.heading.trim());
+      for (const p of s.paragraphs) {
+        const t = p.runs
+          .map((r) => r.text)
+          .join("")
+          .trim();
+        if (t) out.push(t);
+      }
+      walk(s.children);
+    }
+  };
+  walk(tree.sections);
+  return out;
+}
+
+/** Every section heading in a tree, in document order. */
+function headingsOf(tree: DocumentTree): string[] {
+  const out: string[] = [];
+  const walk = (sections: DocumentTree["sections"]): void => {
+    for (const s of sections) {
+      if (s.heading?.trim()) out.push(s.heading.trim());
+      walk(s.children);
+    }
+  };
+  walk(tree.sections);
+  return out;
+}
+
 /** Compare a final draft with its executed copy. */
 export async function checkConformity(
   final: DocumentTree,
@@ -138,8 +173,41 @@ export async function checkConformity(
   // applicant Date") is set aside on the final side, and its filled copy
   // ("/s/ Ana Ruiz 06/03/2026 Signature of applicant Date") arrives as an
   // added paragraph. Filling that rule's blanks is what signing it is.
+  const norm = (t: string): string => t.replace(/\s+/g, " ").trim().toLowerCase();
+  // A line one ingest reads as a heading and the other as a paragraph (a Word
+  // Title paragraph, a 16-point PDF line) is the same line in both files. And
+  // headings are compared too: the paragraph diff never sees them, so a
+  // heading the signed copy changed would otherwise pass unseen.
+  const finalHeadings = headingsOf(final);
+  const executedHeadings = headingsOf(executed);
+  const finalHeadingSet = new Set(finalHeadings.map(norm));
+  const executedHeadingSet = new Set(executedHeadings.map(norm));
+  const finalTexts = new Set(finalClauses.map((c) => norm(c.text)));
+  const executedTexts = new Set(executedClauses.map((c) => norm(c.text)));
+  const headingElsewhere = (c: Clause, side: "final" | "executed"): boolean => {
+    const other = side === "final" ? executedHeadingSet : finalHeadingSet;
+    if (!other.has(norm(c.text))) return false;
+    set_aside.push({ side, text: c.text, reason: "a heading in the other file" });
+    return true;
+  };
+  const headingClause = (text: string): Clause => ({
+    id: "heading",
+    heading: text,
+    text,
+    key: norm(text),
+    number: "",
+  });
+  const headingsRemoved = finalHeadings
+    .filter((h) => !executionAllowance(h))
+    .filter((h) => !executedHeadingSet.has(norm(h)) && !executedTexts.has(norm(h)))
+    .map(headingClause);
+  const headingsAdded = executedHeadings
+    .filter((h) => !executionAllowance(h))
+    .filter((h) => !finalHeadingSet.has(norm(h)) && !finalTexts.has(norm(h)))
+    .map(headingClause);
   const setAsideFinal = set_aside.filter((x) => x.side === "final").map((x) => x.text);
   const added = diff.added.filter((c) => {
+    if (headingElsewhere(c, "executed")) return false;
     if (!setAsideFinal.some((f) => fillsBlanks(f, c.text))) return true;
     set_aside.push({ side: "executed", text: c.text, reason: "blank filled in" });
     return false;
@@ -148,9 +216,9 @@ export async function checkConformity(
   // line set aside above: filling a blank can change where ingest breaks
   // paragraphs, so "FOR OFFICE USE ONLY" arrives inside the signed line under
   // it. The text is there; it is not a difference.
-  const norm = (t: string): string => t.replace(/\s+/g, " ").trim().toLowerCase();
   const setAsideExecuted = set_aside.filter((x) => x.side === "executed").map((x) => norm(x.text));
   const removed = diff.removed.filter((c) => {
+    if (headingElsewhere(c, "final")) return false;
     const key = norm(c.text);
     if (key.length < 4 || !setAsideExecuted.some((t) => t.includes(key))) return true;
     set_aside.push({
@@ -169,11 +237,93 @@ export async function checkConformity(
   // Every line of an added signatory's block is an allowance on its own, so
   // the blocks are counted: a party who signs and was not in the final, or a
   // block the signed copy lacks, is a difference whatever its lines say.
+  // Counted wherever the label starts a word, not only a line: a PDF ingest
+  // can join "By: /s/ …" to the party name above it.
   const blocks = (cs: readonly Clause[]): number =>
-    cs.filter((c) => /^by\s*:/i.test(c.text)).length;
+    cs.reduce((n, c) => n + (c.text.match(/(?:^|\s)by\s*:/gi)?.length ?? 0), 0);
   const signature_blocks = { final: blocks(finalClauses), executed: blocks(executedClauses) };
   const blockDifference = signature_blocks.final !== signature_blocks.executed ? 1 : 0;
 
+  removed.push(...headingsRemoved);
+  added.push(...headingsAdded);
+  // Paragraph boundaries are not text. A PDF ingest joins a short line to the
+  // next ("Halbrook Robotics, Inc." over "Plan Year: …") where a Word file
+  // keeps two paragraphs, so the same words arrive as a removed line and a
+  // changed one. When every differing line on each side, read in document
+  // order as one stream of words, is the same words, the difference is the
+  // segmentation, and it is listed rather than counted. A moved paragraph
+  // changes the order, and a changed word changes the words, so either still
+  // counts.
+  // A line one file joins to the lines after it, where the other keeps them
+  // apart: the changed line is its old self followed, word for word, by the
+  // lines that came next. Read locally, so a match of those lines elsewhere
+  // in the document does not hide the join.
+  const finalLines = linesOf(final).map(norm);
+  const executedLines = linesOf(executed).map(norm);
+  const joined = (short: string, long: string, lines: readonly string[]): string[] | undefined => {
+    if (!long.startsWith(short) || long === short) return undefined;
+    let rest = long.slice(short.length).trim();
+    const used: string[] = [];
+    for (let i = lines.indexOf(short) + 1; i > 0 && i < lines.length && rest; i++) {
+      const next = lines[i]!;
+      if (!rest.startsWith(next)) return undefined;
+      used.push(next);
+      rest = rest.slice(next.length).trim();
+    }
+    return rest === "" && used.length > 0 ? used : undefined;
+  };
+  for (let i = changed.length - 1; i >= 0; i--) {
+    const pair = changed[i]!;
+    const b = norm(pair.base.text);
+    const r = norm(pair.revised.text);
+    const intoExecuted = joined(b, r, finalLines);
+    const intoFinal = intoExecuted ? undefined : joined(r, b, executedLines);
+    const absorbed = intoExecuted ?? intoFinal;
+    if (!absorbed) continue;
+    changed.splice(i, 1);
+    set_aside.push({ side: "final", text: pair.base.text, reason: RESEGMENTED });
+    set_aside.push({ side: "executed", text: pair.revised.text, reason: RESEGMENTED });
+    const pool = intoExecuted ? removed : added;
+    for (const line of absorbed) {
+      const k = pool.findIndex((c) => norm(c.text) === line);
+      if (k >= 0) {
+        set_aside.push({
+          side: intoExecuted ? "final" : "executed",
+          text: pool[k]!.text,
+          reason: RESEGMENTED,
+        });
+        pool.splice(k, 1);
+      }
+    }
+  }
+  const finalDiffering = new Set(
+    [...removed.map((c) => c.text), ...changed.map((p) => p.base.text)].map(norm),
+  );
+  const executedDiffering = new Set(
+    [...added.map((c) => c.text), ...changed.map((p) => p.revised.text)].map(norm),
+  );
+  const stream = (tree: DocumentTree, keep: ReadonlySet<string>): string =>
+    linesOf(tree)
+      .map(norm)
+      .filter((t) => keep.has(t))
+      .join(" ")
+      .split(/\s+/)
+      .filter(Boolean)
+      .join(" ");
+  if (
+    finalDiffering.size + executedDiffering.size > 0 &&
+    stream(final, finalDiffering) === stream(executed, executedDiffering)
+  ) {
+    for (const c of removed) set_aside.push({ side: "final", text: c.text, reason: RESEGMENTED });
+    for (const p of changed) {
+      set_aside.push({ side: "final", text: p.base.text, reason: RESEGMENTED });
+      set_aside.push({ side: "executed", text: p.revised.text, reason: RESEGMENTED });
+    }
+    for (const c of added) set_aside.push({ side: "executed", text: c.text, reason: RESEGMENTED });
+    removed.length = 0;
+    added.length = 0;
+    changed.length = 0;
+  }
   const difference_count = removed.length + added.length + changed.length + blockDifference;
   const verdict = difference_count === 0 ? "identical" : "differences";
   const canonical = JSON.stringify({

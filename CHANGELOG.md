@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.980.0] — 2026-10-20
+
+### Fixed
+- **A signed PDF no longer fails against its Word final just for being a
+  PDF.** Checking a signed copy in another format than its final reported
+  differences that were only the format: a title the PDF reads as a
+  heading, and short lines the PDF joins into one paragraph. Over a
+  corpus sample, 17 of 31 documents with nothing executed came back "not
+  identical"; now 83 of 91 do not, and every changed figure is still
+  found. Headings are now compared too, so a changed title is caught.
+  The conformity hash is version 2.
+
 ## [9.979.0] — 2026-10-20
 
 ### Fixed
