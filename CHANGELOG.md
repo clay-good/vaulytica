@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.981.0] — 2026-10-20
+
+### Fixed
+- The production-QA scope statement (in the bundle Word and JSON reports)
+  said a box drawn over a PDF's text is not checked. It has been since
+  9.975.0; the statement now lists the three redaction shapes checked and
+  the ones that are not.
+
+### Added
+- An image-only fixture for the redaction scan: a box burned into a
+  scanned image is not a text-layer redaction and is not reported as one.
+  The redaction-integrity change (add-redaction-integrity-scan) is
+  complete.
+
 ## [9.980.0] — 2026-10-20
 
 ### Fixed

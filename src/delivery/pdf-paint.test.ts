@@ -197,3 +197,18 @@ describe("text drawn inside a form XObject", () => {
     expect(facts[0]!.masked_shape).toMatch(/xxxxxxx ####/i);
   });
 });
+
+describe("a redaction burned into an image", () => {
+  it("is not read, and is not mistaken for a box over text", async () => {
+    // add-redaction-integrity-scan task 1, the image-only fixture: a scanned
+    // page is an image, and a black box in it is pixels. There is no text
+    // layer to lift, so nothing here is a finding; the scope statement names
+    // the class as not checked.
+    const image = "q 200 0 0 40 120 690 cm BI /W 4 /H 1 /CS /G /BPC 8 ID \x00\x00\x00\x00 EI Q";
+    const { facts, pages_scanned } = await readBoxesOverText(pdf(image));
+    expect(pages_scanned).toBe(1);
+    expect(facts).toEqual([]);
+    const report = await scan(pdf(image));
+    expect(report.findings.map((f) => f.rule_id)).not.toContain("HANDOFF-006");
+  });
+});

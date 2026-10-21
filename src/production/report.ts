@@ -45,11 +45,11 @@ const SCOPE = {
     "Bates sequence integrity from member filenames: gaps, duplicates/overlaps, prefix and padding consistency (Sedona ESI protocol convention)",
     "privilege-log reconciliation against the produced set: ranges claimed withheld but apparently produced, produced gaps not covered by any log entry, overlapping log rows, and rows missing the FRCP 26(b)(5)(A) minimum fields",
     "a pre-production sweep of each member for tracked changes, comments, hidden text, authoring metadata, and sensitive-data patterns",
-    "redactions that can be lifted in two shapes: Word text painted in its own highlight or shading color, and a PDF redaction mark that was never applied",
+    "redactions that can be lifted in three shapes: Word text painted in its own highlight, shading or theme color; a PDF redaction mark that was never applied; and a filled box or square annotation painted over a PDF's text",
   ],
   not_reviewed_for: [
     "in-page Bates stamps (only filename-derived numbering was checked; page-stamp reading needs per-page text the tree does not retain)",
-    "redaction integrity beyond those two shapes — a box drawn over a PDF's text layer, a redaction burned into an image, or an OCR'd scan",
+    "redaction integrity beyond those three shapes — a redaction burned into an image, an OCR'd scan, or a box filled with a pattern or a translucent or blended color",
     "the substantive validity of any privilege claim",
   ],
 } as const;
