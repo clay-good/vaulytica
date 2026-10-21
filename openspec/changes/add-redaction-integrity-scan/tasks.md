@@ -8,7 +8,7 @@
 - [x] 6. Masking: extend the masking assertions in `src/delivery/delivery.test.ts` to grep every serialized export for every fixture's sentinel; the masked shape is the only representation.
 - [x] 7. Renderers and reach: tab card, CLI summary and `--fail-on-delivery`, JSON, DOCX, HTML, SARIF, bundle card; MCP `analyze_document` `include: ["delivery"]` (new); write a delivery reach test over those surfaces (break it on purpose once) and add the rules to `honesty-caveat-reach.test.ts`'s list.
 - [x] 8. Narrow the production-QA scope statement to "image-layer redactions and OCR'd scans are not checked"; add a `known-limits` ledger entry for the image-only class with a plain sentence.
-- [ ] 9. Docs: `reference.md` delivery table rows for 006–008, `threat-model.md` one paragraph, site "Clean to send" copy; the `/known-limits` page regenerates and its guard passes.
+- [x] 9. Docs: `reference.md` delivery table rows for 006–008, `threat-model.md` one paragraph, site "Clean to send" copy; the `/known-limits` page regenerates and its guard passes.
 - [ ] 10. Full gate green: typecheck, lint, format:check, tests, build, the privacy e2e, and the delivery format-invariance relation re-run with the new fixtures.
 
 ## Progress — 9.955.0 (slice A)
@@ -17,7 +17,6 @@ Built: the DOCX read and `HANDOFF-007` (black/white-on-same, run and paragraph s
 
 Not yet built, and stated where the result is shown:
 - Task 8: a known-limits ledger row for the image-only class (the ledger holds specimen-measured debts; this class has none yet).
-- Task 9: site "Clean to send" copy.
 
 ## Progress — 9.974.0
 
@@ -32,3 +31,5 @@ Cost, measured on a 30-page text PDF under load: 65–75 ms for the walk against
 ## Progress — 9.976.0
 
 Task 3's theme half: `w:themeColor` and `w:themeFill` are resolved through `word/theme/theme1.xml`'s color scheme (a system color by its saved `lastClr`), and the theme value wins over the stated hex when both are present, because that is what Word paints. A tinted or shaded theme color (`w:themeTint`/`w:themeShade`, `w:themeFillTint`/`w:themeFillShade`) falls back to the stated hex; with no hex and no resolution the run is counted, not checked, and the scan's note says how many ("N runs use theme colors the file's theme does not resolve"). Tested: white-on-white as `background1` with no hex, `text1` on `text1` shading, the theme beating a stated black, a tinted color and a missing theme (both named in the note, neither guessed), and an ordinary accent-colored heading (nothing).
+
+Task 9 (after 9.978.0): the landing page's "What it checks in every document" gains a "Before you send it" card naming the pre-disclosure scan, the three liftable-redaction kinds included, and saying the covered words are never shown. The `reference.md` rows and the threat-model paragraph were updated with tasks 2 and 3. Open: task 1's image-only scan fixture, and task 10's privacy e2e and delivery format-invariance re-run with the new fixtures.
