@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.986.0] — 2026-10-20
+
+### Changed
+- `/known-limits` now says how text is set (bold, type size, capitals) is
+  read only from a Word file, so a notice required in bold or at a minimum
+  size is checked for its words only in a PDF or plain text.
+- `docs/adding-a-rule.md`: "Adding a mandated text" (official source only,
+  exact or substantially, variants, form, fixtures).
+
 ## [9.985.0] — 2026-10-20
 
 ### Added

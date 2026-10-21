@@ -285,6 +285,16 @@ If your rule should fire selectively for some contract types, add per-playbook o
 
 Or `"skip": true` if the rule should not run at all for that playbook.
 
+## 5b. Adding a mandated text
+
+Some passages are not drafted; a regulation or statute fixes their words, and sometimes their type. Those are rows in [`src/engine/rules/text/mandated-texts.ts`](../src/engine/rules/text/mandated-texts.ts), not new rules: `TEXT-001` checks the words and `TEXT-002` the form for every row.
+
+1. **Read the text at its official source**: eCFR for a federal regulation, the state legislature's own site for a state statute. Never a commentator, a form vendor, or a law firm's page. Record the URL you read it at, the date, and the version the source prints (the Federal Register history, or the statute's amendment note). The table's test refuses a row whose `source_url` is not on an official host.
+2. **Decide `wording`.** `exact` when the authority prescribes "the following provision" or "the following notice": then different words are a defect and `TEXT-001` reports them. `substantially` when it prescribes "substantially the following form" (16 C.F.R. § 429.1(a) does): then only the form is checked.
+3. **One row, several variants**, when the authority gives alternatives (§ 433.2(a) and (b)). A document matching any variant exactly is fine; an altered one is compared with the closest.
+4. **`form`** only when the authority states one: `bold`, `min_points`, and the authority's own words in `statement`. The form is read only from a Word file; plain text and a PDF text layer carry no formatting, and the rules say nothing there.
+5. **Fixtures**: the exact text in capitals and mixed case, with and without its "NOTICE" heading; each alteration a reader would make; and, for a form row, a Word file in and out of the form. Then run the corpus: a mandated-text row must draw no finding on a specimen that does not carry the passage.
+
 ## 6. Verification gate (CI)
 
 Before opening a PR:

@@ -945,6 +945,7 @@ export function renderKnownLimitsPage(d: KnownLimitsData): string {
         <h2>2. What it reads</h2>
         <ul class="plain">
           <li>English only, and United States law.</li>
+          <li>How text is set (bold, type size, capitals) is read only from a Word file. A PDF text layer and plain text carry none of it, so a notice a rule requires in bold or at a minimum size is checked there for its words only.</li>
           <li>PDF, Word (.docx) and plain text, up to ${n(d.reads.max_document_mb)} MB. A scanned page with no text layer is not read: no surface runs OCR, because its models would load from another server. Run OCR on a scan first (Acrobat, Preview or your scanner's software) and the text it adds is read.</li>
           <li>A document is matched to one of ${n(d.self_measured.document_types)} document types when its score reaches ${d.reads.match_threshold}. A document that matches none gets a small generic rule set, and <strong>a short report on an unmatched document is not a clean bill</strong>.</li>
           <li>Up to ${n(d.reads.max_secondary_families)} more document types are detected from a document's vocabulary and checked as well. They are detected, not confirmed: an absence reported under one may be a clause the document was never supposed to carry.</li>
