@@ -11,6 +11,7 @@
  * Build-and-CI-only. Imported by the harness and its tests; never by `src/`.
  */
 
+import { activateReadability } from "../../src/readability/activate.js";
 import { readFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -237,6 +238,8 @@ export async function runIngested(
    * asks for it.
    */
   secondaryFamilies = false,
+  /** `--readability <id>`: hold the document to an asserted readability statute. */
+  readability?: string,
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
@@ -268,6 +271,8 @@ export async function runIngested(
     privacy.rules,
     estateState,
   );
+  const readable = activateReadability(readability, estate.rules);
+  const options = { ...(activation.options ?? {}), ...(readable.options ?? {}) };
 
   // The family that came closest when none matched (spec-v52 §1). It existed
   // only inside a sentence — "Best score was employment-at-will-us at 0.4" —
@@ -275,13 +280,13 @@ export async function runIngested(
   const nearMiss = nearMissOf(match);
 
   const run = await runEngine({
-    rules: estate.rules,
+    rules: readable.rules,
     ctx: {
       tree: ingest.tree,
       extracted,
       dkb: deps.dkb,
       playbook,
-      ...(activation.options ? { options: activation.options } : {}),
+      ...(Object.keys(options).length > 0 ? { options } : {}),
     },
     source_file: { name: filename, sha256: ingest.sha256, size_bytes: sizeBytes },
     playbook_match_confidence: match.confidence,
@@ -290,6 +295,9 @@ export async function runIngested(
     ...(privacy.asserted_regimes ? { asserted_regimes: privacy.asserted_regimes } : {}),
     ...(estate.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
     ...(estate.asserted_state ? { asserted_state: estate.asserted_state } : {}),
+    ...(readable.asserted_readability
+      ? { asserted_readability: readable.asserted_readability }
+      : {}),
     executed_at: "",
   });
 

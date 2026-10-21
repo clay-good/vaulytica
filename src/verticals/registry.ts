@@ -100,6 +100,8 @@ export const NAMESPACE_OWNERS: Readonly<Record<string, string>> = {
   SDP: "student-data-privacy-agreement",
   VEH: "vehicle-purchase-agreement",
   MSO: "management-services-agreement",
+  // add-readability-measure — under an asserted readability statute.
+  READ: "readability",
   // Presence notes on a document no type matched (spec-v50 §11).
   GEN: "generic-fallback",
 } as const;
@@ -121,6 +123,10 @@ export const REGISTERED_ASSERTION_GATES: readonly string[] = [
   // omission legend; a document no SEC-exhibit type matched is in scope only
   // when the user asserts `--sec-exhibit`.
   "sec-exhibit",
+  // add-readability-measure — READ-001/002 hold a policy to a readability
+  // statute; nothing in a document says where it was filed, so the standard
+  // applies only when the user asserts it (`--readability fl`).
+  "readability",
 ];
 
 /** A pack's honesty-bounded statement of what it did and did not review. */

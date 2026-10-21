@@ -83,6 +83,8 @@ export type RunEngineInput = {
   estate_checks_asserted?: boolean;
   /** Normalized `us-xx` state asserted via `--state` when the estate pack ran. */
   asserted_state?: string;
+  /** The readability standard asserted via `--readability` (add-readability-measure). */
+  asserted_readability?: string;
   /** ISO 8601. Excluded from the result hash. Defaults to "" so test runs are reproducible. */
   executed_at?: string;
   /**
@@ -225,6 +227,9 @@ export async function runEngine(input: RunEngineInput): Promise<EngineRun> {
   }
   if (input.asserted_state) {
     run.asserted_state = input.asserted_state;
+  }
+  if (input.asserted_readability) {
+    run.asserted_readability = input.asserted_readability;
   }
 
   run.result_hash = await computeResultHash(run);

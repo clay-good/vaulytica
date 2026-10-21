@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.988.0] — 2026-10-20
+
+### Added
+- **`--readability fl`: hold a policy form to Florida's readable-language
+  statute** (add-readability-measure). Fla. Stat. § 627.4145, read at its
+  official source, requires a Flesch reading ease score of at least 45 and
+  a table of contents or index above 3,000 words. `READ-001` reports a
+  score below 45 with its counts and longest sentence; `READ-002` a long
+  form with neither. Both say what the score does not apply (sampling,
+  the exclusions an insurer may claim) and that compliance is the
+  insurer's certification. Also in `vaulytica.config.json`; `verify`
+  re-derives an asserted report. See `docs/readability.md`.
+
 ## [9.987.0] — 2026-10-20
 
 ### Added

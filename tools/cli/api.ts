@@ -343,6 +343,8 @@ export async function analyzeFile(
      * overlay when the state is seeded; otherwise unchanged.
      */
     estateState?: string;
+    /** `--readability <id>`: hold the document to an asserted readability statute. */
+    readability?: string;
   } & AssertedPackOptions = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
@@ -359,6 +361,7 @@ export async function analyzeFile(
     opts.estateChecks,
     opts.estateState,
     opts.secondaryFamilies ?? false,
+    opts.readability,
   );
   const out: AnalyzeResult = { ...result, ingest };
   if (opts.delivery) {
@@ -455,6 +458,7 @@ export async function analyzeText(
     regimes?: readonly RegimeId[];
     estateChecks?: boolean;
     estateState?: string;
+    readability?: string;
   } & AssertedPackOptions = {},
 ): Promise<AnalyzeResult> {
   const deps = opts.deps ?? (await loadAccuracyDeps({ dkbDir: opts.dkbDir }));
@@ -470,6 +474,7 @@ export async function analyzeText(
     opts.estateChecks,
     opts.estateState,
     opts.secondaryFamilies ?? false,
+    opts.readability,
   );
   return applyAssertedPacks({ ...result, ingest }, ingest, opts);
 }

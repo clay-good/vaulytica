@@ -27,6 +27,7 @@
  * by `src/`.
  */
 
+import { READABILITY_STANDARDS } from "../../src/readability/standards.js";
 import { readFile, realpath, stat } from "node:fs/promises";
 import { basename, dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { z } from "zod";
@@ -88,6 +89,7 @@ export const ConfigSchema = z
     court: enumOf(COURT_PROFILE_IDS).optional(),
     regime: z.array(enumOf(CONFIG_REGIMES)).min(1).optional(),
     estate_checks: z.boolean().optional(),
+    readability: enumOf(READABILITY_STANDARDS.map((s) => s.id) as [string, ...string[]]).optional(),
     state: nonEmpty
       .refine((s) => Boolean(normalizeUsStateId(s)), {
         message: 'expected a US state code, e.g. "pa" or "us-pa"',

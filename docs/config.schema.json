@@ -151,6 +151,12 @@
     "estate_checks": {
       "type": "boolean"
     },
+    "readability": {
+      "type": "string",
+      "enum": [
+        "fl"
+      ]
+    },
     "state": {
       "type": "string",
       "minLength": 1

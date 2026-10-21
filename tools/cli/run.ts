@@ -202,6 +202,7 @@
  * shipped behavior. Build/CI-only; never imported by `src/`.
  */
 
+import { READABILITY_STANDARDS, readabilityStandard } from "../../src/readability/standards.js";
 import "./no-localstorage.js";
 import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -474,6 +475,8 @@ export type Args = {
   estateChecks?: boolean;
   /** add-estate-planning-pack — normalized `us-xx` state for the formalities overlay. */
   estateState?: string;
+  /** add-readability-measure — the asserted readability standard (`--readability fl`). */
+  readability?: string;
   /** add-project-config-file — the discovered configuration, when one applied. */
   config?: LoadedConfig;
   /** add-project-config-file — what the run records about it. */
@@ -774,6 +777,19 @@ function parseArgs(argv: string[]): Args {
       case "--estate-checks":
         args.estateChecks = true;
         break;
+      case "--readability": {
+        const value = argv[i + 1];
+        const ids = READABILITY_STANDARDS.map((s) => s.id);
+        if (!value || value.startsWith("--")) {
+          throw new Error(`--readability requires a standard: ${ids.join(", ")}`);
+        }
+        if (!readabilityStandard(value)) {
+          throw new Error(`unknown --readability "${value}" (known: ${ids.join(", ")})`);
+        }
+        args.readability = value.toLowerCase();
+        i += 1;
+        break;
+      }
       case "--state": {
         const value = argv[i + 1];
         if (!value || value.startsWith("--")) {
@@ -825,6 +841,7 @@ function configFlags(v: LoadedConfig["values"]): string[] {
   if (v.regime !== undefined) flags.push("--regime", v.regime.join(","));
   if (v.state !== undefined) flags.push("--state", v.state);
   if (v.estate_checks) flags.push("--estate-checks");
+  if (v.readability !== undefined) flags.push("--readability", v.readability);
   if (v.delivery) flags.push("--delivery");
   if (v.consistency) flags.push("--consistency");
   return flags;
@@ -883,6 +900,7 @@ async function applyProjectConfig(args: Args, typed: readonly string[]): Promise
   // A boolean the file sets to false is the default either way; the flag can
   // only switch it on, so a typed flag over `false` is still an override.
   take("estate_checks", "--estate-checks", "estateChecks");
+  take("readability", "--readability", "readability");
   take("delivery", "--delivery", "delivery");
   take("consistency", "--consistency", "consistency");
   if (keys.includes("formats")) {
@@ -1417,6 +1435,7 @@ async function analyzeTarget(
     regimes: args.regimes as RegimeId[] | undefined,
     estateChecks: args.estateChecks,
     estateState: args.estateState,
+    ...(args.readability ? { readability: args.readability } : {}),
     // The product surface scans composite documents the way the browser
     // does. Off by default in the API for cost (see AssertedPackOptions).
     secondaryFamilies: true,
@@ -2454,7 +2473,7 @@ ${usageFormatLines()}
                           [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]
                           [--deadline-profile <frcp-6|cal-ccp-12> [--service-method <method>]]
                           [--regime <ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or>] [--estate-checks]
-                          [--state <xx>]
+                          [--state <xx>] [--readability <fl>]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
                           [--consistency | --consistency-only]

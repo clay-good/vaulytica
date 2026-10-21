@@ -44,6 +44,7 @@ import { activatePrivacyNotice } from "../privacy/activate.js";
 import { buildRegimeCoverage, type RegimeCoverage } from "../privacy/coverage.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import { activateEstateChecks } from "../estate/activate.js";
+import { activateReadability } from "../readability/activate.js";
 import {
   runWithCustomPlaybook,
   previewCustomPlaybook,
@@ -544,6 +545,11 @@ export type PipelineOptions = {
    */
   estate_state?: string;
   /**
+   * add-readability-measure — hold the document to an asserted readability
+   * statute (`fl`), as the CLI's `--readability`. Omit for none (default).
+   */
+  readability?: string;
+  /**
    * v6 Part II bring-your-own-playbook (Step 92). When set, the run is
    * driven by the user-supplied playbook: the built-in catalog is narrowed
    * per its `rule_selection` / `rule_overrides` (or dropped entirely in
@@ -854,14 +860,17 @@ export async function runReport(
       privacyWiring.rules,
       options.estate_state,
     );
+    // add-readability-measure — READ-001/002 when a standard is asserted.
+    const readableWiring = activateReadability(options.readability, estateWiring.rules);
+    const ruleOptions = { ...(filingWiring.options ?? {}), ...(readableWiring.options ?? {}) };
     run = await runEngine({
-      rules: estateWiring.rules,
+      rules: readableWiring.rules,
       ctx: {
         tree: prepared.ingest.tree,
         extracted: prepared.extracted,
         dkb: prepared.dkb,
         playbook: prepared.playbook,
-        ...(filingWiring.options ? { options: filingWiring.options } : {}),
+        ...(Object.keys(ruleOptions).length > 0 ? { options: ruleOptions } : {}),
       },
       source_file: prepared.source_file,
       playbook_match_confidence: prepared.match.confidence,
@@ -872,6 +881,9 @@ export async function runReport(
         : {}),
       ...(estateWiring.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
       ...(estateWiring.asserted_state ? { asserted_state: estateWiring.asserted_state } : {}),
+      ...(readableWiring.asserted_readability
+        ? { asserted_readability: readableWiring.asserted_readability }
+        : {}),
       executed_at: new Date().toISOString(),
       onRule: onRuleProgress,
     });

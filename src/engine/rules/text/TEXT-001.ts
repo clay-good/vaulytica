@@ -7,7 +7,11 @@ import { findMandated } from "./_match.js";
 function unmatchedRuns(a: string[], b: string[]): string[] {
   // A longest-common-subsequence table over two short word lists (a notice
   // is a few dozen words), compared case-blind.
-  const key = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, "");
+  const key = (w: string) =>
+    w
+      .toLowerCase()
+      .replace(/[^a-z0-9'’]/g, "")
+      .replace(/’/g, "'");
   const n = a.length;
   const m = b.length;
   const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));

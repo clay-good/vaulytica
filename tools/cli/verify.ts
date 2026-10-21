@@ -48,6 +48,7 @@ export type SavedReport = {
     asserted_regimes?: string[];
     estate_checks_asserted?: boolean;
     asserted_state?: string;
+    asserted_readability?: string;
   };
   provenance?: {
     engine_version: string;
@@ -116,6 +117,7 @@ function savedAssertionsOf(saved: SavedReport): {
   regimes?: readonly RegimeId[];
   estateChecks?: boolean;
   estateState?: string;
+  readability?: string;
 } {
   const run = saved.run;
   const out: ReturnType<typeof savedAssertionsOf> = {};
@@ -128,6 +130,7 @@ function savedAssertionsOf(saved: SavedReport): {
   }
   if (run.estate_checks_asserted) out.estateChecks = true;
   if (run.asserted_state) out.estateState = run.asserted_state;
+  if (run.asserted_readability) out.readability = run.asserted_readability;
   return out;
 }
 

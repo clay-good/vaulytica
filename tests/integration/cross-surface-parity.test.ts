@@ -224,6 +224,27 @@ describe("cross-surface parity: browser pipeline vs CLI (same DOCX, same DKB)", 
     expect(conformity.conformity_hash).toBe(cli.conformity.conformity_hash);
   });
 
+  it("an asserted readability standard runs the same rules to the same hash", async () => {
+    // add-readability-measure: the tab's readability option is the CLI's --readability.
+    const text =
+      "HOMEOWNERS INSURANCE POLICY\n\nThe insurer's obligation to indemnify the insured for consequential, incidental, or derivative losses occasioned by any peril enumerated in the declarations shall be determined exclusively in accordance with the applicable valuation methodology and the limitations, conditions, and exclusions specified in this policy.\n";
+    const pasted = pastedTextFile(text);
+    if (!pasted.ok) throw new Error(pasted.reason);
+    const prepared = await prepareDocument(pasted.file, pasted.kind, {
+      dkb_base: "/x-dkb",
+      playbook_base: "/x-playbooks",
+    });
+    const ui = await runReport(prepared, {}, { readability: "fl" });
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-read-parity-"));
+    const onDisk = join(dir, PASTED_TEXT_NAME);
+    writeFileSync(onDisk, text);
+    const cli = await analyzeFile(onDisk, { readability: "fl" });
+    rmSync(dir, { recursive: true, force: true });
+    expect(ui.run.asserted_readability).toBe("fl");
+    expect(ui.run.findings.map((f) => f.rule_id)).toContain("READ-001");
+    expect(ui.run.result_hash).toBe(cli.run.result_hash);
+  });
+
   it("would catch a CLI running a different DKB (the shipped defect)", async () => {
     const starterDeps = await loadAccuracyDeps({
       dkbDir: join(process.cwd(), "dkb", "dist", "v0.0.1-starter"),

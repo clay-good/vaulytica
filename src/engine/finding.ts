@@ -252,6 +252,12 @@ export type EngineRun = {
    */
   asserted_state?: string;
   /**
+   * The readability standard the user asserted (`--readability fl`,
+   * add-readability-measure). Inside the hash; present only when asserted,
+   * so an unasserted run is byte-identical.
+   */
+  asserted_readability?: string;
+  /**
    * Present only when the document matched no known family and the generic
    * fallback ran. Inside the hash; omitted for matched runs. See
    * {@link ClassificationNotice}.
