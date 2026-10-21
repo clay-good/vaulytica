@@ -186,10 +186,19 @@ describe.skipIf(!RUN)("v3 bundle-size guard", () => {
 /** v4 bundle-size guard (spec-v4 §17). */
 describe.skipIf(!RUN)("v4 bundle-size guard", () => {
   /** v4 incremental budget over v3: +300 KB compressed. */
-  // 1,170 KB ceiling = v2 baseline 165 + v3 705 + v4 300. The comment used to
+  // 1,190 KB ceiling = v2 baseline 165 + v3 705 + v4 300 + waves 4–5 20. The comment used to
   // say 1065, from back when the v3 budget was +600; the v3 raises to +705 left
   // it stale, and docs/bundle-splitting.md quoted the stale figure.
-  const V4_BUDGET_GZIPPED_KB = V3_BUDGET_GZIPPED_KB + 300;
+  //
+  // +20 KB (9.987.0) for the comparison and pre-disclosure work of waves 4–5,
+  // every byte of it in lazily loaded chunks: the tab's redline and
+  // signed-copy checks and closing inventory, the PDF filled-box scan, Word
+  // theme colors and point sizes, the mandated-text rules, and the
+  // readability block. Measured +14.3 KB against the 9.971.0 build with the
+  // same toolchain. The eager entry, which a user waits for, keeps its own
+  // budget above, and Lighthouse CI guards first paint.
+  const WAVE_4_5_GZIPPED_KB = 20;
+  const V4_BUDGET_GZIPPED_KB = V3_BUDGET_GZIPPED_KB + 300 + WAVE_4_5_GZIPPED_KB;
 
   beforeAll(() => {
     // Wait for build artifacts. The v3 block's beforeAll (and the SRI test)
@@ -246,7 +255,7 @@ describe.skipIf(!RUN)("v4 bundle-size guard", () => {
     const breakdown = files.map((f) => `${f.name}: ${f.size.toFixed(2)} KB`).join("\n  ");
     expect(
       total,
-      `total gzipped JS ${total.toFixed(2)} KB exceeds the ${V4_BUDGET_GZIPPED_KB} KB ceiling (v2 ${V2_BASELINE_GZIPPED_KB} KB + v3 705 KB + v4 300 KB). Breakdown:\n  ${breakdown}`,
+      `total gzipped JS ${total.toFixed(2)} KB exceeds the ${V4_BUDGET_GZIPPED_KB} KB ceiling (v2 ${V2_BASELINE_GZIPPED_KB} KB + v3 705 KB + v4 300 KB + waves 4–5 ${WAVE_4_5_GZIPPED_KB} KB). Breakdown:\n  ${breakdown}`,
     ).toBeLessThan(V4_BUDGET_GZIPPED_KB);
   });
 

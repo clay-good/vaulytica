@@ -42,7 +42,7 @@ Because nothing about execution changes, the `result_hash` of every report is by
 [`tests/integration/bundle-size.test.ts`](../tests/integration/bundle-size.test.ts) enforces the budgets a chunking change must respect:
 
 - The eager `main-*.js` entry stays under **50 KB gzipped** (first-paint cost).
-- Total gzipped JS stays under the **1,170 KB** ceiling (v2 baseline 165 + v3 705 + v4 300).
+- Total gzipped JS stays under the **1,190 KB** ceiling (v2 baseline 165 + v3 705 + v4 300 + waves 4–5 20, all of it lazily loaded).
 - Any chunk over **600 KB raw** must match the allow-list (`vendor-mammoth`, `vendor-pdfjs`, `vendor-docx`, `vendor-v4-*`, `pipeline-*`). After this split every chunk is under 600 KB, so the allow-list is currently slack — keep it rather than tighten it, so a future regression surfaces as an explicit decision.
 - v4 rule chunks (`v4-*` / `vendor-v4-*`) must be separate files, never inlined into the eager entry.
 

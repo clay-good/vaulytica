@@ -6,6 +6,7 @@
  * not for hashing.
  */
 
+import { measureReadability } from "./readability.js";
 import type { EngineRun, Finding } from "../engine/finding.js";
 import { scopeForPlaybook, type ScopeStatement } from "../verticals/registry.js";
 import { buildRegimeCoverage } from "../privacy/coverage.js";
@@ -185,6 +186,12 @@ export type JsonReport = {
    */
   related_documents?: Array<{ playbook_id: string; name: string }>;
   /**
+   * Flesch reading ease under the statutory counting rules
+   * (add-readability-measure). Informative and render-side: outside `run`,
+   * so `result_hash` is unchanged, and never called compliant.
+   */
+  readability?: import("./readability.js").Readability;
+  /**
    * Definitions report (add-defined-terms-report), populated only when
    * `--definitions` is passed (or the tab export is used). Outside `run`,
    * so `result_hash` is unchanged; carries its own `definitions_hash`.
@@ -336,6 +343,8 @@ export function buildJsonReport(
   if (relatedDocuments && relatedDocuments.length > 0) {
     payload.related_documents = relatedDocuments.map((r) => ({ ...r }));
   }
+  // add-readability-measure — the reading-ease block, for every document.
+  payload.readability = measureReadability(ingest.tree);
   // add-document-vertical-framework — the active pack's scope-of-review.
   const scope = scopeForPlaybook(run.playbook_id);
   if (scope) payload.scope_of_review = scope;

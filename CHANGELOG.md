@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.987.0] — 2026-10-20
+
+### Added
+- **Reading ease, counted the way the statutes count it**
+  (add-readability-measure, slice A). Every JSON report carries a
+  `readability` block: the Flesch reading ease score under the method
+  Fla. Stat. § 627.4145(5) prints (read at its official source), the word,
+  sentence and syllable counts, the longest sentence and where it is, what
+  was left out, and what a statute allows that is not applied here. It is
+  informative and outside the hashed run; no score is called compliant.
+  The syllable counter is versioned and reads 345 of 348 reference words
+  right.
+
+### Changed
+- The total JavaScript budget rises by a named 20 KB (1,170 to 1,190 KB
+  gzipped) for waves 4 and 5, measured at +14.3 KB, all of it in chunks
+  loaded only when a file is dropped. The first-paint entry keeps its own
+  30 KB budget (29.1 KB). `TEXT-001` no longer pulls the report layer's
+  word diff into the rule chunk.
+
 ## [9.986.0] — 2026-10-20
 
 ### Changed

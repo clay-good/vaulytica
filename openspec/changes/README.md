@@ -124,10 +124,10 @@ DKB from a secondary source.
 | 34  | [add-readability-measure](add-readability-measure/proposal.md)                 | Flesch reading ease under the NAIC model act's counting rules, render-side; `READ-*` findings only under an asserted state standard or NY GOL § 5-702                                                                                                        | The one quality the law measures with a formula          |
 | 35  | [add-project-config-file](add-project-config-file/proposal.md)                 | `vaulytica.config.json` for the CLI, Action and MCP server: playbook, types by glob, gates, profiles; flags win; every applied file is named in the run                                                                                                      | Three surfaces, one set of team settings                 |
 
-Status at 9.981.0:
+Status at 9.986.0:
 
 - **Built:** 28, 32 (all seven `PROOF-*` rules; the date-with-no-year half of PROOF-002 was measured and declined, see its tasks), 33 (CLI, MCP and the tab, byte-identical) and 35.
-- **Partly built:** 29 (everything but the Word round-trip fixture, which needs Word: both readings in the CLI, the MCP server, the Action and the tab, with authors) and 30 (the allowance classifier, the clause-diff predicate, the metamorphic relations, `compare --executed` and `--executed-set`, the tab's check and the Word section; the OCR confidence join is blocked because no surface runs OCR).
+- **Partly built:** 29 (everything but the Word round-trip fixture, which needs Word: both readings in the CLI, the MCP server, the Action and the tab, with authors), 30 (the allowance classifier, the clause-diff predicate, the metamorphic relations, `compare --executed` and `--executed-set`, the tab's check and the Word section; the OCR confidence join is blocked because no surface runs OCR) and 31 (the FTC Holder Rule notice and the door-to-door cancellation statement, read at eCFR: words, bold face, point size, and a warranty disclaimer's conspicuousness; Cal. Civ. Code § 1542 is blocked because its official source refuses automated reads, and the DKB table waits for the scheduled rebuild).
 
 Changes 29 and 30 both add to one new `version-comparison` capability spec; whichever lands second merges into it rather than re-adding. Suggested order: 35 first (small, unblocks the others' CLI ergonomics), then
 28 and 33 (render-side, zero churn), 29 and 30 (comparison surface), 32 and 31

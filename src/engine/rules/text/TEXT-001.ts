@@ -1,20 +1,55 @@
 import type { Finding, Rule, RuleContext } from "../../finding.js";
 import { emit } from "../_helpers.js";
-import { diffWords } from "../../../report/clause-diff.js";
 import { MANDATED_TEXTS } from "./mandated-texts.js";
 import { findMandated } from "./_match.js";
 
+/** Runs of words in `a` that an alignment with `b` leaves unmatched, in order. */
+function unmatchedRuns(a: string[], b: string[]): string[] {
+  // A longest-common-subsequence table over two short word lists (a notice
+  // is a few dozen words), compared case-blind.
+  const key = (w: string) => w.toLowerCase().replace(/[^a-z0-9']/g, "");
+  const n = a.length;
+  const m = b.length;
+  const lcs: number[][] = Array.from({ length: n + 1 }, () => new Array<number>(m + 1).fill(0));
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = m - 1; j >= 0; j--) {
+      lcs[i]![j] =
+        key(a[i]!) === key(b[j]!)
+          ? lcs[i + 1]![j + 1]! + 1
+          : Math.max(lcs[i + 1]![j]!, lcs[i]![j + 1]!);
+    }
+  }
+  const runs: string[] = [];
+  let run: string[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < n) {
+    if (j < m && key(a[i]!) === key(b[j]!)) {
+      if (run.length) runs.push(run.join(" "));
+      run = [];
+      i++;
+      j++;
+    } else if (j < m && lcs[i]![j + 1]! >= lcs[i + 1]![j]!) {
+      j++;
+    } else {
+      run.push(a[i]!);
+      i++;
+    }
+  }
+  if (run.length) runs.push(run.join(" "));
+  return runs;
+}
+
 /** The words the document dropped and added against the authority's text, for a reader. */
 function wordChanges(statute: string, text: string): string {
-  const segments =
-    diffWords(statute.replace(/^NOTICE\s+/, ""), text.replace(/^NOTICE:?\s+/i, "")) ?? [];
-  const removed = segments.filter((s) => s.status === "removed").map((s) => s.text.trim());
-  const added = segments.filter((s) => s.status === "added").map((s) => s.text.trim());
+  const words = (s: string) => s.split(/\s+/).filter(Boolean);
+  const a = words(statute.replace(/^NOTICE\s+/, ""));
+  const b = words(text.replace(/^NOTICE:?\s+/i, ""));
+  const removed = unmatchedRuns(a, b);
+  const added = unmatchedRuns(b, a);
   const parts = [
-    removed.filter(Boolean).length > 0
-      ? `the authority's "${removed.filter(Boolean).join(" … ")}" is not in it`
-      : "",
-    added.filter(Boolean).length > 0 ? `it adds "${added.filter(Boolean).join(" … ")}"` : "",
+    removed.length > 0 ? `the authority's "${removed.join(" … ")}" is not in it` : "",
+    added.length > 0 ? `it adds "${added.join(" … ")}"` : "",
   ].filter(Boolean);
   return parts.length > 0 ? parts.join(", and ") : "its words are in a different order";
 }
