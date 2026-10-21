@@ -27,7 +27,7 @@ function sizeIn(rPr: string | undefined): number | undefined {
 
 /** Read `styles.xml`. Never throws; an unreadable part resolves nothing. */
 export function sizeResolver(bytes: ArrayBuffer): SizeResolver {
-  let xml = "";
+  let xml: string;
   try {
     xml = inflateOoxmlParts(bytes, new Set(["word/styles.xml"]))["word/styles.xml"] ?? "";
   } catch {
