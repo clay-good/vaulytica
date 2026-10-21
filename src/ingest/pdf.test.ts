@@ -474,3 +474,14 @@ describe("a scanned PDF is told it was OCR'd, and how confident that was", () =>
     );
   });
 });
+
+describe("ingestPdfBuffer leaves the caller's bytes usable", () => {
+  it("does not hand pdf.js the caller's buffer, which it may detach", async () => {
+    // The tab passes the same buffer on to the pre-disclosure scan. Detached,
+    // that scan read zero bytes and reported nothing for every PDF.
+    const buf = buildMinimalPdf("Hello Vaulytica PDF extraction");
+    const before = buf.byteLength;
+    await ingestPdfBuffer(buf, { allowOcr: false });
+    expect(buf.byteLength).toBe(before);
+  });
+});

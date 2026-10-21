@@ -105,14 +105,13 @@ export async function ingestPdfBuffer(
 ): Promise<IngestResult> {
   assertDocumentBytes(buf.byteLength); // spec-v8 §7 — reject before parsing
   const warnings: string[] = [];
-  // Hash the source bytes *before* handing the buffer to pdfjs. `getDocument`
-  // takes ownership of the ArrayBuffer and may detach it (it does under pdfjs's
-  // Node fake-worker; the browser's copying worker happens to leave it intact),
-  // so computing the hash afterward would read a detached buffer. Same bytes,
-  // same hash — just ordered so the path is robust in any environment.
+  // `getDocument` takes ownership of the ArrayBuffer it is given and may
+  // detach it, so it is given a COPY: the caller still needs these bytes (the
+  // tab hands the same buffer to the pre-disclosure scan, which reads the
+  // container again). Hashed first all the same.
   const sha256 = await sha256Hex(buf);
   const pdfjs = await loadPdfJs();
-  const pdfDoc = await pdfjs.getDocument({ data: buf, useSystemFonts: true }).promise;
+  const pdfDoc = await pdfjs.getDocument({ data: buf.slice(0), useSystemFonts: true }).promise;
 
   const pages: PageContent[] = [];
   let markupAnnotations = 0;

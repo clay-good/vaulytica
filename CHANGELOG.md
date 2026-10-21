@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.979.0] — 2026-10-20
+
+### Fixed
+- **The tab's pre-disclosure scan read nothing from a PDF.** pdf.js took
+  over the file's bytes while reading its text, and the scan that runs next
+  got an empty buffer, so a PDF's authoring metadata, comments, unapplied
+  redaction marks and boxes over text were never reported in the tab. The
+  command line was not affected. The text read now works on a copy.
+- Text placed with a text matrix (`Tm`) or drawn inside a form was not
+  located by the filled-box check, so a box over it was missed.
+
+### Added
+- A privacy e2e drops a PDF with a box over its text in the real tab: the
+  redaction is reported, the covered words appear nowhere on the page, and
+  nothing leaves the tab. The box check is held to six ways a PDF can write
+  the same words.
+
 ## [9.978.0] — 2026-10-20
 
 ### Added

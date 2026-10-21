@@ -110,3 +110,43 @@ test("scanned-style PDF (no text layer): never reaches a CDN, reports honestly",
   await analyze(page, pdfPath);
   expect(offenses).toEqual([]);
 });
+
+test("PDF with a box over its text: the redaction is reported, the words are not, nothing leaves", async ({
+  page,
+}) => {
+  // add-redaction-integrity-scan task 10: the drawing read runs pdf.js a
+  // second time in the tab. It must stay same-origin, and the covered words
+  // must not reach the page.
+  const tmp = mkdtempSync(join(tmpdir(), "vaul-privacy-"));
+  const pdfPath = join(tmp, "redacted.pdf");
+  const text =
+    "This Mutual Non-Disclosure Agreement is between Acme Corp. and Globex Inc. The fee is ZANTHEL 8842.";
+  const pdf = buildMinimalPdf(text)
+    .toString("latin1")
+    .replace(/<<\/Length \d+>>\nstream\n([\s\S]*?)\nendstream/, (_m, body: string) => {
+      // A filled box painted after the text, over its last line's tail.
+      const boxed = `${body}\nq 0 0 0 rg 72 690 1200 40 re f Q`;
+      return `<</Length ${boxed.length}>>\nstream\n${boxed}\nendstream`;
+    });
+  // Offsets moved; rebuild the xref so pdf.js reads it without recovery.
+  const objects = [...pdf.matchAll(/\d+ 0 obj\n[\s\S]*?\nendobj\n/g)].map((m) => m[0]);
+  let out = "%PDF-1.4\n";
+  const offsets: number[] = [];
+  for (const o of objects) {
+    offsets.push(out.length);
+    out += o;
+  }
+  const xref = out.length;
+  out += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  for (const o of offsets) out += `${String(o).padStart(10, "0")} 00000 n \n`;
+  out += `trailer\n<</Size ${objects.length + 1}/Root 1 0 R>>\nstartxref\n${xref}\n%%EOF`;
+  writeFileSync(pdfPath, Buffer.from(out, "latin1"));
+
+  const offenses = watchRequests(page, pageOrigin());
+  await analyze(page, pdfPath);
+  await expect(page.locator('[data-role="results-page"]')).toContainText(
+    "A redaction can be lifted",
+  );
+  expect(await page.locator("#dropzone").innerHTML()).not.toContain("ZANTHEL");
+  expect(offenses).toEqual([]);
+});

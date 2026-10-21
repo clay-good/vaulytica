@@ -94,6 +94,17 @@ function mul(a: readonly number[], b: readonly number[]): M {
   ];
 }
 
+/**
+ * A matrix argument as pdf.js passes it: six numbers, or one typed array of
+ * six (pdf.js 6 packs `setTextMatrix` and form matrices that way).
+ */
+function matrixOf(value: unknown): M | undefined {
+  const m = value as ArrayLike<number> | null | undefined;
+  if (!m || typeof m !== "object" || m.length !== 6) return undefined;
+  const out = Array.from(m) as M;
+  return out.every((n) => typeof n === "number" && Number.isFinite(n)) ? out : undefined;
+}
+
 function apply(m: readonly number[], x: number, y: number): [number, number] {
   return [m[0]! * x + m[2]! * y + m[4]!, m[1]! * x + m[3]! * y + m[5]!];
 }
@@ -220,8 +231,10 @@ export function boxesOverText(
       // The appearance is drawn through the annotation's own placement, then
       // its form matrix (pdf.js's canvas does the same).
       annotationCtms.push([...gs.ctm]);
-      const placed = Array.isArray(args[2]) ? mul(args[2] as number[], gs.ctm) : gs.ctm;
-      gs.ctm = Array.isArray(args[3]) ? mul(args[3] as number[], placed) : placed;
+      const placement = matrixOf(args[2]);
+      const form = matrixOf(args[3]);
+      const placed = placement ? mul(placement, gs.ctm) : gs.ctm;
+      gs.ctm = form ? mul(form, placed) : placed;
       inSquare = true;
       continue;
     }
@@ -241,12 +254,17 @@ export function boxesOverText(
       case ops.restore:
         gs = stack.pop() ?? gs;
         break;
-      case ops.transform:
-        gs.ctm = mul(args as number[], gs.ctm);
+      case ops.transform: {
+        const m = matrixOf(args.length === 1 ? args[0] : args);
+        if (m) gs.ctm = mul(m, gs.ctm);
         break;
+      }
       case ops.paintFormXObjectBegin:
         forms.push([...gs.ctm]);
-        if (Array.isArray(args[0])) gs.ctm = mul(args[0] as number[], gs.ctm);
+        {
+          const m = matrixOf(args[0]);
+          if (m) gs.ctm = mul(m, gs.ctm);
+        }
         break;
       case ops.paintFormXObjectEnd:
         gs.ctm = forms.pop() ?? gs.ctm;
@@ -274,10 +292,14 @@ export function boxesOverText(
         tm = [...IDENTITY];
         tlm = [...IDENTITY];
         break;
-      case ops.setTextMatrix:
-        tlm = [...(args as number[])] as M;
-        tm = [...tlm];
+      case ops.setTextMatrix: {
+        const m = matrixOf(args.length === 1 ? args[0] : args);
+        if (m) {
+          tlm = m;
+          tm = [...tlm];
+        }
         break;
+      }
       case ops.moveText:
         tlm = mul([1, 0, 0, 1, args[0] as number, args[1] as number], tlm);
         tm = [...tlm];

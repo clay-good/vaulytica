@@ -138,3 +138,62 @@ describe("a filled box over PDF text", () => {
     expect(facts).toEqual([]);
   });
 });
+
+describe("a box over text is found however the page is written", () => {
+  // add-redaction-integrity-scan task 10: the delivery format-invariance
+  // relation over the redaction fixtures. The same words at the same place,
+  // shown five ways a PDF writer may show them, under the same box.
+  const WAYS: Array<[string, string]> = [
+    ["one Tj", LINE],
+    [
+      "a TJ array with no kerning",
+      "BT /F1 12 Tf 72 700 Td [(The price is QUILLAN 5528 dollars)] TJ ET",
+    ],
+    [
+      "a text matrix instead of Td",
+      "BT /F1 12 Tf 1 0 0 1 72 700 Tm (The price is QUILLAN 5528 dollars) Tj ET",
+    ],
+    [
+      "one show per word, moved along",
+      "BT /F1 12 Tf 72 700 Td (The price is ) Tj (QUILLAN ) Tj (5528 dollars) Tj ET",
+    ],
+    [
+      "a translated page",
+      "q 1 0 0 1 72 700 cm BT /F1 12 Tf 0 0 Td (The price is QUILLAN 5528 dollars) Tj ET Q",
+    ],
+  ];
+  it.each(WAYS)("%s", async (_label, text) => {
+    const { facts } = await readBoxesOverText(pdf(`${text}\n${BOX}`));
+    expect(facts.map((f) => [f.kind, f.location])).toEqual([["pdf-filled-box", "page 1"]]);
+    expect(facts[0]!.masked_shape).toMatch(/xxxxxxx ####/i);
+  });
+});
+
+describe("text drawn inside a form XObject", () => {
+  it("is placed through the form's matrix", async () => {
+    const form = "BT /F1 12 Tf 0 0 Td (The price is QUILLAN 5528 dollars) Tj ET";
+    const content = `q /Fm1 Do Q\n${BOX}`;
+    const objects = [
+      "<</Type/Catalog/Pages 2 0 R>>",
+      "<</Type/Pages/Kids[3 0 R]/Count 1>>",
+      "<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents 4 0 R/Resources<</Font<</F1 5 0 R>>/XObject<</Fm1 6 0 R>>>>>>",
+      `<</Length ${content.length}>>\nstream\n${content}\nendstream`,
+      "<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>",
+      `<</Type/XObject/Subtype/Form/BBox[0 -10 400 20]/Matrix[1 0 0 1 72 700]/Resources<</Font<</F1 5 0 R>>>>/Length ${form.length}>>\nstream\n${form}\nendstream`,
+    ];
+    let out = "%PDF-1.4\n";
+    const offsets: number[] = [];
+    objects.forEach((body, i) => {
+      offsets.push(out.length);
+      out += `${i + 1} 0 obj\n${body}\nendobj\n`;
+    });
+    const xref = out.length;
+    out += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    for (const o of offsets) out += `${String(o).padStart(10, "0")} 00000 n \n`;
+    out += `trailer\n<</Size ${objects.length + 1}/Root 1 0 R>>\nstartxref\n${xref}\n%%EOF`;
+    const bytes = Uint8Array.from(out, (c) => c.charCodeAt(0) & 0xff).buffer;
+    const { facts } = await readBoxesOverText(bytes);
+    expect(facts).toHaveLength(1);
+    expect(facts[0]!.masked_shape).toMatch(/xxxxxxx ####/i);
+  });
+});
