@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.989.0] — 2026-10-20
+
+### Added
+- The HTML and Word reports show the reading-ease score on their cover,
+  with its counts, marked "informative only", or naming the statute when
+  `--readability` asserted one.
+
+### Fixed
+- Lint on `main` (a useless initial assignment in the Word size reader,
+  since 9.984.0) and the total-JS budget crossed at 9.982.0 (raised by a
+  named 20 KB in 9.987.0) had failed CI, the cross-OS matrix and Deploy on
+  every push from 9.982.0 to 9.988.0. Both are fixed.
+
 ## [9.988.0] — 2026-10-20
 
 ### Added

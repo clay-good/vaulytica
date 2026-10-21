@@ -125,3 +125,18 @@ export function measureReadability(tree: DocumentTree): Readability {
     syllable_counter_version: SYLLABLE_COUNTER_VERSION,
   };
 }
+
+/**
+ * The block as one line for a report cover. Says it is informative, and names
+ * the standard when one was asserted, so a reader never takes the number for
+ * a finding it is not.
+ */
+export function readabilityLine(
+  r: Readability,
+  asserted?: { id: string; citation: string; min_score: number },
+): string {
+  const base = `${r.score} (Flesch reading ease; ${r.words.toLocaleString("en-US")} words in ${r.sentences.toLocaleString("en-US")} sentences, counted as the statutes prescribe)`;
+  return asserted
+    ? `${base}, held to ${asserted.citation} (minimum ${asserted.min_score}), asserted by the user`
+    : `${base}, informative only`;
+}

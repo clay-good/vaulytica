@@ -17,3 +17,7 @@
 ## Progress — 9.988.0
 
 Task 4, in part: `READ-001` (score below the asserted statute's minimum) and `READ-002` (a form over the statute's word limit with no table of contents or index) under the registered `readability` assertion, from `--readability fl` on the CLI and `readability` in `vaulytica.config.json`, with the asserted standard stamped into the run (`asserted_readability`, inside the hash only when asserted) and re-derived by `verify`. The tab's pipeline takes the same option to the same hash (cross-surface test); its selector is not built, nor the bundle path, the MCP server or the Action input. `READ-003` (NY GOL § 5-702) waits for New York's text. Task 3: the standards table is a provenance-guarded source module with the Florida row, not yet a DKB table. Task 6: `docs/readability.md` and the `reference.md` flag row.
+
+## Progress — 9.989.0
+
+Task 2's report half: the HTML and Word covers carry a "Reading ease" line (score, words and sentences, "informative only", or the asserted statute and its minimum). A full appendix with the longest sentence and the exclusions is the JSON block's; the covers give the line.

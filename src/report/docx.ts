@@ -26,6 +26,8 @@
  * well in both light and dark Word/Pages/Docs themes.
  */
 
+import { measureReadability, readabilityLine } from "./readability.js";
+import { readabilityStandard } from "../readability/standards.js";
 import {
   AlignmentType,
   BorderStyle,
@@ -288,6 +290,14 @@ function renderCover(run: EngineRun, ingest: IngestResult, playbook: Playbook): 
     coverField("Input file", ingest_filename(ingest, run)),
     coverField("Analysis date", dateLine),
     coverField("File SHA-256", run.source_file.sha256),
+    // add-readability-measure — the reading-ease score, informative unless asserted.
+    coverField(
+      "Reading ease",
+      readabilityLine(
+        measureReadability(ingest.tree),
+        run.asserted_readability ? readabilityStandard(run.asserted_readability) : undefined,
+      ),
+    ),
     coverField("Engine version", run.version),
     coverField("DKB version", run.dkb_version),
     coverField(

@@ -1,7 +1,7 @@
 /** Flesch reading ease under the statutory counting rules (add-readability-measure, task 2). */
 import { describe, expect, it } from "vitest";
 import { ingestPaste } from "../ingest/paste.js";
-import { measureReadability } from "./readability.js";
+import { measureReadability, readabilityLine } from "./readability.js";
 
 const measure = async (text: string) => measureReadability((await ingestPaste(text)).tree);
 
@@ -43,5 +43,17 @@ describe("measureReadability", () => {
 
   it("is zero, not NaN, for a document with no sentences", async () => {
     expect((await measure("TITLE\n")).score).toBe(0);
+  });
+});
+
+describe("readabilityLine", () => {
+  it("says the score is informative unless a standard was asserted", async () => {
+    const r = await measure("The cat sat. The dog ran.\n");
+    expect(readabilityLine(r)).toBe(
+      "119.2 (Flesch reading ease; 6 words in 2 sentences, counted as the statutes prescribe), informative only",
+    );
+    expect(
+      readabilityLine(r, { id: "fl", citation: "Fla. Stat. § 627.4145", min_score: 45 }),
+    ).toMatch(/held to Fla\. Stat\. § 627\.4145 \(minimum 45\), asserted by the user$/);
   });
 });

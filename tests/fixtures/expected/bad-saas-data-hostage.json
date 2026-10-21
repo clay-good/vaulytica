@@ -1204,11 +1204,11 @@
   "playbook_id": "saas-customer",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected saas-customer (score 1). Title matched: \"cloud service agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Subscription Term\", \"Customer Data\", \"subscription fee\".",
-  "result_hash": "20babd047adb515b2a906e2862e8ee6c3ddfd113dee7a1506e1621178f42a6ff",
+  "result_hash": "9d91e0c143f31bfeb497dd0e6c19f296c668073a8cbda0b505cb6f2f2eff3888",
   "source_file": {
     "name": "bad-saas-data-hostage.docx",
     "sha256": "04c3904456b9f20c3df66876ffc896b471f0b9c7c0bef4de0c6d2ea4597761fb",
     "size_bytes": 9326
   },
-  "version": "9.988.0"
+  "version": "9.989.0"
 }

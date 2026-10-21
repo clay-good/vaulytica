@@ -71,6 +71,8 @@
  * `result_hash` churn.
  */
 
+import { measureReadability, readabilityLine } from "./readability.js";
+import { readabilityStandard } from "../readability/standards.js";
 import type { EngineRun, Finding, Severity } from "../engine/finding.js";
 import type { ConsistencyRun } from "../engine/consistency/types.js";
 import { scopeForPlaybook } from "../verticals/registry.js";
@@ -795,6 +797,15 @@ export function buildHtmlReport(
       run.asserted_state
         ? `<dt>Estate checks</dt><dd>asserted by the user (--state ${esc(run.asserted_state)})${overlay ? ` — ${esc(overlay.state_name)}: ${esc(overlay.headline)} (${esc(overlay.citation.source)})` : ""}</dd>`
         : "<dt>Estate checks</dt><dd>asserted by the user (--estate-checks)</dd>",
+    );
+  }
+  // add-readability-measure — the reading-ease score, informative unless asserted.
+  {
+    const std = run.asserted_readability
+      ? readabilityStandard(run.asserted_readability)
+      : undefined;
+    body.push(
+      `<dt>Reading ease</dt><dd>${esc(readabilityLine(measureReadability(ingest.tree), std))}</dd>`,
     );
   }
   body.push(`<dt>Result hash</dt><dd>${esc(run.result_hash)}</dd>`);
