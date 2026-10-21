@@ -5,9 +5,9 @@
 - [x] 3. `clause-diff.ts`: accept an allowance predicate so set-aside paragraphs are listed, not diffed; the plain comparison path unchanged (goldens hold).
 - [ ] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **Blocked:** no surface runs OCR (see 9.977.0 below); the refusal half is done.
 - [x] 5. `compare --executed` and `--executed-set` with `--fail-on-nonconformity`; title pairing via the matcher; stream contract respected.
-- [ ] 6. Renderers: Markdown, JSON, DOCX section; browser affordance and Word deliverable; cross-surface hash parity on text-layer inputs.
+- [x] 6. Renderers: Markdown, JSON, DOCX section; browser affordance and Word deliverable; cross-surface hash parity on text-layer inputs.
 - [x] 7. Metamorphic relations: filling blanks in the final must not change the verdict; altering any non-allowance paragraph must; format transforms on the executed side must not.
-- [ ] 8. Docs: `reference.md` comparison section, `ci-integration.md` closing-set example; `/known-limits` sentence for image-only scans headless.
+- [x] 8. Docs: `reference.md` comparison section, `ci-integration.md` closing-set example; `/known-limits` sentence for image-only scans headless.
 - [ ] 9. Full gate green.
 
 ## Progress
@@ -21,3 +21,7 @@
 ## Progress — 9.977.0
 
 Task 4 rests on a premise that is false: the proposal says "the browser already runs OCR on image-only PDFs", but `prepareDocument` ingests every PDF with `allowOcr: false` (fix-privacy-claim-accuracy: tesseract's worker, wasm and language model would load from a third-party CDN, which the shipped `connect-src 'self'` CSP blocks). The CLI's refusal said "the browser can read it with OCR", sending a reader with a scanned signed copy to a surface that cannot read it either; the public `/known-limits` page said scanned pages "are read by OCR … in the browser only". Both now say no surface runs OCR and to OCR the scan first, the page's unused OCR page cap is gone from its data, and a test holds the refusal message to that. The confidence join stays open until OCR can run from same-origin assets, which is a privacy-posture decision for the owner, not a build task.
+
+## Progress — 9.978.0
+
+Task 6: the comparison Word report opens with "Signed copy against the final" (the verdict, "text conformity only, not valid execution", the hash, the differences, and what was set aside) whenever a conformity is passed, which `compare --executed --format docx` now does. The tab's result offers "Check a signed copy against this final…": `runExecutedComparison` analyzes the signed copy and holds it to the final's type only when routing moved, as `compareExecuted` does, and refuses an empty text layer with the same message. The comparison page shows the verdict line, and its JSON carries `conformity` as the CLI's does. The cross-surface test checks both run hashes, the comparison hash and the `conformity_hash` against `compareExecuted`; an e2e drives it in the tab at phone width. Task 8: the `reference.md` row names the tab; `/known-limits` now says no surface reads a scan (9.977.0). Open: task 1's PDF fixtures and task 4 (blocked on OCR).

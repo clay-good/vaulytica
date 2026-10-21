@@ -97,3 +97,35 @@ describe("compare --executed on an image-only signed copy", () => {
     expect(message).not.toMatch(/browser/i);
   });
 });
+
+describe("compare --executed --format docx", () => {
+  it("leads the Word report with the signed copy against the final", async () => {
+    const { runCompare } = await import("../../tools/cli/compare.js");
+    const { readFileSync } = await import("node:fs");
+    const { strFromU8, unzipSync } = await import("fflate");
+    const out = join(dir, "signed-vs-final.docx");
+    const err = process.stderr.write.bind(process.stderr);
+    process.stderr.write = (() => true) as typeof process.stderr.write;
+    try {
+      await runCompare([
+        "--executed",
+        write("final-docx.txt", FINAL),
+        write("signed-docx.txt", EXECUTED.replace("$12,500", "$21,500")),
+        "--format",
+        "docx",
+        "--out",
+        out,
+      ]);
+    } finally {
+      process.stderr.write = err;
+    }
+    const xml = strFromU8(unzipSync(new Uint8Array(readFileSync(out)))["word/document.xml"]!);
+    const text = (xml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((t) => t.replace(/<[^>]+>/g, ""))
+      .join(" ");
+    expect(text).toContain("Signed copy against the final");
+    expect(text).toMatch(/1 difference from the final outside the execution allowance/);
+    expect(text).toContain("Set aside as execution");
+    expect(text.indexOf("Signed copy against the final")).toBeLessThan(text.indexOf("Resolved"));
+  });
+});

@@ -580,7 +580,61 @@ function renderCompleteState(
     ...(result.tracked_changes && file
       ? { on_compare_redline: () => void runRedline(dz, file) }
       : {}),
+    on_check_signed: (signedFile) => {
+      void runSigned(dz, filename, result.run, result.ingest.tree, signedFile);
+    },
   });
+}
+
+/**
+ * A signed copy against this final (add-executed-copy-conformity): the
+ * comparison, plus whether the copy is identical to the final once what
+ * execution fills in is set aside. The CLI's `compare --executed`.
+ */
+async function runSigned(
+  dz: HTMLElement,
+  finalDisplayName: string,
+  finalRun: import("./pipeline.js").PipelineResult["run"],
+  finalTree: import("../ingest/types.js").DocumentTree,
+  signedFile: File,
+): Promise<void> {
+  try {
+    const checked = validateFile(signedFile);
+    if (!checked.ok) {
+      setState(dz, { kind: "error", message: checked.reason });
+      return;
+    }
+    setState(dz, { kind: "analyzing", filename: signedFile.name });
+    const { runExecutedComparison } = await import("./pipeline.js");
+    const { checkConformity } = await import("../report/conformity.js");
+    const progress = createProgressBar(select(dz, "progress")!);
+    const ticker = createRuleTicker(select(dz, "ticker")!);
+    progress.reset();
+    const signed = await runExecutedComparison(
+      signedFile,
+      checked.kind,
+      finalRun.playbook_id,
+      {
+        onProgress: (fraction) => progress.set(fraction),
+        onRule: (rule) => ticker.push(rule.id, rule.name),
+      },
+      {},
+      { custom_playbook: activeCustomPlaybook ?? undefined },
+    );
+    await showComparison(dz, {
+      baseRun: finalRun,
+      baseTree: finalTree,
+      basePosture: undefined,
+      revised: signed,
+      baseName: finalRun.source_file.name || finalDisplayName,
+      revisedName: signedFile.name,
+      stem: `${baseFilename(finalRun.source_file.name)}-vs-${baseFilename(signedFile.name)}`,
+      conformity: await checkConformity(finalTree, signed.ingest.tree),
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    setState(dz, { kind: "error", message });
+  }
 }
 
 /**
@@ -695,9 +749,22 @@ async function showComparison(
     stem: string;
     /** A redline's tracked changes, for naming whose change a finding quotes. */
     revisions?: readonly import("../ingest/docx-revisions.js").RevisionText[];
+    /** A signed copy against its final: the conformity verdict. */
+    conformity?: import("../report/conformity.js").Conformity;
   },
 ): Promise<void> {
-  const { baseRun, baseTree, basePosture, revised, baseName, revisedName, stem, revisions } = input;
+  const {
+    baseRun,
+    baseTree,
+    basePosture,
+    revised,
+    baseName,
+    revisedName,
+    stem,
+    revisions,
+    conformity,
+  } = input;
+  const { conformityLine } = await import("../report/conformity.js");
   const { attributeRevisions } = await import("../report/redline-attribution.js");
   const {
     compareRuns,
@@ -724,22 +791,25 @@ async function showComparison(
   const build = async (confirmPairing: boolean): Promise<void> => {
     const cmp = await compareRuns(baseRun, revisedRun, { confirmPairing });
     const authors = revisions ? attributeRevisions(cmp, revisions) : undefined;
-    const docx = await buildComparisonDocx(cmp, clauseDiff, postureMovement, authors);
-    const json = authors
-      ? new Blob(
-          [
-            JSON.stringify(
-              {
-                ...buildComparisonJsonObject(cmp, clauseDiff, postureMovement),
-                revision_authors: authors,
-              },
-              null,
-              2,
-            ),
-          ],
-          { type: "application/json" },
-        )
-      : buildComparisonJson(cmp, clauseDiff, postureMovement);
+    const docx = await buildComparisonDocx(cmp, clauseDiff, postureMovement, authors, conformity);
+    // The same JSON `compare --redline` / `compare --executed --format json` writes.
+    const json =
+      authors || conformity
+        ? new Blob(
+            [
+              JSON.stringify(
+                {
+                  ...buildComparisonJsonObject(cmp, clauseDiff, postureMovement),
+                  ...(authors ? { revision_authors: authors } : {}),
+                  ...(conformity ? { conformity } : {}),
+                },
+                null,
+                2,
+              ),
+            ],
+            { type: "application/json" },
+          )
+        : buildComparisonJson(cmp, clauseDiff, postureMovement);
     const { resolved, introduced, unchanged } = cmp.delta.counts;
     const verdict =
       introduced.total === 0 && resolved.total === 0
@@ -753,6 +823,15 @@ async function showComparison(
               : "Mixed: equal findings resolved and introduced.";
     setState(dz, {
       kind: "comparison-complete",
+      ...(conformity
+        ? {
+            conformity: {
+              line: conformityLine(conformity),
+              set_aside: conformity.set_aside.length,
+              identical: conformity.verdict === "identical",
+            },
+          }
+        : {}),
       results: buildComparisonResults({
         introduced: cmp.delta.introduced,
         unchanged: cmp.delta.unchanged,

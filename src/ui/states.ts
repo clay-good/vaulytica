@@ -159,6 +159,12 @@ export type DropzoneState =
        */
       on_compare_redline?: () => void;
       /**
+       * add-executed-copy-conformity — "Check a signed copy against this
+       * final…": a file picker; the main UI compares the chosen signed copy
+       * with this document, execution's fills set aside.
+       */
+      on_check_signed?: (file: File) => void;
+      /**
        * v6 Part II bring-your-own-playbook provenance (Step 92). Present only
        * when a user-supplied playbook drove this run. Renders a line under the
        * counts distinguishing "your standard flagged this" from the built-in
@@ -380,6 +386,8 @@ export type DropzoneState =
       kind: "comparison-complete";
       /** The page (extend-results-page-to-bundles-and-comparisons): added, open, resolved. */
       results?: RenderedPage;
+      /** A signed copy against its final (add-executed-copy-conformity): the verdict line. */
+      conformity?: { line: string; set_aside: number; identical: boolean };
       base_filename: string;
       revised_filename: string;
       /** Plain-language headline verdict (net improvement / regression / …). */
@@ -850,6 +858,8 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
       <button class="btn-link" type="button" data-role="compare-redline-button" hidden>Compare both sides of this redline</button>
       <button class="btn-link" type="button" data-role="compare-button">Compare a revised version…</button>
       <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text" data-role="compare-input" hidden aria-hidden="true" tabindex="-1" />
+      <button class="btn-link" type="button" data-role="check-signed-button" hidden>Check a signed copy against this final…</button>
+      <input type="file" accept=".pdf,.docx,.txt,.md,.markdown,.text" data-role="check-signed-input" hidden aria-hidden="true" tabindex="-1" />
     </div>
     <div class="download-status" data-role="download-status" aria-live="polite"></div>
   `,
@@ -857,6 +867,7 @@ const TEMPLATES: Record<DropzoneState["kind"], string> = {
     <div class="dropzone-title" data-role="comparison-title">Version comparison</div>
     <div class="dropzone-sub" data-role="comparison-versions"></div>
     <div class="dropzone-sub comparison-dkb-warning" data-role="comparison-dkb-warning" hidden></div>
+    <p class="comparison-conformity" data-role="comparison-conformity" hidden></p>
     <section class="results-page" data-role="results-page" aria-label="What to raise" hidden></section>
     <details class="results-fold" data-role="also-noted" hidden>
       <summary data-role="also-noted-summary">Also noted</summary>
@@ -1207,6 +1218,23 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
         if (file) onCompare(file);
       });
     }
+    if (state.on_check_signed) {
+      const onSigned = state.on_check_signed;
+      select<HTMLElement>(dz, "compare-row")!.removeAttribute("hidden");
+      const btn = select<HTMLButtonElement>(dz, "check-signed-button")!;
+      const input = select<HTMLInputElement>(dz, "check-signed-input")!;
+      btn.removeAttribute("hidden");
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        input.click();
+      });
+      input.addEventListener("click", (e) => e.stopPropagation());
+      input.addEventListener("change", (e) => {
+        e.stopPropagation();
+        const file = input.files?.[0];
+        if (file) onSigned(file);
+      });
+    }
     if (state.on_compare_redline) {
       const onRedline = state.on_compare_redline;
       select<HTMLElement>(dz, "compare-row")!.removeAttribute("hidden");
@@ -1222,6 +1250,18 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
     select(dz, "comparison-versions")!.textContent =
       `Base: ${state.base_filename} → Revised: ${state.revised_filename}`;
     select(dz, "comparison-verdict")!.textContent = state.verdict;
+    if (state.conformity) {
+      const c = state.conformity;
+      const el = select<HTMLElement>(dz, "comparison-conformity")!;
+      el.hidden = false;
+      el.dataset.identical = String(c.identical);
+      el.textContent =
+        `${c.line} ` +
+        (c.set_aside > 0
+          ? `${c.set_aside} item${c.set_aside === 1 ? "" : "s"} set aside as execution (signature lines, filled blanks, legends), listed in the Word report. `
+          : "") +
+        "Text conformity only, not valid execution.";
+    }
     select(dz, "comparison-counts")!.innerHTML = comparisonCountsHtml(state.counts);
     const redline = select<HTMLElement>(dz, "comparison-redline")!;
     if (state.clause_diff) {

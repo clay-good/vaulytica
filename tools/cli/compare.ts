@@ -491,6 +491,7 @@ export async function runCompare(argv: string[]): Promise<void> {
       clauseDiff,
       postureMovement,
       fileComparison.revision_authors,
+      conformity,
     );
     await writeFile(args.out!, Buffer.from(await blob.arrayBuffer()));
     process.stderr.write(`wrote comparison report → ${args.out}\n`);

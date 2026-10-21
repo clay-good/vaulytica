@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.978.0] — 2026-10-20
+
+### Added
+- **Check a signed copy against the final in the tab**
+  (add-executed-copy-conformity, task 6). A result now offers "Check a
+  signed copy against this final…": the signed copy is compared with what
+  execution fills in (signature lines, dates in blanks, legends) set aside,
+  and the comparison page leads with the verdict. Same hashes as
+  `compare --executed` on the same bytes.
+- The comparison Word report opens with a "Signed copy against the final"
+  section whenever it compares a signed copy, from the tab or from
+  `compare --executed --format docx`.
+
 ## [9.977.0] — 2026-10-20
 
 ### Fixed

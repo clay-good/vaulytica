@@ -23,11 +23,23 @@ import { basename, join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 
 import { PASTED_TEXT_NAME, pastedTextFile } from "../../src/ui/dropzone.js";
-import { prepareDocument, runRedlineComparison, runReport } from "../../src/ui/pipeline.js";
+import {
+  prepareDocument,
+  runExecutedComparison,
+  runRedlineComparison,
+  runReport,
+} from "../../src/ui/pipeline.js";
+import { checkConformity } from "../../src/report/conformity.js";
+import { EXECUTED, FINAL } from "../../src/report/_conformity-fixtures.js";
 import { compareRuns } from "../../src/report/compare.js";
 import { attributeRevisions } from "../../src/report/redline-attribution.js";
 import { redlineDocx } from "../../src/delivery/_fixtures.js";
-import { analyzeFile, compareRedline, loadAccuracyDeps } from "../../tools/cli/api.js";
+import {
+  analyzeFile,
+  compareExecuted,
+  compareRedline,
+  loadAccuracyDeps,
+} from "../../tools/cli/api.js";
 import { resolveDkbDir } from "../../tools/dkb/resolve.js";
 
 const FIXTURE = join(
@@ -180,6 +192,36 @@ describe("cross-surface parity: browser pipeline vs CLI (same DOCX, same DKB)", 
     const cmp = await compareRuns(ui.base.run, ui.revised.run);
     expect(cmp.result_hash).toBe(cli.comparison.result_hash);
     expect(attributeRevisions(cmp, ui.revisions)).toEqual(cli.revision_authors);
+  });
+
+  it("a signed copy checks against its final to the same hashes on both surfaces", async () => {
+    // add-executed-copy-conformity task 6: the tab's "Check a signed copy
+    // against this final…" is `compare --executed` on the same bytes.
+    const dir = mkdtempSync(join(tmpdir(), "vaulytica-executed-parity-"));
+    const finalPath = join(dir, "consulting-final.txt");
+    const signedPath = join(dir, "consulting-signed.txt");
+    writeFileSync(finalPath, FINAL);
+    writeFileSync(signedPath, EXECUTED.replace("$12,500", "$21,500"));
+    const cli = await compareExecuted(finalPath, signedPath);
+    rmSync(dir, { recursive: true, force: true });
+
+    const config = { dkb_base: "/x-dkb", playbook_base: "/x-playbooks" };
+    const final = await runReport(
+      await prepareDocument(new File([FINAL], "consulting-final.txt"), "text", config),
+    );
+    const signed = await runExecutedComparison(
+      new File([EXECUTED.replace("$12,500", "$21,500")], "consulting-signed.txt"),
+      "text",
+      final.run.playbook_id,
+      {},
+      config,
+    );
+    expect(final.run.result_hash).toBe(cli.base.run.result_hash);
+    expect(signed.run.result_hash).toBe(cli.revised.run.result_hash);
+    expect((await compareRuns(final.run, signed.run)).result_hash).toBe(cli.comparison.result_hash);
+    const conformity = await checkConformity(final.ingest.tree, signed.ingest.tree);
+    expect(conformity.verdict).toBe("differences");
+    expect(conformity.conformity_hash).toBe(cli.conformity.conformity_hash);
   });
 
   it("would catch a CLI running a different DKB (the shipped defect)", async () => {

@@ -2593,3 +2593,52 @@ describe("complete state: compare both sides of a redline", () => {
     expect(select(plain, "compare-redline-button")!.hidden).toBe(true);
   });
 });
+
+describe("signed copy against the final", () => {
+  it("offers the check on a result, and shows the verdict on the comparison", () => {
+    const onSigned = vi.fn();
+    const dz = document.createElement("div");
+    renderState(dz, {
+      kind: "complete",
+      filename: "final.docx",
+      playbook_name: "Consulting Agreement",
+      counts: { critical: 0, warning: 0, info: 0 },
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "f.docx",
+      json_filename: "f.json",
+      on_check_signed: onSigned,
+    });
+    const btn = select<HTMLButtonElement>(dz, "check-signed-button")!;
+    expect(btn.hidden).toBe(false);
+    expect(btn.textContent).toBe("Check a signed copy against this final…");
+
+    const cmp = document.createElement("div");
+    renderState(cmp, {
+      kind: "comparison-complete",
+      base_filename: "final.docx",
+      revised_filename: "Scan_0041.pdf",
+      verdict: "No change to the risk surface.",
+      counts: {
+        resolved: { critical: 0, warning: 0, info: 0, total: 0 },
+        introduced: { critical: 0, warning: 0, info: 0, total: 0 },
+        unchanged: { critical: 0, warning: 0, info: 0, total: 0 },
+        carried_clean_count: 0,
+      },
+      dkb_mismatch: false,
+      docx_blob: new Blob(["d"]),
+      json_blob: new Blob(["{}"]),
+      docx_filename: "c.docx",
+      json_filename: "c.json",
+      conformity: {
+        line: "Identical to the final outside the execution allowance.",
+        set_aside: 4,
+        identical: true,
+      },
+    } as Parameters<typeof renderState>[1]);
+    const line = select<HTMLElement>(cmp, "comparison-conformity")!;
+    expect(line.hidden).toBe(false);
+    expect(line.textContent).toMatch(/^Identical to the final .* 4 items set aside as execution/);
+    expect(line.textContent).toContain("not valid execution");
+  });
+});

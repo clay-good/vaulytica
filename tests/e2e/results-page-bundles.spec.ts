@@ -9,6 +9,7 @@ import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { redlineDocx } from "../../src/delivery/_fixtures.js";
+import { EXECUTED, FINAL } from "../../src/report/_conformity-fixtures.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BUNDLE = join(__dirname, "sample-docs", "bundle");
@@ -161,4 +162,36 @@ test("a document with no tracked changes offers no redline comparison", async ({
     .waitFor({ state: "visible", timeout: 60_000 });
   await expect(page.locator('[data-role="compare-button"]')).toBeVisible();
   await expect(page.locator('[data-role="compare-redline-button"]')).toBeHidden();
+});
+
+test("a signed copy is checked against the final, with what execution filled in set aside", async ({
+  page,
+}, testInfo) => {
+  // add-executed-copy-conformity task 6: the tab's check is the CLI's
+  // `compare --executed` on the same bytes.
+  const seen = guard(page, testInfo.project.use.baseURL);
+  await page.goto("/");
+  await page.locator(singleFileInput).setInputFiles({
+    name: "consulting-final.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from(FINAL),
+  });
+  const button = page.locator('[data-role="check-signed-button"]');
+  await button.waitFor({ state: "visible", timeout: 60_000 });
+  await page.locator('[data-role="check-signed-input"]').setInputFiles({
+    name: "Scan_0041.txt",
+    mimeType: "text/plain",
+    buffer: Buffer.from(EXECUTED),
+  });
+  await expect(page.locator("#dropzone")).toHaveAttribute("data-state", "comparison-complete", {
+    timeout: 60_000,
+  });
+  const line = page.locator('[data-role="comparison-conformity"]');
+  await expect(line).toBeVisible();
+  await expect(line).toHaveText(
+    /^Identical to the final outside the execution allowance\. \d+ items? set aside as execution/,
+  );
+  expect(seen.downloads, "nothing is saved without a click").toEqual([]);
+  expect(seen.external, "expected zero cross-origin requests").toEqual([]);
+  await noSidewaysScroll(page);
 });

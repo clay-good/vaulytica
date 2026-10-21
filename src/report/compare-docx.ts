@@ -51,6 +51,7 @@ import {
   para,
 } from "./_docx-primitives.js";
 import { determinismStatement, nonAdviceStatement, privacyStatement } from "./disclaimers.js";
+import { conformityLine, type Conformity } from "./conformity.js";
 
 /**
  * Cap on redline rows rendered per category. A pathological redline (a
@@ -72,9 +73,12 @@ export async function buildComparisonDocx(
   postureMovement?: PostureMovement,
   /** A redline's attribution: finding id → the authors of the changes it quotes. */
   authors?: Record<string, string[]>,
+  /** `compare --executed`: the signed copy against the final, with execution set aside. */
+  conformity?: Conformity,
 ): Promise<Blob> {
   const children: (Paragraph | Table)[] = [
     ...renderCover(cmp),
+    ...renderConformitySection(conformity),
     ...renderExecutiveSummary(cmp),
     ...renderPostureMovementSection(postureMovement),
     ...renderBucket(
@@ -294,6 +298,61 @@ function tierShort(tier: NegotiationTier | null): string {
  * became legally adequate or enforceable. Omitted when no movement was supplied
  * (no custom playbook with positions on the run), so the page flow is unchanged.
  */
+/**
+ * The signed copy against the final (add-executed-copy-conformity): the
+ * verdict, what differs outside the execution allowance, and what was set
+ * aside as execution. First, because it is the question a signed copy is
+ * compared to answer; the finding delta follows.
+ */
+function renderConformitySection(c: Conformity | undefined): Paragraph[] {
+  if (!c) return [];
+  const out: Paragraph[] = [
+    h1("Signed copy against the final"),
+    para({ text: conformityLine(c), bold: true }),
+    para({
+      text: "Text conformity only, not valid execution. Signature lines, dates filled into blanks and page legends are set aside and listed below; anything else that differs is a difference.",
+      italics: true,
+    }),
+    coverField("Conformity hash", c.conformity_hash),
+  ];
+  if (c.signature_blocks.final !== c.signature_blocks.executed) {
+    out.push(
+      para({
+        text: `Signature blocks: ${c.signature_blocks.final} in the final, ${c.signature_blocks.executed} in the signed copy.`,
+      }),
+    );
+  }
+  const { removed, added, changed } = c.differences;
+  if (removed.length + added.length + changed.length > 0) {
+    out.push(h3("Differences outside the execution allowance"));
+    for (const pair of changed.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(para({ text: `Changed. Final: ${pair.base.text}` }));
+      out.push(para({ text: `Signed copy: ${pair.revised.text}` }));
+    }
+    for (const r of removed.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(para({ text: `In the final only: ${r.text}` }));
+    }
+    for (const a of added.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(para({ text: `In the signed copy only: ${a.text}` }));
+    }
+  }
+  if (c.set_aside.length > 0) {
+    out.push(h3("Set aside as execution"));
+    for (const x of c.set_aside.slice(0, MAX_REDLINE_ROWS)) {
+      out.push(
+        para({ text: `${x.side === "final" ? "Final" : "Signed"} · ${x.reason}: ${x.text}` }),
+      );
+    }
+    if (c.set_aside.length > MAX_REDLINE_ROWS) {
+      out.push(
+        para({ text: `…and ${c.set_aside.length - MAX_REDLINE_ROWS} more.`, italics: true }),
+      );
+    }
+  }
+  out.push(pageBreak());
+  return out;
+}
+
 function renderPostureMovementSection(pm: PostureMovement | undefined): (Paragraph | Table)[] {
   if (!pm || pm.dimensions.length === 0) return [];
   const c = pm.counts;

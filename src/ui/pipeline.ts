@@ -1156,6 +1156,40 @@ export async function runPipeline(
   return { ...report, prepared };
 }
 
+/** A signed copy the tab cannot compare (no text layer), with the reason. */
+export class ExecutedRefusedError extends Error {}
+
+/**
+ * A signed copy, analyzed to be checked against its final
+ * (add-executed-copy-conformity): the CLI's `compareExecuted` — analyzed as
+ * itself, and held to the final's type only when routing moved, since a
+ * signed copy is one document with its final by construction. An image-only
+ * scan has no text to compare, and no surface runs OCR, so it is refused.
+ */
+export async function runExecutedComparison(
+  file: File,
+  kind: AcceptedKind,
+  finalPlaybookId: string,
+  hooks: PipelineProgress = {},
+  config: PipelineConfig = {},
+  options: PipelineOptions = {},
+): Promise<PipelineResult> {
+  let signed = await runReport(await prepareDocument(file, kind, config, hooks), hooks, options);
+  if (signed.run.playbook_id !== finalPlaybookId) {
+    signed = await runReport(
+      await prepareDocument(file, kind, config, hooks, { playbook_id: finalPlaybookId }),
+      hooks,
+      options,
+    );
+  }
+  if (signed.ingest.word_count === 0) {
+    throw new ExecutedRefusedError(
+      `${file.name} has no text layer, so there is nothing to compare. It looks like an image-only scan, and no Vaulytica surface runs OCR: run OCR on it first (Acrobat, Preview or the scanner's software), then compare again.`,
+    );
+  }
+  return signed;
+}
+
 /** A file the tab cannot read as a redline, with the reason (as the CLI's `RedlineRefusedError`). */
 export class RedlineRefusedError extends Error {}
 
