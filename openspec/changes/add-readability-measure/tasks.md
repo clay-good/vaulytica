@@ -21,3 +21,7 @@ Task 4, in part: `READ-001` (score below the asserted statute's minimum) and `RE
 ## Progress — 9.989.0
 
 Task 2's report half: the HTML and Word covers carry a "Reading ease" line (score, words and sentences, "informative only", or the asserted statute and its minimum). A full appendix with the longest sentence and the exclusions is the JSON block's; the covers give the line.
+
+## Progress — 9.990.0
+
+Task 4's browser selector: "Reviewing an insurance policy form? Hold it to a readability statute…" beside the estate panel (`readability-panel.ts`, its choices pinned to `READABILITY_STANDARDS` by test). The chosen statute reaches the single-document run and its frame re-runs; an e2e chooses Florida, pastes a dense policy and finds the reading-ease item on the page. The eager entry is 29.44 KB of its 30 KB. Not built: the bundle path, the MCP server and the Action input.

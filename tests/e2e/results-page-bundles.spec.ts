@@ -195,3 +195,25 @@ test("a signed copy is checked against the final, with what execution filled in 
   expect(seen.external, "expected zero cross-origin requests").toEqual([]);
   await noSidewaysScroll(page);
 });
+
+test("a policy held to Florida's readability statute shows its score below 45", async ({
+  page,
+}) => {
+  // add-readability-measure task 4: the tab's selector is the CLI's --readability fl.
+  await page.goto("/");
+  await page.locator("#readability-panel summary").click();
+  await page.locator('[data-role="readability-standard"]').selectOption("fl");
+  await page.locator('[data-role="paste-open"]').click();
+  await page
+    .locator("#paste-text")
+    .fill(
+      "HOMEOWNERS INSURANCE POLICY\n\nThe insurer's obligation to indemnify the insured for consequential, incidental, or derivative losses occasioned by the occurrence of any peril enumerated in the declarations, notwithstanding any contrary provision of any endorsement, rider, or supplementary documentation incorporated by reference, shall be determined exclusively in accordance with the provisions of the applicable valuation methodology and the limitations, conditions, and exclusions specified in this policy.\n",
+    );
+  await page.locator('[data-role="paste-submit"]').click();
+  await page
+    .locator('[data-role="results-headline"]')
+    .waitFor({ state: "visible", timeout: 60_000 });
+  await expect(page.locator('[data-role="results-page"]')).toContainText(
+    /Reading ease -?\d+(\.\d)? is below the 45 Fla\. Stat\. § 627\.4145 requires/,
+  );
+});

@@ -25,6 +25,7 @@ import { scopeForPlaybook } from "../verticals/registry.js";
 import { bindPlaybookPanel, type LoadedPlaybook } from "./playbook-panel.js";
 import { bindRegimePanel } from "./regime-panel.js";
 import { bindEstatePanel, type EstateAssertion } from "./estate-panel.js";
+import { bindReadabilityPanel } from "./readability-panel.js";
 import type { RegimeId } from "../privacy/regime-data.js";
 import {
   reportLinkForFinding,
@@ -50,6 +51,8 @@ let activeRegimes: readonly RegimeId[] = [];
 // analyses and frame-toggle re-runs; the pack activates only when the
 // document matched a will / trust / codicil playbook.
 let activeEstate: EstateAssertion = { checks: false };
+/** add-readability-measure — the asserted readability statute, if any. */
+let activeReadability: string | undefined;
 
 /**
  * Preload the analysis pipeline as a side-effect of user intent —
@@ -90,6 +93,8 @@ export async function bootUi(opts: {
    * exists. When absent, the affordance is simply not rendered.
    */
   estatePanelContainer?: HTMLElement | null;
+  /** Container for the readability-statute assertion (add-readability-measure). */
+  readabilityPanelContainer?: HTMLElement | null;
 }): Promise<void> {
   if (opts.playbookPanelContainer) {
     bindPlaybookPanel(opts.playbookPanelContainer, {
@@ -111,6 +116,14 @@ export async function bootUi(opts: {
     bindEstatePanel(opts.estatePanelContainer, {
       onChange: (assertion) => {
         activeEstate = assertion;
+      },
+    });
+  }
+
+  if (opts.readabilityPanelContainer) {
+    bindReadabilityPanel(opts.readabilityPanelContainer, {
+      onChange: (standard) => {
+        activeReadability = standard;
       },
     });
   }
@@ -211,6 +224,7 @@ async function runFile(dz: HTMLElement, file: File, kind: AcceptedKind): Promise
         // unless the document matched a will/trust/codicil playbook.
         estate_checks: activeEstate.checks || undefined,
         estate_state: activeEstate.state,
+        readability: activeReadability,
       },
     );
 
@@ -244,6 +258,7 @@ async function runFile(dz: HTMLElement, file: File, kind: AcceptedKind): Promise
           // ...and the asserted estate checks / state (add-estate-planning-pack).
           estate_checks: activeEstate.checks || undefined,
           estate_state: activeEstate.state,
+          readability: activeReadability,
         });
         renderCompleteState(dz, file.name, stem, fresh, countsBySeverity, frames, rerun, file);
       } catch (err) {
@@ -1231,6 +1246,7 @@ if (typeof document !== "undefined") {
     const playbookHost = document.getElementById("playbook-panel") ?? undefined;
     const regimeHost = document.getElementById("regime-panel") ?? undefined;
     const estateHost = document.getElementById("estate-panel") ?? undefined;
+    const readabilityHost = document.getElementById("readability-panel") ?? undefined;
     void bootUi({
       dropzone: dz,
       folderPickContainer: folderHost,
@@ -1238,6 +1254,7 @@ if (typeof document !== "undefined") {
       playbookPanelContainer: playbookHost,
       regimePanelContainer: regimeHost,
       estatePanelContainer: estateHost,
+      readabilityPanelContainer: readabilityHost,
     });
     void registerServiceWorker({ badge: document.getElementById("offline-badge") });
     void hydrateDkbValidation();

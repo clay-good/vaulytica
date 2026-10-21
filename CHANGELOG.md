@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.990.0] — 2026-10-20
+
+### Added
+- **Choose a readability statute in the tab.** Beside the estate checks, a
+  selector holds the next document to Florida's readable-language statute
+  (the tab's `--readability fl`). Nothing is asserted by default.
+
 ## [9.989.0] — 2026-10-20
 
 ### Added
