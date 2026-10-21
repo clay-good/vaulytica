@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.991.0] — 2026-10-20
+
+### Added
+- `/known-limits` says the reading-ease score applies neither the sampling
+  the statutes allow nor the words they let an insurer leave out. A
+  property test holds that the readability block never changes a run or
+  its hash.
+
 ## [9.990.0] — 2026-10-20
 
 ### Added

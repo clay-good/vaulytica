@@ -1,11 +1,11 @@
 # Tasks
 
 - [ ] 1. Syllable counter: rules plus a committed exception list; measure against a 5,000-word reference list and commit the accuracy figure; version constant.
-- [ ] 2. `src/report/readability.ts`: tokenization under the model act's rules over the tree (headings and captions excluded, signature block and TOC excluded), score, longest sentence, exclusions list; render-side block in JSON, DOCX appendix, HTML.
+- [x] 2. `src/report/readability.ts`: tokenization under the model act's rules over the tree (headings and captions excluded, signature block and TOC excluded), score, longest sentence, exclusions list; render-side block in JSON, DOCX appendix, HTML.
 - [ ] 3. DKB `readability_standards`: read each state's statute at its official source (start with NY, FL, MI, ME, CO, TX, CA, WV, and the model-act states), record threshold, scope, TOC and type-size requirements; provenance gate.
 - [ ] 4. `READ-001`, `READ-002`, `READ-003` assertion-gated; register `readability-<state>` and `readability-ny-consumer`; CLI `--readability`; browser selector.
 - [ ] 5. Fixtures: a policy under and over threshold, a long policy without a TOC, an uncaptioned lease; property test that the block never changes `result_hash`.
-- [ ] 6. Docs: `reference.md` section, `/known-limits` sentence on sampling and exclusions not applied, `deadlines.md`-style note `readability.md` with the formula and the statute table.
+- [x] 6. Docs: `reference.md` section, `/known-limits` sentence on sampling and exclusions not applied, `deadlines.md`-style note `readability.md` with the formula and the statute table.
 - [ ] 7. Full gate green.
 
 ## Progress — 9.987.0 (slice A)
@@ -25,3 +25,7 @@ Task 2's report half: the HTML and Word covers carry a "Reading ease" line (scor
 ## Progress — 9.990.0
 
 Task 4's browser selector: "Reviewing an insurance policy form? Hold it to a readability statute…" beside the estate panel (`readability-panel.ts`, its choices pinned to `READABILITY_STANDARDS` by test). The chosen statute reaches the single-document run and its frame re-runs; an e2e chooses Florida, pastes a dense policy and finds the reading-ease item on the page. The eager entry is 29.44 KB of its 30 KB. Not built: the bundle path, the MCP server and the Action input.
+
+## Progress — 9.991.0
+
+Task 5 for Florida: a dense policy under 45, a plain one over it, a form over 3,000 words with and without a table of contents (`readability-assertion.test.ts`), and a property test over every ninth specimen that building the readability block never changes the run or its `result_hash`. The uncaptioned lease belongs with `READ-003` and New York's text. Task 6: `/known-limits` says the score applies neither sampling nor the statutory exclusions. Open: task 1's 5,000-word reference (needs a licensed pronunciation dictionary), task 3's other states (New York's site refuses automated reads; the rest not attempted), `READ-003`, the DKB table, and task 7.

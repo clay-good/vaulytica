@@ -81,3 +81,28 @@ describe("--readability fl", () => {
     }
   });
 });
+
+describe("the readability block", () => {
+  it("never changes the run or its hash, for any specimen", async () => {
+    const { readdirSync, readFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const { buildJsonReport } = await import("../../src/report/json.js");
+    const deps = await loadAccuracyDeps({});
+    const dir = join(process.cwd(), "tests", "fixtures", "specimens");
+    const sample = readdirSync(dir)
+      .filter((f) => f.endsWith(".txt"))
+      .sort()
+      .filter((_f, i) => i % 9 === 0);
+    for (const name of sample) {
+      const r = await analyzeText(readFileSync(join(dir, name), "utf8"), name, { deps });
+      const before = JSON.stringify(r.run);
+      const json = JSON.parse(await buildJsonReport(r.run, r.ingest).text()) as {
+        run: { result_hash: string };
+        readability: { score: number };
+      };
+      expect(typeof json.readability.score, name).toBe("number");
+      expect(json.run.result_hash, name).toBe(r.run.result_hash);
+      expect(JSON.stringify(r.run), name).toBe(before);
+    }
+  }, 300_000);
+});
