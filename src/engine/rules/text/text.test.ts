@@ -14,6 +14,7 @@ import type { RuleContext } from "../../finding.js";
 import { MANDATED_TEXTS } from "./mandated-texts.js";
 import { rule as TEXT_001 } from "./TEXT-001.js";
 import { rule as TEXT_002 } from "./TEXT-002.js";
+import { rule as TEXT_003 } from "./TEXT-003.js";
 
 const [A, B] = MANDATED_TEXTS[0]!.variants.map((v) => v.text);
 const BODY_A = A!.replace(/^NOTICE /, "");
@@ -168,5 +169,57 @@ describe("TEXT-002 — the point size", () => {
     const f = TEXT_002.check(await docx(A!, false, { halfPoints: 14 }));
     expect(f?.title).toMatch(/bold face or size/);
     expect(f?.description).toMatch(/none of it is bold, and it is set in 7-point type/);
+  });
+});
+
+describe("TEXT-003 — a warranty disclaimer in plain type", () => {
+  const DISCLAIMER =
+    "Seller disclaims all implied warranties, including the implied warranty of merchantability and fitness for a particular purpose.";
+  async function word(paragraphs: Array<[text: string, bold: boolean]>, heading?: string) {
+    const run = (t: string, b: boolean) =>
+      `<w:r>${b ? "<w:rPr><w:b/></w:rPr>" : ""}<w:t xml:space="preserve">${t}</w:t></w:r>`;
+    const head = heading
+      ? `<w:p><w:pPr><w:pStyle w:val="Heading1"/></w:pPr>${run(heading, false)}</w:p>`
+      : "";
+    const { tree } = await ingestDocxBuffer(
+      buildDocx({
+        document: documentXml(
+          `<w:p>${run("SALES AGREEMENT", true)}</w:p>` +
+            head +
+            paragraphs.map(([t, b]) => `<w:p>${run(t, b)}</w:p>`).join(""),
+        ),
+      }),
+    );
+    return { ...buildContext(["Agreement"]), tree, extracted: extractAll(tree) };
+  }
+
+  it("notes a disclaimer of merchantability in regular mixed-case type", async () => {
+    const f = TEXT_003.check(await word([[DISCLAIMER, false]]));
+    expect(f?.severity).toBe("info");
+    expect(f?.explanation).toMatch(/§ 2-316\(2\)/);
+    expect(f?.explanation).toMatch(/does not say the disclaimer fails/);
+  });
+
+  it("is silent when the disclaimer is bold, in capitals, or under its own heading", async () => {
+    expect(TEXT_003.check(await word([[DISCLAIMER, true]]))).toBeNull();
+    expect(TEXT_003.check(await word([[DISCLAIMER.toUpperCase(), false]]))).toBeNull();
+    expect(
+      TEXT_003.check(await word([[DISCLAIMER, false]], "Disclaimer of Warranties")),
+    ).toBeNull();
+  });
+
+  it("still notes it under a heading that does not name it", async () => {
+    expect(TEXT_003.check(await word([[DISCLAIMER, false]], "Miscellaneous"))).not.toBeNull();
+  });
+
+  it("is silent on pasted text, and on a liability cap", async () => {
+    expect(TEXT_003.check(await pasted(contract(DISCLAIMER)))).toBeNull();
+    expect(
+      TEXT_003.check(
+        await word([
+          ["In no event shall either party be liable for consequential damages.", false],
+        ]),
+      ),
+    ).toBeNull();
   });
 });

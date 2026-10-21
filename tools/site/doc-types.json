@@ -67,7 +67,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 108,
+   "general_checks": 109,
    "companions": [
     "s-1-risk-factors"
    ],
@@ -110,7 +110,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "employee-handbook",
     "information-security-policy"
@@ -172,7 +172,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "healthcare-poa"
    ],
@@ -215,7 +215,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "marketing-services-agreement",
     "influencer-agreement"
@@ -265,7 +265,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "mutual-nda",
     "consulting-agreement"
@@ -321,7 +321,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "msa-vendor-deep",
     "msa-customer-deep",
@@ -380,7 +380,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "code-of-conduct",
     "document-retention-policy"
@@ -430,7 +430,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -489,7 +489,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "complaint"
    ],
@@ -538,7 +538,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "code-of-conduct"
    ],
@@ -587,7 +587,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "saas-vendor",
     "data-license-agreement"
@@ -600,7 +600,7 @@
    "group": "Court filings",
    "summary": "An appellate brief.",
    "checks": [],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [],
    "sources": []
   },
@@ -659,7 +659,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "employment-at-will-us",
     "offer-letter"
@@ -703,7 +703,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "confidential-settlement"
    ],
@@ -752,7 +752,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "design-build-agreement",
     "construction-contract"
@@ -796,7 +796,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "operating-agreement-llc",
     "charter-incorporation"
@@ -870,7 +870,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "disclosure-schedules",
     "escrow-agreement"
@@ -914,7 +914,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "asset-purchase-agreement",
     "bill-of-sale"
@@ -958,7 +958,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "litigation-funding-agreement"
    ],
@@ -1007,7 +1007,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 115,
    "companions": [
     "saas-tos",
     "website-terms-of-use"
@@ -1291,7 +1291,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "msa-vendor-deep"
    ],
@@ -1579,7 +1579,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "baa",
     "msa-vendor-deep"
@@ -1638,7 +1638,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "offer-letter"
    ],
@@ -1675,7 +1675,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "asset-purchase-agreement",
     "assignment-and-assumption-agreement"
@@ -1725,7 +1725,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "privacy-notice-us",
     "employee-handbook"
@@ -1769,7 +1769,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "stockholders-agreement",
     "mutual-nda"
@@ -1813,7 +1813,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "written-consent",
     "meeting-minutes"
@@ -1857,7 +1857,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "executive-employment",
     "commission-plan"
@@ -1907,7 +1907,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "security-incident-response-plan",
     "information-security-policy"
@@ -1957,7 +1957,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "stockholders-agreement"
    ],
@@ -2012,7 +2012,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "listing-agreement"
    ],
@@ -2097,7 +2097,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "charter-incorporation"
    ],
@@ -2158,7 +2158,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [],
    "sources": []
   },
@@ -2199,7 +2199,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -2240,7 +2240,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "construction-contract"
    ],
@@ -2313,7 +2313,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -2384,7 +2384,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "bylaws-corporation"
    ],
@@ -2433,7 +2433,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "privacy-notice-us",
     "website-terms-of-use"
@@ -2489,7 +2489,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "informed-consent",
     "data-sharing-agreement"
@@ -2545,7 +2545,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "whistleblower-policy",
     "coi-policy"
@@ -2558,7 +2558,7 @@
    "group": "Estate & family",
    "summary": "A codicil amending a last will and testament. Estate-planning checks run when you turn them on in the estate panel. Execution formalities cannot be verified from text alone — the pack checks recitals, not valid execution.",
    "checks": [],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "last-will-and-testament"
    ],
@@ -2601,7 +2601,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "prenuptial-agreement",
     "postnuptial-agreement"
@@ -2614,7 +2614,7 @@
    "group": "Insurance & indemnity",
    "summary": "Linter for an ACORD 25 Certificate of Liability Insurance. Extracts carrier, AM Best rating, coverage amounts, and endorsements and lints against a default requirements profile or a customer-supplied profile.",
    "checks": [],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "msa-vendor-deep",
     "msa-customer-deep"
@@ -2661,7 +2661,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "code-of-conduct"
    ],
@@ -2710,7 +2710,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "guaranty"
    ],
@@ -2759,7 +2759,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "offer-letter",
     "bonus-plan"
@@ -2833,7 +2833,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "bylaws-corporation"
    ],
@@ -2894,7 +2894,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "answer",
     "trial-motion"
@@ -2950,7 +2950,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "mutual-release"
    ],
@@ -2993,7 +2993,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "confidential-settlement",
     "stipulation-of-dismissal"
@@ -3049,7 +3049,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "subcontractor-agreement",
     "change-order"
@@ -3099,7 +3099,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -3109,7 +3109,7 @@
    "group": "Commercial & services",
    "summary": "Hybrid independent-contractor + services agreement for a named consultant. Based on Common Paper PSA with consulting-specific overlays.",
    "checks": [],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -3162,7 +3162,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "engagement-letter"
    ],
@@ -3205,7 +3205,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [],
    "sources": []
   },
@@ -3270,7 +3270,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -3317,7 +3317,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "privacy-policy-lint"
    ],
@@ -3366,7 +3366,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -3407,7 +3407,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "mutual-release",
     "confidential-settlement"
@@ -3463,7 +3463,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "auto-renewal-terms"
    ],
@@ -3512,7 +3512,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "insurance-policy-summary",
     "vendor-security-addendum"
@@ -3562,7 +3562,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "api-terms",
     "ip-assignment"
@@ -3612,7 +3612,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "dpa-multi-state-us",
     "phi-authorization"
@@ -3662,7 +3662,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "promissory-note"
    ],
@@ -3705,7 +3705,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -3746,7 +3746,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "security-agreement",
     "revolving-credit-agreement"
@@ -3790,7 +3790,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "document-requests"
    ],
@@ -3839,7 +3839,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "construction-contract",
     "architect-agreement"
@@ -3913,7 +3913,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "bylaws-corporation",
     "written-consent"
@@ -3969,7 +3969,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "stock-purchase-agreement",
     "asset-purchase-agreement",
@@ -4026,7 +4026,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "document-requests",
     "privilege-log"
@@ -4070,7 +4070,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "charter-incorporation"
    ],
@@ -4143,7 +4143,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -4196,7 +4196,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "insurance-policy-summary",
     "indemnification-agreement"
@@ -4246,7 +4246,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "discovery-responses",
     "privilege-log"
@@ -4290,7 +4290,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -4451,7 +4451,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "msa-vendor-deep",
     "dpa-multi-state-us"
@@ -4818,7 +4818,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "msa-vendor-deep",
     "scc-module-2",
@@ -4988,7 +4988,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "dpa-ccpa-service-provider",
     "msa-vendor-deep"
@@ -5355,7 +5355,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "dpa-controller-processor",
     "scc-module-3"
@@ -5414,7 +5414,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "ropa-art-30"
    ],
@@ -5475,7 +5475,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "healthcare-poa"
    ],
@@ -5542,7 +5542,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "stock-purchase-agreement",
     "merger-agreement"
@@ -5598,7 +5598,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -5645,7 +5645,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -5692,7 +5692,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "equity-incentive-plan"
    ],
@@ -5704,7 +5704,7 @@
    "group": "Employment",
    "summary": "Standard US offer-letter-style employment agreement for exempt, at-will employees. Based on GitHub's Balanced Employee IP Agreement and published Cooley offer-letter templates.",
    "checks": [],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [],
    "sources": []
   },
@@ -5763,7 +5763,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "piia",
     "executive-employment"
@@ -5825,7 +5825,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "contingency-fee-agreement",
     "termination-of-representation"
@@ -5875,7 +5875,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "equipment-lease",
     "security-agreement",
@@ -5932,7 +5932,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "equipment-finance-agreement"
    ],
@@ -5987,7 +5987,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "stock-option-grant",
     "rsu-grant"
@@ -6055,7 +6055,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "stock-purchase-agreement",
     "asset-purchase-agreement",
@@ -6106,7 +6106,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "snda"
    ],
@@ -6137,7 +6137,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "saas-tos",
     "privacy-policy-lint"
@@ -6208,7 +6208,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "piia",
     "employment-restrictive-covenant"
@@ -6252,7 +6252,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "engagement-letter"
    ],
@@ -6307,7 +6307,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "anti-bribery-policy",
     "aml-policy"
@@ -6357,7 +6357,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "security-agreement",
     "ucc-1-financing-statement"
@@ -6419,7 +6419,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 115,
    "companions": [],
    "sources": []
   },
@@ -6466,7 +6466,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "teaming-agreement",
     "gsa-schedule-contract"
@@ -6510,7 +6510,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "nonprofit-bylaws",
     "grant-agreement"
@@ -6554,7 +6554,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "engagement-letter"
    ],
@@ -6603,7 +6603,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "loan-agreement",
     "security-agreement"
@@ -6671,7 +6671,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [],
    "sources": []
   },
@@ -6730,7 +6730,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "ppm-narrative"
    ],
@@ -6779,7 +6779,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "franchise-disclosure-document"
    ],
@@ -6828,7 +6828,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "franchise-agreement"
    ],
@@ -6877,7 +6877,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "warehousing-3pl-agreement"
    ],
@@ -6926,7 +6926,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "fiscal-sponsorship-agreement",
     "nonprofit-bylaws"
@@ -6982,7 +6982,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "snda"
    ],
@@ -7025,7 +7025,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "far-subcontract-flowdown"
    ],
@@ -7080,7 +7080,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "loan-agreement"
    ],
@@ -7141,7 +7141,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "advance-directive",
     "durable-poa-financial"
@@ -7197,7 +7197,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "baa",
     "data-sharing-agreement"
@@ -7259,7 +7259,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [],
    "sources": []
   },
@@ -7306,7 +7306,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [],
    "sources": []
   },
@@ -7359,7 +7359,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -7412,7 +7412,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -7422,7 +7422,7 @@
    "group": "Commercial & services",
    "summary": "Engagement of a non-employee contractor to perform defined services. Focused on misclassification dark patterns. Based on Common Paper Professional Services Agreement and IRS 20-factor commentary.",
    "checks": [],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -7469,7 +7469,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "media-release",
     "sponsorship-agreement"
@@ -7525,7 +7525,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "acceptable-use-policy",
     "security-incident-response-plan"
@@ -7593,7 +7593,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -7634,7 +7634,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "code-of-conduct"
    ],
@@ -7683,7 +7683,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "insurance-policy-summary"
    ],
@@ -7732,7 +7732,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "coi"
    ],
@@ -7781,7 +7781,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -7822,7 +7822,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "offer-letter",
     "piia"
@@ -7866,7 +7866,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "discovery-responses"
    ],
@@ -7927,7 +7927,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "voting-agreement",
     "rofr-co-sale",
@@ -7978,7 +7978,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [],
    "sources": []
   },
@@ -8031,7 +8031,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "revocable-living-trust",
     "special-needs-trust"
@@ -8081,7 +8081,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "technology-transfer-agreement",
     "patent-license"
@@ -8131,7 +8131,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "engagement-letter"
    ],
@@ -8180,7 +8180,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "operating-agreement-llc",
     "partnership-agreement"
@@ -8248,7 +8248,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "revocable-living-trust"
    ],
@@ -8303,7 +8303,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [],
    "sources": []
   },
@@ -8313,7 +8313,7 @@
    "group": "Real estate",
    "summary": "Multi-tenant US office lease with operating-expense pass-throughs. High-anxiety contract for small businesses. Drafting standards informed by the ABA Real Property section and Uniform Law Commission commentary.",
    "checks": [],
-   "general_checks": 114,
+   "general_checks": 115,
    "companions": [],
    "sources": []
   },
@@ -8348,7 +8348,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [],
    "sources": []
   },
@@ -8389,7 +8389,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "lease-commercial-multitenant",
     "tenant-improvement-work-letter"
@@ -8433,7 +8433,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "engagement-letter",
     "termination-of-representation"
@@ -8477,7 +8477,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "real-estate-psa",
     "residential-purchase-agreement"
@@ -8527,7 +8527,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "assignment-of-claim",
     "engagement-letter"
@@ -8577,7 +8577,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [],
    "sources": []
   },
@@ -8648,7 +8648,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "promissory-note",
     "security-agreement",
@@ -8693,7 +8693,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "anti-bribery-policy"
    ],
@@ -8760,7 +8760,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "stock-purchase-agreement",
     "asset-purchase-agreement"
@@ -8804,7 +8804,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "website-terms-of-use"
    ],
@@ -8871,7 +8871,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "stock-purchase-agreement",
     "asset-purchase-agreement",
@@ -8922,7 +8922,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "baa",
     "physician-employment-agreement"
@@ -8996,7 +8996,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -9067,7 +9067,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -9114,7 +9114,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "purchase-order-terms",
     "manufacturing-supply-agreement"
@@ -9158,7 +9158,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "influencer-agreement"
    ],
@@ -9207,7 +9207,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "physician-employment-agreement"
    ],
@@ -9256,7 +9256,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "board-resolution",
     "written-consent"
@@ -9312,7 +9312,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "stock-purchase-agreement",
     "operating-agreement-llc"
@@ -9356,7 +9356,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "mutual-nda"
    ],
@@ -9399,7 +9399,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "guaranty",
     "ucc-1-financing-statement"
@@ -9485,7 +9485,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "disclosure-schedules",
     "escrow-agreement",
@@ -9674,7 +9674,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "dpa-controller-processor",
     "baa",
@@ -9702,7 +9702,7 @@
    "group": "Commercial & services",
    "summary": "Generic professional-services MSA. Fallback for B2B services contracts that are not specifically SaaS or consulting. Based on Common Paper Professional Services Agreement.",
    "checks": [],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -9887,7 +9887,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "dpa-controller-processor",
     "baa",
@@ -10060,7 +10060,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 110,
+   "general_checks": 111,
    "companions": [
     "msa-vendor-deep"
    ],
@@ -10116,7 +10116,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "confidential-settlement"
    ],
@@ -10177,7 +10177,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "snda",
     "estoppel-certificate"
@@ -10251,7 +10251,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -10304,7 +10304,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "hipaa-npp"
    ],
@@ -10353,7 +10353,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "distribution-agreement",
     "eula"
@@ -10403,7 +10403,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "piia"
    ],
@@ -10476,7 +10476,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -10517,7 +10517,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "real-estate-psa"
    ],
@@ -10566,7 +10566,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -10637,7 +10637,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [],
    "sources": []
   },
@@ -10678,7 +10678,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "ip-assignment",
     "patent-license"
@@ -10728,7 +10728,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -10775,7 +10775,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "baa",
     "physician-employment-agreement"
@@ -10825,7 +10825,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "construction-contract"
    ],
@@ -10837,7 +10837,7 @@
    "group": "Court filings",
    "summary": "A petition (e.g., writ, review, or original). Court-filing format checks run when you choose a court profile.",
    "checks": [],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [],
    "sources": []
   },
@@ -10902,7 +10902,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -10955,7 +10955,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "medical-director-agreement",
     "employment-restrictive-covenant"
@@ -11011,7 +11011,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "offer-letter",
     "executive-employment"
@@ -11061,7 +11061,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "saas-customer",
     "mutual-nda"
@@ -11111,7 +11111,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   },
@@ -11170,7 +11170,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "prenuptial-agreement"
    ],
@@ -11237,7 +11237,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "form-d-narrative"
    ],
@@ -11280,7 +11280,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "construction-lien-waiver",
     "construction-contract"
@@ -11348,7 +11348,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [],
    "sources": []
   },
@@ -11365,7 +11365,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [],
    "sources": []
   },
@@ -11382,7 +11382,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 70,
+   "general_checks": 71,
    "companions": [],
    "sources": []
   },
@@ -11399,7 +11399,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "dpa-controller-processor",
     "dpa-ccpa-service-provider",
@@ -11463,7 +11463,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "discovery-responses",
     "protective-order-stipulated"
@@ -11513,7 +11513,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "operating-agreement-llc",
     "section-83b-election"
@@ -11569,7 +11569,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [],
    "sources": []
   },
@@ -11616,7 +11616,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "lease-commercial-multitenant"
    ],
@@ -11671,7 +11671,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "litigation-hold",
     "privilege-log"
@@ -11721,7 +11721,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "committee-charter",
     "insider-trading-policy"
@@ -11765,7 +11765,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "master-purchase-agreement"
    ],
@@ -11820,7 +11820,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "family-msa"
    ],
@@ -11863,7 +11863,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "warranty-deed"
    ],
@@ -11930,7 +11930,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [],
    "sources": []
   },
@@ -11989,7 +11989,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [],
    "sources": []
   },
@@ -12030,7 +12030,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "offer-letter"
    ],
@@ -12073,7 +12073,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "employee-handbook",
     "employment-at-will-us"
@@ -12117,7 +12117,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "discovery-responses"
    ],
@@ -12160,7 +12160,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "insurance-policy-summary"
    ],
@@ -12221,7 +12221,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "listing-agreement",
     "warranty-deed"
@@ -12283,7 +12283,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "ucc-1-financing-statement"
    ],
@@ -12350,7 +12350,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "last-will-and-testament"
    ],
@@ -12417,7 +12417,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "security-agreement",
     "intercreditor-agreement"
@@ -12473,7 +12473,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "investor-rights-agreement",
     "voting-agreement"
@@ -12517,7 +12517,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 114,
+   "general_checks": 115,
    "companions": [
     "sublease-agreement"
    ],
@@ -12566,7 +12566,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [],
    "sources": []
   },
@@ -12619,7 +12619,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "section-83b-election"
    ],
@@ -12674,7 +12674,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [],
    "sources": []
   },
@@ -12721,7 +12721,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "document-requests",
     "protective-order-stipulated"
@@ -12789,7 +12789,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "10-k-risk-factors"
    ],
@@ -12808,7 +12808,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [],
    "sources": []
   },
@@ -12831,7 +12831,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "privacy-policy-lint",
     "eula"
@@ -12853,7 +12853,7 @@
    "group": "SaaS & technology",
    "summary": "Vendor reviewing a SaaS subscription agreement. Watches for customer-favorable risk shifts, uncapped indemnity, and gold-plated SLAs. Based on Common Paper Cloud Service Agreement.",
    "checks": [],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [],
    "sources": []
   },
@@ -12918,7 +12918,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "investor-rights-agreement"
    ],
@@ -12973,7 +12973,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "loan-agreement",
     "guaranty"
@@ -13395,7 +13395,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "dpa-controller-processor"
    ],
@@ -13821,7 +13821,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "dpa-processor-subprocessor"
    ],
@@ -13875,7 +13875,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "stockholders-agreement",
     "rofr-co-sale"
@@ -13925,7 +13925,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "rspa"
    ],
@@ -13986,7 +13986,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "loan-agreement",
     "ucc-1-financing-statement"
@@ -14042,7 +14042,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "incident-notification",
     "business-continuity-plan",
@@ -14111,7 +14111,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -14158,7 +14158,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "saas-customer",
     "msa-customer-deep"
@@ -14202,7 +14202,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "investor-rights-agreement",
     "subscription-agreement"
@@ -14246,7 +14246,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "website-terms-of-use",
     "privacy-notice-us"
@@ -14308,7 +14308,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "estoppel-certificate"
    ],
@@ -14345,7 +14345,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "code-of-conduct"
    ],
@@ -14394,7 +14394,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "sow",
     "mutual-nda"
@@ -14407,7 +14407,7 @@
    "group": "SaaS & technology",
    "summary": "Negotiated on-premises software license — a perpetual or term grant in object code, with maintenance and support, source-code escrow, an acceptance test, a software warranty and an IP indemnity.",
    "checks": [],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "source-code-escrow-agreement",
     "sow",
@@ -14452,7 +14452,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "oem-agreement",
     "saas-customer"
@@ -14465,7 +14465,7 @@
    "group": "Commercial & services",
    "summary": "Child of an MSA. Defines the scope, deliverables, schedule, and fees for a specific engagement. Based on Common Paper SOW under the Professional Services Agreement.",
    "checks": [],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [],
    "sources": []
   },
@@ -14512,7 +14512,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "irrevocable-trust",
     "revocable-living-trust"
@@ -14556,7 +14556,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "venue-rental-agreement",
     "influencer-agreement"
@@ -14600,7 +14600,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "independent-contractor",
     "employment-at-will-us"
@@ -14644,7 +14644,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [
     "consent-judgment",
     "confidential-settlement"
@@ -14718,7 +14718,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [],
    "sources": []
   },
@@ -14789,7 +14789,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "disclosure-schedules",
     "escrow-agreement",
@@ -14864,7 +14864,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "charter-incorporation"
    ],
@@ -14919,7 +14919,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "saas-customer",
     "data-sharing-agreement"
@@ -14969,7 +14969,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "construction-contract"
    ],
@@ -15018,7 +15018,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "lease-commercial-multitenant",
     "lease-assignment"
@@ -15068,7 +15068,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "intercreditor-agreement"
    ],
@@ -15123,7 +15123,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "ppm-narrative",
     "side-letter"
@@ -15173,7 +15173,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 122,
+   "general_checks": 123,
    "companions": [
     "software-license-enterprise",
     "service-level-agreement"
@@ -15229,7 +15229,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 112,
+   "general_checks": 113,
    "companions": [
     "website-terms-of-use"
    ],
@@ -15272,7 +15272,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "far-subcontract-flowdown"
    ],
@@ -15327,7 +15327,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "patent-license",
     "joint-development-agreement"
@@ -15377,7 +15377,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "informed-consent",
     "hipaa-npp"
@@ -15421,7 +15421,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "lease-commercial-multitenant",
     "letter-of-intent-lease"
@@ -15465,7 +15465,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "engagement-letter"
    ],
@@ -15502,7 +15502,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [],
    "sources": []
   },
@@ -15543,7 +15543,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "trademark-license",
     "ip-assignment"
@@ -15587,7 +15587,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "trademark-license",
     "trademark-assignment"
@@ -15637,7 +15637,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [],
    "sources": []
   },
@@ -15684,7 +15684,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 118,
+   "general_checks": 119,
    "companions": [
     "employment-at-will-us",
     "offer-letter"
@@ -15746,7 +15746,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "merger-agreement",
     "stock-purchase-agreement",
@@ -15760,7 +15760,7 @@
    "group": "Court filings",
    "summary": "A trial-court motion. Court-filing format checks run when you choose a court profile.",
    "checks": [],
-   "general_checks": 71,
+   "general_checks": 72,
    "companions": [],
    "sources": []
   },
@@ -15801,7 +15801,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "revocable-living-trust",
     "codicil"
@@ -15851,7 +15851,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "security-agreement"
    ],
@@ -15924,7 +15924,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 116,
+   "general_checks": 117,
    "companions": [
     "dpa-controller-processor",
     "scc-module-2"
@@ -16087,7 +16087,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 110,
+   "general_checks": 111,
    "companions": [
     "msa-vendor-deep"
    ],
@@ -16155,7 +16155,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "employee-handbook"
    ],
@@ -16198,7 +16198,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 115,
+   "general_checks": 116,
    "companions": [
     "bill-of-sale"
    ],
@@ -16265,7 +16265,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "msa-vendor-deep",
     "msa-customer-deep",
@@ -16331,7 +16331,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 111,
+   "general_checks": 112,
    "companions": [
     "vendor-security-addendum"
    ],
@@ -16380,7 +16380,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 119,
+   "general_checks": 120,
    "companions": [
     "investor-rights-agreement",
     "rofr-co-sale",
@@ -16425,7 +16425,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 120,
+   "general_checks": 121,
    "companions": [
     "sponsorship-agreement"
    ],
@@ -16480,7 +16480,7 @@
      "severity": "info"
     }
    ],
-   "general_checks": 121,
+   "general_checks": 122,
    "companions": [
     "investor-rights-agreement"
    ],
@@ -16523,7 +16523,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 124,
+   "general_checks": 125,
    "companions": [
     "freight-transportation-agreement"
    ],
@@ -16572,7 +16572,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 111,
+   "general_checks": 112,
    "companions": [
     "separation-agreement"
    ],
@@ -16615,7 +16615,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 117,
+   "general_checks": 118,
    "companions": [
     "convertible-note",
     "safe-yc"
@@ -16659,7 +16659,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "quitclaim-deed",
     "real-estate-psa"
@@ -16709,7 +16709,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [
     "saas-tos",
     "privacy-policy-lint"
@@ -16753,7 +16753,7 @@
      "severity": "warning"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [
     "code-of-conduct"
    ],
@@ -16796,7 +16796,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 123,
+   "general_checks": 124,
    "companions": [],
    "sources": []
   },
@@ -16855,7 +16855,7 @@
      "severity": "critical"
     }
    ],
-   "general_checks": 113,
+   "general_checks": 114,
    "companions": [],
    "sources": []
   }

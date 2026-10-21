@@ -28,3 +28,7 @@
 ## Progress — 9.984.0
 
 Task 5, the DOCX half: a paragraph carries `min_size_pt`, the smallest point size its text is set in, resolved as Word does (the run's own `w:sz`, its character style, its paragraph style through `basedOn`, the default paragraph style, the document defaults; `docx-sizes.ts`), and absent whenever a link is missing, so a size is reported only when the file states it. `TEXT-002` now reports a notice below the authority's minimum ("set in 8-point type"), and says when the size could not be read. `w:caps` and the PDF text item's size are not read yet; no row needs capitals.
+
+## Progress — 9.985.0
+
+Task 6, narrowed: `TEXT-003` (info) notes a disclaimer of the warranty of merchantability that a Word file sets in regular, mixed-case body type, with no bold run, no capitals, and no heading naming it. § 1-201(b)(10) counts a heading in contrasting type as conspicuous, so a disclaimer under "Disclaimer of Warranties" is not flagged. Liability caps are NOT read, against the proposal: they fall under § 2-719, which sets no conspicuousness requirement, so a note citing § 2-316(2) for a cap would assert law that is not there. The finding never says the disclaimer fails. `COMM-206` is unchanged: it asks whether the clauses are there, from text; this asks how a Word file sets one. Task 8: no overlap to resolve, since no existing rule reads run formatting.

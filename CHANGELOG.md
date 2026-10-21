@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.985.0] — 2026-10-20
+
+### Added
+- `TEXT-003` (info): **a warranty disclaimer in plain body type.** U.C.C.
+  § 2-316(2) requires a written disclaimer of merchantability to be
+  conspicuous. A Word file that sets one in regular, mixed-case type, with
+  no bold, capitals or heading naming it, gets a note saying which markers
+  are missing; it never says the disclaimer fails. Liability caps are not
+  read, because no conspicuousness rule applies to them. The launch set is
+  131 rules, the catalog 1,946.
+
 ## [9.984.0] — 2026-10-20
 
 ### Added

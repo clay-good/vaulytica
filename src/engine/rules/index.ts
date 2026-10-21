@@ -42,6 +42,7 @@ import { rule as PROOF_006 } from "./proofreading/PROOF-006.js";
 import { rule as PROOF_007 } from "./proofreading/PROOF-007.js";
 import { rule as TEXT_001 } from "./text/TEXT-001.js";
 import { rule as TEXT_002 } from "./text/TEXT-002.js";
+import { rule as TEXT_003 } from "./text/TEXT-003.js";
 
 // Financial
 import { rule as FIN_001 } from "./financial/FIN-001.js";
@@ -303,7 +304,8 @@ export const LAUNCH_RULES: readonly Rule[] = [
   PROOF_005,
   PROOF_006,
   PROOF_007,
-  // Mandated text — 2 (add-mandated-text-conformance)
+  // Mandated text — 3 (add-mandated-text-conformance)
   TEXT_001,
   TEXT_002,
+  TEXT_003,
 ];
