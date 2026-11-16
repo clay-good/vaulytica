@@ -173,6 +173,32 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     contents_over: { words: 3000, pages: 3 },
     index_ok: true,
   },
+  {
+    id: "ne",
+    name: "Nebraska readability requirement for life and health policies",
+    citation: "Neb. Rev. Stat. § 44-3405",
+    source_url: "https://nebraskalegislature.gov/laws/statutes.php?statute=44-3405",
+    retrieved_at: "2026-11-16",
+    version: "Laws 1979, LB 415, § 5",
+    scope:
+      "a life, sickness and accident, credit life, or credit accident and health policy delivered or issued for delivery in Nebraska",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
+  {
+    id: "dc",
+    name: "District of Columbia policy language simplification standards",
+    citation: "D.C. Code § 31-4725",
+    source_url: "https://code.dccouncil.gov/us/dc/council/code/sections/31-4725",
+    retrieved_at: "2026-11-16",
+    version: "D.C. Law 5-160, § 3(h); D.C. Law 6-192, § 25(h); D.C. Law 11-268, § 10(j)",
+    scope:
+      "a policy form used in the District of Columbia under the chapter on life insurance companies (D.C. Code §§ 31-4725, 31-4727)",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
 ];
 
 export function readabilityStandard(id: string): ReadabilityStandard | undefined {

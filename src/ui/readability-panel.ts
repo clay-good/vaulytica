@@ -18,6 +18,8 @@ export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> =
   { id: "mt", label: "Montana, MCA § 33-15-325 (life and disability policies)" },
   { id: "wv", label: "West Virginia, W. Va. Code § 33-29-5 (life and health policies)" },
   { id: "nd", label: "North Dakota, N.D.C.C. §§ 26.1-33-30, 26.1-36-14 (life, health)" },
+  { id: "ne", label: "Nebraska, Neb. Rev. Stat. § 44-3405 (life and health policies)" },
+  { id: "dc", label: "District of Columbia, D.C. Code § 31-4725 (life insurers' forms)" },
 ];
 
 export function bindReadabilityPanel(
