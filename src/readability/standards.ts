@@ -159,6 +159,20 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     contents_over: { words: 3000, pages: 3 },
     index_ok: true,
   },
+  {
+    id: "nd",
+    name: "North Dakota life and accident and health policy language simplification standards",
+    citation: "N.D. Cent. Code §§ 26.1-33-30, 26.1-36-14",
+    source_url: "https://ndlegis.gov/cencode/t26-1c36.pdf",
+    retrieved_at: "2026-11-16",
+    version:
+      "Chapters 26.1-33 and 26.1-36 as published at ndlegis.gov (t26-1c33.pdf, t26-1c36.pdf); no history note beside the sections",
+    scope:
+      "a life policy form (§ 26.1-33-30), or an individual or group accident and health policy or certificate (§§ 26.1-36-13, 26.1-36-14), delivered or issued for delivery in North Dakota",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
 ];
 
 export function readabilityStandard(id: string): ReadabilityStandard | undefined {

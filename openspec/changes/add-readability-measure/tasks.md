@@ -49,3 +49,7 @@ Task 3: Ohio (Ohio Rev. Code § 3902.04; scope §§ 3902.02–3902.03; codes.ohi
 ## Progress — 9.996.0
 
 Task 3: Montana (Mont. Code Ann. § 33-15-325; scope §§ 33-15-322–323) and West Virginia (W. Va. Code § 33-29-5; scope §§ 33-29-2–3), read 2026-11-16, both minimum 40, model-act contents rule. West Virginia's page prints no history note, and the row says so. Nine states. Texas (1992 commissioner's order) and Wisconsin (Wis. Admin. Code Ins 6.07) set theirs by agency rule; North Dakota's § 26.1-36-14 is next.
+
+## Progress — 9.997.0
+
+Task 3: North Dakota (N.D. Cent. Code §§ 26.1-33-30 life, 26.1-36-14 accident and health; scope § 26.1-36-13), read in the ndlegis.gov chapter PDFs on 2026-11-16, as one row (the sections set the same test). Ten states: FL, ME, MI, MN, NV, OH, OR, MT, WV, ND. Remaining model-act states are to be located at official sources; New York (bot challenge) and California still wait.

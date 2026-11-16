@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.997.0] — 2026-11-16
+
+### Added
+- **`--readability nd`**: North Dakota's life (N.D. Cent. Code
+  § 26.1-33-30) and accident and health (§ 26.1-36-14) policy language
+  standards, read in the chapter PDFs at ndlegis.gov on 2026-11-16. One
+  row covers both sections, which set the same test: at least 40, and a
+  table of contents or an index above 3,000 words or three pages. Ten
+  states now.
+
 ## [9.996.0] — 2026-11-16
 
 ### Added
