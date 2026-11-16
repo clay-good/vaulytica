@@ -13,6 +13,8 @@ export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> =
   { id: "mi", label: "Michigan, MCL § 500.2236(3) (personal-lines forms)" },
   { id: "mn", label: "Minnesota, Minn. Stat. ch. 72C (auto, home, life, health)" },
   { id: "nv", label: "Nevada, NRS § 687B.124 (life and health policies)" },
+  { id: "oh", label: "Ohio, Ohio Rev. Code § 3902.04 (life and health forms)" },
+  { id: "or", label: "Oregon, ORS § 743.106 (life and health policies)" },
 ];
 
 export function bindReadabilityPanel(

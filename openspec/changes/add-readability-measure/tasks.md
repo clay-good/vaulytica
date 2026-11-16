@@ -41,3 +41,7 @@ Task 3: Minnesota (Minn. Stat. §§ 72C.08–72C.10, read at revisor.mn.gov on 2
 ## Progress — 9.994.0
 
 Task 3: Nevada (Nev. Rev. Stat. §§ 687B.122–687B.124, read at leg.state.nv.us on 2026-11-16): at least 40; contents or index above 3,000 words or three pages; life and health policies. The table now holds FL, ME, MI, MN and NV. Connecticut's insurance chapters (700–702, 700c) hold no Flesch test; Texas's minimum is an agency rule, not a statute.
+
+## Progress — 9.995.0
+
+Task 3: Ohio (Ohio Rev. Code § 3902.04; scope §§ 3902.02–3902.03; codes.ohio.gov) and Oregon (Or. Rev. Stat. § 743.106; oregonlegislature.gov), read 2026-11-16, both minimum 40 with the model act's contents rule. Seven states: FL, ME, MI, MN, NV, OH, OR. Delaware's title 18 ch. 27 subch. I and Kentucky's KRS page probed held no Flesch test.

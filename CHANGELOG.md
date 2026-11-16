@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.995.0] — 2026-11-16
+
+### Added
+- **`--readability oh` and `--readability or`**: Ohio Rev. Code § 3902.04
+  and Or. Rev. Stat. § 743.106, each read at the state's own code site on
+  2026-11-16. Both are model-act rows: a score of at least 40, and a table
+  of contents or an index above 3,000 words or three pages. The table now
+  holds seven states.
+
 ## [9.994.0] — 2026-11-16
 
 ### Added

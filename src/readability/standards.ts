@@ -106,6 +106,31 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     contents_over: { words: 3000, pages: 3 },
     index_ok: true,
   },
+  {
+    id: "oh",
+    name: "Ohio readability requirement for life and health policy forms",
+    citation: "Ohio Rev. Code § 3902.04",
+    source_url: "https://codes.ohio.gov/ohio-revised-code/section-3902.04",
+    retrieved_at: "2026-11-16",
+    version: "Effective January 9, 1980; latest legislation Senate Bill 92, 113th General Assembly",
+    scope:
+      "a life, annuity, credit life, credit disability, or sickness and accident policy form, or a health insuring corporation's contract, delivered or issued for delivery in Ohio (Ohio Rev. Code §§ 3902.02–3902.03)",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
+  {
+    id: "or",
+    name: "Oregon reading ease standards for life and health policies",
+    citation: "Or. Rev. Stat. § 743.106",
+    source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors743.html",
+    retrieved_at: "2026-11-16",
+    version: "Formerly 743.365; 2015 c.515 § 5",
+    scope: "a life or health insurance policy form delivered or issued for delivery in Oregon",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
 ];
 
 export function readabilityStandard(id: string): ReadabilityStandard | undefined {
