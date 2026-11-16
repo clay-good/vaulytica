@@ -133,10 +133,10 @@ export function measureReadability(tree: DocumentTree): Readability {
  */
 export function readabilityLine(
   r: Readability,
-  asserted?: { id: string; citation: string; min_score: number },
+  asserted?: { id: string; citation: string; min_score: number; min_exclusive?: boolean },
 ): string {
   const base = `${r.score} (Flesch reading ease; ${r.words.toLocaleString("en-US")} words in ${r.sentences.toLocaleString("en-US")} sentences, counted as the statutes prescribe)`;
   return asserted
-    ? `${base}, held to ${asserted.citation} (minimum ${asserted.min_score}), asserted by the user`
+    ? `${base}, held to ${asserted.citation} (${asserted.min_exclusive ? "more than" : "minimum"} ${asserted.min_score}), asserted by the user`
     : `${base}, informative only`;
 }

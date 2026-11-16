@@ -87,6 +87,7 @@ const OFFICIAL_HOSTS: Record<string, RegExp> = {
   fl: /^www\.leg\.state\.fl\.us$/,
   me: /^legislature\.maine\.gov$/,
   mi: /^www\.legislature\.mi\.gov$/,
+  mn: /^www\.revisor\.mn\.gov$/,
 };
 
 // Scores 46: below Maine's 50, above Florida's and Michigan's 45.
@@ -128,6 +129,29 @@ describe("--readability me and mi", () => {
       { deps, readability: "mi" },
     );
     expect(withContents.run.findings.map((x) => x.rule_id)).not.toContain("READ-002");
+  });
+});
+
+describe("--readability mn", () => {
+  it("asks for MORE than 40, and an index in every policy whatever its length", async () => {
+    const deps = await loadAccuracyDeps({});
+    const r = await analyzeText(DENSE, "policy.txt", { deps, readability: "mn" });
+    const titles = r.run.findings.filter((f) => f.rule_id.startsWith("READ-")).map((f) => f.title);
+    expect(titles).toHaveLength(2);
+    expect(titles[0]).toMatch(
+      /^Reading ease -?[\d.]+ is not above the 40 Minn\. Stat\. §§ 72C\.08–72C\.10 requires$/,
+    );
+    expect(titles[1]).toBe("No index of the major provisions");
+    // Florida asks for no contents in a form this short.
+    const fl = await analyzeText(DENSE, "policy.txt", { deps, readability: "fl" });
+    expect(fl.run.findings.map((f) => f.rule_id)).not.toContain("READ-002");
+  });
+
+  it("takes an index heading as the index, and passes a plain policy that has one", async () => {
+    const deps = await loadAccuracyDeps({});
+    const indexed = PLAIN.replace("\n\n", "\n\nINDEX\n\nWhat we cover, 1\n\n");
+    const r = await analyzeText(indexed, "policy.txt", { deps, readability: "mn" });
+    expect(r.run.findings.filter((f) => f.rule_id.startsWith("READ-"))).toEqual([]);
   });
 });
 

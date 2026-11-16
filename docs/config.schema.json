@@ -156,7 +156,8 @@
       "enum": [
         "fl",
         "me",
-        "mi"
+        "mi",
+        "mn"
       ]
     },
     "state": {

@@ -52,13 +52,16 @@ export const READ_001: Rule = {
     const std = standardOf(ctx);
     if (!std) return null;
     const r = measureReadability(ctx.tree);
-    if (r.words === 0 || r.score >= std.min_score) return null;
+    const passes = std.min_exclusive ? r.score > std.min_score : r.score >= std.min_score;
+    if (r.words === 0 || passes) return null;
     const anchor = firstParagraph(ctx);
     if (!anchor) return null;
     const longest = r.longest_sentence;
     return emit(ctx, READ_001, {
-      title: `Reading ease ${r.score} is below the ${std.min_score} ${std.citation} requires`,
-      description: `The document scores ${r.score} on the Flesch reading ease test (${r.words} words, ${r.sentences} sentences, ${r.syllables} syllables); ${std.citation} requires at least ${std.min_score} for ${std.scope}.${longest ? ` Its longest sentence runs ${longest.words} words.` : ""}`,
+      title: std.min_exclusive
+        ? `Reading ease ${r.score} is not above the ${std.min_score} ${std.citation} requires`
+        : `Reading ease ${r.score} is below the ${std.min_score} ${std.citation} requires`,
+      description: `The document scores ${r.score} on the Flesch reading ease test (${r.words} words, ${r.sentences} sentences, ${r.syllables} syllables); ${std.citation} requires ${std.min_exclusive ? "more than" : "at least"} ${std.min_score} for ${std.scope}.${longest ? ` Its longest sentence runs ${longest.words} words.` : ""}`,
       excerpt: longest?.text ?? anchor.text,
       explanation: `${std.citation} (read at its official source, ${std.retrieved_at}) sets a minimum Flesch reading ease score and prescribes how to count it. ${CAVEAT}`,
       recommendation:
@@ -105,17 +108,29 @@ export const READ_002: Rule = {
     const std = standardOf(ctx);
     if (!std) return null;
     const words = measureReadability(ctx.tree).words;
-    if (words <= std.contents_over.words || hasContents(ctx, std.index_ok)) return null;
+    const over = std.contents_over;
+    if (words === 0 || (over !== "always" && words <= over.words)) return null;
+    if (hasContents(ctx, std.index_ok)) return null;
     const anchor = firstParagraph(ctx);
     if (!anchor) return null;
+    if (over === "always") {
+      return emit(ctx, READ_002, {
+        title: "No index of the major provisions",
+        description: `${std.citation} requires every policy it covers to carry an index of its major provisions, whatever its length, and none was found.`,
+        excerpt: anchor.text,
+        explanation: `${std.citation} requires an index of the major provisions in every policy it covers, whatever its length. A heading reading "Index", "Contents" or "Table of Contents", or a line of dotted leaders to a page number, is taken as one.`,
+        recommendation: "Add an index of the major provisions.",
+        position: anchor,
+      });
+    }
     const required = std.index_ok
       ? "a table of contents or an index of the principal sections"
       : "a table of contents";
     return emit(ctx, READ_002, {
       title: std.index_ok ? "No table of contents or index" : "No table of contents",
-      description: `The document runs ${words.toLocaleString("en-US")} words, more than the ${std.contents_over.words.toLocaleString("en-US")} above which ${std.citation} requires ${required}, and none was found.`,
+      description: `The document runs ${words.toLocaleString("en-US")} words, more than the ${over.words.toLocaleString("en-US")} above which ${std.citation} requires ${required}, and none was found.`,
       excerpt: anchor.text,
-      explanation: `${std.citation} requires ${std.index_ok ? "a table of contents or index" : "a table of contents (an index does not satisfy it)"} when the form has more than ${std.contents_over.words.toLocaleString("en-US")} words or more than ${std.contents_over.pages} pages. Pages are not counted here, so a shorter form of more than ${std.contents_over.pages} pages is not caught.`,
+      explanation: `${std.citation} requires ${std.index_ok ? "a table of contents or index" : "a table of contents (an index does not satisfy it)"} when the form has more than ${over.words.toLocaleString("en-US")} words or more than ${over.pages} pages. Pages are not counted here, so a shorter form of more than ${over.pages} pages is not caught.`,
       recommendation: `Add ${required}.`,
       position: anchor,
     });

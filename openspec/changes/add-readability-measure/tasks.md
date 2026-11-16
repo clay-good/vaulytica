@@ -33,3 +33,7 @@ Task 5 for Florida: a dense policy under 45, a plain one over it, a form over 3,
 ## Progress — 9.992.0
 
 Task 3: Maine (24-A M.R.S. § 2441, minimum 50; scope from §§ 2439–2440) and Michigan (MCL § 500.2236(3), minimum 45; personal-lines policy and annuity forms) read at legislature.maine.gov and legislature.mi.gov on 2026-11-16. Both print the NAIC counting rules the score follows. Rows gained `index_ok`: Michigan's (3)(f) requires "a table of contents" and names no index, so `READ-002` under `mi` does not accept an index heading. Not attempted or not reachable: Texas (statutes.capitol.texas.gov serves its text only to a browser script), West Virginia and Colorado (not yet located at an official source), New York (bot challenge), California. Not checked from the read texts: Maine's 10-point type, Michigan's topical captions and identification of exclusions.
+
+## Progress — 9.993.0
+
+Task 3: Minnesota (Minn. Stat. §§ 72C.08–72C.10, read at revisor.mn.gov on 2026-11-16). Rows gained `min_exclusive` (§ 72C.10 subd. 2(a): "more than 40") and `contents_over: "always"` (§ 72C.08 subd. 1(b): an index of the major provisions in every policy). Not applied: § 72C.09's exclusion of lists from the sentence count, § 72C.08's "Read your policy carefully" cover statement, and § 72C.06's qualitative factors. Connecticut's chapter 700c page reads but holds no Flesch test; its readability law was not located.

@@ -55,5 +55,13 @@ describe("readabilityLine", () => {
     expect(
       readabilityLine(r, { id: "fl", citation: "Fla. Stat. § 627.4145", min_score: 45 }),
     ).toMatch(/held to Fla\. Stat\. § 627\.4145 \(minimum 45\), asserted by the user$/);
+    expect(
+      readabilityLine(r, {
+        id: "mn",
+        citation: "Minn. Stat. §§ 72C.08–72C.10",
+        min_score: 40,
+        min_exclusive: true,
+      }),
+    ).toMatch(/\(more than 40\), asserted by the user$/);
   });
 });

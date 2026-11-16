@@ -19,8 +19,16 @@ export type ReadabilityStandard = {
   scope: string;
   /** The minimum Flesch reading ease score. */
   min_score: number;
-  /** A table of contents or index is required above this many words (or pages). */
-  contents_over: { words: number; pages: number };
+  /**
+   * The score must be MORE than `min_score`, not at least it (Minnesota:
+   * "a certified Flesch scale analysis readability score of more than 40").
+   */
+  min_exclusive?: boolean;
+  /**
+   * A table of contents or index is required above this many words (or
+   * pages), or in every form ("always": Minnesota's index of major provisions).
+   */
+  contents_over: { words: number; pages: number } | "always";
   /**
    * Whether an index satisfies the contents requirement. Florida and Maine
    * say "a table of contents or an index"; Michigan says "a table of
@@ -70,6 +78,20 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     min_score: 45,
     contents_over: { words: 3000, pages: 3 },
     index_ok: false,
+  },
+  {
+    id: "mn",
+    name: "Minnesota Readability of Insurance Policies Act",
+    citation: "Minn. Stat. §§ 72C.08–72C.10",
+    source_url: "https://www.revisor.mn.gov/statutes/cite/72C.10",
+    retrieved_at: "2026-11-16",
+    version: "1977 c 345 ss 8–10; 1980 c 353 s 2; 1986 c 444; 2006 c 255 s 61",
+    scope:
+      "a private passenger vehicle, homeowner's, life, or accident and health policy, and the health plan contracts Minn. Stat. § 72C.11 names",
+    min_score: 40,
+    min_exclusive: true,
+    contents_over: "always",
+    index_ok: true,
   },
 ];
 

@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.993.0] — 2026-11-16
+
+### Added
+- **`--readability mn`: Minnesota's Readability of Insurance Policies Act**
+  (Minn. Stat. §§ 72C.08–72C.10, read at revisor.mn.gov on 2026-11-16).
+  Two things differ from the model-act states and the rows now say so:
+  the score must be *more than* 40, so a policy scoring exactly 40 is
+  flagged ("not above"), and every policy needs an index of its major
+  provisions whatever its length, so `READ-002` fires on a short policy
+  with none. The cover line reads "(more than 40)". Florida, Maine and
+  Michigan output is unchanged.
+
 ## [9.992.0] — 2026-11-16
 
 ### Added
