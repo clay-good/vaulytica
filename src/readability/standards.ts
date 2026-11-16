@@ -131,6 +131,34 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     contents_over: { words: 3000, pages: 3 },
     index_ok: true,
   },
+  {
+    id: "mt",
+    name: "Montana minimum policy language simplification standards",
+    citation: "Mont. Code Ann. § 33-15-325",
+    source_url:
+      "https://leg.mt.gov/bills/mca/title_0330/chapter_0150/part_0030/section_0250/0330-0150-0030-0250.html",
+    retrieved_at: "2026-11-16",
+    version: "En. Sec. 5, Ch. 302, L. 1981 (Montana Code Annotated 2025)",
+    scope:
+      "a life, disability, credit life, or credit disability policy, contract or certificate delivered or issued for delivery in Montana (Mont. Code Ann. §§ 33-15-322, 33-15-323)",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
+  {
+    id: "wv",
+    name: "West Virginia minimum policy language simplification standards",
+    citation: "W. Va. Code § 33-29-5",
+    source_url: "https://code.wvlegislature.gov/33-29-5/",
+    retrieved_at: "2026-11-16",
+    version:
+      "Current text as published by the West Virginia Legislature; the page prints no history note",
+    scope:
+      "a life, accident and sickness, credit life, or credit accident and sickness policy, contract or certificate delivered or issued for delivery in West Virginia (W. Va. Code §§ 33-29-2, 33-29-3)",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
 ];
 
 export function readabilityStandard(id: string): ReadabilityStandard | undefined {

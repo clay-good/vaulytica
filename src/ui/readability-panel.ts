@@ -15,6 +15,8 @@ export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> =
   { id: "nv", label: "Nevada, NRS § 687B.124 (life and health policies)" },
   { id: "oh", label: "Ohio, Ohio Rev. Code § 3902.04 (life and health forms)" },
   { id: "or", label: "Oregon, ORS § 743.106 (life and health policies)" },
+  { id: "mt", label: "Montana, MCA § 33-15-325 (life and disability policies)" },
+  { id: "wv", label: "West Virginia, W. Va. Code § 33-29-5 (life and health policies)" },
 ];
 
 export function bindReadabilityPanel(

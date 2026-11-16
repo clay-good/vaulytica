@@ -45,3 +45,7 @@ Task 3: Nevada (Nev. Rev. Stat. §§ 687B.122–687B.124, read at leg.state.nv.u
 ## Progress — 9.995.0
 
 Task 3: Ohio (Ohio Rev. Code § 3902.04; scope §§ 3902.02–3902.03; codes.ohio.gov) and Oregon (Or. Rev. Stat. § 743.106; oregonlegislature.gov), read 2026-11-16, both minimum 40 with the model act's contents rule. Seven states: FL, ME, MI, MN, NV, OH, OR. Delaware's title 18 ch. 27 subch. I and Kentucky's KRS page probed held no Flesch test.
+
+## Progress — 9.996.0
+
+Task 3: Montana (Mont. Code Ann. § 33-15-325; scope §§ 33-15-322–323) and West Virginia (W. Va. Code § 33-29-5; scope §§ 33-29-2–3), read 2026-11-16, both minimum 40, model-act contents rule. West Virginia's page prints no history note, and the row says so. Nine states. Texas (1992 commissioner's order) and Wisconsin (Wis. Admin. Code Ins 6.07) set theirs by agency rule; North Dakota's § 26.1-36-14 is next.

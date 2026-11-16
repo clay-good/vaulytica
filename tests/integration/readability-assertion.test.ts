@@ -91,6 +91,8 @@ const OFFICIAL_HOSTS: Record<string, RegExp> = {
   nv: /^www\.leg\.state\.nv\.us$/,
   oh: /^codes\.ohio\.gov$/,
   or: /^www\.oregonlegislature\.gov$/,
+  mt: /^leg\.mt\.gov$/,
+  wv: /^code\.wvlegislature\.gov$/,
 };
 
 // Scores 46: below Maine's 50, above Florida's and Michigan's 45.
@@ -114,6 +116,8 @@ describe("--readability me and mi", () => {
     expect(await ids("nv")).toEqual([]);
     expect(await ids("oh")).toEqual([]);
     expect(await ids("or")).toEqual([]);
+    expect(await ids("mt")).toEqual([]);
+    expect(await ids("wv")).toEqual([]);
   });
 
   it("accepts an index for Maine but not for Michigan, which asks for a table of contents", async () => {

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.996.0] — 2026-11-16
+
+### Added
+- **`--readability mt` and `--readability wv`**: Mont. Code Ann.
+  § 33-15-325 and W. Va. Code § 33-29-5, read at leg.mt.gov and
+  code.wvlegislature.gov on 2026-11-16. Both are model-act rows (at least
+  40; contents or index over 3,000 words or three pages). Nine states now.
+
 ## [9.995.0] — 2026-11-16
 
 ### Added
