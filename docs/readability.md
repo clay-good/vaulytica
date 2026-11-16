@@ -22,6 +22,8 @@ Syllables come from a versioned rule set with a short exception list (`src/extra
 
 | `--readability` | Statute | Minimum score | Table of contents | Read at |
 | --- | --- | --- | --- | --- |
-| `fl` | Fla. Stat. § 627.4145, policy forms filed on or after October 1, 1983 | 45 | over 3,000 words or three pages | leg.state.fl.us, 2026-10-20 |
+| `fl` | Fla. Stat. § 627.4145, policy forms filed on or after October 1, 1983 | 45 | contents or index, over 3,000 words or three pages | leg.state.fl.us, 2026-10-20 |
+| `me` | 24-A M.R.S. § 2441, life, health, casualty and property policy forms (§§ 2439–2440) | 50 | contents or index, over 3,000 words or three pages | legislature.maine.gov, 2026-11-16 |
+| `mi` | Mich. Comp. Laws § 500.2236(3), policy and annuity forms for personal, family or household purposes | 45 | a table of contents (an index does not count), over 3,000 words or three pages; not riders or endorsements | legislature.mi.gov, 2026-11-16 |
 
-Pages are not counted, so a form of more than three pages and fewer than 3,000 words is not caught. New York's Ins. Law § 3102 and Gen. Oblig. Law § 5-702 are not in the table: the New York Senate's site answers automated reads with a bot challenge, and no text enters from a secondary source.
+Maine and Michigan print the same counting rules as Florida. Pages are not counted, so a form of more than three pages and fewer than 3,000 words is not caught. Not checked either: Maine's 10-point type, Michigan's topical captions and identification of exclusions. Texas's statute site serves its text only to a browser script, so Texas waits. New York's Ins. Law § 3102 and Gen. Oblig. Law § 5-702 are not in the table: the New York Senate's site answers automated reads with a bot challenge, and no text enters from a secondary source.

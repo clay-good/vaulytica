@@ -21,6 +21,12 @@ export type ReadabilityStandard = {
   min_score: number;
   /** A table of contents or index is required above this many words (or pages). */
   contents_over: { words: number; pages: number };
+  /**
+   * Whether an index satisfies the contents requirement. Florida and Maine
+   * say "a table of contents or an index"; Michigan says "a table of
+   * contents" alone.
+   */
+  index_ok: boolean;
 };
 
 export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
@@ -36,6 +42,34 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     scope: "a policy form or endorsement filed on or after October 1, 1983",
     min_score: 45,
     contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
+  {
+    id: "me",
+    name: "Maine Insurance Policy Language Simplification Act",
+    citation: "24-A M.R.S. § 2441",
+    source_url: "https://legislature.maine.gov/statutes/24-A/title24-Asec2441.html",
+    retrieved_at: "2026-11-16",
+    version: "PL 1979, c. 267, § 2 (NEW)",
+    scope:
+      "a life, health, casualty or property policy form delivered or issued for delivery in Maine (24-A M.R.S. §§ 2439, 2440)",
+    min_score: 50,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
+  {
+    id: "mi",
+    name: "Michigan readability requirement for personal insurance forms",
+    citation: "Mich. Comp. Laws § 500.2236(3)",
+    source_url: "https://www.legislature.mi.gov/Laws/MCL?objectName=mcl-500-2236",
+    retrieved_at: "2026-11-16",
+    version:
+      "1956, Act 218; Am. 1963, Act 53; Am. 1970, Act 180; Am. 1987, Act 52; Am. 1990, Act 137; Am. 1990, Act 305; Am. 1993, Act 200; Am. 2002, Act 664; Am. 2014, Act 140; Am. 2016, Act 276",
+    scope:
+      "a form for an insurance policy or annuity contract for personal, family, or household purposes",
+    min_score: 45,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: false,
   },
 ];
 

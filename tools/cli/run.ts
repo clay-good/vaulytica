@@ -2473,7 +2473,7 @@ ${usageFormatLines()}
                           [--court <frap-default|ca9-appellate|cal-rules-8.204> [--reply]]
                           [--deadline-profile <frcp-6|cal-ccp-12> [--service-method <method>]]
                           [--regime <ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or>] [--estate-checks]
-                          [--state <xx>] [--readability <fl>]
+                          [--state <xx>] [--readability <fl|me|mi>]
                           [--baseline <path|glob|dir> | --baseline-coherence <coherence.json>]
                           [--emit-coherence <path>] [--fail-on-coherence-regression]
                           [--consistency | --consistency-only]

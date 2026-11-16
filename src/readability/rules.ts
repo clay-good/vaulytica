@@ -68,10 +68,15 @@ export const READ_001: Rule = {
   },
 };
 
-/** A table of contents or an index, by its heading or its dotted leaders. */
-function hasContents(ctx: RuleContext): boolean {
+/**
+ * A table of contents (or, where the statute accepts one, an index), by its
+ * heading or its dotted leaders.
+ */
+function hasContents(ctx: RuleContext, indexOk: boolean): boolean {
   let found = false;
-  const heading = /^\s*(?:table of contents|contents|index)\s*$/i;
+  const heading = indexOk
+    ? /^\s*(?:table of contents|contents|index)\s*$/i
+    : /^\s*(?:table of contents|contents)\s*$/i;
   const walk = (sections: RuleContext["tree"]["sections"]): void => {
     for (const s of sections) {
       if (heading.test(s.heading ?? "")) found = true;
@@ -100,15 +105,18 @@ export const READ_002: Rule = {
     const std = standardOf(ctx);
     if (!std) return null;
     const words = measureReadability(ctx.tree).words;
-    if (words <= std.contents_over.words || hasContents(ctx)) return null;
+    if (words <= std.contents_over.words || hasContents(ctx, std.index_ok)) return null;
     const anchor = firstParagraph(ctx);
     if (!anchor) return null;
+    const required = std.index_ok
+      ? "a table of contents or an index of the principal sections"
+      : "a table of contents";
     return emit(ctx, READ_002, {
-      title: "No table of contents or index",
-      description: `The document runs ${words.toLocaleString("en-US")} words, more than the ${std.contents_over.words.toLocaleString("en-US")} above which ${std.citation} requires a table of contents or an index of the principal sections, and none was found.`,
+      title: std.index_ok ? "No table of contents or index" : "No table of contents",
+      description: `The document runs ${words.toLocaleString("en-US")} words, more than the ${std.contents_over.words.toLocaleString("en-US")} above which ${std.citation} requires ${required}, and none was found.`,
       excerpt: anchor.text,
-      explanation: `${std.citation} requires a table of contents or index when the form has more than ${std.contents_over.words.toLocaleString("en-US")} words or more than ${std.contents_over.pages} pages. Pages are not counted here, so a shorter form of more than ${std.contents_over.pages} pages is not caught.`,
-      recommendation: "Add a table of contents or an index of the principal sections.",
+      explanation: `${std.citation} requires ${std.index_ok ? "a table of contents or index" : "a table of contents (an index does not satisfy it)"} when the form has more than ${std.contents_over.words.toLocaleString("en-US")} words or more than ${std.contents_over.pages} pages. Pages are not counted here, so a shorter form of more than ${std.contents_over.pages} pages is not caught.`,
+      recommendation: `Add ${required}.`,
       position: anchor,
     });
   },

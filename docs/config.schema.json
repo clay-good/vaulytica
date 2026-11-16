@@ -154,7 +154,9 @@
     "readability": {
       "type": "string",
       "enum": [
-        "fl"
+        "fl",
+        "me",
+        "mi"
       ]
     },
     "state": {

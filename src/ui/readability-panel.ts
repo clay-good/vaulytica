@@ -9,6 +9,8 @@
  */
 export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> = [
   { id: "fl", label: "Florida, Fla. Stat. § 627.4145 (policy forms)" },
+  { id: "me", label: "Maine, 24-A M.R.S. § 2441 (policy forms)" },
+  { id: "mi", label: "Michigan, MCL § 500.2236(3) (personal-lines forms)" },
 ];
 
 export function bindReadabilityPanel(

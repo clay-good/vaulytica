@@ -76,9 +76,58 @@ describe("--readability fl", () => {
       "fl",
     );
     for (const s of READABILITY_STANDARDS) {
-      expect(new URL(s.source_url).hostname).toMatch(/^www\.leg\.state\.fl\.us$/);
+      expect(new URL(s.source_url).hostname).toMatch(OFFICIAL_HOSTS[s.id] ?? /^$/);
       expect(s.retrieved_at).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     }
+  });
+});
+
+/** Each standard's official host: the legislature's own statute site. */
+const OFFICIAL_HOSTS: Record<string, RegExp> = {
+  fl: /^www\.leg\.state\.fl\.us$/,
+  me: /^legislature\.maine\.gov$/,
+  mi: /^www\.legislature\.mi\.gov$/,
+};
+
+// Scores 46: below Maine's 50, above Florida's and Michigan's 45.
+const MIDDLING = `HOMEOWNERS INSURANCE POLICY
+
+We will pay for direct physical loss to the dwelling described in the declarations, subject to the conditions and exclusions of this policy. You must notify us promptly after any loss and cooperate with our investigation of the claim.
+`;
+
+describe("--readability me and mi", () => {
+  it("holds a form to each statute's own minimum", async () => {
+    const deps = await loadAccuracyDeps({});
+    const ids = async (standard: string) =>
+      (await analyzeText(MIDDLING, "policy.txt", { deps, readability: standard })).run.findings
+        .filter((f) => f.rule_id.startsWith("READ-"))
+        .map((f) => f.title);
+    expect(await ids("me")).toEqual([
+      "Reading ease 46 is below the 50 24-A M.R.S. § 2441 requires",
+    ]);
+    expect(await ids("fl")).toEqual([]);
+    expect(await ids("mi")).toEqual([]);
+  });
+
+  it("accepts an index for Maine but not for Michigan, which asks for a table of contents", async () => {
+    const deps = await loadAccuracyDeps({});
+    const body = Array.from(
+      { length: 400 },
+      (_v, i) => `We pay for loss number ${i} to your home.`,
+    ).join(" ");
+    const withIndex = `HOMEOWNERS POLICY\n\nINDEX\n\nCoverage, 2\n\n${body}\n`;
+    const me = await analyzeText(withIndex, "policy.txt", { deps, readability: "me" });
+    expect(me.run.findings.map((x) => x.rule_id)).not.toContain("READ-002");
+    const mi = await analyzeText(withIndex, "policy.txt", { deps, readability: "mi" });
+    const f = mi.run.findings.find((x) => x.rule_id === "READ-002");
+    expect(f?.title).toBe("No table of contents");
+    expect(f?.explanation).toMatch(/an index does not satisfy it/);
+    const withContents = await analyzeText(
+      `HOMEOWNERS POLICY\n\nTABLE OF CONTENTS\n\nCoverage ........ 2\n\n${body}\n`,
+      "policy.txt",
+      { deps, readability: "mi" },
+    );
+    expect(withContents.run.findings.map((x) => x.rule_id)).not.toContain("READ-002");
   });
 });
 

@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.992.0] — 2026-11-16
+
+### Added
+- **`--readability me` and `--readability mi`: Maine and Michigan join
+  Florida** (add-readability-measure, task 3). 24-A M.R.S. § 2441 (minimum
+  50) and Mich. Comp. Laws § 500.2236(3) (minimum 45), each read at the
+  legislature's own site on 2026-11-16. Both print the same counting rules
+  the score already follows. Michigan asks for "a table of contents" with
+  no index alternative, so `READ-002` under `mi` no longer accepts an index
+  heading and says so; Florida's findings are unchanged word for word. The
+  tab's selector and `vaulytica.config.json` offer the new ids. Texas waits:
+  its statute site serves text only to a browser script.
+
 ## [9.991.0] — 2026-10-20
 
 ### Added

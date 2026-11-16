@@ -29,3 +29,7 @@ Task 4's browser selector: "Reviewing an insurance policy form? Hold it to a rea
 ## Progress — 9.991.0
 
 Task 5 for Florida: a dense policy under 45, a plain one over it, a form over 3,000 words with and without a table of contents (`readability-assertion.test.ts`), and a property test over every ninth specimen that building the readability block never changes the run or its `result_hash`. The uncaptioned lease belongs with `READ-003` and New York's text. Task 6: `/known-limits` says the score applies neither sampling nor the statutory exclusions. Open: task 1's 5,000-word reference (needs a licensed pronunciation dictionary), task 3's other states (New York's site refuses automated reads; the rest not attempted), `READ-003`, the DKB table, and task 7.
+
+## Progress — 9.992.0
+
+Task 3: Maine (24-A M.R.S. § 2441, minimum 50; scope from §§ 2439–2440) and Michigan (MCL § 500.2236(3), minimum 45; personal-lines policy and annuity forms) read at legislature.maine.gov and legislature.mi.gov on 2026-11-16. Both print the NAIC counting rules the score follows. Rows gained `index_ok`: Michigan's (3)(f) requires "a table of contents" and names no index, so `READ-002` under `mi` does not accept an index heading. Not attempted or not reachable: Texas (statutes.capitol.texas.gov serves its text only to a browser script), West Virginia and Colorado (not yet located at an official source), New York (bot challenge), California. Not checked from the read texts: Maine's 10-point type, Michigan's topical captions and identification of exclusions.
