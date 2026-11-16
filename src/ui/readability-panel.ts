@@ -12,6 +12,7 @@ export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> =
   { id: "me", label: "Maine, 24-A M.R.S. § 2441 (policy forms)" },
   { id: "mi", label: "Michigan, MCL § 500.2236(3) (personal-lines forms)" },
   { id: "mn", label: "Minnesota, Minn. Stat. ch. 72C (auto, home, life, health)" },
+  { id: "nv", label: "Nevada, NRS § 687B.124 (life and health policies)" },
 ];
 
 export function bindReadabilityPanel(

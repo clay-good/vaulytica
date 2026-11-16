@@ -93,6 +93,19 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     contents_over: "always",
     index_ok: true,
   },
+  {
+    id: "nv",
+    name: "Nevada readability requirement for life and health policies",
+    citation: "Nev. Rev. Stat. § 687B.124",
+    source_url: "https://www.leg.state.nv.us/NRS/NRS-687B.html",
+    retrieved_at: "2026-11-16",
+    version: "Added to NRS by 1981, 927",
+    scope:
+      "a life or health policy, certificate or contract delivered or issued for delivery in Nevada (Nev. Rev. Stat. § 687B.122)",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
 ];
 
 export function readabilityStandard(id: string): ReadabilityStandard | undefined {

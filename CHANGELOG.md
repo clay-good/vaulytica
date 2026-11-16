@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.994.0] — 2026-11-16
+
+### Added
+- **`--readability nv`: Nevada's readability requirement** for life and
+  health policies (Nev. Rev. Stat. §§ 687B.122–687B.124, read at
+  leg.state.nv.us on 2026-11-16): a score of at least 40, and a table of
+  contents or an index above 3,000 words or three pages.
+
+### Fixed
+- **CI's browser suite could not install Chromium** since 2026-11-14:
+  GitHub's `ubuntu-latest` image moved to Ubuntu 26.04, which Playwright
+  1.60 refuses ("does not support chromium on ubuntu26.04-x64"), so the
+  `CI` workflow failed at `e2e:install` on every push. Playwright is now
+  1.65.1, which knows 26.04; the 70 browser tests pass on it.
+- The deployed-site Lighthouse workflow now names the second Cloudflare
+  injection keeping it red after Web Analytics was turned off: the
+  bot-management "JavaScript Detections" bootstrap, which the site's CSP
+  blocks and which only a dashboard setting removes.
+
 ## [9.993.0] — 2026-11-16
 
 ### Added

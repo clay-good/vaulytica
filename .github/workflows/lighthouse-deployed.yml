@@ -43,6 +43,15 @@ name: Lighthouse (deployed site, 4G budget)
 # project (dashboard setting, no code change). Then this job goes green and
 # stays a live canary. A red run here is a finding, not a flake — read the
 # uploaded report before assuming otherwise.
+#
+# 2026-11-16: Web Analytics is off and the beacon is gone from the served
+# page, but the job is still red for a SECOND edge injection: an inline
+# bootstrap that loads `/cdn-cgi/challenge-platform/scripts/jsd/main.js`
+# (Cloudflare's bot-management "JavaScript Detections", setting
+# `window.__CF$cv$params`). The CSP blocks it the same way, and the blocked
+# inline script is the console error. The fix is again a dashboard setting:
+# Security → Bots → turn off JavaScript Detections (and Bot Fight Mode,
+# which turns it on).
 
 on:
   schedule:
