@@ -2,13 +2,22 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.999.0] — 2026-11-16
+
+### Added
+- **`--readability ok`**: Oklahoma's Life, Accident and Health Insurance
+  Policy Language Simplification Act (Okla. Stat. tit. 36, § 3645), read
+  at OSCN on 2026-11-16: at least 40; contents or index over 3,000 words or
+  three pages. Thirteen jurisdictions. `--help` now points to
+  docs/readability.md for the ids instead of listing them.
+
 ## [9.998.0] — 2026-11-16
 
 ### Added
 - **`--readability ne` and `--readability dc`**: Neb. Rev. Stat. § 44-3405
   (nebraskalegislature.gov) and D.C. Code § 31-4725 (code.dccouncil.gov),
   read 2026-11-16. Both are model-act rows: at least 40, and a table of
-  contents or an index above 3,000 words or three pages. Eleven
+  contents or an index above 3,000 words or three pages. Twelve
   jurisdictions now; the reference table now points to readability.md for
   the list of ids instead of repeating it.
 

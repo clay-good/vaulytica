@@ -56,4 +56,8 @@ Task 3: North Dakota (N.D. Cent. Code §§ 26.1-33-30 life, 26.1-36-14 accident 
 
 ## Progress — 9.998.0
 
-Task 3: Nebraska (Neb. Rev. Stat. § 44-3405, nebraskalegislature.gov) and the District of Columbia (D.C. Code § 31-4725, scope § 31-4727, code.dccouncil.gov), read 2026-11-16, both minimum 40 with the model act's contents rule. Eleven jurisdictions. Located but not yet read at an official source: Oklahoma (36 O.S. § 3645; OSCN), Indiana (IC 27-1-26), Georgia (O.C.G.A. § 33-3-25, no free official code).
+Task 3: Nebraska (Neb. Rev. Stat. § 44-3405, nebraskalegislature.gov) and the District of Columbia (D.C. Code § 31-4725, scope § 31-4727, code.dccouncil.gov), read 2026-11-16, both minimum 40 with the model act's contents rule. Twelve jurisdictions. Located but not yet read at an official source: Oklahoma (36 O.S. § 3645; OSCN), Indiana (IC 27-1-26), Georgia (O.C.G.A. § 33-3-25, no free official code).
+
+## Progress — 9.999.0
+
+Task 3: Oklahoma (Okla. Stat. tit. 36, § 3645; scope § 3644), read at oscn.net on 2026-11-16, minimum 40, model-act contents rule. Thirteen jurisdictions: FL, ME, MI, MN, NV, OH, OR, MT, WV, ND, NE, DC, OK.

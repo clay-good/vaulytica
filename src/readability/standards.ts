@@ -199,6 +199,19 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     contents_over: { words: 3000, pages: 3 },
     index_ok: true,
   },
+  {
+    id: "ok",
+    name: "Oklahoma Life, Accident and Health Insurance Policy Language Simplification Act",
+    citation: "Okla. Stat. tit. 36, § 3645",
+    source_url: "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=87154",
+    retrieved_at: "2026-11-16",
+    version: "Laws 1986, HB 1947, c. 141, § 5, eff. January 1, 1987",
+    scope:
+      "a life, accident or health policy form delivered or issued for delivery in Oklahoma (Okla. Stat. tit. 36, § 3644)",
+    min_score: 40,
+    contents_over: { words: 3000, pages: 3 },
+    index_ok: true,
+  },
 ];
 
 export function readabilityStandard(id: string): ReadabilityStandard | undefined {

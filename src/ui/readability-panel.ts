@@ -20,6 +20,7 @@ export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> =
   { id: "nd", label: "North Dakota, N.D.C.C. §§ 26.1-33-30, 26.1-36-14 (life, health)" },
   { id: "ne", label: "Nebraska, Neb. Rev. Stat. § 44-3405 (life and health policies)" },
   { id: "dc", label: "District of Columbia, D.C. Code § 31-4725 (life insurers' forms)" },
+  { id: "ok", label: "Oklahoma, 36 O.S. § 3645 (life, accident and health forms)" },
 ];
 
 export function bindReadabilityPanel(
