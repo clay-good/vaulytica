@@ -40,6 +40,19 @@ All notable changes to this project will be documented in this file. Format adap
   of size. It now says which part each format states, and `docs/reference.md`'s
   rule row says the same.
 
+### Added
+- **A ratchet on what `normalize()` is allowed to forget** (added after the
+  fix above, no engine change and no hash movement). A sweep for other
+  tree-rebuilders found none — `matcher.ts` and `_fixtures.ts` build synthetic
+  trees from bare text, legitimately sizeless, and `page-furniture.ts` only
+  reads — so the hole was `normalize()` alone. `normalize.test.ts` now records,
+  per declared field of `Run`, `Paragraph` and `Section`, whether
+  normalization carries it or re-derives it, and a field added to one of those
+  types without a recorded decision fails by name. The behavioural cases cover
+  the path that merges runs (a whitespace-only run between two words), a
+  paragraph with no stated size staying absent rather than becoming 0, and
+  idempotence with the field set.
+
 ## [9.1000.0] — 2026-11-23
 
 ### Fixed

@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import type { DocumentTree } from "./types.js";
 import { countWords, normalize, noTextWarning } from "./normalize.js";
@@ -215,5 +217,161 @@ describe("noTextWarning", () => {
   it("speaks exactly once for a document with none", () => {
     expect(noTextWarning(0)).toHaveLength(1);
     expect(noTextWarning(0)[0]).toContain("No readable text was found");
+  });
+});
+
+/**
+ * 🚨 WHAT NORMALIZE IS ALLOWED TO FORGET.
+ *
+ * `normalize` REBUILDS every node — `normalizeParagraph` returns a fresh
+ * `{ id, runs, … }` — so any field it does not name is silently dropped. That
+ * happened: `min_size_pt` was eaten, which is why the DOCX ingest attaches
+ * sizes AFTER normalizing (`attachSizes`) instead of setting them inline, and
+ * why the PDF ingest, which does set them inline, got nothing through until
+ * 9.1001.0. The workaround made the field look like it worked and left the
+ * hole open for the next producer.
+ *
+ * These cases close the class rather than that instance. The table below is
+ * the decision, per field, about what normalization does with it; a field
+ * added to `Run`, `Paragraph` or `Section` and not listed here fails by name,
+ * which is the prompt to decide whether it is carried or re-derived — not a
+ * formality, because getting it wrong is invisible at runtime.
+ */
+describe("normalize preserves every field it does not re-derive", () => {
+  /** What normalization does with each declared field of the tree types. */
+  const DISPOSITION: Readonly<Record<string, Readonly<Record<string, string>>>> = {
+    Run: {
+      id: "re-derived (makeRunId, from position)",
+      text: "normalized (whitespace, format/control characters)",
+      start: "re-derived (contiguous offset stream)",
+      end: "re-derived (contiguous offset stream)",
+      formatting: "carried",
+    },
+    Paragraph: {
+      id: "re-derived (makeParagraphId, from position)",
+      runs: "rebuilt, each run per the Run row",
+      min_size_pt: "carried — what the FILE said about how its text is set",
+    },
+    Section: {
+      id: "re-derived (makeSectionId, from path)",
+      heading: "normalized, exactly as run text is",
+      level: "carried",
+      paragraphs: "rebuilt, each paragraph per the Paragraph row",
+      children: "rebuilt recursively",
+    },
+  };
+
+  const SOURCE = readFileSync(join(process.cwd(), "src", "ingest", "types.ts"), "utf8");
+
+  /** The field names declared in `export type <name> = { … }`. */
+  function declaredFields(typeName: string): string[] {
+    const start = SOURCE.indexOf(`export type ${typeName} = {`);
+    expect(start, `no "export type ${typeName}" in src/ingest/types.ts`).toBeGreaterThan(-1);
+    const end = SOURCE.indexOf("\n};", start);
+    const body = SOURCE.slice(start, end);
+    // Field lines only: two-space indent, a name, an optional `?`, then `:`.
+    return [...body.matchAll(/^ {2}(\w+)\??:/gm)].map((m) => m[1]!);
+  }
+
+  it("has a recorded decision for every declared field", () => {
+    for (const [typeName, table] of Object.entries(DISPOSITION)) {
+      const declared = declaredFields(typeName);
+      expect(declared.length, `parsed no fields for ${typeName}`).toBeGreaterThan(1);
+      const undecided = declared.filter((f) => !(f in table)).sort();
+      expect(
+        undecided,
+        `src/ingest/types.ts: ${typeName} declares ${undecided.join(", ")}, and normalize.ts has ` +
+          `no recorded decision about ${undecided.length === 1 ? "it" : "them"}. normalize() ` +
+          `rebuilds every node, so a field it does not name is DROPPED — silently, at runtime. ` +
+          `Carry it in normalizeParagraph / normalizeSection and add it to DISPOSITION here, or ` +
+          `record that it is re-derived.`,
+      ).toEqual([]);
+      // A stale row is worse than none: it claims cover the type no longer has.
+      const gone = Object.keys(table)
+        .filter((f) => !declared.includes(f))
+        .sort();
+      expect(gone, `DISPOSITION lists ${typeName}.${gone.join(", ")}, no longer declared`).toEqual(
+        [],
+      );
+    }
+  });
+
+  it("carries min_size_pt and formatting through, and re-derives ids and offsets", () => {
+    const normalized = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "junk",
+          heading: "ARTICLE I",
+          level: 3,
+          paragraphs: [
+            {
+              id: "junk",
+              runs: [
+                { id: "junk", text: "Set small.", start: 99, end: 99, formatting: { bold: true } },
+              ],
+              min_size_pt: 8,
+            },
+            // No size stated: it must stay ABSENT, not become 0 or inherit 8.
+            { id: "junk", runs: [{ id: "junk", text: "No size here.", start: 99, end: 99 }] },
+          ],
+          children: [],
+        },
+      ],
+    });
+
+    const section = normalized.sections[0]!;
+    expect(section.level, "level is carried, not recomputed").toBe(3);
+    const [small, sizeless] = section.paragraphs;
+
+    expect(small!.min_size_pt, "min_size_pt was dropped by normalize").toBe(8);
+    expect(small!.runs[0]!.formatting).toEqual({ bold: true });
+    expect(
+      sizeless!.min_size_pt,
+      "a paragraph with no stated size must stay absent",
+    ).toBeUndefined();
+
+    // …and the fields normalize OWNS are re-derived, not passed through.
+    expect(section.id).toBe("s1");
+    expect(small!.id).toBe("s1.p0");
+    expect(small!.runs[0]!.id).toBe("s1.p0.r0");
+    expect(small!.runs[0]!.start).toBe(flattenText(normalized).indexOf("Set small."));
+  });
+
+  it("keeps the size when whitespace normalization rewrites the paragraph's runs", () => {
+    // The field has to survive the path that REBUILDS runs, not just the quiet
+    // one: a whitespace-only run between two words is the case that merges runs.
+    const normalized = normalize({
+      type: "document",
+      sections: [
+        {
+          id: "",
+          heading: "",
+          level: 1,
+          paragraphs: [
+            {
+              id: "",
+              runs: [
+                { id: "", text: "does not", start: 0, end: 0 },
+                { id: "", text: " ", start: 0, end: 0 },
+                { id: "", text: "include", start: 0, end: 0 },
+              ],
+              min_size_pt: 9,
+            },
+          ],
+          children: [],
+        },
+      ],
+    });
+    const p = normalized.sections[0]!.paragraphs[0]!;
+    expect(p.runs.map((r) => r.text).join("")).toBe("does not include");
+    expect(p.min_size_pt).toBe(9);
+  });
+
+  it("is still idempotent with the field set", () => {
+    const once = normalize(treeOf("H", [["Body text."]]));
+    once.sections[0]!.paragraphs[0]!.min_size_pt = 7;
+    const twice = normalize(once);
+    expect(twice).toEqual(once);
   });
 });
