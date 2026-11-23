@@ -202,6 +202,13 @@ The rules, each because the alternative fails silently:
   `vaulytica: config <path> applied: … ; overridden by flags: …` on stderr, and
   the JSON and `brief-json` reports carry a `config` block with the same lists
   and the file's SHA-256. The path is relative to the input, never absolute.
+- **A key a surface cannot use is named, not passed over.** The MCP server
+  honours only the keys that shape what is analyzed (`document_types`,
+  `playbook`, `playbook_file`, `related`), so a gate like `readability` or
+  `estate_checks` does nothing there. Those keys are listed as `ignored` — a
+  separate list from `overridden`, which means a value was read and then
+  replaced by an argument. Without it, a team that set a gate in the file could
+  not tell it had been skipped: silence reads exactly like success.
 - **Paths and globs are relative to the file**, and `playbook_file` and
   `extends` are refused when they resolve outside its folder.
 - **The file enters no hash.** The settings it selects reach `result_hash`

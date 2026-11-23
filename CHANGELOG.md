@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- **The MCP server names the configuration keys it does not apply.** It honours
+  only the keys that shape what is analyzed (`document_types`, `playbook`,
+  `playbook_file`, `related`), which is deliberate — but a team writing
+  `readability` or `estate_checks` into `vaulytica.config.json` believes those
+  are in force everywhere, and the result said nothing either way, so an
+  ignored gate read exactly like an applied one. The `config` block gains
+  `ignored`, distinct from `overridden` (a value read and then replaced by an
+  argument); these were never consulted. Omitted when empty, so the CLI's block
+  and every existing report are byte-identical, and no hash moves.
+
 ## [9.1001.0] — 2026-11-23
 
 ### Fixed

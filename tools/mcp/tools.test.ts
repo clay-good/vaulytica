@@ -471,6 +471,58 @@ describe("a vaulytica.config.json under an allowed root", { timeout: 120_000 }, 
       analyzeDocumentTool({ path: "doc.txt" }, { roots: [bad], deps: ctx.deps }),
     ).rejects.toThrow(ToolError);
   });
+
+  /**
+   * 🚨 A GATE THIS SERVER CANNOT APPLY USED TO BE APPLIED IN SILENCE.
+   *
+   * The server honours only the keys that shape WHAT is analyzed —
+   * `document_types`, `playbook`, `playbook_file`, `related` — which is
+   * deliberate (add-project-config-file task 4), so that a result never claims
+   * a gate shaped it. But a team that writes `readability` or `estate_checks`
+   * into the file believes it is in force everywhere, and the result said
+   * nothing either way: an ignored gate read exactly like an applied one.
+   * `ignored` names them. It is NOT `overridden`, which means a value was read
+   * and then replaced by an argument; these were never consulted at all.
+   */
+  it("names the keys it does not apply, rather than passing over them in silence", async () => {
+    const gated = join(tmp, "gated-config");
+    await mkdir(gated, { recursive: true });
+    await writeFile(join(gated, "policy.txt"), await readFile(NDA));
+    await writeFile(
+      join(gated, "vaulytica.config.json"),
+      JSON.stringify({
+        playbook: "mutual-nda-deep",
+        readability: "fl",
+        estate_checks: true,
+        fail_on: "critical",
+      }),
+    );
+    const r = await analyzeDocumentTool({ path: "policy.txt" }, { roots: [gated], deps: ctx.deps });
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+
+    // The one key it honours is applied and claimed…
+    expect(r.config?.applied).toEqual(["playbook"]);
+    expect(r.config?.overridden).toEqual([]);
+    // …and the three it cannot use are NAMED, sorted, never claimed as applied.
+    expect(r.config?.ignored).toEqual(["estate_checks", "fail_on", "readability"]);
+    // The gates really did stay dormant: naming them is honesty, not a change
+    // of behaviour.
+    expect(r.findings.some((f) => f.rule_id.startsWith("READ-"))).toBe(false);
+  });
+
+  it("omits `ignored` entirely when every key the file sets was used", async () => {
+    const clean = join(tmp, "clean-config");
+    await mkdir(clean, { recursive: true });
+    await writeFile(join(clean, "doc.txt"), await readFile(NDA));
+    await writeFile(
+      join(clean, "vaulytica.config.json"),
+      JSON.stringify({ playbook: "mutual-nda-deep" }),
+    );
+    const r = await analyzeDocumentTool({ path: "doc.txt" }, { roots: [clean], deps: ctx.deps });
+    if ("not_analyzed" in r) throw new Error(r.not_analyzed);
+    expect(r.config?.applied).toEqual(["playbook"]);
+    expect(r.config && "ignored" in r.config).toBe(false);
+  });
 });
 
 describe('analyze_document include: ["delivery"]', () => {

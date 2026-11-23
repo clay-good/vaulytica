@@ -169,6 +169,17 @@ export type ConfigProvenance = {
   applied: string[];
   /** Keys a flag or a tool argument replaced, sorted. */
   overridden: string[];
+  /**
+   * Keys the file sets that this surface does not apply AT ALL, sorted.
+   *
+   * Distinct from `overridden`, where the value was read and then replaced by
+   * a flag: these were never consulted. The MCP server honours only the keys
+   * that shape what is analyzed, so a team's `readability` or `estate_checks`
+   * does nothing there — and used to do nothing in silence, which reads the
+   * same as being applied. Omitted when there are none, so a surface that
+   * honours every key emits exactly the block it did before.
+   */
+  ignored?: string[];
 };
 
 const within = (dir: string, path: string): boolean =>
@@ -438,8 +449,11 @@ export function provenance(
   shownFrom: string,
   applied: Iterable<string>,
   overridden: Iterable<string>,
+  /** Keys this surface does not apply at all; omit where every key is honoured. */
+  ignored: Iterable<string> = [],
 ): ConfigProvenance {
   const show = (p: string): string => relative(shownFrom, p).split(sep).join("/") || basename(p);
+  const notApplied = [...new Set(ignored)].sort();
   return {
     path: show(config.path),
     sha256: config.sha256,
@@ -448,6 +462,7 @@ export function provenance(
       : {}),
     applied: [...new Set(applied)].sort(),
     overridden: [...new Set(overridden)].sort(),
+    ...(notApplied.length > 0 ? { ignored: notApplied } : {}),
   };
 }
 
@@ -456,7 +471,11 @@ export function provenanceLine(p: ConfigProvenance): string {
   const applied = p.applied.length > 0 ? p.applied.join(", ") : "nothing";
   const over = p.overridden.length > 0 ? `; overridden by flags: ${p.overridden.join(", ")}` : "";
   const base = p.extends ? ` (extends ${p.extends.path})` : "";
-  return `vaulytica: config ${p.path}${base} applied: ${applied}${over}\n`;
+  // Named, not silent: a key this surface cannot use is a setting the team
+  // believes is in force.
+  const skipped =
+    p.ignored && p.ignored.length > 0 ? `; not applied here: ${p.ignored.join(", ")}` : "";
+  return `vaulytica: config ${p.path}${base} applied: ${applied}${over}${skipped}\n`;
 }
 
 /**

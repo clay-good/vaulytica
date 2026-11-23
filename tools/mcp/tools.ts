@@ -17,6 +17,7 @@ import {
   type CustomPlaybook,
 } from "../../src/playbooks/custom-playbook.js";
 import {
+  CONFIG_KEYS,
   ConfigError,
   discoverConfig,
   documentTypeFor,
@@ -235,8 +236,17 @@ async function projectConfig(
       if (isRelated(config, real)) out.related = true;
     }
   }
-  if (applied.length + overridden.length > 0) {
-    out.config = provenance(config, root, applied, overridden);
+  // Every key the file actually sets that this tool neither applied nor had
+  // overridden was never consulted — `readability`, `estate_checks`, `court`,
+  // a deadline profile. The server honours only the keys that shape WHAT is
+  // analyzed (see add-project-config-file task 4), and that is deliberate; what
+  // was not deliberate is saying nothing, so a team reading the result cannot
+  // tell an ignored gate from an applied one. Named here, never claimed as
+  // applied.
+  const seen = new Set([...applied, ...overridden]);
+  const ignored = CONFIG_KEYS.filter((k) => v[k] !== undefined && !seen.has(k));
+  if (applied.length + overridden.length + ignored.length > 0) {
+    out.config = provenance(config, root, applied, overridden, ignored);
   }
   return out;
 }

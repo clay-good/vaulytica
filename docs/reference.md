@@ -1310,7 +1310,7 @@ claude mcp add --scope user vaulytica -- node ~/vaulytica/bin/vaulytica.mjs mcp
 
 The repository also commits a `.mcp.json` for people working inside the clone. Design and rationale: [`spec-v48.md`](spec-v48.md).
 
-**A project configuration.** A `vaulytica.config.json` inside an allowed folder, at or above the document, sets its type (`document_types` by glob, or `playbook`), a team playbook (`playbook_file`) and which folders are one deal (`related`). A result it shaped carries `config`, naming the file and the keys applied; a `document_type` or `related` argument wins and is listed as overridden. `text` input reads no configuration. The format is in [`ci-integration.md`](ci-integration.md#configuration-file).
+**A project configuration.** A `vaulytica.config.json` inside an allowed folder, at or above the document, sets its type (`document_types` by glob, or `playbook`), a team playbook (`playbook_file`) and which folders are one deal (`related`). A result it shaped carries `config`, naming the file and the keys applied; a `document_type` or `related` argument wins and is listed as overridden. A key the server does not use at all — a gate like `readability` or `estate_checks`, or an exit gate like `fail_on` — is listed as `ignored`, so a team can tell a skipped setting from an applied one. `text` input reads no configuration. The format is in [`ci-integration.md`](ci-integration.md#configuration-file).
 
 ### Drop it into CI — GitHub Action
 
