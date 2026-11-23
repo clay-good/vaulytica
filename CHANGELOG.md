@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Changed
+- **The fuzz scaling gate measures CPU time, not wall time.**
+  `fuzz-boundary.test.ts` asks whether `extractAll` scales worse than linearly
+  from a tenth of the input. It divided by a small run of only ~10–30 ms, so a
+  few milliseconds of scheduler noise in the denominator swung the ratio
+  enormously: an 11 ms small run against a 310 ms big one reads as 28x and
+  fails, where the same work measured clean is 20 ms against 157 ms, or 8x.
+  Every `upper` case failed that way on three consecutive loaded full-suite
+  runs, a different phrase each time, and passed alone every time.
+
+  ⚠️ The file's own history records the comma/party case being written off as
+  load TWICE before it turned out to be a genuine O(n²) in `parties.ts`. So
+  this was changed only after measuring the curve rather than inferring it from
+  a pass: `upper` at 5,000 → 50,000 → 100,000 → 200,000 characters costs
+  7.0–10.6x for the ten-fold step and 1.8–2.2x for each doubling, across plain,
+  party, definition and amounts — linear at every step, where a quadratic would
+  read 100x then 4x, 4x.
+
+  CPU time is the better instrument for what the gate asks: a quadratic burns
+  CPU, while a loaded machine burns wall time this process spends waiting for a
+  core. CPU ≤ wall always, and a ReDoS is CPU-bound, so the gate still fails a
+  quadratic decisively while no longer failing honest linear work on a busy
+  machine. Vitest forks one process per test file (`isMainThread` is true
+  there), so `process.cpuUsage()` covers that file's work and nothing else. The
+  verdict function and its unit cases — which encode the real measured
+  quadratic ratios 14→1046, 96→7764 and 287→9427 — are unchanged.
+
+  **Not proven end to end:** an attempt to confirm the gate still reddens by
+  injecting an artificial quadratic into `extractParties` was inconclusive (the
+  injected loop tripped the "never crashes" assertion first). The verdict
+  function's own cases are the standing proof.
+
 ### Added
 - **The MCP server names the configuration keys it does not apply.** It honours
   only the keys that shape what is analyzed (`document_types`, `playbook`,
