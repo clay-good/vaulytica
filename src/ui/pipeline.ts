@@ -546,7 +546,9 @@ export type PipelineOptions = {
   estate_state?: string;
   /**
    * add-readability-measure — hold the document to an asserted readability
-   * statute (`fl`), as the CLI's `--readability`. Omit for none (default).
+   * statute (`fl`), as the CLI's `--readability`. In a bundle every member is
+   * held to it, since the statute is the caller's assertion and not something
+   * a document declares. Omit for none (default).
    */
   readability?: string;
   /**
@@ -1663,9 +1665,22 @@ export async function prepareBundle(
       privacyWiring.rules,
       options.estate_state,
     );
+    // add-readability-measure — the asserted statute reaches each bundle member,
+    // as it does the single document. Unlike the privacy and estate packs above
+    // it is NOT playbook-gated, because nothing in a document says where it was
+    // filed: the user's assertion is the whole gate, on one document or on a
+    // folder of them. No assertion, no change — the member run and its
+    // `result_hash` are byte-identical to before this wiring.
+    const readableWiring = activateReadability(options.readability, estateWiring.rules);
     const run = await runEngine({
-      rules: estateWiring.rules,
-      ctx: { tree: ingest.tree, extracted, dkb, playbook },
+      rules: readableWiring.rules,
+      ctx: {
+        tree: ingest.tree,
+        extracted,
+        dkb,
+        playbook,
+        ...(readableWiring.options ? { options: readableWiring.options } : {}),
+      },
       source_file: sourceFile,
       playbook_match_confidence: match.confidence,
       playbook_match_reasoning: match.reasoning,
@@ -1674,6 +1689,9 @@ export async function prepareBundle(
         : {}),
       ...(estateWiring.estate_checks_asserted ? { estate_checks_asserted: true } : {}),
       ...(estateWiring.asserted_state ? { asserted_state: estateWiring.asserted_state } : {}),
+      ...(readableWiring.asserted_readability
+        ? { asserted_readability: readableWiring.asserted_readability }
+        : {}),
       executed_at: new Date().toISOString(),
       onRule: ({ index, total: ruleTotal }) => {
         perDocProgress[docIndex] = (index + 1) / ruleTotal;

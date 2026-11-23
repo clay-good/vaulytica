@@ -962,6 +962,9 @@ async function runBundle(
         // add-estate-planning-pack — likewise for the estate checks / state.
         estate_checks: activeEstate.checks || undefined,
         estate_state: activeEstate.state,
+        // add-readability-measure — and for the asserted readability statute, so
+        // a folder is held to the statute the panel names just as one document is.
+        readability: activeReadability,
       },
     );
     // Retain the prepared bundle so a consistency toggle can re-run
@@ -1179,6 +1182,10 @@ async function runBundleComparison(
         // add-estate-planning-pack — likewise for the estate checks / state.
         estate_checks: activeEstate.checks || undefined,
         estate_state: activeEstate.state,
+        // add-readability-measure — keep the revised round on the same asserted
+        // statute as the baseline round, or its members would be scored against
+        // a different gate and the round comparison would move for that alone.
+        readability: activeReadability,
       },
     );
 

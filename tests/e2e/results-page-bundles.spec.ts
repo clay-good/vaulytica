@@ -217,3 +217,37 @@ test("a policy held to Florida's readability statute shows its score below 45", 
     /Reading ease -?\d+(\.\d)? is below the 45 Fla\. Stat\. § 627\.4145 requires/,
   );
 });
+
+test("a folder held to Florida's statute: the member below 45 is named, the one above is not", async ({
+  page,
+}) => {
+  // add-readability-measure task 4, the bundle path. `prepareBundle` layered the
+  // privacy and estate packs onto each member and dropped the statute, and
+  // main.ts's bundle call sites forwarded the regimes but not the readability
+  // option — so choosing a statute and then dropping a FOLDER silently produced
+  // no READ finding. This is that path, in the real tab.
+  //
+  // The two sample documents straddle the threshold on their own text: the DPA
+  // scores 22.2 and the MSA 51.6, so a per-member score is the only way one is
+  // named and the other is not.
+  await page.goto("/");
+  await page.locator("#readability-panel summary").click();
+  await page.locator('[data-role="readability-standard"]').selectOption("fl");
+  await page.locator(singleFileInput).setInputFiles([DPA, MSA]);
+
+  const headline = page.locator('[data-role="results-headline"]');
+  await expect(headline).toContainText("across 2 documents", { timeout: 120_000 });
+
+  const docRows = page.locator('[data-role="results-documents"] > li > [data-role="result-row"]');
+  const dpaRow = docRows.filter({ hasText: "data-processing-addendum.docx" });
+  await dpaRow.click();
+  await expect(page.locator(`#${await dpaRow.getAttribute("aria-controls")}`)).toContainText(
+    /Reading ease 22\.2 is below the 45 Fla\. Stat\. § 627\.4145 requires/,
+  );
+
+  const msaRow = docRows.filter({ hasText: "master-services-agreement.docx" });
+  await msaRow.click();
+  await expect(page.locator(`#${await msaRow.getAttribute("aria-controls")}`)).not.toContainText(
+    /Fla\. Stat\. § 627\.4145/,
+  );
+});

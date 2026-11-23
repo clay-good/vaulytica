@@ -61,3 +61,62 @@ Task 3: Nebraska (Neb. Rev. Stat. § 44-3405, nebraskalegislature.gov) and the D
 ## Progress — 9.999.0
 
 Task 3: Oklahoma (Okla. Stat. tit. 36, § 3645; scope § 3644), read at oscn.net on 2026-11-16, minimum 40, model-act contents rule. Thirteen jurisdictions: FL, ME, MI, MN, NV, OH, OR, MT, WV, ND, NE, DC, OK.
+
+## Progress — 9.1000.0
+
+Task 4's bundle path. 🚨 **The assertion did not reach a folder.** Thirteen
+statutes were readable from the tab's panel and the option was accepted by the
+bundle pipeline, but `prepareBundle` layered the privacy and estate packs onto
+each member and never passed `options.readability` to `activateReadability`,
+and both of `main.ts`'s `runBundlePipeline` call sites forwarded `regimes` and
+`estate_state` and not the statute. So a user who chose Florida and dropped a
+folder got no `READ-*` finding and no stamp, and nothing said why. The
+single-document path had been right since 9.988.0.
+
+Readability is not playbook-gated the way those two packs are — nothing in a
+document says where it was filed — so the fix holds **every** member to the
+asserted statute, each scored on its own text and each carrying
+`asserted_readability` in its own hashed run. On the two sample bundle
+documents that is the whole point: the addendum scores 22.2 and is named under
+Florida's 45, the services agreement scores 51.6 and is not.
+
+Hash isolation holds: with no assertion the member runs and the
+`bundle_fingerprint` are byte-identical.
+
+Guards, each confirmed to FAIL with its half of the wiring removed:
+`tests/integration/bundle-readability.test.ts` (the real browser bundle
+pipeline, mirroring `bundle-privacy-regimes` and `bundle-estate-checks`) and an
+e2e in `results-page-bundles.spec.ts` that drives the panel and a two-file drop
+for the `main.ts` half. 🥇 **The fingerprint case was vacuous when written** —
+it passed with the wiring removed, because `Packer.toBuffer` stamps a creation
+time into each synthesized .docx, so every call gave the run different bytes
+and a different hash for reasons unrelated to the assertion. The fixtures are
+built once and the case now proves the fingerprint is stable over the same
+bytes before asserting that the statute moves it.
+
+A consequence worth naming: each member's own Word report inside the bundle
+archive had a cover reading `… informative only` even when a statute was
+asserted, because `renderCover` prints that line from
+`run.asserted_readability`. The test reads it out of the `.docx` rather than
+inferring it from the run object — 🥇 **and as first written it matched the
+`READ-001` finding's own title, which also begins "Reading ease", instead of
+the cover field, which `coverField` prints with a colon.** Two of this slice's
+five cases were vacuous on the first pass; both were found by running them
+against the un-fixed code, which is the only thing that distinguishes a guard
+from a decoration.
+
+A new ratchet closes the class rather than this instance:
+`tests/integration/bundle-option-reach.test.ts` compares the `options.*` reads
+inside `runReport` against those inside `prepareBundle` and fails by name when
+one path gains an option the other does not, with `NOT_IN_BUNDLE` carrying a
+stated reason per exemption (`filing` alone: the tab ships no court-profile
+selector on either path). That is the mechanism whose absence let this ship.
+
+The round-comparison call site was wired too, so a revised round is scored
+against the same statute as its baseline rather than moving for that alone; it
+has no guard of its own.
+
+Still open: task 1's 5,000-word reference (needs a licensed pronunciation
+dictionary), task 3's remaining states (New York's site refuses automated
+reads; California not located), `READ-003`, the DKB table, the MCP server and
+the Action (which expose no assertion-gated pack at all), and task 7.

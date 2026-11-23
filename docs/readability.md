@@ -2,6 +2,18 @@
 
 Every JSON report carries a `readability` block: the Flesch reading ease score, counted the way the statutes count it. It is informative, outside the hashed run, and never called compliant. `--readability <id>` holds a document to one statute, and only then do findings appear.
 
+## Where the assertion reaches
+
+A statute is something you assert, not something a document declares — nothing in a policy form says where it was filed. So the assertion is the whole gate, and it applies to **every document in the run**: one file, or every member of a folder, a `.zip` or a deal round. Each member is scored on its own text and carries the statute in its own hashed run, so in a bundle the member below the minimum is the one named.
+
+| Surface | How |
+| --- | --- |
+| CLI, one document or many | `vaulytica analyze … --readability fl` |
+| `vaulytica.config.json` | `"readability": "fl"` (a flag wins over the file) |
+| Browser tab, one document or a folder | the "Hold it to a readability statute" panel |
+
+Not wired: the MCP server and the GitHub Action, which expose no assertion-gated pack yet.
+
 ## The formula and the counting rules
 
 As Fla. Stat. § 627.4145(5) prints them (read at [leg.state.fl.us](https://www.leg.state.fl.us/statutes/index.cfm?App_mode=Display_Statute&URL=0600-0699/0627/Sections/0627.4145.html) on 2026-10-20), following the NAIC model act:

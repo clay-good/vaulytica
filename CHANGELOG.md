@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.1000.0] — 2026-11-23
+
+### Fixed
+- **An asserted readability statute now reaches a folder.** Choosing a statute
+  in the tab's panel and then dropping a FOLDER produced no `READ-*` finding
+  and no `asserted_readability` stamp, with nothing on screen to say the
+  assertion had been ignored: `prepareBundle` layered the privacy and estate
+  packs onto each member and dropped `options.readability`, and both of
+  `main.ts`'s bundle call sites forwarded the regimes and the estate state but
+  not the statute. One document honored the assertion; a folder of them did
+  not. Every member is now held to it and carries it in its own hashed run,
+  scored on its own text — on the two sample bundle documents the
+  addendum (22.2) is named under Florida's 45 and the services agreement
+  (51.6) is not. The CLI's bundle path was already correct.
+
+  Nothing moves without an assertion: an unasserted bundle's member runs and
+  its `bundle_fingerprint` are byte-identical to before.
+
+  Each member's own Word report inside the bundle archive is fixed with it:
+  its cover read `… informative only` even when a statute had been asserted,
+  and now reads `… held to Fla. Stat. § 627.4145 (minimum 45), asserted by the
+  user`.
+
+  Guarded both ways — `tests/integration/bundle-readability.test.ts` over the
+  real browser bundle pipeline, including that cover line read out of the
+  `.docx`, plus an e2e that drives the panel and a two-file drop in the real
+  tab for the `main.ts` half. Each guard was confirmed to fail with its half of
+  the wiring removed. Two of them were vacuous as first written and are noted
+  here because the shapes recur: the fingerprint case passed with the fix
+  removed because `Packer.toBuffer` stamps a creation time, so a rebuilt
+  fixture gave every run different bytes (the fixtures are now built once, and
+  the case proves the fingerprint is stable over the same bytes before
+  asserting that the statute moves it); and the cover case matched the
+  `READ-001` finding's own title, which also begins "Reading ease", rather than
+  the cover field, which `coverField` prints with a colon.
+
+### Added
+- **A ratchet on which surfaces can reach a pipeline option**
+  (`tests/integration/bundle-option-reach.test.ts`). The defect above shipped
+  because nothing forced the question: every option the single-document path
+  reads must now be read by the bundle path too, or be listed with a reason
+  why it cannot apply to a folder (`filing` is the one entry — the tab has no
+  court-profile selector on either path). Adding an option to one path and not
+  the other now fails by name instead of shipping as a silent no-op.
+
+### Changed
+- `docs/readability.md` says which surfaces the assertion reaches, and that the
+  MCP server and the Action expose no assertion-gated pack yet.
+
 ## [9.999.0] — 2026-11-16
 
 ### Added
