@@ -384,6 +384,24 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
       ).replace(/\s+/g, " ");
       if (!allText) continue;
       const maxSize = Math.max(...paraLines.flat().map((it) => Math.round(it.transform[0] ?? 0)));
+      // add-mandated-text-conformance task 5 — the smallest point size this
+      // paragraph's text is set in, for the rules that read whether a notice an
+      // authority requires at a minimum size is actually set that way.
+      //
+      // `transform[0]` is the font size AFTER the page transform (see the type
+      // above), so it is the size the text renders at — which is what a
+      // point-size requirement is about — and a PDF user unit is 1/72 inch, one
+      // point. This is already the basis the heading detector above compares
+      // against, so the two read the file the same way.
+      //
+      // Blank items are skipped: a space set in a huge font is not the
+      // paragraph's size, and a run of them would report 0.
+      const sizes = paraLines
+        .flat()
+        .filter((it) => it.str.trim())
+        .map((it) => Math.round(it.transform[0] ?? 0))
+        .filter((n) => n > 0);
+      const minSize = sizes.length > 0 ? Math.min(...sizes) : undefined;
       const isLikelyHeading =
         maxSize >= page.medianFontSize + 2 && allText.length < 120 && paraLines.length === 1;
       if (isLikelyHeading) {
@@ -414,10 +432,17 @@ function buildTreeFromPages(pages: PageContent[]): DocumentTree {
       if (continues) {
         const run = lastParagraph!.runs[0]!;
         run.text = joinWrappedLines([run.text, allText], vocabulary);
+        // The joined halves are one paragraph, so its size is the smaller of
+        // the two — a notice broken across a page break is not in the required
+        // size if either half falls below it.
+        if (minSize !== undefined) {
+          const sofar = lastParagraph!.min_size_pt;
+          lastParagraph!.min_size_pt = sofar === undefined ? minSize : Math.min(sofar, minSize);
+        }
         continue;
       }
       const runs: Run[] = [{ id: "", text: allText, start: 0, end: 0 }];
-      lastParagraph = { id: "", runs };
+      lastParagraph = { id: "", runs, ...(minSize !== undefined ? { min_size_pt: minSize } : {}) };
       stack[stack.length - 1]!.paragraphs.push(lastParagraph);
     }
   }

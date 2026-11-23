@@ -31,9 +31,13 @@ export type Paragraph = {
   id: string;
   runs: Run[];
   /**
-   * The smallest point size the paragraph's text is set in. DOCX only, and
-   * only where the file determines it (a run's own size, its styles, or the
-   * document defaults); absent otherwise.
+   * The smallest point size the paragraph's text is set in.
+   *
+   * From a DOCX only where the file determines it (a run's own size, its
+   * character or paragraph style, or the document defaults); from a PDF text
+   * layer, the smallest size its text items render at. Absent for pasted text,
+   * which carries no sizes at all, and for a DOCX whose style chain never
+   * states one.
    */
   min_size_pt?: number;
 };

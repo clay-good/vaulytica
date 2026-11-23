@@ -4,7 +4,7 @@
 - [ ] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; migrate the two Texas literals out of `regime-data.ts`.
 - [x] 3. Matching: sliding-window token similarity with an exact whitespace-normalized fast path; threshold chosen by measuring the corpus (no false hit on the 363 specimens; every seeded paraphrase fixture caught); ReDoS-safe by construction (no regex over document text; token arrays).
 - [ ] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
-- [ ] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked".
+- [~] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked". **Size is done for both DOCX and PDF (9.1001.0); `w:caps` is not read, and no row needs capitals.**
 - [x] 6. Conspicuousness rule over the existing clause locator for warranty disclaimers and liability caps; info severity; citation to U.C.C. § 1-201(b)(10) and § 2-316(2) with retrieved dates.
 - [ ] 7. Fixtures: exact, paraphrased, superseded, and form-deficient versions of each seed passage; clean documents for each family confirm no false finding.
 - [x] 8. Overlap decisions: for `COMM-206`, the § 429.1, § 1833(b) and § 1542 presence rules and the two Texas rules, decide retire-or-keep-as-absence, with a fixture proving one finding per defect, never two.
@@ -36,3 +36,53 @@ Task 6, narrowed: `TEXT-003` (info) notes a disclaimer of the warranty of mercha
 ## Progress — 9.986.0
 
 Task 9: the new sources run under the shall/will, compound-spelling, `rule-scaling` and ReDoS guards with the full suite (all green); `citation:check` passes (241 URLs well-formed); no authority cited is in the vacated-authority registry. Task 11: `reference.md` carries the rule row; `/known-limits` says how text is set is read only from a Word file; `adding-a-rule.md` gains "Adding a mandated text" (official source only, `wording`, variants, `form`, fixtures). Still open: § 1542 (leginfo blocks automated reads), § 541.102 (migrating the Texas literals belongs with the DKB move), the DKB table itself (task 10, with the scheduled rebuild), and task 12 once those land.
+
+## Progress — 9.1001.0
+
+Task 5's PDF half, and a defect behind it. `TEXT-002` returned early on any
+file with no run formatting, so **the point-size half of the check never ran on
+a PDF** — the format consumer paper arrives in. The size was never unavailable:
+`src/ingest/pdf.ts` had been reading each text item's rendered size all along
+to find headings (`transform[0]`, the size after the page transform, and a PDF
+user unit is one point), and simply never put it on the paragraph.
+
+🥇 **And `normalize()` was silently dropping it.** It rebuilds each paragraph as
+`{ id, runs }`, so a `min_size_pt` set during ingest did not survive — which is
+precisely why the DOCX path calls `attachSizes` AFTER normalizing instead of
+setting it inline. That workaround made the field look like it worked while the
+hole stayed open for the next producer, which is what a workaround in place of
+a fix always does. The normalizer now carries the field.
+
+The two halves of "form" come from different places and a file may answer for
+one and not the other: size from a Word file's sizes and styles or from a PDF's
+text layer, bold face and capitals from a Word file alone. So the rule no longer
+asks "does this file carry formatting?" but "which half can this file answer
+for?" — it checks what it can, NAMES the half it could not (never implying it
+passed), and advises only on what it read. Telling a PDF's reader to set the
+notice bold would assert a defect that file cannot show.
+
+Guards (`tests/integration/mandated-text-pdf-form.test.ts`), each confirmed to
+fail with its half of the fix removed — reverting the normalizer's carry, and
+restoring the rule's early return, each break it: the ingest records the
+smallest rendered size of a paragraph's text; an 8-point notice in a PDF is
+reported with "Whether it is bold is not recorded in this file"; a 10-point one
+is not (the boundary is `>= 10`); pasted text still says nothing, answering for
+neither half. The fixture builds a real PDF parsed by real pdfjs, with the
+notice WRAPPED across lines as a generator emits it — a single 300-character
+`Tj` came back truncated at 113 characters, which was not run down and is not
+claimed either way here, since no real generator writes a line that overruns
+the page.
+
+Zero findings moved on the 363 specimens: 369 of 370 regenerated goldens differ
+only in the version stamps and `TEXT-002`'s own 1.1.0 → 1.2.0.
+
+Honesty follow-through: `/known-limits` had said how text is set "is read only
+from a Word file. A PDF text layer and plain text carry none of it" — true of
+bold, false of size, and false specifically because the ingest was already
+reading sizes. It and `reference.md`'s rule row now say which part each format
+states.
+
+Still open on this change: § 1542 (leginfo blocks automated reads), §§ 429.1(b),
+541.102 and 1833(b)(3), the DKB table and the Texas literals' migration (task
+2, with the scheduled rebuild), `w:caps` (no row needs it), task 7's fixtures,
+and task 12.

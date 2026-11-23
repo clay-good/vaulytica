@@ -235,6 +235,14 @@ export function normalize(tree: DocumentTree): DocumentTree {
     return {
       id: makeParagraphId(sectionId, paragraphIndex),
       runs,
+      // 🚨 Carried, not dropped. This rebuilds the paragraph, so any field it
+      // forgets is silently lost — and `min_size_pt` was lost, which is why
+      // the DOCX ingest attaches sizes AFTER normalizing (`attachSizes`) and
+      // the PDF ingest, setting it inline as it reads each text item's
+      // rendered size, got nothing through. Normalization is about text
+      // offsets and whitespace; it has no business discarding what the file
+      // said about how its text is set.
+      ...(p.min_size_pt !== undefined ? { min_size_pt: p.min_size_pt } : {}),
     };
   };
 

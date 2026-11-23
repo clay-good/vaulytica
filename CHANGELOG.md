@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. Format adapted from [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.1001.0] — 2026-11-23
+
+### Fixed
+- **A mandated notice's point size is now read from a PDF.** `TEXT-002` holds
+  the FTC Holder Rule notice and the door-to-door cancellation statement to the
+  bold face and the minimum point size 16 C.F.R. §§ 433.2 and 429.1 require.
+  Both halves were built for Word only, and the rule returned early on any file
+  carrying no run formatting — so in a PDF, the format consumer paper actually
+  arrives in, a notice set in 8-point type was never checked at all.
+
+  The size was never unavailable: `src/ingest/pdf.ts` had been reading each text
+  item's rendered size all along to find headings, and simply never recorded it
+  on the paragraph.
+
+  🚨 **And `normalize()` was dropping the field.** It rebuilds every paragraph
+  as `{ id, runs }`, so `min_size_pt` set during ingest was discarded — which is
+  why the DOCX path attaches sizes *after* normalizing (`attachSizes`) rather
+  than inline. That workaround hid the hole until a second producer hit it. The
+  normalizer now carries the field: it is about text offsets and whitespace, and
+  has no business discarding what the file said about how its text is set.
+
+  The two halves of "form" come from different places, so a file can answer for
+  one and not the other — size from a Word file's styles or a PDF's text layer,
+  bold and capitals from a Word file only. A finding now names the half the file
+  could not answer for instead of implying it passed, and the recommendation
+  advises only on what was actually read (it no longer tells a PDF's reader to
+  set a notice bold, a defect that file cannot show).
+
+  `TEXT-002` goes to 1.2.0. Zero findings moved on the 363 specimens: of 370
+  regenerated goldens, 369 differ only in the version stamps and that rule
+  version.
+
+### Changed
+- `/known-limits` said how text is set "is read only from a Word file. A PDF
+  text layer and plain text carry none of it." That was true of bold and false
+  of size. It now says which part each format states, and `docs/reference.md`'s
+  rule row says the same.
+
 ## [9.1000.0] — 2026-11-23
 
 ### Fixed
