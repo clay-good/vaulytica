@@ -1,5 +1,6 @@
 import type { Finding, Rule, RuleContext } from "../../finding.js";
 import { emit } from "../_helpers.js";
+import { readAuthorityCitation } from "../_read-authority.js";
 import { MANDATED_TEXTS } from "./mandated-texts.js";
 import { carriesFormatting, findMandated } from "./_match.js";
 
@@ -75,6 +76,7 @@ export const rule: Rule = {
           ? `Set the whole notice in bold face${form.min_points !== undefined ? `, at ${form.min_points} points or larger` : ""}.`
           : `Set the whole notice at ${form.min_points ?? 10} points or larger.`,
         position: m.position,
+        citations: [readAuthorityCitation("mandated-text", row)],
       });
     }
     return null;

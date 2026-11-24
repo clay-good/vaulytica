@@ -552,6 +552,26 @@ export function emit(
      * print the rule's usury statute as its authority.
      */
     dkb_citations?: readonly string[];
+    /**
+     * An authority this product read ITSELF, held in a source module rather
+     * than the DKB.
+     *
+     * 🚨 Why this exists. `resolveCitations` looks an id up in the DKB and
+     * nothing else, so a rule whose authority is not a DKB node could not
+     * produce a structured citation at all — it could only name the statute in
+     * prose and bake the read date into a sentence. Measured at 9.1005.0:
+     * `READ-001`'s `source_citations` was `[]` while a DKB-backed finding
+     * carried a dated citation.
+     *
+     * That silently broke a promise the product makes elsewhere. The
+     * "verify currency (retrieved <date>)" label (`fix-legal-authority-currency`)
+     * is computed over every finding's `source_citations`, so a pack that
+     * carries none can never be labelled stale, however old its reading is.
+     * The readability statutes, the mandated texts, the court profiles and the
+     * deadline profiles are all read by hand into source modules, and every
+     * one of them was outside the currency check.
+     */
+    citations?: readonly SourceCitation[];
   },
 ): import("../finding.js").Finding {
   return makeFinding({
@@ -563,7 +583,10 @@ export function emit(
     explanation: args.explanation,
     recommendation: args.recommendation,
     position: args.position,
-    source_citations: resolveCitations(ctx, args.dkb_citations ?? rule.dkb_citations),
+    source_citations: [
+      ...resolveCitations(ctx, args.dkb_citations ?? rule.dkb_citations),
+      ...(args.citations ?? []),
+    ],
   });
 }
 

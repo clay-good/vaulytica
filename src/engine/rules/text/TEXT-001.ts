@@ -1,5 +1,6 @@
 import type { Finding, Rule, RuleContext } from "../../finding.js";
 import { emit } from "../_helpers.js";
+import { readAuthorityCitation } from "../_read-authority.js";
 import { MANDATED_TEXTS } from "./mandated-texts.js";
 import { findMandated } from "./_match.js";
 
@@ -88,6 +89,7 @@ export const rule: Rule = {
         explanation: `${row.citation} fixes the words of this notice. A paraphrase or an abbreviation is not the notice it requires. The text was read at the official source (eCFR, ${row.retrieved_at}; ${row.version}).`,
         recommendation: `Replace the passage with the prescribed text: "${m.statute}"`,
         position: m.position,
+        citations: [readAuthorityCitation("mandated-text", row)],
       });
     }
     return null;

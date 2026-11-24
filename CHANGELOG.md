@@ -47,6 +47,62 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1006.0] — 2026-11-23
+
+### Fixed
+- **The "verify currency" label could not reach any authority read by hand.**
+  `fix-legal-authority-currency` promises that a finding resting on a reading
+  older than the horizon says so — the report layer computes
+  "verify currency (retrieved &lt;date&gt;)" over every finding's
+  `source_citations`. That promise held only for the part of the product whose
+  authorities live in the DKB.
+
+  `resolveCitations` looks an id up in the DKB and nothing else, so a rule
+  resting on a statute read by hand into a source module **could not produce a
+  structured citation at all**. It could only name the statute in prose and
+  bake the read date into a sentence, where no machinery can see it. Measured:
+  `READ-001`'s `source_citations` was `[]` while a DKB-backed finding in the
+  same run carried a dated citation. The readability statutes and the mandated
+  texts could never be labelled stale, however old the reading became — and a
+  reader had no way to tell a reading from last month from one three years old.
+
+  `emit` now takes a literal `citations` list beside `dkb_citations`, and
+  `_read-authority.ts` turns a row that already records where and when it was
+  read into a real citation — nothing is fetched and nothing is claimed the row
+  does not already state. `READ-001`, `READ-002`, `READ-003`, `TEXT-001` and
+  `TEXT-002` carry theirs, so the label is now silent inside the horizon and
+  fires outside it, verified on both sides.
+
+  **No hash moved**: the readability rules are assertion-gated and the mandated
+  texts fire only where the notice is present, so all 345 goldens regenerated
+  byte-identical apart from the version stamp.
+
+### Added
+- **`tests/integration/authority-currency-reach.test.ts`** — a runtime guard
+  that a finding resting on a hand-read statute carries a citation the currency
+  machinery can read, with `currencyLabel` asserted silent inside the horizon
+  and firing four years on, plus a static check that every row in both
+  authority tables has the url and read date a citation needs.
+
+  ⚠️ **It is a runtime test because two static scans were written first and
+  both were wrong.** A rule that builds its citation from a data table contains
+  no literal statute string, so a prose scan cannot see it — the readability
+  pack was invisible to the first scan. And `source_citations: []` passed
+  straight to `makeFinding` matches any pattern looking for a literal
+  `citations: [`, because that is a substring of `dkb_citations: []` — which
+  made the second scan report four rules as fixed that carry nothing. "Does
+  this finding carry an authority the machinery can read?" is only answerable
+  by firing the rule and looking at the finding.
+
+- **The debt that is left is pinned, with its reason.** `TEXT-003` rests on
+  U.C.C. § 2-316(2) and § 1-201(b)(10) and still carries no citation. The DKB
+  holds § 2-201, § 2-304 and § 1-201(b)(20) but not those two, and the U.C.C.
+  is a Uniform Law Commission model code whose official text is
+  ULC-copyrighted, unlike a state's enacted version — so minting a
+  "public domain (government edict)" citation for it would be a false claim
+  about the source. The honest state is no citation until those subsections
+  enter the DKB with their real licence, and the test fails when they do.
+
 ## [9.1005.0] — 2026-11-23
 
 ### Fixed

@@ -7,6 +7,7 @@
  */
 import type { Finding, Rule, RuleContext } from "../engine/finding.js";
 import { emit } from "../engine/rules/_helpers.js";
+import { readAuthorityCitation } from "../engine/rules/_read-authority.js";
 import { forEachParagraph } from "../extract/walk.js";
 import { measureReadability } from "../report/readability.js";
 import type { ReadabilityStandard } from "./standards.js";
@@ -73,6 +74,7 @@ export const READ_001: Rule = {
       recommendation:
         "Shorten the longest sentences and prefer shorter words; each word less per sentence and each syllable less per word raises the score.",
       position: anchor,
+      citations: [readAuthorityCitation("readability", std)],
     });
   },
 };
@@ -142,6 +144,7 @@ export const READ_002: Rule = {
       explanation: `${std.citation} requires ${std.index_ok ? "a table of contents or index" : "a table of contents (an index does not satisfy it)"} when the form has more than ${over.words.toLocaleString("en-US")} words or more than ${over.pages} pages. Pages are not counted here, so a shorter form of more than ${over.pages} pages is not caught.`,
       recommendation: `Add ${required}.`,
       position: anchor,
+      citations: [readAuthorityCitation("readability", std)],
     });
   },
 };
@@ -318,6 +321,7 @@ export const READ_003: Rule = {
       recommendation:
         "Divide the agreement into sections and give each one a heading that names what it covers.",
       position: anchor,
+      citations: [readAuthorityCitation("readability", std)],
     });
   },
 };
