@@ -92,6 +92,54 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1014.0] — 2026-11-24
+
+### Added
+- **The OCR word-level join: which differences sit on words OCR was unsure
+  of.** `add-executed-copy-conformity` task 4 is now complete, and ⚠️ **I had
+  recorded this half as needing "OCR actually running" — wrong, in exactly the
+  way the verdict half was wrong.** OCR is needed to *produce* the markers in
+  the wild, but `markLowConfidence` writes them into the text as
+  `word [uncertain]`, so by the time a comparison sees them they are ordinary
+  words. The join acts on text, and text is something a test can write.
+
+  **Why it matters on top of the document-level verdict.** That verdict says no
+  conclusion is possible about the document — true, and on its own unhelpful,
+  because it tells an attorney to re-read everything. In an OCR'd signed copy a
+  difference whose text carries a marker may be the scanner misreading a word,
+  while a difference with no marker near it is a real difference even so.
+  `Conformity.unverified_differences` names the first kind with the words OCR
+  doubted, and `conformityLine` ends with "check those by eye first".
+
+  Deliberately **not hashed**: the list is derived entirely from the text of the
+  differences the canonical object already covers, so hashing it would add
+  nothing and would move every existing `conformity_hash` for an OCR'd pair —
+  the same reasoning as the `DDL-*` notes sitting outside their register's hash.
+
+### Changed
+- **`add-mandated-text-conformance` task 10 is closed: its landing is dated,
+  not blocked.** I had left it reading like an indefinite wait.
+  `dkb-rebuild.yml` runs on `cron: "0 0 * * 0"`, runs `npm run dkb:build`, and
+  commits the new version. The last landing was `v2026-11-22-local`; **the next
+  run is Sunday 2026-11-29 and carries both new tables.** Everything it needs
+  is asserted: `runBuild` writes and manifests both, `build.test.ts` asserts a
+  new build does, both provenance gates run inside the build, and the same job
+  runs `authority:drift`.
+
+  Hand-landing a version would be **worse** than waiting, which is why it is
+  not being done: `dkb_version` is part of every run and so of every
+  `result_hash`, so an off-schedule version moves ~375 goldens for no
+  user-facing gain, five days before the job does it anyway, and bypasses the
+  rebuild's own regression and shrinkage gates.
+
+- **Two partials remain across all 38 changes, and each is a single fixture
+  needing software this environment does not have**: an image-only scan with a
+  seeded low-confidence word (needs OCR running, which needs the product
+  decision about a network-fetched language model), and Word's own Accept-All /
+  Reject-All exports (needs Word or LibreOffice; the round-trip exists to
+  compare this rewrite against Word's output, so building the expected side
+  here would compare the rewrite with itself).
+
 ## [9.1013.0] — 2026-11-24
 
 ### Added

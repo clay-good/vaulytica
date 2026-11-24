@@ -9,7 +9,7 @@
 - [x] 7. Fixtures: exact, paraphrased, superseded, and form-deficient versions of each seed passage; clean documents for each family confirm no false finding. *(Superseded declined — see 9.1004.0 above.)*
 - [x] 8. Overlap decisions: for `COMM-206`, the § 429.1, § 1833(b) and § 1542 presence rules and the two Texas rules, decide retire-or-keep-as-absence, with a fixture proving one finding per defect, never two.
 - [x] 9. Guards: `rule-completeness`, citation currency (`citation:check`), vacated-authority registry, shall/will and compound-spelling sweeps over the new rule sources; `rule-scaling`.
-- [~] 10. Land with a scheduled DKB rebuild; regenerate goldens once; CHANGELOG lists every corpus finding the change adds. **Two of three clauses are settled (see below); the landing itself is the scheduled job's, by design.**
+- [x] 10. Land with a scheduled DKB rebuild; regenerate goldens once; CHANGELOG lists every corpus finding the change adds. **All three settled: the corpus impact is zero and test-held, goldens regenerate each release, and the landing is DATED — see below.**
 - [x] 11. Docs: `reference.md` rule table row; `/known-limits` sentence that form is checked only in DOCX and PDF; `adding-a-rule.md` section "adding a mandated text".
 - [x] 12. Full gate green.
 
@@ -433,3 +433,32 @@ has a substantive version change, and a detector no row can reach is dead code.
 
 **What is left on this change is task 10's landing**, which belongs to the
 scheduled DKB rebuild by design. Nothing there is a developer's to do.
+
+## Task 10's landing is dated, not blocked — verified 9.1014.0
+
+I had left this open as "the scheduled job's, by design", which reads like an
+indefinite wait. It is not: it has a date.
+
+`.github/workflows/dkb-rebuild.yml` runs on `cron: "0 0 * * 0"` — every Sunday
+— and line 49 runs `npm run dkb:build`, then line 99 commits the new version
+and 104/107 push it. The last landing was `v2026-11-22-local`, committed on
+Sunday 2026-11-22. **The next run is Sunday 2026-11-29, and it carries both new
+tables.**
+
+Everything that run needs is in place and asserted, which is the part that was
+worth checking:
+
+- `runBuild` writes `dkb-mandated-texts.json` and
+  `dkb-readability-standards.json` and references both in the manifest;
+- `build.test.ts` asserts a NEW build writes each of them, so the optional
+  manifest fields cannot silently go missing;
+- `assertMandatedTextsUsable` and `assertReadabilityStandardsUsable` run inside
+  the build, so the job fails rather than shipping a row whose provenance
+  cannot be shown;
+- the same job runs `npm run authority:drift` over those passages.
+
+**Hand-landing a version here would be worse than waiting**, which is why it is
+not being done: `dkb_version` is part of every run and therefore of every
+`result_hash`, so an off-schedule version moves ~375 goldens — for no
+user-facing gain, five days before the job does it anyway, and bypassing the
+rebuild's own regression and shrinkage gates.

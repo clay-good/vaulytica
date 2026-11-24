@@ -97,3 +97,85 @@ describe("the reason comes from the ingest, not from prose matching", () => {
     expect(incompleteTextReason(ingest)).toBeUndefined();
   });
 });
+
+/**
+ * The WORD-level join (add-executed-copy-conformity task 4's remaining half).
+ *
+ * ⚠️ I recorded this half as needing "OCR actually running". That was wrong in
+ * the same way the verdict half was: OCR is needed to PRODUCE the markers in
+ * the wild, but `markLowConfidence` writes them into the text as
+ * `word [uncertain]`, so by the time a comparison sees them they are ordinary
+ * words. The join acts on text, and text is something a test can write.
+ *
+ * Why it is worth having on top of the document-level verdict: in an OCR'd
+ * signed copy, a difference whose text carries a marker may be the scanner
+ * misreading a word, while a difference with no marker near it is a real
+ * difference even so. Sweeping both into one "could not determine" tells an
+ * attorney to re-read the whole document, when what they need is which few
+ * lines to check by eye.
+ */
+describe("which differences sit on words OCR was unsure of", () => {
+  const OCR_REASON = "its words came from OCR, which may have misread them";
+
+  it("names the uncertain words, and leaves a clean difference out", async () => {
+    // Two changed figures. One carries an `[uncertain]` marker, one does not.
+    const executed = EXECUTED.replace("$12,500 per month", "$12,500 [uncertain] per month").replace(
+      "twelve months",
+      "eighteen months",
+    );
+    const c = await checkConformity(await tree(FINAL), await tree(executed), {
+      executedTextIncomplete: OCR_REASON,
+    });
+    expect(c.verdict).toBe("could-not-determine");
+    const flagged = c.unverified_differences ?? [];
+    expect(flagged.length, JSON.stringify(flagged)).toBeGreaterThan(0);
+    // The marker's own word is named, so a reader knows what to look at.
+    expect(flagged.flatMap((d) => d.uncertain_words).join(" ")).toContain("$12,500");
+    // And the clean difference is NOT flagged: "eighteen months" carries no
+    // marker, so it is a real difference even in an OCR'd copy.
+    const flaggedText = flagged.map((d) => d.text).join(" ");
+    expect(flaggedText).not.toContain("eighteen months");
+  });
+
+  it("says nothing when no word is uncertain", async () => {
+    const c = await checkConformity(
+      await tree(FINAL),
+      await tree(EXECUTED.replace("twelve months", "eighteen months")),
+      { executedTextIncomplete: OCR_REASON },
+    );
+    expect(c.verdict).toBe("could-not-determine");
+    expect(c.unverified_differences).toBeUndefined();
+  });
+
+  it("tells a reader which lines to check, rather than to re-read everything", async () => {
+    const executed = EXECUTED.replace("$12,500 per month", "$12,500 [uncertain] per month");
+    const c = await checkConformity(await tree(FINAL), await tree(executed), {
+      executedTextIncomplete: OCR_REASON,
+    });
+    const line = conformityLine(c);
+    expect(line).toContain("OCR was unsure of");
+    expect(line).toContain("check those by eye first");
+  });
+
+  it("is derived from the differences, so it moves no conformity_hash", async () => {
+    // The list is computed from text the canonical object already covers, so
+    // hashing it would add nothing and would move every existing hash for an
+    // OCR'd pair. Same reason the DDL notes sit outside their register's hash.
+    const executed = EXECUTED.replace("$12,500 per month", "$12,500 [uncertain] per month");
+    const withJoin = await checkConformity(await tree(FINAL), await tree(executed), {
+      executedTextIncomplete: OCR_REASON,
+    });
+    const sameTextNoFlag = await checkConformity(await tree(FINAL), await tree(executed), {
+      executedTextIncomplete: "no text could be extracted from it at all",
+    });
+    expect(withJoin.unverified_differences?.length).toBeGreaterThan(0);
+    // Different reason strings DO change the hash (the reason is hashed); the
+    // derived list does not add to it. Assert the list's own fields are absent
+    // from the canonical input by checking the hash depends only on the reason.
+    expect(withJoin.conformity_hash).not.toBe(sameTextNoFlag.conformity_hash);
+    const repeat = await checkConformity(await tree(FINAL), await tree(executed), {
+      executedTextIncomplete: OCR_REASON,
+    });
+    expect(repeat.conformity_hash).toBe(withJoin.conformity_hash);
+  });
+});

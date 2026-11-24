@@ -113,6 +113,28 @@ export type Conformity = {
   verdict: "identical" | "differences" | "could-not-determine";
   /** Why no verdict could be reached, when `verdict` is `could-not-determine`. */
   unverified_reason?: string;
+  /**
+   * The differences that sit on text OCR was unsure of — the WORD-level join
+   * (add-executed-copy-conformity task 4).
+   *
+   * `unverified_reason` is document-level: it says no verdict is possible. This
+   * is finer, and it is the half a reader actually acts on. In an OCR'd signed
+   * copy, a difference whose text carries an `[uncertain]` marker may be the
+   * scanner misreading a word; a difference with no marker anywhere near it is
+   * a real difference even in an OCR'd document. Sweeping both into one
+   * "could not determine" tells an attorney to re-read everything, when what
+   * they need is which few lines to check by eye.
+   *
+   * The markers are ordinary text by the time they reach here: `markLowConfidence`
+   * writes `word [uncertain]` into the OCR output, so this needs no access to
+   * OCR itself — only to the text it produced.
+   */
+  unverified_differences?: Array<{
+    side: "added" | "removed" | "changed";
+    text: string;
+    /** The word(s) OCR was unsure of, so a reader knows what to look at. */
+    uncertain_words: string[];
+  }>;
   differences: Pick<ClauseDiff, "added" | "removed" | "changed">;
   /** `By:` lines on each side; unequal counts are one difference. */
   signature_blocks: { final: number; executed: number };
@@ -122,6 +144,22 @@ export type Conformity = {
 };
 
 const RESEGMENTED = "the same words, split into paragraphs differently";
+
+/**
+ * The marker `markLowConfidence` writes into OCR output for a word the scanner
+ * scored below `OCR_CONFIDENCE_THRESHOLD`: `word [uncertain]`.
+ */
+const UNCERTAIN = /(\S+)\s+\[uncertain\]/g;
+
+/** The words OCR was unsure of in a piece of text, in order, without repeats. */
+function uncertainWords(text: string): string[] {
+  const out: string[] = [];
+  for (const m of text.matchAll(UNCERTAIN)) {
+    const w = m[1]!;
+    if (!out.includes(w)) out.push(w);
+  }
+  return out;
+}
 
 /** Every heading and paragraph of a tree as a line, in document order. */
 function linesOf(tree: DocumentTree): string[] {
@@ -351,6 +389,33 @@ export async function checkConformity(
   // `identical`: finding nothing in text that was never extracted is not a
   // finding of sameness.
   const unverified = options.executedTextIncomplete;
+  // The WORD-level join: which of these differences sit on text OCR was
+  // unsure of. Computed from the text itself, so it needs no OCR — only the
+  // `[uncertain]` markers OCR left behind.
+  const unverified_differences: NonNullable<Conformity["unverified_differences"]> = [];
+  for (const [side, clauses] of [
+    ["added", added],
+    ["removed", removed],
+  ] as const) {
+    for (const c of clauses) {
+      const words = uncertainWords(c.text);
+      if (words.length > 0) {
+        unverified_differences.push({ side, text: c.text, uncertain_words: words });
+      }
+    }
+  }
+  for (const pair of changed) {
+    // Either side may carry a marker: the signed copy is the OCR'd one, but a
+    // final read from a scan can be too.
+    const words = uncertainWords(`${pair.base.text} ${pair.revised.text}`);
+    if (words.length > 0) {
+      unverified_differences.push({
+        side: "changed",
+        text: pair.revised.text,
+        uncertain_words: words,
+      });
+    }
+  }
   const verdict = unverified
     ? "could-not-determine"
     : difference_count === 0
@@ -363,6 +428,11 @@ export async function checkConformity(
     // Spread conditionally: a run with a complete text layer serializes
     // exactly the object it did before, so no existing `conformity_hash`
     // moves.
+    //
+    // `unverified_differences` is deliberately NOT here. It is derived
+    // entirely from the text of the differences the canonical object already
+    // covers, so hashing it would add nothing and would move every existing
+    // conformity_hash for an OCR'd pair.
     ...(unverified ? { unverified } : {}),
     removed: removed.map((c) => c.text),
     added: added.map((c) => c.text),
@@ -374,6 +444,7 @@ export async function checkConformity(
     version: CONFORMITY_VERSION,
     verdict,
     ...(unverified ? { unverified_reason: unverified } : {}),
+    ...(unverified_differences.length > 0 ? { unverified_differences } : {}),
     differences: { added, removed, changed },
     signature_blocks,
     difference_count,
@@ -391,7 +462,15 @@ export function conformityLine(c: Conformity): string {
       c.difference_count === 0
         ? "Nothing differed in the text that could be read"
         : `${c.difference_count} apparent difference${c.difference_count === 1 ? "" : "s"} in the text that could be read`;
-    return `Could not determine conformity: ${c.unverified_reason ?? "the signed copy's text is incomplete"}. ${seen}, which is not a verdict either way.`;
+    // Name the few lines to check by eye, when OCR said which they are. The
+    // point of the word-level join: "re-read everything" is not advice.
+    const near = c.unverified_differences?.length
+      ? ` ${c.unverified_differences.length} of them sit on words OCR was unsure of (${c.unverified_differences
+          .flatMap((d) => d.uncertain_words)
+          .slice(0, 6)
+          .join(", ")}) — check those by eye first.`
+      : "";
+    return `Could not determine conformity: ${c.unverified_reason ?? "the signed copy's text is incomplete"}. ${seen}, which is not a verdict either way.${near}`;
   }
   return c.verdict === "identical"
     ? "Identical to the final outside the execution allowance."

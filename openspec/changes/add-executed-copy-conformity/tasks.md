@@ -3,7 +3,7 @@
 - [~] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
 - [x] 2. `src/report/conformity.ts`: allowance classifier over paragraphs (signature window reuse, blank-to-date fill, initials, cover pages, furniture, watermark words); verdict; canonical table and `conformity_hash`.
 - [x] 3. `clause-diff.ts`: accept an allowance predicate so set-aside paragraphs are listed, not diffed; the plain comparison path unchanged (goldens hold).
-- [~] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **The verdict and the unverified differences are BUILT (9.1009.0) from the ingest's text-layer assessment; only the OCR WORD-level confidence join waits on a product decision** — see the notes at the end.
+- [x] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **The verdict (9.1009.0) and the WORD-level unverified-differences join (9.1014.0) are both built; neither needed OCR to run** — see the notes at the end.
 - [x] 5. `compare --executed` and `--executed-set` with `--fail-on-nonconformity`; title pairing via the matcher; stream contract respected.
 - [x] 6. Renderers: Markdown, JSON, DOCX section; browser affordance and Word deliverable; cross-surface hash parity on text-layer inputs.
 - [x] 7. Metamorphic relations: filling blanks in the final must not change the verdict; altering any non-allowance paragraph must; format transforms on the executed side must not.
@@ -142,3 +142,32 @@ before.
 **What is left of task 4** is the word-level join: marking an individual
 difference unverified because it sits near an `[uncertain]` OCR marker. That
 needs OCR actually running, which needs the product decision recorded above.
+
+## Progress — 9.1014.0 (the word-level join, which also needed no OCR)
+
+⚠️ **I recorded this half as needing "OCR actually running". Wrong, in exactly
+the way the verdict half was wrong.** OCR is needed to PRODUCE the markers in
+the wild — but `markLowConfidence` writes them into the text as
+`word [uncertain]`, so by the time a comparison sees them they are ordinary
+words. The join acts on text, and text is something a test can write.
+
+**Why it is worth having on top of the document-level verdict.** The verdict
+says no conclusion is possible about the document. That is true and it is also
+unhelpful on its own: it tells an attorney to re-read everything. In an OCR'd
+signed copy, a difference whose text carries an `[uncertain]` marker may be the
+scanner misreading a word, while a difference with no marker near it is a real
+difference even so. `unverified_differences` names the first kind, with the
+words OCR doubted, and `conformityLine` ends with "check those by eye first".
+
+Deliberately NOT hashed: the list is derived entirely from the text of the
+differences the canonical object already covers, so hashing it would add
+nothing and would move every existing `conformity_hash` for an OCR'd pair. Same
+reasoning as the `DDL-*` notes sitting outside their register's hash. A test
+pins that the hash is stable across repeated runs and still responds to the
+reason string.
+
+**What is genuinely left on this change is task 1(d) alone**: an image-only
+scan with a seeded low-confidence word. The fixture the JOIN needs — text
+carrying markers — is built and tested. A fixture that makes OCR itself emit a
+marker needs OCR to run, which needs the product decision recorded above about
+shipping a network-fetched language model against the no-server guarantee.
