@@ -1,8 +1,8 @@
 # Tasks
 
-- [ ] 1. Syllable counter: rules plus a committed exception list; measure against a 5,000-word reference list and commit the accuracy figure; version constant.
+- [x] 1. Syllable counter: rules plus a committed exception list; measure against a 5,000-word reference list and commit the accuracy figure; version constant.
 - [x] 2. `src/report/readability.ts`: tokenization under the model act's rules over the tree (headings and captions excluded, signature block and TOC excluded), score, longest sentence, exclusions list; render-side block in JSON, DOCX appendix, HTML.
-- [ ] 3. DKB `readability_standards`: read each state's statute at its official source (start with NY, FL, MI, ME, CO, TX, CA, WV, and the model-act states), record threshold, scope, TOC and type-size requirements; provenance gate.
+- [~] 3. DKB `readability_standards`: read each state's statute at its official source (start with NY, FL, MI, ME, CO, TX, CA, WV, and the model-act states), record threshold, scope, TOC and type-size requirements; provenance gate.
 - [x] 4. `READ-001`, `READ-002`, `READ-003` assertion-gated; register `readability-<state>` and `readability-ny-consumer`; CLI `--readability`; browser selector.
 - [x] 5. Fixtures: a policy under and over threshold, a long policy without a TOC, an uncaptioned lease; property test that the block never changes `result_hash`.
 - [x] 6. Docs: `reference.md` section, `/known-limits` sentence on sampling and exclusions not applied, `deadlines.md`-style note `readability.md` with the formula and the statute table.
@@ -186,3 +186,60 @@ Still open and each blocked on something outside the build: task 1's
 CMUdict), and task 3's remaining jurisdictions (Texas and Wisconsin set their
 minimums by agency rule rather than statute; California has no Flesch statute
 for insurance forms) plus the DKB table.
+
+## Progress — 9.1008.0 (task 1 CLOSED; task 3's states resolved)
+
+**Task 1 is done, and the blocker was my own wrong assumption.** It was recorded
+as needing "a licensed pronunciation dictionary (CMUdict)". cmudict is
+BSD-style and expressly permits redistributing derived data provided its notice
+is retained — so there was never a licence blocker, only an unchecked claim.
+
+`syllables-cmudict-reference.ts` holds 5,000 words: the most frequent across
+the 363 specimens that cmudict knows and gives ONE syllable count (130 words
+whose pronunciations disagree are excluded rather than guessed at), with the
+CMU copyright notice retained as the licence's first condition requires. The
+syllable count is the number of phonemes carrying a stress digit, and that
+invariant was checked over the WHOLE dictionary rather than a sample: of
+135,166 entries, every vowel carries a stress digit, no consonant does, and the
+only eight entries yielding zero syllables are vowel-less interjections.
+
+🥇 **The committed figure was an overstatement and is now corrected.** The old
+number was 345 of 348 = 99.1%, measured on the counter's own training set — the
+task note said as much. Held out against 4,661 words the rules never saw, the
+counter is right about **93.2%**, six points lower.
+
+🥇 **And per-word accuracy is the wrong number to publish.** The score's only
+syllable term is `84.6 × (syllables ÷ words)`, so a per-word error of *e* moves
+the score by `84.6 × e`. Over all 324,144 corpus tokens with ground truth the
+mean SIGNED error is −0.006 syllables/word — a bias of **0.5 of a Flesch
+point**, with a 1.8-point bound if every error pointed the same way, against
+thresholds of 40–50. Errors cancel in an aggregate, which is why a counter
+wrong about one word in fourteen still scores a document to within a point.
+`syllables-accuracy.test.ts` holds both, plus a check that the misses are NOT
+one-directional (132 over, 183 under) — a one-sided counter would bias every
+score.
+
+⚠️ Note what is NOT claimed: the counter was not tuned against this list, and
+must not be, or the figure stops being held out.
+
+**Task 3's remaining states are resolved, each at the source, and none adds a
+row.** 14 jurisdictions are in the table (FL, ME, MI, MN, NV, OH, OR, MT, WV,
+ND, NE, DC, OK and `ny-consumer`). Of the three the task still named:
+
+- **Texas** sets no number in statute. Tex. Ins. Code § 2301.053(c), read at
+  statutes.capitol.texas.gov on 2026-11-23, makes a form plain-language if it
+  "achieves the minimum score established by the commissioner on the Flesch
+  reading ease test or an equivalent test selected by the commissioner" — or,
+  at the commissioner's option, conforms to an NAIC model act instead. The
+  threshold and even the choice of test are delegated, so there is no statutory
+  figure to record. My earlier note said "sets its minimum by agency rule",
+  which was right by luck; this is the verbatim basis.
+- **Colorado**'s official C.R.S. is served through LexisNexis or as downloads
+  the Office of Legislative Legal Services marks "for personal use" — no
+  official source this build can read and redistribute a threshold from. (I
+  reached for Justia first and stopped: this spec forbids a secondary source.)
+- **California** sets no Flesch minimum for insurance forms.
+
+So task 3 is complete for every jurisdiction that HAS a statutory threshold
+readable at an official source. Its DKB-table half stays open with
+`add-mandated-text-conformance` task 2, for the reason recorded there.

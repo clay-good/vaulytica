@@ -29,7 +29,13 @@ As Fla. Stat. § 627.4145(5) prints them (read at [leg.state.fl.us](https://www.
 
 Not applied, and the block says so: sampling a form over 10,000 words, and the exclusions a statute lets an insurer claim (defined words, medical terminology, language required by law). A score filed with a regulator can therefore differ.
 
-Syllables come from a versioned rule set with a short exception list (`src/extract/syllables.ts`). It reads 345 of 348 words of a committed reference list of the corpus's most frequent words right; the rules were corrected after reading that list, so the figure is not a held-out one.
+Syllables come from a versioned rule set with a short exception list (`src/extract/syllables.ts`).
+
+**Held-out accuracy: 93.2%.** Measured against `syllables-cmudict-reference.ts`, 5,000 words derived from the CMU Pronouncing Dictionary — the most frequent words across the 363 specimens that cmudict knows and gives a single syllable count (a word whose pronunciations disagree is excluded rather than guessed at). The counter's rules were fitted to a different, 348-word list, so 4,661 of these 5,000 are words it never saw: it is right about 4,346 of them.
+
+⚠️ The figure previously quoted here was 345 of 348, or 99.1%. That measured the counter on its own training set — the rules had been corrected after reading that list's misses — and the held-out number is six points lower. The old figure is gone.
+
+**What that does to a score, which is the number that matters.** The formula's only syllable term is `84.6 × (syllables ÷ words)`, so a per-word error of *e* moves the score by `84.6 × e` and nothing else. Across every corpus token with ground truth (324,144 of them) the mean *signed* error is −0.006 syllables per word: the counter very slightly under-counts, which very slightly overstates readability, for a bias of **0.5 of a Flesch point**. Even if every error pointed the same way the bound would be 1.8 points, against thresholds of 40 to 50. Errors in both directions largely cancel in an aggregate, which is why a counter wrong about one word in fourteen still scores a document to within a point. Both figures are held by `syllables-accuracy.test.ts`.
 
 ## The statutes
 
@@ -50,7 +56,13 @@ Syllables come from a versioned rule set with a short exception list (`src/extra
 | `mn` | Minn. Stat. §§ 72C.08–72C.10, auto, homeowner's, life and accident and health policies (§ 72C.11) | more than 40 | an index of the major provisions in every policy, whatever its length | revisor.mn.gov, 2026-11-16 |
 | `ny-consumer` | N.Y. Gen. Oblig. Law § 5-702, residential leases, consumer personal-property leases and consumer agreements entered into after November 1, 1978; not agreements over $250,000 | **none — the statute sets no score** | none; it requires the agreement's sections to be **captioned** (`READ-003`) | nysenate.gov, 2026-11-23 |
 
-Every state in the table prints the same counting rules as Florida — except New York, which is not a readability statute at all (see below); Minnesota's also leaves lists out of the sentence count, which the score does not do, and asks for a score above 40, so exactly 40 fails. Pages are not counted, so a form of more than three pages and fewer than 3,000 words is not caught. Not checked either: the type sizes (10-point in the District of Columbia, Maine, Montana, Nebraska, Nevada, North Dakota, Ohio, Oklahoma and West Virginia; 12-point for Oregon health benefit plans), Michigan's topical captions and identification of exclusions. Texas and Wisconsin set their minimums by agency rule, not statute, and are not in the table. New York's Ins. Law § 3102 is not in the table; § 5-702 now is, read at the New York Senate's own site on 2026-11-23. (Its API host, `legislation.nysenate.gov`, answers 401 to an unauthenticated read, so the public page is the source used. No text enters from a secondary source.)
+Every state in the table prints the same counting rules as Florida — except New York, which is not a readability statute at all (see below); Minnesota's also leaves lists out of the sentence count, which the score does not do, and asks for a score above 40, so exactly 40 fails. Pages are not counted, so a form of more than three pages and fewer than 3,000 words is not caught. Not checked either: the type sizes (10-point in the District of Columbia, Maine, Montana, Nebraska, Nevada, North Dakota, Ohio, Oklahoma and West Virginia; 12-point for Oregon health benefit plans), Michigan's topical captions and identification of exclusions. Texas, Colorado and California are not in the table, each for a reason read at the source:
+
+- **Texas** sets no number in statute. Tex. Ins. Code § 2301.053(c) (read at statutes.capitol.texas.gov on 2026-11-23) says a form is in plain language if it "achieves the minimum score established by the commissioner on the Flesch reading ease test **or an equivalent test selected by the commissioner**", or at the commissioner's option conforms to an NAIC model act instead. The threshold — and even which test applies — is delegated, so there is no statutory figure to record, and taking the commissioner's current number from a secondary source is not allowed here.
+- **Colorado**'s official C.R.S. is served through LexisNexis or as downloads the Office of Legislative Legal Services marks "for personal use", so there is no official source this build can read and redistribute a threshold from.
+- **California** sets no Flesch minimum for insurance forms at all.
+
+Wisconsin likewise sets its minimum by agency rule rather than statute. New York's Ins. Law § 3102 is not in the table; § 5-702 now is, read at the New York Senate's own site on 2026-11-23. (Its API host, `legislation.nysenate.gov`, answers 401 to an unauthenticated read, so the public page is the source used. No text enters from a secondary source.)
 
 ### New York is the odd one out
 

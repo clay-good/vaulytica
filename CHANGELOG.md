@@ -47,6 +47,78 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1008.0] — 2026-11-23
+
+### Added
+- **A 5,000-word syllable reference, and the honest accuracy figure it
+  produces.** `add-readability-measure` task 1 was recorded as needing "a
+  licensed pronunciation dictionary (CMUdict)". That was an unchecked claim:
+  cmudict is BSD-style and expressly permits redistributing derived data
+  provided its notice is retained. There was never a licence blocker.
+
+  `src/extract/syllables-cmudict-reference.ts` holds the 5,000 most frequent
+  words across the 363 specimens that cmudict knows and gives a **single**
+  syllable count — 130 words whose pronunciations disagree are excluded rather
+  than guessed at, because a yardstick has to be unambiguous — with the CMU
+  copyright notice retained. The count is the number of phonemes carrying a
+  stress digit, and that invariant was checked over the **whole** dictionary
+  rather than a sample: of 135,166 entries every vowel carries a stress digit,
+  no consonant does, and the only eight entries yielding zero syllables are
+  vowel-less interjections ("hmm", "sh").
+
+### Fixed
+- **The published accuracy figure was an overstatement.** It read 345 of 348 =
+  **99.1%**, and the task's own note said why that could not be trusted: the
+  rules had been corrected after reading that list's misses, so it measured the
+  counter on its training set. Held out against 4,661 words the rules never
+  saw, the counter is right about **93.2%** — six points lower. The old figure
+  is gone from `docs/readability.md`.
+
+- 🥇 **And per-word accuracy was the wrong number to publish.** The Flesch
+  formula's only syllable term is `84.6 × (syllables ÷ words)`, so a per-word
+  error of *e* moves the score by `84.6 × e` and nothing else. Across all
+  324,144 corpus tokens with ground truth the mean **signed** error is −0.006
+  syllables per word — the counter very slightly under-counts, which very
+  slightly overstates readability — a bias of **half a Flesch point**, with a
+  1.8-point bound if every error pointed the same way, against thresholds of 40
+  to 50. Errors in both directions largely cancel in an aggregate, which is why
+  a counter wrong about one word in fourteen still scores a document to within
+  a point. That is the number a reader of a report actually needs, and it is
+  now the one the docs lead with.
+
+  ⚠️ An earlier attempt at this measurement was **invalid and discarded**: it
+  tokenized the raw file with `/[a-z]+/g` while `measureReadability` counts
+  words over the tree, excluding headings, captions, signature blocks and the
+  table of contents. Mixing two word sets produced a plausible-looking
+  6.86-point mean difference and a claim that 16 of 55 specimens straddled
+  Florida's minimum. Both were artefacts. The valid route needs no tokenization
+  at all — the frequency-weighted per-word error converts straight into points.
+
+  `syllables-accuracy.test.ts` holds both figures, and also that the misses are
+  **not one-directional** (132 over, 183 under): a one-sided counter would bias
+  every score in the same direction and the cancellation argument above would
+  not hold.
+
+### Changed
+- **Task 3's remaining states are resolved at the source, and none adds a
+  row.** 14 jurisdictions are in the table. Of the three still named:
+  - **Texas** sets no number in statute. Tex. Ins. Code § 2301.053(c), read at
+    statutes.capitol.texas.gov, makes a form plain-language if it "achieves the
+    minimum score established by the commissioner on the Flesch reading ease
+    test **or an equivalent test selected by the commissioner**" — or, at the
+    commissioner's option, conforms to an NAIC model act instead. The threshold
+    and even the choice of test are delegated, so there is no statutory figure
+    to record. The previous note, "sets its minimum by agency rule", was right
+    by luck; this is the verbatim basis.
+  - **Colorado**'s official C.R.S. is served through LexisNexis or as downloads
+    marked "for personal use", so there is no official source this build can
+    read and redistribute a threshold from. (I reached for Justia first and
+    stopped: this spec forbids a secondary source.)
+  - **California** sets no Flesch minimum for insurance forms.
+
+  `add-readability-measure` now has **no open tasks**; its DKB-table half is
+  tracked with `add-mandated-text-conformance` task 2.
+
 ## [9.1007.0] — 2026-11-23
 
 ### Added
