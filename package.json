@@ -1,6 +1,6 @@
 {
   "name": "vaulytica",
-  "version": "9.1015.0",
+  "version": "9.1016.0",
   "private": true,
   "description": "The free, deterministic, runs-entirely-in-your-browser contract checker. A linter for legal documents.",
   "license": "MIT",
@@ -78,7 +78,8 @@
     "mutation": "stryker run",
     "e2e": "playwright test",
     "e2e:install": "playwright install --with-deps chromium",
-    "authority:drift": "tsx tools/authority-drift/run.ts"
+    "authority:drift": "tsx tools/authority-drift/run.ts",
+    "redline:exports": "tsx tools/redline-exports/generate.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/server": "^2.3.1",

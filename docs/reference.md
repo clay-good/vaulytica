@@ -6,7 +6,7 @@
 
 **Vaulytica is the second pair of eyes you can cite.**
 
-`1,946 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,900+ passing tests` · `v9.1015.0` · `MIT`
+`1,946 deterministic rules` · `22 cross-document checks` · `8 pre-disclosure checks` · `3 execution-readiness reconciliations` · `6 derived-deadline families` · `16 document sub-domains` · `94 state-law overlays (non-compete · security deposit · usury · sales-based financing · training repayment · buyer agreements · pupil records · practice management · will formalities)` · `27 export formats` · `0 servers` · `0 AI` · `16,900+ passing tests` · `v9.1016.0` · `MIT`
 
 ![Vaulytica landing page — "Drop legal docs. Get a report. Nothing leaves your browser."](../docs/images/hero.png)
 
@@ -1537,6 +1537,7 @@ npm run golden:churn # after a golden regen: which fixtures' FINDING SETS actual
 npm run mutation     # Stryker mutation score (scoped to extractors; slow, off the per-push path)
 npm run citation:check   # v8 build-only citation URL well-formedness (+ --reachability for the network sweep)
 npm run authority:drift  # build-only: each mandated text's wording re-read at its official source (scheduled; the per-commit half is tools/authority-drift/drift.test.ts)
+npm run redline:exports  # writes the five-kind redline fixture and prints how to produce Word's Accept-All / Reject-All exports for the round-trip test
 npm run cli -- analyze <path> --format sarif,html,json   # v8 headless CLI (also: diff, compare, compare-coherence, coherence-trend, coherence-shift-trend, coherence-arc, coherence-exposure, coherence-persistence, coherence-breadth, coherence-recurrence, coherence-volatility, coherence-synchrony, coherence-settling, coherence-onset, coherence-latency, coherence-concurrency, coherence-relapse, coherence-tenure, coherence-affinity, coherence-recovery-affinity, coherence-opposition, coherence-precedence, coherence-concession, coherence-recovery-order, coherence-weak-front, coherence-cadence, coherence-duration, coherence-durability, coherence-chain, coherence-recovery-chain, coherence-matrix, verify)
 ```
 

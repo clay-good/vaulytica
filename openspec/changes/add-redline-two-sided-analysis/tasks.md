@@ -1,6 +1,6 @@
 # Tasks
 
-- [~] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT in 9.1010.0**; plus Word's Accept-All and Reject-All exports of it, committed, for the round-trip test — still needs Word (see the note at the end).
+- [~] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT and COMMITTED** (`tests/fixtures/redline/five-kind-redline.docx`, 9.1016.0); plus Word's Accept-All and Reject-All exports of it, committed, for the round-trip test — **the assertion is ARMED and runs the moment they are committed**; producing them is one human action, see the end.
 - [x] 2. `src/ingest/docx-revisions.ts`: the linear OOXML rewrite producing the rejected `document.xml`; property test that accepted(rewrite) and rejected(rewrite) each contain no revision elements; bounded matching per `container.ts`.
 - [x] 3. `ingestDocxBuffer(buf, { revisions })` and the `ingestDocx` wrapper with the `#rejected` / `#accepted` name suffix; the default path byte-identical (corpus goldens unchanged).
 - [x] 4. `tools/cli/api.ts` `compareRedline(path, opts)` over `compareFiles` with `pinType`; `compare --redline`; the no-tracked-changes refusal; `MAX_COUNT` notice carried.
@@ -115,3 +115,42 @@ uncovered.
 and save as one file, Reject All and save as another, commit both beside the
 fixture, and the round-trip assertion becomes a byte comparison. Nothing else
 on this change is waiting.
+
+## Progress — 9.1016.0: armed, not merely blocked
+
+The one item in the repository that needs a person is now reduced to exactly
+that person's action, and nothing else.
+
+**The fixture is committed.** `tests/fixtures/redline/five-kind-redline.docx`,
+written by `npm run redline:exports`, carrying all five revision kinds. It was
+only ever a function before, so there was nothing for anyone to open.
+
+**The round-trip assertion exists and is armed.**
+`tests/integration/redline-word-roundtrip.test.ts` looks for
+`five-kind-accepted-word.docx` / `five-kind-rejected-word.docx` (or the
+`-soffice` pair) beside the fixture. Absent, it skips and says what it is
+waiting for. Present, it compares both readings word for word — **and that
+branch is proven live, not dead code**: copying the redline in as a deliberately
+wrong "accepted" export makes the comparison RUN and FAIL, and removing them
+returns it to skipping.
+
+So the state is no longer "blocked with a note". It is: do the four steps
+`npm run redline:exports` prints, commit two files, and the assertion runs on
+every test pass thereafter — and keeps running, failing if this product's
+rewrite ever drifts from Word's reading. A task-list note would have done
+neither.
+
+**Why the exports still cannot be generated here**, restated because it is the
+reason the arming is the right answer rather than a workaround:
+
+- npm does have OOXML redline engines (`@ansonlai/docx-redline-js`,
+  `@stll/folio-core` and others — I checked rather than assumed, having
+  previously only checked this repository's own dependencies). **None of them
+  is Word.** Using one would substitute a second unverified implementation for
+  the first, and the whole value of this test is Word-versus-us.
+- Adding such a dependency to a product whose premise is no server, no AI and
+  no trusted third party, for the sake of a test fixture, is a judgment for a
+  maintainer rather than something to slip in.
+- The comparison is on TEXT, not bytes, deliberately: Word rewrites styles, ids
+  and revision bookkeeping on save, so a byte comparison would fail for reasons
+  unrelated to which words survive — and which words survive is the question.

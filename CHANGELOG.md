@@ -92,6 +92,47 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1016.0] — 2026-11-24
+
+### Added
+- **The last blocked item is now armed rather than merely blocked.**
+  `add-redline-two-sided-analysis` task 1 needs Word's own Accept-All /
+  Reject-All exports, which this machine cannot produce. What it does not need
+  is for everything *around* them to be missing too.
+
+  - **The redline fixture is committed**:
+    `tests/fixtures/redline/five-kind-redline.docx`, written by
+    `npm run redline:exports`, carrying all five revision kinds. It was only
+    ever a function before, so there was nothing for a person to open.
+  - **The round-trip assertion exists and is armed.**
+    `redline-word-roundtrip.test.ts` looks for the two exports beside the
+    fixture; absent, it skips and says what it is waiting for; present, it
+    compares both readings word for word.
+  - 🥇 **That branch is proven live, not dead code.** Copying the redline in as
+    a deliberately wrong "accepted" export makes the comparison **run and
+    fail**; removing it returns the suite to skipping. A guard that has never
+    been seen to fire is not a guard.
+
+  So the state is no longer "blocked with a note": do the four steps the script
+  prints, commit two files, and the assertion runs on every test pass
+  thereafter — and keeps running, failing if the rewrite ever drifts from
+  Word's reading. A task-list note would have done neither.
+
+### Changed
+- **One assumption of mine corrected.** I had said "nothing in the dependency
+  tree can accept or reject tracked changes" and left it there. npm *does* have
+  OOXML redline engines (`@ansonlai/docx-redline-js`, `@stll/folio-core`,
+  others) — I checked this time instead of extrapolating from this repository's
+  own dependencies. **None of them is Word**, so using one would substitute a
+  second unverified implementation for the first, when the entire value of this
+  test is Word-versus-us. Adding such a dependency to a product whose premise
+  is no server, no AI and no trusted third party, for a test fixture, is a
+  maintainer's judgment rather than something to slip in.
+- The comparison is on **text, not bytes**, deliberately: Word rewrites styles,
+  ids and revision bookkeeping on save, so a byte comparison would fail for
+  reasons unrelated to which words survive — and which words survive is the
+  whole question.
+
 ## [9.1015.0] — 2026-11-24
 
 ### Added
