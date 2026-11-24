@@ -86,6 +86,19 @@ describe("offline build from curated sources", () => {
       expect(result.manifest.files[section as keyof typeof STARTER_COUNTS].entries).toBe(count);
     }
 
+    // 🚨 `mandated_texts` is OPTIONAL in the manifest schema, and only because
+    // a released DKB version's content is immutable: 25 manifests are already
+    // committed without it. That optionality must never become a licence for a
+    // NEW build to skip it, or "absent" would stop meaning "built before
+    // 9.1010.0" and start meaning nothing. So a build made now always writes
+    // it, and this is what says so.
+    expect(
+      result.manifest.files.mandated_texts,
+      "a new build must write mandated_texts",
+    ).toBeDefined();
+    expect(result.manifest.files.mandated_texts!.entries).toBe(result.mandated_texts.length);
+    expect(result.mandated_texts.length).toBeGreaterThan(0);
+
     // Every manifest ref must describe the exact bytes written to disk —
     // the shipped incident manifest recorded sha256("[]") for files that
     // held real content.

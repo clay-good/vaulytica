@@ -1,6 +1,6 @@
 # Tasks
 
-- [ ] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change; plus Word's Accept-All and Reject-All exports of it, committed, for the round-trip test.
+- [~] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT in 9.1010.0**; plus Word's Accept-All and Reject-All exports of it, committed, for the round-trip test — still needs Word (see the note at the end).
 - [x] 2. `src/ingest/docx-revisions.ts`: the linear OOXML rewrite producing the rejected `document.xml`; property test that accepted(rewrite) and rejected(rewrite) each contain no revision elements; bounded matching per `container.ts`.
 - [x] 3. `ingestDocxBuffer(buf, { revisions })` and the `ingestDocx` wrapper with the `#rejected` / `#accepted` name suffix; the default path byte-identical (corpus goldens unchanged).
 - [x] 4. `tools/cli/api.ts` `compareRedline(path, opts)` over `compareFiles` with `pinType`; `compare --redline`; the no-tracked-changes refusal; `MAX_COUNT` notice carried.
@@ -46,3 +46,42 @@ LibreOffice) in front of them.
 Built and standing meanwhile (task 2): the linear OOXML rewrite, and the
 property test that neither reading — accepted or rejected — contains any
 revision element.
+
+## Progress — 9.1010.0 (the five-kind fixture, which needed no copy of Word)
+
+Task 1 is two halves and I had been treating it as one. The Word exports
+genuinely need Word. **The fixture does not**, and it was missing: the only
+builder, `markEveryRun`, wraps every run in `w:ins` or `w:del`, so the three
+kinds where the rewrite must do something other than keep or drop a run were
+never exercised by any fixture.
+
+`fiveKindRedlineXml()` builds the five as OOXML directly — `docx` the library
+has no API for a tracked move or a `w:rPrChange` — and
+`redline-revision-kinds.test.ts` holds both readings to:
+
+- the insertion present only when accepted, the deletion only when rejected;
+- 🥇 **a moved clause present EXACTLY ONCE in each reading, at different
+  positions.** This is the one worth having. `w:moveFrom` wraps the words at
+  their origin and `w:moveTo` the same words at their destination, so a rewrite
+  that drops neither half DUPLICATES the clause and one that drops both LOSES
+  it. Counting revision elements — which is what the existing property test
+  does — sees neither. The test pins the origin in the payment clause when
+  rejected and the destination in the remedies clause when accepted, and
+  asserts each reading does *not* contain the other arrangement;
+- a formatting-only change leaving the text identical on both sides, since
+  `w:rPrChange` carries no text and must therefore move no words;
+- a revision nested in `w:tc` applied like any other — the case a run-level
+  rewrite is likeliest to miss, because the element sits inside table markup;
+- no `w:ins`, `w:del`, `w:moveFrom`, `w:moveTo` or `w:rPrChange` surviving into
+  either reading.
+
+The fixture is also guarded against itself: a derivation that stopped emitting
+one of the five kinds would make the assertions vacuous, so the first case
+asserts all five markers are present and that the move's two halves carry the
+same words.
+
+**Still needs Word** (or LibreOffice): its own Accept-All and Reject-All
+exports, committed, for the round-trip. That test exists to compare this
+product's rewrite with what Word actually produces, so a fixture built here
+would only compare the rewrite with itself. Verified on this machine: no
+`soffice`, no `libreoffice`, no `pandoc`.

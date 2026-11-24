@@ -74,6 +74,92 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1010.0] — 2026-11-23
+
+### Added
+- **A `mandated_texts` table in the DKB, with a build-time provenance gate.**
+  `add-mandated-text-conformance` task 2. I had declined this on the ground
+  that its value was already delivered by other routes — that was a judgment
+  about value, not a blocker, and presenting it as one was wrong.
+
+  `dkb-mandated-texts.json` is written by `runBuild` and referenced in the
+  manifest with its entry count and SHA-256. A table of its own rather than a
+  row in `statutes`, for the reason verified earlier: a `StatutoryIndexEntry`
+  carries an `excerpt`, and a mandated passage's exact words **are** the
+  requirement. Each variant ships with a `content_sha256` of its
+  whitespace-normalized text, so a scheduled re-read can tell "the authority
+  amended this passage" from "our copy was edited" — which a date alone cannot.
+
+  **The gate** (`assertMandatedTextsUsable`) runs inside `runBuild` and refuses
+  to **write** a knowledge base whose mandated passages lack a source, a read
+  date, a version, a subsection, or a digest matching their own text. A test
+  beside the rules already guarded the rows; the point of a gate here is that
+  the DKB is what ships and what the weekly rebuild regenerates, so a bad row
+  cannot reach a user even if it reached `main`. It reports **every** defect
+  rather than throwing on the first, so one build names them all.
+
+  **The validation test** drives all nine defects against a row that has each
+  one, plus the duplicate-id case — a gate is only worth having if it can fail.
+
+### Fixed
+- 🚨 **A migration trap, caught by the build failing immediately.** Adding
+  `mandated_texts` to the manifest schema as **required** broke `loadCurated`:
+  25 DKB manifests are already committed without it, and the builder's own rule
+  is that a released version's content is immutable — a same-day change ships
+  under a new version name rather than rewriting an old one. Rewriting them
+  would have violated that rule across every shipped DKB.
+
+  So the field is `.optional()`, like `shrinkage_acknowledgments`. To stop that
+  optionality becoming a licence to skip it, `build.test.ts` asserts a **new**
+  build always writes it — so "absent" means "built before 9.1010.0" and never
+  "a build that skipped it".
+
+### Added
+- **A redline fixture carrying all five revision kinds**, which needed no copy
+  of Word. `add-redline-two-sided-analysis` task 1 is two halves and I had been
+  treating it as one: the Word Accept-All/Reject-All exports genuinely need
+  Word, but the *fixture* does not — and it was missing. The only builder,
+  `markEveryRun`, wraps every run in `w:ins` or `w:del`, so the three kinds
+  where the rewrite must do something other than keep or drop a run were never
+  exercised.
+
+  `fiveKindRedlineXml()` builds them as OOXML directly (the `docx` library has
+  no API for a tracked move or a `w:rPrChange`), and
+  `redline-revision-kinds.test.ts` holds both readings to each:
+
+  - 🥇 **a moved clause present exactly once in each reading, at different
+    positions.** The one worth having. `w:moveFrom` wraps the words at their
+    origin and `w:moveTo` the same words at their destination, so a rewrite
+    that drops neither half **duplicates** the clause and one that drops both
+    **loses** it — and counting revision elements, which is what the existing
+    property test does, sees neither. The test pins the origin in the payment
+    clause when rejected and the destination in the remedies clause when
+    accepted, and asserts each reading does *not* contain the other
+    arrangement.
+  - a formatting-only change leaving the text identical on both sides, since
+    `w:rPrChange` carries no text and so must move no words;
+  - a revision nested in `w:tc` applied like any other — the case a run-level
+    rewrite is likeliest to miss, because the element sits inside table markup;
+  - the insertion present only when accepted, the deletion only when rejected;
+  - no revision element of any kind surviving into either reading.
+
+  The fixture is guarded against itself: the first case asserts all five
+  markers are present and that the move's two halves carry the same words, so a
+  derivation that stopped emitting a kind cannot make the rest vacuous.
+
+### Changed
+- **The fetch script is deliberately not built**, and the reason is this spec's
+  own rule: no mandated text enters from a secondary source, and each passage
+  was read at an official one by a person. An automatic fetcher would make the
+  table's provenance a matter of whatever a URL served that week. The scheduled
+  re-read is `npm run authority:drift` (9.1007.0), which reports a wording
+  change for a person to act on rather than silently replacing the text.
+- **Migrating the two Texas literals remains declined**, for the measured
+  reason recorded at 9.1004.0: the privacy pack already matches them
+  case-sensitively and reports an altered rendering, so `TEXT-001` would report
+  the same defect twice — what task 8 exists to prevent. They gained the
+  provenance that migration was really worth at 9.1004.0.
+
 ## [9.1009.0] — 2026-11-23
 
 ### Added

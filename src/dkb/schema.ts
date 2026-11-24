@@ -159,6 +159,13 @@ export const DkbManifestSchema = z.object({
     definitions: FileRef,
     dark_patterns: FileRef,
     statutes: FileRef,
+    // Optional, and only because a released DKB version's content is
+    // immutable: 25 manifests are already committed without it, and the
+    // builder's own rule is that a same-day content change ships under a new
+    // version name rather than rewriting an old one. A build made from now on
+    // always writes it — `build.test.ts` asserts that — so "absent" means
+    // "built before 9.1010.0", never "a build that skipped it".
+    mandated_texts: FileRef.optional(),
     classifier_vocab: FileRef,
     classifier_patterns: FileRef,
   }),

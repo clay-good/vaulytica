@@ -1,7 +1,7 @@
 # Tasks
 
 - [~] 1. Read each seed authority at its official source and record text, URL, retrieved date, and version history: leginfo.legislature.ca.gov (Civ. Code § 1542, current; pre-2019 text from the chaptered SB 1431), eCFR (16 C.F.R. §§ 433.2, 429.1), statutes.capitol.texas.gov (§ 541.102), uscode.house.gov (18 U.S.C. § 1833(b)(3)). No text enters the table from a secondary source.
-- [ ] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; migrate the two Texas literals out of `regime-data.ts`.
+- [~] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; ~~migrate the two Texas literals out of `regime-data.ts`~~ (declined, see below). **Schema, gate and validation test BUILT in 9.1010.0**; the fetch script stays unbuilt because the rows are curated by design.
 - [x] 3. Matching: sliding-window token similarity with an exact whitespace-normalized fast path; threshold chosen by measuring the corpus (no false hit on the 363 specimens; every seeded paraphrase fixture caught); ReDoS-safe by construction (no regex over document text; token arrays).
 - [~] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
 - [~] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked". **Size is done for both DOCX and PDF (9.1001.0); `w:caps` is not read, and no row needs capitals.**
@@ -268,3 +268,51 @@ provenance and currency halves are already delivered by other means
 reaches them; 9.1007.0 added drift on the text itself). A new DKB table is
 therefore a migration whose user-facing value is already in place, which is why
 it is not being built ahead of a reason to.
+
+## Progress — 9.1010.0 (the table, the gate and the validation test are built)
+
+I had declined this on the ground that the value was already delivered
+elsewhere. That was a judgment about value, not a blocker, and presenting it as
+one was wrong — so it is built.
+
+**The table.** `dkb-mandated-texts.json`, written by `runBuild` and referenced
+in the manifest with its entry count and SHA-256. A table of its own, not a row
+in `statutes`, for the reason verified earlier: a `StatutoryIndexEntry` carries
+an `excerpt`, and a mandated passage's exact words ARE the requirement. Each
+variant ships with a `content_sha256` of its whitespace-normalized text, so a
+scheduled re-read can tell "the authority amended this" from "our copy was
+edited" — which a date alone cannot.
+
+**The gate.** `assertMandatedTextsUsable` runs inside `runBuild` and refuses to
+WRITE a knowledge base whose mandated passages lack a source, a read date, a
+version, a subsection, or a digest matching their own text. The rows were
+already guarded by a test beside the rules; the point of a gate here is that
+the DKB is what ships and what the weekly rebuild regenerates, so a bad row
+cannot reach a user even if it reached `main`. It reports EVERY defect rather
+than throwing on the first, so one build names them all.
+
+**The validation test** drives all nine defects against a row that has each
+one, plus the duplicate-id case — a gate is only worth having if it can fail.
+
+🚨 **A migration trap, caught by the build failing.** Adding `mandated_texts`
+to the manifest schema as REQUIRED broke `loadCurated` immediately: 25 manifests
+are already committed without it, and the builder's own rule is that a released
+version's content is immutable — a same-day change ships under a new version
+name rather than rewriting an old one. So the field is `.optional()`, like
+`shrinkage_acknowledgments`. To stop that optionality becoming a licence to
+skip it, `build.test.ts` asserts a NEW build always writes it, so "absent"
+means "built before 9.1010.0" and never "a build that skipped it".
+
+**The fetch script is deliberately not built.** This spec's rule is that no
+mandated text enters from a secondary source, and each passage here was read at
+an official one by a person — the eCFR versioner for the two FTC notices. An
+automatic fetcher would make the table's provenance a matter of whatever a URL
+served that week. The scheduled re-read is `npm run authority:drift` (9.1007.0),
+which reports a wording change for a person to act on rather than silently
+replacing the text.
+
+**Migrating the two Texas literals is still declined**, for the measured reason
+in the 9.1004.0 note: the privacy pack already matches them case-sensitively
+and reports an altered rendering, so `TEXT-001` would report the same defect a
+second time — the thing task 8 exists to prevent. They gained the provenance
+that migration was really worth in 9.1004.0.

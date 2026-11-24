@@ -155,6 +155,41 @@ export type DkbShrinkageAck = {
   reason: string;
 };
 
+/**
+ * A passage an authority fixes word for word, as the DKB carries it.
+ *
+ * Distinct from `StatutoryIndexEntry`, which holds an `excerpt` for citation.
+ * Here the TEXT is the requirement: `TEXT-001` reports a notice that is close
+ * to the prescribed words but not the same, so it needs the words themselves,
+ * every variant the authority prints, and the form it requires.
+ *
+ * `content_sha256` is the digest of the whitespace-normalized text. It lets a
+ * scheduled re-read tell "the authority amended this passage" from "our copy
+ * was edited", which a date alone cannot.
+ */
+export type MandatedTextEntry = {
+  id: string;
+  /** What the passage is, in a reader's words. */
+  name: string;
+  citation: string;
+  source_url: string;
+  /** YYYY-MM-DD, the date the passage was read at that source. */
+  retrieved_at: string;
+  /** The amendment history the source prints. */
+  version: string;
+  /** `exact` when the authority prescribes these words; `substantially` when it prescribes a form. */
+  wording: "exact" | "substantially";
+  variants: ReadonlyArray<{
+    /** The subsection that prescribes it, e.g. "§ 433.2(a)". */
+    where: string;
+    text: string;
+    /** SHA-256 of the whitespace-normalized text. */
+    content_sha256: string;
+  }>;
+  /** A form the authority requires, where it requires one. */
+  form?: { bold?: boolean; min_points?: number; statement: string };
+};
+
 export type DkbManifest = {
   /** e.g. `v2026-05-11-a1b2c3d`. */
   version: string;
@@ -168,6 +203,13 @@ export type DkbManifest = {
     definitions: DkbFileRef;
     dark_patterns: DkbFileRef;
     statutes: DkbFileRef;
+    /**
+     * Passages a regulation or statute fixes WORD FOR WORD
+     * (add-mandated-text-conformance task 2). Separate from `statutes`, which
+     * carries an `excerpt` — a mandated text's exact words ARE the
+     * requirement, so an excerpt cannot stand in for one.
+     */
+    mandated_texts?: DkbFileRef;
     classifier_vocab: DkbFileRef;
     classifier_patterns: DkbFileRef;
   };
