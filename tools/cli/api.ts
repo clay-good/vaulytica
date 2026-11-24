@@ -975,6 +975,11 @@ export async function compareExecutedSet(
         verdict: conformity.verdict,
         difference_count: conformity.difference_count,
         conformity_hash: conformity.conformity_hash,
+        // Carried so the table can say WHY a row has no verdict. Spread
+        // conditionally: an ordinary row must not gain the key.
+        ...(conformity.unverified_reason
+          ? { unverified_reason: conformity.unverified_reason }
+          : {}),
       });
     } catch (e) {
       if (!(e instanceof ExecutedRefusedError)) throw e;

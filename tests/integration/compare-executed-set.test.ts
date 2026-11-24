@@ -16,6 +16,7 @@ import { EXECUTED, FINAL } from "../../src/report/_conformity-fixtures.js";
 import {
   buildClosingSet,
   closingSetConforms,
+  closingSetMarkdown,
   pairClosingSet,
   pairingTitle,
 } from "../../src/report/closing-set.js";
@@ -149,4 +150,124 @@ describe("compare --executed-set", () => {
       revised: "b",
     });
   });
+});
+
+/**
+ * A pair the set compared but cannot stand behind
+ * (`could-not-determine` in the closing-set table).
+ *
+ * 🚨 The row class this guards. `ClosingRow.verdict` has carried three states
+ * plus `unreadable` since the verdict was added, but the Markdown table's
+ * final branch read `not compared: ${r.reason ?? "unreadable"}` — and a
+ * `could-not-determine` row sets no `reason`, because the reason it has is
+ * `unverified_reason`. So a signed copy whose text layer covered some of its
+ * pages printed **"not compared: unreadable"**: false twice over. It WAS
+ * compared, and it is not an unreadable file. The two call for different work
+ * — re-scan it, versus read the pages that did come through — and the summary
+ * line counted neither, so a set of twelve could say "3 identical" with nine
+ * rows of nothing.
+ */
+describe("a closing-set row with no verdict", () => {
+  const ROW = {
+    title: "consulting agreement",
+    final: "final/consulting.txt",
+    signed: "signed/Scan_0041.pdf",
+  };
+
+  it("says it could not be determined, and why, rather than 'unreadable'", async () => {
+    const set = await buildClosingSet(
+      [
+        {
+          ...ROW,
+          verdict: "could-not-determine",
+          difference_count: 2,
+          conformity_hash: "a".repeat(64),
+          unverified_reason: "it is a scan whose text layer covers only some of its pages",
+        },
+      ],
+      [],
+      [],
+    );
+    const md = closingSetMarkdown(set);
+    expect(md).toContain("could not be determined");
+    expect(md).toContain("text layer covers only some of its pages");
+    // The two false statements, both gone.
+    expect(md).not.toContain("not compared");
+    expect(md).not.toContain("unreadable");
+    // The count is reported as APPARENT, never as a difference found.
+    expect(md).toContain("2 apparent differences, not a verdict");
+    // And it is counted, where it used to appear in no figure at all.
+    expect(md).toContain("1 undetermined");
+  });
+
+  it("still calls a genuinely unreadable copy not compared", async () => {
+    // The other branch must survive: an image-only scan is a different row,
+    // and collapsing the two was the defect.
+    const set = await buildClosingSet(
+      [{ ...ROW, verdict: "unreadable", reason: "no text layer (image-only scan)" }],
+      [],
+      [],
+    );
+    const md = closingSetMarkdown(set);
+    expect(md).toContain("not compared: no text layer (image-only scan)");
+    expect(md).not.toContain("could not be determined");
+    expect(md).toContain("0 undetermined");
+  });
+
+  it("does not conform, so --fail-on-nonconformity stops a false clear", async () => {
+    const set = await buildClosingSet(
+      [{ ...ROW, verdict: "could-not-determine", unverified_reason: "its words came from OCR" }],
+      [],
+      [],
+    );
+    expect(closingSetConforms(set)).toBe(false);
+  });
+
+  it("moves no existing set hash, because the new field is not canonical", async () => {
+    // The guard on the change itself. Each row already carries its pair's own
+    // `conformity_hash`, and the reason is hashed inside THAT, so the set hash
+    // covers it transitively; putting it in the canonical rows would move
+    // every set hash ever recorded to say nothing new.
+    const plain = { ...ROW, verdict: "differences" as const, difference_count: 1 };
+    const a = await buildClosingSet([plain], [], []);
+    const b = await buildClosingSet([{ ...plain, unverified_reason: "ignored here" }], [], []);
+    expect(b.conformity_hash).toBe(a.conformity_hash);
+  });
+
+  it("arises from a real signed copy, not only from a hand-built row", async () => {
+    // Reach. The three assertions above would pass on a row nothing produces,
+    // which is how a rendering branch becomes dead. This drives the actual
+    // pipeline: a PDF signed copy whose text layer covers some of its pages,
+    // paired by title, through `compareExecutedSet`.
+    const { mixedLayerPdf } = await import("./_mcp/pdf.js");
+    const root = mkdtempSync(join(tmpdir(), "vaulytica-undetermined-"));
+    const f = join(root, "final");
+    const s = join(root, "signed");
+    mkdirSync(f);
+    mkdirSync(s);
+    writeFileSync(join(f, "consulting.txt"), FINAL);
+    // Only the title goes in the text layer, which is the point: the rest of
+    // the document is the part nobody read. (The fixture draws its text with
+    // no line breaks, so a longer string would run the title together with
+    // the body and the set could not pair the two sides at all.)
+    writeFileSync(join(s, "Scan_0041.pdf"), mixedLayerPdf("CONSULTING AGREEMENT"));
+    const set = await compareExecutedSet(f, s);
+    const row = set.rows.find((r) => r.verdict === "could-not-determine");
+    expect(row, JSON.stringify(set.rows)).toBeDefined();
+    expect(row!.unverified_reason, "the reason never reached the row").toBeDefined();
+    expect(closingSetMarkdown(set)).toContain("could not be determined");
+
+    // And the gate's own message, through the CLI. It used to name four
+    // causes — a difference, an unpaired file, a tie, an unreadable copy —
+    // while failing for a fifth, so it described something that had not
+    // happened.
+    const err: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation(() => true);
+    vi.spyOn(process.stderr, "write").mockImplementation((c) => (err.push(String(c)), true));
+    const before = process.exitCode;
+    await runCompare(["--executed-set", f, s, "--fail-on-nonconformity"]);
+    expect(process.exitCode).toBe(2);
+    process.exitCode = before;
+    expect(err.join("")).toContain("could not be determined (1 of 1)");
+  }, 90_000);
 });

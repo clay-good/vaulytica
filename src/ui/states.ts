@@ -387,7 +387,16 @@ export type DropzoneState =
       /** The page (extend-results-page-to-bundles-and-comparisons): added, open, resolved. */
       results?: RenderedPage;
       /** A signed copy against its final (add-executed-copy-conformity): the verdict line. */
-      conformity?: { line: string; set_aside: number; identical: boolean };
+      conformity?: {
+        line: string;
+        set_aside: number;
+        /**
+         * The verdict itself, not `identical: boolean`. `could-not-determine`
+         * is neither a clean bill of health nor a found difference, and a
+         * boolean has nowhere to put it.
+         */
+        verdict: "identical" | "differences" | "could-not-determine";
+      };
       base_filename: string;
       revised_filename: string;
       /** Plain-language headline verdict (net improvement / regression / …). */
@@ -1254,7 +1263,7 @@ export function renderState(dz: HTMLElement, state: DropzoneState): void {
       const c = state.conformity;
       const el = select<HTMLElement>(dz, "comparison-conformity")!;
       el.hidden = false;
-      el.dataset.identical = String(c.identical);
+      el.dataset.verdict = c.verdict;
       el.textContent =
         `${c.line} ` +
         (c.set_aside > 0

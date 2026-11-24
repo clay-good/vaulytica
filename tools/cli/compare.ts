@@ -455,8 +455,19 @@ export async function runCompare(argv: string[]): Promise<void> {
       args.format === "json" ? JSON.stringify(set, null, 2) + "\n" : closingSetMarkdown(set),
     );
     if (args.failOnNonconformity && !closingSetConforms(set)) {
+      // 🚨 The message used to name four causes — a difference, an unpaired
+      // file, a tie, an unreadable copy — and an undetermined pair is none of
+      // them, so the gate failed while describing something that had not
+      // happened. Same defect as the single-pair message, which this now
+      // matches: the gate exists to stop a false clear, not to assert a
+      // difference the comparison could not make.
+      const undetermined = set.rows.filter((r) => r.verdict === "could-not-determine").length;
       process.stderr.write(
-        `\n✗ the closing set has a difference, an unpaired file, a tie or an unreadable copy (--fail-on-nonconformity)\n`,
+        `\n✗ the closing set has a difference, an unpaired file, a tie, an unreadable copy` +
+          (undetermined > 0
+            ? ` or a pair whose conformity could not be determined (${undetermined} of ${set.rows.length})`
+            : "") +
+          ` (--fail-on-nonconformity)\n`,
       );
       process.exitCode = 2;
     }

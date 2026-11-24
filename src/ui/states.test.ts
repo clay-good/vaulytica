@@ -2633,12 +2633,55 @@ describe("signed copy against the final", () => {
       conformity: {
         line: "Identical to the final outside the execution allowance.",
         set_aside: 4,
-        identical: true,
+        verdict: "identical",
       },
     } as Parameters<typeof renderState>[1]);
     const line = select<HTMLElement>(cmp, "comparison-conformity")!;
     expect(line.hidden).toBe(false);
     expect(line.textContent).toMatch(/^Identical to the final .* 4 items set aside as execution/);
     expect(line.textContent).toContain("not valid execution");
+    expect(line.dataset.verdict).toBe("identical");
+  });
+
+  it("marks a document with no verdict as its own state, not as a difference", () => {
+    // 🚨 The regression this guards. The panel used to publish
+    // `data-identical`, a boolean, so `could-not-determine` and a signed copy
+    // that genuinely differs both rendered as `false`. Anything reading the
+    // DOM — an e2e check, a person inspecting it — could not tell a document
+    // nobody finished reading from one with a found difference.
+    const states: Array<["identical" | "differences" | "could-not-determine", string]> = [
+      ["identical", "Identical to the final outside the execution allowance."],
+      ["differences", "2 differences outside the execution allowance."],
+      ["could-not-determine", "Could not determine conformity: its words came from OCR."],
+    ];
+    const seen = new Set<string>();
+    for (const [verdict, line] of states) {
+      const cmp = document.createElement("div");
+      renderState(cmp, {
+        kind: "comparison-complete",
+        base_filename: "final.docx",
+        revised_filename: "Scan_0041.pdf",
+        verdict: "No change to the risk surface.",
+        counts: {
+          resolved: { critical: 0, warning: 0, info: 0, total: 0 },
+          introduced: { critical: 0, warning: 0, info: 0, total: 0 },
+          unchanged: { critical: 0, warning: 0, info: 0, total: 0 },
+          carried_clean_count: 0,
+        },
+        dkb_mismatch: false,
+        docx_blob: new Blob(["d"]),
+        json_blob: new Blob(["{}"]),
+        docx_filename: "c.docx",
+        json_filename: "c.json",
+        conformity: { line, set_aside: 0, verdict },
+      } as Parameters<typeof renderState>[1]);
+      const el = select<HTMLElement>(cmp, "comparison-conformity")!;
+      expect(el.dataset.verdict).toBe(verdict);
+      expect(el.textContent).toContain(line);
+      seen.add(el.dataset.verdict!);
+    }
+    // Three distinct values, which is the whole point: a boolean could carry
+    // at most two.
+    expect(seen.size).toBe(3);
   });
 });

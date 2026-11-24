@@ -27,6 +27,23 @@ export type ClosingRow = {
   difference_count?: number;
   conformity_hash?: string;
   reason?: string;
+  /**
+   * Why no verdict was reached, when `verdict` is `could-not-determine` — the
+   * pair's own `Conformity.unverified_reason`.
+   *
+   * 🚨 Without this the row rendered as "not compared: unreadable", which is
+   * false twice over: the pair WAS compared, and an incomplete text layer is
+   * not an unreadable file. The two call for different work from a reader —
+   * re-scan the document versus read the pages that did come through — so the
+   * table has to tell them apart.
+   *
+   * It is deliberately absent from the canonical rows `conformity_hash` is
+   * taken over. Each row already carries its pair's own `conformity_hash`,
+   * and the reason string is hashed INSIDE that, so the set hash already
+   * covers it; adding it here would move every existing set hash to record
+   * nothing new.
+   */
+  unverified_reason?: string;
 };
 
 export type ClosingSet = {
@@ -134,12 +151,24 @@ export function closingSetMarkdown(set: ClosingSet): string {
       ? "identical outside the execution allowance"
       : r.verdict === "differences"
         ? `${r.difference_count} difference${r.difference_count === 1 ? "" : "s"}`
-        : `not compared: ${r.reason ?? "unreadable"}`;
+        : r.verdict === "could-not-determine"
+          ? // Compared, but the comparison cannot be stood behind. Naming the
+            // apparent count matters: it says there is something to look at
+            // without asserting it is a difference.
+            `could not be determined: ${r.unverified_reason ?? "the signed copy's text is incomplete"}` +
+            (r.difference_count
+              ? ` (${r.difference_count} apparent difference${r.difference_count === 1 ? "" : "s"}, not a verdict)`
+              : "")
+          : `not compared: ${r.reason ?? "unreadable"}`;
   const lines = [
     "# Closing set: signed copies against the finals",
     "",
     `${set.rows.length} pair${set.rows.length === 1 ? "" : "s"}, ` +
       `${set.rows.filter((r) => r.verdict === "identical").length} identical outside the execution allowance, ` +
+      // Counted explicitly. A row with no verdict used to appear in none of
+      // these figures, so a set of twelve could report "3 identical" and look
+      // like nine ordinary differences.
+      `${set.rows.filter((r) => r.verdict === "could-not-determine").length} undetermined, ` +
       `${set.unpaired.length} unpaired, ${set.ties.length} tied.`,
     "",
   ];

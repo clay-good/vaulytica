@@ -848,7 +848,12 @@ async function showComparison(
             conformity: {
               line: conformityLine(conformity),
               set_aside: conformity.set_aside.length,
-              identical: conformity.verdict === "identical",
+              // 🚨 This was `identical: conformity.verdict === "identical"`.
+              // A boolean cannot carry three states, so a document whose text
+              // came back incomplete read as `false` — indistinguishable in
+              // the DOM from a signed copy that genuinely differs, which is
+              // the exact conflation the third verdict was added to stop.
+              verdict: conformity.verdict,
             },
           }
         : {}),
