@@ -1,3 +1,12 @@
+/**
+ * `posture-review`: the three attorney views composed from one verified
+ * sequence (add-attorney-coherence-views task 3).
+ *
+ * The composition must equal what the individual commands produce — the point
+ * of the command is to compose, never to recompute — so these cases hold the
+ * composed output against the parts, pin the JSON nesting and its namespaced
+ * hash, and check the ladder/tamper refusals match the sibling commands.
+ */
 import { describe, expect, it } from "vitest";
 import type { CoherenceInput } from "../../src/report/posture-coherence.js";
 import {

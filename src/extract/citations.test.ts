@@ -1,3 +1,12 @@
+/**
+ * The citation extractor (add-authority-citation-lint task 2).
+ *
+ * Parses full case, statute and rule citations plus `id.`, `supra` and short
+ * forms, with positions, clean-room against the DKB citation grammar (The
+ * Indigo Book 2.0, CC0 — never "Bluebook", which is a live trademark). The
+ * property test is the load-bearing one: the extractor must be TOTAL, never
+ * throwing and never moving a position, because every CITE rule reads it.
+ */
 import { describe, expect, it } from "vitest";
 import fc from "fast-check";
 import { extractCitations, type ParsedCitation } from "./citations.js";

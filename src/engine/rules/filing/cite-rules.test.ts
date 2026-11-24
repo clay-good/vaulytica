@@ -1,3 +1,11 @@
+/**
+ * CITE-001 … CITE-005, the citation rules (add-authority-citation-lint tasks
+ * 3 and 4), all gated to filing playbooks.
+ *
+ * Malformed citations, orphaned `id.`, dangling `supra`/short forms,
+ * inconsistent short forms, and the table-of-authorities reconciliation in
+ * both directions.
+ */
 import { describe, expect, it } from "vitest";
 import type { RuleContext } from "../../finding.js";
 import { buildContext } from "../../_test-fixtures.js";
