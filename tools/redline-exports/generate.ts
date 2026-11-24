@@ -19,6 +19,31 @@
  * user's document actually came from, so the file name records which produced
  * an export (`-word` or `-soffice`) and the test reports which it compared
  * against rather than conflating them.
+ *
+ * 🚨 CORRECTION to what this script said at 9.1016.0. It claimed LibreOffice's
+ * accept/reject-all "only exists in its UI". That was an overstatement I had
+ * not checked. What the official documentation actually supports, read on
+ * 2026-11-24:
+ *
+ *   - CONFIRMED: `--convert-to` only converts, and cannot apply a redline
+ *     operation first, so a one-line CLI conversion is genuinely not enough.
+ *   - CONFIRMED: `com.sun.star.document.XRedlinesSupplier` exposes exactly one
+ *     method, `getRedlines()`, returning an enumeration; `com.sun.star.text.
+ *     XRedline.makeRedline()` CREATES redlines. Neither documents an accept-all
+ *     or reject-all.
+ *   - CONFIRMED: `com.sun.star.frame.XDispatchHelper.executeDispatch(...)`
+ *     exists, which is how a `.uno:` command would be invoked.
+ *   - NOT CONFIRMED: the names `.uno:AcceptAllTrackedChanges` /
+ *     `.uno:RejectAllTrackedChanges` — the wiki page listing dispatch commands
+ *     refuses automated reads — and whether a Basic macro runs under
+ *     `--headless` in the form this would need.
+ *
+ * So a scripted route is PLAUSIBLE and unverified, which is not the same as
+ * impossible. No macro is shipped here because it would be built on a command
+ * name no official source confirmed and could not be run on this machine, and
+ * untested tooling in a repository is worse than an honest instruction. Anyone
+ * with LibreOffice installed can settle it in a minute — see
+ * `openspec/changes/add-redline-two-sided-analysis/tasks.md`.
  */
 import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -71,8 +96,10 @@ async function main(): Promise<void> {
   process.stdout.write(
     app
       ? `found ${app}.\n` +
-          "⚠️ It has no command-line filter for accepting or rejecting revisions —\n" +
-          "the operation only exists in its UI — so the exports still need a person.\n" +
+          "⚠️ `--convert-to` only converts and cannot accept or reject revisions\n" +
+          "first, so the exports still need either its UI or a macro through the\n" +
+          "UNO API. A scripted route is plausible and was NOT verified here; see\n" +
+          "the header of this file for exactly what is confirmed and what is not.\n" +
           BY_HAND
       : "no Word-compatible application found on this machine.\n" + BY_HAND,
   );

@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file. Format adap
 
 ## [Unreleased]
 
+### Fixed
+- 🚨 **Corrected an overstatement of mine about LibreOffice.** At 9.1016.0 the
+  export script said accept/reject-all "only exists in its UI". I had not
+  checked that, and the difference matters: it is "impossible" versus "nobody
+  has confirmed the command name yet". Read at official sources:
+  `--convert-to` genuinely cannot apply a redline operation first (confirmed),
+  and `XRedlinesSupplier` documents only `getRedlines()` with no accept-all
+  (confirmed) — but `XDispatchHelper.executeDispatch` exists, and the names
+  `.uno:AcceptAllTrackedChanges` / `.uno:RejectAllTrackedChanges` plus headless
+  Basic-macro execution are **unconfirmed**, because the wiki listing dispatch
+  commands refuses automated reads.
+
+  So a scripted route is **plausible and unverified**, and the task now records
+  exactly what two experiments would settle it. No macro is committed: it would
+  rest on a command name no official source confirmed and could not be run
+  here, and untested tooling is worse than an honest instruction. Installing
+  LibreOffice is deliberately not done either — a large application and a
+  change to the developer's own machine is their decision, not a side effect of
+  a build loop.
+
 ### Changed
 - **The corpus impact of the whole mandated-text change is ZERO findings**, as
   `add-mandated-text-conformance` task 10 asks to be recorded — and it is held

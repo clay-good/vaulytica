@@ -154,3 +154,35 @@ reason the arming is the right answer rather than a workaround:
 - The comparison is on TEXT, not bytes, deliberately: Word rewrites styles, ids
   and revision bookkeeping on save, so a byte comparison would fail for reasons
   unrelated to which words survive — and which words survive is the question.
+
+## Correction — what I asserted about LibreOffice, and what is actually known
+
+At 9.1016.0 I wrote that LibreOffice's accept/reject-all "only exists in its
+UI". **That was an overstatement I had not checked**, and correcting it matters
+because it is the difference between "impossible" and "nobody has confirmed the
+command name yet". Read at official sources on 2026-11-24:
+
+| | |
+| --- | --- |
+| **Confirmed** | `--convert-to` only converts and cannot apply a redline operation first, so a one-line CLI conversion genuinely is not enough. |
+| **Confirmed** | `com.sun.star.document.XRedlinesSupplier` exposes exactly one method, `getRedlines()`, returning an enumeration; `com.sun.star.text.XRedline.makeRedline()` *creates* redlines. Neither documents an accept-all or reject-all. |
+| **Confirmed** | `com.sun.star.frame.XDispatchHelper.executeDispatch(...)` exists — the route a `.uno:` command would take. |
+| **Confirmed** | .docx filter names for saving: `"MS Word 2007 XML"` and `"Office Open XML Text"`. |
+| **NOT confirmed** | the names `.uno:AcceptAllTrackedChanges` / `.uno:RejectAllTrackedChanges`. The wiki page listing dispatch commands refuses automated reads. |
+| **NOT confirmed** | whether a Basic macro runs under `--headless` in the form this would need. The documented form is `{file} macro://./[Library.Module.MacroName]`. |
+
+**So a scripted route is PLAUSIBLE and unverified — not impossible.** No macro
+is committed here, deliberately: it would rest on a dispatch-command name no
+official source confirmed and could not be executed on this machine, and
+untested tooling in a repository is worse than an honest instruction. It would
+also be the one piece of this change nobody could trust.
+
+**The two things that would settle it**, for anyone with LibreOffice to hand:
+run `soffice --headless` against a redline with a macro calling
+`executeDispatch` for the accept-all command, and see (1) whether the command
+name resolves and (2) whether the macro runs at all without a GUI. If both
+work, the exports become one command and this task closes without Word.
+
+**Not done here on purpose:** installing LibreOffice. It is a large
+application and a change to the developer's own machine, which is their
+decision to make, not a side effect of a build loop.
