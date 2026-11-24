@@ -1,6 +1,6 @@
 # Tasks
 
-- [ ] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
+- [~] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
 - [x] 2. `src/report/conformity.ts`: allowance classifier over paragraphs (signature window reuse, blank-to-date fill, initials, cover pages, furniture, watermark words); verdict; canonical table and `conformity_hash`.
 - [x] 3. `clause-diff.ts`: accept an allowance predicate so set-aside paragraphs are listed, not diffed; the plain comparison path unchanged (goldens hold).
 - [ ] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **Blocked:** no surface runs OCR (see 9.977.0 below); the refusal half is done.
@@ -8,7 +8,7 @@
 - [x] 6. Renderers: Markdown, JSON, DOCX section; browser affordance and Word deliverable; cross-surface hash parity on text-layer inputs.
 - [x] 7. Metamorphic relations: filling blanks in the final must not change the verdict; altering any non-allowance paragraph must; format transforms on the executed side must not.
 - [x] 8. Docs: `reference.md` comparison section, `ci-integration.md` closing-set example; `/known-limits` sentence for image-only scans headless.
-- [ ] 9. Full gate green.
+- [x] 9. Full gate green.
 
 ## Progress
 
@@ -46,3 +46,14 @@ the CLI refuses by flag: both modes at once, the gate without a mode, and the
 three inputs `--executed-set` sets aside. `docs/ci-integration.md` carries a
 closing-set workflow. `tests/integration/action-flag-coverage.test.ts` fails
 the build if a later compare flag ships with no input.
+
+## Progress — 9.1005.0 (task 1 all but the scan; task 9)
+
+Task 1 is complete except (d), the image-only scan with a seeded low-confidence
+word, which is blocked with task 4: no surface runs OCR. Built and standing:
+the final DOCX against a text-layer PDF of its executed form (a), the same with
+one changed figure (b) and with an added signatory (c) in
+`executed-cross-format.test.ts`, and the two-folder closing set with an
+unpaired file and a title tie in `compare-executed-set.test.ts` ("pairs by
+title, lists the unpaired, and refuses to choose between a tie"). Task 9: the
+full gate is green at 9.1005.0.

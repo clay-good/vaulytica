@@ -1229,11 +1229,11 @@
   "playbook_id": "msa-general",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected msa-general (score 1). Title matched: \"master services agreement\", \"services agreement\". Required clauses present: \"indemnification\". Distinguishing phrases: \"Statement of Work\", \"SOW\", \"Master Agreement\".",
-  "result_hash": "31fcd1e8e9d3c0fa165122df79fb1a7a43dede180aee643738b1dd2901980259",
+  "result_hash": "649268e973a89e0aa17b045bf471620c02e63415998e4461067cb7a89ee857a9",
   "source_file": {
     "name": "bad-msa.docx",
     "sha256": "230075c191089510c566f91a8020e1d82f4632510794cd80d8e78c744570f4f5",
     "size_bytes": 9221
   },
-  "version": "9.1004.0"
+  "version": "9.1005.0"
 }

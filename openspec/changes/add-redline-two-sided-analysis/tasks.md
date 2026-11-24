@@ -9,7 +9,7 @@
 - [x] 7. MCP `compare_documents` `redline_path`; Action `redline` input; `ci-integration.md` example "gate a counterparty redline on a pull request".
 - [x] 8. Format-invariance relation for the rejected reading (same five transforms); reach and honesty-caveat tests extended.
 - [x] 9. Docs: `reference.md` ingest table row for redlines updated to say both readings are available; the "About this input" notice links to the comparison.
-- [ ] 10. Full gate green.
+- [x] 10. Full gate green.
 
 ## Progress
 
@@ -22,3 +22,11 @@
 - 9.973.0 shipped tasks 6 and 9. A DOCX with tracked changes shows "Compare both sides of this redline" beside "Compare a revised version…"; it runs `runRedlineComparison` (the CLI's `compareRedline`: the same `#rejected` / `#accepted` names, the accepted reading held to the rejected reading's type) and renders the comparison page the two-file compare renders. The Word report and the JSON carry `revision_authors`. `prepareDocument` gained an optional reading (`revisions`, a pinned `playbook_id`), as `runIngested` takes them. The cross-surface test checks both runs' hashes, the comparison hash and the attribution against the CLI; an e2e drives the tab and reads the author from the downloaded JSON. The accepted reading's notice now names both ways to compare. The page itself does not show authors; they are in the downloads.
 - Task 8 finished (test only, no release): `redline-format-invariance.test.ts`. CRLF and hard-wrap have no DOCX analog (a Word paragraph has no line ending, and a wrapped line is not a paragraph), so the five are the ways a Word redline varies without its words changing: curly quotes, a repeated page legend, an empty paragraph after each paragraph, every run split in two, formatting on every run. Each, applied before marking every run deleted, leaves the rejected reading's findings unchanged on five specimens. The fixture helpers moved to `tests/integration/_redline-docx.ts`, shared with `redline-reading-invariance`. The honesty-caveat surfaces already include the comparison renderers, so no reach entry was added.
 - Open: task 1's Word round-trip (needs Word), and with it task 10.
+
+## Progress — 9.1005.0 (task 10)
+
+The full gate is green at 9.1005.0. Task 1's remaining half — Word's own
+Accept-All and Reject-All exports of the committed redline, for the round-trip
+test — still needs a copy of Word to produce them; the synthesized fixture and
+the property test that neither reading contains a revision element are built
+(task 2).

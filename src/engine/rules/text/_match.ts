@@ -18,6 +18,28 @@ import type { MandatedText } from "./mandated-texts.js";
 /** The share of the passage's words a window must carry to count as the passage. */
 export const NEAR = 0.85;
 
+/**
+ * Words of the passage's OPENING that identify it on their own.
+ *
+ * 🚨 `NEAR` alone cannot see the defect this rule exists for. A notice whose
+ * last sentence is dropped keeps ~75% of § 433.2(a)'s words — below 0.85 — so
+ * the document was not recognized as carrying the notice at all and NOTHING
+ * was reported. The dropped sentence is the recovery cap ("RECOVERY HEREUNDER
+ * BY THE DEBTOR SHALL NOT EXCEED AMOUNTS PAID BY THE DEBTOR HEREUNDER"), which
+ * is exactly the half a drafter has a reason to leave out, and a presence
+ * pattern keyed on the opening passes it too. The corpus sweep in
+ * `mandated-text-corpus.test.ts` is what exposed this: the sweep was clean and
+ * the reach case failed.
+ *
+ * Lowering `NEAR` is the wrong fix — the threshold was chosen by measuring the
+ * corpus, and a looser multiset share would start calling ordinary paragraphs
+ * notices. The opening is a better instrument: twelve consecutive words of a
+ * prescribed notice, verbatim and in order, are not something a document says
+ * by accident. So a window that opens with them IS the passage, whatever share
+ * of the tail survives, and the word diff then says what is missing.
+ */
+const ANCHOR_WORDS = 12;
+
 type Token = { word: string; at: number; end: number };
 
 /** Lowercase word tokens with their offsets. Curly apostrophes fold to straight. */
@@ -64,7 +86,11 @@ export function findMandated(ctx: RuleContext, row: MandatedText): MandatedMatch
     const toks = tokens(p.text);
     for (const { v, words } of variants) {
       const n = words.length;
-      if (toks.length < Math.ceil(n * NEAR)) continue;
+      // A paragraph too short to carry `NEAR` of the passage can still carry
+      // its opening, which is the whole point of the anchor path below — so
+      // this skips the WINDOW loop, not the variant.
+      const tooShortForAWindow = toks.length < Math.ceil(n * NEAR);
+      if (toks.length < ANCHOR_WORDS) continue;
       const want = new Map<string, number>();
       for (const w of words) want.set(w, (want.get(w) ?? 0) + 1);
       const have = new Map<string, number>();
@@ -75,7 +101,7 @@ export function findMandated(ctx: RuleContext, row: MandatedText): MandatedMatch
         overlap += Math.min(have.get(w)!, want.get(w) ?? 0) - before;
       };
       const size = Math.min(n, toks.length);
-      for (let i = 0; i < toks.length; i++) {
+      for (let i = 0; !tooShortForAWindow && i < toks.length; i++) {
         add(toks[i]!.word, 1);
         if (i >= size) add(toks[i - size]!.word, -1);
         if (i < size - 1) continue;
@@ -113,6 +139,48 @@ export function findMandated(ctx: RuleContext, row: MandatedText): MandatedMatch
             .filter((r) => r.end > start && r.start < end && r.text.trim())
             .map((r) => ({ bold: r.formatting?.bold === true })),
         };
+      }
+      // The anchor path. Only where the share-based pass found nothing for
+      // this variant, so an exact or near match always wins and no existing
+      // verdict moves.
+      if (best) continue;
+      if (n <= ANCHOR_WORDS) continue;
+      const anchor = words.slice(0, ANCHOR_WORDS);
+      for (let i = 0; i + anchor.length <= toks.length; i++) {
+        if (!anchor.every((w, k) => toks[i + k]!.word === w)) continue;
+        // Take in the passage's words that follow, so the window covers what
+        // the document kept of the notice and no more.
+        let to = i + anchor.length - 1;
+        while (to + 1 < toks.length && want.has(toks[to + 1]!.word) && to - i < n * 1.25) to++;
+        const covered = toks.slice(i, to + 1).map((t) => t.word);
+        const seen = new Map<string, number>();
+        let overlapped = 0;
+        for (const w of covered) {
+          const before = Math.min(seen.get(w) ?? 0, want.get(w) ?? 0);
+          seen.set(w, (seen.get(w) ?? 0) + 1);
+          overlapped += Math.min(seen.get(w)!, want.get(w) ?? 0) - before;
+        }
+        const first = toks[i]!;
+        const last = toks[to]!;
+        const start = p.start + first.at;
+        const end = p.start + last.end;
+        best = {
+          row,
+          where: v.where,
+          statute: v.text,
+          // It opened with the passage's words and did not carry all of them,
+          // so it is a near match by construction.
+          exact: false,
+          score: overlapped / n,
+          text: p.text.slice(first.at, last.end + (p.text[last.end] === "." ? 1 : 0)),
+          paragraphText: p.text,
+          position: { section_id: p.section.id, paragraph_id: p.paragraph.id, start, end },
+          ...(p.paragraph.min_size_pt !== undefined ? { size_pt: p.paragraph.min_size_pt } : {}),
+          runs: p.paragraph.runs
+            .filter((r) => r.end > start && r.start < end && r.text.trim())
+            .map((r) => ({ bold: r.formatting?.bold === true })),
+        };
+        break;
       }
     }
   });

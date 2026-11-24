@@ -47,6 +47,67 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1005.0] — 2026-11-23
+
+### Fixed
+- **A mandated notice with its last sentence dropped was not reported at
+  all.** `TEXT-001` recognizes a passage as the prescribed notice when a window
+  carries `NEAR` = 85% of its words. The FTC Holder Rule notice minus its final
+  sentence keeps about 75%, so the document was not recognized as carrying the
+  notice and **nothing was said**. That sentence is the recovery cap —
+  "RECOVERY HEREUNDER BY THE DEBTOR SHALL NOT EXCEED AMOUNTS PAID BY THE DEBTOR
+  HEREUNDER" — the half a drafter has a reason to omit, and a presence pattern
+  keyed on the notice's opening passes it just as happily.
+
+  Lowering `NEAR` would be the wrong fix: the threshold was chosen by measuring
+  the corpus, and a looser multiset share starts calling ordinary paragraphs
+  notices. The fix is a second instrument. **Twelve consecutive words of the
+  passage's opening, verbatim and in order, identify it** — a document does not
+  say them by accident — so a window that opens with them is the passage
+  whatever share of the tail survives, and the existing word diff then reports
+  what is missing. The anchor path runs ONLY where the share-based pass found
+  nothing, so no existing verdict moves: the 18 unit cases and 5 PDF-form cases
+  are unchanged, the corpus sweep stays at zero, and 345 goldens are
+  semantically identical (only the version-stamped digest ledger differs).
+
+  ⚠️ The first version of this fix changed nothing, because an early
+  `toks.length < ceil(n * NEAR)` guard skipped the variant before the anchor
+  path could run. The guard now bounds the window loop, not the variant.
+
+### Added
+- **`tests/integration/mandated-text-corpus.test.ts`** — the standing sweep for
+  `TEXT-001`, `TEXT-002` and `TEXT-003` over every specimen, a clean retail
+  instalment contract carrying § 433.2(a)'s notice verbatim, and a reach case.
+
+  🥇 **This is what found the defect above.** The spec recorded "no false hit on
+  the 363 specimens" as a measurement taken once and written into a task list,
+  with nothing holding it. A number in a task list is not a guard — the same
+  gap for `READ-003` failed three times the moment it was made standing in
+  9.1003.0. Here the sweep was clean and the REACH case failed, which is the
+  other way a one-time measurement misleads: it tells you the rule is quiet
+  without telling you it is also blind.
+
+### Changed
+- **Six open spec tasks closed, 13 → 6.** `add-readability-measure` 5 and 7,
+  `add-mandated-text-conformance` 7 and 12, `add-executed-copy-conformity` 9
+  (and 1 reduced to its OCR-blocked item), `add-redline-two-sided-analysis` 10.
+  Each closed against evidence in the tree, not intent.
+
+  Of the six that remain, **four are blocked on something outside the build**
+  and each now says so in its own task list: a licensed pronunciation
+  dictionary (CMUdict) for the 5,000-word syllable reference; Texas and
+  Wisconsin setting their readability minimums by agency rule rather than
+  statute, and California having no Flesch statute for insurance forms; a
+  surface that runs OCR, for the image-only executed copy; and a copy of Word,
+  for its own Accept-All and Reject-All exports of the committed redline.
+
+  **The other two are not blocked and are the next chunk**: the DKB
+  `mandated_texts` schema with its fetch script and `dkb:build` provenance
+  gate, and the scheduled rebuild that lands it. Both authority tables —
+  `MANDATED_TEXTS` and `READABILITY_STANDARDS` — still live beside their rules
+  rather than in the DKB, which is where every other authority in the product
+  is held to a build-time provenance gate.
+
 ## [9.1004.0] — 2026-11-23
 
 ### Fixed
