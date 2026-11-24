@@ -134,6 +134,25 @@ describe("the currency label reaches the hand-read authorities", () => {
  *
  * This case is pinned so the debt is visible and so adding those nodes makes
  * the test fail and be deleted, rather than sitting unnoticed.
+ *
+ * ⚠️ The REST of the rules that declare no DKB citation — 97 of 1,946 — were
+ * audited at 9.1007.0 and are correct as they are. Most are drafting-quality
+ * rules resting on no law at all ("this clause sets no notice period"), which
+ * is why `STRUCT`, `RISK`, `TEMP`, `TERM`, `OBLI` and `PROOF` are nearly all
+ * uncited. The handful that DO name a statute name it for a reason that is not
+ * a single supporting authority:
+ *
+ *   - `PERS-007` weighs FOUR separate tests (the IRS 20-factor test, the DOL
+ *     economic-realities test, Cal. Lab. Code § 2775, M.G.L. c. 149 § 148B).
+ *     The finding does not rest on one of them, and minting one citation would
+ *     misrepresent which authority it depends on.
+ *   - `IPDATA-002` names Cal. Lab. Code § 2870 in a CODE COMMENT, never in
+ *     user-facing text.
+ *
+ * A wrong citation is worse than none: it would put a confident
+ * "verify currency" label on a statute the finding does not actually rest on.
+ * So the rule is to cite where ONE hand-read authority backs the finding, and
+ * to stay silent where several do or where none does.
  */
 describe("the authorities deliberately left outside it", () => {
   it("TEXT-003 carries no citation, and the U.C.C. nodes it needs are not in the DKB", async () => {

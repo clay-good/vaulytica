@@ -47,6 +47,60 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1007.0] — 2026-11-23
+
+### Added
+- **Nothing noticed when a mandated text's WORDING changed at its source.
+  Now something does.** `citation:check` asks whether a citation URL still
+  resolves. The "verify currency" label asks whether a reading is older than
+  the horizon. Neither sees an amendment — and for `TEXT-001`, whose entire
+  premise is exact wording, an amended § 433.2 silently turns the committed
+  passage into **the wrong yardstick**: a conforming notice is reported as
+  altered, and so is a notice matching the new text. A stale reading date might
+  hint at it after twelve months; nothing would say the words moved.
+
+  `tools/authority-drift/` closes that in `citation-check`'s own two-half shape:
+  - **Pure, per-commit** — every variant's SHA-256 matches its own committed
+    text, whitespace-normalized, so a passage cannot be edited without its
+    digest moving. No clock, no socket.
+  - **Scheduled** — `npm run authority:drift`, wired into `dkb-rebuild.yml`
+    beside the citation check, re-reads each section at its official source.
+
+  Containment rather than equality, because the fetched body is a whole section
+  with its own subsection labels, amendment history and markup; case-blind,
+  because § 433.2 prints its notice in capitals and the rules compare
+  case-blind, so a source serving mixed case is not an amendment. A **drifted
+  passage and an unreadable source are different verdicts** — re-read the
+  statute, versus fix the fetch — because they need different responses, and
+  collapsing them sends a reader to the wrong place.
+
+  Verified against the live eCFR API: **3/3 passages unchanged**, exit 0.
+
+### Changed
+- **Task 2's DKB `mandated_texts` table is left deliberately unbuilt, with the
+  reasoning recorded.** Reading the DKB first changed what it was worth: the
+  curated `statutes` table carries an `excerpt`, not a verbatim passage, so it
+  cannot hold a mandated text (which is why the spec wanted a new table). The
+  provenance half is already enforced where it matters —
+  `mandated-texts.test.ts` refuses a row with no source, date or version — and
+  the currency half shipped in 9.1006.0 by a different route. What was left
+  was drift on the text itself, and that is what got built, rather than moving
+  a table for its own sake.
+
+- **The remaining 97 rules that declare no DKB citation were audited and are
+  correct as they are**, with the finding recorded in
+  `authority-currency-reach.test.ts`. Most are drafting-quality rules resting
+  on no law at all ("this clause sets no notice period"), which is why
+  `STRUCT`, `RISK`, `TEMP`, `TERM`, `OBLI` and `PROOF` are nearly all uncited.
+  The few that do name a statute name it for a reason that is not a single
+  supporting authority: `PERS-007` weighs **four** separate tests (IRS
+  20-factor, DOL economic realities, Cal. Lab. Code § 2775, M.G.L. c. 149
+  § 148B) and rests on none of them alone; `IPDATA-002` names Cal. Lab. Code
+  § 2870 only in a code comment. **A wrong citation is worse than none** — it
+  would put a confident "verify currency" label on a statute the finding does
+  not rest on — so the rule is to cite where one hand-read authority backs the
+  finding and stay silent where several do or none does.
+
 ## [9.1006.0] — 2026-11-23
 
 ### Fixed

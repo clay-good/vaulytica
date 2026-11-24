@@ -61,6 +61,21 @@ jobs:
           npx tsx tools/citation-check/run.ts --reachability --attest dkb/v3/validation-status.json \
             || echo "citation check reported issues — attestation records the pending count"
 
+      # The mandated texts' WORDING, which neither the citation check nor the
+      # currency label can see. `citation:check` asks whether a URL still
+      # resolves; the "verify currency" label asks whether a reading is older
+      # than the horizon. Neither notices that a regulation was amended — and
+      # for TEXT-001, whose whole premise is exact wording, an amended source
+      # silently turns the committed passage into the wrong yardstick: a
+      # conforming notice is reported as altered, and so is one matching the
+      # new text. Non-fatal here for the same reason as the citation check
+      # above: the regression gate below decides commit vs PR, and a drift
+      # should reach a person as a PR rather than stop the rebuild.
+      - name: Check mandated texts against their sources
+        run: |
+          npm run authority:drift \
+            || echo "a mandated text drifted or could not be read — see the log above"
+
       # tests/golden is in the gate as well as tests/integration: a green
       # gate commits straight to main, so any suite that reads the DKB and
       # is left out is one this job can turn red for the next human push

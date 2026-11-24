@@ -207,3 +207,45 @@ rebuild. Both authority tables added by these changes — `MANDATED_TEXTS` and
 `READABILITY_STANDARDS` — still live beside their rules, which means they are
 the only authorities in the product not held to a build-time provenance gate.
 That is the next chunk.
+
+## Progress — 9.1007.0 (the drift check: task 2's protection, without the table)
+
+Task 2 asks for a DKB `mandated_texts` table with a `dkb:build` provenance
+gate and a validation test. Reading the DKB first changed what that is worth
+building:
+
+- The curated `statutes` table carries an **`excerpt`**, not a verbatim
+  passage, so it cannot hold a mandated text — which is why the spec asked for
+  a new table rather than reusing it.
+- The provenance half is already enforced where it matters:
+  `mandated-texts.test.ts` refuses a row with no source, date or version, and
+  9.1004.0 gave the Texas literals the same treatment.
+- The currency half was delivered in 9.1006.0 by a different route — the rows
+  now emit structured citations, so the existing "verify currency" label
+  reaches them.
+
+What none of that covers, and what the table was really for, is **the wording
+changing at the source**. `citation:check` asks whether a URL still resolves;
+the currency label asks whether a reading is old. Neither notices an
+amendment. For `TEXT-001`, whose whole premise is exact wording, an amended
+§ 433.2 silently turns the committed passage into the wrong yardstick: a
+conforming notice is reported as altered, and so is one matching the new text.
+
+`tools/authority-drift/` closes that, in `citation-check`'s own two-half shape:
+
+- **Pure, per-commit** (`drift.test.ts`): every variant's SHA-256 matches its
+  own committed text, whitespace-normalized, so a passage cannot be edited
+  without its digest moving.
+- **Scheduled** (`npm run authority:drift`, wired into `dkb-rebuild.yml` beside
+  the citation check): re-read each section at its official source and compare.
+  Containment rather than equality, because the body is a whole section with
+  its own labels, history and markup; case-blind, because § 433.2 prints its
+  notice in capitals and the rules compare case-blind. A drifted passage and an
+  unreadable source are **different verdicts** — re-read the statute, versus
+  fix the fetch — since they need different responses.
+
+Verified against the live eCFR API on 2026-11-23: 3/3 passages unchanged.
+
+Task 2's remaining DKB-table half is left deliberately unbuilt, with that
+reasoning, rather than moved for its own sake. Task 10's scheduled rebuild is
+what runs the drift check.
