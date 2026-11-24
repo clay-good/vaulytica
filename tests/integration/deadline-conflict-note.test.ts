@@ -244,3 +244,117 @@ describe("a drafting note reaches every surface that renders the register", () =
     expect(await criticalDatesMarkdownBlob(reg).text()).not.toContain("Drafting notes");
   }, 60_000);
 });
+
+/**
+ * The conservatism guards, pinned individually (mutation-driven).
+ *
+ * 🚨 Why these exist. The header of this file says the cases above "pin the
+ * CONSERVATISM as hard as the detection". Mutation testing of
+ * `buildConflictNotes` on 2026-11-24 showed that was aspiration, not fact:
+ * **55.74%** of mutants survived the suite as it stood — below the
+ * repository's own break threshold of 57 — and the survivors were not
+ * cosmetic. Deleting the unattributed-party skip survived. Deleting the
+ * party-name normalization survived. Inverting the title's singular/plural
+ * survived. Each is a guard against this note accusing a document of
+ * contradicting itself when it does not, which is the expensive direction.
+ *
+ * Every case below was first run as a probe to see what the pipeline actually
+ * produces, so none of them asserts an assumption about the register.
+ */
+describe("DDL-002's conservatism, guard by guard", () => {
+  it("treats one party spelled two ways as one obligation, printed as written", async () => {
+    // The grouping key lowercases and collapses whitespace, so "Supplier" and
+    // "SUPPLIER" are the same obligation — otherwise a real conflict hides as
+    // two parties with one date each. The note must still print the party the
+    // way the DOCUMENT writes it, never the lowercased key.
+    const r = await register([
+      "SUPPLY AGREEMENT",
+      '"Notice Date" means March 2, 2026.',
+      "Supplier shall cure any breach within 10 days after the Notice Date.",
+      "Notwithstanding the foregoing, SUPPLIER shall cure any breach within 30 days after the Notice Date.",
+    ]);
+    const note = ddl002(r);
+    expect(note, JSON.stringify(notes(r))).toBeDefined();
+    expect(note!.title).toContain("1 obligation");
+    expect(note!.detail).toContain("for Supplier");
+    // The lowercased grouping key must not reach a reader.
+    expect(note!.detail).not.toContain("for supplier");
+    expect(note!.detail).not.toContain("|");
+  });
+
+  it("says nothing when no party can be attributed", async () => {
+    // Two clauses, two different dates, nobody named. They may bind DIFFERENT
+    // parties, so calling it a contradiction would be a false accusation —
+    // and deleting this guard survived the suite before this case existed.
+    const r = await register([
+      "SUPPLY AGREEMENT",
+      '"Notice Date" means March 2, 2026.',
+      "Any breach shall be cured within 10 days after the Notice Date.",
+      "Notwithstanding the foregoing, any breach shall be cured within 30 days after the Notice Date.",
+    ]);
+    expect(
+      ddl002(r),
+      `two unattributed dates must not be a conflict: ${JSON.stringify(notes(r))}`,
+    ).toBeUndefined();
+    // The rows really are there and really are unattributed — otherwise this
+    // passes because the register is empty, which proves nothing.
+    const unattributed = r.register.filter((x) => x.responsible === "" && x.resolved);
+    expect(unattributed.length, JSON.stringify(r.register)).toBeGreaterThan(1);
+    expect(new Set(unattributed.map((x) => x.computed_date)).size).toBeGreaterThan(1);
+  });
+
+  it("counts the obligations and agrees with itself grammatically", async () => {
+    // One conflict reads "1 obligation has"; two read "2 obligations have".
+    // Inverting that condition survived the suite, so the note could have
+    // shipped saying "1 obligations have".
+    const one = ddl002(
+      await register([
+        "SUPPLY AGREEMENT",
+        '"Notice Date" means March 2, 2026.',
+        "Supplier shall cure any breach within 10 days after the Notice Date.",
+        "Notwithstanding the foregoing, Supplier shall cure any breach within 30 days after the Notice Date.",
+      ]),
+    );
+    expect(one!.title).toBe("1 obligation has clauses implying different dates");
+
+    const two = ddl002(
+      await register([
+        "SUPPLY AGREEMENT",
+        '"Notice Date" means March 2, 2026.',
+        "Supplier shall cure any breach within 10 days after the Notice Date.",
+        "Notwithstanding the foregoing, Supplier shall cure any breach within 30 days after the Notice Date.",
+        "Customer shall provide notice of termination within 5 days after the Notice Date.",
+        "Notwithstanding the foregoing, Customer shall provide notice of termination within 20 days after the Notice Date.",
+      ]),
+    );
+    expect(two!.title).toBe("2 obligations have clauses implying different dates");
+    // Both obligations are described, each with its own party and kind.
+    expect(two!.detail).toContain("for Supplier");
+    expect(two!.detail).toContain("for Customer");
+    expect(two!.detail).toContain("cure window");
+    expect(two!.detail).toContain("notice period");
+    expect(two!.severity).toBe("info");
+  });
+
+  it("lists an obligation's dates in ascending order, on any host", async () => {
+    // The sort is locale-pinned to "en" so the wording cannot differ between
+    // machines — the same class as the determinism guard's bare-localeCompare
+    // finding. Ascending order is also what a reader expects to scan.
+    const note = ddl002(
+      await register([
+        "SUPPLY AGREEMENT",
+        '"Notice Date" means March 2, 2026.',
+        "Supplier shall cure any breach within 30 days after the Notice Date.",
+        "Notwithstanding the foregoing, Supplier shall cure any breach within 10 days after the Notice Date.",
+      ]),
+    );
+    expect(note).toBeDefined();
+    const dates = [...note!.detail.matchAll(/\d{4}-\d{2}-\d{2}/g)].map((m) => m[0]);
+    expect(dates.length).toBeGreaterThan(1);
+    expect(dates, "the later clause is written first, so this fails if unsorted").toEqual(
+      [...dates].sort(),
+    );
+    // And each date is attributed to the clause it came from.
+    expect(note!.detail).toContain('(from "within 10 days after the Notice Date")');
+  });
+});
