@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **The corpus impact of the whole mandated-text change is ZERO findings**, as
+  `add-mandated-text-conformance` task 10 asks to be recorded — and it is held
+  by a test, not asserted. Across all 363 specimens `TEXT-001`, `TEXT-002` and
+  `TEXT-003` draw nothing; `mandated-text-corpus.test.ts` fails on any hit and
+  ran green in the 9.1010.0 gate. Every golden regenerated semantically
+  identical at each release in this change's history, including after the
+  9.1005.0 anchor-path fix. The pack fires only on a document that carries a
+  mandated notice, and no specimen does.
+
+  Task 10's remaining clause — landing the table through a scheduled DKB
+  rebuild — belongs to that job by design, not by preference:
+  `tools/dkb/resolve.ts` picks the newest `dkb/dist/` version, so committing a
+  hand-built one would change which DKB the engine reads, stamp a new version
+  into every run, churn every golden, and bypass `dkb-rebuild.yml`'s own
+  regression and shrinkage gates. What is assured instead is that the job will
+  carry it: `runBuild` writes and manifests the table, `build.test.ts` asserts
+  a new build always does, and the build-time gate fails rather than shipping a
+  passage whose provenance cannot be shown.
 - **The four remaining open spec tasks now record a VERIFIED reason, not a
   vague one.** Two of the six open at 9.1007.0 turned out to rest on unchecked
   claims of mine and were closed at 9.1008.0, so the other four were re-tested

@@ -9,7 +9,7 @@
 - [x] 7. Fixtures: exact, paraphrased, superseded, and form-deficient versions of each seed passage; clean documents for each family confirm no false finding. *(Superseded declined — see 9.1004.0 above.)*
 - [x] 8. Overlap decisions: for `COMM-206`, the § 429.1, § 1833(b) and § 1542 presence rules and the two Texas rules, decide retire-or-keep-as-absence, with a fixture proving one finding per defect, never two.
 - [x] 9. Guards: `rule-completeness`, citation currency (`citation:check`), vacated-authority registry, shall/will and compound-spelling sweeps over the new rule sources; `rule-scaling`.
-- [ ] 10. Land with a scheduled DKB rebuild; regenerate goldens once; CHANGELOG lists every corpus finding the change adds.
+- [~] 10. Land with a scheduled DKB rebuild; regenerate goldens once; CHANGELOG lists every corpus finding the change adds. **Two of three clauses are settled (see below); the landing itself is the scheduled job's, by design.**
 - [x] 11. Docs: `reference.md` rule table row; `/known-limits` sentence that form is checked only in DOCX and PDF; `adding-a-rule.md` section "adding a mandated text".
 - [x] 12. Full gate green.
 
@@ -316,3 +316,42 @@ in the 9.1004.0 note: the privacy pack already matches them case-sensitively
 and reports an altered rendering, so `TEXT-001` would report the same defect a
 second time — the thing task 8 exists to prevent. They gained the provenance
 that migration was really worth in 9.1004.0.
+
+## Progress — task 10's three clauses, settled where they can be
+
+**"CHANGELOG lists every corpus finding the change adds" — the number is
+ZERO, and it is held by a test rather than asserted.** Across all 363
+specimens, `TEXT-001`, `TEXT-002` and `TEXT-003` together draw nothing:
+`mandated-text-corpus.test.ts`'s sweep fails on any hit, and it ran green in
+the 9.1010.0 gate. Every golden regenerated semantically identical at each
+release in this change's history (345 files checked by parsing both sides and
+stripping the version stamp), including after the anchor-path fix at 9.1005.0
+that made `TEXT-001` able to see a truncated notice. So there is no corpus
+finding to list: the pack fires only on a document that actually carries a
+mandated notice, and no specimen does.
+
+**"Regenerate goldens once" — done at each release**, with the semantic check
+above rather than a glance at the diff (the goldens are minified single-line
+JSON, so `git diff` shows the whole object and tells a reader nothing).
+
+**"Land with a scheduled DKB rebuild" belongs to the scheduled job, and that
+is the task's own wording.** It is not a dodge, and the reason is mechanical:
+`tools/dkb/resolve.ts` resolves the active artifact as *the newest version
+directory in `dkb/dist/`*. Committing a hand-built version here would
+immediately change which DKB the engine reads, stamp a new version into every
+run, churn every golden, and bypass `dkb-rebuild.yml`'s own regression and
+shrinkage gates — the machinery that decides commit-versus-PR precisely so a
+DKB change reaches a person.
+
+What this session made sure of instead is that the scheduled job will carry the
+table when it next runs:
+
+- `runBuild` writes `dkb-mandated-texts.json` and references it in the manifest
+  with its entry count and SHA-256 (verified by building to a scratch version
+  and reading the file, which was then deleted rather than committed).
+- `build.test.ts` asserts a NEW build always writes it, so the optional
+  manifest field cannot silently go missing.
+- `assertMandatedTextsUsable` runs inside the build, so the scheduled job fails
+  rather than shipping a passage whose provenance cannot be shown.
+- `dkb-rebuild.yml` also runs `npm run authority:drift`, so the same job that
+  lands the table re-reads its passages at their official sources.
