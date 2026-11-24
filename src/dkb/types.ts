@@ -190,6 +190,42 @@ export type MandatedTextEntry = {
   form?: { bold?: boolean; min_points?: number; statement: string };
 };
 
+/**
+ * A readability standard a user can assert, as the DKB carries it.
+ *
+ * Unlike `MandatedTextEntry` there is no verbatim passage and so no digest:
+ * what a standard contributes is a THRESHOLD and a scope, and a threshold is a
+ * number a person has to read in context. A statute moving from "40" to "40
+ * for policies issued after a date" is not a change a content hash could
+ * report usefully.
+ */
+export type ReadabilityStandardEntry = {
+  /** The id a user asserts: `--readability fl`. */
+  id: string;
+  name: string;
+  citation: string;
+  source_url: string;
+  /** YYYY-MM-DD. */
+  retrieved_at: string;
+  version: string;
+  /** What the statute covers, in its words. */
+  scope: string;
+  /** The minimum Flesch reading ease score, where the statute sets one. */
+  min_score?: number;
+  /** The score must be MORE than `min_score`, not at least it. */
+  min_exclusive?: boolean;
+  /** A table of contents is required above this length, or in every form. */
+  contents_over?: { words: number; pages: number } | "always";
+  /** The statute requires the document's sections to be captioned. */
+  captions_required?: boolean;
+  /** An amount above which the statute does not apply, in dollars. */
+  max_amount?: number;
+  /** Whether an index satisfies the contents requirement. */
+  index_ok: boolean;
+  /** A requirement of the statute this product does NOT measure. */
+  not_measured?: string;
+};
+
 export type DkbManifest = {
   /** e.g. `v2026-05-11-a1b2c3d`. */
   version: string;
@@ -210,6 +246,12 @@ export type DkbManifest = {
      * requirement, so an excerpt cannot stand in for one.
      */
     mandated_texts?: DkbFileRef;
+    /**
+     * Readability standards a user can assert (add-readability-measure task
+     * 3). Optional for the same reason as `mandated_texts`: the manifests
+     * already committed predate it and a released version is immutable.
+     */
+    readability_standards?: DkbFileRef;
     classifier_vocab: DkbFileRef;
     classifier_patterns: DkbFileRef;
   };

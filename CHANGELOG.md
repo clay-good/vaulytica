@@ -92,6 +92,48 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1013.0] — 2026-11-24
+
+### Added
+- **A `readability_standards` table in the DKB, with a build-time provenance
+  gate**, closing `add-readability-measure` task 3. Mirrors `mandated_texts`
+  (9.1010.0): written by `runBuild`, referenced in the manifest with its entry
+  count and SHA-256, all 14 jurisdictions shipping in it.
+
+  `assertReadabilityStandardsUsable` runs inside `runBuild` and refuses to
+  **write** a row lacking a citation, an official source, a read date, a
+  version history or a scope — plus two checks that are about honesty rather
+  than completeness:
+  - a row setting **no score, no contents requirement and no captions
+    requirement** is refused, because asserting it would do nothing at all;
+  - a row with **no score that records nothing it does not measure** is
+    refused, because a reader would be left with a citation and no obligation.
+
+  New York's § 5-702 is the row that second check exists for: it sets no
+  threshold, and what makes it usable is `captions_required` together with
+  `not_measured` naming the clear-and-coherent requirement the product does not
+  judge. A test asserts that row carries **no `min_score` field at all** rather
+  than a zero or a default a finding could quote.
+
+  `build.test.ts` asserts a **new** build always writes the table, so the
+  optional manifest field cannot silently go missing — the same guard
+  `mandated_texts` has, and for the same reason: a released DKB version's
+  content is immutable, so the field has to be optional for the manifests
+  already committed.
+
+### Changed
+- **No `content_sha256` and no drift check for a standard**, said in the module
+  rather than left as an apparent omission. A mandated text contributes a
+  verbatim passage, so a digest tells you the words moved. A standard
+  contributes a **threshold**, which is a number that has to be read in
+  context: a statute moving from "40" to "40 for policies issued after a date"
+  is not a change a content hash could report usefully.
+- The rows stay **curated**, for the reason this change has recorded
+  throughout: each jurisdiction was read at its legislature's own site by a
+  person, and three more were examined and excluded with written reasons. An
+  automatic fetcher would make a threshold whatever a URL served that week —
+  and the threshold is the number a finding quotes at an attorney.
+
 ## [9.1012.0] — 2026-11-24
 
 ### Fixed

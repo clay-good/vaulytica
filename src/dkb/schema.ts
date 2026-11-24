@@ -166,6 +166,7 @@ export const DkbManifestSchema = z.object({
     // always writes it — `build.test.ts` asserts that — so "absent" means
     // "built before 9.1010.0", never "a build that skipped it".
     mandated_texts: FileRef.optional(),
+    readability_standards: FileRef.optional(),
     classifier_vocab: FileRef,
     classifier_patterns: FileRef,
   }),

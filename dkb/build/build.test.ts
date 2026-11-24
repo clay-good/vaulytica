@@ -98,6 +98,15 @@ describe("offline build from curated sources", () => {
     ).toBeDefined();
     expect(result.manifest.files.mandated_texts!.entries).toBe(result.mandated_texts.length);
     expect(result.mandated_texts.length).toBeGreaterThan(0);
+    // Same for the readability standards, optional for the same reason.
+    expect(
+      result.manifest.files.readability_standards,
+      "a new build must write readability_standards",
+    ).toBeDefined();
+    expect(result.manifest.files.readability_standards!.entries).toBe(
+      result.readability_standards.length,
+    );
+    expect(result.readability_standards.length).toBeGreaterThan(10);
 
     // Every manifest ref must describe the exact bytes written to disk —
     // the shipped incident manifest recorded sha256("[]") for files that

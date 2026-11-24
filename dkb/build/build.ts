@@ -56,7 +56,11 @@ import {
 } from "../../src/dkb/schema.js";
 import { FETCHERS } from "./fetchers/index.js";
 import { assertMandatedTextsUsable, buildMandatedTexts } from "./mandated-texts.js";
-import type { MandatedTextEntry } from "../../src/dkb/types.js";
+import {
+  assertReadabilityStandardsUsable,
+  buildReadabilityStandards,
+} from "./readability-standards.js";
+import type { MandatedTextEntry, ReadabilityStandardEntry } from "../../src/dkb/types.js";
 import { FilesystemCache, defaultCacheRoot } from "./cache.js";
 import { RateLimitedHttp } from "./http.js";
 import { loadSourcesYaml } from "./sources.js";
@@ -107,6 +111,7 @@ export type BuildResult = {
   definitions: DefinitionTemplate[];
   dark_patterns: DarkPatternEntry[];
   mandated_texts: MandatedTextEntry[];
+  readability_standards: ReadabilityStandardEntry[];
 };
 
 /** Manifest `files` keys whose entries are legal knowledge (not classifier artifacts). */
@@ -252,6 +257,8 @@ export async function runBuild(opts: BuildOptions = {}): Promise<BuildResult> {
   // `npm run authority:drift` re-reads them on the scheduled path.
   const mandated_texts = buildMandatedTexts();
   assertMandatedTextsUsable(mandated_texts);
+  const readability_standards = buildReadabilityStandards();
+  assertReadabilityStandardsUsable(readability_standards);
 
   // --- Manifest: every ref is computed from the content written below ---
   const files = {
@@ -261,6 +268,7 @@ export async function runBuild(opts: BuildOptions = {}): Promise<BuildResult> {
     dark_patterns: makeFileRef("dkb-dark-patterns.json", dark_patterns),
     statutes: makeFileRef("dkb-statutes.json", statutes),
     mandated_texts: makeFileRef("dkb-mandated-texts.json", mandated_texts),
+    readability_standards: makeFileRef("dkb-readability-standards.json", readability_standards),
     classifier_vocab: makeFileRef("dkb-classifier-vocab.json", vocab),
     classifier_patterns: makeFileRef("dkb-classifier-patterns.json", patterns),
   };
@@ -288,6 +296,7 @@ export async function runBuild(opts: BuildOptions = {}): Promise<BuildResult> {
     await writeJsonFile(join(outDir, "dkb-dark-patterns.json"), dark_patterns);
     await writeJsonFile(join(outDir, "dkb-statutes.json"), statutes);
     await writeJsonFile(join(outDir, "dkb-mandated-texts.json"), mandated_texts);
+    await writeJsonFile(join(outDir, "dkb-readability-standards.json"), readability_standards);
     await writeJsonFile(join(outDir, "dkb-classifier-vocab.json"), vocab);
     await writeJsonFile(join(outDir, "dkb-classifier-patterns.json"), patterns);
   }
@@ -296,6 +305,7 @@ export async function runBuild(opts: BuildOptions = {}): Promise<BuildResult> {
     version,
     manifest,
     mandated_texts,
+    readability_standards,
     vocab,
     patterns,
     clauses,

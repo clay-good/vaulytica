@@ -2,7 +2,7 @@
 
 - [x] 1. Syllable counter: rules plus a committed exception list; measure against a 5,000-word reference list and commit the accuracy figure; version constant.
 - [x] 2. `src/report/readability.ts`: tokenization under the model act's rules over the tree (headings and captions excluded, signature block and TOC excluded), score, longest sentence, exclusions list; render-side block in JSON, DOCX appendix, HTML.
-- [~] 3. DKB `readability_standards`: read each state's statute at its official source (start with NY, FL, MI, ME, CO, TX, CA, WV, and the model-act states), record threshold, scope, TOC and type-size requirements; provenance gate.
+- [x] 3. DKB `readability_standards`: read each state's statute at its official source (start with NY, FL, MI, ME, CO, TX, CA, WV, and the model-act states), record threshold, scope, TOC and type-size requirements; provenance gate.
 - [x] 4. `READ-001`, `READ-002`, `READ-003` assertion-gated; register `readability-<state>` and `readability-ny-consumer`; CLI `--readability`; browser selector.
 - [x] 5. Fixtures: a policy under and over threshold, a long policy without a TOC, an uncaptioned lease; property test that the block never changes `result_hash`.
 - [x] 6. Docs: `reference.md` section, `/known-limits` sentence on sampling and exclusions not applied, `deadlines.md`-style note `readability.md` with the formula and the statute table.
@@ -243,3 +243,39 @@ ND, NE, DC, OK and `ny-consumer`). Of the three the task still named:
 So task 3 is complete for every jurisdiction that HAS a statutory threshold
 readable at an official source. Its DKB-table half stays open with
 `add-mandated-text-conformance` task 2, for the reason recorded there.
+
+## Progress — 9.1013.0 (the DKB table, closing task 3)
+
+The table and its build-time provenance gate are built, mirroring
+`mandated_texts` (9.1010.0). `dkb-readability-standards.json` is written by
+`runBuild` and referenced in the manifest with its entry count and SHA-256; all
+14 jurisdictions ship in it.
+
+`assertReadabilityStandardsUsable` runs inside `runBuild` and refuses to WRITE
+a row lacking a citation, an official source, a read date, a version history or
+a scope — and two checks that are about honesty rather than completeness:
+
+- a row that sets **no score, no contents requirement and no captions
+  requirement** is refused, because asserting it would do nothing at all;
+- a row with **no score that records nothing it does not measure** is refused,
+  because a reader would be left with a citation and no obligation. New York's
+  § 5-702 is the row this exists for: it sets no threshold, and what makes it
+  usable is `captions_required` plus `not_measured` naming the
+  clear-and-coherent requirement the product does not judge.
+
+A test asserts the score-less New York row carries **no `min_score` field at
+all** rather than a zero or a default a finding could quote, and `build.test.ts`
+asserts a NEW build always writes the table — so the optional manifest field
+cannot silently go missing, the same guard `mandated_texts` has.
+
+⚠️ Unlike a mandated text there is **no `content_sha256` and no drift check**.
+A standard contributes a threshold, not a passage, and a threshold is a number
+that has to be read in context: a statute moving from "40" to "40 for policies
+issued after a date" is not a change a content hash could report usefully. Said
+in the module rather than left as an apparent omission.
+
+The rows stay curated for the reason the change has recorded throughout: each
+jurisdiction was read at its legislature's own site by a person, and three more
+were examined and excluded with written reasons. An automatic fetcher would
+make a threshold whatever a URL served that week — and the threshold is the
+number a finding quotes at an attorney.
