@@ -77,19 +77,24 @@ describe("the analyze gate surface", () => {
     // as an exception with the reason, and the assertion will say so.
     // Declared, with the reason, and asserted USED below so a stale entry
     // fails here rather than quietly covering a gate that has since arrived.
-    const NEEDS_A_MODE_THE_ACTION_DOES_NOT_EXPOSE = new Map([
-      [
-        "fail-on-coherence-regression",
-        "needs a BASELINE round — a second set of documents, or a saved coherence artifact — which the Action's single `files` input does not model",
-      ],
-      // `fail-on-production-gap` WAS listed here, with the reason "belongs to
-      // `--production-qa`, a different mode". That reason was true and the
-      // conclusion was wrong: the flag's own comment in the CLI says it exists
-      // for "a CI check before a production goes out", and the Action is that
-      // check. 9.631.0 gave the Action both the mode and the gate, and this
-      // guard is what noticed the entry had gone stale — which is what the
-      // "asserted USED" rule below is for.
-    ]);
+    //
+    // 🥇 THE LIST IS EMPTY, and both entries it used to hold were WRONG rather
+    // than merely stale — each stated a true fact and drew a false conclusion
+    // from it, and this guard's "asserted USED" rule is what caught both.
+    //
+    //   - `fail-on-production-gap`: "belongs to `--production-qa`, a different
+    //     mode". True. But the flag's own comment in the CLI says it exists for
+    //     "a CI check before a production goes out", and the Action IS that
+    //     check. 9.631.0 gave the Action the mode and the gate together.
+    //   - `fail-on-coherence-regression`: "needs a BASELINE round, which the
+    //     Action's single `files` input does not model". Also true, and also
+    //     not a reason — the answer was to model it. 9.1002.0 gave the Action
+    //     `baseline`, `baseline-coherence` and `emit-coherence`.
+    //
+    // So "this gate needs something the Action does not expose" is never a
+    // reason on its own; it is a description of the work. An entry added here
+    // has to say why a CI consumer should not have the gate AT ALL.
+    const NEEDS_A_MODE_THE_ACTION_DOES_NOT_EXPOSE = new Map<string, string>([]);
     const exposes = (name: string): boolean => new RegExp(`^\\s{2}${name}:`, "m").test(actionYml);
     const missing = gateFlags()
       .map((f) => f.replace(/^--/, ""))

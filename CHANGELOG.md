@@ -47,6 +47,112 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1002.0] — 2026-11-23
+
+### Added
+- **The GitHub Action can reach 26 settings it could not reach before.** The
+  Action is the only surface a CI consumer has, and it declared 20 inputs
+  against an `analyze` parser that accepts 38 flags and a `compare` parser that
+  accepts 13. Everything the engine refuses to infer was unreachable: every
+  assertion (`state` overlays, privacy `regime`s, a `readability` statute, a
+  `court`'s filing format with `reply`, a `deadline-profile` with
+  `service-method`, the `estate-checks`, the `sec-exhibit` half of the
+  pre-disclosure scan), every derived register the export formats print
+  (`critical-dates`, `checklist`, `definitions`, the verification
+  `certificate`), the posture refinements (`role`, `deal-value`), `as-text`,
+  `emit-consistency`, the whole baseline comparison that answers "did this
+  round give ground?" (`baseline`, `baseline-coherence`, `emit-coherence`,
+  `fail-on-coherence-regression`), and the whole executed-copy conformity
+  surface (`executed`, `executed-set`, `fail-on-nonconformity`, plus
+  `confirm-pairing` and `fail-on-regression`). Each worked at a terminal and
+  none of them existed for a workflow.
+
+  Each input refuses what the CLI would refuse, but names the **input** rather
+  than the flag it becomes: `reply` without `court`, `service-method` without
+  `deadline-profile`, `certificate` without `out`, `fail-on-nonconformity`
+  without a mode, `executed` with `executed-set`, both baseline sources at
+  once, `fail-on-coherence-regression` with nothing to compare against, the six
+  ladder-scored inputs without `playbook-file`, and the three inputs
+  `executed-set` sets aside. A step that would have died on an argument error
+  naming a flag the caller never typed now says which input to change.
+
+  `--playbook-file` was also declared, documented, and appended only under
+  `analyze`: a `compare` run scored against the built-in playbook match however
+  the input was set. It now reaches `compare`, with `posture`.
+
+### Fixed
+- **`docs/ci-integration.md` said five of seven gates were reachable from the
+  Action.** `--fail-on-production-gap` had been reachable since 9.631.0 and the
+  prose had not caught up; the gate table now lists nine, all reachable, and
+  the new guard below fails the build if a tenth ships without an input.
+
+### Changed
+- **New guard: `tests/integration/action-flag-coverage.test.ts`.**
+  `action-input-reach.test.ts` asks whether every input the Action *declares*
+  reaches a flag. That is one-sided — it passes just as happily on an
+  `action.yml` that declares three inputs and leaves the rest of the CLI with
+  no CI path at all, which is the shape this repository shipped for months.
+  The new guard asserts the inverse: every flag `analyze` and `compare` parse
+  is either reachable through an input or named in an `OUT_OF_SCOPE` table with
+  a written reason. Two entries qualify today — `--help` (a workflow input that
+  makes the step do nothing is not a setting) and `--dkb` (the Action's
+  no-network guarantee rests on it reading the DKB it ships). A new flag fails
+  here until it is wired or classified.
+
+  It failed on 21 analyze flags and 5 compare flags when written, which is how
+  the list above was found rather than guessed.
+- **A sibling guard's declared exception was not stale but wrong.**
+  `cli-exit-code-contract.test.ts` has asked the same question of the *gate*
+  flags since 9.550.0, and holds each exception to being still true — which is
+  how it caught `fail-on-coherence-regression`, now reachable. Its exception
+  list is empty, and both entries it ever held had the same shape: a true fact
+  ("needs a baseline round the Action's single `files` input does not model")
+  and a false conclusion drawn from it. The answer in both cases was to model
+  it. The comment now says so, so "this needs something the Action does not
+  expose" cannot be entered as a reason again.
+- **26 new argv cases in `action-argv.test.ts`**, and three of them feed the
+  composed line to the **real parsers** (`resolveAnalyzeArgs`,
+  `parseCompareArgs`) and assert where each value landed. Composing a
+  plausible-looking command and composing one the CLI accepts are different
+  claims, and only the second is worth anything to a consumer.
+- `docs/ci-integration.md` gains a row per input, a closing-set example
+  (`executed-set` over two folders, gated on nonconformity) and a
+  round-over-round example (`baseline` with
+  `fail-on-coherence-regression`).
+- **`rule-scaling.test.ts` measures CPU time, not wall time.** 9.1001.0 moved
+  `fuzz-boundary.test.ts` to `process.cpuUsage()` for exactly this reason and
+  the change never reached this file, which asks the same question of the 1,946
+  rules. It failed a full-suite run at `SET-007: 12.9ms -> 449ms` on dot runs.
+
+  🥇 SET-007 is LINEAR, and that was established by measuring the curve rather
+  than by its passing in isolation — the sibling file records a case written
+  off as load twice that was a genuine O(n²), so a pass alone proves nothing.
+  On dot runs SET-007 costs 1.81x, 1.97x, 1.88x and 1.74x per doubling at 2k,
+  5k, 20k and 40k characters (55 ms at 1,000 to 2,763 ms at 40,000: 40x the
+  input for 50x the time). A quadratic reads 4x per doubling and compounds.
+
+  The red was then reproduced on demand rather than inferred: under twelve
+  spinning processes (load ~28) the wall form read x9.5, x9.7 and **x36.0**,
+  that sample being 12.9 ms -> 465 ms — the failing sample almost exactly. The
+  big run absorbs the scheduler wait while the small one is too short to, so
+  the ratio inflates from a denominator that never grows. The CPU form on the
+  same work read x8.7–x17.9, and with the small run sampled five times (it is
+  the denominator and the shorter measurement, so its spread is what moves the
+  ratio) the worst of six trials at load ~28 is x15.7 — 63% of the threshold.
+  The fixed gate passes 22/22 under that load.
+
+  ⚠️ **Proven end to end, which 9.1001.0's version of this fix was not.** An
+  injected `/[.\d]+(?:per annum|…)/` over the same sentences reads 1.6 ms ->
+  311 ms, x62.2 in CPU, and is caught. So the instrument separates a real
+  quadratic (x62) from linear work on a busy machine (x10–x15.7) with 4x of
+  margin. Those readings are pinned as verdict unit cases, since this CI cannot
+  carry a live timing assertion. The small-run floor also rose from 1 ms to
+  5 ms, matching the sibling, and its test now says what the floor actually
+  does — it BOUNDS what timer granularity can claim (a 0.01 ms denominator
+  reads x16,000 unfloored and x32 floored) rather than making a tiny
+  denominator safe; what keeps cheap rules out is the 150 ms floor on the big
+  run. The v3-extractor half of the file moved to CPU time too.
+
 ## [9.1001.0] — 2026-11-23
 
 ### Fixed

@@ -87,6 +87,120 @@ inputs:
     required: false
     default: "false"
 
+  # The assertions. Each switches on a body of rules that no document's own
+  # text can be read to request: nothing in a lease says which state's law a
+  # filer must satisfy, so the engine never guesses and the caller asserts.
+  # Until 9.1002.0 a CI consumer could not assert any of them.
+  state:
+    description: "analyze only: a two-letter state code (e.g. ca, ny, tx). Switches on that state's overlay rules — the statutory requirements that apply only there. Asserted, never inferred: nothing in a document says which state's law governs its form."
+    required: false
+    default: ""
+  regime:
+    description: "analyze only: comma list of privacy regimes to hold the documents to: ccpa,gdpr,gdpr-13,gdpr-14,co,va,tx,or. Asserted — which regimes reach a controller is a fact about the business, not about the text."
+    required: false
+    default: ""
+  readability:
+    description: "analyze only: a readability standard id (see docs/readability.md — fl, me, mi, mn, nv, oh, or, mt, wv, nd, ne, dc, ok). Holds the document to that state's minimum Flesch reading ease and its table-of-contents requirement. Without it the score is reported and no finding fires."
+    required: false
+    default: ""
+  estate-checks:
+    description: "analyze only: set to true to run the estate-formalities checks (execution requirements for wills and trusts) in addition to the ordinary rules."
+    required: false
+    default: ""
+  sec-exhibit:
+    description: "analyze only: set to true to add the SEC exhibit checks to the pre-disclosure scan — redaction markers without the first-page omission statement 17 C.F.R. § 229.601(b)(10)(iv) requires. Implies delivery."
+    required: false
+    default: ""
+  court:
+    description: "analyze only: a filing-format profile id (frap-default, ca9-appellate, cal-rules-8.204). Checks the brief against that court's length, type and cover requirements."
+    required: false
+    default: ""
+  reply:
+    description: "analyze only: set to true to read the brief as a REPLY rather than a principal brief, which the court profiles hold to a shorter length. Requires court."
+    required: false
+    default: ""
+  deadline-profile:
+    description: "analyze only: a deadline-computation profile id (frcp-6, cal-ccp-12) for the dates the documents set."
+    required: false
+    default: ""
+  service-method:
+    description: "analyze only: the method service was made by, which the deadline profile adds days for. Requires deadline-profile."
+    required: false
+    default: ""
+  critical-dates:
+    description: "analyze only: set to true to compute the critical-dates register (every dated obligation and its anchor). Needed by the dates-md, dates-ics and deadlines-ics formats."
+    required: false
+    default: ""
+  checklist:
+    description: "analyze only: set to true to compute the closing checklist. Needed by the checklist-md and checklist-csv formats."
+    required: false
+    default: ""
+  definitions:
+    description: "analyze only: set to true to compute the defined-terms report. Needed by the definitions-csv format."
+    required: false
+    default: ""
+  certificate:
+    description: "analyze only: set to true to write the verification certificate — the .docx that records what was run, against which authorities, and the hashes a later verify re-derives. Binary output, so it requires out."
+    required: false
+    default: ""
+  role:
+    description: "analyze only: which side of the deal the playbook speaks for, when its negotiation_positions are written per role. Requires playbook-file."
+    required: false
+    default: ""
+  deal-value:
+    description: "analyze only: the deal's value in dollars, which a playbook's positions may scale against (e.g. a liability cap as a multiple). Requires playbook-file."
+    required: false
+    default: ""
+  as-text:
+    description: "analyze only: set to true to read every input as UTF-8 text whatever its extension, instead of by format. For a repository that keeps contracts under an extension this tool does not recognize."
+    required: false
+    default: ""
+
+  # The regression gate: this round's posture against the last one. The CI
+  # question "did this PR give ground?" needed --baseline, and no input reached it.
+  baseline:
+    description: "analyze only: the previous round's documents (path, glob or directory) to score this round against, reporting each position that moved. Requires posture (and so playbook-file). Mutually exclusive with baseline-coherence."
+    required: false
+    default: ""
+  baseline-coherence:
+    description: "analyze only: a coherence.json emitted by an earlier run, as the baseline, instead of re-analyzing its documents. Requires posture. Mutually exclusive with baseline."
+    required: false
+    default: ""
+  fail-on-coherence-regression:
+    description: "analyze only: set to true to exit non-zero when a posture position moved against you since the baseline. Requires baseline or baseline-coherence."
+    required: false
+    default: ""
+  emit-coherence:
+    description: "analyze only: a path to write this round's coherence.json to, for a later run to use as its baseline-coherence. Requires posture."
+    required: false
+    default: ""
+  emit-consistency:
+    description: "analyze only: a path to write the cross-document consistency report to as JSON. Implies the bundle run."
+    required: false
+    default: ""
+
+  # compare's remaining modes and gates.
+  executed:
+    description: "compare only: set to true to read 'base' as the final draft and 'revised' as its SIGNED copy, reporting what differs once execution's own fills (signature lines, dates written into blanks, execution legends) are set aside, with a verdict."
+    required: false
+    default: ""
+  executed-set:
+    description: "compare only: set to true to read 'base' and 'revised' as two FOLDERS — the finals and the signed copies — pairing each by the document's own title. Unpaired files and tied titles are listed, never guessed. Conformity only: fail-on, posture and fail-on-regression do not apply."
+    required: false
+    default: ""
+  fail-on-nonconformity:
+    description: "compare only: set to true to exit non-zero when a signed copy differs from its final outside the execution allowance. Requires executed or executed-set."
+    required: false
+    default: ""
+  confirm-pairing:
+    description: "compare only: set to true to confirm that two documents of different families are meant to be compared. Without it a cross-family compare refuses rather than producing a diff of two unrelated documents."
+    required: false
+    default: ""
+  fail-on-regression:
+    description: "compare only: set to true to exit non-zero when a posture position moved against you between the two versions. Requires posture (and so playbook-file)."
+    required: false
+    default: ""
+
 runs:
   using: "composite"
   steps:
@@ -129,6 +243,32 @@ runs:
         SUMMARY: ${{ inputs.summary }}
         PRODUCTION_QA: ${{ inputs.production-qa }}
         FAIL_ON_PRODUCTION_GAP: ${{ inputs.fail-on-production-gap }}
+        STATE: ${{ inputs.state }}
+        REGIME: ${{ inputs.regime }}
+        READABILITY: ${{ inputs.readability }}
+        ESTATE_CHECKS: ${{ inputs.estate-checks }}
+        SEC_EXHIBIT: ${{ inputs.sec-exhibit }}
+        COURT: ${{ inputs.court }}
+        REPLY: ${{ inputs.reply }}
+        DEADLINE_PROFILE: ${{ inputs.deadline-profile }}
+        SERVICE_METHOD: ${{ inputs.service-method }}
+        CRITICAL_DATES: ${{ inputs.critical-dates }}
+        CHECKLIST: ${{ inputs.checklist }}
+        DEFINITIONS: ${{ inputs.definitions }}
+        CERTIFICATE: ${{ inputs.certificate }}
+        ROLE: ${{ inputs.role }}
+        DEAL_VALUE: ${{ inputs.deal-value }}
+        AS_TEXT: ${{ inputs.as-text }}
+        BASELINE: ${{ inputs.baseline }}
+        BASELINE_COHERENCE: ${{ inputs.baseline-coherence }}
+        FAIL_ON_COHERENCE_REGRESSION: ${{ inputs.fail-on-coherence-regression }}
+        EMIT_COHERENCE: ${{ inputs.emit-coherence }}
+        EMIT_CONSISTENCY: ${{ inputs.emit-consistency }}
+        EXECUTED: ${{ inputs.executed }}
+        EXECUTED_SET: ${{ inputs.executed-set }}
+        FAIL_ON_NONCONFORMITY: ${{ inputs.fail-on-nonconformity }}
+        CONFIRM_PAIRING: ${{ inputs.confirm-pairing }}
+        FAIL_ON_REGRESSION: ${{ inputs.fail-on-regression }}
       run: |
         set -euo pipefail
         args=("$CMD")
@@ -143,7 +283,61 @@ runs:
             echo "::error::compare requires both 'base' and 'revised' inputs, or 'redline'" >&2
             exit 1
           else
+            # The closing-set modes read the same two slots as something else:
+            # `executed` makes them a final and its signed copy, `executed-set`
+            # two folders of them. The flag goes BEFORE the positionals, which
+            # is the order the CLI's usage prints and the parser expects.
+            if [ "${EXECUTED_SET:-}" = "true" ] && [ "${EXECUTED:-}" = "true" ]; then
+              echo "::error::'executed' and 'executed-set' are different modes; set one" >&2
+              exit 1
+            fi
+            if [ "${EXECUTED_SET:-}" = "true" ]; then
+              args+=(--executed-set)
+            elif [ "${EXECUTED:-}" = "true" ]; then
+              args+=(--executed)
+            fi
             args+=("$BASE" "$REVISED")
+          fi
+          # Conformity's own gate. It needs one of the two modes above, and the
+          # CLI says so rather than guessing, so the input is refused on its own
+          # here instead of reaching the binary as an argument error.
+          if [ "${FAIL_ON_NONCONFORMITY:-}" = "true" ]; then
+            if [ "${EXECUTED:-}" != "true" ] && [ "${EXECUTED_SET:-}" != "true" ]; then
+              echo "::error::'fail-on-nonconformity' requires 'executed' or 'executed-set'" >&2
+              exit 1
+            fi
+            args+=(--fail-on-nonconformity)
+          fi
+          # Two documents of different families: asserted, never assumed.
+          [ "${CONFIRM_PAIRING:-}" = "true" ] && args+=(--confirm-pairing)
+          # `--executed-set` checks conformity and nothing else — the CLI
+          # rejects --posture, --fail-on and --fail-on-regression beside it. Say
+          # so here, naming the input, rather than letting the step die on an
+          # argument error that names a flag the caller never typed.
+          if [ "${EXECUTED_SET:-}" = "true" ]; then
+            for bad in FAIL_ON:fail-on POSTURE:posture FAIL_ON_REGRESSION:fail-on-regression; do
+              name="${bad%%:*}"
+              value="${!name:-}"
+              if [ -n "$value" ] && [ "$value" != "false" ]; then
+                echo "::error::'executed-set' checks conformity only; '${bad#*:}' does not apply" >&2
+                exit 1
+              fi
+            done
+          fi
+          # The team's own ladder, on compare as on analyze: `--playbook-file`
+          # was declared and appended only under analyze, so a compare run
+          # scored against the built-in match however the input was set.
+          if [ -n "${PLAYBOOK_FILE:-}" ]; then
+            args+=(--playbook-file "$PLAYBOOK_FILE")
+            # Did the revision give ground? Needs the ladder to score against.
+            if [ "${FAIL_ON_REGRESSION:-}" = "true" ]; then
+              args+=(--posture --fail-on-regression)
+            elif [ "${POSTURE:-}" = "true" ]; then
+              args+=(--posture)
+            fi
+          elif [ "${FAIL_ON_REGRESSION:-}" = "true" ]; then
+            echo "::error::'fail-on-regression' requires 'playbook-file'" >&2
+            exit 1
           fi
         else
           if [ -z "$FILES" ]; then
@@ -172,9 +366,56 @@ runs:
         if [ "$CMD" = "analyze" ]; then
           if [ -n "$FAIL_ON_DELIVERY" ]; then
             args+=(--delivery --fail-on-delivery "$FAIL_ON_DELIVERY")
-          elif [ "$DELIVERY" = "true" ]; then
+          elif [ "$DELIVERY" = "true" ] || [ "${SEC_EXHIBIT:-}" = "true" ]; then
             args+=(--delivery)
           fi
+          # The SEC exhibit half of the scan: redaction markers with no
+          # first-page omission statement. It is a sub-check of the delivery
+          # scan, so it turns the scan on rather than failing beside it.
+          [ "${SEC_EXHIBIT:-}" = "true" ] && args+=(--sec-exhibit)
+        fi
+        # The assertions. Each names a body of law the caller says applies; the
+        # engine never infers one, so an unset input means those rules do not
+        # run. All analyze-only, and each independent of the others.
+        if [ "$CMD" = "analyze" ]; then
+          [ -n "${STATE:-}" ] && args+=(--state "$STATE")
+          [ -n "${REGIME:-}" ] && args+=(--regime "$REGIME")
+          [ -n "${READABILITY:-}" ] && args+=(--readability "$READABILITY")
+          [ "${ESTATE_CHECKS:-}" = "true" ] && args+=(--estate-checks)
+          [ "${AS_TEXT:-}" = "true" ] && args+=(--as-text)
+          # A court profile, and the shorter length a reply is held to. `--reply`
+          # means nothing on its own, so it goes on only with the profile.
+          if [ -n "${COURT:-}" ]; then
+            args+=(--court "$COURT")
+            [ "${REPLY:-}" = "true" ] && args+=(--reply)
+          elif [ "${REPLY:-}" = "true" ]; then
+            echo "::error::'reply' requires 'court'" >&2
+            exit 1
+          fi
+          # The deadline profile, and the method service was made by, which only
+          # that profile adds days for.
+          if [ -n "${DEADLINE_PROFILE:-}" ]; then
+            args+=(--deadline-profile "$DEADLINE_PROFILE")
+            [ -n "${SERVICE_METHOD:-}" ] && args+=(--service-method "$SERVICE_METHOD")
+          elif [ -n "${SERVICE_METHOD:-}" ]; then
+            echo "::error::'service-method' requires 'deadline-profile'" >&2
+            exit 1
+          fi
+          # The derived registers. Each is computed only when asserted, and the
+          # formats that print them are inert without it — a workflow asking for
+          # `dates-ics` and not `critical-dates` got an empty calendar.
+          [ "${CRITICAL_DATES:-}" = "true" ] && args+=(--critical-dates)
+          [ "${CHECKLIST:-}" = "true" ] && args+=(--checklist)
+          [ "${DEFINITIONS:-}" = "true" ] && args+=(--definitions)
+          # The verification certificate is a .docx, so it needs somewhere to go.
+          if [ "${CERTIFICATE:-}" = "true" ]; then
+            if [ -z "${OUT:-}" ]; then
+              echo "::error::'certificate' writes a .docx and requires 'out'" >&2
+              exit 1
+            fi
+            args+=(--certificate)
+          fi
+          [ -n "${EMIT_CONSISTENCY:-}" ] && args+=(--emit-consistency "$EMIT_CONSISTENCY")
         fi
         # The team's own ladder. --posture needs the playbook file to score
         # against, so the flags only go on together.
@@ -190,6 +431,45 @@ runs:
           if [ "$FAIL_ON_DIVERGENCE" = "true" ]; then
             args+=(--fail-on-divergence)
           fi
+          # Which side the ladder speaks for, and the figure its positions scale
+          # against. Both require the playbook file, which is why they sit here.
+          [ -n "${ROLE:-}" ] && args+=(--role "$ROLE")
+          [ -n "${DEAL_VALUE:-}" ] && args+=(--deal-value "$DEAL_VALUE")
+          # This round against the last one — the question a pull request asks.
+          # Both baseline sources require --posture (which the branch above has
+          # already added when asked) and exclude each other.
+          if [ -n "${BASELINE:-}" ] && [ -n "${BASELINE_COHERENCE:-}" ]; then
+            echo "::error::set 'baseline' or 'baseline-coherence', not both" >&2
+            exit 1
+          fi
+          if [ -n "${BASELINE:-}" ] || [ -n "${BASELINE_COHERENCE:-}" ] \
+            || [ -n "${EMIT_COHERENCE:-}" ]; then
+            # --posture is what produces the coherence these read and write, and
+            # the CLI refuses all three without it.
+            case " ${args[*]} " in
+              *" --posture "*) ;;
+              *) args+=(--posture) ;;
+            esac
+          fi
+          [ -n "${BASELINE:-}" ] && args+=(--baseline "$BASELINE")
+          [ -n "${BASELINE_COHERENCE:-}" ] && args+=(--baseline-coherence "$BASELINE_COHERENCE")
+          [ -n "${EMIT_COHERENCE:-}" ] && args+=(--emit-coherence "$EMIT_COHERENCE")
+          if [ "${FAIL_ON_COHERENCE_REGRESSION:-}" = "true" ]; then
+            if [ -z "${BASELINE:-}" ] && [ -z "${BASELINE_COHERENCE:-}" ]; then
+              echo "::error::'fail-on-coherence-regression' requires 'baseline' or 'baseline-coherence'" >&2
+              exit 1
+            fi
+            args+=(--fail-on-coherence-regression)
+          fi
+        elif [ "$CMD" = "analyze" ] && { [ -n "${ROLE:-}" ] || [ -n "${DEAL_VALUE:-}" ] \
+          || [ -n "${BASELINE:-}" ] || [ -n "${BASELINE_COHERENCE:-}" ] \
+          || [ -n "${EMIT_COHERENCE:-}" ] \
+          || [ "${FAIL_ON_COHERENCE_REGRESSION:-}" = "true" ]; }; then
+          # All six score against the team's own ladder, and the CLI refuses
+          # each one without it. Name the missing input rather than letting the
+          # binary name a flag the caller never typed.
+          echo "::error::'role', 'deal-value', 'baseline', 'baseline-coherence', 'emit-coherence' and 'fail-on-coherence-regression' all require 'playbook-file'" >&2
+          exit 1
         fi
         # Cross-document checks read the inputs as one bundle. analyze-only, and
         # asserted rather than inferred: a directory of unrelated documents

@@ -33,3 +33,16 @@ Task 1, the text-layer half: `executed-cross-format.test.ts` checks a Word final
 - A PDF joins a short line to the next where Word keeps two paragraphs. A changed line that is its old self followed, word for word, by the lines after it is a join, set aside as "the same words, split into paragraphs differently"; so is a set of differences whose word streams, in document order, are equal. A moved paragraph or a changed word still counts.
 - The signature-block count read only lines that START with "By:"; a joined "… By: /s/ …" is now counted.
 Measured: 83 of 91 identical, every one of 52 changed figures caught. The eight that still differ are declared in the test with reasons, and the test fails if any becomes identical. Five are the test renderer setting an all-caps line past the page edge (pdf.js drops the glyph, so the PDF really lacks it). Three are joins that cross an execution line, reported rather than reconciled. Open: the image-only scan fixture (task 1's last item) and task 4.
+
+## Progress — 9.1002.0 (the Action reaches it)
+
+Part of task 5. `compare --executed` and `--executed-set` shipped at 9.968.0
+and 9.977.0 on the CLI, the MCP server and the tab, and had no CI path at all:
+`action.yml` declared neither mode nor the `--fail-on-nonconformity` gate, so
+the check written for the closing table could not run in a workflow. Now four
+inputs — `executed`, `executed-set`, `fail-on-nonconformity`, and
+`confirm-pairing` beside them — with the Action refusing, by input name, what
+the CLI refuses by flag: both modes at once, the gate without a mode, and the
+three inputs `--executed-set` sets aside. `docs/ci-integration.md` carries a
+closing-set workflow. `tests/integration/action-flag-coverage.test.ts` fails
+the build if a later compare flag ships with no input.

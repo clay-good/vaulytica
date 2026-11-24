@@ -118,5 +118,13 @@ has no guard of its own.
 
 Still open: task 1's 5,000-word reference (needs a licensed pronunciation
 dictionary), task 3's remaining states (New York's site refuses automated
-reads; California not located), `READ-003`, the DKB table, the MCP server and
-the Action (which expose no assertion-gated pack at all), and task 7.
+reads; California not located), `READ-003`, the DKB table, and task 7.
+
+## Progress — 9.1002.0 (the Action reaches it)
+
+Part of task 4: `--readability` is now a GitHub Action input of the same name,
+with `state`, `regime`, `court`, `deadline-profile`, `estate-checks` and the
+rest of the assertions — the Action had exposed no assertion-gated pack at all,
+and `tests/integration/action-flag-coverage.test.ts` now fails the build if a
+new assertion flag ships without an input. The MCP server already had it. Still
+open on task 4: the browser's own selector.
