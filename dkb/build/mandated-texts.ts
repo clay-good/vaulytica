@@ -80,7 +80,15 @@ export function mandatedTextDefects(
   return out;
 }
 
-/** The committed rows as the DKB table, each variant carrying its digest. */
+/**
+ * The committed rows as the DKB table, each variant carrying its digest.
+ *
+ * ⚠️ The sort pins its locale. `determinism-guard` scans `src/` and
+ * `tools/cli/` and would not have caught it here — and here it matters MORE:
+ * this order is the written file's byte order, and the manifest records that
+ * file's SHA-256, so an unpinned sort would make the DKB's own hash depend on
+ * the host's locale.
+ */
 export function buildMandatedTexts(): MandatedTextEntry[] {
   return MANDATED_TEXTS.map((row) => ({
     id: row.id,
@@ -96,7 +104,7 @@ export function buildMandatedTexts(): MandatedTextEntry[] {
       content_sha256: digest(v.text),
     })),
     ...(row.form ? { form: row.form } : {}),
-  })).sort((a, b) => a.id.localeCompare(b.id));
+  })).sort((a, b) => a.id.localeCompare(b.id, "en"));
 }
 
 /**

@@ -132,11 +132,17 @@ export default defineConfig({
       // the scope guard is concerned, and including it costs nothing: the suite
       // is 11 fast unit tests.
       "src/report/export-blobs.test.ts",
-      // The critical-dates register's three suites. It joined the mutated set
+      // The critical-dates register's suites. It joined the mutated set
       // in 9.568.0: the arithmetic behind every date an attorney acts on.
       "src/report/critical-dates-kind.test.ts",
       "src/report/critical-dates-responsible.test.ts",
       "src/report/critical-dates.test.ts",
+      // DDL-002's suite (9.1011.0). It drives `buildConflictNotes` through the
+      // real register, and three of its five cases are the exclusions that
+      // keep the note from accusing a document falsely — a mutant that drops
+      // the different-parties check, the unattributed-row skip or the
+      // assertion gate is killed by one of them.
+      "tests/integration/deadline-conflict-note.test.ts",
       "src/extract/sections.test.ts",
       // Reaches `src/extract/dates.ts` for the named-anchor date a two-column
       // table flattens to a pipe. Unit-speed (~130ms), so unlike the

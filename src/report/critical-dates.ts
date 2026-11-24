@@ -122,7 +122,7 @@ export type DeadlineResolution = { profile: DeadlineProfile; service_method?: Se
  * lives OUTSIDE `critical_dates_hash` (the hash is over `register` only).
  */
 export type DeadlineNote = {
-  code: "DDL-001";
+  code: "DDL-001" | "DDL-002";
   severity: "info";
   title: string;
   detail: string;
@@ -162,6 +162,68 @@ function buildDeadlineNotes(rows: readonly CriticalDate[]): DeadlineNote[] {
       severity: "info",
       title: `${rolled.length} deadline${rolled.length === 1 ? " falls" : "s fall"} on a non-court day before rolling forward`,
       detail: `The document's own date math lands on a weekend or holiday; the selected court rule rolls it to the next court day: ${examples}. Confirm the intended deadline.`,
+    },
+  ];
+}
+
+/**
+ * DDL-002 — two clauses imply CONFLICTING dates for one obligation.
+ *
+ * The defect a reader cannot see by reading either clause alone. A document
+ * says the cure window is ten days in § 8.2 and thirty in the notice
+ * provision; both resolve, both look right in isolation, and the register
+ * holds two rows whose `computed_date` differ for the same duty of the same
+ * party. Whichever a party relies on, the other is an argument against them.
+ *
+ * "One obligation" is the party plus the KIND of deadline — a cure window for
+ * the Supplier is one obligation however many clauses mention it. Deliberately
+ * NOT grouped by trigger text, which differs between the very clauses this is
+ * meant to compare.
+ *
+ * ⚠️ Conservative on purpose, because this note accuses a document of
+ * contradicting itself:
+ *   - a row with no `responsible` party is skipped, since two unattributed
+ *     rows may well belong to different parties;
+ *   - a `window` row is skipped: a range is not a single date, so a date
+ *     inside it is not a conflict;
+ *   - only RESOLVED rows with a `computed_date` are compared.
+ */
+function buildConflictNotes(rows: readonly CriticalDate[]): DeadlineNote[] {
+  const byObligation = new Map<string, Map<string, CriticalDate[]>>();
+  for (const r of rows) {
+    if (!r.resolved || !r.computed_date || r.window) continue;
+    if (!r.responsible.trim()) continue;
+    const key = `${r.responsible.toLowerCase().replace(/\s+/g, " ").trim()}|${r.kind}`;
+    const dates = byObligation.get(key) ?? new Map<string, CriticalDate[]>();
+    dates.set(r.computed_date, [...(dates.get(r.computed_date) ?? []), r]);
+    byObligation.set(key, dates);
+  }
+  const conflicts = [...byObligation.entries()].filter(([, dates]) => dates.size > 1);
+  if (conflicts.length === 0) return [];
+  const described = conflicts
+    .slice(0, 4)
+    .map(([key, dates]) => {
+      const rows_ = [...dates.values()].flat();
+      // The party as the DOCUMENT writes it. The grouping key is lowercased so
+      // "Supplier" and "supplier" are one obligation, but printing the key put
+      // a lowercased party name in front of a reader.
+      const party = rows_[0]!.responsible;
+      const kind = key.slice(key.indexOf("|") + 1).replace(/-/g, " ");
+      const each = [...dates.entries()]
+        // Pinned locale: an unpinned sort orders by the HOST's locale, so
+        // the note's wording could differ between machines.
+        .sort(([a], [b]) => a.localeCompare(b, "en"))
+        .map(([date, rs]) => `${date} (from "${rs[0]!.trigger}")`)
+        .join(" and ");
+      return `the ${kind} for ${party} resolves to ${each}`;
+    })
+    .join("; ");
+  return [
+    {
+      code: "DDL-002",
+      severity: "info",
+      title: `${conflicts.length} obligation${conflicts.length === 1 ? " has" : "s have"} clauses implying different dates`,
+      detail: `Two or more clauses give the same party's same deadline different dates: ${described}. Both resolve, so neither reads as wrong on its own; decide which governs.`,
     },
   ];
 }
@@ -868,7 +930,9 @@ export async function buildCriticalDates(
   const resolved_count = rows.filter((r) => r.resolved).length;
   const critical_dates_hash = await sha256Hex(stableStringify({ register: rows }));
   // DDL drafting notes — advisory, only when a profile was asserted; outside the hash.
-  const deadline_notes = deadline ? buildDeadlineNotes(rows) : [];
+  // Both DDL notes are advisory, computed only under an asserted deadline
+  // profile, and outside `critical_dates_hash` (the hash is over `register`).
+  const deadline_notes = deadline ? [...buildDeadlineNotes(rows), ...buildConflictNotes(rows)] : [];
   return {
     register: rows,
     resolved_count,

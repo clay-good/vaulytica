@@ -92,6 +92,94 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1011.0] — 2026-11-23
+
+### Added
+- **`DDL-002` — two clauses implying conflicting dates for one obligation.**
+  The defect a reader cannot see by reading either clause alone: the same
+  party's same deadline given two different dates in two places, both
+  resolving, each reading correctly in isolation. Whichever a party relies on,
+  the other is an argument against them.
+
+  It had been deferred on the ground that both DDL findings "need the resolved
+  register available inside the engine run", requiring either "building the
+  register before the engine" or "a second post-run pass — a pipeline
+  reordering best done as its own change". **`DDL-001` then shipped without any
+  of that**, as a register note: advisory, gated on an asserted
+  `--deadline-profile`, outside `critical_dates_hash`. That dissolved the
+  premise — the reordering was only needed to make these *engine rules*, and
+  neither needs to be one. `DDL-002` follows the same path.
+
+  Verified end to end on a document whose cure window is 10 days in one clause
+  and 30 in another: the note names both dates, both triggers and the party,
+  and says "decide which governs" rather than picking one.
+
+  ⚠️ Conservative on purpose, because it accuses a document of contradicting
+  itself, and each exclusion has a test. **Two different parties are not a
+  conflict** — asymmetric cure windows are ordinary drafting, and that is the
+  obvious false positive. A row with no attributable party is skipped, since
+  two unattributed rows may bind different parties. A date *range* is skipped,
+  because a single date inside a range is not a conflict. Unresolved rows are
+  never compared. "One obligation" is the party plus the *kind* of deadline,
+  deliberately not the trigger text — which is what differs between the very
+  clauses being compared.
+
+### Fixed
+- 🚨 **A determinism defect in the new note, caught by the repository's own
+  guard.** `DDL-002` sorted its dates with a bare `localeCompare`, which orders
+  by the HOST's locale — so the note's wording could differ between machines,
+  in a product whose premise is byte-identical output.
+  `determinism-guard.test.ts` failed the gate on it. Locale pinned to `"en"`,
+  as every other sort in the tree does.
+
+  The same hazard existed in `dkb/build/mandated-texts.ts`, which the guard
+  does **not** scan (it reads `src/` and `tools/cli/`) — and there it matters
+  more, because that sort is the written file's byte order and the manifest
+  records that file's SHA-256. An unpinned sort would have made the DKB's own
+  hash depend on the builder's locale. Pinned, with a comment saying why the
+  guard would not have caught it.
+
+- **`DDL-002`'s suite was outside the mutation scope.** `mutation-scope.test.ts`
+  failed because a test importing a mutated module must be declared, and
+  `critical-dates.ts` is in the mutated set. It is now listed with the reason:
+  three of its five cases are the exclusions that keep the note from accusing a
+  document falsely, so a mutant dropping the different-parties check, the
+  unattributed-row skip or the assertion gate is killed by one of them.
+
+- 🚨 **Two further mistakes of my own, both caught by the tests I was writing:**
+  1. I asserted that the profiled and **unprofiled** registers hash
+     identically. False — asserting a profile adds `deadline_steps`,
+     `deadline_profile_id` and `deadline_calendar_version` to the **rows**, and
+     the rows are what the hash covers. The profile is *supposed* to move the
+     hash, because it changes the resolved dates. What `DDL-002` must not do is
+     become a register row or reach the hash, and that is what is pinned
+     instead.
+  2. The note printed the party **lowercased** ("supplier"), because it
+     displayed the grouping key rather than the document's own wording. The key
+     is lowercased so "Supplier" and "supplier" are one obligation; the note
+     now shows the party as the document writes it.
+
+- **`add-negotiation-ladder-playbooks` tasks 1, 2 and 5 were marked partial
+  with reasons that tasks 3 and 4 had already superseded.** The Deviations
+  section said "Deal-size bands REMAIN DEFERRED" directly above a `[x]` task 4
+  reading "Deal-size band resolution (both paths DONE)". A reader would have
+  concluded that role resolution and deal-size bands were unbuilt. They are
+  built: `party_roles`/`role_variants` with `resolvePositionsForRole` and
+  `--role`, `size_bands`/`min_value` with `resolvePositionsForDealValue`,
+  `--deal-value` and `src/extract/deal-value.ts` (26 tests), and the sheet
+  rendering "met rung", "Deal-size band" and "Your approved fallback" in DOCX
+  with matching Markdown and CSV columns (11 tests).
+
+  This is the inverse of the usual stale-record defect — not a claim that
+  something works when it does not, but a claim that something is missing when
+  it ships. It is still a false record, and it was costing the next session a
+  re-derivation.
+
+### Changed
+- `docs/deadlines.md` gains a "Drafting notes the register draws" section
+  covering both `DDL-001` and `DDL-002`, what `DDL-002` deliberately does not
+  report, and that the notes sit outside `critical_dates_hash`.
+
 ## [9.1010.0] — 2026-11-23
 
 ### Added

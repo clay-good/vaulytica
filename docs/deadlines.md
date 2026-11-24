@@ -43,5 +43,30 @@ and its `critical_dates_hash` are byte-identical to before this feature.
   the rules above are day-counting rules, and a contract's month-term deadline
   is a contract-interpretation question, not FRCP arithmetic.
 
+## Drafting notes the register draws
+
+With a profile asserted, the register also carries `deadline_notes` — advisory
+observations about the document's own date math, **outside
+`critical_dates_hash`** and never findings against a rule:
+
+| Note | What it says |
+| --- | --- |
+| `DDL-001` | The document's own math lands on a weekend or holiday, so the selected court rule rolls it forward. The drafter chose a period that expires on a non-court day. |
+| `DDL-002` | **Two clauses imply different dates for one obligation** — the same party's same deadline, given two dates in two places. Both resolve, so neither reads as wrong on its own. |
+
+`DDL-002` is the one a reader cannot catch by reading either clause: a cure
+window of ten days in one provision and thirty in another both compute
+correctly and disagree. "One obligation" is the party plus the kind of
+deadline, not the clause wording — which is what differs between the very
+clauses being compared.
+
+It is deliberately conservative, because the note says a document contradicts
+itself. Two **different** parties with different cure windows is ordinary
+asymmetric drafting and draws nothing; a deadline with no attributable party is
+skipped, since two unattributed clauses may bind different parties; a date
+*range* is skipped, because a single date inside a range is not a conflict; and
+unresolved rows are never compared. The note names both dates and both
+triggers, and says to decide which governs rather than choosing one.
+
 Court and calendar data (`src/deadlines/`) carry a `retrieved_at` per entry and
 are versioned; content changes are releases, never silent edits.
