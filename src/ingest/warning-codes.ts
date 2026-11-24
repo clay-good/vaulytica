@@ -25,6 +25,17 @@ export type IngestWarningCode =
   | "empty"
   /** A scan that was read through OCR; the text may be wrong. */
   | "ocr"
+  /**
+   * A scan whose text layer is thin, read WITHOUT OCR: some pages yielded no
+   * words at all, so the text is INCOMPLETE rather than merely uncertain.
+   *
+   * 🚨 This used to be reported as `ocr`, because the sentence explaining that
+   * OCR was unavailable contains the word "OCR" and `codeOf` matched on that.
+   * So a file where OCR never ran, and 60% of whose pages yielded nothing, was
+   * labelled "read through OCR" — a caveat about accuracy standing in for a
+   * fact about coverage. Anything sorting on these codes under-reported it.
+   */
+  | "partial-text-layer"
   /** Tracked changes, analyzed as if every change were accepted. */
   | "tracked-changes"
   /** Not English: the rules did not read most of it. */
@@ -41,6 +52,9 @@ function codeOf(message: string, source: IngestResult["source"]): IngestWarningC
   if (message.startsWith("Read as plain text.")) return "plain-text";
   if (message.startsWith("This document has tracked changes")) return "tracked-changes";
   if (message.startsWith("This document does not read as English")) return "not-english";
+  // Before the generic OCR test: this sentence SAYS OCR was unavailable, so a
+  // bare /\bOCR\b/ claims the opposite of what it reads.
+  if (/OCR is not available/.test(message)) return "partial-text-layer";
   if (/\bOCR\b/.test(message)) return "ocr";
   return "other";
 }
@@ -58,6 +72,10 @@ export const NOT_READ_CODES: ReadonlySet<IngestWarningCode> = new Set(["no-text-
 /** Codes that mean it was read, and the findings may be incomplete or wrong. */
 export const CAVEAT_CODES: ReadonlySet<IngestWarningCode> = new Set([
   "ocr",
+  // Some of the file WAS read, so it does not belong in NOT_READ_CODES; but
+  // what reached the rules is a fraction of the document, which is why
+  // `checkConformity` refuses to return a verdict on it.
+  "partial-text-layer",
   "tracked-changes",
   "not-english",
   "other",

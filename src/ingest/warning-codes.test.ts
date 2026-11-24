@@ -14,7 +14,7 @@ import {
   ingestWarningCodes,
   type IngestWarningCode,
 } from "./warning-codes.js";
-import { scannedPdf } from "../../tests/integration/_mcp/pdf.js";
+import { mixedLayerPdf, scannedPdf } from "../../tests/integration/_mcp/pdf.js";
 
 const ENGLISH =
   "This Agreement is made between the parties. Each party shall keep the other's information confidential and shall not disclose it to any third party without consent.";
@@ -43,6 +43,25 @@ describe("ingest warning codes", () => {
     );
     expect(r.word_count).toBe(0);
     expect(ingestWarningCodes(r)).toContain("no-text-layer");
+  }, 30_000);
+
+  it("a thin text layer read WITHOUT OCR is `partial-text-layer`, not `ocr`", async () => {
+    // 🚨 The sentence explaining that OCR was UNAVAILABLE contains the word
+    // "OCR", so a bare /\bOCR\b/ coded it as "read through OCR" — a caveat
+    // about accuracy standing in for a fact about coverage. Here one page of
+    // four carries words and three are image-only, so most of the document
+    // never reached the rules.
+    const bytes = mixedLayerPdf("CONSULTING AGREEMENT between Acme and Jordan Lee dated June 2026");
+    const r = await ingestPdfBuffer(
+      bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer,
+      { allowOcr: false },
+    );
+    const codes = ingestWarningCodes(r);
+    expect(r.word_count, "the first page's words must be read").toBeGreaterThan(0);
+    expect(codes, codes.join(",")).toContain("partial-text-layer");
+    expect(codes, "it must not claim OCR ran").not.toContain("ocr");
+    // And it is a caveat, never clean.
+    expect(codes.some((c) => CAVEAT_CODES.has(c))).toBe(true);
   }, 30_000);
 
   it("tracked changes are `tracked-changes`", async () => {

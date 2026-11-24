@@ -3,7 +3,7 @@
 - [~] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
 - [x] 2. `src/report/conformity.ts`: allowance classifier over paragraphs (signature window reuse, blank-to-date fill, initials, cover pages, furniture, watermark words); verdict; canonical table and `conformity_hash`.
 - [x] 3. `clause-diff.ts`: accept an allowance predicate so set-aside paragraphs are listed, not diffed; the plain comparison path unchanged (goldens hold).
-- [ ] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **Blocked — see the 9.1008.0 note at the end for the verified reason** (it is not that the OCR code is missing); the refusal half is done.
+- [~] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **The verdict and the unverified differences are BUILT (9.1009.0) from the ingest's text-layer assessment; only the OCR WORD-level confidence join waits on a product decision** — see the notes at the end.
 - [x] 5. `compare --executed` and `--executed-set` with `--fail-on-nonconformity`; title pairing via the matcher; stream contract respected.
 - [x] 6. Renderers: Markdown, JSON, DOCX section; browser affordance and Word deliverable; cross-surface hash parity on text-layer inputs.
 - [x] 7. Metamorphic relations: filling blanks in the final must not change the verdict; altering any non-allowance paragraph must; format transforms on the executed side must not.
@@ -89,3 +89,56 @@ So the blocker is neither the OCR nor the confidence data. It is this:
 
 The honest summary: this task needs a product decision about shipping a
 network-fetched OCR model, not more code.
+
+## Progress — 9.1009.0 (the verdict is built; only the word-level join waits)
+
+The blocked note conflated two different things, and splitting them made most
+of this task buildable today.
+
+- **Word-level** confidence is what OCR gives: which words it may have misread.
+  That is still unavailable, for the reason recorded above.
+- **Document-level** completeness is a different and coarser question — *was
+  the signed copy's text extracted in full?* — and the ingest has always
+  answered it. `assessTextLayer` already detects a scan whose text layer covers
+  only some pages.
+
+The verdict turns on the second, not the first. So it is built:
+
+`Conformity.verdict` gains **`could-not-determine`**, with
+`unverified_reason`. 🚨 It exists because the other two verdicts were both
+false on a partially-read document: `differences` asserts differences the
+comparison cannot substantiate, and `identical` is a clean bill of health for
+pages nobody read. The second is the more dangerous, which is why an
+incomplete read disqualifies **both** ordinary verdicts and not merely the
+negative one.
+
+`src/report/_incomplete-text.ts` derives the reason from the ingest's warning
+CODES rather than its prose, and both call sites pass it — `tools/cli/api.ts`
+for `compare --executed` and `src/ui/main.ts` for the tab.
+
+Found on the way, and fixed:
+
+- **A mislabelled warning code.** The sentence explaining that OCR was
+  *unavailable* contains the word "OCR", so `codeOf`'s `/\bOCR\b/` returned
+  `"ocr"` — "a scan that was read through OCR" — for a file where OCR never ran
+  and most pages yielded nothing. A caveat about accuracy stood in for a fact
+  about coverage, and anything sorting on these codes under-reported it. New
+  code `partial-text-layer`, matched before the generic test, in the same sets
+  `ocr` was in so the triage tier is unchanged. Proven reachable from a real
+  four-page PDF (`mixedLayerPdf`), not assumed — `scannedPdf()` cannot stand in,
+  because `assessTextLayer` exempts a single-page document.
+- **The gate's message was a false statement.** `--fail-on-nonconformity`
+  printed "the signed copy differs from the final" for every non-identical
+  verdict. For `could-not-determine` that asserts a difference where the truth
+  is that no comparison was possible; the gate exists to stop a false clear,
+  not to manufacture a difference. It now says which it is. (The gate itself
+  needed no change: it passes only on `identical`, so an unknown already
+  tripped it — a gate that passes on "unknown" would be a false green.)
+
+No existing `conformity_hash` moves: the new field is spread into the canonical
+object only when set, and a test asserts a complete-text run hashes exactly as
+before.
+
+**What is left of task 4** is the word-level join: marking an individual
+difference unverified because it sits near an `[uncertain]` OCR marker. That
+needs OCR actually running, which needs the product decision recorded above.

@@ -74,6 +74,62 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1009.0] — 2026-11-23
+
+### Added
+- **`Conformity.verdict` gains `could-not-determine`, and most of
+  `add-executed-copy-conformity` task 4 is built.** The task was recorded as
+  blocked on OCR. That conflated two different questions:
+  - **Word-level** confidence — which words OCR may have misread — is still
+    unavailable, for the reason in the task list.
+  - **Document-level** completeness — *was the signed copy's text extracted in
+    full?* — the ingest has always answered. `assessTextLayer` already detects
+    a scan whose text layer covers only some pages.
+
+  The verdict turns on the second. 🚨 It is needed because the other two
+  verdicts were **both false** on a partially-read document: `differences`
+  asserts differences the comparison cannot substantiate, and `identical` is a
+  clean bill of health for pages nobody read. The second is the more dangerous,
+  which is why an incomplete read now disqualifies **both** ordinary verdicts
+  rather than only the negative one. `conformityLine` still reports what was
+  seen — as *apparent* differences — and says it is not a verdict either way.
+
+  `src/report/_incomplete-text.ts` derives the reason from the ingest's warning
+  **codes** rather than its prose, so a reworded sentence cannot break it, and
+  both call sites pass it: `tools/cli/api.ts` for `compare --executed` and
+  `src/ui/main.ts` for the tab.
+
+  No existing `conformity_hash` moves — the new field is spread into the
+  canonical object only when set, and a test asserts a complete-text run hashes
+  exactly as before.
+
+### Fixed
+- **A warning code said OCR had run when it had not.** The sentence explaining
+  that OCR was *unavailable* contains the word "OCR", so `codeOf`'s
+  `/\bOCR\b/` returned `"ocr"` — documented as "a scan that was read through
+  OCR" — for a file where OCR never ran and most pages yielded nothing. A
+  caveat about **accuracy** stood in for a fact about **coverage**, and
+  anything sorting on these codes under-reported it. New code
+  `partial-text-layer`, matched before the generic test and placed in the same
+  sets `ocr` was in so the triage tier is unchanged.
+
+  Proven reachable from a real four-page PDF (`mixedLayerPdf`), not assumed:
+  `scannedPdf()` cannot stand in, because `assessTextLayer` exempts a
+  single-page document, so a one-page fixture would have left the new code
+  dead.
+
+- **`--fail-on-nonconformity`'s message was a false statement.** It printed
+  "the signed copy differs from the final" for every non-identical verdict. For
+  `could-not-determine` that asserts a difference where the truth is that no
+  comparison was possible — and the gate exists to stop a false clear, not to
+  manufacture a difference. It now says which it is. The gate itself needed no
+  change: it passes only on `identical`, so an unknown already tripped it, as
+  it must — a gate that passes on "unknown" is a false green.
+
+### Changed
+- `/known-limits` and `docs/ci-integration.md` now say that a scan whose text
+  layer covers only some pages gets no verdict, not even "identical".
+
 ## [9.1008.0] — 2026-11-23
 
 ### Added

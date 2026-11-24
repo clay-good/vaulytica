@@ -218,6 +218,9 @@ const TIER_2_CODES: ReadonlySet<IngestWarningCode> = new Set([
   "tracked-changes",
   "not-english",
   "ocr",
+  // A thin text layer read without OCR. Previously reached here as `ocr`,
+  // which kept the tier right and the reason wrong.
+  "partial-text-layer",
 ]);
 
 const HIDDEN = /^hidden\b/;

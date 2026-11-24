@@ -37,3 +37,42 @@ export function scannedPdf(): Uint8Array {
     `<</Length ${stream.length}>>\nstream\n${stream}\nendstream`,
   ]);
 }
+
+/**
+ * A PDF with a MIXED text layer: a searchable first page over a scanned body.
+ *
+ * This is the shape `assessTextLayer` calls "mixed" — two or more image-only
+ * pages, and at least 60% of pages image-only — and it is the input the
+ * `partial-text-layer` warning code and the could-not-determine conformity
+ * verdict both need. `scannedPdf()` cannot stand in: it is a single page, and
+ * `assessTextLayer` exempts a one-page document.
+ *
+ * @param text words for the FIRST page; the remaining pages draw a rectangle.
+ * @param blankPages how many image-only pages follow (3 of 4 = 75%).
+ */
+export function mixedLayerPdf(text: string, blankPages = 3): Uint8Array {
+  const draw = "0 0 100 100 re f";
+  const pageCount = 1 + blankPages;
+  // Object numbering: 1 catalog, 2 pages, 3..(2+pageCount) page objects,
+  // then one content stream per page, then the font last.
+  const firstPageObj = 3;
+  const firstContentObj = firstPageObj + pageCount;
+  const fontObj = firstContentObj + pageCount;
+  const kids = Array.from({ length: pageCount }, (_, i) => `${firstPageObj + i} 0 R`).join(" ");
+  const objects = [
+    "<</Type/Catalog/Pages 2 0 R>>",
+    `<</Type/Pages/Kids[${kids}]/Count ${pageCount}>>`,
+  ];
+  for (let i = 0; i < pageCount; i++) {
+    const resources = i === 0 ? `<</Font<</F1 ${fontObj} 0 R>>>>` : "<<>>";
+    objects.push(
+      `<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents ${firstContentObj + i} 0 R/Resources${resources}>>`,
+    );
+  }
+  for (let i = 0; i < pageCount; i++) {
+    const stream = i === 0 ? `BT /F1 12 Tf 72 700 Td (${text}) Tj ET` : draw;
+    objects.push(`<</Length ${stream.length}>>\nstream\n${stream}\nendstream`);
+  }
+  objects.push("<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>");
+  return assemble(objects);
+}

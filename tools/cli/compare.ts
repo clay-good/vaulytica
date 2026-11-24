@@ -523,8 +523,14 @@ export async function runCompare(argv: string[]): Promise<void> {
   }
 
   if (args.failOnNonconformity && conformity && conformity.verdict !== "identical") {
+    // 🚨 The message used to say "the signed copy differs from the final" for
+    // every non-identical verdict. With `could-not-determine` that is a false
+    // statement about the document — the comparison could not be made — and
+    // the gate exists to stop a false clear, not to manufacture a difference.
     process.stderr.write(
-      `\n✗ the signed copy differs from the final outside the execution allowance (--fail-on-nonconformity)\n`,
+      conformity.verdict === "could-not-determine"
+        ? `\n✗ conformity could not be determined: ${conformity.unverified_reason ?? "the signed copy's text is incomplete"} (--fail-on-nonconformity)\n`
+        : `\n✗ the signed copy differs from the final outside the execution allowance (--fail-on-nonconformity)\n`,
     );
     process.exitCode = 2;
   }

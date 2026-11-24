@@ -622,6 +622,7 @@ async function runSigned(
     setState(dz, { kind: "analyzing", filename: signedFile.name });
     const { runExecutedComparison } = await import("./pipeline.js");
     const { checkConformity } = await import("../report/conformity.js");
+    const { incompleteTextReason } = await import("../report/_incomplete-text.js");
     const progress = createProgressBar(select(dz, "progress")!);
     const ticker = createRuleTicker(select(dz, "ticker")!);
     progress.reset();
@@ -644,7 +645,11 @@ async function runSigned(
       baseName: finalRun.source_file.name || finalDisplayName,
       revisedName: signedFile.name,
       stem: `${baseFilename(finalRun.source_file.name)}-vs-${baseFilename(signedFile.name)}`,
-      conformity: await checkConformity(finalTree, signed.ingest.tree),
+      conformity: await checkConformity(finalTree, signed.ingest.tree, {
+        ...(incompleteTextReason(signed.ingest)
+          ? { executedTextIncomplete: incompleteTextReason(signed.ingest)! }
+          : {}),
+      }),
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);

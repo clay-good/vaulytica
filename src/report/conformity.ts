@@ -98,8 +98,21 @@ export type SetAside = { side: "final" | "executed"; text: string; reason: strin
 
 export type Conformity = {
   version: string;
-  /** `identical` outside the execution allowance, or how many differences remain. */
-  verdict: "identical" | "differences";
+  /**
+   * `identical` outside the execution allowance, how many differences remain,
+   * or `could-not-determine` when the signed copy's own text is incomplete.
+   *
+   * 🚨 The third state exists because the first two were both lies on a
+   * partially-read document. A signed copy that arrives as a scan with a thin
+   * text layer yields the words of some pages and nothing from the rest. Run
+   * against that, this check used to return `differences` — asserting
+   * differences it cannot substantiate — or, worse, `identical`, which is a
+   * clean bill of health for pages nobody read. Neither is a verdict; the
+   * honest answer is that the comparison could not be made.
+   */
+  verdict: "identical" | "differences" | "could-not-determine";
+  /** Why no verdict could be reached, when `verdict` is `could-not-determine`. */
+  unverified_reason?: string;
   differences: Pick<ClauseDiff, "added" | "removed" | "changed">;
   /** `By:` lines on each side; unequal counts are one difference. */
   signature_blocks: { final: number; executed: number };
@@ -147,6 +160,15 @@ function headingsOf(tree: DocumentTree): string[] {
 export async function checkConformity(
   final: DocumentTree,
   executed: DocumentTree,
+  options: {
+    /**
+     * Set when the EXECUTED side's text is known to be incomplete — a scan
+     * whose text layer covers only some pages (`partial-text-layer`), or a
+     * file read through OCR. The string is the reason, shown to a reader.
+     * Given this, no verdict is returned, however the comparison came out.
+     */
+    executedTextIncomplete?: string;
+  } = {},
 ): Promise<Conformity> {
   const finalClauses = flattenClauses(final);
   const executedClauses = flattenClauses(executed);
@@ -325,11 +347,23 @@ export async function checkConformity(
     changed.length = 0;
   }
   const difference_count = removed.length + added.length + changed.length + blockDifference;
-  const verdict = difference_count === 0 ? "identical" : "differences";
+  // An incomplete read disqualifies BOTH ordinary verdicts, including
+  // `identical`: finding nothing in text that was never extracted is not a
+  // finding of sameness.
+  const unverified = options.executedTextIncomplete;
+  const verdict = unverified
+    ? "could-not-determine"
+    : difference_count === 0
+      ? "identical"
+      : "differences";
   const canonical = JSON.stringify({
     namespace: "vaulytica-conformity",
     version: CONFORMITY_VERSION,
     verdict,
+    // Spread conditionally: a run with a complete text layer serializes
+    // exactly the object it did before, so no existing `conformity_hash`
+    // moves.
+    ...(unverified ? { unverified } : {}),
     removed: removed.map((c) => c.text),
     added: added.map((c) => c.text),
     changed: changed.map((p) => [p.base.text, p.revised.text]),
@@ -339,6 +373,7 @@ export async function checkConformity(
   return {
     version: CONFORMITY_VERSION,
     verdict,
+    ...(unverified ? { unverified_reason: unverified } : {}),
     differences: { added, removed, changed },
     signature_blocks,
     difference_count,
@@ -349,6 +384,15 @@ export async function checkConformity(
 
 /** The verdict as one line a reader can act on. */
 export function conformityLine(c: Conformity): string {
+  if (c.verdict === "could-not-determine") {
+    // Say what WAS seen, so the line is useful, but never as a count of
+    // differences the comparison can stand behind.
+    const seen =
+      c.difference_count === 0
+        ? "Nothing differed in the text that could be read"
+        : `${c.difference_count} apparent difference${c.difference_count === 1 ? "" : "s"} in the text that could be read`;
+    return `Could not determine conformity: ${c.unverified_reason ?? "the signed copy's text is incomplete"}. ${seen}, which is not a verdict either way.`;
+  }
   return c.verdict === "identical"
     ? "Identical to the final outside the execution allowance."
     : `${c.difference_count} difference${c.difference_count === 1 ? "" : "s"} from the final outside the execution allowance.`;

@@ -27,6 +27,7 @@ import { collectRevisionTexts } from "../../src/ingest/docx-revisions.js";
 import { inflateOoxmlParts } from "../../src/ingest/ooxml.js";
 import { attributeRevisions } from "../../src/report/redline-attribution.js";
 import { checkConformity, type Conformity } from "../../src/report/conformity.js";
+import { incompleteTextReason } from "../../src/report/_incomplete-text.js";
 import {
   buildClosingSet,
   pairClosingSet,
@@ -920,7 +921,13 @@ export async function compareExecuted(
       `${basename(signedPath)} has no text layer, so there is nothing to compare. It looks like an image-only scan, and no Vaulytica surface runs OCR: run OCR on it first (Acrobat, Preview or the scanner's software), then compare again.`,
     );
   }
-  const conformity = await checkConformity(result.base.ingest.tree, result.revised.ingest.tree);
+  // The signed copy is the revised side. When its own text is incomplete, no
+  // verdict is possible — see `Conformity.verdict`.
+  const conformity = await checkConformity(result.base.ingest.tree, result.revised.ingest.tree, {
+    ...(incompleteTextReason(result.revised.ingest)
+      ? { executedTextIncomplete: incompleteTextReason(result.revised.ingest)! }
+      : {}),
+  });
   return { ...result, conformity };
 }
 
