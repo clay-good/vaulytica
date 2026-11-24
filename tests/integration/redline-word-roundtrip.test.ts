@@ -19,6 +19,7 @@
  * note in a task list would not do that, and would not fail if the rewrite
  * later drifted away from Word.
  */
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -28,6 +29,8 @@ import { flattenText } from "../../src/ingest/types.js";
 import { fiveKindRedlineDocx } from "./_redline-docx.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "redline");
+/** The committed redline, which every independent reader below is pointed at. */
+const REDLINE_PATH = join(DIR, "five-kind-redline.docx");
 
 /** Which application produced a committed export, if one is there. */
 function exportPair(): { app: string; accepted: string; rejected: string } | undefined {
@@ -96,5 +99,88 @@ describe("this product's rewrite against an independent implementation", () => {
       "(or the -soffice pair)",
     ];
     expect(wanted.length).toBe(3);
+  });
+});
+
+/**
+ * An independent implementation that needs no human: Apple's text engine
+ * (add-redline-two-sided-analysis task 1, the accepted side).
+ *
+ * 🥇 I recorded this task as "needs Word, and producing the exports is one
+ * human action". That was true of the artifacts I had imagined and false of
+ * the REQUIREMENT. What the round trip needs is a second implementation's
+ * reading of ECMA-376 — and macOS ships one. `textutil` reads .docx through
+ * Apple's own text engine, which has nothing to do with this repository, and
+ * it resolves tracked changes on its way to plain text.
+ *
+ * It gives exactly one reading, with no accept/reject switch, and that reading
+ * is the ACCEPTED one. So this closes half the task by a better route than the
+ * one the task described: scripted, reproducible on any Mac, no human step and
+ * no committed binary. The REJECTED side still has no independent producer —
+ * `textutil` cannot be asked for it — so the Word round trip above stays armed
+ * for that half.
+ *
+ * ⚠️ The comparison is word sequences, not bytes or lines. Apple's engine
+ * writes a table row as two lines where this product writes `cell | cell`, and
+ * it leaves a trailing space where this one does not. Those are serialization
+ * differences and the question is which WORDS survive a revision — so both
+ * sides are reduced to their words in order. Nothing is sorted or de-duplicated:
+ * a lost clause, a duplicated moved clause or a substituted figure still fails.
+ */
+describe("this product's accepted reading against Apple's text engine", () => {
+  /** macOS only. `textutil` is not on Linux, where CI runs. */
+  function hasTextutil(): boolean {
+    try {
+      execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  /** The words, in order — see the note above on what is normalized away. */
+  const words = (s: string): string =>
+    s
+      .replace(/\|/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length > 0)
+      .join(" ");
+
+  const available = hasTextutil();
+
+  it.runIf(available)(
+    "reads the five-kind redline exactly as Apple's engine does, accepted",
+    async () => {
+      const theirs = words(
+        execFileSync("textutil", ["-convert", "txt", REDLINE_PATH, "-stdout"], {
+          encoding: "utf8",
+          timeout: 120_000,
+        }),
+      );
+      expect(theirs.length, "textutil returned nothing").toBeGreaterThan(50);
+      expect(words(await ourReading("accepted"))).toBe(theirs);
+    },
+    180_000,
+  );
+
+  it.runIf(available)(
+    "is discriminating: Apple's reading is NOT this product's rejected one",
+    async () => {
+      // The proof that the assertion above can fail. If the two readings were
+      // interchangeable here, matching one of them would say nothing about
+      // whether revisions are resolved correctly.
+      const theirs = words(
+        execFileSync("textutil", ["-convert", "txt", REDLINE_PATH, "-stdout"], {
+          encoding: "utf8",
+          timeout: 120_000,
+        }),
+      );
+      expect(words(await ourReading("rejected"))).not.toBe(theirs);
+    },
+    180_000,
+  );
+
+  it.skipIf(available)("is skipped off macOS, where there is no textutil", () => {
+    expect(available).toBe(false);
   });
 });

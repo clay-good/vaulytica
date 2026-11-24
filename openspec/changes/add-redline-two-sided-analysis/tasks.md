@@ -1,6 +1,6 @@
 # Tasks
 
-- [~] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT and COMMITTED** (`tests/fixtures/redline/five-kind-redline.docx`, 9.1016.0); plus Word's Accept-All and Reject-All exports of it, committed, for the round-trip test — **the assertion is ARMED and runs the moment they are committed**; producing them is one human action, see the end.
+- [~] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT and COMMITTED** (`tests/fixtures/redline/five-kind-redline.docx`, 9.1016.0). The independent cross-check it exists for is **DONE for the accepted reading and still open for the rejected one** (9.1019.0): macOS's own `textutil` reads the redline through Apple's text engine and resolves revisions to the accepted reading, and `redline-word-roundtrip.test.ts` asserts this product's accepted reading matches it word for word — including the `w:moveFrom`/`w:moveTo` move — plus a second assertion that Apple's reading is **not** this product's rejected one, which is what proves the first can fail. No human step, no committed binary. `textutil` offers no reject mode and nothing else on this machine reads OOXML revisions, so the rejected half keeps the **ARMED** Word round trip, which runs the moment the exports are committed. See the end.
 - [x] 2. `src/ingest/docx-revisions.ts`: the linear OOXML rewrite producing the rejected `document.xml`; property test that accepted(rewrite) and rejected(rewrite) each contain no revision elements; bounded matching per `container.ts`.
 - [x] 3. `ingestDocxBuffer(buf, { revisions })` and the `ingestDocx` wrapper with the `#rejected` / `#accepted` name suffix; the default path byte-identical (corpus goldens unchanged).
 - [x] 4. `tools/cli/api.ts` `compareRedline(path, opts)` over `compareFiles` with `pinType`; `compare --redline`; the no-tracked-changes refusal; `MAX_COUNT` notice carried.
@@ -186,3 +186,57 @@ work, the exports become one command and this task closes without Word.
 **Not done here on purpose:** installing LibreOffice. It is a large
 application and a change to the developer's own machine, which is their
 decision to make, not a side effect of a build loop.
+
+## 🥇 9.1019.0 — half of this closed without Word, and my own framing was what blocked it
+
+I had written that the exports need Word and that "producing them is one human
+action". The first half was a claim about the ARTIFACTS I had pictured — two
+`.docx` files — and I never tested it against the REQUIREMENT, which is only
+this: *a second implementation's reading of ECMA-376, written by someone other
+than this repository.*
+
+macOS ships one. `textutil` reads .docx through Apple's text engine and
+resolves tracked changes on the way to plain text. It needs no human, no
+install and no committed binary, and it is reproducible on any Mac. Its one
+reading is the accepted one, and this product's accepted reading matches it
+word for word on all five revision kinds.
+
+What I had actually checked before calling it blocked: whether Word was
+installed, and whether npm had an OOXML redline engine. What I had **not**
+checked: whether anything already on the machine could read a .docx at all.
+`textutil` has shipped with macOS for twenty years.
+
+The lesson, which is the same one seven other "blocked" items in this change
+set taught: **a blocked reason names the artifact someone imagined, not the
+requirement.** Ask what the test actually needs to be true, then ask who else
+in the world already does that.
+
+### The rejected half: pandoc is the best candidate, and NOT armed
+
+Asking the same question for the rejected reading turns up pandoc, which has a
+`--track-changes` option. It is not installed here. Read at
+`https://pandoc.org/MANUAL.html` on 2026-11-24:
+
+| | |
+| --- | --- |
+| **Confirmed** | the option is `--track-changes=accept|reject|all`, `accept` is the default, and "This option only affects the docx reader". |
+| **Confirmed** | `-t plain` is a valid output format. |
+| **Confirmed** | `accept` "processes all the insertions and deletions". |
+| **NOT confirmed** | that `reject` yields the rejected READING. The manual's only words for it are "`reject` ignores them" — it never says deleted text is restored, which is the entire question. |
+| **NOT confirmed** | anything about `w:moveFrom`/`w:moveTo`. Neither term appears, and a move is the revision kind most easily got wrong: it is duplicated-or-lost, and counting revision elements sees neither failure. |
+| **NOT confirmed** | anything about formatting-only changes. |
+
+**So no pandoc assertion is armed**, on the same ground the LibreOffice macro
+was not committed: an assertion resting on semantics no official source pins
+down would fail for reasons nobody could attribute, and a test that cannot be
+trusted on failure is worse than none. `textutil` was armed because its
+behaviour was MEASURED here, not assumed.
+
+What would settle it, for anyone who has pandoc (`brew install pandoc` — a
+small CLI, not the 1 GB GUI application LibreOffice is): run it with
+`--track-changes=reject -t plain` over
+`tests/fixtures/redline/five-kind-redline.docx` and compare against this
+product's rejected reading. If the deleted text comes back and the moved clause
+sits in its original position, the assertion is worth arming and this task
+closes with no Word at all. If `reject` merely drops the markup, pandoc cannot
+settle the rejected half either, and that is worth recording too.

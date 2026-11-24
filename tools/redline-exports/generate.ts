@@ -38,6 +38,15 @@
  *     refuses automated reads — and whether a Basic macro runs under
  *     `--headless` in the form this would need.
  *
+ * 🥇 CORRECTION at 9.1019.0, and a larger one: the ACCEPTED side needs none
+ * of this. What the round trip requires is a second implementation's reading of
+ * ECMA-376, and macOS already ships one — `textutil` reads .docx through
+ * Apple's text engine and resolves tracked changes to the accepted reading.
+ * `redline-word-roundtrip.test.ts` compares against it with no human step and
+ * no committed binary. `textutil` has no reject mode, so only the REJECTED
+ * export below is still wanted. I had been reasoning about the artifacts I
+ * pictured instead of the requirement.
+ *
  * So a scripted route is PLAUSIBLE and unverified, which is not the same as
  * impossible. No macro is shipped here because it would be built on a command
  * name no official source confirmed and could not be run on this machine, and
@@ -71,8 +80,10 @@ function findOfficeApp(): string | undefined {
 }
 
 const BY_HAND = `
-The round-trip assertion SKIPS until both exports exist, and runs on every test
-pass once they do. To supply them:
+The ACCEPTED side is already cross-checked against Apple's text engine on any
+Mac (textutil), with no artifact needed. The REJECTED side has no independent
+producer, so its round-trip assertion SKIPS until both exports exist and runs
+on every test pass once they do. To supply them:
 
   1. open ${join(FIXTURE_DIR, REDLINE_NAME)} in Word
   2. Review > Accept > Accept All Changes, then Save As
