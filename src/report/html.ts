@@ -42,6 +42,16 @@
  * justification was sound for the findings index and had been carried across to
  * something it did not fit.
  *
+ * 🚨 **"The three v9 surfaces" was true at the top level and false one level
+ * down (9.1018.0).** This file read `criticalDates` and rendered its dated
+ * rows, but not the register's `deadline_notes` — the DDL drafting notes,
+ * which the Word report and the register's Markdown export have both printed
+ * since DDL-001 shipped. So one run wrote a note into three files and left it
+ * out of the fourth. Nothing caught it: `v9-surface-reach.test.ts` asserts
+ * that each builder READS each top-level field of the bundle, and this one
+ * did. A claim of parity has to be checked at the altitude the content lives
+ * at, not the altitude the type is declared at.
+ *
  * 🚨 **Two entries were on that list and did not belong on it**: the
  * jurisdiction overlays and the obligations ledger, both here since 9.579.0. A
  * California non-compete's Bus. & Prof. Code § 16600 overlay is the single most
@@ -694,6 +704,26 @@ function renderCriticalDatesSection(register: CriticalDatesRegister): string[] {
     );
   }
   out.push("</ul>");
+  // add-deadline-computation (DDL follow-up) — drafting notes, present only
+  // when a deadline profile was asserted.
+  //
+  // 🚨 The HTML report was the one renderer of the register that dropped
+  // these. The Word report and the register exports have printed them since
+  // DDL-001 shipped, so the same run wrote a note into two files and left it
+  // out of the third. `v9-surface-reach.test.ts` did not catch it: it asserts
+  // that each builder reads the top-level `criticalDates` field, and this one
+  // did — the omission was a field NESTED inside it, below the ratchet's
+  // altitude.
+  if (register.deadline_notes && register.deadline_notes.length > 0) {
+    out.push("<h3>Drafting notes</h3>");
+    out.push('<ul class="v9-list">');
+    for (const n of register.deadline_notes) {
+      out.push(
+        `<li class="info"><div class="v9-head"><span class="ruleid">${esc(n.code)}</span> ${esc(n.title)}</div><div class="v9-sub">${esc(n.detail)}</div></li>`,
+      );
+    }
+    out.push("</ul>");
+  }
   return out;
 }
 

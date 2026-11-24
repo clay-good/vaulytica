@@ -60,6 +60,15 @@ correctly and disagree. "One obligation" is the party plus the kind of
 deadline, not the clause wording — which is what differs between the very
 clauses being compared.
 
+Both notes print in every surface that renders the register: the Word report,
+the emailable HTML report, the register's own Markdown export, and the JSON
+report's `critical_dates.deadline_notes`. (The HTML report dropped them until
+9.1018.0 — it read the register and rendered only the dated rows.) The SARIF
+deliberately carries neither: its register contribution is the dated rows and
+the register hash, and a drafting note is advisory prose, not a result for a CI
+gate to count. The tab shows no notes because it asserts no deadline profile,
+which is the only way they are computed.
+
 It is deliberately conservative, because the note says a document contradicts
 itself. Two **different** parties with different cure windows is ordinary
 asymmetric drafting and draws nothing; a deadline with no attributable party is

@@ -19,7 +19,12 @@
  * ⚠️ The cases below pin the CONSERVATISM as hard as the detection. This note
  * accuses a document of contradicting itself, so a false one is expensive.
  */
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import type { EngineRun } from "../../src/engine/finding.js";
+import type { IngestResult } from "../../src/ingest/types.js";
+import type { Playbook } from "../../src/playbooks/types.js";
 import { buildCriticalDates } from "../../src/report/critical-dates.js";
 import { extractAll } from "../../src/extract/index.js";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
@@ -122,4 +127,120 @@ describe("DDL-002 fires on a self-contradicting document", () => {
     expect(first.register.some((r) => r.rule_id === "DDL-002")).toBe(false);
     expect(first.register.map((r) => r.rule_id).every((id) => /^DATE-\d{3}$/.test(id))).toBe(true);
   });
+});
+
+/**
+ * Where a drafting note actually appears.
+ *
+ * 🚨 The gap this closes. The register is rendered by four surfaces, and
+ * `deadline_notes` reached three: the Word report and the register's Markdown
+ * export printed a "Drafting notes" block, the JSON report carried the field
+ * because it serializes the register whole — and the HTML report dropped it.
+ * So one run wrote a note into three files and left it out of the fourth, with
+ * no way for a reader of that fourth to know a note existed.
+ *
+ * ⚠️ `v9-surface-reach.test.ts` cannot catch this, and the reason is worth
+ * recording: it asserts that each builder reads the TOP-LEVEL `criticalDates`
+ * field of the `V9Surfaces` bundle, and `html.ts` did read it. The omission
+ * was a field nested one level inside, below the ratchet's altitude. A guard's
+ * scope is itself a defect surface.
+ *
+ * SARIF is deliberately not in this list. Its register contribution is the
+ * dated rows and the register hash; a drafting note is advisory prose, not a
+ * result, and adding one would change the result count every CI consumer
+ * thresholds on.
+ */
+describe("a drafting note reaches every surface that renders the register", () => {
+  /** A minimal run and ingest: these surfaces read the register, not the findings. */
+  const RUN: EngineRun = {
+    version: "0.1.0",
+    dkb_version: "v0.0.1-starter",
+    playbook_id: "mutual-nda",
+    source_file: { name: "supply.docx", sha256: "a".repeat(64), size_bytes: 2048 },
+    executed_at: "2026-06-08T00:00:00Z",
+    findings: [],
+    execution_log: [],
+    result_hash: "d".repeat(64),
+  };
+  const INGEST: IngestResult = {
+    tree: { type: "document", sections: [] },
+    source: "docx",
+    word_count: 400,
+    sha256: "a".repeat(64),
+    warnings: [],
+  };
+  const playbook = (): Playbook =>
+    JSON.parse(readFileSync(join(process.cwd(), "playbooks", "mutual-nda.json"), "utf8"));
+
+  const CONFLICT: [string, ...string[]] = [
+    "SUPPLY AGREEMENT",
+    '"Notice Date" means March 2, 2026.',
+    "Supplier shall cure any breach within 10 days after the Notice Date.",
+    "Notwithstanding the foregoing, Supplier shall cure any breach within 30 days after the Notice Date.",
+  ];
+
+  it("prints the note in the Word report, the HTML report and the register export", async () => {
+    const { buildHtmlReport } = await import("../../src/report/html.js");
+    const { buildDocxReport } = await import("../../src/report/docx.js");
+    const { criticalDatesMarkdownBlob } = await import("../../src/report/exports.js");
+    const { loadStarterDkbSync } = await import("../../src/engine/_test-fixtures.js");
+    const { unzipSync, strFromU8 } = await import("fflate");
+
+    const reg = await register(CONFLICT);
+    const note = ddl002(reg);
+    expect(note, JSON.stringify(notes(reg))).toBeDefined();
+
+    const v9 = { criticalDates: reg };
+    const dkb = loadStarterDkbSync();
+
+    // HTML — the surface that dropped it.
+    const html = buildHtmlReport(RUN, INGEST, dkb, undefined, v9);
+    expect(html, "the HTML report has no drafting-notes block").toContain("Drafting notes");
+    expect(html).toContain("DDL-002");
+    // The note's own text, not just its heading: a block with no body would
+    // satisfy the line above and tell a reader nothing.
+    expect(html).toContain("2026-03-12");
+    expect(html).toContain("2026-04-01");
+
+    // Word — unchanged, and asserted here so this test fails if either side
+    // regresses rather than only the one that was broken.
+    const blob = await buildDocxReport(
+      RUN,
+      INGEST,
+      dkb,
+      playbook(),
+      undefined,
+      undefined,
+      undefined,
+      v9,
+    );
+    const xml = strFromU8(
+      unzipSync(new Uint8Array(await blob.arrayBuffer()))["word/document.xml"]!,
+    );
+    const docxText = (xml.match(/<w:t[^>]*>([^<]*)<\/w:t>/g) ?? [])
+      .map((m) => m.replace(/<[^>]+>/g, ""))
+      .join("");
+    expect(docxText).toContain("Drafting notes");
+    expect(docxText).toContain("DDL-002");
+
+    // The register's own Markdown export.
+    const md = await criticalDatesMarkdownBlob(reg).text();
+    expect(md).toContain("Drafting notes");
+    expect(md).toContain("DDL-002");
+  }, 60_000);
+
+  it("adds no notes block to any surface when no profile was asserted", async () => {
+    // The other direction. The notes exist only under an asserted
+    // `--deadline-profile`, so an ordinary run must gain no empty heading.
+    const { buildHtmlReport } = await import("../../src/report/html.js");
+    const { criticalDatesMarkdownBlob } = await import("../../src/report/exports.js");
+    const { loadStarterDkbSync } = await import("../../src/engine/_test-fixtures.js");
+    const reg = await register(CONFLICT, false);
+    expect(reg.deadline_notes).toBeUndefined();
+    const html = buildHtmlReport(RUN, INGEST, loadStarterDkbSync(), undefined, {
+      criticalDates: reg,
+    });
+    expect(html).not.toContain("Drafting notes");
+    expect(await criticalDatesMarkdownBlob(reg).text()).not.toContain("Drafting notes");
+  }, 60_000);
 });
