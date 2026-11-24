@@ -617,13 +617,60 @@ const VA_ITEMS: ContentItem[] = [
 const TX_URL = "https://statutes.capitol.texas.gov/Docs/BC/htm/BC.541.htm";
 
 /**
+ * A passage a statute fixes word for word, with where and when it was read.
+ *
+ * The two Texas notices below are the only such passages in this file, and
+ * until 9.1004.0 they were bare string constants: the URL lived in a comment,
+ * and nothing recorded the date they were read or the act that enacted them.
+ * Every OTHER authority here carries `retrieved_at`, and
+ * `src/engine/rules/text/mandated-texts.ts` refuses a row with no provenance
+ * at all — so an exact-wording passage was the one kind of authority in the
+ * tree held to the loosest standard, which is backwards: its whole point is
+ * that the words are the requirement.
+ */
+export type MandatedLiteral = {
+  /** The passage as the statute prints it. */
+  text: string;
+  citation: string;
+  /** The official source it was read at. */
+  source_url: string;
+  /** YYYY-MM-DD. */
+  retrieved_at: string;
+  /** The act that enacted it, as the source prints the history. */
+  enacted: string;
+};
+
+/**
  * Tex. Bus. & Com. Code § 541.102(b)–(c) mandated notice texts (TDPSA),
  * quoted verbatim from the statute. The exact-wording rules match these
  * whitespace-normalized and case-sensitively — an altered rendering is
  * reported as "present but altered", never silently accepted.
+ *
+ * Re-read at the official source on 2026-11-23 and unchanged. ⚠️ The spec for
+ * `add-mandated-text-conformance` recorded this host as unreachable
+ * ("statutes.capitol.texas.gov serves its text only to a browser script").
+ * That is true of a plain fetch and false of the browser pane, which rendered
+ * the chapter. A blocked source is blocked at a HOST, not at a statute.
  */
-export const TX_SENSITIVE_SALE_NOTICE = "NOTICE: We may sell your sensitive personal data.";
-export const TX_BIOMETRIC_SALE_NOTICE = "NOTICE: We may sell your biometric personal data.";
+export const TX_SALE_NOTICES: Readonly<Record<"sensitive" | "biometric", MandatedLiteral>> = {
+  sensitive: {
+    text: "NOTICE: We may sell your sensitive personal data.",
+    citation: "Tex. Bus. & Com. Code § 541.102(b)",
+    source_url: TX_URL,
+    retrieved_at: "2026-11-23",
+    enacted: "Acts 2023, 88th Leg., R.S., Ch. 995 (H.B. 4), Sec. 2, eff. July 1, 2024",
+  },
+  biometric: {
+    text: "NOTICE: We may sell your biometric personal data.",
+    citation: "Tex. Bus. & Com. Code § 541.102(c)",
+    source_url: TX_URL,
+    retrieved_at: "2026-11-23",
+    enacted: "Acts 2023, 88th Leg., R.S., Ch. 995 (H.B. 4), Sec. 2, eff. July 1, 2024",
+  },
+};
+
+export const TX_SENSITIVE_SALE_NOTICE = TX_SALE_NOTICES.sensitive.text;
+export const TX_BIOMETRIC_SALE_NOTICE = TX_SALE_NOTICES.biometric.text;
 
 /** Tex. Bus. & Com. Code § 541.102(a)(1)–(6) — TDPSA privacy notice. */
 const TX_ITEMS: ContentItem[] = [

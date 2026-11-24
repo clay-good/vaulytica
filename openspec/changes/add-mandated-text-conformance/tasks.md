@@ -1,9 +1,9 @@
 # Tasks
 
-- [ ] 1. Read each seed authority at its official source and record text, URL, retrieved date, and version history: leginfo.legislature.ca.gov (Civ. Code § 1542, current; pre-2019 text from the chaptered SB 1431), eCFR (16 C.F.R. §§ 433.2, 429.1), statutes.capitol.texas.gov (§ 541.102), uscode.house.gov (18 U.S.C. § 1833(b)(3)). No text enters the table from a secondary source.
+- [~] 1. Read each seed authority at its official source and record text, URL, retrieved date, and version history: leginfo.legislature.ca.gov (Civ. Code § 1542, current; pre-2019 text from the chaptered SB 1431), eCFR (16 C.F.R. §§ 433.2, 429.1), statutes.capitol.texas.gov (§ 541.102), uscode.house.gov (18 U.S.C. § 1833(b)(3)). No text enters the table from a secondary source.
 - [ ] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; migrate the two Texas literals out of `regime-data.ts`.
 - [x] 3. Matching: sliding-window token similarity with an exact whitespace-normalized fast path; threshold chosen by measuring the corpus (no false hit on the 363 specimens; every seeded paraphrase fixture caught); ReDoS-safe by construction (no regex over document text; token arrays).
-- [ ] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
+- [~] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
 - [~] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked". **Size is done for both DOCX and PDF (9.1001.0); `w:caps` is not read, and no row needs capitals.**
 - [x] 6. Conspicuousness rule over the existing clause locator for warranty disclaimers and liability caps; info severity; citation to U.C.C. § 1-201(b)(10) and § 2-316(2) with retrieved dates.
 - [ ] 7. Fixtures: exact, paraphrased, superseded, and form-deficient versions of each seed passage; clean documents for each family confirm no false finding.
@@ -86,3 +86,82 @@ Still open on this change: § 1542 (leginfo blocks automated reads), §§ 429.1(
 541.102 and 1833(b)(3), the DKB table and the Texas literals' migration (task
 2, with the scheduled rebuild), `w:caps` (no row needs it), task 7's fixtures,
 and task 12.
+
+## Progress — 9.1004.0 (both "blocked" hosts read; two items DECLINED with reasons)
+
+**Both recorded blocks were wrong, and in the same way.** The spec recorded
+Cal. Civ. Code § 1542 as blocked (leginfo answers 403 to a fetch) and
+Tex. Bus. & Com. Code § 541.102 as unreachable ("serves its text only to a
+browser script"). Both are true of a plain fetch and false of the browser
+pane, which rendered each page on 2026-11-23. **A blocked source is blocked at
+a HOST, not at a statute** — the same lesson N.Y. Gen. Oblig. Law § 5-702 taught
+in 9.1003.0, where the API host 401s and the public page serves the section.
+Re-try the other hosts before recording a block.
+
+Reading them settled three open items, two of them as DECLINED rather than
+built. That is the point of reading the authority first.
+
+### § 1542 is not a mandated text, and its "superseded" version is not superseded
+
+Task 1 asked for the current and pre-2019 § 1542 text; task 4 asked for a
+`TEXT-<row>` **superseded** shape, with the pre-2019 § 1542 as its seed row.
+Both are declined:
+
+1. **§ 1542 prescribes no wording for a document.** It is a default rule —
+   "A general release does not extend to claims that the creditor or releasing
+   party does not know or suspect to exist…" — which parties WAIVE by express
+   reference. There is no passage the statute requires an agreement to carry,
+   so there is nothing for `TEXT-001` (altered) or `TEXT-002` (form) to be
+   altered or misformatted against. `SET-003` already checks for the waiver as
+   a presence rule, which is the right shape for it.
+2. **The 2018 amendment is declaratory of existing law.** SEC. 3 of the
+   chaptered act (Stats. 2018, Ch. 157, SB 1431, read at leginfo on
+   2026-11-23) says in terms: "The amendments to Sections 1541 and 1542 of the
+   Civil Code made by this act are declaratory of existing law." The change
+   added "or releasing party" and "or released party" and the Legislative
+   Counsel's Digest calls it a clarification. So a release reciting the
+   pre-2019 wording is **not** quoting a superseded rule; the legislature said
+   the law did not change. A finding telling an attorney their § 1542 waiver is
+   out of date would be wrong.
+
+**The superseded shape therefore has no legitimate seed row and is not built.**
+No other row in the table has a version history where the change is
+substantive, and a detector with no row that can reach it is dead code — the
+failure class `dead-optional-field-sweep` and `2026-10-11-goal-loop-s44` are
+about. If a row with a substantive version change is ever added, build the
+shape then, with that row as its proof.
+
+### § 541.102 was already exact, and has gained the provenance it lacked
+
+The two TDPSA notices were re-read at statutes.capitol.texas.gov on 2026-11-23
+and are **unchanged**: § 541.102(b) "NOTICE: We may sell your sensitive
+personal data." and (c) "NOTICE: We may sell your biometric personal data."
+(Acts 2023, 88th Leg., R.S., Ch. 995 (H.B. 4), Sec. 2, eff. July 1, 2024).
+
+Task 2's migration of these literals into `mandated_texts` is **declined as
+specified**: the privacy pack already matches them whitespace-normalized and
+case-sensitively and reports an altered rendering, so adding them to
+`MANDATED_TEXTS` would have `TEXT-001` report the same defect a second time —
+the thing task 8 exists to prevent ("one finding per defect, never two").
+
+What the migration was really worth is the provenance, and that is built:
+`TX_SALE_NOTICES` in `src/privacy/regime-data.ts` now carries each notice's
+text, citation, official source, read date and enacting act, with a guard
+(`regime-data.test.ts`) holding it to the same standard `MANDATED_TEXTS` is
+held to. Before this they were bare string constants with the URL in a
+comment and no date — an exact-wording passage was the loosest-held authority
+in the tree, which is backwards, since its whole point is that the words are
+the requirement.
+
+### What is left on this change
+
+- Task 2's DKB `mandated_texts` table and its `dkb:build` provenance gate (the
+  table still lives beside its rules).
+- Task 7's fixtures for the two FTC passages, and the clean documents per
+  family.
+- Task 1's 18 U.S.C. § 1833(b)(3): **re-examined and declined as a mandated
+  text.** § 1833(b)(3)(A) requires an employer to "provide notice of the
+  immunity set forth in this subsection" and expressly permits a
+  cross-reference to a policy document instead; it prescribes no wording. It is
+  a required DISCLOSURE, not a fixed passage, and the existing DTSA presence
+  rule is the right shape.

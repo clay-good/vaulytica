@@ -47,6 +47,67 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1004.0] — 2026-11-23
+
+### Fixed
+- **Both authorities `add-mandated-text-conformance` recorded as unreachable
+  are readable, and reading them settled three open items — two by DECLINING
+  them with a written reason.** The spec recorded Cal. Civ. Code § 1542 as
+  blocked (leginfo answers 403) and Tex. Bus. & Com. Code § 541.102 as serving
+  "its text only to a browser script". Both are true of a plain fetch and
+  false of the browser pane, which rendered each page on 2026-11-23. Same
+  lesson as 9.1003.0's § 5-702, where the API host answers 401 and the public
+  page serves the section: **a blocked source is blocked at a HOST, not at a
+  statute.**
+
+- **§ 1542 is not a mandated text, and its "superseded" version is not
+  superseded.** Task 1 asked for its current and pre-2019 text and task 4 for
+  a `TEXT-<row>` *superseded* shape seeded by it. Both are declined:
+  - § 1542 **prescribes no wording for a document**. It is a default rule that
+    parties WAIVE by express reference, so there is no passage an agreement is
+    required to carry and nothing for `TEXT-001` or `TEXT-002` to measure.
+    `SET-003` already checks for the waiver as a presence rule, which is the
+    right shape.
+  - The 2018 amendment is **declaratory of existing law**. SEC. 3 of the
+    chaptered act says so in terms (Stats. 2018, Ch. 157, SB 1431): "The
+    amendments to Sections 1541 and 1542 of the Civil Code made by this act
+    are declaratory of existing law." It added "or releasing party" and "or
+    released party" and the Legislative Counsel's Digest calls it a
+    clarification. A release reciting the pre-2019 wording is therefore **not**
+    quoting a superseded rule, and a finding telling an attorney their § 1542
+    waiver is out of date would be wrong.
+
+  **So the superseded shape has no legitimate seed row and is not built.** No
+  other row has a substantive version change, and a detector no row can reach
+  is dead code — the class `2026-10-11-goal-loop-s44` is about.
+
+- **18 U.S.C. § 1833(b)(3) likewise declined**: it requires an employer to
+  "provide notice of the immunity set forth in this subsection" and expressly
+  permits a cross-reference to a policy document instead. It prescribes no
+  wording, so it is a required disclosure rather than a fixed passage, and the
+  existing DTSA presence rule is the right shape.
+
+### Added
+- **Provenance on the only exact-wording literals in `regime-data.ts`.** The
+  two TDPSA notices were re-read at statutes.capitol.texas.gov on 2026-11-23
+  and are unchanged — § 541.102(b) "NOTICE: We may sell your sensitive personal
+  data." and (c) "NOTICE: We may sell your biometric personal data." (Acts
+  2023, 88th Leg., R.S., Ch. 995 (H.B. 4), Sec. 2, eff. July 1, 2024).
+
+  They were bare string constants, with the URL in a comment and no read date
+  at all, while every other authority in the file carries `retrieved_at` and
+  `MANDATED_TEXTS` refuses a row with no provenance. An exact-wording passage
+  was the loosest-held authority in the tree, which is backwards: its whole
+  point is that the words are the requirement. `TX_SALE_NOTICES` now carries
+  text, citation, official source, read date and enacting act for each, with a
+  guard in `regime-data.test.ts` holding it to the same standard — so the next
+  such literal cannot arrive bare.
+
+  Task 2's *migration* of these into `MANDATED_TEXTS` is declined as specified:
+  the privacy pack already matches them whitespace-normalized and
+  case-sensitively and reports an altered rendering, so `TEXT-001` would report
+  the same defect twice, which is what task 8 exists to prevent.
+
 ## [9.1003.0] — 2026-11-23
 
 ### Added

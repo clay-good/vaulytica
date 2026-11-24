@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { getRegime, REGIME_IDS, REGIMES } from "./regime-data.js";
+import {
+  getRegime,
+  REGIME_IDS,
+  REGIMES,
+  TX_BIOMETRIC_SALE_NOTICE,
+  TX_SALE_NOTICES,
+  TX_SENSITIVE_SALE_NOTICE,
+} from "./regime-data.js";
 
 describe("regime-data — registry contract", () => {
   it("REGIME_IDS covers every REGIMES key", () => {
@@ -105,5 +112,48 @@ describe("regime-data — ccpa", () => {
     expect(
       soldShared?.present_patterns.some((p) => /do not sell/i.test(new RegExp(p, "i").source)),
     ).toBe(true);
+  });
+});
+
+/**
+ * Provenance on an exact-wording passage.
+ *
+ * `MANDATED_TEXTS` in `src/engine/rules/text/` is held to carrying where and
+ * when each passage was read, and refuses a row with none. The two Texas
+ * notices here are the same kind of authority — words a statute fixes — and
+ * were bare string constants until 9.1004.0, with the URL in a comment and no
+ * date at all. This holds them to the same standard, so the next exact-wording
+ * literal added to this file cannot arrive bare.
+ */
+describe("mandated literals carry their provenance", () => {
+  it("records text, citation, an official source, a read date and the enacting act", () => {
+    const rows = Object.values(TX_SALE_NOTICES);
+    expect(rows.length, "no mandated literals found — the assertions below would be vacuous").toBe(
+      2,
+    );
+    for (const row of rows) {
+      expect(row.text.length, row.citation).toBeGreaterThan(20);
+      expect(row.citation).toMatch(/^Tex\. Bus\. & Com\. Code § 541\.102\([bc]\)$/);
+      // The Texas Legislature's own statute site, not a secondary source.
+      expect(new URL(row.source_url).hostname).toBe("statutes.capitol.texas.gov");
+      expect(row.retrieved_at).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(row.enacted).toMatch(/Acts \d{4}/);
+    }
+  });
+
+  it("keeps the exported constants and the rows in step", () => {
+    // The rules import the bare constants; if those ever drift from the rows
+    // the provenance above would describe text nothing matches against.
+    expect(TX_SENSITIVE_SALE_NOTICE).toBe(TX_SALE_NOTICES.sensitive.text);
+    expect(TX_BIOMETRIC_SALE_NOTICE).toBe(TX_SALE_NOTICES.biometric.text);
+  });
+
+  it("quotes the statute's words exactly, including 'personal'", () => {
+    // 🚨 The defect this guards: dropping one word. A controller who writes
+    // "NOTICE: We may sell your sensitive data." satisfies any presence check
+    // built on "sensitive" and does NOT satisfy § 541.102(b), which prescribes
+    // the sentence. Read at the official source on 2026-11-23.
+    expect(TX_SENSITIVE_SALE_NOTICE).toBe("NOTICE: We may sell your sensitive personal data.");
+    expect(TX_BIOMETRIC_SALE_NOTICE).toBe("NOTICE: We may sell your biometric personal data.");
   });
 });
