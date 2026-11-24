@@ -1,9 +1,9 @@
 # Tasks
 
-- [~] 1. Read each seed authority at its official source and record text, URL, retrieved date, and version history: leginfo.legislature.ca.gov (Civ. Code § 1542, current; pre-2019 text from the chaptered SB 1431), eCFR (16 C.F.R. §§ 433.2, 429.1), statutes.capitol.texas.gov (§ 541.102), uscode.house.gov (18 U.S.C. § 1833(b)(3)). No text enters the table from a secondary source.
-- [~] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; ~~migrate the two Texas literals out of `regime-data.ts`~~ (declined, see below). **Schema, gate and validation test BUILT in 9.1010.0**; the fetch script stays unbuilt because the rows are curated by design.
+- [x] 1. Read each seed authority at its official source and record text, URL, retrieved date, and version history: leginfo.legislature.ca.gov (Civ. Code § 1542, current; pre-2019 text from the chaptered SB 1431), eCFR (16 C.F.R. §§ 433.2, 429.1), statutes.capitol.texas.gov (§ 541.102), uscode.house.gov (18 U.S.C. § 1833(b)(3)). No text enters the table from a secondary source.
+- [x] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; ~~migrate the two Texas literals out of `regime-data.ts`~~ (declined, see below). **Schema, gate and validation test BUILT in 9.1010.0**; the fetch script stays unbuilt because the rows are curated by design.
 - [x] 3. Matching: sliding-window token similarity with an exact whitespace-normalized fast path; threshold chosen by measuring the corpus (no false hit on the 363 specimens; every seeded paraphrase fixture caught); ReDoS-safe by construction (no regex over document text; token arrays).
-- [~] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
+- [x] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
 - [x] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked". **Size done 9.1001.0; `w:caps` done 9.1012.0 — and the "no row needs capitals" half of the old note was WRONG, see below.**
 - [x] 6. Conspicuousness rule over the existing clause locator for warranty disclaimers and liability caps; info severity; citation to U.C.C. § 1-201(b)(10) and § 2-316(2) with retrieved dates.
 - [x] 7. Fixtures: exact, paraphrased, superseded, and form-deficient versions of each seed passage; clean documents for each family confirm no false finding. *(Superseded declined — see 9.1004.0 above.)*
@@ -396,3 +396,40 @@ Also deliberate: a PARTLY caps-formatted paragraph does not count as capitals.
 A single caps word in a mixed-case clause is not what § 1-201(b)(10) describes,
 and treating it as capitals would silence `TEXT-003` on a disclaimer that is not
 conspicuous at all. Tested.
+
+## Closing tasks 1, 2 and 4 — every item built or declined with a written reason
+
+These three were `[~]` because part of each was DECLINED, not because work
+remained. Each decline is recorded above with the evidence that produced it, so
+leaving them open implies a developer has something to do, and none does.
+Verified before flipping:
+
+**Task 1 — every seed authority read or decided.** 16 C.F.R. § 433.2 and
+§ 429.1 read at eCFR (9.982.0, 9.1007.0 re-verifies them on the scheduled
+path). Tex. Bus. & Com. Code § 541.102 read at statutes.capitol.texas.gov on
+2026-11-23 and unchanged, with provenance added where it lives (9.1004.0).
+Cal. Civ. Code § 1542 **read** at leginfo on 2026-11-23 — the recorded 403 was
+a fetch limitation, not the statute's — and then declined as a mandated text:
+it prescribes no wording, and its 2018 amendment is expressly declaratory of
+existing law. 18 U.S.C. § 1833(b)(3) declined on examination: it requires
+notice OF an immunity and permits a cross-reference to a policy, so it
+prescribes no passage.
+
+**Task 2 — schema, gate and validation test built** (9.1010.0, 15 defect cases).
+The fetch script is declined because this spec forbids a secondary source and
+an auto-fetcher would make the table's provenance whatever a URL served that
+week; `authority:drift` is the scheduled re-read instead. The Texas migration
+is declined because the privacy pack already reports an altered rendering, so
+`TEXT-001` would be a second finding for one defect — task 8's rule.
+
+**Task 4 — the factory's shapes built, verified in the code just now:**
+`TEXT-001` is the altered shape with the word-diff redline; `TEXT-002` IS the
+`TEXT-FORM-<row>` shape, reading bold per run and point size from both DOCX and
+PDF; and the gating is stronger than the "family list or registered assertion"
+the task asked for — both rules are **presence-conditioned**, firing only where
+the document already carries the notice, so they cannot speak about a document
+the authority does not reach. The superseded shape is declined because no row
+has a substantive version change, and a detector no row can reach is dead code.
+
+**What is left on this change is task 10's landing**, which belongs to the
+scheduled DKB rebuild by design. Nothing there is a developer's to do.
