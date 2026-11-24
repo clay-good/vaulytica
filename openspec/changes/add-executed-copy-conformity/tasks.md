@@ -3,7 +3,7 @@
 - [~] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
 - [x] 2. `src/report/conformity.ts`: allowance classifier over paragraphs (signature window reuse, blank-to-date fill, initials, cover pages, furniture, watermark words); verdict; canonical table and `conformity_hash`.
 - [x] 3. `clause-diff.ts`: accept an allowance predicate so set-aside paragraphs are listed, not diffed; the plain comparison path unchanged (goldens hold).
-- [ ] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **Blocked:** no surface runs OCR (see 9.977.0 below); the refusal half is done.
+- [ ] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **Blocked — see the 9.1008.0 note at the end for the verified reason** (it is not that the OCR code is missing); the refusal half is done.
 - [x] 5. `compare --executed` and `--executed-set` with `--fail-on-nonconformity`; title pairing via the matcher; stream contract respected.
 - [x] 6. Renderers: Markdown, JSON, DOCX section; browser affordance and Word deliverable; cross-surface hash parity on text-layer inputs.
 - [x] 7. Metamorphic relations: filling blanks in the final must not change the verdict; altering any non-allowance paragraph must; format transforms on the executed side must not.
@@ -57,3 +57,35 @@ one changed figure (b) and with an added signatory (c) in
 unpaired file and a title tie in `compare-executed-set.test.ts` ("pairs by
 title, lists the unpaired, and refuses to choose between a tie"). Task 9: the
 full gate is green at 9.1005.0.
+
+## Why task 4 is blocked — verified 9.1008.0, replacing a vague claim
+
+The note used to read "no surface runs OCR", which is true in effect and
+useless as a reason, so it was re-tested. What is actually there:
+
+- The OCR path **exists and is called**: `src/ingest/pdf.ts` imports and runs
+  `runOcr` when the text layer is thin and `options.allowOcr` is set.
+- The confidence machinery **exists too**: `ocr.ts` exports
+  `OCR_CONFIDENCE_THRESHOLD = 60` and `markLowConfidence`, OCR output marks
+  each low-confidence word `[uncertain]`, and `pdf.ts` counts them and raises a
+  run warning naming the count and telling the reader to verify any party
+  name, amount or date near a marker.
+
+So the blocker is neither the OCR nor the confidence data. It is this:
+
+1. **Every shipped surface passes `allowOcr: false`** — `src/ui/pipeline.ts`
+   at lines 621 and 1583, both call sites. Nothing can reach the OCR path as
+   the product ships.
+2. **Turning it on is a held maintainer decision**, not an oversight: the
+   tesseract `eng` language model is fetched over the network, which the
+   product's "nothing leaves the tab, no server" guarantee forbids, and the
+   path cannot be verified headless or in a sandbox. `tesseract.js` is pinned
+   at 5 for the same reason.
+3. **`Conformity.verdict` is `"identical" | "differences"`** with no third
+   state, so there is nowhere to put an unverified difference. Adding a
+   `could-not-determine` state now would be a branch no input can reach — the
+   dead-detector class this repository has been bitten by before — so it waits
+   for the OCR input rather than landing ahead of it.
+
+The honest summary: this task needs a product decision about shipping a
+network-fetched OCR model, not more code.

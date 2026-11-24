@@ -30,3 +30,19 @@ Accept-All and Reject-All exports of the committed redline, for the round-trip
 test — still needs a copy of Word to produce them; the synthesized fixture and
 the property test that neither reading contains a revision element are built
 (task 2).
+
+## Why task 1's round-trip half is blocked — verified 9.1008.0
+
+The fixture needs Word's OWN Accept-All and Reject-All exports of the committed
+redline, because the test exists to check this product's rewrite against what
+Word actually produces. Synthesizing those exports here would make the test
+compare the rewrite with itself.
+
+Checked on this machine: no `soffice`, no `libreoffice`, no `pandoc`. There is
+no headless tool available that accepts or rejects tracked changes with
+authority, so the two exports have to come from someone with Word (or
+LibreOffice) in front of them.
+
+Built and standing meanwhile (task 2): the linear OOXML rewrite, and the
+property test that neither reading — accepted or rejected — contains any
+revision element.

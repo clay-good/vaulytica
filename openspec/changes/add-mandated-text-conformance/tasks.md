@@ -249,3 +249,22 @@ Verified against the live eCFR API on 2026-11-23: 3/3 passages unchanged.
 Task 2's remaining DKB-table half is left deliberately unbuilt, with that
 reasoning, rather than moved for its own sake. Task 10's scheduled rebuild is
 what runs the drift check.
+
+## Where tasks 2 and 10 stand — 9.1008.0
+
+Task 10 is **half done**: the scheduled rebuild now runs the mandated-text
+drift check (`npm run authority:drift`, wired into `dkb-rebuild.yml` in
+9.1007.0), which is the protection the scheduled path was wanted for. What
+remains of task 10 is landing task 2's table, so the two stand or fall
+together.
+
+Task 2's reason is recorded above and was verified, not assumed: the curated
+`statutes` table carries an **`excerpt`**, not verbatim text, so it cannot hold
+a passage whose exact words are the requirement — which is why the spec asked
+for a new `mandated_texts` table rather than reusing `statutes`. The
+provenance and currency halves are already delivered by other means
+(`mandated-texts.test.ts` refuses a row with no source, date or version;
+9.1006.0 gave the rows structured citations so the "verify currency" label
+reaches them; 9.1007.0 added drift on the text itself). A new DKB table is
+therefore a migration whose user-facing value is already in place, which is why
+it is not being built ahead of a reason to.

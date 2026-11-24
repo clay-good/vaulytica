@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file. Format adap
 ## [Unreleased]
 
 ### Changed
+- **The four remaining open spec tasks now record a VERIFIED reason, not a
+  vague one.** Two of the six open at 9.1007.0 turned out to rest on unchecked
+  claims of mine and were closed at 9.1008.0, so the other four were re-tested
+  the same way. Documentation only — no version bump, so no golden churn.
+
+  - `add-executed-copy-conformity` task 4 said "no surface runs OCR". True in
+    effect and useless as a reason. In fact `src/ingest/pdf.ts` **does** call
+    `runOcr`, and the confidence machinery already exists — `ocr.ts` exports
+    `OCR_CONFIDENCE_THRESHOLD = 60` and `markLowConfidence`, low-confidence
+    words are marked `[uncertain]`, counted, and surfaced in a run warning. The
+    real blocker is that **both browser call sites pass `allowOcr: false`**
+    (`src/ui/pipeline.ts` 621 and 1583), and enabling it is a held maintainer
+    decision because the tesseract `eng` model is fetched over the network,
+    which the no-server guarantee forbids. Also `Conformity.verdict` is
+    `"identical" | "differences"`, so a `could-not-determine` state added now
+    would be a branch no input can reach. It needs a product decision about
+    shipping a network-fetched OCR model, not more code.
+  - `add-redline-two-sided-analysis` task 1 needs Word's own Accept-All and
+    Reject-All exports, because the test exists to check this product's rewrite
+    against what Word actually produces — synthesizing them would compare the
+    rewrite with itself. Verified on this machine: no `soffice`, no
+    `libreoffice`, no `pandoc`.
+  - `add-mandated-text-conformance` task 10 is **half done** — the scheduled
+    rebuild runs the drift check as of 9.1007.0 — and the rest stands or falls
+    with task 2, whose reason (the `statutes` table holds an `excerpt`, not
+    verbatim text) was verified rather than assumed.
+
 - **The fuzz scaling gate measures CPU time, not wall time.**
   `fuzz-boundary.test.ts` asks whether `extractAll` scales worse than linearly
   from a tenth of the input. It divided by a small run of only ~10–30 ms, so a
