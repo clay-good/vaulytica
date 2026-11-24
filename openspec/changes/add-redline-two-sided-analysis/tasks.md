@@ -232,6 +232,31 @@ element counts, and why every textutil comparison asserts a non-empty result.
 The lesson on top of the one above: **when a tool does half of what you need,
 ask whether the INPUT can be transformed so that half becomes the whole.**
 
+### 🚨 9.1022.0 — where these oracles RUN, and a caveat of mine that was wrong
+
+On finishing 9.1021.0 I wrote that the `textutil` comparisons are "macOS-only
+and skip where CI runs on Linux, so they're a developer-machine guard rather
+than a CI gate", and suggested adding a macOS runner as a follow-up. **That was
+wrong, and I had not looked.** `.github/workflows/test-matrix.yml` has run
+`macos-latest` alongside `ubuntu-latest` and `windows-latest` on every push and
+PR to main since long before this change, and its macOS leg runs `npm test` —
+so these comparisons were already enforced in CI the moment they landed. Check
+the workflow before describing what CI does.
+
+The gap underneath was real, though, and sharper than the one I named. All
+three comparisons are `runIf`-gated on `textutil` being present. If it ever
+vanished from the macOS runner image, **every leg would skip, CI would stay
+green, and the only independent cross-check of both redline readings would be
+gone with nothing to show it** — the same trap as a skipped test nobody has
+seen fire. Proved by simulation: with `textutil` forced absent, six tests went
+to silent skips and nothing failed.
+
+So `textutil`-is-present-on-macOS is now asserted as a fact rather than
+treated as a precondition: on `darwin` its absence FAILS, off `darwin` the
+absence is asserted instead, and the three duplicated availability helpers are
+one definition. Off macOS the comparisons still skip — there is no `textutil`
+to run — but they can no longer skip everywhere at once unnoticed.
+
 ### pandoc, considered and NOT armed
 
 Asking the same question for the rejected reading turns up pandoc, which has a

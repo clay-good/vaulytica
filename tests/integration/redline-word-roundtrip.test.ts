@@ -58,6 +58,65 @@ async function theirReading(path: string): Promise<string> {
   return normalize(flattenText(r.tree));
 }
 
+/**
+ * Is Apple's text engine available? On macOS the answer must be yes.
+ *
+ * 🚨 Why this is not a plain feature test. Three of the comparisons below are
+ * the only independent cross-checks this product has of its redline readings,
+ * and they are `runIf`-gated. On Linux and Windows they skip because
+ * `textutil` is a macOS tool — but if it ever vanished from the macOS runner
+ * image too, every leg of the cross-OS matrix would skip, CI would stay green,
+ * and the oracle would be gone with nothing to show it. A skipped test nobody
+ * has seen fire is indistinguishable from dead code.
+ *
+ * So `textutil-is-present-on-macOS` is asserted as a fact, and the macOS leg of
+ * `.github/workflows/test-matrix.yml` (`macos-latest`, which runs `npm test` on
+ * every push and PR to main) is where these actually execute.
+ */
+const DARWIN = process.platform === "darwin";
+
+function textutilAvailable(): boolean {
+  try {
+    execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+const available = textutilAvailable();
+
+/**
+ * Both sides reduced to their words in order.
+ *
+ * Apple's engine writes a table row as two lines where this product writes
+ * `cell | cell`, and leaves a trailing space where this one does not. Those are
+ * serialization differences and the question is which WORDS survive a revision.
+ * Nothing is sorted or de-duplicated, so a lost clause, a duplicated moved
+ * clause or a substituted figure still fails.
+ */
+const words = (s: string): string =>
+  s
+    .replace(/\|/g, " ")
+    .split(/\s+/)
+    .filter((w) => w.length > 0)
+    .join(" ");
+
+describe("the independent oracle must actually run somewhere", () => {
+  it("is present on macOS, where these comparisons are enforced", () => {
+    if (DARWIN) {
+      expect(
+        available,
+        "textutil is missing on macOS: every independent redline cross-check just became a silent skip",
+      ).toBe(true);
+    } else {
+      // Off macOS it is absent, and the comparisons say so rather than
+      // pretending to have run.
+      expect(available).toBe(false);
+    }
+  });
+});
+
 const pair = exportPair();
 
 describe("this product's rewrite against an independent implementation", () => {
@@ -129,24 +188,8 @@ describe("this product's rewrite against an independent implementation", () => {
  */
 describe("this product's accepted reading against Apple's text engine", () => {
   /** macOS only. `textutil` is not on Linux, where CI runs. */
-  function hasTextutil(): boolean {
-    try {
-      execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
-      return true;
-    } catch {
-      return false;
-    }
-  }
 
   /** The words, in order — see the note above on what is normalized away. */
-  const words = (s: string): string =>
-    s
-      .replace(/\|/g, " ")
-      .split(/\s+/)
-      .filter((w) => w.length > 0)
-      .join(" ");
-
-  const available = hasTextutil();
 
   it.runIf(available)(
     "reads the five-kind redline exactly as Apple's engine does, accepted",
@@ -179,10 +222,6 @@ describe("this product's accepted reading against Apple's text engine", () => {
     },
     180_000,
   );
-
-  it.skipIf(available)("is skipped off macOS, where there is no textutil", () => {
-    expect(available).toBe(false);
-  });
 });
 
 /**
@@ -209,22 +248,6 @@ describe("this product's accepted reading against Apple's text engine", () => {
  * inside, which is the line that catches it.
  */
 describe("the rejected DOCX this product writes, opened by Apple's engine", () => {
-  function hasTextutil(): boolean {
-    try {
-      execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  const words = (s: string): string =>
-    s
-      .replace(/\|/g, " ")
-      .split(/\s+/)
-      .filter((w) => w.length > 0)
-      .join(" ");
-  const available = hasTextutil();
-
   it.runIf(available)(
     "opens as a valid DOCX and yields the same words this product reads",
     async () => {
@@ -301,21 +324,6 @@ describe("the rejected DOCX this product writes, opened by Apple's engine", () =
  * check: swapping twice must reproduce the original byte for byte.
  */
 describe("this product's rejected reading, via inverted markup", () => {
-  function hasTextutil(): boolean {
-    try {
-      execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
-      return true;
-    } catch {
-      return false;
-    }
-  }
-  const words = (s: string): string =>
-    s
-      .replace(/\|/g, " ")
-      .split(/\s+/)
-      .filter((w) => w.length > 0)
-      .join(" ");
-
   /** `w:t` → `w:delText` across one revision block's inner XML. */
   const toDel = (inner: string): string =>
     inner.replace(/<w:t(?=[ >])/g, "<w:delText").replace(/<\/w:t>/g, "</w:delText>");
@@ -345,7 +353,6 @@ describe("this product's rejected reading, via inverted markup", () => {
     return out;
   }
 
-  const available = hasTextutil();
   const DOC = "word/document.xml";
 
   it("is an involution, and preserves every revision element", async () => {
