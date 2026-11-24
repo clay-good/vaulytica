@@ -263,3 +263,160 @@ describe("the rejected DOCX this product writes, opened by Apple's engine", () =
     180_000,
   );
 });
+
+/**
+ * The REJECTED reading, independently — by inverting the markup instead of the
+ * reader (add-redline-two-sided-analysis task 1, the other half).
+ *
+ * 🥇 `textutil` resolves revisions one way only: it accepts them. I took that
+ * to mean it could not speak to the rejected reading, and recorded the rejected
+ * half as still needing Word. That was the same mistake as before, one level
+ * down — reasoning about the READER's options instead of the requirement.
+ *
+ * Accepting insertions and dropping deletions over a document whose insertions
+ * and deletions have been SWAPPED yields the original's rejected reading. So
+ * the trick is to invert the input markup and let Apple's engine do exactly the
+ * work it already does:
+ *
+ *   `w:ins` ⟷ `w:del`     and their text: `w:t` ⟷ `w:delText`
+ *   `w:moveTo` ⟷ `w:moveFrom`  (same text swap — a move is a del/ins pair)
+ *   `w:rPrChange` untouched — a formatting change adds and removes no words
+ *
+ * ⚠️ HOW INDEPENDENT IS IT, precisely. The resolution — which words survive —
+ * is done by Apple's engine in both directions, and the swap reuses nothing
+ * from `src/ingest/docx-revisions.ts`: one relabels markup and defers, the
+ * other rewrites the document directly. So a wrong decision in our reject
+ * logic (dropping the moved clause, keeping the insertion, losing a table
+ * cell) fails this test. What it cannot rule out is a bug in the swap that
+ * happens to mirror a bug in the rewrite. That residual is bounded by the two
+ * self-checks below, and it is why the Word round trip above stays armed:
+ * Word's own export would need no such argument. This is materially stronger
+ * than nothing and honestly weaker than Word.
+ *
+ * 🚨 The swap was wrong twice before it was right, and both ways were silent.
+ * `<w:del([^>]*)>` also matches `<w:delText ...>`, which destroyed every
+ * deleted run; and sentinelling only one direction let the second pass
+ * re-match what the first had just written. Both produced a DOCX `textutil`
+ * read as empty — never as an error, per the note above. Hence the involution
+ * check: swapping twice must reproduce the original byte for byte.
+ */
+describe("this product's rejected reading, via inverted markup", () => {
+  function hasTextutil(): boolean {
+    try {
+      execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  const words = (s: string): string =>
+    s
+      .replace(/\|/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length > 0)
+      .join(" ");
+
+  /** `w:t` → `w:delText` across one revision block's inner XML. */
+  const toDel = (inner: string): string =>
+    inner.replace(/<w:t(?=[ >])/g, "<w:delText").replace(/<\/w:t>/g, "</w:delText>");
+  /** `w:delText` → `w:t`, the inverse. */
+  const toIns = (inner: string): string =>
+    inner.replace(/<w:delText(?=[ >])/g, "<w:t").replace(/<\/w:delText>/g, "</w:t>");
+
+  /** Swap which side of every revision is the insertion. An involution. */
+  function swapRevisionRoles(xml: string): string {
+    let out = xml;
+    for (const [a, b] of [
+      ["w:ins", "w:del"],
+      ["w:moveTo", "w:moveFrom"],
+    ] as const) {
+      // `(?=[ >])` so `w:del` never matches `w:delText`, and \0 sentinels on
+      // BOTH outputs so neither pass re-matches what the other just wrote.
+      out = out.replace(
+        new RegExp(`<${a}(?=[ >])([^>]*)>([\\s\\S]*?)</${a}>`, "g"),
+        (_m, attrs: string, inner: string) => `<\0${b}${attrs}>${toDel(inner)}</\0${b}>`,
+      );
+      out = out.replace(
+        new RegExp(`<${b}(?=[ >])([^>]*)>([\\s\\S]*?)</${b}>`, "g"),
+        (_m, attrs: string, inner: string) => `<\0${a}${attrs}>${toIns(inner)}</\0${a}>`,
+      );
+      out = out.split("\0").join("");
+    }
+    return out;
+  }
+
+  const available = hasTextutil();
+  const DOC = "word/document.xml";
+
+  it("is an involution, and preserves every revision element", async () => {
+    // Self-check one, and it runs everywhere — no textutil needed. Both earlier
+    // versions of the swap failed this while producing a DOCX that merely read
+    // as empty.
+    const { unzipSync, strFromU8 } = await import("fflate");
+    const xml = strFromU8(unzipSync(new Uint8Array(readFileSync(REDLINE_PATH)))[DOC]!);
+    const once = swapRevisionRoles(xml);
+    expect(once).not.toBe(xml);
+    expect(swapRevisionRoles(once), "swapping twice must be the identity").toBe(xml);
+    for (const tag of ["w:ins", "w:del", "w:delText", "w:moveFrom", "w:moveTo", "w:rPrChange"]) {
+      const count = (s: string) => s.split(new RegExp(`<${tag}(?=[ >/])`)).length - 1;
+      expect(count(once), `${tag} count changed`).toBe(count(xml));
+    }
+  }, 60_000);
+
+  it.runIf(available)(
+    "reads the same words Apple's engine gets from the inverted redline",
+    async () => {
+      const { unzipSync, zipSync, strFromU8, strToU8 } = await import("fflate");
+      const { mkdtempSync, writeFileSync } = await import("node:fs");
+      const { tmpdir } = await import("node:os");
+
+      const entries = unzipSync(new Uint8Array(readFileSync(REDLINE_PATH)));
+      const swapped = swapRevisionRoles(strFromU8(entries[DOC]!));
+      const out = join(mkdtempSync(join(tmpdir(), "vaulytica-swapped-")), "swapped.docx");
+      writeFileSync(out, zipSync({ ...entries, [DOC]: strToU8(swapped) }));
+
+      const theirs = words(
+        execFileSync("textutil", ["-convert", "txt", out, "-stdout"], {
+          encoding: "utf8",
+          timeout: 120_000,
+        }),
+      );
+      // Load-bearing, as always with textutil: malformed OOXML is reported as
+      // exit 0 and empty output, which is how both broken swaps presented.
+      expect(
+        theirs.length,
+        "Apple's engine returned nothing — the swap is malformed",
+      ).toBeGreaterThan(50);
+      expect(words(await ourReading("rejected"))).toBe(theirs);
+      // The revisions really were inverted: the deletion's text is back, the
+      // insertion's is gone, and the moved clause sat still.
+      expect(theirs).toContain("thirty (30) days");
+      expect(theirs).not.toContain("fifteen");
+      expect(theirs).toContain("invoice. Interest accrues");
+    },
+    180_000,
+  );
+
+  it.runIf(available)(
+    "is discriminating: the inverted reading is NOT the accepted one",
+    async () => {
+      const { unzipSync, zipSync, strFromU8, strToU8 } = await import("fflate");
+      const { mkdtempSync, writeFileSync } = await import("node:fs");
+      const { tmpdir } = await import("node:os");
+      const entries = unzipSync(new Uint8Array(readFileSync(REDLINE_PATH)));
+      const out = join(mkdtempSync(join(tmpdir(), "vaulytica-swapped2-")), "swapped.docx");
+      writeFileSync(
+        out,
+        zipSync({ ...entries, [DOC]: strToU8(swapRevisionRoles(strFromU8(entries[DOC]!))) }),
+      );
+      const theirs = words(
+        execFileSync("textutil", ["-convert", "txt", out, "-stdout"], {
+          encoding: "utf8",
+          timeout: 120_000,
+        }),
+      );
+      expect(words(await ourReading("accepted"))).not.toBe(theirs);
+    },
+    180_000,
+  );
+});

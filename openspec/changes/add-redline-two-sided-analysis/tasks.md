@@ -1,6 +1,6 @@
 # Tasks
 
-- [~] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT and COMMITTED** (`tests/fixtures/redline/five-kind-redline.docx`, 9.1016.0). The independent cross-check it exists for is **DONE for the accepted reading and still open for the rejected one** (9.1019.0): macOS's own `textutil` reads the redline through Apple's text engine and resolves revisions to the accepted reading, and `redline-word-roundtrip.test.ts` asserts this product's accepted reading matches it word for word — including the `w:moveFrom`/`w:moveTo` move — plus a second assertion that Apple's reading is **not** this product's rejected one, which is what proves the first can fail. No human step, no committed binary. `textutil` offers no reject mode and nothing else on this machine reads OOXML revisions, so the rejected half keeps the **ARMED** Word round trip, which runs the moment the exports are committed. See the end.
+- [x] 1. Fixtures: a DOCX redline with insertions, deletions, a move, a formatting-only change, and a table-cell change — **BUILT and COMMITTED** (`tests/fixtures/redline/five-kind-redline.docx`, 9.1016.0). **The independent cross-check it exists for is DONE for BOTH readings (9.1019.0, 9.1021.0), without Word.** macOS's `textutil` reads .docx through Apple's text engine: run over the fixture it yields the ACCEPTED reading, and run over the fixture with every revision's role SWAPPED (`w:ins`⟷`w:del`, `w:moveTo`⟷`w:moveFrom`, `w:t`⟷`w:delText`) it yields the REJECTED one — accepting inverted revisions is rejecting them. Apple's engine does the resolution in both directions and the swap reuses nothing from `docx-revisions.ts`, so a wrong decision in our reject logic fails the test. Each direction is paired with a discrimination assertion (theirs is not our *other* reading), and the swap is self-checked by involution — swapping twice must reproduce the original byte for byte. ⚠️ The residual the swap cannot rule out is a bug in itself mirroring one in the rewrite, which is why the **Word round trip stays ARMED**: Word's own export needs no such argument, and it runs the moment the exports are committed. Producing them is optional now, not blocking.
 - [x] 2. `src/ingest/docx-revisions.ts`: the linear OOXML rewrite producing the rejected `document.xml`; property test that accepted(rewrite) and rejected(rewrite) each contain no revision elements; bounded matching per `container.ts`. **Hardened at 9.1020.0:** that property was checked only with this repository's own reader, so a rewrite emitting unbalanced tags, an orphaned `w:r` or a broken zip entry could pass every test here and fail in the user's Word. `withRevisionsRejected`'s output is now opened by Apple's text engine and its word sequence compared. ⚠️ `textutil` does not error on malformed OOXML — it exits 0 and prints nothing — so the non-empty assertion is what catches it and is load-bearing (measured: a dropped `</w:p>`, an orphaned-run rename, and a 70%-truncated XML all gave exit 0 and empty output).
 - [x] 3. `ingestDocxBuffer(buf, { revisions })` and the `ingestDocx` wrapper with the `#rejected` / `#accepted` name suffix; the default path byte-identical (corpus goldens unchanged).
 - [x] 4. `tools/cli/api.ts` `compareRedline(path, opts)` over `compareFiles` with `pinType`; `compare --redline`; the no-tracked-changes refusal; `MAX_COUNT` notice carried.
@@ -211,7 +211,28 @@ set taught: **a blocked reason names the artifact someone imagined, not the
 requirement.** Ask what the test actually needs to be true, then ask who else
 in the world already does that.
 
-### The rejected half: pandoc is the best candidate, and NOT armed
+### 🥇 9.1021.0 — the rejected half too, by inverting the markup not the reader
+
+`textutil` resolves revisions one way only: it accepts them. I read that as
+"it cannot speak to the rejected reading" and left the rejected half blocked.
+Same mistake as the one above, one level down — reasoning about the READER's
+options instead of the requirement.
+
+Accepting insertions and dropping deletions, over a document whose insertions
+and deletions have been swapped, IS the rejected reading. Invert the input
+markup and Apple's engine does exactly the work it already does.
+
+🚨 The swap was wrong twice before it was right, and **both ways were silent**:
+`<w:del([^>]*)>` also matches `<w:delText ...>`, destroying every deleted run,
+and sentinelling only one direction let the second pass re-match what the first
+had just written. Each produced a DOCX `textutil` read as EMPTY — never as an
+error. That is why the swap is self-checked by involution and by preserved
+element counts, and why every textutil comparison asserts a non-empty result.
+
+The lesson on top of the one above: **when a tool does half of what you need,
+ask whether the INPUT can be transformed so that half becomes the whole.**
+
+### pandoc, considered and NOT armed
 
 Asking the same question for the rejected reading turns up pandoc, which has a
 `--track-changes` option. It is not installed here. Read at
