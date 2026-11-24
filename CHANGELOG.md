@@ -47,6 +47,76 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1003.0] — 2026-11-23
+
+### Added
+- **`READ-003`: a consumer agreement whose sections are not captioned**, under
+  `--readability ny-consumer` (N.Y. Gen. Oblig. Law § 5-702). This closes task
+  4 of `add-readability-measure`, the last unbuilt rule in the pack.
+
+  **The blocker was not one.** § 5-702 had been recorded as unreachable
+  because "the New York Senate's site answers automated reads with a bot
+  challenge". That is true of the API host — `legislation.nysenate.gov` answers
+  401 to an unauthenticated read — and not of the public page, which served the
+  section on 2026-11-23 and prints its own revision date (2020-04-10). A
+  blocked source is blocked at a HOST, not at a statute.
+
+  § 5-702 is the first row in the standards table that is not an insurance
+  readability statute and the first that sets **no score at all**. It requires
+  an agreement it covers to be (1) "written in a clear and coherent manner
+  using words with common and every day meanings" — a judgment no formula
+  makes, which the product does not make and the finding says so — and (2)
+  "appropriately divided and captioned by its various sections", which is
+  measurable and is `READ-003`. So `min_score` and `contents_over` became
+  optional on `ReadabilityStandard`, with `captions_required`, `max_amount` and
+  `not_measured` beside them; `READ-001` and `READ-002` return early for a row
+  that sets neither, and the report cover line says the statute sets no score
+  rather than printing "minimum undefined".
+
+  The finding states two further limits: it does not judge whether a caption is
+  *appropriate* to what sits under it, only whether the agreement has captions
+  at all; and it does not apply the statute's $250,000 ceiling, because the
+  agreement's value is not read.
+
+### Fixed
+- **The caption detector was wrong twice, and the corpus sweep is what said
+  so.** `READ-003` is an absence finding, so asserting `ny-consumer` over all
+  363 specimens is the cheap form of the clean-document method: nearly all of
+  them are captioned, so any hit is a caption style the detector cannot read.
+
+  | Hits | What the sweep found |
+  | --- | --- |
+  | 32 | The first draft read only the ingest's **outline**. A plain-text document has no section headings whatever its captions — `paste.ts` promotes a line to a heading only on a Markdown `#` or a Setext underline — so the rule would have reported every pasted consumer agreement as uncaptioned. |
+  | 10 | `1. PURPOSE AND SCOPE` — a numbered ALL-CAPS caption with no terminating punctuation, the commonest caption form in American legal drafting. |
+  | 9 | `uk-contract-of-employment`, captioned throughout, whose caption line runs into `1.1` with no blank line; normalization joins them, the title ends at the `.` inside `1.1`, and the trailing `1` was read as an uncapitalized content word. |
+  | 0 | With the uncaptioned-lease fixture still firing, so the rule is proven able to fail. |
+
+  Also on the way: the **first paragraph is the document's own title**
+  ("RESIDENTIAL LEASE AGREEMENT"), which matched the caption-line pattern and
+  made the uncaptioned lease look captioned — the rule was switched off on
+  exactly the documents it exists for. § 5-702(a)(2) asks about the agreement's
+  sections; its title names the whole thing.
+
+  The detector now errs toward **accepting** a caption, reusing `paste.ts`'s
+  own heading-like test (a short single line that is not a sentence) so the two
+  surfaces agree. A missed violation costs a reader nothing; calling a
+  captioned agreement undivided is a false statement about their document.
+
+### Changed
+- The corpus sweep is a permanent guard in `readability-assertion.test.ts`,
+  paired with the firing fixture so zero hits can never mean the rule is dead.
+- `docs/readability.md` gains the `ny-consumer` row and a section on why New
+  York is the odd one out; `docs/reference.md` names `READ-003`; the
+  known-limits page says what the assertion does not cover. The browser panel
+  no longer says "insurance policy form" only, and its hint distinguishes the
+  score statutes from § 5-702.
+- Every golden was regenerated for the version stamp and **no finding moved**
+  (345 files checked semantically, only the artifact-digest ledger differs),
+  confirming `READ-003` changes nothing without the assertion.
+- `docs/config.schema.json` regenerated: `readability` in
+  `vaulytica.config.json` accepts `ny-consumer`, and the published schema's
+  enum is derived from the standards table, so the gate caught it.
+
 ## [9.1002.0] — 2026-11-23
 
 ### Added

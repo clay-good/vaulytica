@@ -21,13 +21,17 @@ export const READABILITY_CHOICES: ReadonlyArray<{ id: string; label: string }> =
   { id: "ne", label: "Nebraska, Neb. Rev. Stat. § 44-3405 (life and health policies)" },
   { id: "dc", label: "District of Columbia, D.C. Code § 31-4725 (life insurers' forms)" },
   { id: "ok", label: "Oklahoma, 36 O.S. § 3645 (life, accident and health forms)" },
+  {
+    id: "ny-consumer",
+    label: "New York, N.Y. Gen. Oblig. Law § 5-702 (consumer agreements and residential leases)",
+  },
 ];
 
 export function bindReadabilityPanel(
   container: HTMLElement,
   opts: { onChange: (standard: string | undefined) => void },
 ): void {
-  container.innerHTML = `<details class="regime-details"><summary class="btn-link">Reviewing an insurance policy form? Hold it to a readability statute…</summary><fieldset class="regime-fieldset"><legend>Readability statute</legend><label>Statute <select data-role="readability-standard"><option value="">None asserted</option>${READABILITY_CHOICES.map((c) => `<option value="${c.id}">${c.label}</option>`).join("")}</select></label><div class="regime-hint">Flags a reading-ease score below the statute's minimum, and a long form with no table of contents. The score always appears in the reports; only a statute you choose produces findings.</div></fieldset></details>`;
+  container.innerHTML = `<details class="regime-details"><summary class="btn-link">Reviewing an insurance form or a consumer agreement? Hold it to a plain-language statute…</summary><fieldset class="regime-fieldset"><legend>Plain-language statute</legend><label>Statute <select data-role="readability-standard"><option value="">None asserted</option>${READABILITY_CHOICES.map((c) => `<option value="${c.id}">${c.label}</option>`).join("")}</select></label><div class="regime-hint">The insurance statutes flag a reading-ease score below the statute's minimum and a long form with no table of contents. New York's § 5-702 sets no score: it flags a consumer agreement whose sections carry no captions, and its "clear and coherent manner" requirement is not measured. The score always appears in the reports; only a statute you choose produces findings.</div></fieldset></details>`;
   const select = container.querySelector<HTMLSelectElement>('[data-role="readability-standard"]')!;
   select.addEventListener("click", (e) => e.stopPropagation());
   select.addEventListener("change", (e) => {

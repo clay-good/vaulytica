@@ -12,7 +12,8 @@ A statute is something you assert, not something a document declares — nothing
 | `vaulytica.config.json` | `"readability": "fl"` (a flag wins over the file) |
 | Browser tab, one document or a folder | the "Hold it to a readability statute" panel |
 
-Not wired: the MCP server and the GitHub Action, which expose no assertion-gated pack yet.
+| GitHub Action | `readability: fl` (since 9.1002.0) |
+| MCP server | `readability` on the analyze tool |
 
 ## The formula and the counting rules
 
@@ -47,5 +48,19 @@ Syllables come from a versioned rule set with a short exception list (`src/extra
 | `dc` | D.C. Code § 31-4725, policy forms of life insurers used in the District (§ 31-4727) | 40 | contents or index, over 3,000 words on three pages or over three pages | code.dccouncil.gov, 2026-11-16 |
 | `ok` | Okla. Stat. tit. 36, § 3645, life, accident and health policy forms (§ 3644) | 40 | contents or index, over 3,000 words or three pages | oscn.net, 2026-11-16 |
 | `mn` | Minn. Stat. §§ 72C.08–72C.10, auto, homeowner's, life and accident and health policies (§ 72C.11) | more than 40 | an index of the major provisions in every policy, whatever its length | revisor.mn.gov, 2026-11-16 |
+| `ny-consumer` | N.Y. Gen. Oblig. Law § 5-702, residential leases, consumer personal-property leases and consumer agreements entered into after November 1, 1978; not agreements over $250,000 | **none — the statute sets no score** | none; it requires the agreement's sections to be **captioned** (`READ-003`) | nysenate.gov, 2026-11-23 |
 
-Every state in the table prints the same counting rules as Florida; Minnesota's also leaves lists out of the sentence count, which the score does not do, and asks for a score above 40, so exactly 40 fails. Pages are not counted, so a form of more than three pages and fewer than 3,000 words is not caught. Not checked either: the type sizes (10-point in the District of Columbia, Maine, Montana, Nebraska, Nevada, North Dakota, Ohio, Oklahoma and West Virginia; 12-point for Oregon health benefit plans), Michigan's topical captions and identification of exclusions. Texas and Wisconsin set their minimums by agency rule, not statute, and are not in the table. New York's Ins. Law § 3102 and Gen. Oblig. Law § 5-702 are not in the table: the New York Senate's site answers automated reads with a bot challenge, and no text enters from a secondary source.
+Every state in the table prints the same counting rules as Florida — except New York, which is not a readability statute at all (see below); Minnesota's also leaves lists out of the sentence count, which the score does not do, and asks for a score above 40, so exactly 40 fails. Pages are not counted, so a form of more than three pages and fewer than 3,000 words is not caught. Not checked either: the type sizes (10-point in the District of Columbia, Maine, Montana, Nebraska, Nevada, North Dakota, Ohio, Oklahoma and West Virginia; 12-point for Oregon health benefit plans), Michigan's topical captions and identification of exclusions. Texas and Wisconsin set their minimums by agency rule, not statute, and are not in the table. New York's Ins. Law § 3102 is not in the table; § 5-702 now is, read at the New York Senate's own site on 2026-11-23. (Its API host, `legislation.nysenate.gov`, answers 401 to an unauthenticated read, so the public page is the source used. No text enters from a secondary source.)
+
+### New York is the odd one out
+
+Every other row is an insurance readability statute that sets a Flesch minimum. **N.Y. Gen. Oblig. Law § 5-702 sets no score and no formula.** It requires an agreement it covers to be two things:
+
+1. "Written in a clear and coherent manner using words with common and every day meanings" — a judgment no formula makes. **This is not measured, and the finding says so.**
+2. "Appropriately divided and captioned by its various sections" — which is measurable, and is `READ-003`.
+
+So under `--readability ny-consumer` neither `READ-001` nor `READ-002` can fire: there is no threshold to be below, and the statute asks for no table of contents. The reading-ease score still appears in the reports, and the cover line says in as many words that this statute sets none, so the number is never mistaken for a threshold.
+
+Two further limits of `READ-003`. It does not judge whether a caption is **appropriate** to what sits under it, only whether the agreement has captions at all. And it does not apply the statute's $250,000 ceiling, because the agreement's value is not read — asserting the standard is the reader's call, and the finding says that too.
+
+A caption is a section heading, a numbered clause title (`3. Security Deposit.`, `1. PURPOSE AND SCOPE`), or a short heading-like line of its own. A numbered paragraph that runs straight into a sentence (`1. Tenant will pay rent of $2,450 each month.`) is divided but not captioned, which is the distinction § 5-702(a)(2) draws. The detector errs toward **accepting** a caption: asserting `ny-consumer` over all 363 specimens draws no finding, which is the guard (`readability-assertion.test.ts`), because a missed violation costs a reader nothing while calling a captioned agreement undivided is a false statement about their document.

@@ -97,6 +97,10 @@ const OFFICIAL_HOSTS: Record<string, RegExp> = {
   ne: /^nebraskalegislature\.gov$/,
   dc: /^code\.dccouncil\.gov$/,
   ok: /^www\.oscn\.net$/,
+  // The New York State Senate's own site. Its API host
+  // (legislation.nysenate.gov) answers 401 to an unauthenticated read, so the
+  // public page is the official source used.
+  "ny-consumer": /^www\.nysenate\.gov$/,
 };
 
 // Scores 46: below Maine's 50, above Florida's and Michigan's 45.
@@ -195,5 +199,180 @@ describe("the readability block", () => {
       expect(json.run.result_hash, name).toBe(r.run.result_hash);
       expect(JSON.stringify(r.run), name).toBe(before);
     }
+  }, 300_000);
+});
+
+/**
+ * New York's § 5-702 (add-readability-measure, `READ-003`) — the odd one out.
+ *
+ * Every other row in the standards table is an insurance readability statute
+ * that sets a Flesch minimum. § 5-702 sets NO score and no table-of-contents
+ * rule: it requires a consumer agreement to be "appropriately divided and
+ * captioned by its various sections", and separately to be written "in a clear
+ * and coherent manner using words with common and every day meanings", which
+ * is a judgment no formula makes. So the three assertions worth making are
+ * that READ-003 fires on an uncaptioned agreement, that READ-001 and READ-002
+ * stay silent under a standard that sets neither threshold, and that the
+ * finding says what it did not measure.
+ *
+ * The lease below is task 5's "uncaptioned lease" fixture: a complete,
+ * ordinarily-drafted residential lease whose only defect is that its terms run
+ * as unheaded paragraphs.
+ */
+const UNCAPTIONED_LEASE = `RESIDENTIAL LEASE AGREEMENT
+
+This Lease is made on March 1, 2026 between Harbor Street Holdings LLC ("Landlord") and Dana Whitfield ("Tenant") for the apartment at 418 Harbor Street, Apartment 3R, Brooklyn, New York.
+
+Tenant will pay rent of $2,450 each month, due on the first day of the month. Rent is paid to Landlord at the address above or any address Landlord gives Tenant in writing.
+
+The term of this Lease is one year. It begins on April 1, 2026 and ends on March 31, 2027. Tenant may stay on after that only with Landlord's written consent.
+
+Tenant will pay a security deposit of $2,450 before moving in. Landlord will hold the deposit in an interest-bearing account at a New York bank and will return it, with interest, within fourteen days after Tenant moves out, less any amount Tenant owes.
+
+Tenant will use the apartment only as a home for Tenant and Tenant's family. Tenant will not sublet the apartment or let anyone else take it over without Landlord's written consent.
+
+Landlord will keep the building and its systems in good repair. Tenant will tell Landlord promptly of anything that needs repair and will let Landlord in to make it, after reasonable notice.
+
+Tenant will not keep a dog or cat in the apartment without Landlord's written consent. Tenant will not make any alteration to the apartment without that consent.
+
+If Tenant does not pay rent when it is due, Landlord may end this Lease after giving Tenant the notice the law requires. Each party will pay its own legal costs in any dispute about this Lease.
+
+This Lease is governed by the law of the State of New York.
+`;
+
+/** The same lease, with each of its terms under a heading. */
+const CAPTIONED_LEASE = UNCAPTIONED_LEASE.replace(
+  "Tenant will pay rent of",
+  "1. Rent.\n\nTenant will pay rent of",
+)
+  .replace("The term of this Lease is", "2. Term.\n\nThe term of this Lease is")
+  .replace(
+    "Tenant will pay a security deposit",
+    "3. Security Deposit.\n\nTenant will pay a security deposit",
+  )
+  .replace(
+    "Tenant will use the apartment",
+    "4. Use and Subletting.\n\nTenant will use the apartment",
+  )
+  .replace("Landlord will keep the building", "5. Repairs.\n\nLandlord will keep the building")
+  .replace("Tenant will not keep a dog", "6. Pets and Alterations.\n\nTenant will not keep a dog")
+  .replace("If Tenant does not pay rent", "7. Default.\n\nIf Tenant does not pay rent")
+  .replace("This Lease is governed by", "8. Governing Law.\n\nThis Lease is governed by");
+
+describe("--readability ny-consumer", () => {
+  it("reports a consumer agreement whose sections carry no captions", async () => {
+    const deps = await loadAccuracyDeps({});
+    const r = await analyzeText(UNCAPTIONED_LEASE, "lease.txt", {
+      deps,
+      readability: "ny-consumer",
+    });
+    expect(r.run.asserted_readability).toBe("ny-consumer");
+    const f = r.run.findings.find((x) => x.rule_id === "READ-003");
+    expect(f, JSON.stringify(r.run.findings.map((x) => x.rule_id))).toBeDefined();
+    expect(f!.description).toContain("appropriately divided and captioned by its various sections");
+    // It must say what it did NOT measure, or a reader takes the finding for
+    // the whole statute.
+    expect(f!.explanation).toContain("clear and coherent manner");
+    expect(f!.explanation).toContain("not judged here");
+    // And that the $250,000 ceiling was not applied, because the agreement's
+    // value is never read.
+    expect(f!.description).toContain("$250,000");
+    expect(f!.description).toContain("value was not read");
+  });
+
+  it("says nothing about the same lease once its sections are captioned", async () => {
+    const deps = await loadAccuracyDeps({});
+    const r = await analyzeText(CAPTIONED_LEASE, "lease.txt", {
+      deps,
+      readability: "ny-consumer",
+    });
+    expect(r.run.findings.some((x) => x.rule_id === "READ-003")).toBe(false);
+  });
+
+  it("draws no score or contents finding, because § 5-702 sets neither", async () => {
+    // The lease is plain English and the dense policy is not, but neither
+    // matters here: a standard with no `min_score` must not produce READ-001,
+    // and one with no `contents_over` must not produce READ-002, however the
+    // document reads. Asserting this on the DENSE policy is the sharp case —
+    // it scores far below every insurance statute's minimum.
+    const deps = await loadAccuracyDeps({});
+    const r = await analyzeText(DENSE, "agreement.txt", { deps, readability: "ny-consumer" });
+    expect(r.run.findings.some((x) => x.rule_id === "READ-001")).toBe(false);
+    expect(r.run.findings.some((x) => x.rule_id === "READ-002")).toBe(false);
+  });
+
+  it("still reports the score on the cover, saying the statute sets none", async () => {
+    // The cover line is the surface a reader sees first, and a standard with
+    // no threshold must not print "minimum undefined" there — nor print the
+    // score beside § 5-702 with no word, which would read as a threshold the
+    // statute never set.
+    const { ingestPaste } = await import("../../src/ingest/index.js");
+    const { measureReadability, readabilityLine } = await import("../../src/report/readability.js");
+    const tree = (await ingestPaste(UNCAPTIONED_LEASE)).tree;
+    const std = READABILITY_STANDARDS.find((s) => s.id === "ny-consumer")!;
+    const line = readabilityLine(measureReadability(tree), std);
+    expect(line).toContain("sets no score");
+    expect(line).not.toContain("undefined");
+    expect(line).not.toMatch(/\bminimum \d/);
+    // Florida's line is unchanged by the same call.
+    const fl = READABILITY_STANDARDS.find((s) => s.id === "fl")!;
+    expect(readabilityLine(measureReadability(tree), fl)).toMatch(/\(minimum 45\)/);
+  });
+
+  it("leaves an insurance statute's score behaviour alone", async () => {
+    // The guard on the change itself: making `min_score` optional must not
+    // have made Florida's threshold optional in practice.
+    const deps = await loadAccuracyDeps({});
+    const r = await analyzeText(DENSE, "policy.txt", { deps, readability: "fl" });
+    expect(r.run.findings.some((x) => x.rule_id === "READ-001")).toBe(true);
+    expect(r.run.findings.some((x) => x.rule_id === "READ-003")).toBe(false);
+  });
+});
+
+/**
+ * READ-003's false-positive sweep, which is what shaped the rule.
+ *
+ * `READ-003` is an ABSENCE finding, and the clean-document method says every
+ * absence finding drawn on a well-drafted document is a bug. Asserting
+ * `ny-consumer` over all 363 specimens is the cheap version of that: most are
+ * not § 5-702 consumer agreements at all, but nearly all are captioned, so any
+ * hit is a caption style the detector cannot read.
+ *
+ * Three rounds, each a real defect the sweep found and nothing else would have:
+ *   - 32 hits. The detector read only the ingest's OUTLINE, and a plain-text
+ *     document has no section headings at all, whatever its captions.
+ *   - 10 hits. `1. PURPOSE AND SCOPE` — a numbered ALL-CAPS caption with no
+ *     terminating punctuation, the commonest form in American legal drafting.
+ *   - 9 hits. `uk-contract-of-employment`, captioned throughout, whose caption
+ *     line runs into `1.1` with no blank line, leaving a trailing numeral that
+ *     was read as an uncapitalized content word.
+ *   - 0 hits, with the uncaptioned lease above still reported.
+ */
+describe("READ-003 over the corpus", () => {
+  it("draws nothing on any specimen, while still firing on an undivided one", async () => {
+    const { readdirSync, readFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const dir = join(process.cwd(), "tests", "fixtures", "specimens");
+    const names = readdirSync(dir).filter((n) => n.endsWith(".txt") || n.endsWith(".md"));
+    expect(names.length, "no specimens found — the sweep would be vacuous").toBeGreaterThan(300);
+    const deps = await loadAccuracyDeps({});
+    const hits: string[] = [];
+    for (const name of names) {
+      const r = await analyzeText(readFileSync(join(dir, name), "utf8"), name, {
+        deps,
+        readability: "ny-consumer",
+      });
+      if (r.run.findings.some((f) => f.rule_id === "READ-003")) hits.push(name);
+    }
+    expect(
+      hits,
+      `READ-003 called these uncaptioned; check each before widening the detector:\n  ${hits.join("\n  ")}`,
+    ).toEqual([]);
+    // 🚨 And the rule must still be able to FAIL, or zero hits means nothing.
+    const lease = await analyzeText(UNCAPTIONED_LEASE, "lease.txt", {
+      deps,
+      readability: "ny-consumer",
+    });
+    expect(lease.run.findings.some((f) => f.rule_id === "READ-003")).toBe(true);
   }, 300_000);
 });

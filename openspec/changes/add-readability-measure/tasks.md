@@ -3,7 +3,7 @@
 - [ ] 1. Syllable counter: rules plus a committed exception list; measure against a 5,000-word reference list and commit the accuracy figure; version constant.
 - [x] 2. `src/report/readability.ts`: tokenization under the model act's rules over the tree (headings and captions excluded, signature block and TOC excluded), score, longest sentence, exclusions list; render-side block in JSON, DOCX appendix, HTML.
 - [ ] 3. DKB `readability_standards`: read each state's statute at its official source (start with NY, FL, MI, ME, CO, TX, CA, WV, and the model-act states), record threshold, scope, TOC and type-size requirements; provenance gate.
-- [ ] 4. `READ-001`, `READ-002`, `READ-003` assertion-gated; register `readability-<state>` and `readability-ny-consumer`; CLI `--readability`; browser selector.
+- [x] 4. `READ-001`, `READ-002`, `READ-003` assertion-gated; register `readability-<state>` and `readability-ny-consumer`; CLI `--readability`; browser selector.
 - [ ] 5. Fixtures: a policy under and over threshold, a long policy without a TOC, an uncaptioned lease; property test that the block never changes `result_hash`.
 - [x] 6. Docs: `reference.md` section, `/known-limits` sentence on sampling and exclusions not applied, `deadlines.md`-style note `readability.md` with the formula and the statute table.
 - [ ] 7. Full gate green.
@@ -128,3 +128,45 @@ rest of the assertions — the Action had exposed no assertion-gated pack at all
 and `tests/integration/action-flag-coverage.test.ts` now fails the build if a
 new assertion flag ships without an input. The MCP server already had it. Still
 open on task 4: the browser's own selector.
+
+## Progress — 9.1003.0 (`READ-003`, and the blocker that was not one)
+
+**Task 4 is closed.** New York's § 5-702 was recorded as blocked ("the New York
+Senate's site answers automated reads with a bot challenge"). That was true of
+the API host — `legislation.nysenate.gov` answers 401 to an unauthenticated
+read — but NOT of the public page: `www.nysenate.gov/legislation/laws/GOB/5-702`
+served it on 2026-11-23, and it prints its own revision date (2020-04-10). The
+lesson is narrow and worth keeping: **a blocked source is blocked at a HOST,
+not at a statute.** Re-try the other hosts before recording a block.
+
+§ 5-702 is the first row in the table that is not an insurance readability
+statute and the first that sets NO SCORE, so `min_score` and `contents_over`
+became optional on `ReadabilityStandard`, with `captions_required`,
+`max_amount` and `not_measured` beside them. `READ-001` and `READ-002` return
+early for a row that sets neither, and the report cover line says the statute
+sets no score rather than printing "minimum undefined".
+
+🥇 **The detector was wrong twice and the corpus sweep is what said so.**
+`READ-003` is an absence finding, so asserting `ny-consumer` over all 363
+specimens is the cheap clean-document test: nearly all are captioned, so any
+hit is a caption style the detector cannot read. 32 hits → the first draft read
+only the ingest's OUTLINE, and a plain-text document has no section headings
+whatever its captions (`paste.ts` promotes a line only on a Markdown `#` or a
+Setext underline). 10 hits → `1. PURPOSE AND SCOPE`, a numbered ALL-CAPS
+caption with no terminator, the commonest form in American drafting. 9 hits →
+`uk-contract-of-employment`, captioned throughout, whose caption line runs into
+`1.1` with no blank line, leaving a trailing numeral read as an uncapitalized
+word. 0 hits, with the uncaptioned-lease fixture still firing.
+
+Also fixed on the way: the first paragraph is the document's own TITLE
+("RESIDENTIAL LEASE AGREEMENT"), which matched the caption-line pattern and
+made the uncaptioned lease look captioned — the rule was off on exactly the
+documents it exists for.
+
+Task 5's "uncaptioned lease" fixture is in `readability-assertion.test.ts`,
+paired with the same lease captioned, so the rule is proven able to fail.
+
+Still open: task 1's 5,000-word reference (needs a licensed pronunciation
+dictionary), task 3's remaining states (Texas and Wisconsin set their minimums
+by agency rule; California not located; N.Y. Ins. Law § 3102 not attempted),
+the DKB table, and task 7.

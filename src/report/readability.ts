@@ -133,10 +133,17 @@ export function measureReadability(tree: DocumentTree): Readability {
  */
 export function readabilityLine(
   r: Readability,
-  asserted?: { id: string; citation: string; min_score: number; min_exclusive?: boolean },
+  asserted?: { id: string; citation: string; min_score?: number; min_exclusive?: boolean },
 ): string {
   const base = `${r.score} (Flesch reading ease; ${r.words.toLocaleString("en-US")} words in ${r.sentences.toLocaleString("en-US")} sentences, counted as the statutes prescribe)`;
-  return asserted
-    ? `${base}, held to ${asserted.citation} (${asserted.min_exclusive ? "more than" : "minimum"} ${asserted.min_score}), asserted by the user`
-    : `${base}, informative only`;
+  if (!asserted) return `${base}, informative only`;
+  // A standard may set no score at all — N.Y. Gen. Oblig. Law § 5-702 requires
+  // captioned sections and a qualitative "clear and coherent manner", and sets
+  // no number. Saying "minimum undefined" would be worse than saying nothing,
+  // and printing the score beside that citation without a word would read as a
+  // threshold the statute never set.
+  if (asserted.min_score === undefined) {
+    return `${base}; ${asserted.citation}, asserted by the user, sets no score — the number above is informative and the statute's own requirements are checked separately`;
+  }
+  return `${base}, held to ${asserted.citation} (${asserted.min_exclusive ? "more than" : "minimum"} ${asserted.min_score}), asserted by the user`;
 }

@@ -17,8 +17,18 @@ export type ReadabilityStandard = {
   version: string;
   /** What the statute covers, in its words. */
   scope: string;
-  /** The minimum Flesch reading ease score. */
-  min_score: number;
+  /**
+   * The minimum Flesch reading ease score, where the statute sets one.
+   *
+   * Not every asserted standard does. N.Y. Gen. Oblig. Law § 5-702 sets no
+   * score and no formula: it requires a consumer agreement to be written
+   * "in a clear and coherent manner using words with common and every day
+   * meanings" and to be "appropriately divided and captioned by its various
+   * sections". The first half is not measurable and the product does not
+   * pretend to measure it; the second is. A row with no `min_score` draws no
+   * `READ-001`.
+   */
+  min_score?: number;
   /**
    * The score must be MORE than `min_score`, not at least it (Minnesota:
    * "a certified Flesch scale analysis readability score of more than 40").
@@ -26,15 +36,37 @@ export type ReadabilityStandard = {
   min_exclusive?: boolean;
   /**
    * A table of contents or index is required above this many words (or
-   * pages), or in every form ("always": Minnesota's index of major provisions).
+   * pages), or in every form ("always": Minnesota's index of major
+   * provisions). Omitted where the statute requires none, which draws no
+   * `READ-002`.
    */
-  contents_over: { words: number; pages: number } | "always";
+  contents_over?: { words: number; pages: number } | "always";
+  /**
+   * The statute requires the document's sections to be captioned, as
+   * § 5-702(a)(2) does ("appropriately divided and captioned by its various
+   * sections"). Draws `READ-003`.
+   */
+  captions_required?: boolean;
+  /**
+   * An amount above which the statute does not apply, in dollars
+   * (§ 5-702(a): "agreements involving amounts in excess of two hundred fifty
+   * thousand dollars"). Recorded so the finding can say so; the product does
+   * not read the agreement's value to decide, because the assertion is the
+   * user's.
+   */
+  max_amount?: number;
   /**
    * Whether an index satisfies the contents requirement. Florida and Maine
    * say "a table of contents or an index"; Michigan says "a table of
    * contents" alone.
    */
   index_ok: boolean;
+  /**
+   * A requirement of the statute this product does NOT measure, named so the
+   * finding and the docs can say what the assertion does not cover rather
+   * than leaving a reader to assume it was checked.
+   */
+  not_measured?: string;
 };
 
 export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
@@ -211,6 +243,31 @@ export const READABILITY_STANDARDS: readonly ReadabilityStandard[] = [
     min_score: 40,
     contents_over: { words: 3000, pages: 3 },
     index_ok: true,
+  },
+  {
+    // Last, and the odd one out: the only asserted standard that is not an
+    // insurance readability statute, and the only one that sets NO SCORE.
+    // Read at the New York State Senate's own site on 2026-11-23, which
+    // prints "Viewing most recent revision (from 2020-04-10)". Its API
+    // (legislation.nysenate.gov) answers 401 to an unauthenticated read, so
+    // the public page is the official source used; no text here comes from a
+    // secondary one.
+    id: "ny-consumer",
+    name: "New York plain-language requirement for consumer transactions",
+    citation: "N.Y. Gen. Oblig. Law § 5-702",
+    source_url: "https://www.nysenate.gov/legislation/laws/GOB/5-702",
+    retrieved_at: "2026-11-23",
+    version: "most recent revision from 2020-04-10",
+    scope:
+      "a written agreement entered into after November 1, 1978 for a residential lease, a lease of personal property for personal, family or household purposes, or a consumer agreement for money, property or services primarily for personal, family or household purposes",
+    // § 5-702 sets no Flesch threshold and requires no table of contents, so
+    // neither READ-001 nor READ-002 runs under it. What it does require is
+    // captions, which is READ-003.
+    captions_required: true,
+    max_amount: 250_000,
+    index_ok: false,
+    not_measured:
+      'the requirement in § 5-702(a)(1) that the agreement be "written in a clear and coherent manner using words with common and every day meanings", which is a judgment no formula makes',
   },
 ];
 
