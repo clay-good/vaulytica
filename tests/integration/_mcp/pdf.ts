@@ -76,3 +76,29 @@ export function mixedLayerPdf(text: string, blankPages = 3): Uint8Array {
   objects.push("<</Type/Font/Subtype/Type1/BaseFont/Helvetica>>");
   return assemble(objects);
 }
+
+/**
+ * A multi-page IMAGE-ONLY scan: every page draws a rectangle and carries no
+ * text at all (add-executed-copy-conformity task 1(d)).
+ *
+ * `scannedPdf()` cannot stand in: it is a single page, and `assessTextLayer`
+ * exempts a one-page document, so it never reports `needsOcr`. With several
+ * blank pages the total alphabetic count is zero, which is the "text layer is
+ * effectively empty" case — the shape a scan actually has.
+ */
+export function imageOnlyPdf(pages = 3): Uint8Array {
+  const draw = "0 0 100 100 re f";
+  const firstPageObj = 3;
+  const firstContentObj = firstPageObj + pages;
+  const kids = Array.from({ length: pages }, (_, i) => `${firstPageObj + i} 0 R`).join(" ");
+  const objects = ["<</Type/Catalog/Pages 2 0 R>>", `<</Type/Pages/Kids[${kids}]/Count ${pages}>>`];
+  for (let i = 0; i < pages; i++) {
+    objects.push(
+      `<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]/Contents ${firstContentObj + i} 0 R/Resources<<>>>>`,
+    );
+  }
+  for (let i = 0; i < pages; i++) {
+    objects.push(`<</Length ${draw.length}>>\nstream\n${draw}\nendstream`);
+  }
+  return assemble(objects);
+}

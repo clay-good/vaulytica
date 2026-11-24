@@ -92,6 +92,54 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1015.0] — 2026-11-24
+
+### Added
+- **The image-only scan with a seeded low-confidence word**, closing
+  `add-executed-copy-conformity` task 1 — the last fixture it asked for.
+
+  ⚠️ **What was unavailable was never "OCR" as a whole.** It is the tesseract
+  WASM engine and a real rasterizer, which cannot run headless, and
+  `src/ingest/ocr.test.ts` has mocked exactly those since the path was written.
+  Everything between the scan and the verdict is this product's own code, and
+  none of it had end-to-end coverage.
+
+  **Where the mock sits is a measurement, not a preference.** `runOcr` is
+  mocked, not tesseract: mocking tesseract alone leaves pdf.js's real
+  rasterizer in the path, and `CanvasGraphics` needs a genuine 2D context — a
+  stub fails with "Cannot read properties of undefined (reading 'width')".
+  `ocr.test.ts` avoids that only because it feeds `runOcr` a fake page and
+  never reaches pdf.js rendering. So the two suites overlap nowhere:
+  `ocr.test.ts` covers `runOcr`'s orchestration; the new suite covers
+  everything after it with real code — `pdf.ts`'s OCR branch, its
+  low-confidence warning and word count, the tree, `incompleteTextReason`, and
+  the conformity verdict plus the word-level join.
+
+  The seeded page is rendered by the **real** `markLowConfidence`, so the
+  marker format is the product's own rather than a string the test invented,
+  and a fourth case asserts `runOcr` was actually *called* — otherwise every
+  assertion would pass on a document that never reached the branch.
+
+  **Still not claimed: OCR accuracy.** Whether tesseract reads a scanned page
+  correctly needs a real device. That is a different statement from "the
+  fixture is blocked", which is what the task said before.
+
+### Changed
+- **One partial remains in the repository, and it is the only item that needs a
+  person with Word.** `add-redline-two-sided-analysis` task 1's round-trip
+  exports, tested three ways rather than assumed: no `soffice`/`libreoffice`/
+  `pandoc` on the machine; nothing in the dependency tree can do it (`docx` has
+  no accept/reject API, `mammoth` drops revisions); and the artifact exists to
+  be an **independent oracle** — to catch where Word diverges from ECMA-376 or
+  from this product's reading of it. If the divergence were predictable the
+  export would be unnecessary, and writing the expected side here would compare
+  the rewrite with itself.
+
+  `redline-revision-kinds.test.ts` already holds both readings against the
+  behaviour the standard defines, including the move case a revision-element
+  count cannot see. Only Word-versus-standard divergence is uncovered, and the
+  task now records exactly what a person has to do.
+
 ## [9.1014.0] — 2026-11-24
 
 ### Added

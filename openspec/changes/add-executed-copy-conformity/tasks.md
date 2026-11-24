@@ -1,6 +1,6 @@
 # Tasks
 
-- [~] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
+- [x] 1. Fixtures: a final DOCX and (a) a text-layer PDF of its executed form with filled blocks and dates, (b) the same with one changed figure, (c) the same with an added signatory, (d) an image-only scan with a seeded low-confidence word; a two-folder closing set with one unpaired file and one title tie.
 - [x] 2. `src/report/conformity.ts`: allowance classifier over paragraphs (signature window reuse, blank-to-date fill, initials, cover pages, furniture, watermark words); verdict; canonical table and `conformity_hash`.
 - [x] 3. `clause-diff.ts`: accept an allowance predicate so set-aside paragraphs are listed, not diffed; the plain comparison path unchanged (goldens hold).
 - [x] 4. OCR confidence join: unverified differences and the could-not-determine verdict in the browser; CLI refusal for image-only PDFs. **The verdict (9.1009.0) and the WORD-level unverified-differences join (9.1014.0) are both built; neither needed OCR to run** — see the notes at the end.
@@ -171,3 +171,40 @@ scan with a seeded low-confidence word. The fixture the JOIN needs — text
 carrying markers — is built and tested. A fixture that makes OCR itself emit a
 marker needs OCR to run, which needs the product decision recorded above about
 shipping a network-fetched language model against the no-server guarantee.
+
+## Progress — 9.1015.0 (task 1(d), the last fixture)
+
+The image-only scan with a seeded low-confidence word is built
+(`imageOnlyPdf` + `executed-scan-ocr.test.ts`), and task 1 is closed.
+
+⚠️ **What was unavailable was never "OCR" as a whole** — it is the tesseract
+WASM engine and a real rasterizer, which cannot run headless, and
+`src/ingest/ocr.test.ts` has mocked exactly those since the path was written.
+Everything between the scan and the verdict is this product's own code, and
+none of it had end-to-end coverage.
+
+**Where the mock sits, and why there — a measurement, not a preference.**
+`runOcr` is mocked, not tesseract. Mocking tesseract alone leaves pdf.js's REAL
+rasterizer in the path, and `CanvasGraphics` needs a genuine 2D context: a stub
+fails with "Cannot read properties of undefined (reading 'width')".
+`ocr.test.ts` gets away with mocking tesseract because it feeds `runOcr` a fake
+page and never reaches pdf.js rendering at all. So the two suites split cleanly
+and overlap nowhere:
+
+| Suite | Covers |
+| --- | --- |
+| `src/ingest/ocr.test.ts` | `runOcr`'s own orchestration: the page loop, the `\n\n` separator, the progress callback, the worker always terminated |
+| `tests/integration/executed-scan-ocr.test.ts` | everything after it, with real code: `pdf.ts`'s OCR branch, its low-confidence warning and word count, the tree, `incompleteTextReason`, and the conformity verdict plus the word-level join |
+
+The seeded page is rendered by the **real** `markLowConfidence`, so the marker
+format is the product's own rather than a string the test invented — and the
+figure is the seed deliberately, because a figure is what an attorney acts on
+and what a scanner most often misreads.
+
+A fourth case guards the derivation: `runOcr` must have been CALLED, or every
+assertion above would pass on a document that never reached the OCR branch.
+
+**Still not claimed, as the OCR suite has always said: OCR ACCURACY.** Whether
+tesseract reads a scanned page correctly needs a real device, and nothing here
+pretends otherwise. That is a different statement from "the fixture is blocked",
+which is what this task said before.

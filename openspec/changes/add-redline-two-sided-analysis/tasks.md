@@ -85,3 +85,33 @@ exports, committed, for the round-trip. That test exists to compare this
 product's rewrite with what Word actually produces, so a fixture built here
 would only compare the rewrite with itself. Verified on this machine: no
 `soffice`, no `libreoffice`, no `pandoc`.
+
+## Final determination on the Word exports — 9.1015.0
+
+This is the one item in the repository that needs a person with Word, and the
+reason is not an unchecked assumption. It was tested three ways:
+
+1. **No tool on this machine can do it.** No `soffice`, no `libreoffice`, no
+   `pandoc`.
+2. **Nothing in the dependency tree can either.** `docx` writes DOCX but has no
+   accept/reject-revisions API; `mammoth` reads DOCX to HTML and drops
+   revisions entirely. Those are the only two Word-format libraries present.
+3. **The artifact's purpose makes it unsynthesizable by me.** It exists to be an
+   INDEPENDENT oracle — to catch cases where Word's actual behaviour diverges
+   from ECMA-376 or from this product's reading of it. If I could predict the
+   divergence I would not need the export; writing the expected side myself
+   would compare the rewrite with itself, which is the one thing the test is
+   designed to rule out.
+
+What stands in for it meanwhile is not nothing:
+`redline-revision-kinds.test.ts` holds both readings of a redline carrying all
+five revision kinds to the behaviour ECMA-376 defines, including the move case
+where a rewrite that drops neither half DUPLICATES a clause and one that drops
+both LOSES it — which counting revision elements cannot see. That covers the
+rewrite against the STANDARD. Only Word-versus-standard divergence is
+uncovered.
+
+**What a person needs to do:** open the committed redline in Word, Accept All
+and save as one file, Reject All and save as another, commit both beside the
+fixture, and the round-trip assertion becomes a byte comparison. Nothing else
+on this change is waiting.
