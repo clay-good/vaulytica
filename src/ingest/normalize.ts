@@ -243,6 +243,13 @@ export function normalize(tree: DocumentTree): DocumentTree {
       // offsets and whitespace; it has no business discarding what the file
       // said about how its text is set.
       ...(p.min_size_pt !== undefined ? { min_size_pt: p.min_size_pt } : {}),
+      // Carried for the same reason: what the FILE said about how its text is
+      // SET, which normalization has no business discarding. `displayed_caps`
+      // is attached after normalizing today (`attachCaps`, as sizes are), so
+      // dropping it here would not break the DOCX path — but it would make
+      // this function lossy for any caller that sets it before normalizing,
+      // which is precisely the trap `min_size_pt` fell into.
+      ...(p.displayed_caps !== undefined ? { displayed_caps: p.displayed_caps } : {}),
     };
   };
 

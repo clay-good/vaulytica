@@ -25,7 +25,8 @@ function inCapitals(text: string): boolean {
  * means: a heading in capitals or contrasting type, or body text in larger
  * or contrasting type, capitals, or color. A Word file shows which of those
  * it used. A disclaimer set in regular, mixed-case body type with no
- * heading naming it, and no bold, is reported; one with any of them is not.
+ * heading naming it, no bold, and no capitals — typed OR applied as `w:caps`
+ * formatting — is reported; one with any of them is not.
  *
  * Whether a court finds a clause conspicuous is the court's call, and the
  * finding never says the disclaimer fails. Liability caps are not read: they
@@ -49,6 +50,12 @@ export const rule: Rule = {
       if (DISCLAIMER_HEADING.test(p.section.heading ?? "")) return;
       if (p.paragraph.runs.some((r) => r.formatting?.bold)) return;
       if (inCapitals(p.text)) return;
+      // 🚨 The file may DISPLAY capitals while storing mixed case: a Word user
+      // who applies All Caps formatting (`w:caps`) leaves the text as typed.
+      // Reading only the text's own case reported such a disclaimer as "in
+      // plain body type" — a false statement about the document, measured on a
+      // DOCX that fired identically with and without the formatting.
+      if (p.paragraph.displayed_caps) return;
       hit = emit(ctx, rule, {
         title: "Warranty disclaimer is in plain body type",
         description:

@@ -1365,11 +1365,11 @@
   "playbook_id": "lease-commercial-multitenant",
   "playbook_match_confidence": 1,
   "playbook_match_reasoning": "Selected lease-commercial-multitenant (score 1). Title matched: \"office lease\". Distinguishing phrases: \"Common Area\", \"Rentable Square Feet\", \"Base Rent\", \"Operating Expenses\".",
-  "result_hash": "de617f2d39b54761a4fcbe1aadfd44047b91d1b3cdd14e59b4f126b14b32cd91",
+  "result_hash": "0cc5e00693c04227b4bb0b0e6d2a9948c3f5cd2897f8df8e46cacdeba2129a5f",
   "source_file": {
     "name": "bad-lease.docx",
     "sha256": "b9f12348ac5e0f56fe223c8e264370bf1159ebafc2e1c7e1fdb5a811ed1eea17",
     "size_bytes": 9367
   },
-  "version": "9.1011.0"
+  "version": "9.1012.0"
 }

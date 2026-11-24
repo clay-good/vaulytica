@@ -4,7 +4,7 @@
 - [~] 2. DKB: `mandated_texts` schema, fetch script, provenance gate in `dkb:build`, validation test; ~~migrate the two Texas literals out of `regime-data.ts`~~ (declined, see below). **Schema, gate and validation test BUILT in 9.1010.0**; the fetch script stays unbuilt because the rows are curated by design.
 - [x] 3. Matching: sliding-window token similarity with an exact whitespace-normalized fast path; threshold chosen by measuring the corpus (no false hit on the 363 specimens; every seeded paraphrase fixture caught); ReDoS-safe by construction (no regex over document text; token arrays).
 - [~] 4. `src/engine/rules/text/` factory: `TEXT-<row>` altered / superseded shapes with the word-diff redline (reuse `clause-diff` segments); `TEXT-FORM-<row>` over run properties; gating by family list or registered assertion.
-- [~] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked". **Size is done for both DOCX and PDF (9.1001.0); `w:caps` is not read, and no row needs capitals.**
+- [x] 5. DOCX ingest: expose `w:sz`, `w:caps`, `w:b` per run on the tree's formatting (bold already carried); PDF text-item size already available; pasted text reports "not checked". **Size done 9.1001.0; `w:caps` done 9.1012.0 — and the "no row needs capitals" half of the old note was WRONG, see below.**
 - [x] 6. Conspicuousness rule over the existing clause locator for warranty disclaimers and liability caps; info severity; citation to U.C.C. § 1-201(b)(10) and § 2-316(2) with retrieved dates.
 - [x] 7. Fixtures: exact, paraphrased, superseded, and form-deficient versions of each seed passage; clean documents for each family confirm no false finding. *(Superseded declined — see 9.1004.0 above.)*
 - [x] 8. Overlap decisions: for `COMM-206`, the § 429.1, § 1833(b) and § 1542 presence rules and the two Texas rules, decide retire-or-keep-as-absence, with a fixture proving one finding per defect, never two.
@@ -355,3 +355,44 @@ table when it next runs:
   rather than shipping a passage whose provenance cannot be shown.
 - `dkb-rebuild.yml` also runs `npm run authority:drift`, so the same job that
   lands the table re-reads its passages at their official sources.
+
+## Progress — 9.1012.0 (`w:caps`, and the note that said it wasn't needed)
+
+🚨 **The deferral's reason was half false, and the false half hid a real false
+positive.** The note read: "`w:caps` is not read, and no row needs capitals."
+The first clause was true. The second was wrong in a way that mattered: no
+MANDATED TEXT row needs capitals, but **`TEXT-003` does**, and `TEXT-003` is not
+a mandated-text row. U.C.C. § 1-201(b)(10) counts capitals as one way for a
+warranty disclaimer to be conspicuous, and the rule was reading the TEXT's own
+case.
+
+A Word user who applies All Caps formatting — the ordinary way to do it —
+leaves the stored text mixed case, and mammoth drops `w:caps`, so the ingest
+never saw it either. **Measured: the same DOCX fired `TEXT-003` identically
+with and without `w:caps` on the disclaimer**, so a disclaimer Word displays
+entirely in capitals was reported as "in plain body type" — a false statement
+about the document.
+
+`src/ingest/docx-caps.ts` reads the property from `word/document.xml` directly,
+the way `docx-sizes.ts` reads `w:sz`, and attaches
+`Paragraph.displayed_caps`; `TEXT-003` now treats it as capitals.
+
+🚨 **A case bug in my own first version, and the module returned an EMPTY SET
+because of it.** The pattern was `/<w:(?:small)?Caps\b/` — which matches
+`w:smallCaps` and **not** `w:caps`, because OOXML spells the commoner of the two
+in lowercase. The probe showed `capsParagraphs() → []` on a document that
+plainly had the formatting. Both spellings are now named explicitly and a test
+pins each. This is the class `2026-08-31-goal-loop-s24` is about: a pattern
+written in one case does not apply to half its inputs.
+
+Scope stated rather than implied: a run's own `w:rPr` and the paragraph's
+`w:pPr/w:rPr` are read; a character or paragraph STYLE that sets caps without
+the run saying so is not followed. `w:sz` needed that chain because most text
+inherits its size, whereas `w:caps` is nearly always applied directly — and a
+missed marker leaves the previous behaviour, which is the safe direction: it can
+only make the rule speak, never silence it wrongly.
+
+Also deliberate: a PARTLY caps-formatted paragraph does not count as capitals.
+A single caps word in a mixed-case clause is not what § 1-201(b)(10) describes,
+and treating it as capitals would silence `TEXT-003` on a disclaimer that is not
+conspicuous at all. Tested.

@@ -92,6 +92,65 @@ All notable changes to this project will be documented in this file. Format adap
   argument); these were never consulted. Omitted when empty, so the CLI's block
   and every existing report are byte-identical, and no hash moves.
 
+## [9.1012.0] — 2026-11-24
+
+### Fixed
+- 🚨 **A warranty disclaimer that Word DISPLAYS in capitals was reported as "in
+  plain body type".** `TEXT-003` asks whether a disclaimer is conspicuous, and
+  U.C.C. § 1-201(b)(10) counts capitals as one way to be — but the rule read
+  the TEXT's own case. A Word user who applies All Caps formatting (the
+  ordinary way to do it) leaves the stored text mixed case, and mammoth drops
+  `w:caps`, so the ingest never saw it either.
+
+  **Measured: the same DOCX fired `TEXT-003` identically with and without
+  `w:caps` on the disclaimer paragraph.** So the product told an attorney their
+  disclaimer was in plain type while the document showed it entirely in
+  capitals — a false statement about their own file.
+
+  `src/ingest/docx-caps.ts` reads the property from `word/document.xml`
+  directly, as `docx-sizes.ts` reads `w:sz`, and attaches
+  `Paragraph.displayed_caps`; `TEXT-003` treats it as capitals. The end-to-end
+  test asserts **both** directions — silent with the formatting, still firing
+  without it — because a rule broken into permanent silence would pass the
+  first assertion alone.
+
+  This closes `add-mandated-text-conformance` task 5, whose note read "`w:caps`
+  is not read, and no row needs capitals". The first clause was true; the second
+  was wrong in a way that hid this. No *mandated-text* row needs capitals —
+  but `TEXT-003` does, and it is not a mandated-text row.
+
+- 🚨 **A case bug in the first version of that reader, which made it return an
+  empty set.** The pattern was `/<w:(?:small)?Caps\b/`, which matches
+  `w:smallCaps` and **not** `w:caps` — OOXML spells the commoner of the two in
+  lowercase. The probe showed `capsParagraphs() → []` on a document that plainly
+  carried the formatting. Both spellings are now named explicitly, with a test
+  pinning each. Same class as the 2026-08-31 case-sensitivity sweep: a pattern
+  written in one case does not apply to half its inputs.
+
+- **`normalize()` would have silently dropped the new field, and a ratchet from
+  9.1001.0 caught it.** `normalize.test.ts` asserts that every field declared
+  on `Paragraph` has a *recorded decision* in `normalize.ts` — because the
+  function rebuilds every node, so a field it does not name is lost at runtime
+  with no error. That ratchet exists because `min_size_pt` was lost exactly
+  that way, which is why the DOCX ingest attaches sizes *after* normalizing.
+
+  `displayed_caps` is attached after normalizing too, so dropping it would not
+  have broken the DOCX path today — but it would have left `normalize()` lossy
+  for any caller that sets the field before normalizing, which is the trap
+  `min_size_pt` fell into. Carried, with its disposition recorded in the table.
+
+### Changed
+- Scope of the caps reader, stated rather than implied: a run's own `w:rPr` and
+  the paragraph's `w:pPr/w:rPr` are read; a character or paragraph **style**
+  that sets caps without the run saying so is not followed. `w:sz` needed that
+  chain because most text inherits its size, whereas `w:caps` is nearly always
+  applied directly — and a missed marker leaves the previous behaviour, which is
+  the safe direction: it can only make the rule speak, never silence it wrongly.
+- A **partly** caps-formatted paragraph deliberately does not count as
+  capitals. A single caps word in a mixed-case clause is not what
+  § 1-201(b)(10) describes, and treating it as capitals would silence
+  `TEXT-003` on a disclaimer that is not conspicuous at all.
+
 ## [9.1011.0] — 2026-11-23
 
 ### Added

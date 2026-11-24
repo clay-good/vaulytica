@@ -251,6 +251,7 @@ describe("normalize preserves every field it does not re-derive", () => {
       id: "re-derived (makeParagraphId, from position)",
       runs: "rebuilt, each run per the Run row",
       min_size_pt: "carried — what the FILE said about how its text is set",
+      displayed_caps: "carried — same reason: the file's own rendering, not text",
     },
     Section: {
       id: "re-derived (makeSectionId, from path)",

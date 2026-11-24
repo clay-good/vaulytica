@@ -2,6 +2,7 @@ import type { DocumentTree, IngestResult, Paragraph, Run, Section } from "./type
 import { countWords, noTextWarning, normalize } from "./normalize.js";
 import { numberingLabels, paragraphKey } from "./docx-numbering.js";
 import { sizeResolver } from "./docx-sizes.js";
+import { capsParagraphs } from "./docx-caps.js";
 import { sha256Hex } from "./hash.js";
 import { assertDocumentBytes } from "./limits.js";
 import { countRevisions, docxNotices } from "./docx-notices.js";
@@ -154,6 +155,9 @@ export async function ingestDocxBuffer(
   const tree = parseDocxHtml(result.value);
   const normalized = normalize(tree);
   attachSizes(normalized, paragraphSizes);
+  // Which paragraphs Word DISPLAYS in capitals. Mammoth drops `w:caps`, so it
+  // is read from the OOXML and matched by the paragraph's text.
+  attachCaps(normalized, capsParagraphs(source));
 
   const language = languageFields(normalized, warnings);
   const word_count = countWords(normalized);
@@ -170,6 +174,25 @@ export async function ingestDocxBuffer(
 }
 
 /** Give each paragraph the smallest size it is set in, where the file states one. */
+/** Mark the paragraphs the file sets in capitals, keyed by their text. */
+function attachCaps(tree: DocumentTree, caps: ReadonlySet<string>): void {
+  if (caps.size === 0) return;
+  const walk = (sections: Section[]): void => {
+    for (const s of sections) {
+      for (const p of s.paragraphs) {
+        const text = p.runs
+          .map((r) => r.text)
+          .join("")
+          .replace(/\s+/g, " ")
+          .trim();
+        if (text && caps.has(text)) p.displayed_caps = true;
+      }
+      walk(s.children);
+    }
+  };
+  walk(tree.sections);
+}
+
 function attachSizes(tree: DocumentTree, sizes: Map<string, Array<number | undefined>>): void {
   const walk = (sections: Section[]): void => {
     for (const s of sections) {

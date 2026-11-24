@@ -40,6 +40,17 @@ export type Paragraph = {
    * states one.
    */
   min_size_pt?: number;
+  /**
+   * The file DISPLAYS this paragraph in capitals (`w:caps` / `w:smallCaps`),
+   * whatever case its stored text is in.
+   *
+   * Only a DOCX can answer this. A Word user who applies All Caps formatting —
+   * the ordinary way to do it — leaves the stored text mixed case, so a rule
+   * reading the text's own case cannot see that the document shows capitals.
+   * Absent for pasted text and for a PDF text layer, which carry no such
+   * property, and absent for a DOCX paragraph that is not caps-formatted.
+   */
+  displayed_caps?: boolean;
 };
 
 export type Section = {
