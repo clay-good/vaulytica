@@ -184,3 +184,82 @@ describe("this product's accepted reading against Apple's text engine", () => {
     expect(available).toBe(false);
   });
 });
+
+/**
+ * The rewritten DOCX this product emits must be openable by an engine that is
+ * not this one.
+ *
+ * ⚠️ READ WHAT THIS DOES AND DOES NOT PROVE. It is **not** an independent check
+ * of reject SEMANTICS — both sides of the assertion get their words from this
+ * product's own rewrite, so it cannot catch a wrong decision about which words
+ * survive. That is what the accepted comparison above does, and what the armed
+ * Word round trip is still waiting to do for the rejected side.
+ *
+ * What it does prove is the property nothing else covered: that
+ * `withRevisionsRejected` emits a .docx a THIRD-PARTY parser can open, and that
+ * the parser recovers the same word sequence. The existing property test
+ * asserts the rewrite "contains no revision elements", which this repository
+ * checks with this repository's own reader — so a rewrite that left unbalanced
+ * tags, an orphaned `w:r` outside its `w:p`, or a broken zip entry could pass
+ * every test here and fail in the one place it matters, the user's Word. This
+ * closes that gap with the engine macOS already ships.
+ *
+ * How a failure actually presents: `textutil` does not error on malformed
+ * OOXML — it exits 0 and prints nothing. See the note on the length assertion
+ * inside, which is the line that catches it.
+ */
+describe("the rejected DOCX this product writes, opened by Apple's engine", () => {
+  function hasTextutil(): boolean {
+    try {
+      execFileSync("textutil", ["-info", REDLINE_PATH], { stdio: "ignore", timeout: 30_000 });
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  const words = (s: string): string =>
+    s
+      .replace(/\|/g, " ")
+      .split(/\s+/)
+      .filter((w) => w.length > 0)
+      .join(" ");
+  const available = hasTextutil();
+
+  it.runIf(available)(
+    "opens as a valid DOCX and yields the same words this product reads",
+    async () => {
+      const { withRevisionsRejected } = await import("../../src/ingest/docx-revisions.js");
+      const { mkdtempSync, writeFileSync } = await import("node:fs");
+      const { tmpdir } = await import("node:os");
+
+      const rewritten = withRevisionsRejected(asArrayBuffer(readFileSync(REDLINE_PATH)));
+      const out = join(mkdtempSync(join(tmpdir(), "vaulytica-rejected-")), "rejected.docx");
+      writeFileSync(out, new Uint8Array(rewritten));
+
+      const theirs = words(
+        execFileSync("textutil", ["-convert", "txt", out, "-stdout"], {
+          encoding: "utf8",
+          timeout: 120_000,
+        }),
+      );
+      // 🚨 THE LENGTH ASSERTION IS LOAD-BEARING — do not remove it as
+      // redundant. It was measured here on 2026-11-24: given malformed OOXML,
+      // `textutil` does NOT fail. It exits 0 and prints NOTHING. All three
+      // malformations tried — a dropped `</w:p>`, a `<w:p>` renamed so its
+      // runs are orphaned, and an XML file truncated at 70% — produced exit 0
+      // and empty output. So there is no exception to catch, and without this
+      // line a rewrite that emitted unopenable OOXML would compare "" against
+      // "" and pass.
+      expect(
+        theirs.length,
+        "Apple's engine returned nothing for the rewritten DOCX, which is how it reports malformed OOXML",
+      ).toBeGreaterThan(50);
+      expect(words(await ourReading("rejected"))).toBe(theirs);
+      // And it really is the rejected reading, not the original bytes read
+      // twice: the insertion's word must be gone and the deletion's restored.
+      expect(theirs).toContain("thirty");
+      expect(theirs).not.toContain("fifteen");
+    },
+    180_000,
+  );
+});
