@@ -1,0 +1,74 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement is entered into as of February 30, 2025 between Northwind Logistics, Inc., a Delaware corporation ("Provider"), and Harbor Point Retail LLC, a New York limited liability company ("Customer"). This Agreement is executed under seal and acknowledged before a notary public.
+
+TABLE OF CONTENTS
+
+1. Definitions
+2. Services
+3. Fees
+4. Term and Termination
+9. Confidentiality
+12. Dispute Resolution
+
+1. Definitions
+
+1.1 "Services" means the logistics and warehousing services described in each Statement of Work.
+
+1.3 "Fee Cap" means the maximum aggregate amount payable in any Contract Year.
+
+2. Services
+
+2.1 Provider shall perform the Services in accordance with each Statement of Work. The appropriate party shall maintain the inventory records required by applicable law.
+
+2.2 Where a discrepancy arises in the inventory count, the responsible party shall reconcile the count within [insert number] business days.
+
+4. Fees
+
+4.1 Customer shall pay Provider an annual fee of Fifty Thousand Dollars ($75,000), payable in four equal quarterly installments.
+
+4.2 The Fee Cap for the initial Contract Year is $50,000. The Fee Cap for the initial Contract Year is CAD $120,000 where the Services are performed from the Toronto facility.
+
+4.3 Late payment of any invoice shall bear interest at 36% per annum until paid in full.
+
+4.4 Expense reimbursement shall be submitted on form TBD and approved by XXX prior to payment.
+
+3. Services
+
+3.1 Provider shall provide the additional services set out in Exhibit B.
+
+5. Term and Termination
+
+5.1 The initial term of this Agreement is twelve (12) months from the Effective Date and expires on December 31, 2025.
+
+5.2 Either party may elect not to renew this Agreement by giving eighteen (18) months' prior written notice of non-renewal.
+
+5.3 This Agreement renews automatically for successive one-year terms unless either party gives written notice of non-renewal not less than 15 days before the end of the then-current term.
+
+5.4 Provider may terminate this Agreement immediately upon Customer's failure to pay any invoice when due.
+
+5.5 Any notice of termination shall be in writing and delivered by hand or by nationally recognized overnight courier to the address set forth in Section 14.
+
+5.6 Customer shall deliver the final reconciliation statement on March 15, 2026 and shall deliver the closing inventory certificate on June 1, 2026.
+
+5. Term and Termination
+
+5.7 The provisions of this Section survive termination.
+
+7.1 Provider shall retain the records described in Section 7.2 for seven years.
+
+7.3 Customer may inspect those records on reasonable notice.
+
+IN WITNESS WHEREOF, the parties have executed this Agreement as of the date first written above.
+
+NORTHWIND LOGISTICS, INC.
+
+By: _______________________
+Name: _____________________
+Title: ____________________
+
+HARBOR POINT RETAIL LLC
+
+By: _______________________
+Name: _____________________
+Title: ____________________

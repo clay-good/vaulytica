@@ -1,0 +1,59 @@
+AMENDED AND RESTATED BYLAWS, LIMITED LIABILITY COMPANY AGREEMENT, EQUITY INCENTIVE PLAN AND MERGER AGREEMENT
+
+These instruments govern Fulcrum Dynamics, Inc., a Delaware corporation (the "Corporation"), Fulcrum Holdings LLC, a Delaware limited liability company (the "Company"), Fulcrum Partners LP, a Delaware limited partnership (the "Partnership"), and the acquisition of Tessellate Labs, Inc. (the "Target").
+
+1. Exclusive Forum
+
+1.1 The exclusive forum for any claim arising under the Securities Exchange Act of 1934 shall be the Court of Chancery of the State of Delaware, and the exclusive forum provision shall apply to every claim under the Exchange Act.
+
+2. Implied Covenant
+
+2.1 The implied covenant of good faith and fair dealing is hereby waived and eliminated with respect to the Members and the Managers of the Company.
+
+2.2 The implied covenant of good faith and fair dealing is hereby eliminated with respect to the General Partner and the Limited Partners of the Partnership.
+
+3. Audit Committee
+
+3.1 A non-independent director may serve on the audit committee of the Corporation, and the members of the audit committee need not be independent, because the Corporation is a controlled company.
+
+4. Minutes and Conflicts
+
+4.1 The minutes of each meeting shall record the business transacted.
+
+5. Equity Incentive Plan
+
+5.1 The Administrator may reduce the exercise price of any outstanding Option, or cancel and regrant any Option at a lower exercise price, at any time and without stockholder approval.
+
+5.2 Incentive Stock Options may be granted under the Plan.
+
+6. Promissory Note
+
+6.1 The Note bears interest at the rate of thirty-two percent (32%) per annum.
+
+7. Merger Agreement
+
+7.1 Seller has made available to Buyer a virtual data room, and all documents posted to the data room folders shall constitute disclosure against each of Seller's representations and warranties, whether or not described in the Disclosure Schedules.
+
+7.2 Buyer has no obligation to maximize or accelerate the Earnout, and Buyer expressly disclaims any such duty, notwithstanding the Earnout statement delivered under Section 7.4.
+
+7.3 The non-competition covenant shall be 8 years, and Seller shall not compete for a period of 8 years following the Closing anywhere in the world.
+
+8. Side Letter
+
+8.1 The Investor shall receive terms no less favorable than those granted to any other investor.
+
+9. Intellectual Property Transfers
+
+9.1 Assignor assigns to Assignee the trademarks listed in Schedule A.
+
+9.2 The parties shall jointly develop the Technology described in Exhibit A.
+
+9.3 Licensor transfers the Technology to Licensee for manufacture and sale.
+
+IN WITNESS WHEREOF, these instruments have been executed.
+
+FULCRUM DYNAMICS, INC.
+
+By: _______________________
+Name: _____________________
+Title: ____________________

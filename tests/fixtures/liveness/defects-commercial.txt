@@ -1,0 +1,99 @@
+MASTER SERVICES AGREEMENT, DATA PROCESSING ADDENDUM AND BUSINESS ASSOCIATE AGREEMENT
+
+This instrument is entered into between Quarry Systems, Inc., a Texas corporation ("Vendor", also the "Processor" and the "Business Associate"), and Cedar Health Partners LLC ("Customer", also the "Controller" and the "Covered Entity"). This is a mutual non-disclosure arrangement as well as a master services agreement, and it is governed by the laws of the State of Texas. Vendor performs construction, repair and renovation work at Customer's facilities.
+
+1. Order of Precedence
+
+1.1 In the event of a conflict, this Agreement shall control over any Statement of Work or Order Form. The provisions governing indemnification, limitation of liability and intellectual property are set out in the Statement of Work and Order Form.
+
+2. Limitation of Liability
+
+2.1 Each party's aggregate liability under this Agreement shall not exceed the fees paid in the twelve months preceding the claim. Indemnification is excluded from the cap, and the cap shall not apply to the indemnification obligations in Section 3.
+
+2.2 Vendor shall not be liable for any consequential damages, special damages or incidental damages, including lost profits, arising out of this Agreement. Customer reserves all of its own rights to recover every category of loss from Vendor.
+
+2.3 In any action to enforce this Agreement, Vendor shall be entitled to recover its reasonable attorneys' fees and costs from Customer. Customer shall have no corresponding right to recover its attorneys' fees from Vendor.
+
+3. Indemnification
+
+3.1 This Agreement is governed by the laws of the State of Texas, and Customer shall indemnify and hold harmless Vendor from and against all claims arising out of the construction and renovation work, including claims caused by the negligence of the indemnitee.
+
+3.2 This indemnity is also governed by the laws of the State of New York, and Customer shall indemnify Vendor against all claims arising out of the construction work, whether caused in whole or in part by Vendor.
+
+3.3 Covered Entity shall indemnify and hold harmless Business Associate against any penalty, fine or civil money penalty assessed under HIPAA, including any violation caused by Business Associate.
+
+3.3 Controller shall indemnify Processor for any administrative fine imposed on Processor under the General Data Protection Regulation, including a fine imposed for Processor's own infringement.
+
+4. Service Levels
+
+4.1 Vendor shall meet the service levels in Exhibit A. Service-level credits are the sole and exclusive remedy for any failure to meet a service level.
+
+5. Feedback and Customer Data
+
+5.1 Customer grants Vendor rights in all feedback, suggestions and ideas Customer provides, which licence is perpetual, irrevocable, worldwide and royalty-free, for any purpose and without any restriction of scope, attribution or confidentiality.
+
+5.2 Vendor may use Customer Data to train, develop and improve Vendor's machine-learning models and artificial-intelligence features, and to train models for the benefit of Vendor's other customers.
+
+6. Confidentiality
+
+6.1 The Receiving Party shall hold the Disclosing Party's Confidential Information in confidence and shall not disclose it to any third party.
+
+6.2 Each party may use Residuals freely, being any information retained in the unaided memory of its personnel, for any purpose, including the development of competing products.
+
+7. Data Processing Addendum
+
+7.1 Processor shall implement commercially reasonable security to protect Personal Data.
+
+7.2 Processor shall notify Controller of a Personal Data Breach within fourteen (14) days of Processor becoming aware of it.
+
+7.3 On termination, Processor may elect to delete or return the Personal Data.
+
+7.4 Processor may provide its most recent SOC 2 Type II report in lieu of any audit, and Controller shall have no other audit rights.
+
+7.5 Processor may deviate from Controller's documented instructions where Processor determines that the deviation is appropriate.
+
+7.6 Controller shall bear the entire cost of any audit, inspection or assessment, including any audit occasioned by a Personal Data Breach caused by Processor.
+
+8. International Transfers
+
+8.1 The parties incorporate the Standard Contractual Clauses approved by the European Commission, as modified by this Section 8 and notwithstanding Clause 2 thereof.
+
+8.2 The parties incorporate the UK Addendum, as amended by Exhibit C, and the Mandatory Clauses as modified by Exhibit C.
+
+8.3 Vendor relies on the EU-US Data Privacy Framework for transfers of Personal Data from the European Economic Area to the United States.
+
+9. US State Privacy Terms
+
+9.1 Vendor claims Service Provider status under the CCPA with respect to Personal Information Vendor processes on Customer's behalf.
+
+9.2 This is a multi-state agreement intended to satisfy applicable US state privacy law in California, Colorado, Connecticut, Virginia and Utah, and the parties shall comply with the Utah Consumer Privacy Act standard in all states.
+
+9.3 This Agreement is governed by the laws of the State of Delaware, and the parties consent to the exclusive jurisdiction and venue of the courts located in New York County, New York
+
+10. Business Associate Agreement
+
+10.1 "Security Incident" means only the successful unauthorized access, use, disclosure, modification or destruction of Protected Health Information. Unsuccessful attempts, pings and scans are excluded.
+
+10.2 On termination, Business Associate shall return or destroy all Protected Health Information as soon as reasonably practicable and commercially reasonable.
+
+11. AI Addendum
+
+11.1 Vendor may use Customer's data, prompts and outputs to train Vendor's foundation models. No opt-in or opt-out is provided.
+
+12. Distribution Terms
+
+12.1 Distributor shall sell the Products at the resale prices Vendor specifies from time to time, and shall not discount below those prices.
+
+IN WITNESS WHEREOF, the parties have executed this instrument.
+
+QUARRY SYSTEMS, INC.
+
+By: _______________________
+Name: _____________________
+Title: ____________________
+
+CEDAR HEALTH PARTNERS LLC
+
+By: _______________________
+Name: _____________________
+Title: ____________________
