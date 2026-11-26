@@ -22,10 +22,18 @@
  * real `prepareDocument` on a document naming a US state, so a call site that
  * passes a lookup which resolves nothing still fails.
  */
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 
+import {
+  callSites,
+  callSitesIn,
+  committedOutputHelpers,
+  harnessReasons,
+  sourcesUnder,
+  type CallSite,
+} from "./_extract-all-sites.js";
 import { prepareDocument, runReport } from "../../src/ui/pipeline.js";
 import { runCustomPlaybook } from "../../src/playbooks/custom-interpreter.js";
 import { validateCustomPlaybook } from "../../src/playbooks/custom-playbook.js";
@@ -62,102 +70,32 @@ afterAll(() => {
 });
 
 /**
- * Every non-test `.ts` in the product — `src/` AND `tools/`.
+ * The walk and the scan live in `_extract-all-sites.ts`, shared with the
+ * harness sweep below. One scanner, one answer.
  *
- * 🚨 `tools/` is in this walk because leaving it out is the mistake this guard
- * was written to prevent, and it made it anyway. The first version scoped to
- * `src/`, went green on two wired call sites, and was reported as done — while
- * `tools/cli/artifacts.ts` built its own `extracted` with a bare `extractAll`
- * and handed it to `buildDocxReport`. So the CLI's report, the surface agents
- * and scripts use, still printed a dash in every id cell. Fourteen call sites
- * across four `tools/` files were unwired.
+ * 🚨 `tools/` is in the product walk because leaving it out is the mistake this
+ * guard was written to prevent, and it made it anyway. The first version scoped
+ * to `src/`, went green on two wired call sites, and was reported as done —
+ * while `tools/cli/artifacts.ts` built its own `extracted` with a bare
+ * `extractAll` and handed it to `buildDocxReport`, so the CLI's report, the
+ * surface agents and scripts use, still printed a dash in every id cell.
  *
  * The lesson is the s34 one: ask WHO can reach a surface. A guard that sweeps
  * the directory where you happened to make the fix proves you made the fix.
  */
-function productSources(dir: string): string[] {
-  const out: string[] = [];
-  for (const e of readdirSync(join(ROOT, dir), { withFileTypes: true }).sort((a, b) =>
-    a.name < b.name ? -1 : 1,
-  )) {
-    const p = `${dir}/${e.name}`;
-    if (e.isDirectory()) out.push(...productSources(p));
-    else if (e.name.endsWith(".ts") && !e.name.endsWith(".test.ts")) out.push(p);
-  }
-  return out;
+const PRODUCT_ROOTS = ["src", "tools"] as const;
+const HARNESS_ROOTS = ["tests", "tools"] as const;
+
+function productCallSites(): CallSite[] {
+  return callSites(
+    ROOT,
+    PRODUCT_ROOTS.flatMap((r) => sourcesUnder(ROOT, r, { includeTests: false })),
+  );
 }
 
-/**
- * Test harnesses are NOT swept, with one exception handled elsewhere.
- *
- * `tests/` holds 91 `extractAll` calls, nearly all of them unit fixtures that
- * assert nothing about jurisdictions; requiring the lookup there would be churn
- * with no reader. The exception that matters is a harness whose output is
- * COMMITTED — `tests/golden/artifact-digests.test.ts` and
- * `report-reproducibility.test.ts` render the artifacts this repo pins, so they
- * must build `extracted` the way the product does or the pin enshrines
- * something no user sees. Both pass the lookup, and the digest set is what
- * would fail if that changed.
- */
-const SWEPT_ROOTS = ["src", "tools"] as const;
-
-/**
- * Every `extractAll(` call in the product, with its FULL argument list.
- *
- * 🚨 The first version of this matched `extractAll\(…,\s*\{(…)\}\)` — it
- * required an options object. So a call with NO options at all, which is
- * exactly the defect (`extractAll(r.ingest.tree)` in `tools/cli/artifacts.ts`),
- * matched nothing and was reported as zero unwired sites. **Proved by failing:
- * unwiring that site left this guard GREEN.** A sweep's blind spot is not a gap
- * in the thing it sweeps — the same shape as `export-reach`'s regex that could
- * not see `export async function build*` and so missed the full attorney-facing
- * report for the CLI's entire existence.
- *
- * Scanning with balanced delimiters instead of a regex, so every call shape is
- * visible: no options, an options literal across any number of lines, and a
- * nested call or object inside it.
- */
-function extractAllCallSites(): { file: string; args: string }[] {
-  const out: { file: string; args: string }[] = [];
-  for (const file of SWEPT_ROOTS.flatMap((r) => productSources(r))) {
-    const src = readFileSync(join(ROOT, file), "utf8");
-    const needle = "extractAll(";
-    for (let i = src.indexOf(needle); i !== -1; i = src.indexOf(needle, i + 1)) {
-      // Skip any identifier that merely ENDS with the name (e.g. a
-      // hypothetical `reExtractAll(`), or a member call.
-      const before = src[i - 1];
-      if (before !== undefined && /[A-Za-z0-9_$.]/.test(before)) continue;
-      // Skip the DECLARATION in `src/extract/index.ts`. It is the function
-      // whose parameter this is, not a caller of it.
-      const lineStart = src.lastIndexOf("\n", i) + 1;
-      const linePrefix = src.slice(lineStart, i);
-      if (/\bfunction\s+$/.test(linePrefix)) continue;
-      // Skip prose. A JSDoc line that NAMES `extractAll(tree)` to explain the
-      // bare form is not a call — two of the three hits on the first run of
-      // the fixed scanner were this, including a comment written in this very
-      // change. A guard that cannot tell code from the comment about the code
-      // produces findings nobody can act on, which is how an exception table
-      // starts.
-      const trimmed = linePrefix.trimStart();
-      if (trimmed.startsWith("*") || trimmed.startsWith("//")) continue;
-      let depth = 0;
-      let j = i + needle.length - 1;
-      for (; j < src.length; j++) {
-        const c = src[j]!;
-        if (c === "(" || c === "{" || c === "[") depth++;
-        else if (c === ")" || c === "}" || c === "]") {
-          depth--;
-          if (depth === 0) break;
-        }
-      }
-      out.push({ file, args: src.slice(i + needle.length, j) });
-    }
-  }
-  return out;
-}
 describe("jurisdiction_id reach", () => {
   it("has product call sites to check (the guard is not vacuous)", () => {
-    const sites = extractAllCallSites();
+    const sites = productCallSites();
     expect(sites.length).toBeGreaterThan(0);
     // Both of the browser pipelines, single-document and bundle...
     expect(sites.filter((s) => s.file === "src/ui/pipeline.ts").length).toBe(2);
@@ -169,8 +107,8 @@ describe("jurisdiction_id reach", () => {
   });
 
   it("passes a jurisdiction lookup at every product extractAll call site", () => {
-    const unwired = extractAllCallSites()
-      .filter((s) => !/jurisdictionLookup\s*:/.test(s.args))
+    const unwired = productCallSites()
+      .filter((s) => !s.wired)
       .map((s) => s.file);
     expect(unwired).toEqual([]);
   });
@@ -301,5 +239,75 @@ describe("jurisdiction_id reach", () => {
       expect(html).toContain("Jurisdictions");
       expect(html).toContain("us-de");
     }, 180000);
+  });
+});
+
+/**
+ * The harness half — `guard-harness-extraction-parity`.
+ *
+ * 🥇 Three times in one session a TEST HARNESS built `extracted` differently
+ * from the product, and each time something else found it: `_test-fixtures.ts`
+ * (the shared rule-test context builder) turned up in a static sweep, the
+ * digest harness by inspection, and `cli-docx-report`'s parity check by going
+ * red in the gate. Nothing was looking for the class. That is a bad detection
+ * story for a defect that has now recurred three times, so this looks for it.
+ *
+ * ⚠️ Deliberately NOT every harness. `tests/` holds ~90 `extractAll` calls and
+ * most are unit fixtures asserting things jurisdictions have nothing to do
+ * with; requiring the option there would be churn with no reader, and a guard
+ * that flags 40 files nobody will fix becomes an exceptions table. The three
+ * reasons in `harnessReasons` are the ones where the omission changes what the
+ * harness PROVES — committed output, a rendered report, or an assertion that
+ * reads the field.
+ *
+ * 🚨 The third reason is the sharpest and the easiest to miss:
+ * `extraction-format-invariance` projects `jurisdiction_id ?? ""` to assert the
+ * id survives a format transform, and for its whole life every value in that
+ * projection was the empty string. It compared "" to "" on every document and
+ * passed. An assertion over a field the harness never populates does not fail
+ * — it quietly stops being a test.
+ */
+describe("jurisdiction_id reach — the harnesses that must match the product", () => {
+  const swept = (): { file: string; reasons: string[]; src: string }[] => {
+    const files = HARNESS_ROOTS.flatMap((r) => sourcesUnder(ROOT, r, { includeTests: true }));
+    const inherited = committedOutputHelpers(ROOT, files);
+    return files
+      .map((file) => {
+        const src = readFileSync(join(ROOT, file), "utf8");
+        return { file, src, reasons: harnessReasons(src, inherited.has(file)) };
+      })
+      .filter((f) => f.reasons.length > 0);
+  };
+
+  it("has a non-trivial class to check, for each reason", () => {
+    const files = swept();
+    expect(files.length).toBeGreaterThan(15);
+    // Every reason must actually select something. A reason that matches no
+    // file is a rule nobody is held to, and it would read as compliance.
+    for (const reason of [
+      "committed output",
+      "renders a report artifact",
+      "asserts on jurisdiction_id",
+    ]) {
+      expect(
+        files.filter((f) => f.reasons.includes(reason)).length,
+        `no file selected by "${reason}" — the rule matches nothing`,
+      ).toBeGreaterThan(0);
+    }
+  });
+
+  it("finds real call sites in that class (the sweep is not vacuous)", () => {
+    const sites = swept().flatMap((f) => callSitesIn(f.file, f.src));
+    expect(sites.length).toBeGreaterThan(10);
+    expect(sites.filter((s) => s.wired).length).toBeGreaterThan(5);
+  });
+
+  it("passes the lookup in every harness that renders, pins, or reads the field", () => {
+    const unwired = swept().flatMap((f) =>
+      callSitesIn(f.file, f.src)
+        .filter((s) => !s.wired)
+        .map(() => `${f.file} (${f.reasons.join("; ")})`),
+    );
+    expect([...new Set(unwired)].sort()).toEqual([]);
   });
 });

@@ -18,6 +18,7 @@ import {
 } from "../../src/ui/results-page.js";
 import { compareRuns } from "../../src/report/index.js";
 import { extractAll } from "../../src/extract/index.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const SPECIMEN = resolve(__dirname, "../fixtures/specimens/legend-nda.txt");
 
@@ -29,7 +30,10 @@ describe("the legend NDA's results page", () => {
     const model = buildResultsModel({
       run: r.run,
       abstract,
-      isSigner: signerTest(r.ingest.tree, extractAll(r.ingest.tree).parties),
+      isSigner: signerTest(
+        r.ingest.tree,
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }).parties,
+      ),
       reportUrl: () => null,
     });
 
@@ -70,7 +74,10 @@ describe("one count everywhere", () => {
       run: r.run,
       abstract: await abstractOf("bad-nda.docx", r),
       delivery: r.delivery?.findings,
-      isSigner: signerTest(r.ingest.tree, extractAll(r.ingest.tree).parties),
+      isSigner: signerTest(
+        r.ingest.tree,
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }).parties,
+      ),
       reportUrl: () => null,
     });
     const alone = thingsToRaise(model);

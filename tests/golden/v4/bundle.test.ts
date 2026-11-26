@@ -44,6 +44,7 @@ import { extractAll } from "../../../src/extract/index.js";
 import { matchPlaybook, titleCorpus } from "../../../src/playbooks/index.js";
 
 import { ingestFixture, listV4Bundles, loadAllPlaybooks } from "./_pipeline.js";
+import { resolveJurisdictionId } from "../../../src/dkb/jurisdiction-ids.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const BUNDLES = join(__dirname, "bundles");
@@ -130,6 +131,7 @@ async function runBundle(name: string): Promise<BundleResult> {
     const fixturePath = join(dir, entry);
     const ingest = await ingestFixture(fixturePath);
     const extracted = extractAll(ingest.tree, {
+      jurisdictionLookup: resolveJurisdictionId,
       classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
     });
     const titleSource = titleCorpus(ingest.tree, entry);

@@ -29,12 +29,13 @@ import { buildCriticalDates } from "../../src/report/critical-dates.js";
 import { extractAll } from "../../src/extract/index.js";
 import { buildContext } from "../../src/engine/_test-fixtures.js";
 import { getDeadlineProfile } from "../../src/deadlines/profile.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const PROFILE = getDeadlineProfile("frcp-6")!;
 
 async function register(paragraphs: [string, ...string[]], withProfile = true) {
   const { tree } = buildContext(paragraphs);
-  const extracted = extractAll(tree);
+  const extracted = extractAll(tree, { jurisdictionLookup: resolveJurisdictionId });
   return buildCriticalDates(extracted, tree, withProfile ? { profile: PROFILE } : undefined);
 }
 

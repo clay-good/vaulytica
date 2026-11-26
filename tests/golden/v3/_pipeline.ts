@@ -24,6 +24,7 @@ import { ingestPaste } from "../../../src/ingest/paste.js";
 import type { IngestResult } from "../../../src/ingest/types.js";
 import { extractAll } from "../../../src/extract/index.js";
 import { loadStarterDkbSync } from "../../../src/engine/_test-fixtures.js";
+import { resolveJurisdictionId } from "../../../src/dkb/jurisdiction-ids.js";
 import {
   LAUNCH_RULES,
   V3_RULES,
@@ -116,6 +117,7 @@ export async function runV3Fixture(path: string, fileName?: string): Promise<Run
 
   const dkb = loadStarterDkbSync();
   const extracted = extractAll(ingest.tree, {
+    jurisdictionLookup: resolveJurisdictionId,
     classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
   });
   const playbooks = await loadAllPlaybooks();

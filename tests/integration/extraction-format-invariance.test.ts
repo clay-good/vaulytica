@@ -106,6 +106,7 @@ import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
 import type { ExtractedData } from "../../src/extract/types.js";
 import { KNOWN_DEBT } from "./_known-debt.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 const SPECIMENS = readdirSync(DIR)
@@ -177,6 +178,12 @@ const SURFACES: Record<string, (d: ExtractedData) => string[]> = {
         [p.name, p.role ?? "", p.entity_type ?? "", p.jurisdiction_of_formation ?? ""].join("|"),
       )
       .sort(),
+  // 🚨 This projection asserts that `jurisdiction_id` survives a format
+  // transform, and for its whole life every value in it was the empty
+  // string: the harness built `extracted` without the lookup, so the id
+  // half compared "" to "" on every document and every surface. The
+  // clause_kind half was doing all the work. Nothing fails when the
+  // assertion is vacuous — it just quietly stops being a test.
   jurisdictions: (d) =>
     d.jurisdictions.map((j) => [j.clause_kind, j.jurisdiction_id ?? ""].join("|")).sort(),
   amounts: (d) =>
@@ -225,16 +232,27 @@ describe("the extracted substance is not a function of the layout", () => {
       dates: [],
     };
     const baseline: Record<string, number> = { parties: 0, jurisdictions: 0, amounts: 0, dates: 0 };
+    let resolvedIds = 0;
     for (const name of SPECIMENS) {
       const text = readFileSync(join(DIR, name), "utf8");
-      const base = extractAll((await ingestPaste(text)).tree);
+      const base = extractAll((await ingestPaste(text)).tree, {
+        jurisdictionLookup: resolveJurisdictionId,
+      });
       for (const [surface, project] of Object.entries(SURFACES)) {
         baseline[surface] = (baseline[surface] ?? 0) + project(base).length;
       }
+      // 🚨 Count the projected values that carry a RESOLVED id, not just the
+      // rows. Row counts cannot distinguish "the id survived the transform"
+      // from "the id was empty on both sides", which is the state this surface
+      // was in until the harness started passing the lookup. A floor on real
+      // ids is what makes the comparison above mean something.
+      resolvedIds += base.jurisdictions.filter((j) => j.jurisdiction_id).length;
       for (const [label, fn] of TRANSFORMS) {
         const mutated = fn(text);
         if (mutated === text) continue;
-        const got = extractAll((await ingestPaste(mutated)).tree);
+        const got = extractAll((await ingestPaste(mutated)).tree, {
+          jurisdictionLookup: resolveJurisdictionId,
+        });
         for (const [surface, project] of Object.entries(SURFACES)) {
           const before = project(base);
           const after = project(got);
@@ -252,6 +270,12 @@ describe("the extracted substance is not a function of the layout", () => {
     // surface must actually be carrying values across the corpus.
     expect(baseline.parties).toBeGreaterThan(800);
     expect(baseline.jurisdictions).toBeGreaterThan(200);
+    // The anti-vacuity floor for the id half of the jurisdictions surface.
+    expect(
+      resolvedIds,
+      "no jurisdiction carried a resolved id — the id half of the " +
+        "jurisdictions surface is comparing empty strings",
+    ).toBeGreaterThan(150);
     expect(baseline.amounts).toBeGreaterThan(600);
     expect(baseline.dates).toBeGreaterThan(1000);
 

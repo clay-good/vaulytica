@@ -17,6 +17,7 @@ import type { IngestResult } from "../../src/ingest/types.js";
 import { extractAll } from "../../src/extract/index.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 import { LAUNCH_RULES, runEngine, type EngineRun } from "../../src/engine/index.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 import {
   matchPlaybook,
   titleCorpus,
@@ -113,6 +114,7 @@ export async function runFixture(path: string, fileName?: string): Promise<RunFi
 
   const dkb = loadStarterDkbSync();
   const extracted = extractAll(ingest.tree, {
+    jurisdictionLookup: resolveJurisdictionId,
     classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
   });
   const playbooks = await loadAllPlaybooks();

@@ -30,6 +30,7 @@ import { extractAll } from "../../src/extract/index.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildDocxReport } from "../../src/report/docx.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 /** A California employment agreement — the family with a real overlay catalog. */
 const SPECIMEN = join(
@@ -44,7 +45,7 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
   it("renders the jurisdiction overlays and the obligations ledger", async () => {
     const deps = await loadAccuracyDeps();
     const r = await analyzeFile(SPECIMEN, { deps });
-    const extracted = extractAll(r.ingest.tree);
+    const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
     const html = buildHtmlReport(
       r.run,
       r.ingest,
@@ -100,7 +101,7 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
     // had extracted.
     const deps = await loadAccuracyDeps();
     const r = await analyzeFile(SPECIMEN, { deps });
-    const extracted = extractAll(r.ingest.tree);
+    const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
     const html = buildHtmlReport(
       r.run,
       r.ingest,
@@ -144,7 +145,12 @@ describe("the HTML report carries the same CONTENT as the DOCX", () => {
     const deps = await loadAccuracyDeps();
     const r = await analyzeFile(SPECIMEN, { deps });
     const extracted = {
-      ...extractAll(r.ingest.tree),
+      // The lookup, for the same reason as the two renders above. The
+      // `jurisdictions` override below is DELIBERATE and stays: this case needs
+      // a state the overlay catalog does not cover, which no specimen supplies.
+      // Constructing a scenario the corpus cannot produce is legitimate;
+      // constructing the baseline differently from the product is not.
+      ...extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
       jurisdictions: [
         {
           clause_kind: "governing-law",

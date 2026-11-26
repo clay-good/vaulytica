@@ -31,6 +31,7 @@ import { describe, expect, it } from "vitest";
 import { ingestPaste } from "../../src/ingest/paste.js";
 import { extractAll } from "../../src/extract/index.js";
 import { collectDeadlines, buildDeadlinesIcs } from "../../src/report/exports.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const DIR = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -52,7 +53,9 @@ const RESOLVED_NAMED_ANCHORS = 167;
 const HELD_BACK = 5;
 
 async function extracted(file: string) {
-  return extractAll((await ingestPaste(readFileSync(join(DIR, file), "utf8"))).tree);
+  return extractAll((await ingestPaste(readFileSync(join(DIR, file), "utf8"))).tree, {
+    jurisdictionLookup: resolveJurisdictionId,
+  });
 }
 
 describe("a named anchor the document defines is not unresolved", () => {

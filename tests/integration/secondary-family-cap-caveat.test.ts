@@ -42,6 +42,7 @@ import { buildHtmlReport } from "../../src/report/html.js";
 import { buildDocxReport } from "../../src/report/docx.js";
 import { buildSarif } from "../../src/report/sarif.js";
 import { runFixture } from "./_pipeline-helpers.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const SPECIMENS = join(process.cwd(), "tests", "fixtures", "specimens");
 
@@ -64,6 +65,7 @@ describe("the secondary-family cap is stated wherever the capped list is shown",
     for (const f of files) {
       const ingest = await ingestPaste(readFileSync(join(SPECIMENS, f), "utf8"));
       const extracted = extractAll(ingest.tree, {
+        jurisdictionLookup: resolveJurisdictionId,
         classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
       });
       const signals = {

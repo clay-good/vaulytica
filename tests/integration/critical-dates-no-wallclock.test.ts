@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildTree } from "../../src/extract/_fixtures.js";
 import { extractAll } from "../../src/extract/index.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 import {
   buildCriticalDates,
   buildCriticalDatesIcs,
@@ -50,7 +51,7 @@ async function snapshotUnderClock(iso: string): Promise<{
 }> {
   vi.useFakeTimers();
   vi.setSystemTime(new Date(iso));
-  const extracted = extractAll(TREE);
+  const extracted = extractAll(TREE, { jurisdictionLookup: resolveJurisdictionId });
   const register = await buildCriticalDates(extracted, TREE);
   return {
     hash: register.critical_dates_hash,

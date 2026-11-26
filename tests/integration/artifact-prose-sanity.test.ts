@@ -31,6 +31,7 @@ import { analyzeText } from "../../tools/cli/api.js";
 import { buildCriticalDates } from "../../src/report/critical-dates.js";
 import { buildClosingChecklist } from "../../src/report/closing-checklist.js";
 import { buildDefinitionsReport, buildDefinitionsCsv } from "../../src/report/definitions.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 import {
   buildFixListMarkdown,
   buildFixListCsv,
@@ -84,7 +85,7 @@ describe("every artifact a user receives, over the clean documents", () => {
     for (const file of CLEAN) {
       const text = readFileSync(join(DIR, file), "utf8");
       const ingest = await ingestPaste(text);
-      const extracted = extractAll(ingest.tree);
+      const extracted = extractAll(ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
       const r = await analyzeText(text, file);
       const register = await buildCriticalDates(extracted, ingest.tree);
       const checklist = buildClosingChecklist(r.run);
@@ -126,7 +127,7 @@ describe("every artifact a user receives, over the clean documents", () => {
     for (const file of CLEAN) {
       const text = readFileSync(join(DIR, file), "utf8");
       const ingest = await ingestPaste(text);
-      const extracted = extractAll(ingest.tree);
+      const extracted = extractAll(ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
       const r = await analyzeText(text, file);
       const register = await buildCriticalDates(extracted, ingest.tree);
       const checklist = buildClosingChecklist(r.run);
