@@ -789,7 +789,7 @@ export function extractJurisdictions(
       // it: "submit to the exclusive jurisdiction of the Court of Chancery of
       // the State of Delaware **for any dispute arising under this Agreement**"
       // registered a venue of "Delaware for any dispute arising under this
-      // Agreement", and CHOICE-004, CHOICE-009, and CHOICE-012 each reported
+      // Agreement", and CHOICE-004, CHOICE-009 (since retired), and CHOICE-012 each reported
       // that Delaware governing law and that venue "name different
       // jurisdictions". Trimming to the last capitalized token is not enough —
       // "this Agreement" ends on one — so the place name ends at the first

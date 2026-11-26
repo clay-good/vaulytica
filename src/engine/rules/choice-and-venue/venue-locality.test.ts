@@ -18,7 +18,6 @@
 import { describe, expect, it } from "vitest";
 import { rule as CHOICE_004 } from "./CHOICE-004.js";
 import { rule as CHOICE_005 } from "./CHOICE-005.js";
-import { rule as CHOICE_009 } from "./CHOICE-009.js";
 import { rule as CHOICE_012 } from "./CHOICE-012.js";
 import { buildContext } from "../../_test-fixtures.js";
 
@@ -33,7 +32,6 @@ describe("a venue named by city and state is that state", () => {
   it("no law-vs-venue rule fires on Delaware law with Delaware courts", () => {
     const ctx = aligned();
     expect(CHOICE_004.check(ctx)).toBeNull();
-    expect(CHOICE_009.check(ctx)).toBeNull();
     expect(CHOICE_012.check(ctx)).toBeNull();
   });
 
@@ -49,7 +47,6 @@ describe("a venue named by city and state is that state", () => {
     ]);
     expect(CHOICE_004.check(ctx)?.title).toMatch(/California/);
     // Reported ONCE, by CHOICE-004 (9.757.0).
-    expect(CHOICE_009.check(ctx)).toBeNull();
     expect(CHOICE_012.check(ctx)).toBeNull();
   });
 });

@@ -111,6 +111,14 @@ export type LivenessFixture = {
 export const LIVENESS_FIXTURES: readonly LivenessFixture[] = [
   { file: "defects-structural.txt", note: "numbering, dates, amounts, obligors" },
   { file: "defects-choice-venue.txt", note: "governing law, venue, arbitration" },
+  // A SECOND venue clause that contradicts the first. CHOICE-004 and CHOICE-009
+  // both read `jurisdictions.find(venue)` — the first venue only — and go quiet
+  // when it matches the governing law; CHOICE-012 scans every venue entry, so it
+  // is the only rule that sees a later carve-out pointing somewhere else. That
+  // is a real drafting defect (an IP or trademark carve-out copied from another
+  // template) and it wants its own document, because any fixture where the FIRST
+  // venue already mismatches makes CHOICE-004 fire and shadows CHOICE-012 again.
+  { file: "defects-multi-venue.txt", note: "a later venue clause contradicts the first" },
   { file: "defects-dark-patterns.txt", note: "consumer dark patterns" },
   { file: "defects-proofreading.txt", note: "typography and proofreading" },
   { file: "defects-commercial.txt", note: "MSA / SOW / DPA / BAA defects" },

@@ -59,18 +59,26 @@ describe("CHOICE-003 — retained enforcement jurisdiction is a forum clause", (
  * CHOICE-009 (info, "a legitimate drafting choice … usually deliberate") all
  * reported Delaware law with a Texas venue, and a reviewed copy of an MSA
  * carried three comments disagreeing with each other about one clause.
- * CHOICE-004 owns the finding; the other two keep only the cases it misses.
+ * CHOICE-004 owns the finding; CHOICE-012 keeps only the case it misses — a
+ * LATER venue clause that contradicts the first, which 004 never reads because
+ * it takes the first venue entry alone.
+ *
+ * CHOICE-009 was the third, and it is gone (`retire-shadowed-choice-rule`):
+ * deferring to 004 and then testing substantially 004's own condition left it
+ * with no case of its own, and all four of its tests asserted it returned null.
+ * `rule-liveness.test.ts` is what made that visible. The case 012 keeps is
+ * covered by `tests/fixtures/liveness/defects-multi-venue.txt`, which is the
+ * only shape that silences 004 and fires 012.
  */
-describe("CHOICE-004 / -009 / -012 — one law-venue split, one finding", () => {
+describe("CHOICE-004 / -012 — one law-venue split, one finding", () => {
   it("reports Delaware law with a Texas venue once", async () => {
     const { rule: C4 } = await import("./CHOICE-004.js");
-    const { rule: C9 } = await import("./CHOICE-009.js");
     const { rule: C12 } = await import("./CHOICE-012.js");
     const ctx = buildContext([
       "Governing Law",
       "This Agreement is governed by the laws of the State of Delaware. Any action arising out of this Agreement shall be brought exclusively in the state or federal courts located in Travis County, Texas.",
     ]);
-    const fired = [C4, C9, C12].filter((r) => r.check(ctx) !== null).map((r) => r.id);
+    const fired = [C4, C12].filter((r) => r.check(ctx) !== null).map((r) => r.id);
     expect(fired).toEqual(["CHOICE-004"]);
   });
 });

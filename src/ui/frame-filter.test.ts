@@ -74,7 +74,7 @@ describe("framesForRule", () => {
       "TEMP-004",
       "OBLIG-001",
       "RISK-007",
-      "CHOICE-009",
+      "CHOICE-004",
       "TERM-009",
       "IPDATA-008",
       "PERS-009",

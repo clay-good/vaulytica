@@ -108,7 +108,6 @@ import { rule as CHOICE_005 } from "./choice-and-venue/CHOICE-005.js";
 import { rule as CHOICE_006 } from "./choice-and-venue/CHOICE-006.js";
 import { rule as CHOICE_007 } from "./choice-and-venue/CHOICE-007.js";
 import { rule as CHOICE_008 } from "./choice-and-venue/CHOICE-008.js";
-import { rule as CHOICE_009 } from "./choice-and-venue/CHOICE-009.js";
 import { rule as CHOICE_010 } from "./choice-and-venue/CHOICE-010.js";
 import { rule as CHOICE_011 } from "./choice-and-venue/CHOICE-011.js";
 import { rule as CHOICE_012 } from "./choice-and-venue/CHOICE-012.js";
@@ -245,7 +244,6 @@ export const LAUNCH_RULES: readonly Rule[] = [
   CHOICE_006,
   CHOICE_007,
   CHOICE_008,
-  CHOICE_009,
   CHOICE_010,
   CHOICE_011,
   CHOICE_012,

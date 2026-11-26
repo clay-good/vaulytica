@@ -91,7 +91,7 @@ const OPT_IN_PACK_RULES: readonly Rule[] = [
   ...ESTATE_CHECK_RULES,
   ...READABILITY_RULES,
 ];
-const EXPECTED_BASE_RULES = 1946;
+const EXPECTED_BASE_RULES = 1945;
 const EXPECTED_PACK_RULES = 27;
 
 /**
@@ -107,29 +107,43 @@ const EXPECTED_PACK_RULES = 27;
  *
  * Where it came from: at the time this guard was written, 117 of the 1,973
  * catalog rules fired on none of the 363 specimens. Committing the defect
- * fixtures took that to 28. The rest fall into three shapes, all of which are
- * findings rather than gaps in the fixtures, and all of which want a rule
- * change rather than a document:
+ * fixtures took that to 28, and then to 26 — see below. What remains falls into
+ * two shapes, both of which are findings rather than gaps in the fixtures, and
+ * both of which want a rule change rather than a document:
  *
- *  1. SHADOWED. CHOICE-009 and CHOICE-012 both open with
- *     `if (CHOICE_004.check(ctx) !== null) return null;` and then test
- *     substantially CHOICE-004's own condition — a governing-law/venue split.
- *     CHOICE-004 fires on every document that reaches them, so they are silent
- *     by construction, not by accident of the corpus. Three rules describe one
- *     defect and two can never speak.
- *  2. SELF-SATISFYING. A `pack()` column is satisfied by ANY ONE of its
+ *  1. SELF-SATISFYING. A `pack()` column is satisfied by ANY ONE of its
  *     `pat` patterns (`require_all_present` defaults to false), so a column
  *     whose `when` trigger is also one of its `pat` patterns is satisfied by
  *     the very text that makes it applicable. COMM-205 is the clearest case:
  *     `when: [/arbitrat/i]` and `pat[0]: /arbitrat/i`.
- *  3. UNREACHABLE GUARD. CHOICE-002 returns null unless the extracted
+ *  2. UNREACHABLE GUARD. CHOICE-002 returns null unless the extracted
  *     governing-law `raw_text` is shorter than three characters, and the
  *     extractor only records an entry when it recognizes a jurisdiction.
  *
- * Fixing those means changing rules, which moves findings and therefore
- * `result_hash` for any document that draws them — a product decision with a
- * golden-corpus cost, not a test change. The ledger is how that work stays
- * visible until it is done, instead of being invisible as it was before.
+ * 🚨 The two entries this list has lost are the reason it carries no reason
+ * field. Both were first recorded here as SHADOWED — CHOICE-009 and CHOICE-012
+ * each open with `if (CHOICE_004.check(ctx) !== null) return null;` and then
+ * test substantially CHOICE-004's own condition — and that was a true
+ * observation with a wrong conclusion attached for one of them:
+ *
+ *   CHOICE-012 was never dead. CHOICE-004 and CHOICE-009 both read
+ *   `jurisdictions.find(venue)`, the FIRST venue only; CHOICE-012 scans every
+ *   venue entry. A document whose first venue matches the governing law and
+ *   whose second does not — an IP carve-out copied from another template —
+ *   silences 004 and fires 012. It wanted `defects-multi-venue.txt`, not a
+ *   rule change. Any fixture where the first venue already mismatches makes
+ *   004 fire and shadows 012 again, which is why it needs a document of its own.
+ *
+ *   CHOICE-009 is dead, and for a stronger reason than shadowing: no caller in
+ *   the product ever passes `jurisdictionLookup` to `extractAll`, so
+ *   `lookup` is always the default `() => undefined` and `jurisdiction_id` is
+ *   undefined on every entry the extractor produces. With no ids, CHOICE-009's
+ *   `same` reduces to a case-insensitive raw-text compare — exactly CHOICE-004's
+ *   own test, which runs first. It was retired rather than ledgered.
+ *
+ * Had the ledger let either entry carry its reason, "shadowed by CHOICE-004"
+ * would have read as settled for both, and the fixture that disproved it for
+ * one would never have been written.
  */
 const KNOWN_SILENT: readonly string[] = [
   "BNK-013",
@@ -137,9 +151,7 @@ const KNOWN_SILENT: readonly string[] = [
   "CHOICE-002",
   "CHOICE-005",
   "CHOICE-007",
-  "CHOICE-009",
   "CHOICE-010",
-  "CHOICE-012",
   "CITE-005",
   "COMM-204",
   "COMM-205",

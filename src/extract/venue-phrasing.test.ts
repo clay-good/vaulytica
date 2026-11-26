@@ -117,7 +117,7 @@ describe("a venue capture stops at the place name", () => {
    * "submit to the exclusive jurisdiction of the Court of Chancery of the
    * State of Delaware for any dispute arising under this Agreement"
    * registered a venue of "Delaware for any dispute arising under this
-   * Agreement", and CHOICE-004, CHOICE-009, and CHOICE-012 each then reported
+   * Agreement", and CHOICE-004, CHOICE-009 (since retired), and CHOICE-012 each then reported
    * that Delaware governing law and that venue "name different
    * jurisdictions".
    *
