@@ -1,5 +1,5 @@
 /**
- * `wire-jurisdiction-id-resolution` tasks 3–4 — the product fills
+ * `wire-jurisdiction-id-resolution` tasks 3–4, extended by `pin-the-docx-report` task 3 — the product fills
  * `jurisdiction_id`.
  *
  * 🚨 Why this guard exists at all. `extractAll` has always accepted a
@@ -61,8 +61,21 @@ afterAll(() => {
   globalThis.fetch = realFetch;
 });
 
-/** Every non-test `.ts` under `src/`, POSIX-separated. */
-function productSources(dir = "src"): string[] {
+/**
+ * Every non-test `.ts` in the product — `src/` AND `tools/`.
+ *
+ * 🚨 `tools/` is in this walk because leaving it out is the mistake this guard
+ * was written to prevent, and it made it anyway. The first version scoped to
+ * `src/`, went green on two wired call sites, and was reported as done — while
+ * `tools/cli/artifacts.ts` built its own `extracted` with a bare `extractAll`
+ * and handed it to `buildDocxReport`. So the CLI's report, the surface agents
+ * and scripts use, still printed a dash in every id cell. Fourteen call sites
+ * across four `tools/` files were unwired.
+ *
+ * The lesson is the s34 one: ask WHO can reach a surface. A guard that sweeps
+ * the directory where you happened to make the fix proves you made the fix.
+ */
+function productSources(dir: string): string[] {
   const out: string[] = [];
   for (const e of readdirSync(join(ROOT, dir), { withFileTypes: true }).sort((a, b) =>
     a.name < b.name ? -1 : 1,
@@ -75,36 +88,89 @@ function productSources(dir = "src"): string[] {
 }
 
 /**
- * Every `extractAll(` call in the product, with the options object that
- * follows it.
+ * Test harnesses are NOT swept, with one exception handled elsewhere.
  *
- * Matching to the closing brace of the options literal rather than to a line
- * end: the call is formatted across four lines by the formatter, so a
- * line-scoped regex would see `extractAll(ingest.tree, {` and no options at
- * all — and would pass whatever the options said.
+ * `tests/` holds 91 `extractAll` calls, nearly all of them unit fixtures that
+ * assert nothing about jurisdictions; requiring the lookup there would be churn
+ * with no reader. The exception that matters is a harness whose output is
+ * COMMITTED — `tests/golden/artifact-digests.test.ts` and
+ * `report-reproducibility.test.ts` render the artifacts this repo pins, so they
+ * must build `extracted` the way the product does or the pin enshrines
+ * something no user sees. Both pass the lookup, and the digest set is what
+ * would fail if that changed.
  */
-function extractAllCallSites(): { file: string; options: string }[] {
-  const out: { file: string; options: string }[] = [];
-  for (const file of productSources()) {
+const SWEPT_ROOTS = ["src", "tools"] as const;
+
+/**
+ * Every `extractAll(` call in the product, with its FULL argument list.
+ *
+ * 🚨 The first version of this matched `extractAll\(…,\s*\{(…)\}\)` — it
+ * required an options object. So a call with NO options at all, which is
+ * exactly the defect (`extractAll(r.ingest.tree)` in `tools/cli/artifacts.ts`),
+ * matched nothing and was reported as zero unwired sites. **Proved by failing:
+ * unwiring that site left this guard GREEN.** A sweep's blind spot is not a gap
+ * in the thing it sweeps — the same shape as `export-reach`'s regex that could
+ * not see `export async function build*` and so missed the full attorney-facing
+ * report for the CLI's entire existence.
+ *
+ * Scanning with balanced delimiters instead of a regex, so every call shape is
+ * visible: no options, an options literal across any number of lines, and a
+ * nested call or object inside it.
+ */
+function extractAllCallSites(): { file: string; args: string }[] {
+  const out: { file: string; args: string }[] = [];
+  for (const file of SWEPT_ROOTS.flatMap((r) => productSources(r))) {
     const src = readFileSync(join(ROOT, file), "utf8");
-    for (const m of src.matchAll(/extractAll\(\s*[^,)]+,\s*\{([\s\S]*?)\n\s*\}\s*\)/g)) {
-      out.push({ file, options: m[1]! });
+    const needle = "extractAll(";
+    for (let i = src.indexOf(needle); i !== -1; i = src.indexOf(needle, i + 1)) {
+      // Skip any identifier that merely ENDS with the name (e.g. a
+      // hypothetical `reExtractAll(`), or a member call.
+      const before = src[i - 1];
+      if (before !== undefined && /[A-Za-z0-9_$.]/.test(before)) continue;
+      // Skip the DECLARATION in `src/extract/index.ts`. It is the function
+      // whose parameter this is, not a caller of it.
+      const lineStart = src.lastIndexOf("\n", i) + 1;
+      const linePrefix = src.slice(lineStart, i);
+      if (/\bfunction\s+$/.test(linePrefix)) continue;
+      // Skip prose. A JSDoc line that NAMES `extractAll(tree)` to explain the
+      // bare form is not a call — two of the three hits on the first run of
+      // the fixed scanner were this, including a comment written in this very
+      // change. A guard that cannot tell code from the comment about the code
+      // produces findings nobody can act on, which is how an exception table
+      // starts.
+      const trimmed = linePrefix.trimStart();
+      if (trimmed.startsWith("*") || trimmed.startsWith("//")) continue;
+      let depth = 0;
+      let j = i + needle.length - 1;
+      for (; j < src.length; j++) {
+        const c = src[j]!;
+        if (c === "(" || c === "{" || c === "[") depth++;
+        else if (c === ")" || c === "}" || c === "]") {
+          depth--;
+          if (depth === 0) break;
+        }
+      }
+      out.push({ file, args: src.slice(i + needle.length, j) });
     }
   }
   return out;
 }
-
 describe("jurisdiction_id reach", () => {
   it("has product call sites to check (the guard is not vacuous)", () => {
     const sites = extractAllCallSites();
     expect(sites.length).toBeGreaterThan(0);
-    // Both of the product's pipelines, single-document and bundle.
+    // Both of the browser pipelines, single-document and bundle...
     expect(sites.filter((s) => s.file === "src/ui/pipeline.ts").length).toBe(2);
+    // ...and the headless surface, which the first version of this guard could
+    // not see. A floor rather than an exact count: `tools/` call sites come and
+    // go with the CLI's subcommands, and pinning the number would make this
+    // fail for reasons that have nothing to do with the lookup.
+    expect(sites.filter((s) => s.file.startsWith("tools/")).length).toBeGreaterThanOrEqual(10);
   });
 
   it("passes a jurisdiction lookup at every product extractAll call site", () => {
     const unwired = extractAllCallSites()
-      .filter((s) => !/jurisdictionLookup\s*:/.test(s.options))
+      .filter((s) => !/jurisdictionLookup\s*:/.test(s.args))
       .map((s) => s.file);
     expect(unwired).toEqual([]);
   });

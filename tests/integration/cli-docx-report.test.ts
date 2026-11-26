@@ -157,6 +157,7 @@ describe("analyze --format docx", () => {
     const { buildDocxReport } = await import("../../src/report/docx.js");
     const { loadAccuracyDeps } = await import("../../tools/accuracy/pipeline.js");
     const { extractAll } = await import("../../src/extract/index.js");
+    const { resolveJurisdictionId } = await import("../../src/dkb/jurisdiction-ids.js");
     const deps = await loadAccuracyDeps();
     const r = await analyzeFile(NDA, { deps, secondaryFamilies: true });
     const blob = await buildDocxReport(
@@ -165,7 +166,13 @@ describe("analyze --format docx", () => {
       deps.dkb,
       r.playbook,
       undefined,
-      extractAll(r.ingest.tree),
+      // The resolver, because the CLI side passes it. 🚨 This test is a PARITY
+      // test and it built its own third version of the input: with both sides
+      // bare it compared two reports that each showed "—" where a jurisdiction
+      // id belongs, and agreed. It failed the moment the CLI was wired, which
+      // is the test working — a parity guard whose reference is constructed by
+      // hand only proves parity with the hand-construction.
+      extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
       r.secondary_families.length > 0 ? r.secondary_families : undefined,
       {
         relatedDocuments: r.related_documents.length > 0 ? r.related_documents : undefined,

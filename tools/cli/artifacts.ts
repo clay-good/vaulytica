@@ -40,6 +40,7 @@ import {
 import { buildNegotiationSheet } from "../../src/report/negotiation-sheet.js";
 import { dkbCurrency } from "../../src/report/citations.js";
 import { buildDefinitionsMarkdown, buildDefinitionsCsv } from "../../src/report/definitions.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 import {
   buildDocumentAbstract,
   buildInventory,
@@ -333,7 +334,7 @@ export async function renderFormat(
         // `--critical-dates` and `--posture` paths above: the overlay is not
         // part of `run.result_hash`, so this cannot change what a run verifies
         // to.
-        extractAll(r.ingest.tree),
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
         r.delivery,
         r.critical_dates,
         r.closing_checklist,
@@ -374,7 +375,7 @@ export async function renderFormat(
         currency,
         r.ingest,
         consistency,
-        extractAll(r.ingest.tree),
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
       );
       const violations = sarifConformanceViolations(log);
       if (violations.length > 0) {
@@ -403,7 +404,7 @@ export async function renderFormat(
         // overlays and the obligations ledger are built from `extracted`, which
         // is not part of `run.result_hash`, so this cannot change what a run
         // verifies to.
-        extractAll(r.ingest.tree),
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
       );
     case "md": {
       const md = buildFixListMarkdown(r.run, undefined, currency, r.ingest);
@@ -423,9 +424,15 @@ export async function renderFormat(
     case "dates-ics":
       return buildCriticalDatesIcs(r.critical_dates!);
     case "obligations-csv":
-      return buildObligationsCsv(extractAll(r.ingest.tree), r.ingest.tree);
+      return buildObligationsCsv(
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
+        r.ingest.tree,
+      );
     case "deadlines-ics":
-      return buildDeadlinesIcs(extractAll(r.ingest.tree), r.ingest.tree);
+      return buildDeadlinesIcs(
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
+        r.ingest.tree,
+      );
     case "posture-md":
       return buildNegotiationPostureMarkdown(r.negotiation_posture!, caveats);
     case "posture-csv":
@@ -460,7 +467,7 @@ export async function renderDocxReport(
   dkb: Dkb,
   consistency?: ConsistencyRun,
 ): Promise<Uint8Array> {
-  const extracted = extractAll(r.ingest.tree);
+  const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
   const v3Inputs = buildV3ReportInputs(r.ingest.tree, {
     parties: extracted.parties,
     dkb_build_date: dkb.manifest.built_at,

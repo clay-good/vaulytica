@@ -57,6 +57,7 @@ import type { BriefKind } from "../../src/filing/run-options.js";
 import { activatePrivacyNotice } from "../../src/privacy/activate.js";
 import type { RegimeId } from "../../src/privacy/regime-data.js";
 import { activateEstateChecks } from "../../src/estate/activate.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = join(__dirname, "..", "..");
@@ -242,6 +243,7 @@ export async function runIngested(
   readability?: string,
 ): Promise<DocumentRun> {
   const extracted = extractAll(ingest.tree, {
+    jurisdictionLookup: resolveJurisdictionId,
     classifier: { vocab: { vocab: {} }, patterns: deps.dkb.classifier.patterns },
   });
   const titleSource = titleCorpus(ingest.tree, filename);

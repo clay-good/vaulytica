@@ -7,7 +7,8 @@
     "fixlist_md": "158103a36d61f989b932ebe0761c8e76e278eeaa5fa1d1e24aee2d08364531c8",
     "fixlist_csv": "d9ff0b9a96f1e3c9b65a6f787518af6ba4f298639453f13cff57d5dc91572139",
     "obligations_csv": "5c1c1affaf1ece09667608d539cfe02289f4002c73f8292cf13636f0522aabf9",
-    "deadlines_ics": "b2a113c497ad65bb95b7787bc7c0e02bfebddb980864fc007399c2379ed786a4"
+    "deadlines_ics": "b2a113c497ad65bb95b7787bc7c0e02bfebddb980864fc007399c2379ed786a4",
+    "docx_document_xml": "771e825d9d56ed2d65a4cccbef1eef5d68f1df16d27d20ff28be03537e1c7dfd"
   },
   "msa-customer-side.txt": {
     "result_hash": "4503d08c48f5bcb13fab59fc54932edb8aca4b7374ab0fed91679d907cc1ab96",
@@ -17,6 +18,7 @@
     "fixlist_md": "d920783b1dbfe39d3e9b09e7c0f02c3e3658be9f1c6cdb31921792646aaf418b",
     "fixlist_csv": "cffdf8ca80902561bbe6b730332aafd3e04449f026865c5f39073012ae1a7245",
     "obligations_csv": "1f1a7bb49d2e79d9bc13d8973033523664f56d199f88b0a5d2ac92c2cd76ee98",
-    "deadlines_ics": "443d8cb6693127a807b004692f10ef10fb2aa866474c2b950b9ae0c769792aba"
+    "deadlines_ics": "443d8cb6693127a807b004692f10ef10fb2aa866474c2b950b9ae0c769792aba",
+    "docx_document_xml": "4bed96e65bcf9f1dc2ccb2587eb4d28f020cf4967f3716ce97025183780ae1cb"
   }
 }

@@ -12,11 +12,26 @@
  * digest that moves is either a deliberate render change — regenerate — or a
  * machine-dependent byte, which is the defect this exists to catch.
  *
- * 🚨 The DOCX is deliberately absent. The `docx` library assigns hyperlink
- * relationship ids with `nanoid()`, so its bytes differ on every render on one
- * machine, let alone across three; that exception is declared and normalized in
- * `report-reproducibility.test.ts`, which is where the DOCX is checked. A digest
- * here would fail everywhere and teach nobody anything.
+ * `pin-the-docx-report` tasks 1, 4 and 5.
+ *
+ * 🚨 The DOCX used to be absent, and the stated reason was HALF true. The
+ * `docx` library does assign hyperlink relationship ids with `nanoid()`, so the
+ * raw bytes differ on every render — but `report-reproducibility.test.ts` had
+ * already solved that, normalizing the ids and comparing `word/document.xml`.
+ * What it compares is render A against render B of the SAME code, which proves
+ * DETERMINISM and pins no CONTENT: change a column header and both renders
+ * change together, and it stays green.
+ *
+ * So nothing pinned the DOCX's content, and that is how the Jurisdictions
+ * table shipped with every id cell reading "—". `docx.test.ts` asserts
+ * `blob.size` and nothing about the text, and a dash is the same number of
+ * bytes as an id. `docx_document_xml` below closes it, over the same
+ * normalized part, shared from `_docx-part.ts` so the two guards cannot drift
+ * to two spellings of one exception.
+ *
+ * ⚠️ What this still does NOT pin: the zip container. Per-entry metadata and
+ * `docProps/core.xml`'s creation stamp are outside the document part, so a
+ * change to how the archive itself is assembled would not show up here.
  *
  * Regeneration: `VAULYTICA_REGEN_GOLDEN=1 vitest run tests/golden/artifact-digests.test.ts`.
  * Regenerate on a version bump (the engine version is stamped into every
@@ -43,6 +58,9 @@ import { sha256Hex } from "../../src/ingest/hash.js";
 import { buildJsonReport } from "../../src/report/json.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildSarif } from "../../src/report/sarif.js";
+import { renderDocxReport } from "../../tools/cli/artifacts.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
+import { docxDocumentPartDigest } from "../integration/_docx-part.js";
 import {
   buildFixListMarkdown,
   buildFixListCsv,
@@ -66,7 +84,10 @@ async function digests(name: string): Promise<Record<string, string>> {
     deps,
     secondaryFamilies: true,
   });
-  const extracted = extractAll(r.ingest.tree);
+  // The lookup, because this harness RENDERS WHAT IS PINNED. A pinned
+  // artifact built from an `extracted` the product never produces enshrines
+  // something no user sees — which is precisely what the dash column was.
+  const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
   const artifacts: Record<string, string> = {
     json: await buildJsonReport(r.run, r.ingest, r.playbook).text(),
     html: buildHtmlReport(r.run, r.ingest, deps.dkb, r.playbook),
@@ -78,6 +99,21 @@ async function digests(name: string): Promise<Record<string, string>> {
   };
   const out: Record<string, string> = { result_hash: r.run.result_hash };
   for (const [k, v] of Object.entries(artifacts)) out[k] = await sha256Hex(v);
+
+  // The DOCX, via its normalized document part rather than its zip bytes.
+  // `docxDocumentPartDigest` throws if the part comes back implausibly small,
+  // so a broken unzip or an over-eager normalization fails loudly instead of
+  // digesting an empty string identically on all three machines.
+  //
+  // 🚨 Rendered through the CLI's OWN `renderDocxReport`, not by calling
+  // `buildDocxReport` here. The first draft of this did the latter and passed
+  // six of the builder's nine arguments — which produced a report 8 KB SHORTER
+  // than the one the CLI writes, missing the secondary families and the
+  // related-documents block. It would have pinned a document no user ever
+  // receives, which is the same mistake as building `extracted` without the
+  // product's options, one layer up. Calling the real renderer is also the only
+  // version that cannot drift from it.
+  out.docx_document_xml = await docxDocumentPartDigest(await renderDocxReport(r, deps.dkb));
   return out;
 }
 
@@ -100,6 +136,8 @@ describe("every text artifact is byte-identical on any machine", () => {
     expect(Object.keys(got)).toEqual(FIXTURES);
     for (const f of FIXTURES) {
       expect(Object.keys(got[f]!).length).toBeGreaterThan(6);
+      // Named explicitly: a renamed key would otherwise pass the count.
+      expect(Object.keys(got[f]!)).toContain("docx_document_xml");
     }
     expect(got).toEqual(expected);
   }, 300_000);

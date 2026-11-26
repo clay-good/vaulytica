@@ -112,6 +112,7 @@ import { nonAdviceStatement } from "../../src/report/disclaimers.js";
 import { sha256Hex } from "../../src/ingest/hash.js";
 import { ENGINE_VERSION } from "../../src/engine/runner.js";
 import { buildTriage, type Triage } from "./triage.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 export { FolderTooLargeError };
 export type { ConsistencyRun };
@@ -401,7 +402,7 @@ async function applyAssertedPacks(
     // The register reads only dates/definitions/obligations, so a classifier-
     // free re-extract suffices; outside `run.result_hash`. A `--deadline-profile`
     // implies the register (it is what the profile resolves).
-    const extracted = extractAll(ingest.tree);
+    const extracted = extractAll(ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
     const register = await buildCriticalDates(extracted, ingest.tree, opts.deadline);
     if (register.register.length > 0) out.critical_dates = register;
   }
@@ -420,7 +421,7 @@ async function applyAssertedPacks(
   // custom playbook's `negotiation_positions` (the posture only — the playbook's
   // custom rules are not merged into the run in this pass).
   if (opts.posture && opts.customPlaybook?.negotiation_positions?.length) {
-    const extracted = extractAll(ingest.tree);
+    const extracted = extractAll(ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
     let positions = opts.customPlaybook.negotiation_positions;
     // add-negotiation-ladder-playbooks — when the caller left size_bands
     // unresolved (no explicit `--deal-value`), resolve them from the document's
@@ -776,7 +777,7 @@ export async function checkConsistency(
       source_file_name: basename(d.file),
       playbook_id: d.result.playbook_id,
       tree: d.result.ingest.tree,
-      extracted: extractAll(d.result.ingest.tree),
+      extracted: extractAll(d.result.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
     })),
     dkb: deps.dkb,
   });
@@ -1068,7 +1069,10 @@ export async function exportArtifacts(
     criticalDates: wants("dates-"),
   });
   const definitions = formats.includes("definitions-csv")
-    ? await buildDefinitionsReport(extractAll(r.ingest.tree), r.ingest.tree)
+    ? await buildDefinitionsReport(
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
+        r.ingest.tree,
+      )
     : undefined;
   const nothing: Partial<Record<ExportFormat, string>> = {
     ...(r.closing_checklist

@@ -365,6 +365,7 @@ import {
   renderCoherenceMovementSummary,
 } from "../../src/report/coherence-movement.js";
 import { jsonKindOf, wrongKindOfJson, READ_BY, WRITTEN_BY } from "./json-kind.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 const SEVERITY_RANK: Record<Severity, number> = { critical: 0, warning: 1, info: 2 };
 
@@ -1466,7 +1467,7 @@ async function analyzeTarget(
     // Only when the caller asserted a bundle: a single input has nothing to be
     // consistent WITH, and the extra `extractAll` is not free.
     if (wantsConsistency && inputs.length >= 2) {
-      const extracted = extractAll(r.ingest.tree);
+      const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
       consistencyDocs.push({
         doc_id: documentLabel(label(file), labels),
         source_file_name: basename(file),
@@ -1604,7 +1605,10 @@ async function analyzeTarget(
     // check runs before the re-extraction so a document with no overlay family
     // pays nothing.
     if (overlayFamilyForPlaybook(r.playbook_id)) {
-      const overlays = selectStateOverlays(r.playbook_id, extractAll(r.ingest.tree).jurisdictions);
+      const overlays = selectStateOverlays(
+        r.playbook_id,
+        extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }).jurisdictions,
+      );
       for (const o of overlays?.matched ?? []) {
         human(`  ${o.state_name}: ${o.headline} — ${o.recommendation} (${o.citation.source})\n`);
       }
@@ -1645,7 +1649,10 @@ async function analyzeTarget(
     // add-defined-terms-report — projection over a classifier-free
     // re-extract (definitions don't need the classifier), outside the run.
     const definitions = args.definitions
-      ? await buildDefinitionsReport(extractAll(r.ingest.tree), r.ingest.tree)
+      ? await buildDefinitionsReport(
+          extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }),
+          r.ingest.tree,
+        )
       : undefined;
 
     for (const fmt of args.formats) {

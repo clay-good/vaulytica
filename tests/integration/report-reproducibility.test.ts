@@ -37,6 +37,8 @@ import { buildJsonReport } from "../../src/report/json.js";
 import { buildHtmlReport } from "../../src/report/html.js";
 import { buildSarif } from "../../src/report/sarif.js";
 import { buildDocxReport } from "../../src/report/docx.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
+import { docxDocumentPart, MIN_DOCUMENT_PART_CHARS } from "./_docx-part.js";
 import {
   buildFixListMarkdown,
   buildFixListCsv,
@@ -47,20 +49,15 @@ import {
 const DOC = join(process.cwd(), "tests", "fixtures", "specimens", "mutual-nda-letter.txt");
 
 /**
- * The ONE declared exception, with its cause.
- *
- * `docx` generates each hyperlink's relationship id with `nanoid()`
- * (`uniqueId = () => nanoid().toLowerCase()` in the shipped bundle), so every
- * citation link in a fresh render carries a fresh `r:id`. Nothing in the
- * library's public API takes a seed or a counter. Normalized here, and ONLY
- * here — the rest of the document part still has to match exactly.
+ * The declared exception and the part extraction now live in
+ * `_docx-part.ts`, shared with `tests/golden/artifact-digests.test.ts`, which
+ * pins this same part's digest. One artifact, one exception, one spelling.
  */
-const DOCX_RANDOM_REL_IDS = /r:id="rId[A-Za-z0-9_-]+"/g;
 
 async function renderAll(): Promise<Record<string, string>> {
   const deps = await loadAccuracyDeps();
   const r = await analyzeFile(DOC, { deps, secondaryFamilies: true });
-  const extracted = extractAll(r.ingest.tree);
+  const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
   const docx = Buffer.from(
     await (await buildDocxReport(r.run, r.ingest, deps.dkb, r.playbook)).arrayBuffer(),
   ).toString("base64");
@@ -92,7 +89,7 @@ async function renderBundleTwice(): Promise<[Record<string, string>, Record<stri
       const r = await analyzeFile(join(process.cwd(), "tests", "fixtures", "specimens", f), {
         deps,
       });
-      const extracted = extractAll(r.ingest.tree);
+      const extracted = extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId });
       docs.push({ doc_id: f, source_file_name: f, run: r.run, extracted, ingest: r.ingest });
       cdocs.push({
         doc_id: f,
@@ -138,16 +135,12 @@ describe("two renders of the same document produce the same artifacts", () => {
     const [a, b] = [await renderAll(), await renderAll()];
     // The zip's compressed bytes are not comparable directly; compare the
     // uncompressed document part, which is where any real drift would show.
-    const { unzipSync, strFromU8 } = await import("fflate");
-    const part = (s: string): string =>
-      strFromU8(unzipSync(new Uint8Array(Buffer.from(s, "base64")))["word/document.xml"]!).replace(
-        DOCX_RANDOM_REL_IDS,
-        'r:id="rIdN"',
-      );
-    const pa = part(a.docx!);
+    const part = (s: string): Promise<string> =>
+      docxDocumentPart(new Uint8Array(Buffer.from(s, "base64")));
+    const pa = await part(a.docx!);
     // Guard the normalization: if it ate the document the compare is vacuous.
-    expect(pa.length).toBeGreaterThan(100_000);
-    expect(pa).toBe(part(b.docx!));
+    expect(pa.length).toBeGreaterThan(MIN_DOCUMENT_PART_CHARS);
+    expect(pa).toBe(await part(b.docx!));
   }, 300_000);
 
   /**

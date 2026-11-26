@@ -26,6 +26,7 @@ import { titleCorpus } from "../playbooks/matcher.js";
 import { resolveAnchors } from "./critical-dates.js";
 import { ABSTRACT_STATEMENT } from "./disclaimers.js";
 import { csvField } from "./exports.js";
+import { resolveJurisdictionId } from "../dkb/jurisdiction-ids.js";
 
 /** One cell: the value as the document states it, and where it was read. */
 export type AbstractCell = { value: string; section?: string };
@@ -90,7 +91,8 @@ export async function buildDocumentAbstract(input: {
   extracted?: ExtractedData;
 }): Promise<DocumentAbstract> {
   const { tree, run } = input;
-  const extracted = input.extracted ?? extractAll(tree);
+  const extracted =
+    input.extracted ?? extractAll(tree, { jurisdictionLookup: resolveJurisdictionId });
   const labelOf = sectionLabels(tree);
   const clauseOf = clauseNumbers(tree);
   // Where a cell was read: the section's heading when the document has one,

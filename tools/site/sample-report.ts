@@ -24,6 +24,7 @@ import {
   type ResultsModel,
 } from "../../src/ui/results-page.js";
 import { ORIGIN } from "./seo-pages.js";
+import { resolveJurisdictionId } from "../../src/dkb/jurisdiction-ids.js";
 
 /** The fixture the sample is built from, and the name it is shown under. */
 export const SAMPLE_SOURCE = "tests/fixtures/contracts/bad-nda.docx";
@@ -91,7 +92,10 @@ export async function writeSampleReport(root: string, outFile: string): Promise<
     run: r.run,
     abstract: await abstractOf(SAMPLE_NAME, r),
     delivery: r.delivery?.findings,
-    isSigner: signerTest(r.ingest.tree, extractAll(r.ingest.tree).parties),
+    isSigner: signerTest(
+      r.ingest.tree,
+      extractAll(r.ingest.tree, { jurisdictionLookup: resolveJurisdictionId }).parties,
+    ),
     reportUrl: (f) => reportLinkForFinding(r.run, f),
   });
   const page = `<!doctype html>
