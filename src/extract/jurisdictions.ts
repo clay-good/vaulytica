@@ -6,11 +6,20 @@ import { forEachParagraph, posInParagraph } from "./walk.js";
 /**
  * Extract governing-law, venue, and arbitration-seat references.
  *
- * The DKB jurisdiction table is consulted for normalization, but it is
- * passed in by the caller (so this extractor stays a pure function over
- * `(tree, dkbLookup)`). When no DKB is available — for example during the
- * very first prototype runs before the DKB scaffolding lands — pass an
- * empty function and `jurisdiction_id` will be `undefined` everywhere.
+ * Normalization is passed in by the caller, so this extractor stays a pure
+ * function over `(tree, lookup)`. The product supplies
+ * `resolveJurisdictionId` at both pipeline call sites
+ * (`wire-jurisdiction-id-resolution`); a caller that omits it gets
+ * `jurisdiction_id: undefined` on every entry.
+ *
+ * 🚨 That default is not a harmless convenience. For most of this tool's life
+ * NO caller passed a lookup, so the field was empty in everything the product
+ * shipped: a report column that always printed a dash, a playbook predicate
+ * documented to accept DKB ids that could never match one, and three separate
+ * re-implementations of this normalization in the consumers that gave up on
+ * reading it. An optional parameter nobody passes does not fail; it answers
+ * "unknown" forever. `tests/integration/jurisdiction-id-reach.test.ts` is what
+ * now keeps it supplied.
  */
 
 /**

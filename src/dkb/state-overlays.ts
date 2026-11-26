@@ -40,6 +40,7 @@ import { z } from "zod";
 import type { SourceCitation } from "./types.js";
 import type { Severity } from "../engine/finding.js";
 import type { JurisdictionReference } from "../extract/types.js";
+import { resolveJurisdictionId } from "./jurisdiction-ids.js";
 
 /** ISO 8601 date the public statutes below were last checked. A fixed
  * constant (never wall-clock) so the catalog and every report that embeds it
@@ -1118,89 +1119,19 @@ export function overlayFamilyForPlaybook(playbookId: string): OverlayFamily | un
 }
 
 /**
- * Normalize a governing-law `raw_text` (e.g. "State of California",
- * "Commonwealth of Massachusetts", "New York") to a `us-XX` jurisdiction id.
- * Runtime extraction does not populate `jurisdiction_id` (no DKB lookup is
- * passed), so this map is the resolver. Unknown states return `undefined` —
- * the honest-N/A path.
- */
-const STATE_NAME_TO_ID: ReadonlyMap<string, string> = new Map(
-  (
-    [
-      ["alabama", "al"],
-      ["alaska", "ak"],
-      ["arizona", "az"],
-      ["arkansas", "ar"],
-      ["california", "ca"],
-      ["colorado", "co"],
-      ["connecticut", "ct"],
-      ["delaware", "de"],
-      ["district of columbia", "dc"],
-      ["florida", "fl"],
-      ["georgia", "ga"],
-      ["hawaii", "hi"],
-      ["idaho", "id"],
-      ["illinois", "il"],
-      ["indiana", "in"],
-      ["iowa", "ia"],
-      ["kansas", "ks"],
-      ["kentucky", "ky"],
-      ["louisiana", "la"],
-      ["maine", "me"],
-      ["maryland", "md"],
-      ["massachusetts", "ma"],
-      ["michigan", "mi"],
-      ["minnesota", "mn"],
-      ["mississippi", "ms"],
-      ["missouri", "mo"],
-      ["montana", "mt"],
-      ["nebraska", "ne"],
-      ["nevada", "nv"],
-      ["new hampshire", "nh"],
-      ["new jersey", "nj"],
-      ["new mexico", "nm"],
-      ["new york", "ny"],
-      ["north carolina", "nc"],
-      ["north dakota", "nd"],
-      ["ohio", "oh"],
-      ["oklahoma", "ok"],
-      ["oregon", "or"],
-      ["pennsylvania", "pa"],
-      ["rhode island", "ri"],
-      ["south carolina", "sc"],
-      ["south dakota", "sd"],
-      ["tennessee", "tn"],
-      ["texas", "tx"],
-      ["utah", "ut"],
-      ["vermont", "vt"],
-      ["virginia", "va"],
-      ["washington", "wa"],
-      ["west virginia", "wv"],
-      ["wisconsin", "wi"],
-      ["wyoming", "wy"],
-    ] as const
-  ).map(([name, abbr]) => [name, `us-${abbr}`]),
-);
-
-/**
- * Resolve a `JurisdictionReference` to a `us-XX` id. Prefers an already-
- * normalized `jurisdiction_id` (when a DKB lookup was supplied), else
- * normalizes the raw text. The raw text may carry leading articles
- * ("the State of ...") which the governing-law extractor already strips, but
- * we defensively trim a trailing "law"/"laws" and surrounding whitespace.
+ * Resolve a `JurisdictionReference` to a `us-XX` id.
+ *
+ * Prefers the `jurisdiction_id` the extractor filled in, and falls back to
+ * resolving the raw text with the same resolver. The fallback is not
+ * redundant: the field is absent on a reference built by a caller that does
+ * not pass the lookup (every unit test that calls `extractAll(tree)` bare),
+ * and the overlay must still select correctly for those.
  */
 function jurisdictionIdOf(ref: JurisdictionReference): string | undefined {
   if (ref.jurisdiction_id && /^us-[a-z]{2}$/.test(ref.jurisdiction_id)) {
     return ref.jurisdiction_id;
   }
-  const cleaned = ref.raw_text
-    .toLowerCase()
-    .replace(/\b(the\s+)?(state|commonwealth)\s+of\s+/g, "")
-    .replace(/\s+laws?$/, "")
-    .replace(/[^a-z\s]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-  return STATE_NAME_TO_ID.get(cleaned);
+  return resolveJurisdictionId(ref.raw_text);
 }
 
 const BY_FAMILY_STATE: ReadonlyMap<string, StateOverlay> = (() => {

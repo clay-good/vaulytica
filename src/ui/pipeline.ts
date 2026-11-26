@@ -250,6 +250,7 @@ import {
   type RenderedResults,
 } from "./results-page.js";
 import { nearMissOf } from "../playbooks/types.js";
+import { resolveJurisdictionId } from "../dkb/jurisdiction-ids.js";
 
 export type PipelineProgress = {
   /** Fraction in [0, 1] after each rule completes. */
@@ -627,6 +628,7 @@ export async function prepareDocument(
 
   const extracted = extractAll(ingest.tree, {
     classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+    jurisdictionLookup: resolveJurisdictionId,
   });
 
   const playbookBase = config.playbook_base ?? DEFAULT_PLAYBOOK_BASE;
@@ -1596,6 +1598,7 @@ export async function prepareBundle(
 
     const extracted = extractAll(ingest.tree, {
       classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
+      jurisdictionLookup: resolveJurisdictionId,
     });
 
     // Walk body text the same way the single-doc pipeline does so the

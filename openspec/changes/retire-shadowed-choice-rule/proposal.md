@@ -37,7 +37,8 @@ product's way of saying "checked, and clean."
   log, 17 are identical once hashes are stripped, and the 10 changed keys in
   `artifact-digests.json` are all digests of artifacts that embed the hash. **No finding changed
   anywhere** — which is provable a priori, since the rule never produced one.
-- Not in scope, and worth its own change: `jurisdiction_id` is dead product-wide. Nothing supplies
-  `jurisdictionLookup`, so the id branches in `CHOICE-004` and the extractor's seven `lookup(raw)`
-  call sites are unreachable, and comments describing id-preferring comparison describe behaviour
-  that never happens. Wiring the DKB lookup would change routing and findings, not just hashes.
+- Done, in `wire-jurisdiction-id-resolution`. `jurisdiction_id` was dead product-wide: nothing
+  supplied `jurisdictionLookup`, so the id branches in `CHOICE-004` and the extractor's seven
+  `lookup(raw)` call sites were unreachable. ⚠️ The cost was stated here as "would change routing
+  and findings, not just hashes" — **measured, that was wrong: it moves no finding on any of the
+  377 committed documents.** Predicting a blast radius is not measuring one.

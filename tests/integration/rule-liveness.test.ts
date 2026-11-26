@@ -134,12 +134,19 @@ const EXPECTED_PACK_RULES = 27;
  *   rule change. Any fixture where the first venue already mismatches makes
  *   004 fire and shadows 012 again, which is why it needs a document of its own.
  *
- *   CHOICE-009 is dead, and for a stronger reason than shadowing: no caller in
- *   the product ever passes `jurisdictionLookup` to `extractAll`, so
- *   `lookup` is always the default `() => undefined` and `jurisdiction_id` is
- *   undefined on every entry the extractor produces. With no ids, CHOICE-009's
- *   `same` reduces to a case-insensitive raw-text compare — exactly CHOICE-004's
- *   own test, which runs first. It was retired rather than ledgered.
+ *   CHOICE-009 was dead, and for a stronger reason than shadowing: at the time
+ *   no caller in the product passed `jurisdictionLookup` to `extractAll`, so
+ *   `lookup` was always the default `() => undefined` and `jurisdiction_id` was
+ *   undefined on every entry the extractor produced. With no ids, CHOICE-009's
+ *   `same` reduced to a case-insensitive raw-text compare — exactly
+ *   CHOICE-004's own test, which runs first. It was retired rather than
+ *   ledgered.
+ *
+ *   The lookup is wired now (`wire-jurisdiction-id-resolution`), which does not
+ *   revive CHOICE-009: measured across these same documents, 147 of the 149
+ *   that carry both clauses have identical `raw_text` on the two, so the id
+ *   comparison is never what decides. Retiring it remains correct, and the
+ *   reason it was dead has been removed rather than left as a trap.
  *
  * Had the ledger let either entry carry its reason, "shadowed by CHOICE-004"
  * would have read as settled for both, and the fixture that disproved it for

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import type { DKB } from "../dkb/types.js";
 import { buildTree } from "../extract/_fixtures.js";
 import { extractAll } from "../extract/index.js";
+import { resolveJurisdictionId } from "../dkb/jurisdiction-ids.js";
 import type { RuleContext, Playbook } from "./finding.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -43,6 +44,13 @@ export const GENERIC_PLAYBOOK: Playbook = {
 export function buildContext(...sections: [string, ...string[]][]): RuleContext {
   const tree = buildTree(...sections);
   const extracted = extractAll(tree, {
+    // The product's own pipelines pass this (`wire-jurisdiction-id-resolution`).
+    // 🚨 A harness that builds contexts differently from the product grades the
+    // engine on inputs the engine never sees — s35, where the accuracy harness
+    // routed 78 of 312 specimens differently from the product. Rules that read
+    // `jurisdiction_id` would have been unit-tested against `undefined` forever
+    // while the shipped pipeline filled it in.
+    jurisdictionLookup: resolveJurisdictionId,
     classifier: {
       vocab: { vocab: {} },
       patterns: loadStarterDkbSync().classifier.patterns.map((p) => ({

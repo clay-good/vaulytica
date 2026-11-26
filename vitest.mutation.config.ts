@@ -96,6 +96,14 @@ export default defineConfig({
       // Covers both delivery modules: `delivery.test.ts` is the suite for the
       // scanner AND the masking helpers (its "masking helpers" describe block).
       "src/delivery/delivery.test.ts",
+      // The shared jurisdiction resolver's suite. It is here because its
+      // drift guard imports `US_STATE_PATTERN` from the mutated
+      // `src/extract/jurisdictions.ts` — deliberately, so the extractor's
+      // state list and the resolver's cannot drift to two spellings of the
+      // same set. Same reason as `CURRENCY_GLYPHS` above, but unlike the
+      // corpus relations this is a 2ms unit suite, so it belongs IN the
+      // per-mutant run and its kills count.
+      "src/dkb/jurisdiction-ids.test.ts",
       "src/extract/amount-postfix-currency.test.ts",
       "src/extract/amounts.test.ts",
       "src/extract/arbitration-seat-phrasing.test.ts",

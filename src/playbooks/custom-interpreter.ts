@@ -557,10 +557,19 @@ function evaluatePredicate(
     case "governing_law_in": {
       const gov = facts.extracted.jurisdictions.filter((j) => j.clause_kind === "governing-law");
       // A governing-law reference is usable if it carries either a resolved
-      // DKB id or a non-empty raw jurisdiction name. `jurisdiction_id` is only
-      // populated when a DKB lookup is wired (the live pipeline does not wire
-      // one), so matching on raw_text too keeps the predicate usable: authors
-      // write `allowed: ["Delaware", "New York"]` (names) or DKB ids.
+      // DKB id or a non-empty raw jurisdiction name. Both matter: the product
+      // pipeline fills `jurisdiction_id` for the 50 states and DC
+      // (`wire-jurisdiction-id-resolution`), and leaves it absent for every
+      // other jurisdiction — "England and Wales", "Ireland", or a clause that
+      // states a formula instead of a place. So authors may write
+      // `allowed: ["Delaware", "New York"]` (names) or `["us-de", "us-ny"]`
+      // (DKB ids), and both resolve.
+      //
+      // 🚨 The id half of this comparison was unreachable until the lookup was
+      // wired, which made `allowed: ["us-de"]` match nothing and report a
+      // Delaware-law document VIOLATED. The comment above promised a form the
+      // code could not deliver, and every unit test here supplied
+      // `jurisdiction_id` by hand, so nothing disagreed.
       const usable = gov.filter((g) => g.jurisdiction_id || norm(g.raw_text));
       if (usable.length === 0) {
         return {
