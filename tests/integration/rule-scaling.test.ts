@@ -163,18 +163,39 @@ const RESOLUTION_MS = 1;
  * larger ratio honestly earned if it truly is super-linear, and no accusation
  * at all when the reading was simply noise.
  */
-function measuredThunk(run: () => void): number {
-  const once = cpuMs(run);
+/**
+ * The amplifier's DECISION, with no clock in it.
+ *
+ * 🚨 Split out because the first version of this fix tested the amplifier by
+ * timing a real workload, and that test passed here and FAILED ON CI:
+ * `"ab".repeat(20_000).replace(/a/g, "b")` costs 0.283 ms on this machine, so
+ * it took the amplification branch, and 2.197 ms on the deploy runner, so it
+ * did not — `expected 2.197 to be less than 1`. **I pinned a property of my
+ * laptop and called it a property of the amplifier**, inside the very change
+ * that exists because a timing assertion read a slow machine as a defect. The
+ * rule in `verification-gate` is absolute for a reason: never assert a
+ * wall-clock number measured on a laptop against this CI.
+ *
+ * So the policy is pure and the clock lives in the caller. `sample(reps)` is
+ * the only thing that touches time, and the tests below inject it.
+ */
+function amplified(once: number, sample: (reps: number) => number): number {
   if (once >= RESOLUTION_MS) return once;
   for (const reps of [16, 64, 256]) {
-    const t0 = performance.now();
-    for (let i = 0; i < reps; i++) run();
-    const total = performance.now() - t0;
+    const total = sample(reps);
     if (total >= RESOLUTION_MS * 10) return total / reps;
   }
   // Still unmeasurable after 256 repetitions: genuinely free at this size, and
   // a quotient over it would be meaningless either way.
   return Number.NaN;
+}
+
+function measuredThunk(run: () => void): number {
+  return amplified(cpuMs(run), (reps) => {
+    const t0 = performance.now();
+    for (let i = 0; i < reps; i++) run();
+    return performance.now() - t0;
+  });
 }
 
 function measuredSmall(rule: Rule, ctx: ReturnType<typeof buildContext>): number {
@@ -282,42 +303,53 @@ describe("the v3 extractors are linear on a long run of one character", () => {
  * coarse CPU timer and a false accusation.
  */
 describe("the sub-resolution denominator is amplified, not fabricated", () => {
-  it("returns a real, small number for work too fast to time ONCE", () => {
-    // ⚠️ The workload here is MEASURED, not guessed. Two earlier drafts of this
-    // test asserted a finite result for work that is free even at 256
-    // repetitions and failed — which is the amplifier behaving correctly. The
-    // readings on this machine: an increment 0.011 ms once and NaN amplified; a
-    // 2,000-char replace 0.067 ms and still NaN (the loop JITs faster than a
-    // single call suggests); a 20,000-char replace 0.283 ms once, under the
-    // 1 ms floor, amplifying to a real 0.275 ms. That last one is the regime
-    // this is about, so it is the one used.
-    const t = measuredThunk(() => {
-      "ab".repeat(20_000).replace(/a/g, "b");
-    });
-    expect(Number.isFinite(t)).toBe(true);
-    expect(t).toBeGreaterThan(0);
+  // Every reading below is INJECTED. These assertions hold on a fast laptop and
+  // on a loaded Windows runner alike, which is the whole point — the thing being
+  // tested is the policy, and the policy has no clock in it.
+
+  it("returns a measurable single shot untouched, without sampling at all", () => {
+    let sampled = 0;
+    expect(
+      amplified(2.197, (reps) => {
+        sampled += reps;
+        return 999;
+      }),
+    ).toBe(2.197);
+    // 2.197 ms is the reading that failed on the deploy runner. A sample taken
+    // here would be wasted work and, worse, could override a real measurement.
+    expect(sampled).toBe(0);
+  });
+
+  it("amplifies a sub-resolution reading into a real, small denominator", () => {
+    // 0.05 ms per call: 16 and 64 reps stay under the 10 ms total, 256 clears
+    // it, and the answer divides back to the per-call cost.
+    const t = amplified(0.05, (reps) => reps * 0.05);
+    expect(t).toBeCloseTo(0.05, 6);
     expect(t).toBeLessThan(RESOLUTION_MS);
   });
 
-  it("returns NaN for work that is free even amplified, and accuses nobody", () => {
-    // ⚠️ My first draft of the test above asserted a finite number for `n += 1`
-    // and failed: an increment is free even at 256 repetitions, so the
-    // amplifier correctly gives up. That is the point — NaN declines to judge,
-    // where the old `Math.max(t, 5)` would have invented a denominator.
-    let n = 0;
-    const t = measuredThunk(() => {
-      n += 1;
+  it("stops at the first reps count that clears the floor", () => {
+    const seen: number[] = [];
+    const t = amplified(0, (reps) => {
+      seen.push(reps);
+      return reps * 1;
     });
-    expect(n).toBeGreaterThan(256);
-    expect(Number.isNaN(t)).toBe(true);
-    expect(Number.isFinite(t) && 172 / t > 25).toBe(false);
+    expect(seen).toEqual([16]);
+    expect(t).toBe(1);
   });
 
-  it("never returns the 5 ms floor that produced the Windows verdict", () => {
-    // `superLinear` is still used by the recorded verdicts below; what must not
-    // happen is a LIVE comparison dividing by its floor. With an amplified
-    // denominator of ~0.001 ms the ratio is large but the numerator is tiny, so
-    // the `b2 > 150` arm is what (correctly) withholds the accusation.
+  it("returns NaN for work that is free even amplified, and accuses nobody", () => {
+    const seen: number[] = [];
+    const t = amplified(0, (reps) => {
+      seen.push(reps);
+      return 0;
+    });
+    expect(seen).toEqual([16, 64, 256]);
+    expect(Number.isNaN(t)).toBe(true);
+    expect(accuses(t, 172)).toBe(false);
+  });
+
+  it("never hands the verdict a zero or the 5 ms floor", () => {
     // The pre-filter still accuses on the fabricated denominator — that is what
     // it did on Windows twice — and the live verdict does not.
     expect(superLinear(0, 172)).toBe(true);
@@ -337,6 +369,17 @@ describe("the sub-resolution denominator is amplified, not fabricated", () => {
     // that one IS super-linear. The floor's harm is upward, never downward.
     expect(accuses(0.01, 160)).toBe(true);
     expect(accuses(0.1, 42)).toBe(false);
+  });
+
+  it("is wired to a real clock, which is all the live path needs from it", () => {
+    // The ONE assertion here that touches time, and it asserts no duration:
+    // only that the plumbing returns something the verdict can use on any
+    // machine — a positive number or NaN, never zero.
+    const t = measuredThunk(() => {
+      "ab".repeat(20_000).replace(/a/g, "b");
+    });
+    expect(Number.isNaN(t) || t > 0).toBe(true);
+    expect(t).not.toBe(0);
   });
 });
 
