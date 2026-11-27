@@ -48,7 +48,7 @@ export { extractObligations } from "./obligations.js";
 export { extractPercentages } from "./percentages.js";
 export { extractJurisdictions } from "./jurisdictions.js";
 export type { DkbLookup } from "./jurisdictions.js";
-export { classifyClauses } from "./classifier.js";
+export { classifyClauses, detectableCategories } from "./classifier.js";
 export type { ClassifierData, ClassifierVocab, ClassifierPattern } from "./classifier.js";
 
 /**

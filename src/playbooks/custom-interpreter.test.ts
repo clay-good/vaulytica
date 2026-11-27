@@ -59,11 +59,27 @@ function pb(over: Partial<CustomPlaybook> = {}): CustomPlaybook {
   return v.playbook;
 }
 
+/**
+ * The classifier's live category set, as these unit tests assume it.
+ *
+ * `runCustomPlaybook` takes `detectable` as a REQUIRED argument so no caller
+ * can reintroduce the false-"missing" bug by omission; these predicate tests
+ * do not exercise that path, so they share one set and the tests that DO
+ * exercise it pass their own (the spread lets `input` win).
+ */
+const DETECTABLE: ReadonlySet<string> = new Set(["limitation-of-liability"]);
+
+const runPb = (
+  playbook: Parameters<typeof runCustomPlaybook>[0],
+  input: Omit<Parameters<typeof runCustomPlaybook>[1], "detectable"> &
+    Partial<Pick<Parameters<typeof runCustomPlaybook>[1], "detectable">>,
+) => runCustomPlaybook(playbook, { detectable: DETECTABLE, ...input });
+
 // --- predicate behavior -----------------------------------------------------
 
 describe("runCustomPlaybook — predicates", () => {
   it("defined_term_present fires when the term is undefined", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -83,7 +99,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("defined_term_present is compliant (no finding) when the term is defined", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -117,7 +133,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("clause_absent fires when the forbidden clause is present", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -139,7 +155,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("clause_present fires when a required clause is missing", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -157,7 +173,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("governing_law_in fires when the law is outside the allowed set", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -190,7 +206,7 @@ describe("runCustomPlaybook — predicates", () => {
   it("governing_law_in distinguishes 'West Virginia' from an allowed 'Virginia'", async () => {
     // Regression: naive substring containment matched "Virginia" against "West
     // Virginia" (a different state) and falsely PASSED a governing-law check.
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -219,7 +235,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("governing_law_in still matches a 'State of X' phrasing of an allowed name", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -248,7 +264,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("governing_law_in is unevaluable when no governing-law clause resolves", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -268,7 +284,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("cross_ref_resolves fires when an internal reference dangles", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -297,7 +313,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("numeric_threshold fires when a stated value breaks the assertion", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -324,7 +340,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("numeric_threshold is unevaluable when the metric is absent", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -351,7 +367,7 @@ describe("runCustomPlaybook — predicates", () => {
   });
 
   it("numeric_threshold is compliant when the stated value satisfies the assertion", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -455,7 +471,7 @@ describe("runCustomPlaybook — Thrust C numeric metrics", () => {
       // eq makes the assertion pass iff the extracted value is exactly c.expect:
       // a clean proof the extractor located the right number (compliant = found
       // and matched; a wrong/absent value would be a finding or unevaluable).
-      const run = await runCustomPlaybook(metricRule(c.metric, "eq", c.expect), {
+      const run = await runPb(metricRule(c.metric, "eq", c.expect), {
         tree: tree("Clause", c.body),
         extracted: emptyExtracted(),
       });
@@ -465,7 +481,7 @@ describe("runCustomPlaybook — Thrust C numeric metrics", () => {
   }
 
   it("a Thrust C metric is unevaluable when the document never states it", async () => {
-    const run = await runCustomPlaybook(metricRule("uptime_sla_percent", "gte", 99), {
+    const run = await runPb(metricRule("uptime_sla_percent", "gte", 99), {
       tree: tree("X", "This agreement says nothing about service availability."),
       extracted: emptyExtracted(),
     });
@@ -474,7 +490,7 @@ describe("runCustomPlaybook — Thrust C numeric metrics", () => {
   });
 
   it("a Thrust C metric fires a finding when the stated value breaks the assertion", async () => {
-    const run = await runCustomPlaybook(metricRule("uptime_sla_percent", "gte", 99.99), {
+    const run = await runPb(metricRule("uptime_sla_percent", "gte", 99.99), {
       tree: tree("SLA", "Provider guarantees uptime of 99.9% per month."),
       extracted: emptyExtracted(),
     });
@@ -485,7 +501,7 @@ describe("runCustomPlaybook — Thrust C numeric metrics", () => {
 
 describe("runCustomPlaybook — clause_mutual predicate", () => {
   it("is compliant when the clause carries mutuality language", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -510,7 +526,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   });
 
   it("fires when the clause is one-way", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -557,7 +573,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   };
 
   it("does not read a following clause's mutuality as this clause's", async () => {
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree("Terms", ONE_WAY_INDEMNITY + MUTUAL_CONFIDENTIALITY),
       extracted: emptyExtracted(),
     });
@@ -566,7 +582,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   });
 
   it("does not read a preceding clause's mutuality as this clause's", async () => {
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree("Terms", MUTUAL_CONFIDENTIALITY + " " + ONE_WAY_INDEMNITY),
       extracted: emptyExtracted(),
     });
@@ -575,7 +591,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
 
   it("still sees mutuality in the anchored clause's own sentence", async () => {
     // The clip must not swing the other way and accuse compliant drafting.
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree(
         "Terms",
         "Indemnification. Each party shall indemnify and hold harmless the other party from " +
@@ -593,7 +609,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
     // that mention truncated the clause before its own "shall be mutual … each
     // party" tail and accused compliant drafting of being one-way — the exact
     // opposite error, and the worse one.
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree(
         "Terms",
         "Indemnification. Client's indemnification obligations, including for any breach of " +
@@ -609,7 +625,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   it("does not treat a mid-sentence semicolon as a clause boundary", async () => {
     // A semicolon joining two halves of one sentence is not a new clause.
     // Clipping there cut the clause off before its own mutuality tail.
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree(
         "Terms",
         "Indemnification. The parties acknowledge that; termination of any related covenant " +
@@ -622,7 +638,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   });
 
   it("does not treat a list item as a clause boundary", async () => {
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree(
         "Terms",
         "Indemnification. The following survive termination: confidentiality; indemnification; " +
@@ -638,7 +654,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
     // drafting. A boundary check reading only the single preceding character
     // saw ")" and rejected it, so the two clauses bled together and the
     // one-way indemnity was reported mutual.
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree("Terms", "4) " + ONE_WAY_INDEMNITY + "5) " + MUTUAL_CONFIDENTIALITY),
       extracted: emptyExtracted(),
     });
@@ -647,7 +663,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   });
 
   it("does not mistake a sentence ending in the topic word for a heading", async () => {
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnityRule] }), {
+    const run = await runPb(pb({ custom_rules: [indemnityRule] }), {
       tree: tree(
         "Terms",
         "Indemnification. Neither party is released from its obligations of confidentiality. " +
@@ -659,7 +675,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   });
 
   it("is unevaluable when no clause of that category is present", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -678,7 +694,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   });
 
   it("honors an explicit pattern override for the clause location", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -706,7 +722,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   // section prefix. A mutual clause located past the cap was misread as one-way.
   it("finds mutuality in a clause located past the 480-char section prefix", async () => {
     const padding = "This agreement contains many recitals and definitions herein. ".repeat(9);
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -735,7 +751,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
   it("flags a one-way clause even when unrelated 'mutual' language precedes it", async () => {
     const preamble = "The parties acknowledge their mutual obligations of good faith. ";
     const padding = "Additional background terms and definitions follow here now. ".repeat(8);
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -764,7 +780,7 @@ describe("runCustomPlaybook — clause_mutual predicate", () => {
 
 describe("runCustomPlaybook — required_clauses + citation provenance", () => {
   it("required_clauses fires when a required category is not classified", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({ required_clauses: [{ category: "limitation-of-liability", severity: "critical" }] }),
       { tree: tree("X", "y"), extracted: emptyExtracted() },
     );
@@ -773,7 +789,7 @@ describe("runCustomPlaybook — required_clauses + citation provenance", () => {
   });
 
   it("marks a citationless rule uncited and a cited rule cited", async () => {
-    const run = await runCustomPlaybook(
+    const run = await runPb(
       pb({
         custom_rules: [
           {
@@ -824,8 +840,8 @@ describe("runCustomPlaybook — determinism", () => {
       ],
     });
     const input = { tree: tree("X", "binding arbitration"), extracted: emptyExtracted() };
-    const a = await runCustomPlaybook(playbook, input);
-    const b = await runCustomPlaybook(playbook, input);
+    const a = await runPb(playbook, input);
+    const b = await runPb(playbook, input);
     expect(a.result_hash).toBe(b.result_hash);
     expect(a.result_hash).toMatch(/^[0-9a-f]{64}$/);
   });
@@ -842,11 +858,11 @@ describe("runCustomPlaybook — determinism", () => {
         },
       ],
     });
-    const present = await runCustomPlaybook(playbook, {
+    const present = await runPb(playbook, {
       tree: tree("X", "binding arbitration"),
       extracted: emptyExtracted(),
     });
-    const absent = await runCustomPlaybook(playbook, {
+    const absent = await runPb(playbook, {
       tree: tree("X", "no such clause"),
       extracted: emptyExtracted(),
     });
@@ -900,7 +916,7 @@ describe("term_length_days — the instrument, not the obligation", () => {
   };
 
   async function term(body: string) {
-    return runCustomPlaybook(pb({ custom_rules: [TERM_RULE] }), {
+    return runPb(pb({ custom_rules: [TERM_RULE] }), {
       tree: tree("Term and Termination", body),
       extracted: emptyExtracted(),
     });
@@ -963,7 +979,7 @@ describe("notice_period_days — the plural possessive", () => {
   };
 
   async function notice(body: string) {
-    return runCustomPlaybook(pb({ custom_rules: [NOTICE_RULE] }), {
+    return runPb(pb({ custom_rules: [NOTICE_RULE] }), {
       tree: tree("Term and Termination", body),
       extracted: emptyExtracted(),
     });
@@ -997,7 +1013,7 @@ describe("liability_cap_multiple — a cap whose base is the fees", () => {
   };
 
   async function cap(body: string) {
-    return runCustomPlaybook(pb({ custom_rules: [CAP_RULE] }), {
+    return runPb(pb({ custom_rules: [CAP_RULE] }), {
       tree: tree("Limitation of Liability", body),
       extracted: emptyExtracted(),
     });
@@ -1313,7 +1329,7 @@ describe("result_hash covers the evidence, not just which rules fired", () => {
     } as Partial<CustomPlaybook>);
 
   const run = async (body: string) =>
-    runCustomPlaybook(arbitrationPlaybook(), {
+    runPb(arbitrationPlaybook(), {
       tree: tree("X", body),
       extracted: emptyExtracted(),
     });
@@ -1345,7 +1361,7 @@ describe("clause_mutual — a multi-word run-in heading is a clause boundary", (
   };
 
   const fires = async (body: string): Promise<number> => {
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnity] }), {
+    const run = await runPb(pb({ custom_rules: [indemnity] }), {
       tree: tree("Agreement", body),
       extracted: emptyExtracted(),
     });
@@ -1415,7 +1431,7 @@ describe("clause_mutual — capitalization separates a heading from a sentence",
   };
 
   const fires = async (body: string): Promise<number> => {
-    const run = await runCustomPlaybook(pb({ custom_rules: [indemnity] }), {
+    const run = await runPb(pb({ custom_rules: [indemnity] }), {
       tree: tree("Agreement", body),
       extracted: emptyExtracted(),
     });

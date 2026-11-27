@@ -27,6 +27,7 @@
 
 import type { DocumentTree } from "../ingest/types.js";
 import type { ExtractedData } from "../extract/types.js";
+import { detectableCategories } from "../extract/classifier.js";
 import type {
   EngineRun,
   Finding,
@@ -212,6 +213,13 @@ export async function runWithCustomPlaybook(
   const custom = await runCustomPlaybook(input.custom_playbook, {
     tree: input.tree,
     extracted: input.extracted,
+    // Read from the DKB this run loaded, the same two inputs the extraction's
+    // classifier read — never a list written here, which would drift from the
+    // artifact the moment a pattern is added.
+    detectable: detectableCategories({
+      vocab: { vocab: {} },
+      patterns: input.dkb.classifier.patterns,
+    }),
   });
 
   // Tag every built-in finding `catalog` (custom findings already carry

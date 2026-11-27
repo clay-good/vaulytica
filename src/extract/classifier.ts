@@ -99,6 +99,30 @@ export function classifyClauses(
   return out;
 }
 
+/**
+ * Every category {@link classifyClauses} can emit for this data, besides
+ * `"unclassified"`.
+ *
+ * Derived from the SAME two inputs the classifier reads — the pattern overlay
+ * and the TF-IDF vocab — so the two cannot drift. A caller that wants to know
+ * "could this document ever be labeled X?" must ask here rather than hard-code
+ * a list: the answer is a property of the loaded DKB, not of the source.
+ *
+ * 🚨 The product passes an empty vocab (`{ vocab: { vocab: {} }, patterns }`),
+ * so today this is the pattern categories alone — 21 of the 103 the DKB ships.
+ * That is deliberate and documented in
+ * `tests/integration/required-clauses-live.test.ts`; wiring the vocab was
+ * measured over the 363-specimen corpus and moved no route and no finding,
+ * while labeling 6,258 paragraphs instead of 645. Reading the live set from
+ * the data keeps this helper correct either way.
+ */
+export function detectableCategories(data: ClassifierData = {}): Set<string> {
+  const out = new Set<string>();
+  for (const p of data.patterns ?? []) out.add(p.category);
+  for (const cat of Object.keys(data.vocab?.vocab ?? {})) out.add(cat);
+  return out;
+}
+
 function compilePatterns(raw: ClassifierPattern[]): {
   category: string;
   re: RegExp;

@@ -19,6 +19,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { runFixture, listFixtures } from "./_pipeline-helpers.js";
 import { extractAll } from "../../src/extract/index.js";
+import { detectableCategories } from "../../src/extract/classifier.js";
 import { loadStarterDkbSync } from "../../src/engine/_test-fixtures.js";
 import {
   runCustomPlaybook,
@@ -251,11 +252,15 @@ describe("custom-playbook end-to-end harness over the fixture corpus", () => {
         classifier: { vocab: { vocab: {} }, patterns: dkb.classifier.patterns },
       });
       const playbook = playbookFor(fixture);
-      const run = await runCustomPlaybook(playbook, { tree: ingest.tree, extracted });
+      const detectable = detectableCategories({
+        vocab: { vocab: {} },
+        patterns: dkb.classifier.patterns,
+      });
+      const run = await runCustomPlaybook(playbook, { tree: ingest.tree, extracted, detectable });
       rows.push({ fixture, playbook: playbook.id, run });
 
       // Determinism: a second run is byte-identical.
-      const again = await runCustomPlaybook(playbook, { tree: ingest.tree, extracted });
+      const again = await runCustomPlaybook(playbook, { tree: ingest.tree, extracted, detectable });
       expect(again.result_hash).toBe(run.result_hash);
     }
 

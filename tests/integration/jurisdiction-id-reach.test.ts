@@ -36,6 +36,7 @@ import {
 } from "./_extract-all-sites.js";
 import { prepareDocument, runReport } from "../../src/ui/pipeline.js";
 import { runCustomPlaybook } from "../../src/playbooks/custom-interpreter.js";
+import { detectableCategories } from "../../src/extract/classifier.js";
 import { validateCustomPlaybook } from "../../src/playbooks/custom-playbook.js";
 import { buildDocxReport } from "../../src/report/docx.js";
 import { resolveDkbDir } from "../../tools/dkb/resolve.js";
@@ -207,6 +208,10 @@ describe("jurisdiction_id reach", () => {
       const run = await runCustomPlaybook(pb.playbook, {
         tree: prepared.ingest.tree,
         extracted: prepared.extracted,
+        detectable: detectableCategories({
+          vocab: { vocab: {} },
+          patterns: prepared.dkb.classifier.patterns,
+        }),
       });
       expect(run.findings).toEqual([]);
     }, 120000);

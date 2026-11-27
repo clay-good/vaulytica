@@ -273,13 +273,50 @@ export type NegotiationPosture = {
 
 export async function runCustomPlaybook(
   playbook: CustomPlaybook,
-  input: { tree: DocumentTree; extracted: ExtractedData },
+  input: {
+    tree: DocumentTree;
+    extracted: ExtractedData;
+    /**
+     * Every clause category the loaded classifier can emit
+     * ({@link detectableCategories}).
+     *
+     * 🚨 Required, not optional, and that is the point. `required_clauses`
+     * accepts a free string (`z.string().min(1)`), the DKB ships 103 vocab
+     * categories while the product's patterns emit 21, and a category outside
+     * those 21 can never appear in `extracted.classified`. Read as "absent"
+     * that produced a **critical finding asserting a clause was missing from a
+     * document that plainly contained it** — `change-of-control` and
+     * `base-salary` both reproduce it. An optional parameter would have let
+     * every caller keep the bug by saying nothing, which is the failure mode
+     * `jurisdiction_id` shipped with for the whole product's history.
+     *
+     * The same invariant is enforced for the 286 SHIPPED playbooks by
+     * `tests/integration/required-clauses-live.test.ts`, where violating it
+     * only costs match weight. On a user's own playbook it manufactures a
+     * false accusation, so here it must be answered, not scored.
+     */
+    detectable: ReadonlySet<string>;
+  },
 ): Promise<CustomPlaybookRun> {
   const facts = buildDocFacts(input.tree, input.extracted);
   const findings: CustomPlaybookFinding[] = [];
   const unevaluable: UnevaluableRule[] = [];
 
   for (const rc of playbook.required_clauses ?? []) {
+    if (!input.detectable.has(rc.category)) {
+      // Not "missing" — unaskable. The honest answer is that this run cannot
+      // speak to the category, which is what the `unevaluable` channel is for
+      // and what the UI already reports ("N custom rules could not be
+      // evaluated on this document").
+      unevaluable.push({
+        rule_id: `required-clause:${rc.category}`,
+        reason:
+          `no clause of category "${rc.category}" can be detected by the loaded ` +
+          `classifier, so this document cannot be checked against it — ` +
+          `detectable categories: ${[...input.detectable].sort().join(", ")}`,
+      });
+      continue;
+    }
     const present = facts.extracted.classified.some((c) => c.category === rc.category);
     if (!present) {
       findings.push(
