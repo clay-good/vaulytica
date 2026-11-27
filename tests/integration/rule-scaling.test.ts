@@ -119,6 +119,29 @@ function superLinear(tSmallMs: number, tBigMs: number): boolean {
   return tBigMs > 150 && tBigMs / Math.max(tSmallMs, 5) > 25;
 }
 
+/**
+ * The LIVE verdict, in one place.
+ *
+ * 🚨 `superLinear` above is kept only as the cheap pre-filter that decides
+ * whether a rule is worth re-sampling; it floors the denominator at 5 ms, which
+ * is what produced two false Windows accusations. Every verdict that can fail
+ * the build goes through here instead — and this function had been INLINED at
+ * both of those call sites, so the "recorded verdicts" below were pinning
+ * `superLinear`, a function no live assertion called any more. A pinned
+ * instrument that has drifted from the live one proves nothing.
+ *
+ * ⚠️ `smallMs > 0` is not redundant. `Number.isFinite(0)` is true and
+ * `172 / 0` is Infinity, so a literal zero reading would still accuse — the
+ * exact failure this is here to remove. The call sites cannot produce a zero
+ * today (an under-resolution sample is replaced by the amplified one, which is
+ * positive or NaN), but relying on an invariant maintained two functions away
+ * is how that guarantee gets lost.
+ */
+function accuses(smallMs: number, bigMs: number): boolean {
+  if (!(smallMs > 0) || !Number.isFinite(smallMs)) return false;
+  return bigMs > 150 && bigMs / smallMs > 25;
+}
+
 /** Below this, one sample is timer noise rather than a measurement. */
 const RESOLUTION_MS = 1;
 
@@ -140,18 +163,28 @@ const RESOLUTION_MS = 1;
  * larger ratio honestly earned if it truly is super-linear, and no accusation
  * at all when the reading was simply noise.
  */
-function measuredSmall(rule: Rule, ctx: ReturnType<typeof buildContext>): number {
-  const once = check(rule, ctx);
+function measuredThunk(run: () => void): number {
+  const once = cpuMs(run);
   if (once >= RESOLUTION_MS) return once;
   for (const reps of [16, 64, 256]) {
     const t0 = performance.now();
-    for (let i = 0; i < reps; i++) check(rule, ctx);
+    for (let i = 0; i < reps; i++) run();
     const total = performance.now() - t0;
     if (total >= RESOLUTION_MS * 10) return total / reps;
   }
   // Still unmeasurable after 256 repetitions: genuinely free at this size, and
   // a quotient over it would be meaningless either way.
   return Number.NaN;
+}
+
+function measuredSmall(rule: Rule, ctx: ReturnType<typeof buildContext>): number {
+  return measuredThunk(() => {
+    try {
+      rule.check(ctx);
+    } catch {
+      // A throw is another test's subject; this one measures time.
+    }
+  });
 }
 
 describe("every rule is linear on a long run of one character", () => {
@@ -190,8 +223,7 @@ describe("every rule is linear on a long run of one character", () => {
           // A real denominator, so no 5 ms floor here: an unmeasurable small
           // sample yields NaN and accuses nobody, and a measured one is
           // compared on its own terms.
-          if (Number.isFinite(s2) && b2 > 150 && b2 / s2 > 25)
-            slow.push(`${rule.id}: ${s2.toFixed(2)}ms -> ${b2.toFixed(0)}ms`);
+          if (accuses(s2, b2)) slow.push(`${rule.id}: ${s2.toFixed(2)}ms -> ${b2.toFixed(0)}ms`);
         }
       }
       expect(slow).toEqual([]);
@@ -208,18 +240,104 @@ describe("every rule is linear on a long run of one character", () => {
 describe("the v3 extractors are linear on a long run of one character", () => {
   for (const [name, ch] of RUNS) {
     it(`${name} runs`, () => {
-      const time = (n: number): number => {
-        const ctx = buildContext(["Terms", sentence(ch.repeat(n))]);
-        return cpuMs(() => extractAllV3(ctx.tree, { parties: [] }));
+      // 🚨 This block used `superLinear(tSmall, tBig)` on single samples until
+      // 2026-11-26, when the Windows leg failed it with
+      // `hyphenated word: 0.0ms -> 172ms` — the SAME fabricated-denominator
+      // verdict `measuredSmall` was written to remove two days earlier, left
+      // behind in the sibling describe because the fix was applied to the rule
+      // path only. `172 / Math.max(0.0, 5)` is 34, the threshold is 25, and
+      // nothing about the extractors was being tested.
+      //
+      // Measured locally across 2k-40k the day it failed, every run type is
+      // flatly linear — x2.00 time for x2.00 size at every step:
+      //   "a-"  2k:1.27  5k:3.43  10k:6.94  20k:13.98  40k:27.75 ms
+      //   "Ab " 2k:1.57  5k:3.97  10k:7.96  20k:16.73  40k:29.85 ms
+      // The Windows big sample was 172 ms against 13.98 ms here, so that runner
+      // was ~12x slower; a coarse CPU timer on a slow machine is exactly how a
+      // 2,000-character sample reads as 0.0 while the 20,000 one reads large.
+      // Same instrument as the rule block now: sample the denominator hardest,
+      // amplify it when it lands under the resolution floor, and decline to
+      // judge rather than divide by a fabricated 5.
+      const small = buildContext(["Terms", sentence(ch.repeat(2_000))]);
+      const big = buildContext(["Terms", sentence(ch.repeat(20_000))]);
+      const v3 = (ctx: ReturnType<typeof buildContext>) => (): void => {
+        extractAllV3(ctx.tree, { parties: [] });
       };
-      time(2_000);
-      const tSmall = time(2_000);
-      const tBig = time(20_000);
-      expect(superLinear(tSmall, tBig), `${tSmall.toFixed(1)}ms -> ${tBig.toFixed(0)}ms`).toBe(
-        false,
-      );
-    }, 120_000);
+      const fastest = (ctx: ReturnType<typeof buildContext>, n: number): number => {
+        let best = Infinity;
+        for (let i = 0; i < n; i++) best = Math.min(best, cpuMs(v3(ctx)));
+        return best;
+      };
+      cpuMs(v3(small));
+      const s1 = fastest(small, 5);
+      const s2 = s1 >= RESOLUTION_MS ? s1 : measuredThunk(v3(small));
+      const b2 = fastest(big, 3);
+      expect(accuses(s2, b2), `${s2.toFixed(2)}ms -> ${b2.toFixed(0)}ms`).toBe(false);
+    }, 300_000);
   }
+});
+
+/**
+ * The amplifier itself, because it is now the only thing standing between a
+ * coarse CPU timer and a false accusation.
+ */
+describe("the sub-resolution denominator is amplified, not fabricated", () => {
+  it("returns a real, small number for work too fast to time ONCE", () => {
+    // ⚠️ The workload here is MEASURED, not guessed. Two earlier drafts of this
+    // test asserted a finite result for work that is free even at 256
+    // repetitions and failed — which is the amplifier behaving correctly. The
+    // readings on this machine: an increment 0.011 ms once and NaN amplified; a
+    // 2,000-char replace 0.067 ms and still NaN (the loop JITs faster than a
+    // single call suggests); a 20,000-char replace 0.283 ms once, under the
+    // 1 ms floor, amplifying to a real 0.275 ms. That last one is the regime
+    // this is about, so it is the one used.
+    const t = measuredThunk(() => {
+      "ab".repeat(20_000).replace(/a/g, "b");
+    });
+    expect(Number.isFinite(t)).toBe(true);
+    expect(t).toBeGreaterThan(0);
+    expect(t).toBeLessThan(RESOLUTION_MS);
+  });
+
+  it("returns NaN for work that is free even amplified, and accuses nobody", () => {
+    // ⚠️ My first draft of the test above asserted a finite number for `n += 1`
+    // and failed: an increment is free even at 256 repetitions, so the
+    // amplifier correctly gives up. That is the point — NaN declines to judge,
+    // where the old `Math.max(t, 5)` would have invented a denominator.
+    let n = 0;
+    const t = measuredThunk(() => {
+      n += 1;
+    });
+    expect(n).toBeGreaterThan(256);
+    expect(Number.isNaN(t)).toBe(true);
+    expect(Number.isFinite(t) && 172 / t > 25).toBe(false);
+  });
+
+  it("never returns the 5 ms floor that produced the Windows verdict", () => {
+    // `superLinear` is still used by the recorded verdicts below; what must not
+    // happen is a LIVE comparison dividing by its floor. With an amplified
+    // denominator of ~0.001 ms the ratio is large but the numerator is tiny, so
+    // the `b2 > 150` arm is what (correctly) withholds the accusation.
+    // The pre-filter still accuses on the fabricated denominator — that is what
+    // it did on Windows twice — and the live verdict does not.
+    expect(superLinear(0, 172)).toBe(true);
+    expect(accuses(0, 172)).toBe(false);
+    expect(accuses(Number.NaN, 172)).toBe(false);
+    // ...while still separating a real quadratic from linear work, on the same
+    // recorded measurements the pre-filter is pinned against below.
+    expect(accuses(26.5, 2_827)).toBe(true);
+    expect(accuses(1.6, 311)).toBe(true);
+    expect(accuses(12.9, 465)).toBe(true);
+    expect(accuses(20, 230)).toBe(false);
+    expect(accuses(14.0, 219)).toBe(false);
+    expect(accuses(7, 160)).toBe(false);
+    // 🚨 Where the two genuinely differ: a TINY but real denominator. The
+    // pre-filter's 5 ms floor turns 0.01 -> 160 into 32x and accuses; the live
+    // verdict sees 16,000x on a 160 ms numerator and accuses too, correctly —
+    // that one IS super-linear. The floor's harm is upward, never downward.
+    expect(accuses(0.01, 160)).toBe(true);
+    expect(accuses(0.1, 42)).toBe(false);
+  });
 });
 
 /**
